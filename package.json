@@ -1,0 +1,58 @@
+{
+	"name": "vue-advanced-chat",
+	"version": "0.1.5",
+	"license": "MIT",
+	"description": "A beautiful chat made with Vue JS. Backend agnostic",
+	"author": {
+		"email": "antoindupontdev@gmail.com",
+		"name": "Antoine Dupont"
+	},
+	"keywords": [
+		"vue",
+		"vuejs",
+		"chat",
+		"vue-js-chat"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/antoine92190/vue-advanced-chat.git"
+	},
+	"bugs": {
+		"url": "https://github.com/antoine92190/vue-advanced-chat/issues"
+	},
+	"homepage": "https://github.com/antoine92190/vue-advanced-chat#readme",
+	"main": "./dist/vue-advanced-chat.common.js",
+	"scripts": {
+		"serve": "vue-cli-service serve",
+		"build": "vue-cli-service build",
+		"build:lib": "vue-cli-service build --target lib --name vue-advanced-chat ./src/ChatWindow/index.js",
+		"prepublish": "npm run build:lib",
+		"publish-beta": "npm publish --tag beta",
+		"lint": "vue-cli-service lint"
+	},
+	"files": [
+		"dist/*"
+	],
+	"peerDependencies": {
+		"vue": "^2.6.10"
+	},
+	"devDependencies": {
+		"@vue/cli-plugin-babel": "^4.1.0",
+		"@vue/cli-plugin-eslint": "^4.1.0",
+		"@vue/cli-service": "^4.1.0",
+		"@vue/eslint-config-standard": "^4.0.0",
+		"babel-eslint": "^10.0.3",
+		"eslint": "^5.16.0",
+		"eslint-plugin-vue": "^5.0.0",
+		"node-sass": "^4.13.0",
+		"sass": "^1.19.0",
+		"sass-loader": "^8.0.0",
+		"vue-template-compiler": "^2.6.10",
+		"vue": "^2.6.10"
+	},
+	"dependencies": {
+		"v-click-outside": "^3.0.0",
+		"vue-emoji-picker": "^1.0.1",
+		"vue-infinite-loading": "^2.4.4"
+	}
+}
