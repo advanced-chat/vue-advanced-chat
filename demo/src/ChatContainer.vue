@@ -273,7 +273,7 @@ export default {
 			if (message.file) content = `${message.file.name}.${message.file.type}`
 			if (message.deleted) content = 'This message was deleted'
 
-			return { content, timestamp }
+			return { content, timestamp, seen: message.seen }
 		},
 
 		fetchMessages({ room, options = {} }) {

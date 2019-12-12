@@ -40,7 +40,10 @@
 					<div class="name-container">
 						<div class="room-name">{{ room.roomName }}</div>
 						<div class="room-name text-last" v-if="room.lastMessage">
-							{{ room.lastMessage.content }}
+							<span v-if="room.lastMessage.seen">
+								<svg-icon fill="#0696c7" name="check" class="icon-check" />
+							</span>
+							<span>{{ room.lastMessage.content }}</span>
 						</div>
 						<div class="room-name text-date" v-if="room.lastMessage">
 							{{ room.lastMessage.timestamp }}
@@ -185,7 +188,7 @@ export default {
 	flex: 1 1 100%;
 	padding: 0 16px;
 	position: relative;
-	min-height: 70px;
+	min-height: 71px;
 }
 
 .room-avatar {
@@ -217,22 +220,30 @@ export default {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	line-height: 20px;
+	line-height: 22px;
 }
 
 .text-last {
 	color: #67717a !important;
 	font-size: 12px;
-	line-height: 15px;
+	line-height: 16px;
 }
 
 .text-date {
 	color: #a2aeb8 !important;
 	font-size: 11px;
-	line-height: 15px;
+	line-height: 16px;
 }
 
 .room-disabled {
 	pointer-events: none;
+}
+
+.icon-check {
+	height: 14px;
+	width: 14px;
+	vertical-align: middle;
+	margin-top: -1px;
+	margin-right: 1px;
 }
 </style>
