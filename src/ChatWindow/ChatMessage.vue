@@ -112,19 +112,28 @@ export default {
 	data() {
 		return {
 			openMessageId: {},
-			hoverMessageId: null
+			hoverMessageId: null,
+			imageLoading: false
+		}
+	},
+
+	watch: {
+		message: {
+			immediate: true,
+			handler() {
+				this.checkImgLoad()
+			}
 		}
 	},
 
 	computed: {
 		isImage() {
-			if (!this.message.file) return
-			const imageTypes = ['png', 'jpg']
-			const { type } = this.message.file
-			return imageTypes.some(t => type.includes(t))
+			return this.checkImageFile()
 		},
 		isImageLoading() {
-			return this.message.file.url.indexOf('blob:http') !== -1
+			return (
+				this.message.file.url.indexOf('blob:http') !== -1 || this.imageLoading
+			)
 		},
 		isEditable() {
 			return this.canEditMessage()
@@ -174,6 +183,19 @@ export default {
 		},
 		openFile({ url }) {
 			window.open(url, '_blank')
+		},
+		checkImageFile() {
+			if (!this.message.file) return
+			const imageTypes = ['png', 'jpg']
+			const { type } = this.message.file
+			return imageTypes.some(t => type.includes(t))
+		},
+		checkImgLoad() {
+			if (!this.checkImageFile()) return
+			this.imageLoading = true
+			const image = new Image()
+			image.src = this.message.file.url
+			image.addEventListener('load', () => (this.imageLoading = false))
 		}
 	}
 }
@@ -282,7 +304,7 @@ export default {
 }
 
 .image-loading {
-	filter: blur(5px);
+	filter: blur(3px);
 }
 
 @keyframes slide-up {
