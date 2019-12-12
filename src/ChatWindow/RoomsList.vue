@@ -185,15 +185,15 @@ export default {
 	flex: 1 1 100%;
 	padding: 0 16px;
 	position: relative;
-	min-height: 64px;
+	min-height: 70px;
 }
 
 .room-avatar {
 	background-size: cover !important;
 	background-position: center center !important;
 	background-repeat: no-repeat !important;
-	height: 35px;
-	width: 35px;
+	height: 42px;
+	width: 42px;
 	margin-right: 15px;
 	border-radius: 50%;
 }
@@ -208,7 +208,7 @@ export default {
 	-webkit-box-flex: 1;
 	flex: 1 1;
 	overflow: hidden;
-	padding: 12px 0;
+	padding: 8px 0;
 }
 
 .room-name {
@@ -217,16 +217,19 @@ export default {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	line-height: 20px;
 }
 
 .text-last {
 	color: #67717a !important;
 	font-size: 12px;
+	line-height: 15px;
 }
 
 .text-date {
 	color: #a2aeb8 !important;
 	font-size: 11px;
+	line-height: 15px;
 }
 
 .room-disabled {
