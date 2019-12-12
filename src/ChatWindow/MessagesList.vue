@@ -33,7 +33,7 @@
 				</transition>
 			</div>
 		</div>
-		<div class="chat-background container-scroll">
+		<div class="container-scroll">
 			<div class="messages-container">
 				<chat-loader :show="loadingMessages"></chat-loader>
 				<transition name="fade">
@@ -446,11 +446,8 @@ export default {
 	margin: 0;
 }
 
-.chat-background {
-	background-color: #f8f9fa !important;
-}
-
 .container-scroll {
+	background: var(--bg-color-content);
 	height: calc(100% - 120px);
 	overflow-y: auto;
 }
@@ -472,7 +469,7 @@ export default {
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	background: #fff;
+	background: var(--color-input);
 	border-top: 1px solid #d3dde7;
 	z-index: 10;
 }
@@ -487,6 +484,8 @@ export default {
 }
 
 textarea {
+	background: var(--color-input);
+	color: var(--color);
 	margin: 2px;
 	padding: 15px 15px 5px 10px;
 	overflow: hidden;

@@ -109,7 +109,6 @@ body {
 
 .app-container {
 	font-family: 'Roboto', sans-serif;
-	color: rgba(0, 0, 0, 0.87);
 	line-height: 1.5;
 	padding: 10px 20px 20px;
 }

@@ -1,5 +1,5 @@
 <template>
-	<div class="card-window" :style="{ height }">
+	<div class="card-window" :style="[{ height }, cssVars]">
 		<div class="chat-container">
 			<rooms-list
 				:rooms="rooms"
@@ -35,6 +35,7 @@ import RoomsList from './RoomsList'
 import MessagesList from './MessagesList'
 const { roomsValid, partcipantsValid } = require('../utils/roomValidation')
 import locales from '../locales'
+import themes from '../themes'
 
 export default {
 	name: 'chat-container',
@@ -52,7 +53,9 @@ export default {
 		menuActions: { type: Array, default: () => [] },
 		showFiles: { type: Boolean, default: true },
 		showEmojis: { type: Boolean, default: true },
-		textMessages: { type: Object, default: null }
+		textMessages: { type: Object, default: null },
+		theme: { type: String, default: 'light' },
+		colors: { type: Object, default: null }
 	},
 
 	data() {
@@ -86,6 +89,23 @@ export default {
 			return {
 				...locales,
 				...this.textMessages
+			}
+		},
+		cssVars() {
+			const themeColors = {
+				...themes[this.theme],
+				...this.colors
+			}
+
+			return {
+				'--bg-color': themeColors.sidemenuBg,
+				'--bg-color-hover': themeColors.sidemenuBgHover,
+				'--bg-color-active': themeColors.sidemenuBgActive,
+				'--bg-color-content': themeColors.messagesBg,
+				'--color-dark': themeColors.textColorDark,
+				'--color': themeColors.textColor,
+				'--color-active': themeColors.sidemenuColorActive,
+				'--color-input': themeColors.inputBg
 			}
 		}
 	},
@@ -128,7 +148,8 @@ export default {
 	border-radius: 4px;
 	display: block;
 	max-width: 100%;
-	background: #fff;
+	background: var(--bg-color);
+	color: var(--color);
 	overflow-wrap: break-word;
 	position: relative;
 	white-space: normal;

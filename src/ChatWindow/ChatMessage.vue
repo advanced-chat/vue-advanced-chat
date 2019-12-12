@@ -244,6 +244,7 @@ export default {
 
 .message-card {
 	background: #fff;
+	color: var(--color-dark);
 	border-radius: 4px;
 	font-size: 14px;
 	padding: 8px 8px 3px;

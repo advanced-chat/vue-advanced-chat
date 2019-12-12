@@ -136,6 +136,12 @@ export default {
 	display: flex;
 }
 
+input {
+	background: var(--color-input);
+	border-radius: 4px;
+	margin: 0 10px;
+}
+
 .rooms-empty {
 	font-size: 14px;
 	color: #9ca6af;
@@ -154,7 +160,7 @@ export default {
 	flex: 0 1 auto;
 	position: relative;
 	max-width: 100%;
-	background: #fff;
+	background: var(--text-color);
 	cursor: pointer;
 
 	:not(:hover) {
@@ -163,19 +169,18 @@ export default {
 	}
 
 	:hover {
-		background: #f6f6f6;
+		background: var(--bg-color-hover);
 		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 	}
 }
 
 .room-selected {
-	color: #1976d2 !important;
-	background: #e5effa !important;
+	color: var(--color-active) !important;
+	background: var(--bg-color-active) !important;
 
 	:hover {
-		color: #1976d2;
-		background: #e5effa;
+		background: var(--bg-color-active);
 	}
 }
 
