@@ -418,7 +418,7 @@ export default {
 			const uploadFileRef = filesRef
 				.child(this.currentUserId)
 				.child(messageId)
-				.child(`file.${file.type}`)
+				.child(`${file.name}.${file.type}`)
 
 			await uploadFileRef.put(file.blob, { contentType: file.type })
 			const url = await uploadFileRef.getDownloadURL()
