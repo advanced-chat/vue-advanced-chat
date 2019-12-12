@@ -45,7 +45,7 @@
 					</div>
 
 					<div v-else-if="!message.file">
-						{{ message.content }}
+						<span>{{ message.content }}</span>
 					</div>
 
 					<div class="image-container" v-else-if="isImage">
@@ -57,7 +57,7 @@
 							}"
 							:style="{ background: `url(${message.file.url})` }"
 						></div>
-						<div>{{ message.content }}</div>
+						<span>{{ message.content }}</span>
 					</div>
 
 					<div v-else :class="{ 'file-message': message.file && !isImage }">
@@ -67,7 +67,7 @@
 						>
 							<svg-icon fill="#1976d2" name="document" />
 						</div>
-						{{ message.content }}
+						<span>{{ message.content }}</span>
 					</div>
 
 					<div class="text-timestamp">
@@ -266,6 +266,7 @@ export default {
 
 .image-container {
 	padding-bottom: 2px;
+	width: 250px;
 }
 
 .message-image {
@@ -277,6 +278,7 @@ export default {
 	width: 250px;
 	margin-bottom: 5px;
 	border-radius: 4px;
+	margin: 0 auto 5px;
 }
 
 .image-loading {
