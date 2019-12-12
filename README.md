@@ -88,7 +88,7 @@ You can import it as a custom component:
 (3) `menuActions` can be used to display your own buttons when clicking the vertical dots icon inside a room.<br>
 You can then use the [menuActionHandler](#events-api) event to call your own action after clicking a button. Ex:
 
-```javascript
+```html
 menuActions="[
   {
     name: 'inviteUser',
@@ -107,7 +107,7 @@ menuActions="[
 
 (4) `textMessages` can be used to replace default texts. Ex:
 
-```javascript
+```html
 textMessages="{
   MESSAGE_DELETED: 'Ce message a été supprimé',
   MESSAGES_EMPTY: 'Aucun message',
@@ -123,7 +123,7 @@ Your props must follow a specific structure to display rooms and messages correc
 
 ### Rooms prop
 
-```javascript
+```html
 rooms="[
   {
     roomId: 1,
@@ -147,10 +147,10 @@ rooms="[
 Message objects are rendered differently depending on their type. Currently, only text, emoji and file types are supported.<br>
 Each message object has a `sender_id` field which can have the value 'me' or the id of the corresponding agent.
 
-```javascript
+```html
 messages="[
   {
-    content: 'message 1",
+    content: 'message 1',
     sender_id: 1234,
     username: 'John Doe',
     date: '13 November',
@@ -254,7 +254,7 @@ messages: {
   MESSAGE_ID_1: {
     content: 'My first message',
     sender_id: 2,
-    timestamp: 'December 11, 2019 at 4:00:00 PM UTC+2,
+    timestamp: 'December 11, 2019 at 4:00:00 PM UTC+2',
     seen: true
   }
 }
