@@ -75,7 +75,7 @@
 			<div class="box-footer">
 				<div v-if="imageFile">
 					<div class="svg-button icon-image" @click="resetImageFile">
-						<svg-icon fill="#9ca6af" name="close" />
+						<svg-icon fill="#fff" name="close" />
 					</div>
 					<img :src="imageFile" class="image-file" />
 				</div>
@@ -519,12 +519,15 @@ textarea {
 
 .icon-image {
 	position: absolute;
-	top: 14px;
-	left: 14px;
+	top: 16px;
+	left: 16px;
 
 	svg {
 		height: 20px;
 		width: 20px;
+		border-radius: 50%;
+		box-shadow: 0 1px 3px -1px rgba(0, 0, 0, 0.2),
+			0 1px 3px 1px rgba(0, 0, 0, 0.12), 0 1px 3px 1px rgba(0, 0, 0, 0.1);
 	}
 }
 
