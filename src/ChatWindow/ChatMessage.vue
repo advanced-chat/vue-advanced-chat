@@ -301,6 +301,7 @@ export default {
 	margin-bottom: 5px;
 	border-radius: 4px;
 	margin: 0 auto 5px;
+	transition: 0.4s filter linear;
 }
 
 .image-loading {
