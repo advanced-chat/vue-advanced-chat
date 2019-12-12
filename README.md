@@ -7,6 +7,8 @@
 
 # vue-advanced-chat
 
+![Demo](demo/src/assets/demo.gif)
+
 ## Features
 
 - Realtime chat messaging
