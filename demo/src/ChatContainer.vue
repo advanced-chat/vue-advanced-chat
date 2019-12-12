@@ -269,12 +269,11 @@ export default {
 			let timestamp = parseTimestamp(message.timestamp, timestampFormat)
 			if (timestampFormat === 'HH:mm') timestamp = 'Today, ' + timestamp
 
-			return {
-				content: message.file
-					? `${message.file.name}.${message.file.type}`
-					: message.content,
-				timestamp
-			}
+			let content = message.content
+			if (message.file) content = `${message.file.name}.${message.file.type}`
+			if (message.deleted) content = 'This message was deleted'
+
+			return { content, timestamp }
 		},
 
 		fetchMessages({ room, options = {} }) {
