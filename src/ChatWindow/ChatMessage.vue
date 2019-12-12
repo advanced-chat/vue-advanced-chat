@@ -75,7 +75,7 @@
 							<svg-icon fill="#9e9e9e" name="pencil" />
 						</div>
 						<span>{{ message.timestamp }}</span>
-						<span v-if="message.sender_id === 'me' && message.seen">
+						<span v-if="isMessageSeen">
 							<svg-icon fill="#0696c7" name="check" class="icon-check" />
 						</span>
 					</div>
@@ -128,6 +128,13 @@ export default {
 		},
 		isEditable() {
 			return this.canEditMessage()
+		},
+		isMessageSeen() {
+			return (
+				this.message.sender_id === 'me' &&
+				this.message.seen &&
+				!this.message.deleted
+			)
 		}
 	},
 
