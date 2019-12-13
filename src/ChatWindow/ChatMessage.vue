@@ -360,11 +360,11 @@ export default {
 	line-height: 1;
 	text-indent: 0;
 	vertical-align: middle;
-	margin: 0 5px 2px;
+	margin: 0 4px 2px;
 
 	svg {
-		height: 13px;
-		width: 13px;
+		height: 12px;
+		width: 12px;
 	}
 }
 
