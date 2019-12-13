@@ -249,7 +249,7 @@ input {
 	height: 14px;
 	width: 14px;
 	vertical-align: middle;
-	margin-top: -1px;
+	margin-top: -2px;
 	margin-right: 1px;
 }
 </style>
