@@ -139,6 +139,8 @@ colors="{
   messagesBg: '#f8f9fa',
   messageBg: '#fff',
   messageMeBg: '#ccf2cf',
+  messageDeletedBg: '#dadfe2',
+  messageDeletedColor: '#757e85',
   messageUsernameColor: '#9ca6af',
   messageTimestampColor: '#828c94',
   messageTextColor: '#0a0a0a',
