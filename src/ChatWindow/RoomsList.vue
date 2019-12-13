@@ -138,6 +138,7 @@ export default {
 
 input {
 	background: var(--chat-color-input);
+	color: var(--chat-color);
 	border-radius: 4px;
 	margin: 0 10px;
 }

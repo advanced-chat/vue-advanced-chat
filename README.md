@@ -15,6 +15,7 @@
 - Customizeable
 - Backend agnostic
 - Images, files & emojis
+- Dark mode
 - Firestore example
 
 ## [Demo](https://antoine92190.github.io/vue-advanced-chat)
@@ -44,7 +45,7 @@ yarn add --save vue-advanced-chat
 
 You can import it as a custom component:
 
-```html
+```javascript
 <template>
   <chat-window :rooms="rooms" :messages="messages" />
 </template>
@@ -81,15 +82,17 @@ You can import it as a custom component:
 | showFiles          | Boolean | -        | true    |
 | showEmojis         | Boolean | -        | true    |
 | textMessages (4)   | Object  | -        | null    |
+| theme (5)          | Sring   | -        | light   |
+| colors (6)         | Object  | -        | (6)     |
 
-(1) `loadingRooms` is must be used to show/hide a spinner icon while rooms are loading
+(1) `loadingRooms` can be used to show/hide a spinner icon while rooms are loading
 
 (2) `messagesLoaded` must be manually set to `true` when all messages of a conversation have been loaded. Meaning the user cannot scroll on top anymore
 
 (3) `menuActions` can be used to display your own buttons when clicking the vertical dots icon inside a room.<br>
 You can then use the [menuActionHandler](#events-api) event to call your own action after clicking a button. Ex:
 
-```html
+```javascript
 menuActions="[
   {
     name: 'inviteUser',
@@ -108,7 +111,7 @@ menuActions="[
 
 (4) `textMessages` can be used to replace default texts. Ex:
 
-```html
+```javascript
 textMessages="{
   MESSAGE_DELETED: 'Ce message a été supprimé',
   MESSAGES_EMPTY: 'Aucun message',
@@ -118,13 +121,51 @@ textMessages="{
 }"
 ```
 
+(5) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+
+(6) `colors` can be use to create your own theme. Ex:
+
+```javascript
+colors="{
+  headerBg: '#fff',
+  sidemenuBg: '#fff',
+  sidemenuBgHover: '#f6f6f6',
+  sidemenuBgActive: '#e5effa',
+  sidemenuColorActive: '#1976d2',
+  menuBg: '#fff',
+  menuBgHover: '#f6f6f6',
+  messagesBg: '#f8f9fa',
+  textColorDark: '#0a0a0a',
+  textColor: '#0a0a0a',
+  inputBg: '#fff',
+  iconsColor: {
+    search: '#9ca6af',
+    add: '#1976d2',
+    menu: '#0a0a0a',
+    close: '#9ca6af',
+    closeImage: '#fff',
+    file: '#1976d2',
+    paperclip: '#1976d2',
+    closeOutline: '#1976d2',
+    send: '#1976d2',
+    sendDisabled: '#9ca6af',
+    emoji: '#1976d2',
+    document: '#1976d2',
+    pencil: '#1976d2',
+    pencilEdited: '#9e9e9e',
+    trash: '#f44336',
+    checkmark: '#0696c7'
+  }
+}"
+```
+
 ## Props data structure
 
 Your props must follow a specific structure to display rooms and messages correctly:
 
 ### Rooms prop
 
-```html
+```javascript
 rooms="[
   {
     roomId: 1,
@@ -148,7 +189,7 @@ rooms="[
 Message objects are rendered differently depending on their type. Currently, only text, emoji and file types are supported.<br>
 Each message object has a `sender_id` field which can have the value 'me' or the id of the corresponding agent.
 
-```html
+```javascript
 messages="[
   {
     content: 'message 1',
@@ -194,7 +235,7 @@ menuActionHandler({ roomId, action }) {
     case 'deleteRoom':
       // call a method to delete the room
   }
-},
+}
 ```
 
 (3) All file params contain: `{ blob, localURL, name, size, type }`
