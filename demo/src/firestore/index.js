@@ -2,15 +2,10 @@ import * as app from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/storage'
 
-const config = JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG) || {
-	apiKey: 'AIzaSyCVy3Oc1jgvacBZe5hKBA8mV9EOqmqUG0U',
-	authDomain: 'sandbox-public.firebaseapp.com',
-	databaseURL: 'https://sandbox-public.firebaseio.com',
-	projectId: 'sandbox-public',
-	storageBucket: 'sandbox-public.appspot.com',
-	messagingSenderId: '694742394920',
-	appId: '1:694742394920:web:af0d589c7618f85ccc2d1d'
-}
+const config =
+	process.env.NODE_ENV === 'development'
+		? JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG)
+		: JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG_PUBLIC)
 
 app.initializeApp(config)
 
