@@ -400,10 +400,10 @@ export default {
 	border-radius: 4px;
 	display: block;
 	cursor: pointer;
-	background: #fff;
+	background: var(--chat-bg-menu);
 
 	:hover {
-		background: #f6f6f6;
+		background: var(--chat-bg-menu-hover);
 		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 	}
