@@ -11,7 +11,17 @@
 					{{ user.username }}
 				</option>
 			</select>
-			<chat-container :currentUserId="currentUserId" v-if="showChat" />
+
+			<div class="button-theme">
+				<button @click="theme = 'light'" class="button-light">Light</button>
+				<button @click="theme = 'dark'" class="button-dark">Dark</button>
+			</div>
+
+			<chat-container
+				:currentUserId="currentUserId"
+				:theme="theme"
+				v-if="showChat"
+			/>
 		</div>
 	</div>
 </template>
@@ -27,6 +37,7 @@ export default {
 
 	data() {
 		return {
+			theme: 'light',
 			showChat: true,
 			users: [
 				{
@@ -123,5 +134,38 @@ select {
 .user-logged {
 	font-size: 12px;
 	margin-right: 5px;
+}
+
+.button-theme {
+	float: right;
+
+	.button-light {
+		background: #cbced1;
+	}
+
+	.button-dark {
+		background: #1C1D21;
+	}
+
+	button {
+		color: #fff;
+		outline: none;
+		cursor: pointer;
+		border-radius: 4px;
+		padding: 8px 12px;
+		margin-left: 10px;
+		border: none;
+		font-size: 14px;
+		transition: 0.3s;
+		vertical-align: middle;
+
+		&:hover {
+			opacity: 0.8;
+		}
+
+		&:active {
+			opacity: 0.6;
+		}
+	}
 }
 </style>

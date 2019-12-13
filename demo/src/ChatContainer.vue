@@ -47,6 +47,7 @@
 
 		<chat-window
 			height="calc(100vh - 80px)"
+			:theme="theme"
 			:rooms="rooms"
 			:loadingRooms="loadingRooms"
 			:messages="messages"
@@ -81,7 +82,7 @@ export default {
 		ChatWindow
 	},
 
-	props: ['currentUserId'],
+	props: ['currentUserId', 'theme'],
 
 	data() {
 		return {
