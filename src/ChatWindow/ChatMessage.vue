@@ -65,27 +65,27 @@
 							class="svg-button icon-file"
 							@click.stop="openFile(message.file)"
 						>
-							<svg-icon fill="#1976d2" name="document" />
+							<svg-icon name="document" />
 						</div>
 						<span>{{ message.content }}</span>
 					</div>
 
 					<div class="text-timestamp">
 						<div class="icon-edited" v-if="message.edited && !message.deleted">
-							<svg-icon fill="#9e9e9e" name="pencil" />
+							<svg-icon name="pencil" param="edited" />
 						</div>
 						<span>{{ message.timestamp }}</span>
 						<span v-if="isMessageSeen">
-							<svg-icon fill="#0696c7" name="check" class="icon-check" />
+							<svg-icon name="checkmark" class="icon-check" />
 						</span>
 					</div>
 				</div>
 				<div class="action-buttons" v-if="isEditable">
 					<div class="svg-button button-delete" @click.stop="deleteMessage">
-						<svg-icon fill="#f44336" name="trash" />
+						<svg-icon name="trash" />
 					</div>
 					<div class="svg-button button-edit" @click.stop="editMessage">
-						<svg-icon fill="#1976d2" name="pencil" />
+						<svg-icon name="pencil" />
 					</div>
 				</div>
 			</div>

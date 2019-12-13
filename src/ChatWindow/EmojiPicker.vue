@@ -8,7 +8,7 @@
 				@click.stop="clickEvent"
 				@click="openEmoji"
 			>
-				<svg-icon name="emoji" fill="#1976d2" />
+				<svg-icon name="emoji" />
 			</div>
 			<div
 				slot="emoji-picker"

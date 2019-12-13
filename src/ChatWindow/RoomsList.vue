@@ -2,7 +2,7 @@
 	<div class="rooms-container app-border-r">
 		<div class="box-search app-border-b">
 			<div class="icon-search">
-				<svg-icon fill="#9ca6af" name="search" />
+				<svg-icon name="search" />
 			</div>
 			<input
 				type="text"
@@ -12,7 +12,7 @@
 				@input="searchRoom"
 			/>
 			<div class="svg-button" @click="addRoom">
-				<svg-icon fill="#1976d2" name="add-circle" />
+				<svg-icon name="add" />
 			</div>
 		</div>
 
@@ -41,7 +41,7 @@
 						<div class="room-name">{{ room.roomName }}</div>
 						<div class="room-name text-last" v-if="room.lastMessage">
 							<span v-if="room.lastMessage.seen">
-								<svg-icon fill="#0696c7" name="check" class="icon-check" />
+								<svg-icon name="checkmark" class="icon-check" />
 							</span>
 							<span>{{ room.lastMessage.content }}</span>
 						</div>

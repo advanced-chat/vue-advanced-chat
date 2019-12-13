@@ -54,7 +54,7 @@ export default {
 		showFiles: { type: Boolean, default: true },
 		showEmojis: { type: Boolean, default: true },
 		textMessages: { type: Object, default: null },
-		theme: { type: String, default: 'dark' },
+		theme: { type: String, default: 'light' },
 		colors: { type: Object, default: null }
 	},
 

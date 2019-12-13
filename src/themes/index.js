@@ -8,7 +8,25 @@ export const defaultThemeColors = {
 		messagesBg: '#f8f9fa',
 		textColorDark: '#0a0a0a',
 		textColor: '#0a0a0a',
-		inputBg: '#fff'
+		inputBg: '#fff',
+		iconsColor: {
+			search: '#9ca6af',
+			add: '#1976d2',
+			menu: '#0a0a0a',
+			close: '#9ca6af',
+			closeImage: '#fff',
+			file: '#1976d2',
+			paperclip: '#1976d2',
+			closeOutline: '#1976d2',
+			send: '#1976d2',
+			sendDisabled: '#9ca6af',
+			emoji: '#1976d2',
+			document: '#1976d2',
+			pencil: '#1976d2',
+			pencilEdited: '#9e9e9e',
+			trash: '#f44336',
+			checkmark: '#0696c7'
+		}
 	},
 	dark: {
 		headerBg: '#26272e',
@@ -19,7 +37,25 @@ export const defaultThemeColors = {
 		messagesBg: '#1C1D21',
 		textColorDark: '#0a0a0a',
 		textColor: '#fff',
-		inputBg: '#34343b'
+		inputBg: '#34343b',
+		iconsColor: {
+			search: '#9ca6af',
+			add: '#fff',
+			menu: '#fff',
+			close: '#9ca6af',
+			closeImage: '#fff',
+			file: '#fff',
+			paperclip: '#fff',
+			closeOutline: '#fff',
+			send: '#fff',
+			sendDisabled: '#9ca6af',
+			emoji: '#fff',
+			document: '#1976d2',
+			pencil: '#1976d2',
+			pencilEdited: '#9e9e9e',
+			trash: '#f44336',
+			checkmark: '#0696c7'
+		}
 	}
 }
 
@@ -32,7 +68,8 @@ export const cssThemeVars = ({
 	messagesBg,
 	textColorDark,
 	textColor,
-	inputBg
+	inputBg,
+	iconsColor
 }) => {
 	return {
 		'--chat-header-bg-color': headerBg,
@@ -43,6 +80,22 @@ export const cssThemeVars = ({
 		'--chat-color-dark': textColorDark,
 		'--chat-color': textColor,
 		'--chat-color-active': sidemenuColorActive,
-		'--chat-color-input': inputBg
+		'--chat-color-input': inputBg,
+		'--chat-icon-color-search': iconsColor.search,
+		'--chat-icon-color-add': iconsColor.add,
+		'--chat-icon-color-menu': iconsColor.menu,
+		'--chat-icon-color-close': iconsColor.close,
+		'--chat-icon-color-close-image': iconsColor.closeImage,
+		'--chat-icon-color-file': iconsColor.file,
+		'--chat-icon-color-paperclip': iconsColor.paperclip,
+		'--chat-icon-color-close-outline': iconsColor.closeOutline,
+		'--chat-icon-color-send': iconsColor.send,
+		'--chat-icon-color-send-disabled': iconsColor.sendDisabled,
+		'--chat-icon-color-emoji': iconsColor.emoji,
+		'--chat-icon-color-document': iconsColor.document,
+		'--chat-icon-color-pencil': iconsColor.pencil,
+		'--chat-edited-icon-color-pencil': iconsColor.pencilEdited,
+		'--chat-icon-color-trash': iconsColor.trash,
+		'--chat-icon-color-checkmark': iconsColor.checkmark
 	}
 }

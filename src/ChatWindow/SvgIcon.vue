@@ -7,13 +7,21 @@
 		height="24"
 		viewBox="0 0 24 24"
 	>
-		<path :fill="fill" :d="svgItem.find(item => item.name === name).path" />
+		<path :id="svgId" :d="svgItem.find(item => item.name === name).path" />
 	</svg>
 </template>
 
 <script>
 export default {
-	props: ['fill', 'name', 'path'],
+	props: ['name', 'path', 'param'],
+
+	computed: {
+		svgId() {
+			const param = this.param ? '-' + this.param : ''
+			return `chat-icon-${this.name}${param}`
+		}
+	},
+
 	data() {
 		return {
 			svgItem: [
@@ -23,12 +31,12 @@ export default {
 						'M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z'
 				},
 				{
-					name: 'add-circle',
+					name: 'add',
 					path:
 						'M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z'
 				},
 				{
-					name: 'vetical-dots',
+					name: 'menu',
 					path:
 						'M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z'
 				},
@@ -76,7 +84,7 @@ export default {
 						'M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z'
 				},
 				{
-					name: 'check',
+					name: 'checkmark',
 					path: 'M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z'
 				}
 			]
@@ -85,4 +93,68 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+#chat-icon-search {
+	fill: var(--chat-icon-color-search);
+}
+
+#chat-icon-add {
+	fill: var(--chat-icon-color-add);
+}
+
+#chat-icon-menu {
+	fill: var(--chat-icon-color-menu);
+}
+
+#chat-icon-close {
+	fill: var(--chat-icon-color-close);
+}
+
+#chat-icon-close-image {
+	fill: var(--chat-icon-color-close-image);
+}
+
+#chat-icon-file {
+	fill: var(--chat-icon-color-file);
+}
+
+#chat-icon-paperclip {
+	fill: var(--chat-icon-color-paperclip);
+}
+
+#chat-icon-close-outline {
+	fill: var(--chat-icon-color-close-outline);
+}
+
+#chat-icon-send {
+	fill: var(--chat-icon-color-send);
+}
+
+#chat-icon-send-disabled {
+	fill: var(--chat-icon-color-send-disabled);
+}
+
+#chat-icon-emoji {
+	fill: var(--chat-icon-color-emoji);
+}
+
+#chat-icon-document {
+	fill: var(--chat-icon-color-document);
+}
+
+#chat-icon-pencil {
+	fill: var(--chat-icon-color-pencil);
+}
+
+#chat-icon-pencil-edited {
+	fill: var(--chat-edited-icon-color-pencil);
+}
+
+#chat-icon-trash {
+	fill: var(--chat-icon-color-trash);
+}
+
+#chat-icon-checkmark {
+	fill: var(--chat-icon-color-checkmark);
+}
+</style>

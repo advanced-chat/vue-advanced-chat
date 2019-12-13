@@ -13,7 +13,7 @@
 					v-if="menuActions.length"
 					@click="menuOpened = !menuOpened"
 				>
-					<svg-icon name="vetical-dots" />
+					<svg-icon name="menu" />
 				</div>
 				<transition name="slide-fade" v-if="menuActions.length">
 					<div
@@ -75,18 +75,18 @@
 			<div class="box-footer">
 				<div v-if="imageFile">
 					<div class="svg-button icon-image" @click="resetImageFile">
-						<svg-icon fill="#fff" name="close" />
+						<svg-icon name="close" param="image" />
 					</div>
 					<img :src="imageFile" class="image-file" />
 				</div>
 
 				<div class="file-container" v-else-if="file">
 					<div class="icon-file">
-						<svg-icon fill="#1976d2" name="file" />
+						<svg-icon name="file" />
 					</div>
 					<div>{{ message }}</div>
 					<div class="svg-button icon-remove" @click="resetFile">
-						<svg-icon fill="#9ca6af" name="close" />
+						<svg-icon name="close" />
 					</div>
 				</div>
 
@@ -110,7 +110,7 @@
 					></emoji-picker>
 
 					<div v-if="showFiles" class="svg-button" @click="launchFilePicker">
-						<svg-icon fill="#1976d2" name="paperclip" />
+						<svg-icon name="paperclip" />
 					</div>
 
 					<input
@@ -126,7 +126,7 @@
 						v-if="editedMessage._id"
 						@click="resetMessage"
 					>
-						<svg-icon fill="#1976d2" name="close-outline" />
+						<svg-icon name="close-outline" />
 					</div>
 
 					<div
@@ -135,10 +135,7 @@
 						class="svg-button"
 						:class="{ 'send-disabled': inputDisabled }"
 					>
-						<svg-icon
-							:fill="inputDisabled ? '#9ca6af' : '#1976d2'"
-							name="send"
-						/>
+						<svg-icon name="send" :param="inputDisabled ? 'disabled' : ''" />
 					</div>
 				</div>
 			</div>
