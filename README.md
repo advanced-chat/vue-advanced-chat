@@ -257,7 +257,7 @@ You can find the source code to implement a full featured chat app using Firebas
 To test it using your own Firebase project:
 
 - Clone this repository: `git clone https://github.com/antoine92190/vue-advanced-chat.git`
-- Inside `demo/src/firestore/index.js` file, replace the line `const config = { ... }` by your own Firebase config
+- Inside `demo/src/firestore/index.js` file, replace the line `const config = ...` by your own Firebase config
 - Go inside `demo` folder and run `npm run serve`
 
 ### Data structure
