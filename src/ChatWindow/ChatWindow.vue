@@ -35,7 +35,7 @@ import RoomsList from './RoomsList'
 import MessagesList from './MessagesList'
 const { roomsValid, partcipantsValid } = require('../utils/roomValidation')
 import locales from '../locales'
-import themes from '../themes'
+import { defaultThemeColors, cssThemeVars } from '../themes'
 
 export default {
 	name: 'chat-container',
@@ -54,7 +54,7 @@ export default {
 		showFiles: { type: Boolean, default: true },
 		showEmojis: { type: Boolean, default: true },
 		textMessages: { type: Object, default: null },
-		theme: { type: String, default: 'light' },
+		theme: { type: String, default: 'dark' },
 		colors: { type: Object, default: null }
 	},
 
@@ -93,20 +93,11 @@ export default {
 		},
 		cssVars() {
 			const themeColors = {
-				...themes[this.theme],
+				...defaultThemeColors[this.theme],
 				...this.colors
 			}
 
-			return {
-				'--bg-color': themeColors.sidemenuBg,
-				'--bg-color-hover': themeColors.sidemenuBgHover,
-				'--bg-color-active': themeColors.sidemenuBgActive,
-				'--bg-color-content': themeColors.messagesBg,
-				'--color-dark': themeColors.textColorDark,
-				'--color': themeColors.textColor,
-				'--color-active': themeColors.sidemenuColorActive,
-				'--color-input': themeColors.inputBg
-			}
+			return cssThemeVars(themeColors)
 		}
 	},
 
@@ -148,8 +139,8 @@ export default {
 	border-radius: 4px;
 	display: block;
 	max-width: 100%;
-	background: var(--bg-color);
-	color: var(--color);
+	background: var(--chat-bg-color);
+	color: var(--chat-color);
 	overflow-wrap: break-word;
 	position: relative;
 	white-space: normal;

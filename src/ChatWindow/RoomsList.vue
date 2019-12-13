@@ -137,7 +137,7 @@ export default {
 }
 
 input {
-	background: var(--color-input);
+	background: var(--chat-color-input);
 	border-radius: 4px;
 	margin: 0 10px;
 }
@@ -160,7 +160,7 @@ input {
 	flex: 0 1 auto;
 	position: relative;
 	max-width: 100%;
-	background: var(--text-color);
+	background: var(--chat-text-color);
 	cursor: pointer;
 
 	:not(:hover) {
@@ -169,18 +169,18 @@ input {
 	}
 
 	:hover {
-		background: var(--bg-color-hover);
+		background: var(--chat-bg-color-hover);
 		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 	}
 }
 
 .room-selected {
-	color: var(--color-active) !important;
-	background: var(--bg-color-active) !important;
+	color: var(--chat-color-active) !important;
+	background: var(--chat-bg-color-active) !important;
 
 	:hover {
-		background: var(--bg-color-active);
+		background: var(--chat-bg-color-active);
 	}
 }
 

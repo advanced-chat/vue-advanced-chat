@@ -447,7 +447,7 @@ export default {
 }
 
 .container-scroll {
-	background: var(--bg-color-content);
+	background: var(--chat-bg-color-content);
 	height: calc(100% - 120px);
 	overflow-y: auto;
 }
@@ -469,7 +469,7 @@ export default {
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	background: var(--color-input);
+	background: var(--chat-color-input);
 	border-top: 1px solid #d3dde7;
 	z-index: 10;
 }
@@ -484,8 +484,8 @@ export default {
 }
 
 textarea {
-	background: var(--color-input);
-	color: var(--color);
+	background: var(--chat-color-input);
+	color: var(--chat-color);
 	margin: 2px;
 	padding: 15px 15px 5px 10px;
 	overflow: hidden;
