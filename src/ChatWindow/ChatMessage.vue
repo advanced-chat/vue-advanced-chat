@@ -41,7 +41,7 @@
 					</div>
 
 					<div v-if="message.deleted">
-						{{ textMessages.MESSAGE_DELETED }}
+						<span>{{ textMessages.MESSAGE_DELETED }}</span>
 					</div>
 
 					<div v-else-if="!message.file">
@@ -281,10 +281,10 @@ export default {
 }
 
 .message-deleted {
-	color: #757e85 !important;
+	color: var(--chat-color-message-deleted) !important;
 	font-size: 13px !important;
 	font-style: italic !important;
-	background: #dadfe2 !important;
+	background: var(--chat-bg-color-message-deleted) !important;
 }
 
 .image-container {
