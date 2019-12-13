@@ -37,7 +37,7 @@
 						v-if="roomUsers.length > 2 && message.sender_id !== 'me'"
 						class="text-username"
 					>
-						{{ message.username }}
+						<span>{{ message.username }}</span>
 					</div>
 
 					<div v-if="message.deleted">
@@ -243,8 +243,8 @@ export default {
 }
 
 .message-card {
-	background: #fff;
-	color: var(--chat-color-dark);
+	background: var(--chat-bg-color-message);
+	color: var(--chat-color-message-text);
 	border-radius: 4px;
 	font-size: 14px;
 	padding: 8px 8px 3px;
@@ -269,7 +269,7 @@ export default {
 }
 
 .message-current {
-	background: #ccf2cf !important;
+	background: var(--chat-bg-color-message-me) !important;
 
 	&.slide-up {
 		animation: slide-up 0.3s ease-out forwards;
@@ -329,14 +329,14 @@ export default {
 
 .text-username {
 	font-size: 13px;
-	color: #9ca6af;
+	color: var(--chat-color-message-username);
 	margin-bottom: 2px;
 }
 
 .text-timestamp {
 	font-size: 10px;
 	font-weight: 300;
-	color: #828c94;
+	color: var(--chat-color-message-timestamp);
 	text-align: right;
 }
 
