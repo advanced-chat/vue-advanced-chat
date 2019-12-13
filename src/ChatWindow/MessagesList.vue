@@ -1,37 +1,31 @@
 <template>
 	<div class="col-messages">
-		<div>
-			<div class="room-header app-border-b">
-				<div
-					v-if="room.avatar"
-					class="room-avatar"
-					:style="{ background: `url(${room.avatar})` }"
-				></div>
-				<div>{{ room.roomName }}</div>
-				<div
-					class="svg-button room-options"
-					v-if="menuActions.length"
-					@click="menuOpened = !menuOpened"
-				>
-					<svg-icon name="menu" />
-				</div>
-				<transition name="slide-fade" v-if="menuActions.length">
-					<div
-						v-if="menuOpened"
-						v-click-outside="closeMenu"
-						class="menu-options"
-					>
-						<div class="menu-list">
-							<div v-for="action in menuActions" :key="action.name">
-								<div class="menu-item" @click="menuActionHandler(action)">
-									{{ action.title }}
-								</div>
-								<hr class="menu-divider" />
+		<div class="room-header app-border-b">
+			<div
+				v-if="room.avatar"
+				class="room-avatar"
+				:style="{ background: `url(${room.avatar})` }"
+			></div>
+			<div>{{ room.roomName }}</div>
+			<div
+				class="svg-button room-options"
+				v-if="menuActions.length"
+				@click="menuOpened = !menuOpened"
+			>
+				<svg-icon name="menu" />
+			</div>
+			<transition name="slide-fade" v-if="menuActions.length">
+				<div v-if="menuOpened" v-click-outside="closeMenu" class="menu-options">
+					<div class="menu-list">
+						<div v-for="action in menuActions" :key="action.name">
+							<div class="menu-item" @click="menuActionHandler(action)">
+								{{ action.title }}
 							</div>
+							<hr class="menu-divider" />
 						</div>
 					</div>
-				</transition>
-			</div>
+				</div>
+			</transition>
 		</div>
 		<div class="container-scroll">
 			<div class="messages-container">
@@ -356,7 +350,6 @@ export default {
 }
 
 .room-header {
-	border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 	align-items: center;
 	display: flex;
 	flex: 1 1 100%;
