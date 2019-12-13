@@ -140,11 +140,14 @@ select {
 	float: right;
 
 	.button-light {
-		background: #cbced1;
+		background: #fff;
+		border: 1px solid #46484e;
+		color: #46484e;
 	}
 
 	.button-dark {
-		background: #1C1D21;
+		background: #1c1d21;
+		border: 1px solid #1c1d21;
 	}
 
 	button {
@@ -152,7 +155,7 @@ select {
 		outline: none;
 		cursor: pointer;
 		border-radius: 4px;
-		padding: 8px 12px;
+		padding: 6px 12px;
 		margin-left: 10px;
 		border: none;
 		font-size: 14px;
