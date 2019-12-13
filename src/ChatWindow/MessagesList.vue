@@ -356,6 +356,7 @@ export default {
 	padding: 0 16px;
 	position: relative;
 	height: 64px;
+	margin-right: 1px;
 }
 
 .room-avatar {
@@ -440,6 +441,7 @@ export default {
 	background: var(--chat-bg-color-content);
 	height: calc(100% - 120px);
 	overflow-y: auto;
+	margin-right: 1px;
 }
 
 .messages-container {
@@ -458,7 +460,7 @@ export default {
 .room-footer {
 	position: absolute;
 	bottom: 0;
-	width: 100%;
+	width: calc(100% - 1px);
 	background: var(--chat-color-input);
 	border-top: 1px solid var(--chat-border-color);
 	z-index: 10;
