@@ -357,6 +357,8 @@ export default {
 	position: relative;
 	height: 64px;
 	margin-right: 1px;
+	background: var(--chat-header-bg-color);
+	border-top-right-radius: 4px;
 }
 
 .room-avatar {
@@ -464,6 +466,7 @@ export default {
 	background: var(--chat-color-input);
 	border-top: 1px solid var(--chat-border-color);
 	z-index: 10;
+	border-bottom-right-radius: 4px;
 }
 
 .box-footer {
