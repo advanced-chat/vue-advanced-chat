@@ -154,7 +154,7 @@ export default {
 }
 
 // General
-$borderStyle: 1px solid #d3dde7;
+$borderStyle: 1px solid var(--chat-border-color);
 
 .app-border {
 	border: $borderStyle;

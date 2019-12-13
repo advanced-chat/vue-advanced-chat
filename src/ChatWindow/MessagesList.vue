@@ -467,7 +467,7 @@ export default {
 	bottom: 0;
 	width: 100%;
 	background: var(--chat-color-input);
-	border-top: 1px solid #d3dde7;
+	border-top: 1px solid var(--chat-border-color);
 	z-index: 10;
 }
 
