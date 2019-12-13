@@ -141,6 +141,7 @@ colors="{
   textColor: '#0a0a0a',
   inputBg: '#fff',
   spinnerColor: '#333',
+  borderColor: '#d3dde7',
   iconsColor: {
     search: '#9ca6af',
     add: '#1976d2',
