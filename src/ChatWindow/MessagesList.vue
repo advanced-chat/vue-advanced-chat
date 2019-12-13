@@ -191,7 +191,7 @@ export default {
 	watch: {
 		loadingMessages(val) {
 			if (val) this.infiniteState = null
-			else this.$refs['roomTextarea'].focus()
+			else this.focusTextarea()
 		},
 		room() {
 			this.loadingMessages = true
@@ -235,12 +235,18 @@ export default {
 
 	methods: {
 		resetMessage() {
-			this.$refs['roomTextarea'].style.height = '38px'
+			this.resetTextareaSize()
 			this.message = ''
 			this.editedMessage = {}
 			this.file = null
 			this.imageFile = null
 			this.emojiOpened = false
+		},
+		resetTextareaSize() {
+			this.$refs['roomTextarea'].style.height = '38px'
+		},
+		focusTextarea() {
+			this.$refs['roomTextarea'].focus()
 		},
 		isMessageEmpty() {
 			return !this.file && !this.message.trim()
@@ -271,7 +277,7 @@ export default {
 		},
 		editMessage(message) {
 			this.resetFile()
-			this.$refs['roomTextarea'].focus()
+			this.focusTextarea()
 			this.editedMessage = { ...message }
 			this.file = message.file
 			if (this.isImageCheck(this.file)) this.imageFile = message.file.url
@@ -291,7 +297,7 @@ export default {
 		},
 		addEmoji(emoji) {
 			this.message += emoji
-			this.$refs['roomTextarea'].focus()
+			this.focusTextarea()
 		},
 		launchFilePicker() {
 			this.$refs.file.value = ''
@@ -317,12 +323,15 @@ export default {
 			this.imageFile = null
 			this.editedMessage.file = null
 			this.file = null
+			this.focusTextarea()
 		},
 		resetFile() {
 			this.message = ''
 			this.imageFile = null
 			this.editedMessage.file = null
 			this.file = null
+			this.resetTextareaSize()
+			setTimeout(() => this.focusTextarea(), 0)
 		},
 		isImageCheck(file) {
 			if (!file) return
