@@ -11,6 +11,7 @@ export const defaultThemeColors = {
 		textColorDark: '#0a0a0a',
 		textColor: '#0a0a0a',
 		inputBg: '#fff',
+		spinnerColor: '#333',
 		iconsColor: {
 			search: '#9ca6af',
 			add: '#1976d2',
@@ -42,6 +43,7 @@ export const defaultThemeColors = {
 		textColorDark: '#0a0a0a',
 		textColor: '#fff',
 		inputBg: '#34343b',
+		spinnerColor: '#fff',
 		iconsColor: {
 			search: '#9ca6af',
 			add: '#fff',
@@ -75,6 +77,7 @@ export const cssThemeVars = ({
 	textColorDark,
 	textColor,
 	inputBg,
+	spinnerColor,
 	iconsColor
 }) => {
 	return {
@@ -89,6 +92,7 @@ export const cssThemeVars = ({
 		'--chat-bg-menu': menuBg,
 		'--chat-bg-menu-hover': menuBgHover,
 		'--chat-color-input': inputBg,
+		'--chat-color-spinner': spinnerColor,
 		'--chat-icon-color-search': iconsColor.search,
 		'--chat-icon-color-add': iconsColor.add,
 		'--chat-icon-color-menu': iconsColor.menu,

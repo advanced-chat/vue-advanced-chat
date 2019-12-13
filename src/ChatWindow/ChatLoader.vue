@@ -39,9 +39,9 @@ export default {
 	height: 32px;
 	width: 32px;
 	border: 3px rgba(0, 0, 0, 0.25) solid;
-	border-top: 3px #000 solid;
-	border-right: 3px #000 solid;
-	border-bottom: 3px #000 solid;
+	border-top: 3px var(--chat-color-spinner) solid;
+	border-right: 3px var(--chat-color-spinner) solid;
+	border-bottom: 3px var(--chat-color-spinner) solid;
 	border-radius: 50%;
 	-webkit-animation: spin 1s infinite linear;
 	animation: spin 1s infinite linear;
