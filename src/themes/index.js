@@ -47,11 +47,11 @@ export const defaultThemeColors = {
 		menuBg: '#26272e',
 		menuBgHover: '#1C1D21',
 		messagesBg: '#1C1D21',
-		messageBg: '#9ea8b5',
-		messageMeBg: '#46586b',
+		messageBg: '#46586b',
+		messageMeBg: '#4fb381',
 		messageDeletedBg: '#353b40',
 		messageDeletedColor: '#dadfe2',
-		messageUsernameColor: '#ebedf2',
+		messageUsernameColor: '#b3bac9',
 		messageTimestampColor: '#ebedf2',
 		messageTextColor: '#fff',
 		textColor: '#fff',
@@ -64,17 +64,17 @@ export const defaultThemeColors = {
 			menu: '#fff',
 			close: '#9ca6af',
 			closeImage: '#fff',
-			file: '#fff',
+			file: '#1976d2',
 			paperclip: '#fff',
 			closeOutline: '#fff',
 			send: '#fff',
 			sendDisabled: '#9ca6af',
 			emoji: '#fff',
-			document: '#fff',
+			document: '#1976d2',
 			pencil: '#1976d2',
-			pencilEdited: '#9e9e9e',
+			pencilEdited: '#ebedf2',
 			trash: '#f44336',
-			checkmark: '#30a65d'
+			checkmark: '#f0d90a'
 		}
 	}
 }

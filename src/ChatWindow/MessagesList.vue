@@ -538,11 +538,11 @@ textarea {
 }
 
 .icon-remove {
-	margin-left: 5px;
+	margin-left: 10px;
 
 	svg {
-		height: 20px;
-		width: 20px;
+		height: 18px;
+		width: 18px;
 	}
 }
 
