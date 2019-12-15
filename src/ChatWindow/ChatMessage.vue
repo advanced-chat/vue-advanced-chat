@@ -56,23 +56,24 @@
 								'image-loading': isImageLoading && message.sender_id === 'me'
 							}"
 							:style="{ background: `url(${message.file.url})` }"
-						></div>
-						<transition name="fade">
-							<div class="image-buttons" v-if="imageHover">
-								<div
-									class="svg-button button-view"
-									@click.stop="openFile(message.file)"
-								>
-									<svg-icon name="eye" />
+						>
+							<transition name="fade">
+								<div class="image-buttons" v-if="imageHover">
+									<div
+										class="svg-button button-view"
+										@click.stop="openFile(message.file)"
+									>
+										<svg-icon name="eye" />
+									</div>
+									<div
+										class="svg-button button-download"
+										@click.stop="openFile(message.file)"
+									>
+										<svg-icon name="document" />
+									</div>
 								</div>
-								<div
-									class="svg-button button-download"
-									@click.stop="openFile(message.file)"
-								>
-									<svg-icon name="document" />
-								</div>
-							</div>
-						</transition>
+							</transition>
+						</div>
 						<span>{{ message.content }}</span>
 					</div>
 
@@ -314,6 +315,7 @@ export default {
 }
 
 .message-image {
+	position: relative;
 	background-color: #ddd !important;
 	background-size: cover !important;
 	background-position: center center !important;
@@ -414,30 +416,43 @@ export default {
 }
 
 .image-buttons {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	border-radius: 4px;
+	background: linear-gradient(
+		to bottom,
+		rgba(0, 0, 0, 0) 55%,
+		rgba(0, 0, 0, 0.02) 60%,
+		rgba(0, 0, 0, 0.05) 65%,
+		rgba(0, 0, 0, 0.1) 70%,
+		rgba(0, 0, 0, 0.2) 75%,
+		rgba(0, 0, 0, 0.3) 80%,
+		rgba(0, 0, 0, 0.5) 85%,
+		rgba(0, 0, 0, 0.6) 90%,
+		rgba(0, 0, 0, 0.7) 95%,
+		rgba(0, 0, 0, 0.8) 100%
+	);
+
 	svg {
-		height: 20px;
-		width: 20px;
+		height: 26px;
+		width: 26px;
 	}
 
 	.button-view,
 	.button-download {
 		position: absolute;
-		bottom: 2px;
-		left: 5px;
+		bottom: 6px;
+		left: 7px;
 	}
 
 	:first-child {
-		left: 30px;
+		left: 40px;
 	}
 
 	.button-view {
 		max-width: 18px;
-		bottom: 4px;
-
-		svg {
-			height: 18px;
-			width: 18px;
-		}
+		bottom: 8px;
 	}
 }
 
@@ -446,7 +461,7 @@ export default {
 }
 
 .fade-enter-active {
-	transition: opacity 1.5s;
+	transition: opacity 1s;
 }
 
 .fade-leave-active {

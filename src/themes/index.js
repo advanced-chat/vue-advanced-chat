@@ -40,7 +40,7 @@ export const defaultThemeColors = {
 			pencilEdited: '#9e9e9e',
 			trash: '#f44336',
 			checkmark: '#0696c7',
-			eye: '#9ca6af'
+			eye: '#fff'
 		}
 	},
 	dark: {
