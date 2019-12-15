@@ -226,7 +226,7 @@ messages="[
 | sendMessage           | `{ roomId, content, file (3) }`               | A user has sent a message                             |
 | editMessage           | `{ roomId, messageId, newContent, file (3) }` | A user has edited a message                           |
 | deleteMessage         | `{ roomId, messageId }`                       | A user has deleted a message                          |
-| uploadFile            | `{ roomId, messageId, file (3) }`             | A user has uploaded a file                            |
+| openFile              | `{ message }`                                 | A user has clicked to view or download a file         |
 | addRoom               | -                                             | A user clicks on the plus icon next to searchbar      |
 | menuActionHandler (2) | `{ roomId, action }`                          | A user clicks on the vertical dots icon inside a room |
 

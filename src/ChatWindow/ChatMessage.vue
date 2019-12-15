@@ -200,8 +200,8 @@ export default {
 			this.$emit('deleteMessage', this.message)
 			this.onLeaveMessage()
 		},
-		openFile({ url }) {
-			window.open(url, '_blank')
+		openFile() {
+			this.$emit('openFile', this.message)
 		},
 		checkImageFile() {
 			if (!this.message.file) return

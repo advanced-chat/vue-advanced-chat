@@ -23,6 +23,7 @@
 				@editMessage="editMessage"
 				@deleteMessage="deleteMessage"
 				@uploadFile="uploadFile"
+				@openFile="openFile"
 				@menuActionHandler="menuActionHandler"
 			>
 			</messages-list>
@@ -123,6 +124,9 @@ export default {
 		},
 		uploadFile(file) {
 			this.$emit('uploadFile', file)
+		},
+		openFile(message) {
+			this.$emit('openFile', message)
 		},
 		menuActionHandler(ev) {
 			this.$emit('menuActionHandler', { action: ev, roomId: this.room.roomId })

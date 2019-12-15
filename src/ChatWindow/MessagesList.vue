@@ -60,6 +60,7 @@
 							:textMessages="textMessages"
 							@editMessage="editMessage"
 							@deleteMessage="deleteMessage"
+							@openFile="openFile"
 						></chat-message>
 					</div>
 				</transition-group>
@@ -338,6 +339,9 @@ export default {
 			const imageTypes = ['png', 'jpg']
 			const { type } = file
 			return imageTypes.some(t => type.includes(t))
+		},
+		openFile(message) {
+			this.$emit('openFile', message)
 		},
 		menuActionHandler(action) {
 			this.closeMenu()

@@ -58,6 +58,7 @@
 			@editMessage="editMessage"
 			@deleteMessage="deleteMessage"
 			@uploadFile="uploadFile"
+			@openFile="openFile"
 			@addRoom="addRoom"
 			@menuActionHandler="menuActionHandler"
 		/>
@@ -382,6 +383,10 @@ export default {
 				.add(message)
 
 			if (file) this.uploadFile({ file, messageId: id, roomId })
+		},
+
+		openFile(message) {
+			window.open(message.file.url, '_blank')
 		},
 
 		async editMessage({ messageId, newContent, roomId, file }) {
