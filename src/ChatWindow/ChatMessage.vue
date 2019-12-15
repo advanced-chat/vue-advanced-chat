@@ -244,6 +244,8 @@ export default {
 	flex: 0 0 50%;
 	max-width: 50%;
 	justify-content: flex-start;
+	font-weight: 300;
+	line-height: 1.4;
 }
 
 .message-cursor {
