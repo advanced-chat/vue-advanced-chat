@@ -24,7 +24,7 @@
 				<div
 					class="message-card"
 					:class="{
-						'message-highlight': setMessageElevation(message),
+						'message-highlight': isMessageHover(message),
 						'message-current': message.sender_id === 'me',
 						'message-deleted': message.deleted,
 						'slide-up':
@@ -57,10 +57,26 @@
 							}"
 							:style="{ background: `url(${message.file.url})` }"
 						></div>
+						<transition name="fade">
+							<div class="image-buttons" v-if="imageHover">
+								<div
+									class="svg-button button-view"
+									@click.stop="openFile(message.file)"
+								>
+									<svg-icon name="eye" />
+								</div>
+								<div
+									class="svg-button button-download"
+									@click.stop="openFile(message.file)"
+								>
+									<svg-icon name="document" />
+								</div>
+							</div>
+						</transition>
 						<span>{{ message.content }}</span>
 					</div>
 
-					<div v-else :class="{ 'file-message': message.file && !isImage }">
+					<div v-else class="file-message">
 						<div
 							class="svg-button icon-file"
 							@click.stop="openFile(message.file)"
@@ -113,7 +129,8 @@ export default {
 		return {
 			openMessageId: {},
 			hoverMessageId: null,
-			imageLoading: false
+			imageLoading: false,
+			imageHover: false
 		}
 	},
 
@@ -148,7 +165,7 @@ export default {
 	},
 
 	methods: {
-		setMessageElevation() {
+		isMessageHover() {
 			return (
 				this.editedMessage._id === this.message._id ||
 				this.hoverMessageId === this.message._id ||
@@ -165,12 +182,14 @@ export default {
 			}
 		},
 		onHoverMessage() {
+			this.imageHover = true
 			if (this.canEditMessage()) this.hoverMessageId = this.message._id
 		},
 		canEditMessage() {
 			return this.message.sender_id === 'me' && !this.message.deleted
 		},
 		onLeaveMessage() {
+			this.imageHover = false
 			this.openMessageId.toggle = false
 			this.hoverMessageId = null
 		},
@@ -371,13 +390,15 @@ export default {
 .action-buttons {
 	position: relative;
 
+	svg {
+		height: 18px;
+		width: 18px;
+	}
+
 	.button-delete,
 	.button-edit {
-		max-width: 18px;
 		right: 5px;
-		z-index: 0;
 		position: absolute;
-		width: 100%;
 	}
 
 	.button-delete {
@@ -387,11 +408,47 @@ export default {
 	.button-edit {
 		bottom: 2px;
 	}
+}
 
+.image-buttons {
 	svg {
-		height: 18px;
-		width: 18px;
+		height: 20px;
+		width: 20px;
 	}
+
+	.button-view,
+	.button-download {
+		position: absolute;
+		bottom: 2px;
+		left: 5px;
+	}
+
+	:first-child {
+		left: 30px;
+	}
+
+	.button-view {
+		max-width: 18px;
+		bottom: 4px;
+
+		svg {
+			height: 18px;
+			width: 18px;
+		}
+	}
+}
+
+.fade-enter {
+	opacity: 0;
+}
+
+.fade-enter-active {
+	transition: opacity 1.5s;
+}
+
+.fade-leave-active {
+	transition: opacity 0.5s;
+	opacity: 0;
 }
 
 .icon-check {

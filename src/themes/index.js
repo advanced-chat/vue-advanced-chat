@@ -35,7 +35,8 @@ export const defaultThemeColors = {
 			pencil: '#1976d2',
 			pencilEdited: '#9e9e9e',
 			trash: '#f44336',
-			checkmark: '#0696c7'
+			checkmark: '#0696c7',
+			eye: '#9ca6af'
 		}
 	},
 	dark: {
@@ -74,7 +75,8 @@ export const defaultThemeColors = {
 			pencil: '#1976d2',
 			pencilEdited: '#ebedf2',
 			trash: '#f44336',
-			checkmark: '#f0d90a'
+			checkmark: '#f0d90a',
+			eye: '#fff'
 		}
 	}
 }
@@ -136,6 +138,7 @@ export const cssThemeVars = ({
 		'--chat-icon-color-pencil': iconsColor.pencil,
 		'--chat-edited-icon-color-pencil': iconsColor.pencilEdited,
 		'--chat-icon-color-trash': iconsColor.trash,
-		'--chat-icon-color-checkmark': iconsColor.checkmark
+		'--chat-icon-color-checkmark': iconsColor.checkmark,
+		'--chat-icon-color-eye': iconsColor.eye
 	}
 }
