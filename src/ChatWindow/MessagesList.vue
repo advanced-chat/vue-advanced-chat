@@ -66,7 +66,13 @@
 				</transition-group>
 			</div>
 		</div>
-		<div class="room-footer" :class="{ 'textarea-outline': editedMessage._id }">
+		<div
+			class="room-footer"
+			:class="{
+				'textarea-outline': editedMessage._id,
+				'footer-border': !editedMessage._id
+			}"
+		>
 			<div class="box-footer">
 				<div v-if="imageFile">
 					<div class="svg-button icon-image" @click="resetImageFile">
@@ -477,9 +483,12 @@ export default {
 	bottom: 0;
 	width: calc(100% - 1px);
 	background: var(--chat-color-input);
-	border-top: 1px solid var(--chat-border-color);
 	z-index: 10;
 	border-bottom-right-radius: 4px;
+}
+
+.footer-border {
+	border-top: 1px solid var(--chat-border-color);
 }
 
 .box-footer {
