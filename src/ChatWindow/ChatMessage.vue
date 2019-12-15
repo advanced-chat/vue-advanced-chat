@@ -229,8 +229,8 @@ export default {
 	font-size: 12px;
 	text-transform: uppercase;
 	padding: 4px;
-	color: #505a62;
-	background: rgba(33, 148, 243, 0.15);
+	color: var(--chat-color-message-date);
+	background: var(--chat-color-message-date-bg);
 	display: block;
 	overflow-wrap: break-word;
 	position: relative;
@@ -266,7 +266,7 @@ export default {
 	color: var(--chat-color-message-text);
 	border-radius: 4px;
 	font-size: 14px;
-	padding: 6px 10px 3px;
+	padding: 6px 9px 3px;
 	white-space: pre-wrap;
 	z-index: 1;
 	display: block;
@@ -319,7 +319,7 @@ export default {
 	height: 250px;
 	width: 250px;
 	border-radius: 4px;
-	margin: 3px auto 5px;
+	margin: 4px auto 5px;
 	transition: 0.4s filter linear;
 }
 
@@ -348,6 +348,7 @@ export default {
 .text-username {
 	font-size: 13px;
 	color: var(--chat-color-message-username);
+	line-height: 15px;
 	margin-bottom: 2px;
 }
 

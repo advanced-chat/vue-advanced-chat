@@ -143,6 +143,8 @@ colors="{
   messageDeletedColor: '#757e85',
   messageUsernameColor: '#9ca6af',
   messageTimestampColor: '#828c94',
+  messageDateBg: 'rgba(33, 148, 243, 0.15)',
+  messageDateColor: '#b8bdcc',
   messageTextColor: '#0a0a0a',
   roomLastMessage: '#a2aeb8',
   roomTimestamp: '#67717a',
