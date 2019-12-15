@@ -57,7 +57,6 @@
 			@sendMessage="sendMessage"
 			@editMessage="editMessage"
 			@deleteMessage="deleteMessage"
-			@uploadFile="uploadFile"
 			@openFile="openFile"
 			@addRoom="addRoom"
 			@menuActionHandler="menuActionHandler"

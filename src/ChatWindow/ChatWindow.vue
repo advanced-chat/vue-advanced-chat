@@ -22,7 +22,6 @@
 				@sendMessage="sendMessage"
 				@editMessage="editMessage"
 				@deleteMessage="deleteMessage"
-				@uploadFile="uploadFile"
 				@openFile="openFile"
 				@menuActionHandler="menuActionHandler"
 			>
@@ -121,9 +120,6 @@ export default {
 		},
 		deleteMessage(messageId) {
 			this.$emit('deleteMessage', { messageId, roomId: this.room.roomId })
-		},
-		uploadFile(file) {
-			this.$emit('uploadFile', file)
 		},
 		openFile(message) {
 			this.$emit('openFile', message)
