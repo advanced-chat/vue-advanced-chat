@@ -235,8 +235,8 @@ export default {
 	overflow-wrap: break-word;
 	position: relative;
 	white-space: normal;
-	box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-		0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+	box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+		0 1px 2px 0 rgba(0, 0, 0, 0.12);
 }
 
 .message-box {
@@ -251,7 +251,7 @@ export default {
 }
 
 .message-container {
-	padding: 8px 10px;
+	padding: 3px 10px;
 	align-items: end;
 	min-width: 100px;
 }
@@ -266,7 +266,7 @@ export default {
 	color: var(--chat-color-message-text);
 	border-radius: 4px;
 	font-size: 14px;
-	padding: 8px 8px 3px;
+	padding: 6px 10px 3px;
 	white-space: pre-wrap;
 	z-index: 1;
 	display: block;
@@ -278,13 +278,13 @@ export default {
 	-webkit-transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
 	transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
 	will-change: box-shadow;
-	box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
-		0 1px 3px 0 rgba(0, 0, 0, 0.12);
+	box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+		0 1px 2px 0 rgba(0, 0, 0, 0.12);
 }
 
 .message-highlight {
-	box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2),
-		0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+	box-shadow: 0px 2px 2px -2px rgba(0, 0, 0, 0.2),
+		0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 4px 0px rgba(0, 0, 0, 0.12);
 }
 
 .message-current {
@@ -318,9 +318,8 @@ export default {
 	background-repeat: no-repeat !important;
 	height: 250px;
 	width: 250px;
-	margin-bottom: 5px;
 	border-radius: 4px;
-	margin: 0 auto 5px;
+	margin: 3px auto 5px;
 	transition: 0.4s filter linear;
 }
 
@@ -363,10 +362,11 @@ export default {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-}
+	margin-top: 3px;
 
-.icon-file svg {
-	margin-right: 5px;
+	.icon-file svg {
+		margin-right: 5px;
+	}
 }
 
 .icon-edited {
@@ -402,7 +402,7 @@ export default {
 	}
 
 	.button-delete {
-		bottom: 26px;
+		bottom: 24px;
 	}
 
 	.button-edit {
