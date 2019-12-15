@@ -144,6 +144,8 @@ colors="{
   messageUsernameColor: '#9ca6af',
   messageTimestampColor: '#828c94',
   messageTextColor: '#0a0a0a',
+  roomLastMessage: '#a2aeb8',
+  roomTimestamp: '#67717a',
   textColor: '#0a0a0a',
   inputBg: '#fff',
   spinnerColor: '#333',

@@ -230,13 +230,13 @@ input {
 }
 
 .text-last {
-	color: #67717a !important;
+	color: var(--chat-color-room-last) !important;
 	font-size: 12px;
 	line-height: 16px;
 }
 
 .text-date {
-	color: #a2aeb8 !important;
+	color: var(--chat-color-room-timestamp) !important;
 	font-size: 11px;
 	line-height: 16px;
 }
