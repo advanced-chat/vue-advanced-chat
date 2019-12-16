@@ -17,6 +17,8 @@
 - Customizeable
 - Backend agnostic
 - Images, files & emojis
+- Edit messages
+- Reply to other messages
 - Dark mode
 - Firestore example
 
