@@ -390,6 +390,7 @@ export default {
 	}
 
 	.reply-content {
+		font-size: 12px;
 		color: var(--chat-color-message-reply-content);
 	}
 }
