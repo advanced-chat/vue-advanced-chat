@@ -104,7 +104,7 @@
 						<svg-icon name="file" />
 					</div>
 					<div>{{ message }}</div>
-					<div class="svg-button icon-remove" @click="resetFile">
+					<div class="svg-button icon-remove" @click="resetMessage">
 						<svg-icon name="close" />
 					</div>
 				</div>
@@ -267,20 +267,13 @@ export default {
 			this.file = null
 			this.imageFile = null
 			this.emojiOpened = false
+			setTimeout(() => this.focusTextarea(), 0)
 		},
 		resetImageFile() {
 			this.imageFile = null
 			this.editedMessage.file = null
 			this.file = null
 			this.focusTextarea()
-		},
-		resetFile() {
-			this.message = ''
-			this.imageFile = null
-			this.editedMessage.file = null
-			this.file = null
-			this.resetTextareaSize()
-			setTimeout(() => this.focusTextarea(), 0)
 		},
 		resetTextareaSize() {
 			this.$refs['roomTextarea'].style.height = '32px'
@@ -321,8 +314,7 @@ export default {
 			this.$emit('fetchMessages')
 		},
 		editMessage(message) {
-			this.resetFile()
-			this.focusTextarea()
+			this.resetMessage()
 			this.editedMessage = { ...message }
 			this.file = message.file
 			if (this.isImageCheck(this.file)) this.imageFile = message.file.url
