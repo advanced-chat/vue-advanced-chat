@@ -81,11 +81,12 @@ You can import it as a custom component:
 | messages           | Array   | -        | [ ]     |
 | messagesLoaded (2) | Boolean | -        | false   |
 | menuActions (3)    | Array   | -        | [ ]     |
+| messageActions (4) | Array   | -        | (4)     |
 | showFiles          | Boolean | -        | true    |
 | showEmojis         | Boolean | -        | true    |
-| textMessages (4)   | Object  | -        | null    |
-| theme (5)          | Sring   | -        | light   |
-| colors (6)         | Object  | -        | (6)     |
+| textMessages (5)   | Object  | -        | null    |
+| theme (6)          | Sring   | -        | light   |
+| colors (7)         | Object  | -        | (6)     |
 
 (1) `loadingRooms` can be used to show/hide a spinner icon while rooms are loading
 
@@ -111,7 +112,47 @@ menuActions="[
 ]"
 ```
 
-(4) `textMessages` can be used to replace default texts. Ex:
+(4) `messageActions` can be used to display your own buttons when clicking the dropdown icon inside a message.<br>
+You can then use the [messageActionHandler](#events-api) event to call your own action after clicking a button. Ex:
+
+```javascript
+messageActions="[
+  {
+    name: 'addMessageToFavorite',
+    title: 'Add To Favorite'
+  },
+  {
+    name: 'shareMessage',
+    title: 'Share Message'
+  }
+]"
+```
+
+You can use built-in `messageActions` names to trigger specific UI modifications when clicked.<br>
+Currently, `replyMessage`, `editMessage` and `deleteMessage` action names are available.<br>
+If `messageActions` is not set, it will use the default values below.<br>
+If you don't want to display this `messageActions`menu, you can pass it an empty array.
+
+```javascript
+messageActions="[
+  {
+    name: 'replyMessage',
+    title: 'Reply'
+  },
+  {
+    name: 'editMessage',
+    title: 'Edit Message',
+    onlyMe: true
+  },
+  {
+    name: 'deleteMessage',
+    title: 'Delete Message',
+    onlyMe: true
+  }
+]"
+```
+
+(5) `textMessages` can be used to replace default texts. Ex:
 
 ```javascript
 textMessages="{
@@ -123,9 +164,9 @@ textMessages="{
 }"
 ```
 
-(5) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+(6) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
 
-(6) `colors` can be use to create your own theme. Ex:
+(7) `colors` can be use to create your own theme. Ex:
 
 ```javascript
 colors="{
@@ -169,12 +210,10 @@ colors="{
     sendDisabled: '#9ca6af',
     emoji: '#1976d2',
     document: '#1976d2',
-    pencil: '#1976d2',
-    pencilEdited: '#9e9e9e',
-    trash: '#f44336',
+    pencil: '#9e9e9e',
     checkmark: '#0696c7',
     eye: '#fff',
-    reply: '#000'
+    dropdown: '#9e9e9e'
 		}
 }"
 ```
@@ -229,15 +268,16 @@ messages="[
 
 ## Events API
 
-| Event                 | Params                                                          | Fires when                                            |
-| --------------------- | --------------------------------------------------------------- | ----------------------------------------------------- |
-| fetchMessages (1)     | `{ room, options }`                                             | A user has scrolled on top to load more messages      |
-| sendMessage           | `{ roomId, content, file (3), replyMessage (4) }`               | A user has sent a message                             |
-| editMessage           | `{ roomId, messageId, newContent, file (3), replyMessage (4) }` | A user has edited a message                           |
-| deleteMessage         | `{ roomId, messageId }`                                         | A user has deleted a message                          |
-| openFile              | `{ message }`                                                   | A user has clicked to view or download a file         |
-| addRoom               | -                                                               | A user clicks on the plus icon next to searchbar      |
-| menuActionHandler (2) | `{ roomId, action }`                                            | A user clicks on the vertical dots icon inside a room |
+| Event                    | Params                                                          | Fires when                                            |
+| ------------------------ | --------------------------------------------------------------- | ----------------------------------------------------- |
+| fetchMessages (1)        | `{ room, options }`                                             | A user has scrolled on top to load more messages      |
+| sendMessage              | `{ roomId, content, file (4), replyMessage (5) }`               | A user has sent a message                             |
+| editMessage              | `{ roomId, messageId, newContent, file (4), replyMessage (5) }` | A user has edited a message                           |
+| deleteMessage            | `{ roomId, messageId }`                                         | A user has deleted a message                          |
+| openFile                 | `{ message }`                                                   | A user has clicked to view or download a file         |
+| addRoom                  | -                                                               | A user clicks on the plus icon next to searchbar      |
+| menuActionHandler (2)    | `{ roomId, action }`                                            | A user clicks on the vertical dots icon inside a room |
+| messageActionHandler (3) | `{ roomId, action }`                                            | A user clicks on the dropdown icon inside a message   |
 
 (1) `fetchMessages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top
 
@@ -258,9 +298,24 @@ menuActionHandler({ roomId, action }) {
 }
 ```
 
-(3) All file params contain: `{ blob, localURL, name, size, type }`
+(3) `messageActionHandler` is the result of the `messageActions` prop.<br>
+When clicking a button from your `messageActions` array, `messageActionHandler` will give you the name of the button that was click.
+Then you can do whatever you want with it. Ex:
 
-(4) `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked
+```javascript
+messageActionHandler({ roomId, action }) {
+  switch (action.name) {
+    case 'addMessageToFavorite':
+      // call a method to add a message to the favorite list
+    case 'shareMessage':
+      // call a method to share the message with another user
+  }
+}
+```
+
+(4) All file params contain: `{ blob, localURL, name, size, type }`
+
+(5) `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked
 
 ## Using with Firestore
 

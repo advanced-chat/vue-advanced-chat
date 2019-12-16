@@ -14,37 +14,15 @@
 		>
 			<div
 				class="message-container"
-				:class="{
-					'message-cursor': isEditable
-				}"
-				@click="onClickMessage(message)"
 				@mouseover="onHoverMessage(message)"
 				@mouseleave="onLeaveMessage"
 			>
-				<transition name="fade">
-					<div
-						v-if="messageReply && !message.deleted"
-						class="svg-button button-reply"
-						:class="{
-							'reply-current': message.sender_id === 'me',
-							'reply-agent': message.sender_id !== 'me'
-						}"
-						@click.stop="replyMessage(message)"
-					>
-						<svg-icon name="reply" />
-					</div>
-				</transition>
-
 				<div
 					class="message-card"
 					:class="{
 						'message-highlight': isMessageHover(message),
 						'message-current': message.sender_id === 'me',
-						'message-deleted': message.deleted,
-						'slide-up':
-							openMessageId.id === message._id && openMessageId.toggle,
-						'slide-down':
-							openMessageId.id === message._id && !openMessageId.toggle
+						'message-deleted': message.deleted
 					}"
 				>
 					<div
@@ -111,21 +89,40 @@
 
 					<div class="text-timestamp">
 						<div class="icon-edited" v-if="message.edited && !message.deleted">
-							<svg-icon name="pencil" param="edited" />
+							<svg-icon name="pencil" />
 						</div>
 						<span>{{ message.timestamp }}</span>
 						<span v-if="isMessageSeen">
 							<svg-icon name="checkmark" class="icon-check" />
 						</span>
 					</div>
-				</div>
-				<div class="action-buttons" v-if="isEditable">
-					<div class="svg-button button-delete" @click.stop="deleteMessage">
-						<svg-icon name="trash" />
-					</div>
-					<div class="svg-button button-edit" @click.stop="editMessage">
-						<svg-icon name="pencil" />
-					</div>
+
+					<transition name="slide-fade">
+						<div
+							class="svg-button message-options"
+							v-if="messageActions.length && messageReply && !message.deleted"
+							@click="optionsOpened = !optionsOpened"
+						>
+							<svg-icon name="dropdown" />
+						</div>
+					</transition>
+
+					<transition name="slide-fade" v-if="messageActions.length">
+						<div
+							v-if="optionsOpened"
+							v-click-outside="closeOptions"
+							class="menu-options"
+						>
+							<div class="menu-list">
+								<div v-for="action in messageActions" :key="action.name">
+									<div class="menu-item" @click="messageActionHandler(action)">
+										{{ action.title }}
+									</div>
+									<hr class="menu-divider" />
+								</div>
+							</div>
+						</div>
+					</transition>
 				</div>
 			</div>
 		</div>
@@ -134,10 +131,16 @@
 
 <script>
 import SvgIcon from './SvgIcon'
+import vClickOutside from 'v-click-outside'
 import ChatLoader from './ChatLoader'
 
 export default {
+	name: 'chat-message',
 	components: { SvgIcon, ChatLoader },
+
+	directives: {
+		clickOutside: vClickOutside.directive
+	},
 
 	props: {
 		index: { type: Number, required: true },
@@ -145,16 +148,17 @@ export default {
 		messages: { type: Array, required: true },
 		editedMessage: { type: Object, required: true },
 		roomUsers: { type: Array, default: () => [] },
-		textMessages: { type: Object, required: true }
+		textMessages: { type: Object, required: true },
+		messageActions: { type: Array, required: true }
 	},
 
 	data() {
 		return {
-			openMessageId: {},
 			hoverMessageId: null,
 			imageLoading: false,
 			imageHover: false,
-			messageReply: false
+			messageReply: false,
+			optionsOpened: false
 		}
 	},
 
@@ -197,18 +201,8 @@ export default {
 		isMessageHover() {
 			return (
 				this.editedMessage._id === this.message._id ||
-				this.hoverMessageId === this.message._id ||
-				(this.openMessageId.id === this.message._id &&
-					this.openMessageId.toggle)
+				this.hoverMessageId === this.message._id
 			)
-		},
-		onClickMessage() {
-			if (this.canEditMessage()) {
-				this.openMessageId = {
-					id: this.message._id,
-					toggle: !this.openMessageId.toggle
-				}
-			}
 		},
 		onHoverMessage() {
 			this.imageHover = true
@@ -221,21 +215,17 @@ export default {
 		onLeaveMessage() {
 			this.imageHover = false
 			this.messageReply = false
-			this.openMessageId.toggle = false
 			this.hoverMessageId = null
-		},
-		editMessage() {
-			this.$emit('editMessage', this.message)
-		},
-		replyMessage() {
-			this.$emit('replyMessage', this.message)
-		},
-		deleteMessage() {
-			this.$emit('deleteMessage', this.message)
-			this.onLeaveMessage()
 		},
 		openFile() {
 			this.$emit('openFile', this.message)
+		},
+		messageActionHandler(action) {
+			this.closeOptions()
+			this.$emit('messageActionHandler', { action, message: this.message })
+		},
+		closeOptions() {
+			this.optionsOpened = false
 		},
 		checkImageFile() {
 			if (!this.message.file) return
@@ -282,10 +272,6 @@ export default {
 	line-height: 1.4;
 }
 
-.message-cursor {
-	cursor: pointer;
-}
-
 .message-container {
 	position: relative;
 	padding: 3px 10px;
@@ -311,7 +297,6 @@ export default {
 	-webkit-transition-property: box-shadow, opacity;
 	transition-property: box-shadow, opacity;
 	overflow-wrap: break-word;
-	position: relative;
 	-webkit-transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
 	transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
 	will-change: box-shadow;
@@ -326,14 +311,6 @@ export default {
 
 .message-current {
 	background: var(--chat-bg-color-message-me) !important;
-
-	&.slide-up {
-		animation: slide-up 0.3s ease-out forwards;
-	}
-
-	&.slide-down {
-		animation: slide-down 0.3s ease-out forwards;
-	}
 }
 
 .message-deleted {
@@ -365,24 +342,6 @@ export default {
 	filter: blur(3px);
 }
 
-@keyframes slide-up {
-	from {
-		transform: translateX(0);
-	}
-	to {
-		transform: translateX(-35px);
-	}
-}
-
-@keyframes slide-down {
-	from {
-		transform: translateX(-35px);
-	}
-	to {
-		transform: translateX(0);
-	}
-}
-
 .reply-message {
 	background: var(--chat-bg-color-message-reply);
 	border-radius: 4px;
@@ -400,24 +359,6 @@ export default {
 		padding: 0 5px 5px 5px;
 		color: var(--chat-color-message-reply-content);
 	}
-}
-
-.button-reply {
-	position: absolute;
-	top: 4px;
-
-	svg {
-		height: 20px;
-		width: 20px;
-	}
-}
-
-.reply-agent {
-	right: -14px;
-}
-
-.reply-current {
-	left: -14px;
 }
 
 .text-username {
@@ -463,29 +404,6 @@ export default {
 	}
 }
 
-.action-buttons {
-	position: relative;
-
-	svg {
-		height: 18px;
-		width: 18px;
-	}
-
-	.button-delete,
-	.button-edit {
-		right: 5px;
-		position: absolute;
-	}
-
-	.button-delete {
-		bottom: 24px;
-	}
-
-	.button-edit {
-		bottom: 2px;
-	}
-}
-
 .image-buttons {
 	position: absolute;
 	width: 100%;
@@ -527,6 +445,76 @@ export default {
 	}
 }
 
+.message-options {
+	position: absolute;
+	top: 5px;
+	right: 10px;
+}
+
+.menu-options {
+	position: absolute;
+	right: 10px;
+	top: 20px;
+	z-index: 9999;
+	min-width: 150px;
+	display: inline-block;
+	border-radius: 4px;
+	max-width: 80%;
+	font-size: 15px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	contain: content;
+	box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+		0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.menu-list {
+	border-radius: 4px;
+	display: block;
+	cursor: pointer;
+	background: var(--chat-bg-menu);
+
+	:hover {
+		background: var(--chat-bg-menu-hover);
+		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+	}
+
+	:not(:hover) {
+		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+	}
+}
+
+.menu-item {
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-flex: 1;
+	-ms-flex: 1 1 100%;
+	flex: 1 1 100%;
+	min-height: 30px;
+	padding: 8px 16px;
+	position: relative;
+}
+
+.menu-divider {
+	display: block;
+	-webkit-box-flex: 1;
+	-ms-flex: 1 1 0px;
+	flex: 1 1 0px;
+	max-width: 100%;
+	height: 0;
+	max-height: 0;
+	border: solid;
+	border-width: thin 0 0 0;
+	border-color: rgba(0, 0, 0, 0.12);
+	margin: 0;
+}
+
 .fade-enter {
 	opacity: 0;
 }
@@ -545,5 +533,17 @@ export default {
 	width: 14px;
 	vertical-align: middle;
 	margin: -3px 0 0 3px;
+}
+
+.slide-fade-enter-active {
+	transition: all 0.3s ease;
+}
+.slide-fade-leave-active {
+	transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-fade-enter,
+.slide-fade-leave-to {
+	transform: translateX(10px);
+	opacity: 0;
 }
 </style>

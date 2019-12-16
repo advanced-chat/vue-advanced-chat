@@ -56,11 +56,10 @@
 							:index="i"
 							:messages="messages"
 							:editedMessage="editedMessage"
+							:messageActions="messageActions"
 							:roomUsers="room.users"
 							:textMessages="textMessages"
-							@editMessage="editMessage"
-							@replyMessage="replyMessage"
-							@deleteMessage="deleteMessage"
+							@messageActionHandler="messageActionHandler"
 							@openFile="openFile"
 						></chat-message>
 					</div>
@@ -188,6 +187,7 @@ export default {
 		messages: { type: Array, required: true },
 		messagesLoaded: { type: Boolean, required: true },
 		menuActions: { type: Array, required: true },
+		messageActions: { type: Array, required: true },
 		showFiles: { type: Boolean, required: true },
 		showEmojis: { type: Boolean, required: true },
 		textMessages: { type: Object, required: true }
@@ -298,7 +298,7 @@ export default {
 				}
 			} else {
 				this.$emit('sendMessage', {
-					content: this.message,
+					content: this.message.trim(),
 					file: this.file,
 					replyMessage: this.messageReply
 				})
@@ -313,6 +313,22 @@ export default {
 			this.infiniteState = infiniteState
 			this.$emit('fetchMessages')
 		},
+		messageActionHandler({ action, message }) {
+			switch (action.name) {
+				case 'replyMessage':
+					return this.replyMessage(message)
+				case 'editMessage':
+					return this.editMessage(message)
+				case 'deleteMessage':
+					return this.$emit('deleteMessage', message._id)
+				default:
+					return this.$emit('messageActionHandler', message)
+			}
+		},
+		replyMessage(message) {
+			this.resetMessage()
+			this.messageReply = message
+		},
 		editMessage(message) {
 			this.resetMessage()
 			this.editedMessage = { ...message }
@@ -321,12 +337,6 @@ export default {
 			this.message = message.content
 
 			setTimeout(() => this.resizeTextarea(this.$refs['roomTextarea']), 0)
-		},
-		replyMessage(message) {
-			this.messageReply = message
-		},
-		deleteMessage(message) {
-			this.$emit('deleteMessage', message._id)
 		},
 		autoGrow(el) {
 			this.resizeTextarea(el.srcElement)

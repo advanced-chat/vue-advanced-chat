@@ -60,6 +60,7 @@
 			@openFile="openFile"
 			@addRoom="addRoom"
 			@menuActionHandler="menuActionHandler"
+			@messageActionHandler="messageActionHandler"
 		/>
 	</div>
 </template>
@@ -104,18 +105,9 @@ export default {
 			removeUserId: '',
 			removeUsers: [],
 			menuActions: [
-				{
-					name: 'inviteUser',
-					title: 'Invite User'
-				},
-				{
-					name: 'removeUser',
-					title: 'Remove User'
-				},
-				{
-					name: 'deleteRoom',
-					title: 'Delete Room'
-				}
+				{ name: 'inviteUser', title: 'Invite User' },
+				{ name: 'removeUser', title: 'Remove User' },
+				{ name: 'deleteRoom', title: 'Delete Room' }
 			]
 		}
 	},
@@ -456,6 +448,10 @@ export default {
 				case 'deleteRoom':
 					return this.deleteRoom(roomId)
 			}
+		},
+
+		messageActionHandler({ action, roomId }) {
+			// do something
 		},
 
 		addRoom() {

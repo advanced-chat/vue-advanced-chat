@@ -13,6 +13,7 @@
 
 <script>
 export default {
+	name: 'svg-icon',
 	props: ['name', 'path', 'param'],
 
 	computed: {
@@ -79,11 +80,6 @@ export default {
 						'M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z'
 				},
 				{
-					name: 'trash',
-					path:
-						'M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z'
-				},
-				{
 					name: 'checkmark',
 					path: 'M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z'
 				},
@@ -93,9 +89,8 @@ export default {
 						'M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z'
 				},
 				{
-					name: 'reply',
-					path:
-						'M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9Z'
+					name: 'dropdown',
+					path: 'M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z'
 				}
 			]
 		}
@@ -156,14 +151,6 @@ export default {
 	fill: var(--chat-icon-color-pencil);
 }
 
-#chat-icon-pencil-edited {
-	fill: var(--chat-edited-icon-color-pencil);
-}
-
-#chat-icon-trash {
-	fill: var(--chat-icon-color-trash);
-}
-
 #chat-icon-checkmark {
 	fill: var(--chat-icon-color-checkmark);
 }
@@ -172,7 +159,7 @@ export default {
 	fill: var(--chat-icon-color-eye);
 }
 
-#chat-icon-reply {
-	fill: var(--chat-icon-color-reply);
+#chat-icon-dropdown {
+	fill: var(--chat-icon-color-dropdown);
 }
 </style>

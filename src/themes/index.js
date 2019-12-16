@@ -40,12 +40,10 @@ export const defaultThemeColors = {
 			sendDisabled: '#9ca6af',
 			emoji: '#1976d2',
 			document: '#1976d2',
-			pencil: '#1976d2',
-			pencilEdited: '#9e9e9e',
-			trash: '#f44336',
+			pencil: '#9e9e9e',
 			checkmark: '#0696c7',
 			eye: '#fff',
-			reply: '#000'
+			dropdown: '#9e9e9e'
 		}
 	},
 	dark: {
@@ -89,12 +87,10 @@ export const defaultThemeColors = {
 			sendDisabled: '#9ca6af',
 			emoji: '#fff',
 			document: '#1976d2',
-			pencil: '#1976d2',
-			pencilEdited: '#ebedf2',
-			trash: '#f44336',
+			pencil: '#ebedf2',
 			checkmark: '#f0d90a',
 			eye: '#fff',
-			reply: '#fff'
+			dropdown: '#fff'
 		}
 	}
 }
@@ -170,10 +166,8 @@ export const cssThemeVars = ({
 		'--chat-icon-color-emoji': iconsColor.emoji,
 		'--chat-icon-color-document': iconsColor.document,
 		'--chat-icon-color-pencil': iconsColor.pencil,
-		'--chat-edited-icon-color-pencil': iconsColor.pencilEdited,
-		'--chat-icon-color-trash': iconsColor.trash,
 		'--chat-icon-color-checkmark': iconsColor.checkmark,
 		'--chat-icon-color-eye': iconsColor.eye,
-		'--chat-icon-color-reply': iconsColor.reply
+		'--chat-icon-color-dropdown': iconsColor.dropdown
 	}
 }

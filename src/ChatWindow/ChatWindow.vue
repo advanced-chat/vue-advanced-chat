@@ -15,6 +15,7 @@
 				:messages="messages"
 				:messagesLoaded="messagesLoaded"
 				:menuActions="menuActions"
+				:messageActions="messageActions"
 				:showFiles="showFiles"
 				:showEmojis="showEmojis"
 				:textMessages="t"
@@ -24,6 +25,7 @@
 				@deleteMessage="deleteMessage"
 				@openFile="openFile"
 				@menuActionHandler="menuActionHandler"
+				@messageActionHandler="messageActionHandler"
 			>
 			</messages-list>
 		</div>
@@ -51,6 +53,14 @@ export default {
 		messages: { type: Array, default: () => [] },
 		messagesLoaded: { type: Boolean, default: false },
 		menuActions: { type: Array, default: () => [] },
+		messageActions: {
+			type: Array,
+			default: () => [
+				{ name: 'replyMessage', title: 'Reply' },
+				{ name: 'editMessage', title: 'Edit Message', onlyMe: true },
+				{ name: 'deleteMessage', title: 'Delete Message', onlyMe: true }
+			]
+		},
 		showFiles: { type: Boolean, default: true },
 		showEmojis: { type: Boolean, default: true },
 		textMessages: { type: Object, default: null },
@@ -126,6 +136,12 @@ export default {
 		},
 		menuActionHandler(ev) {
 			this.$emit('menuActionHandler', { action: ev, roomId: this.room.roomId })
+		},
+		messageActionHandler(ev) {
+			this.$emit('messageActionHandler', {
+				action: ev,
+				roomId: this.room.roomId
+			})
 		}
 	}
 }
