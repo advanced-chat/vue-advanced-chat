@@ -67,13 +67,7 @@
 				</transition-group>
 			</div>
 		</div>
-		<div
-			ref="roomFooter"
-			class="room-footer"
-			:class="{
-				'textarea-outline': editedMessage._id
-			}"
-		>
+		<div ref="roomFooter" class="room-footer">
 			<transition name="slide-up-fade">
 				<div v-if="messageReply" class="reply-container">
 					<img
@@ -114,6 +108,7 @@
 					v-show="!file || imageFile"
 					ref="roomTextarea"
 					:placeholder="textMessages.TYPE_MESSAGE"
+					:class="{ 'textarea-outline': editedMessage._id }"
 					v-model="message"
 					@input="autoGrow"
 					@keydown.esc="resetMessage"
@@ -578,7 +573,7 @@ textarea {
 }
 
 .textarea-outline {
-	box-shadow: inset 0px 0px 0px 2px #1976d2;
+	box-shadow: inset 0px 0px 0px 1px #1976d2;
 }
 
 .icon-textarea {
