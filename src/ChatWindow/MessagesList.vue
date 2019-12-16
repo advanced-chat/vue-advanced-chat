@@ -204,11 +204,11 @@ export default {
 		}
 	},
 
-	// mounted() {
-	// 	window.addEventListener('keypress', e => {
-	// 		if (e.keyCode === 13) this.sendMessage()
-	// 	})
-	// },
+	mounted() {
+		window.addEventListener('keypress', e => {
+			if (e.keyCode === 13 && !e.shiftKey) this.sendMessage()
+		})
+	},
 
 	watch: {
 		loadingMessages(val) {
