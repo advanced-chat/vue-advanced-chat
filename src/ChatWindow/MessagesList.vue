@@ -6,7 +6,7 @@
 				class="room-avatar"
 				:style="{ background: `url(${room.avatar})` }"
 			></div>
-			<div>{{ room.roomName }}</div>
+			<div class="room-name">{{ room.roomName }}</div>
 			<div
 				class="svg-button room-options"
 				v-if="menuActions.length"
@@ -419,6 +419,10 @@ export default {
 	border-radius: 50%;
 }
 
+.room-name {
+	font-size: 17px;
+}
+
 .room-options {
 	margin-left: auto;
 }
@@ -529,7 +533,6 @@ export default {
 	display: flex;
 	padding: 10px;
 	background: var(--chat-bg-color-footer);
-	font-weight: 300;
 	z-index: -1;
 }
 
@@ -566,7 +569,6 @@ textarea {
 	caret-color: #1976d2;
 	border: none;
 	font-size: 16px;
-	font-weight: 300;
 
 	&::placeholder {
 		color: #9ca6af;
