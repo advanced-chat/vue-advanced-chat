@@ -97,7 +97,7 @@
 						</span>
 					</div>
 
-					<transition name="slide-fade">
+					<transition name="slide-left">
 						<div
 							class="svg-button message-options"
 							v-if="messageActions.length && messageReply && !message.deleted"
@@ -107,11 +107,15 @@
 						</div>
 					</transition>
 
-					<transition name="slide-fade" v-if="messageActions.length">
+					<transition
+						:name="message.sender_id === 'me' ? 'slide-left' : 'slide-right'"
+						v-if="messageActions.length"
+					>
 						<div
 							v-if="optionsOpened"
 							v-click-outside="closeOptions"
 							class="menu-options"
+							:class="{ 'menu-left': message.sender_id !== 'me' }"
 						>
 							<div class="menu-list">
 								<div v-for="action in messageActions" :key="action.name">
@@ -451,8 +455,8 @@ export default {
 
 .menu-options {
 	position: absolute;
-	right: 10px;
-	top: 20px;
+	right: 15px;
+	top: 28px;
 	z-index: 9999;
 	min-width: 150px;
 	display: inline-block;
@@ -464,6 +468,10 @@ export default {
 	contain: content;
 	box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
 		0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.menu-left {
+	right: -118px;
 }
 
 .menu-list {
@@ -533,15 +541,25 @@ export default {
 	margin: -3px 0 0 3px;
 }
 
-.slide-fade-enter-active {
+.slide-left-enter-active,
+.slide-right-enter-active {
 	transition: all 0.3s ease;
 }
-.slide-fade-leave-active {
+
+.slide-left-leave-active,
+.slide-right-leave-active {
 	transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
 }
-.slide-fade-enter,
-.slide-fade-leave-to {
+
+.slide-left-enter,
+.slide-left-leave-to {
 	transform: translateX(10px);
+	opacity: 0;
+}
+
+.slide-right-enter,
+.slide-right-leave-to {
+	transform: translateX(-10px);
 	opacity: 0;
 }
 </style>
