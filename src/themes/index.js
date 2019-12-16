@@ -43,7 +43,7 @@ export const defaultThemeColors = {
 			pencil: '#9e9e9e',
 			checkmark: '#0696c7',
 			eye: '#fff',
-			dropdown: '#9e9e9e'
+			dropdown: '#fff'
 		}
 	},
 	dark: {

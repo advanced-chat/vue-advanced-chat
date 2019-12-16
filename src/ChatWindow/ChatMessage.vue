@@ -8,9 +8,7 @@
 		</div>
 		<div
 			class="message-box"
-			:class="{
-				'offset-current': message.sender_id === 'me'
-			}"
+			:class="{ 'offset-current': message.sender_id === 'me' }"
 		>
 			<div
 				class="message-container"
@@ -101,7 +99,7 @@
 						<div
 							ref="actionIcon"
 							class="svg-button message-options"
-							v-if="messageActions.length && messageReply && !message.deleted"
+							v-if="isMessageActions"
 							@click="openOptions"
 						>
 							<svg-icon name="dropdown" />
@@ -203,6 +201,11 @@ export default {
 			const { sender_id } = this.message.replyMessage
 			const replyUser = this.roomUsers.find(user => user._id === sender_id)
 			return replyUser ? replyUser.username : ''
+		},
+		isMessageActions() {
+			return (
+				this.messageActions.length && this.messageReply && !this.message.deleted
+			)
 		}
 	},
 
@@ -223,7 +226,7 @@ export default {
 		},
 		onLeaveMessage() {
 			this.imageHover = false
-			this.messageReply = false
+			if (!this.optionsOpened) this.messageReply = false
 			this.hoverMessageId = null
 		},
 		openFile() {
@@ -232,9 +235,6 @@ export default {
 		messageActionHandler(action) {
 			this.closeOptions()
 			this.$emit('messageActionHandler', { action, message: this.message })
-		},
-		closeOptions() {
-			this.optionsOpened = false
 		},
 		checkImageFile() {
 			if (!this.message.file) return
@@ -267,6 +267,10 @@ export default {
 				if (optionsTopPosition) this.menuOptionsHeight = 28
 				else this.menuOptionsHeight = -menuOptionsHeight
 			}, 0)
+		},
+		closeOptions() {
+			this.optionsOpened = false
+			if (this.hoverMessageId !== this.message._id) this.messageReply = false
 		}
 	}
 }
@@ -472,9 +476,16 @@ export default {
 }
 
 .message-options {
+	background: rgba(0, 0, 0, 0.25);
+	border-radius: 50%;
 	position: absolute;
-	top: 5px;
-	right: 10px;
+	top: 7px;
+	right: 14px;
+
+	svg {
+		height: 20px;
+		width: 20px;
+	}
 }
 
 .menu-options {
