@@ -265,7 +265,7 @@ export default {
 				const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
 
 				const optionsTopPosition =
-					roomFooterTop - actionIconTop > menuOptionsHeight
+					roomFooterTop - actionIconTop > menuOptionsHeight + 50
 
 				if (optionsTopPosition) this.menuOptionsHeight = 28
 				else this.menuOptionsHeight = -menuOptionsHeight
@@ -585,11 +585,13 @@ export default {
 .slide-left-enter-active,
 .slide-right-enter-active {
 	transition: all 0.3s ease;
+	transition-property: transform, opacity;
 }
 
 .slide-left-leave-active,
 .slide-right-leave-active {
 	transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
+	transition-property: transform, opacity;
 }
 
 .slide-left-enter,
