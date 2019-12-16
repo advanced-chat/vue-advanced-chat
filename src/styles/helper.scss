@@ -1,0 +1,50 @@
+$borderStyle: 1px solid var(--chat-border-color);
+
+.app-border {
+	border: $borderStyle;
+}
+
+.app-border-t {
+	border-top: $borderStyle;
+}
+
+.app-border-r {
+	border-right: $borderStyle;
+}
+
+.app-border-b {
+	border-bottom: $borderStyle;
+}
+
+.vertical-center {
+	display: flex;
+	align-items: center;
+	height: 100%;
+
+	.vertical-container {
+		width: 100%;
+		text-align: center;
+	}
+}
+
+.svg-button {
+	max-height: 30px;
+	display: flex;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.svg-button:hover {
+	transform: scale(1.1);
+	opacity: 0.7;
+}
+
+.room-avatar {
+	background-size: cover !important;
+	background-position: center center !important;
+	background-repeat: no-repeat !important;
+	height: 42px;
+	width: 42px;
+	margin-right: 15px;
+	border-radius: 50%;
+}

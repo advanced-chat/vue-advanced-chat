@@ -424,16 +424,6 @@ export default {
 	border-top-right-radius: 4px;
 }
 
-.room-avatar {
-	background-size: cover !important;
-	background-position: center center !important;
-	background-repeat: no-repeat !important;
-	height: 42px;
-	width: 42px;
-	margin-right: 15px;
-	border-radius: 50%;
-}
-
 .room-name {
 	font-size: 17px;
 }

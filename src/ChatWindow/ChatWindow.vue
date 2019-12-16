@@ -168,46 +168,4 @@ export default {
 	height: 100%;
 	display: flex;
 }
-
-// General
-$borderStyle: 1px solid var(--chat-border-color);
-
-.app-border {
-	border: $borderStyle;
-}
-
-.app-border-t {
-	border-top: $borderStyle;
-}
-
-.app-border-r {
-	border-right: $borderStyle;
-}
-
-.app-border-b {
-	border-bottom: $borderStyle;
-}
-
-.vertical-center {
-	display: flex;
-	align-items: center;
-	height: 100%;
-
-	.vertical-container {
-		width: 100%;
-		text-align: center;
-	}
-}
-
-.svg-button {
-	max-height: 30px;
-	display: flex;
-	cursor: pointer;
-	transition: all 0.2s;
-}
-
-.svg-button:hover {
-	transform: scale(1.1);
-	opacity: 0.7;
-}
 </style>

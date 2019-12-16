@@ -197,16 +197,6 @@ input {
 	min-height: 71px;
 }
 
-.room-avatar {
-	background-size: cover !important;
-	background-position: center center !important;
-	background-repeat: no-repeat !important;
-	height: 42px;
-	width: 42px;
-	margin-right: 15px;
-	border-radius: 50%;
-}
-
 .name-container {
 	-webkit-box-align: center;
 	align-items: center;
