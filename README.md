@@ -144,12 +144,16 @@ colors="{
   messageUsernameColor: '#9ca6af',
   messageTimestampColor: '#828c94',
   messageDateBg: 'rgba(33, 148, 243, 0.15)',
-  messageDateColor: '#b8bdcc',
+  messageDateColor: '#505a62',
   messageTextColor: '#0a0a0a',
-  roomLastMessage: '#a2aeb8',
-  roomTimestamp: '#67717a',
+  messageReplyBg: '#f0f0f0',
+  messageReplyUsernameColor: '#9ca6af',
+  messageReplyContentColor: '#0a0a0a',
+  roomLastMessage: '#67717a',
+  roomTimestamp: '#a2aeb8',
   textColor: '#0a0a0a',
   inputBg: '#fff',
+  footerBg: '#f0f0f0',
   spinnerColor: '#333',
   borderColor: '#d3dde7',
   iconsColor: {
@@ -169,8 +173,9 @@ colors="{
     pencilEdited: '#9e9e9e',
     trash: '#f44336',
     checkmark: '#0696c7',
-    eye: '#9ca6af'
-  }
+    eye: '#fff',
+    reply: '#000'
+		}
 }"
 ```
 
@@ -224,15 +229,15 @@ messages="[
 
 ## Events API
 
-| Event                 | Params                                        | Fires when                                            |
-| --------------------- | --------------------------------------------- | ----------------------------------------------------- |
-| fetchMessages (1)     | `{ room, options }`                           | A user has scrolled on top to load more messages      |
-| sendMessage           | `{ roomId, content, file (3) }`               | A user has sent a message                             |
-| editMessage           | `{ roomId, messageId, newContent, file (3) }` | A user has edited a message                           |
-| deleteMessage         | `{ roomId, messageId }`                       | A user has deleted a message                          |
-| openFile              | `{ message }`                                 | A user has clicked to view or download a file         |
-| addRoom               | -                                             | A user clicks on the plus icon next to searchbar      |
-| menuActionHandler (2) | `{ roomId, action }`                          | A user clicks on the vertical dots icon inside a room |
+| Event                 | Params                                                          | Fires when                                            |
+| --------------------- | --------------------------------------------------------------- | ----------------------------------------------------- |
+| fetchMessages (1)     | `{ room, options }`                                             | A user has scrolled on top to load more messages      |
+| sendMessage           | `{ roomId, content, file (3), replyMessage (4) }`               | A user has sent a message                             |
+| editMessage           | `{ roomId, messageId, newContent, file (3), replyMessage (4) }` | A user has edited a message                           |
+| deleteMessage         | `{ roomId, messageId }`                                         | A user has deleted a message                          |
+| openFile              | `{ message }`                                                   | A user has clicked to view or download a file         |
+| addRoom               | -                                                               | A user clicks on the plus icon next to searchbar      |
+| menuActionHandler (2) | `{ roomId, action }`                                            | A user clicks on the vertical dots icon inside a room |
 
 (1) `fetchMessages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top
 
@@ -254,6 +259,8 @@ menuActionHandler({ roomId, action }) {
 ```
 
 (3) All file params contain: `{ blob, localURL, name, size, type }`
+
+(4) `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked
 
 ## Using with Firestore
 

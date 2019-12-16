@@ -209,7 +209,7 @@ export default {
 				)
 
 				room.roomName =
-					roomContacts.map(user => user.username).join(', ') || 'Myslef'
+					roomContacts.map(user => user.username).join(', ') || 'Myself'
 
 				const roomAvatar =
 					roomContacts.length === 1 && roomContacts[0].avatar
@@ -360,7 +360,7 @@ export default {
 			}
 		},
 
-		async sendMessage({ content, roomId, file }) {
+		async sendMessage({ content, roomId, file, replyMessage }) {
 			const message = {
 				sender_id: this.currentUserId,
 				content,
@@ -373,6 +373,17 @@ export default {
 					size: file.size,
 					type: file.type,
 					url: file.localUrl
+				}
+			}
+
+			if (replyMessage) {
+				message.replyMessage = {
+					_id: replyMessage._id,
+					content: replyMessage.content,
+					sender_id:
+						replyMessage.sender_id === 'me'
+							? this.currentUserId
+							: replyMessage.sender_id
 				}
 			}
 

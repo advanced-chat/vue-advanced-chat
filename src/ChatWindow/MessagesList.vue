@@ -59,6 +59,7 @@
 							:roomUsers="room.users"
 							:textMessages="textMessages"
 							@editMessage="editMessage"
+							@replyMessage="replyMessage"
 							@deleteMessage="deleteMessage"
 							@openFile="openFile"
 						></chat-message>
@@ -69,10 +70,27 @@
 		<div
 			class="room-footer"
 			:class="{
-				'textarea-outline': editedMessage._id,
-				'footer-border': !editedMessage._id
+				'textarea-outline': editedMessage._id
 			}"
 		>
+			<transition name="slide-up-fade">
+				<div v-if="messageReply" class="reply-container">
+					<img
+						v-if="isImageCheck(messageReply.file)"
+						:src="messageReply.file.url"
+						class="image-reply"
+					/>
+
+					<div class="message-reply">{{ messageReply.content }}</div>
+
+					<div class="icon-reply">
+						<div class="svg-button" @click="resetMessage">
+							<svg-icon name="close-outline" />
+						</div>
+					</div>
+				</div>
+			</transition>
+
 			<div class="box-footer">
 				<div v-if="imageFile">
 					<div class="svg-button icon-image" @click="resetImageFile">
@@ -94,7 +112,6 @@
 				<textarea
 					v-show="!file || imageFile"
 					ref="roomTextarea"
-					rows="1"
 					:placeholder="textMessages.TYPE_MESSAGE"
 					v-model="message"
 					@input="autoGrow"
@@ -180,6 +197,7 @@ export default {
 		return {
 			message: '',
 			editedMessage: {},
+			messageReply: null,
 			infiniteState: null,
 			loadingMessages: false,
 			file: null,
@@ -189,11 +207,11 @@ export default {
 		}
 	},
 
-	mounted() {
-		window.addEventListener('keypress', e => {
-			if (e.keyCode === 13) this.sendMessage()
-		})
-	},
+	// mounted() {
+	// 	window.addEventListener('keypress', e => {
+	// 		if (e.keyCode === 13) this.sendMessage()
+	// 	})
+	// },
 
 	watch: {
 		loadingMessages(val) {
@@ -245,12 +263,27 @@ export default {
 			this.resetTextareaSize()
 			this.message = ''
 			this.editedMessage = {}
+			this.messageReply = null
 			this.file = null
 			this.imageFile = null
 			this.emojiOpened = false
 		},
+		resetImageFile() {
+			this.imageFile = null
+			this.editedMessage.file = null
+			this.file = null
+			this.focusTextarea()
+		},
+		resetFile() {
+			this.message = ''
+			this.imageFile = null
+			this.editedMessage.file = null
+			this.file = null
+			this.resetTextareaSize()
+			setTimeout(() => this.focusTextarea(), 0)
+		},
 		resetTextareaSize() {
-			this.$refs['roomTextarea'].style.height = '38px'
+			this.$refs['roomTextarea'].style.height = '32px'
 		},
 		focusTextarea() {
 			this.$refs['roomTextarea'].focus()
@@ -266,11 +299,16 @@ export default {
 					this.$emit('editMessage', {
 						messageId: this.editedMessage._id,
 						newContent: this.message.trim(),
-						file: this.file
+						file: this.file,
+						replyMessage: this.messageReply
 					})
 				}
 			} else {
-				this.$emit('sendMessage', { content: this.message, file: this.file })
+				this.$emit('sendMessage', {
+					content: this.message,
+					file: this.file,
+					replyMessage: this.messageReply
+				})
 			}
 
 			this.resetMessage()
@@ -292,6 +330,9 @@ export default {
 
 			setTimeout(() => this.resizeTextarea(this.$refs['roomTextarea']), 0)
 		},
+		replyMessage(message) {
+			this.messageReply = message
+		},
 		deleteMessage(message) {
 			this.$emit('deleteMessage', message._id)
 		},
@@ -300,7 +341,7 @@ export default {
 		},
 		resizeTextarea(textarea) {
 			textarea.style.height = 0
-			textarea.style.height = textarea.scrollHeight + 'px'
+			textarea.style.height = textarea.scrollHeight + 2 + 'px'
 		},
 		addEmoji(emoji) {
 			this.message += emoji
@@ -325,20 +366,6 @@ export default {
 			}
 			if (this.isImageCheck(this.file)) this.imageFile = fileURL
 			else this.message = file.name
-		},
-		resetImageFile() {
-			this.imageFile = null
-			this.editedMessage.file = null
-			this.file = null
-			this.focusTextarea()
-		},
-		resetFile() {
-			this.message = ''
-			this.imageFile = null
-			this.editedMessage.file = null
-			this.file = null
-			this.resetTextareaSize()
-			setTimeout(() => this.focusTextarea(), 0)
 		},
 		isImageCheck(file) {
 			if (!file) return
@@ -482,17 +509,40 @@ export default {
 	position: absolute;
 	bottom: 0;
 	width: calc(100% - 1px);
-	background: var(--chat-color-input);
 	z-index: 10;
 	border-bottom-right-radius: 4px;
 }
 
-.footer-border {
-	border-top: 1px solid var(--chat-border-color);
-}
-
 .box-footer {
 	display: flex;
+	background: var(--chat-bg-color-footer);
+	padding: 8px;
+
+	* {
+		z-index: 1;
+	}
+}
+
+.reply-container {
+	display: flex;
+	padding: 10px;
+	background: var(--chat-bg-color-footer);
+	font-weight: 300;
+	z-index: -1;
+}
+
+.message-reply {
+	overflow: hidden;
+	width: 100%;
+}
+
+.icon-reply {
+	margin-left: 10px;
+}
+
+.image-reply {
+	max-height: 100px;
+	margin-right: 10px;
 }
 
 .image-file {
@@ -501,18 +551,20 @@ export default {
 }
 
 textarea {
-	background: var(--chat-color-input);
+	background: var(--chat-bg-color-input);
 	color: var(--chat-color);
+	border-radius: 20px;
 	margin: 2px;
-	padding: 15px 15px 5px 10px;
+	padding: 12px 15px 0 10px;
 	overflow: hidden;
 	outline: 0;
 	width: 100%;
 	resize: none;
-	height: 38px;
+	height: 32px;
 	caret-color: #1976d2;
 	border: none;
 	font-size: 16px;
+	font-weight: 300;
 
 	&::placeholder {
 		color: #9ca6af;
@@ -525,7 +577,7 @@ textarea {
 
 .icon-textarea {
 	display: flex;
-	margin: 18px 10px 0 0;
+	margin: 12px 0 0 5px;
 
 	svg,
 	.wrapper {
@@ -535,8 +587,8 @@ textarea {
 
 .icon-image {
 	position: absolute;
-	top: 16px;
-	left: 16px;
+	top: 25px;
+	left: 25px;
 
 	svg {
 		height: 20px;
@@ -597,6 +649,18 @@ textarea {
 .slide-fade-enter,
 .slide-fade-leave-to {
 	transform: translateX(10px);
+	opacity: 0;
+}
+
+.slide-up-fade-enter-active {
+	transition: all 0.3s ease;
+}
+.slide-up-fade-leave-active {
+	transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-up-fade-enter,
+.slide-up-fade-leave-to {
+	transform: translateY(10px);
 	opacity: 0;
 }
 </style>

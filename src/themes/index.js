@@ -17,10 +17,14 @@ export const defaultThemeColors = {
 		messageDateBg: 'rgba(33, 148, 243, 0.15)',
 		messageDateColor: '#505a62',
 		messageTextColor: '#0a0a0a',
+		messageReplyBg: '#f0f0f0',
+		messageReplyUsernameColor: '#9ca6af',
+		messageReplyContentColor: '#0a0a0a',
 		roomLastMessage: '#67717a',
 		roomTimestamp: '#a2aeb8',
 		textColor: '#0a0a0a',
 		inputBg: '#fff',
+		footerBg: '#f0f0f0',
 		spinnerColor: '#333',
 		borderColor: '#d3dde7',
 		iconsColor: {
@@ -40,7 +44,8 @@ export const defaultThemeColors = {
 			pencilEdited: '#9e9e9e',
 			trash: '#f44336',
 			checkmark: '#0696c7',
-			eye: '#fff'
+			eye: '#fff',
+			reply: '#000'
 		}
 	},
 	dark: {
@@ -61,10 +66,14 @@ export const defaultThemeColors = {
 		messageDateBg: 'rgba(33, 148, 243, 0.15)',
 		messageDateColor: '#b8bdcc',
 		messageTextColor: '#fff',
+		messageReplyBg: '#f0f0f0',
+		messageReplyUsernameColor: '#9ca6af',
+		messageReplyContentColor: '#0a0a0a',
 		roomLastMessage: '#a2aeb8',
 		roomTimestamp: '#67717a',
 		textColor: '#fff',
 		inputBg: '#34343b',
+		footerBg: '#26272e',
 		spinnerColor: '#fff',
 		borderColor: '#63686e',
 		iconsColor: {
@@ -84,7 +93,8 @@ export const defaultThemeColors = {
 			pencilEdited: '#ebedf2',
 			trash: '#f44336',
 			checkmark: '#f0d90a',
-			eye: '#fff'
+			eye: '#fff',
+			reply: '#fff'
 		}
 	}
 }
@@ -107,10 +117,14 @@ export const cssThemeVars = ({
 	messageDateBg,
 	messageDateColor,
 	messageTextColor,
+	messageReplyBg,
+	messageReplyUsernameColor,
+	messageReplyContentColor,
 	roomLastMessage,
 	roomTimestamp,
 	textColor,
 	inputBg,
+	footerBg,
 	spinnerColor,
 	borderColor,
 	iconsColor
@@ -132,11 +146,15 @@ export const cssThemeVars = ({
 		'--chat-color-message-timestamp': messageTimestampColor,
 		'--chat-color-room-last': roomLastMessage,
 		'--chat-color-room-timestamp': roomTimestamp,
-		'--chat-color-message-date-bg': messageDateBg,
+		'--chat-bg-color-message-date': messageDateBg,
 		'--chat-color-message-date': messageDateColor,
 		'--chat-color-message-text': messageTextColor,
+		'--chat-bg-color-message-reply': messageReplyBg,
+		'--chat-color-message-reply-username': messageReplyUsernameColor,
+		'--chat-color-message-reply-content': messageReplyContentColor,
 		'--chat-color': textColor,
-		'--chat-color-input': inputBg,
+		'--chat-bg-color-input': inputBg,
+		'--chat-bg-color-footer': footerBg,
 		'--chat-color-spinner': spinnerColor,
 		'--chat-border-color': borderColor,
 		'--chat-icon-color-search': iconsColor.search,
@@ -155,6 +173,7 @@ export const cssThemeVars = ({
 		'--chat-edited-icon-color-pencil': iconsColor.pencilEdited,
 		'--chat-icon-color-trash': iconsColor.trash,
 		'--chat-icon-color-checkmark': iconsColor.checkmark,
-		'--chat-icon-color-eye': iconsColor.eye
+		'--chat-icon-color-eye': iconsColor.eye,
+		'--chat-icon-color-reply': iconsColor.reply
 	}
 }

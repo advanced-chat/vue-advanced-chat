@@ -91,6 +91,11 @@ export default {
 					name: 'eye',
 					path:
 						'M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z'
+				},
+				{
+					name: 'reply',
+					path:
+						'M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9Z'
 				}
 			]
 		}
@@ -165,5 +170,9 @@ export default {
 
 #chat-icon-eye {
 	fill: var(--chat-icon-color-eye);
+}
+
+#chat-icon-reply {
+	fill: var(--chat-icon-color-reply);
 }
 </style>

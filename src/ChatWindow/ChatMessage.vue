@@ -21,6 +21,20 @@
 				@mouseover="onHoverMessage(message)"
 				@mouseleave="onLeaveMessage"
 			>
+				<transition name="fade">
+					<div
+						v-if="messageReply && !message.deleted"
+						class="svg-button button-reply"
+						:class="{
+							'reply-current': message.sender_id === 'me',
+							'reply-agent': message.sender_id !== 'me'
+						}"
+						@click.stop="replyMessage(message)"
+					>
+						<svg-icon name="reply" />
+					</div>
+				</transition>
+
 				<div
 					class="message-card"
 					:class="{
@@ -38,6 +52,14 @@
 						class="text-username"
 					>
 						<span>{{ message.username }}</span>
+					</div>
+
+					<div
+						v-if="!message.deleted && message.replyMessage"
+						class="reply-message"
+					>
+						<div class="reply-username">{{ replyUsername }}</div>
+						<div class="reply-content">{{ message.replyMessage.content }}</div>
 					</div>
 
 					<div v-if="message.deleted">
@@ -131,7 +153,8 @@ export default {
 			openMessageId: {},
 			hoverMessageId: null,
 			imageLoading: false,
-			imageHover: false
+			imageHover: false,
+			messageReply: false
 		}
 	},
 
@@ -162,6 +185,11 @@ export default {
 				this.message.seen &&
 				!this.message.deleted
 			)
+		},
+		replyUsername() {
+			const { sender_id } = this.message.replyMessage
+			const replyUser = this.roomUsers.find(user => user._id === sender_id)
+			return replyUser ? replyUser.username : ''
 		}
 	},
 
@@ -184,6 +212,7 @@ export default {
 		},
 		onHoverMessage() {
 			this.imageHover = true
+			this.messageReply = true
 			if (this.canEditMessage()) this.hoverMessageId = this.message._id
 		},
 		canEditMessage() {
@@ -191,11 +220,15 @@ export default {
 		},
 		onLeaveMessage() {
 			this.imageHover = false
+			this.messageReply = false
 			this.openMessageId.toggle = false
 			this.hoverMessageId = null
 		},
 		editMessage() {
 			this.$emit('editMessage', this.message)
+		},
+		replyMessage() {
+			this.$emit('replyMessage', this.message)
 		},
 		deleteMessage() {
 			this.$emit('deleteMessage', this.message)
@@ -231,7 +264,7 @@ export default {
 	text-transform: uppercase;
 	padding: 4px;
 	color: var(--chat-color-message-date);
-	background: var(--chat-color-message-date-bg);
+	background: var(--chat-bg-color-message-date);
 	display: block;
 	overflow-wrap: break-word;
 	position: relative;
@@ -254,6 +287,7 @@ export default {
 }
 
 .message-container {
+	position: relative;
 	padding: 3px 10px;
 	align-items: end;
 	min-width: 100px;
@@ -347,6 +381,43 @@ export default {
 	to {
 		transform: translateX(0);
 	}
+}
+
+.reply-message {
+	background: var(--chat-bg-color-message-reply);
+	border-radius: 4px;
+	margin: -1px -5px 8px;
+
+	.reply-username {
+		padding: 5px 5px 0 5px;
+		color: var(--chat-color-message-reply-username);
+		font-size: 13px;
+		line-height: 15px;
+		margin-bottom: 2px;
+	}
+
+	.reply-content {
+		padding: 0 5px 5px 5px;
+		color: var(--chat-color-message-reply-content);
+	}
+}
+
+.button-reply {
+	position: absolute;
+	top: 4px;
+
+	svg {
+		height: 20px;
+		width: 20px;
+	}
+}
+
+.reply-agent {
+	right: -14px;
+}
+
+.reply-current {
+	left: -14px;
 }
 
 .text-username {
