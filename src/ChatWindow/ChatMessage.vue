@@ -384,7 +384,7 @@ export default {
 
 	.reply-username {
 		color: var(--chat-color-message-reply-username);
-		font-size: 13px;
+		font-size: 12px;
 		line-height: 15px;
 		margin-bottom: 2px;
 	}
