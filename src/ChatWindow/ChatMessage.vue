@@ -377,9 +377,9 @@ export default {
 	background: var(--chat-bg-color-message-reply);
 	border-radius: 4px;
 	margin: -1px -5px 8px;
+	padding: 8px 10px;
 
 	.reply-username {
-		padding: 5px 5px 0 5px;
 		color: var(--chat-color-message-reply-username);
 		font-size: 13px;
 		line-height: 15px;
@@ -387,7 +387,6 @@ export default {
 	}
 
 	.reply-content {
-		padding: 0 5px 5px 5px;
 		color: var(--chat-color-message-reply-content);
 	}
 }
