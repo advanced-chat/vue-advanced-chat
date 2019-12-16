@@ -187,9 +187,9 @@ colors="{
   messageDateBg: 'rgba(33, 148, 243, 0.15)',
   messageDateColor: '#505a62',
   messageTextColor: '#0a0a0a',
-  messageReplyBg: '#f0f0f0',
-  messageReplyUsernameColor: '#9ca6af',
-  messageReplyContentColor: '#0a0a0a',
+  messageReplyBg: 'rgba(0, 0, 0, 0.08)',
+  messageReplyUsernameColor: '#0a0a0a',
+  messageReplyContentColor: '#6e6e6e',
   roomLastMessage: '#67717a',
   roomTimestamp: '#a2aeb8',
   textColor: '#0a0a0a',
@@ -213,7 +213,7 @@ colors="{
     pencil: '#9e9e9e',
     checkmark: '#0696c7',
     eye: '#fff',
-    dropdown: '#9e9e9e'
+    dropdown: '#fff'
 		}
 }"
 ```
