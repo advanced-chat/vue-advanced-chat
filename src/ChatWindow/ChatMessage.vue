@@ -99,9 +99,10 @@
 
 					<transition name="slide-left">
 						<div
+							ref="actionIcon"
 							class="svg-button message-options"
 							v-if="messageActions.length && messageReply && !message.deleted"
-							@click="optionsOpened = !optionsOpened"
+							@click="openOptions"
 						>
 							<svg-icon name="dropdown" />
 						</div>
@@ -112,10 +113,12 @@
 						v-if="messageActions.length"
 					>
 						<div
+							ref="menuOptions"
 							v-if="optionsOpened"
 							v-click-outside="closeOptions"
 							class="menu-options"
 							:class="{ 'menu-left': message.sender_id !== 'me' }"
+							:style="{ top: `${menuOptionsHeight}px` }"
 						>
 							<div class="menu-list">
 								<div v-for="action in messageActions" :key="action.name">
@@ -153,7 +156,8 @@ export default {
 		editedMessage: { type: Object, required: true },
 		roomUsers: { type: Array, default: () => [] },
 		textMessages: { type: Object, required: true },
-		messageActions: { type: Array, required: true }
+		messageActions: { type: Array, required: true },
+		roomFooterRef: { type: HTMLDivElement }
 	},
 
 	data() {
@@ -162,7 +166,8 @@ export default {
 			imageLoading: false,
 			imageHover: false,
 			messageReply: false,
-			optionsOpened: false
+			optionsOpened: false,
+			menuOptionsHeight: 0
 		}
 	},
 
@@ -243,6 +248,25 @@ export default {
 			const image = new Image()
 			image.src = this.message.file.url
 			image.addEventListener('load', () => (this.imageLoading = false))
+		},
+		openOptions() {
+			this.optionsOpened = !this.optionsOpened
+
+			if (!this.optionsOpened) return
+
+			setTimeout(() => {
+				const menuOptionsHeight = this.$refs.menuOptions.getBoundingClientRect()
+					.height
+
+				const actionIconTop = this.$refs.actionIcon.getBoundingClientRect().top
+				const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
+
+				const optionsTopPosition =
+					roomFooterTop - actionIconTop > menuOptionsHeight
+
+				if (optionsTopPosition) this.menuOptionsHeight = 28
+				else this.menuOptionsHeight = -menuOptionsHeight
+			}, 0)
 		}
 	}
 }

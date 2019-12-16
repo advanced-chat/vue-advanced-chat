@@ -59,6 +59,7 @@
 							:messageActions="messageActions"
 							:roomUsers="room.users"
 							:textMessages="textMessages"
+							:roomFooterRef="$refs.roomFooter"
 							@messageActionHandler="messageActionHandler"
 							@openFile="openFile"
 						></chat-message>
@@ -67,6 +68,7 @@
 			</div>
 		</div>
 		<div
+			ref="roomFooter"
 			class="room-footer"
 			:class="{
 				'textarea-outline': editedMessage._id
