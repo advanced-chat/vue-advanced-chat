@@ -26,6 +26,9 @@
 					<div
 						v-if="roomUsers.length > 2 && message.sender_id !== 'me'"
 						class="text-username"
+						:class="{
+							'username-reply': !message.deleted && message.replyMessage
+						}"
 					>
 						<span>{{ message.username }}</span>
 					</div>
@@ -394,8 +397,11 @@ export default {
 .text-username {
 	font-size: 13px;
 	color: var(--chat-color-message-username);
-	line-height: 15px;
 	margin-bottom: 2px;
+}
+
+.username-reply {
+	margin-bottom: 5px;
 }
 
 .text-timestamp {
