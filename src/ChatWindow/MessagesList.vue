@@ -604,7 +604,7 @@ textarea {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: 62px;
+	height: 48px;
 }
 
 .icon-file {
