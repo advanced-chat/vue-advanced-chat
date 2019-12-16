@@ -1,5 +1,5 @@
 <template>
-	<transition name="fade" appear>
+	<transition name="fade-spinner" appear>
 		<div class="container-center" v-if="show">
 			<div id="circle"></div>
 		</div>
@@ -20,19 +20,6 @@ export default {
 	top: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 9999;
-}
-
-.fade-enter {
-	opacity: 0;
-}
-
-.fade-enter-active {
-	transition: opacity 0.8s;
-}
-
-.fade-leave-active {
-	transition: opacity 0.2s;
-	opacity: 0;
 }
 
 #circle {

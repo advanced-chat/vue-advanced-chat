@@ -58,7 +58,7 @@
 							}"
 							:style="{ background: `url(${message.file.url})` }"
 						>
-							<transition name="fade">
+							<transition name="fade-image">
 								<div class="image-buttons" v-if="imageHover">
 									<div
 										class="svg-button button-view"
@@ -562,47 +562,10 @@ export default {
 	margin: 0;
 }
 
-.fade-enter {
-	opacity: 0;
-}
-
-.fade-enter-active {
-	transition: opacity 1s;
-}
-
-.fade-leave-active {
-	transition: opacity 0.5s;
-	opacity: 0;
-}
-
 .icon-check {
 	height: 14px;
 	width: 14px;
 	vertical-align: middle;
 	margin: -3px 0 0 3px;
-}
-
-.slide-left-enter-active,
-.slide-right-enter-active {
-	transition: all 0.3s ease;
-	transition-property: transform, opacity;
-}
-
-.slide-left-leave-active,
-.slide-right-leave-active {
-	transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
-	transition-property: transform, opacity;
-}
-
-.slide-left-enter,
-.slide-left-leave-to {
-	transform: translateX(10px);
-	opacity: 0;
-}
-
-.slide-right-enter,
-.slide-right-leave-to {
-	transform: translateX(-10px);
-	opacity: 0;
 }
 </style>

@@ -14,7 +14,7 @@
 			>
 				<svg-icon name="menu" />
 			</div>
-			<transition name="slide-fade" v-if="menuActions.length">
+			<transition name="slide-left" v-if="menuActions.length">
 				<div v-if="menuOpened" v-click-outside="closeMenu" class="menu-options">
 					<div class="menu-list">
 						<div v-for="action in menuActions" :key="action.name">
@@ -30,7 +30,7 @@
 		<div class="container-scroll">
 			<div class="messages-container">
 				<chat-loader :show="loadingMessages"></chat-loader>
-				<transition name="fade">
+				<transition name="fade-message">
 					<div class="text-started" v-if="showNoMessages">
 						{{ textMessages.MESSAGES_EMPTY }}
 					</div>
@@ -38,7 +38,7 @@
 						{{ textMessages.CONVERSATION_STARTED }} {{ messages[0].date }}
 					</div>
 				</transition>
-				<transition name="fade">
+				<transition name="fade-message">
 					<infinite-loading
 						v-if="messages.length"
 						spinner="spiral"
@@ -49,7 +49,7 @@
 						<div slot="no-more"></div>
 					</infinite-loading>
 				</transition>
-				<transition-group name="fade">
+				<transition-group name="fade-message">
 					<div v-for="(message, i) in messages" :key="message._id">
 						<chat-message
 							:message="message"
@@ -73,7 +73,7 @@
 			</transition>
 		</div>
 		<div ref="roomFooter" class="room-footer">
-			<transition name="slide-up-fade">
+			<transition name="slide-up">
 				<div v-if="messageReply" class="reply-container">
 					<img
 						v-if="isImageCheck(messageReply.file)"
@@ -662,62 +662,5 @@ textarea {
 	cursor: none !important;
 	pointer-events: none !important;
 	transform: none !important;
-}
-
-.fade-enter {
-	opacity: 0;
-}
-
-.fade-enter-active {
-	transition: opacity 0.5s;
-}
-
-.fade-leave-active {
-	transition: opacity 0.2s;
-	opacity: 0;
-}
-
-.slide-fade-enter-active {
-	transition: all 0.3s ease;
-}
-.slide-fade-leave-active {
-	transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
-}
-.slide-fade-enter,
-.slide-fade-leave-to {
-	transform: translateX(10px);
-	opacity: 0;
-}
-
-.slide-up-fade-enter-active {
-	transition: all 0.3s ease;
-}
-.slide-up-fade-leave-active {
-	transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
-}
-.slide-up-fade-enter,
-.slide-up-fade-leave-to {
-	transform: translateY(10px);
-	opacity: 0;
-}
-
-.bounce-enter-active {
-	animation: bounce-in 0.5s;
-}
-
-.bounce-leave-active {
-	animation: bounce-in 0.3s reverse;
-}
-
-@keyframes bounce-in {
-	0% {
-		transform: scale(0);
-	}
-	50% {
-		transform: scale(1.05);
-	}
-	100% {
-		transform: scale(1);
-	}
 }
 </style>
