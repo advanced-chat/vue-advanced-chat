@@ -66,6 +66,11 @@
 					</div>
 				</transition-group>
 			</div>
+			<transition name="bounce">
+				<div class="icon-scroll" v-if="scrollIcon" @click="scrollToBottom">
+					<svg-icon name="dropdown" param="scroll" />
+				</div>
+			</transition>
 		</div>
 		<div ref="roomFooter" class="room-footer">
 			<transition name="slide-up-fade">
@@ -200,7 +205,8 @@ export default {
 			file: null,
 			imageFile: null,
 			menuOpened: false,
-			emojiOpened: false
+			emojiOpened: false,
+			scrollIcon: true
 		}
 	},
 
@@ -208,6 +214,14 @@ export default {
 		window.addEventListener('keypress', e => {
 			if (e.keyCode === 13 && !e.shiftKey) this.sendMessage()
 		})
+
+		document
+			.getElementsByClassName('container-scroll')[0]
+			.addEventListener('scroll', e => {
+				this.scrollIcon =
+					e.target.scrollHeight > 500 &&
+					e.target.scrollHeight - e.target.scrollTop > 1000
+			})
 	},
 
 	watch: {
@@ -334,6 +348,10 @@ export default {
 			this.message = message.content
 
 			setTimeout(() => this.resizeTextarea(this.$refs['roomTextarea']), 0)
+		},
+		scrollToBottom() {
+			const element = document.getElementsByClassName('container-scroll')[0]
+			element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
 		},
 		autoGrow(el) {
 			this.resizeTextarea(el.srcElement)
@@ -508,6 +526,24 @@ export default {
 	margin-bottom: 20px;
 }
 
+.icon-scroll {
+	position: absolute;
+	bottom: 80px;
+	right: 20px;
+	padding: 8px;
+	background: #fff;
+	border-radius: 50%;
+	box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+		0 1px 2px 0 rgba(0, 0, 0, 0.12);
+	display: flex;
+	cursor: pointer;
+
+	svg {
+		height: 25px;
+		width: 25px;
+	}
+}
+
 .room-footer {
 	position: absolute;
 	bottom: 0;
@@ -663,5 +699,25 @@ textarea {
 .slide-up-fade-leave-to {
 	transform: translateY(10px);
 	opacity: 0;
+}
+
+.bounce-enter-active {
+	animation: bounce-in 0.5s;
+}
+
+.bounce-leave-active {
+	animation: bounce-in 0.3s reverse;
+}
+
+@keyframes bounce-in {
+	0% {
+		transform: scale(0);
+	}
+	50% {
+		transform: scale(1.05);
+	}
+	100% {
+		transform: scale(1);
+	}
 }
 </style>

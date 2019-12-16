@@ -215,7 +215,8 @@ colors="{
     pencil: '#9e9e9e',
     checkmark: '#0696c7',
     eye: '#fff',
-    dropdown: '#fff'
+    dropdown: '#fff',
+    dropdownScroll: '#0a0a0a'
 		}
 }"
 ```

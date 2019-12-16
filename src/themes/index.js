@@ -43,7 +43,8 @@ export const defaultThemeColors = {
 			pencil: '#9e9e9e',
 			checkmark: '#0696c7',
 			eye: '#fff',
-			dropdown: '#fff'
+			dropdown: '#fff',
+			dropdownScroll: '#0a0a0a'
 		}
 	},
 	dark: {
@@ -90,7 +91,8 @@ export const defaultThemeColors = {
 			pencil: '#ebedf2',
 			checkmark: '#f0d90a',
 			eye: '#fff',
-			dropdown: '#fff'
+			dropdown: '#fff',
+			dropdownScroll: '#0a0a0a'
 		}
 	}
 }
@@ -168,6 +170,7 @@ export const cssThemeVars = ({
 		'--chat-icon-color-pencil': iconsColor.pencil,
 		'--chat-icon-color-checkmark': iconsColor.checkmark,
 		'--chat-icon-color-eye': iconsColor.eye,
-		'--chat-icon-color-dropdown': iconsColor.dropdown
+		'--chat-icon-color-dropdown': iconsColor.dropdown,
+		'--chat-icon-color-dropdown-scroll': iconsColor.dropdownScroll
 	}
 }

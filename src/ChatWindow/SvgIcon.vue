@@ -162,4 +162,8 @@ export default {
 #chat-icon-dropdown {
 	fill: var(--chat-icon-color-dropdown);
 }
+
+#chat-icon-dropdown-sroll {
+	fill: var(--chat-icon-color-dropdown-scroll);
+}
 </style>
