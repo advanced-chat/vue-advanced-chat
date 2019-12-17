@@ -267,7 +267,7 @@ export default {
 				const optionsTopPosition =
 					roomFooterTop - actionIconTop > menuOptionsHeight + 50
 
-				if (optionsTopPosition) this.menuOptionsHeight = 30
+				if (optionsTopPosition) this.menuOptionsHeight = 28
 				else this.menuOptionsHeight = -menuOptionsHeight
 			}, 0)
 		},
@@ -489,8 +489,8 @@ export default {
 	right: 14px;
 
 	svg {
-		height: 20px;
-		width: 20px;
+		height: 17px;
+		width: 17px;
 	}
 }
 
