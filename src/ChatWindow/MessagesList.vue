@@ -75,13 +75,16 @@
 		<div ref="roomFooter" class="room-footer">
 			<transition name="slide-up">
 				<div v-if="messageReply" class="reply-container">
-					<img
-						v-if="isImageCheck(messageReply.file)"
-						:src="messageReply.file.url"
-						class="image-reply"
-					/>
+					<div class="reply-box">
+						<img
+							v-if="isImageCheck(messageReply.file)"
+							:src="messageReply.file.url"
+							class="image-reply"
+						/>
 
-					<div class="message-reply">{{ messageReply.content }}</div>
+						<div class="reply-username">{{ messageReply.username }}</div>
+						<div class="reply-content">{{ messageReply.content }}</div>
+					</div>
 
 					<div class="icon-reply">
 						<div class="svg-button" @click="resetMessage">
@@ -490,23 +493,40 @@ export default {
 
 .reply-container {
 	display: flex;
-	padding: 10px;
+	padding: 10px 10px 0;
 	background: var(--chat-bg-color-footer);
 	z-index: -1;
-}
+	align-items: center;
+	max-width: 100%;
 
-.message-reply {
-	overflow: hidden;
-	width: 100%;
-}
+	.reply-box {
+		width: 100%;
+		overflow: hidden;
+		background: var(--chat-bg-color-message-reply);
+		border-radius: 4px;
+		padding: 8px 10px;
+	}
 
-.icon-reply {
-	margin-left: 10px;
-}
+	.reply-username {
+		color: var(--chat-color-message-reply-username);
+		font-size: 12px;
+		line-height: 15px;
+		margin-bottom: 2px;
+	}
 
-.image-reply {
-	max-height: 100px;
-	margin-right: 10px;
+	.reply-content {
+		font-size: 12px;
+		color: var(--chat-color-message-reply-content);
+	}
+
+	.icon-reply {
+		margin-left: 10px;
+	}
+
+	.image-reply {
+		max-height: 100px;
+		margin-right: 10px;
+	}
 }
 
 .image-file {
