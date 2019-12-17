@@ -119,13 +119,13 @@ body {
 }
 
 .app-container {
-	font-family: 'Roboto', sans-serif;
+	font-family: 'Quicksand', sans-serif;
 	line-height: 1.5;
 	padding: 10px 20px 20px;
 
-	* {
-		font-weight: 300;
-	}
+	// * {
+	// 	font-weight: 300;
+	// }
 }
 
 select {
