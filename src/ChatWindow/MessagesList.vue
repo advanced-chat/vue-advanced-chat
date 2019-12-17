@@ -95,11 +95,13 @@
 			</transition>
 
 			<div class="box-footer">
-				<div v-if="imageFile" class="image-container">
+				<div v-if="imageFile">
 					<div class="svg-button icon-image" @click="resetImageFile">
 						<svg-icon name="close" param="image" />
 					</div>
-					<img :src="imageFile" class="image-file" />
+					<div class="image-file">
+						<img :src="imageFile" />
+					</div>
 				</div>
 
 				<div class="file-container" v-else-if="file">
@@ -529,11 +531,6 @@ export default {
 	}
 }
 
-.image-file {
-	margin-right: 10px;
-	max-width: 250px;
-}
-
 textarea {
 	background: var(--chat-bg-color-input);
 	color: var(--chat-color);
@@ -568,8 +565,14 @@ textarea {
 	}
 }
 
-.image-container {
+.image-file {
 	display: flex;
+	margin-right: 10px;
+
+	img {
+		max-width: 250px;
+		max-height: 100%;
+	}
 }
 
 .icon-image {
