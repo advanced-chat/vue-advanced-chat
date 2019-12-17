@@ -1,33 +1,58 @@
 export const defaultThemeColors = {
 	light: {
-		headerBg: '#fff',
-		sidemenuBg: '#fff',
-		sidemenuBgHover: '#f6f6f6',
-		sidemenuBgActive: '#e5effa',
-		sidemenuColorActive: '#1976d2',
-		menuBg: '#fff',
-		menuBgHover: '#f6f6f6',
-		messagesBg: '#f8f9fa',
-		messageBg: '#fff',
-		messageMeBg: '#ccf2cf',
-		messageDeletedBg: '#dadfe2',
-		messageDeletedColor: '#757e85',
-		messageUsernameColor: '#9ca6af',
-		messageTimestampColor: '#828c94',
-		messageDateBg: '#e5effa',
-		messageDateColor: '#505a62',
-		messageTextColor: '#0a0a0a',
-		messageReplyBg: 'rgba(0, 0, 0, 0.08)',
-		messageReplyUsernameColor: '#0a0a0a',
-		messageReplyContentColor: '#6e6e6e',
-		roomLastMessage: '#67717a',
-		roomTimestamp: '#a2aeb8',
-		textColor: '#0a0a0a',
-		inputBg: '#fff',
-		footerBg: '#f0f0f0',
-		spinnerColor: '#333',
-		borderColor: '#d3dde7',
-		iconsColor: {
+		general: {
+			color: '#0a0a0a',
+			backgroundInput: '#fff',
+			colorSpinner: '#333',
+			colorBorder: '#d3dde7'
+		},
+
+		header: {
+			background: '#fff'
+		},
+
+		footer: {
+			background: '#f0f0f0'
+		},
+
+		content: {
+			background: '#f8f9fa'
+		},
+
+		sidemenu: {
+			background: '#fff',
+			backgroundHover: '#f6f6f6',
+			backgroundActive: '#e5effa',
+			colorActive: '#1976d2'
+		},
+
+		dropdown: {
+			background: '#fff',
+			backgroundHover: '#f6f6f6'
+		},
+
+		message: {
+			background: '#fff',
+			backgroundMe: '#ccf2cf',
+			color: '#0a0a0a',
+			backgroundDeleted: '#dadfe2',
+			colorDeleted: '#757e85',
+			colorUsername: '#9ca6af',
+			colorTimestamp: '#828c94',
+			backgroundDate: '#e5effa',
+			colorDate: '#505a62',
+			backgroundReply: 'rgba(0, 0, 0, 0.08)',
+			colorReplyUsername: '#0a0a0a',
+			colorReply: '#6e6e6e'
+		},
+
+		room: {
+			colorUsername: '#0a0a0a',
+			colorMessage: '#67717a',
+			colorTimestamp: '#a2aeb8'
+		},
+
+		icons: {
 			search: '#9ca6af',
 			add: '#1976d2',
 			menu: '#0a0a0a',
@@ -48,34 +73,59 @@ export const defaultThemeColors = {
 		}
 	},
 	dark: {
-		headerBg: '#181a1b',
-		sidemenuBg: '#181a1b',
-		sidemenuBgHover: '#202024',
-		sidemenuBgActive: '#151617',
-		sidemenuColorActive: '#fff',
-		menuBg: '#343740',
-		menuBgHover: '#2b2e36',
-		messagesBg: '#131415',
-		messageBg: '#22242a',
-		messageMeBg: '#1F87EC',
-		messageDeletedBg: '#1b1c21',
-		messageDeletedColor: '#dadfe2',
-		messageUsernameColor: '#b3bac9',
-		messageTimestampColor: '#ebedf2',
-		messageDateBg: 'rgba(0, 0, 0, 0.2)',
-		messageDateColor: '#9ca6af',
-		messageTextColor: '#fff',
-		messageReplyBg: 'rgba(0, 0, 0, 0.18)',
-		messageReplyUsernameColor: '#fff',
-		messageReplyContentColor: '#d6d6d6',
-		roomLastMessage: '#a2aeb8',
-		roomTimestamp: '#67717a',
-		textColor: '#fff',
-		inputBg: '#202223',
-		footerBg: '#181a1b',
-		spinnerColor: '#fff',
-		borderColor: '#63686e',
-		iconsColor: {
+		general: {
+			color: '#fff',
+			backgroundInput: '#202223',
+			colorSpinner: '#fff',
+			colorBorder: '#63686e'
+		},
+
+		header: {
+			background: '#181a1b'
+		},
+
+		footer: {
+			background: '#181a1b'
+		},
+
+		content: {
+			background: '#131415'
+		},
+
+		sidemenu: {
+			background: '#181a1b',
+			backgroundHover: '#202024',
+			backgroundActive: '#151617',
+			colorActive: '#fff'
+		},
+
+		dropdown: {
+			background: '#343740',
+			backgroundHover: '#2b2e36'
+		},
+
+		message: {
+			background: '#22242a',
+			backgroundMe: '#1F87EC',
+			color: '#fff',
+			backgroundDeleted: '#1b1c21',
+			colorDeleted: '#dadfe2',
+			colorUsername: '#b3bac9',
+			colorTimestamp: '#ebedf2',
+			backgroundDate: 'rgba(0, 0, 0, 0.2)',
+			colorDate: '#9ca6af',
+			backgroundReply: 'rgba(0, 0, 0, 0.18)',
+			colorReplyUsername: '#fff',
+			colorReply: '#d6d6d6'
+		},
+
+		room: {
+			colorUsername: '#fff',
+			colorMessage: '#a2aeb8',
+			colorTimestamp: '#67717a'
+		},
+
+		icons: {
 			search: '#9ca6af',
 			add: '#fff',
 			menu: '#fff',
@@ -98,79 +148,74 @@ export const defaultThemeColors = {
 }
 
 export const cssThemeVars = ({
-	headerBg,
-	sidemenuBg,
-	sidemenuBgHover,
-	sidemenuBgActive,
-	sidemenuColorActive,
-	menuBg,
-	menuBgHover,
-	messagesBg,
-	messageBg,
-	messageMeBg,
-	messageDeletedBg,
-	messageDeletedColor,
-	messageUsernameColor,
-	messageTimestampColor,
-	messageDateBg,
-	messageDateColor,
-	messageTextColor,
-	messageReplyBg,
-	messageReplyUsernameColor,
-	messageReplyContentColor,
-	roomLastMessage,
-	roomTimestamp,
-	textColor,
-	inputBg,
-	footerBg,
-	spinnerColor,
-	borderColor,
-	iconsColor
+	general,
+	header,
+	footer,
+	sidemenu,
+	content,
+	dropdown,
+	message,
+	room,
+	icons
 }) => {
 	return {
-		'--chat-header-bg-color': headerBg,
-		'--chat-bg-color': sidemenuBg,
-		'--chat-bg-color-hover': sidemenuBgHover,
-		'--chat-bg-color-active': sidemenuBgActive,
-		'--chat-color-active': sidemenuColorActive,
-		'--chat-bg-menu': menuBg,
-		'--chat-bg-menu-hover': menuBgHover,
-		'--chat-bg-color-content': messagesBg,
-		'--chat-bg-color-message': messageBg,
-		'--chat-bg-color-message-me': messageMeBg,
-		'--chat-bg-color-message-deleted': messageDeletedBg,
-		'--chat-color-message-deleted': messageDeletedColor,
-		'--chat-color-message-username': messageUsernameColor,
-		'--chat-color-message-timestamp': messageTimestampColor,
-		'--chat-color-room-last': roomLastMessage,
-		'--chat-color-room-timestamp': roomTimestamp,
-		'--chat-bg-color-message-date': messageDateBg,
-		'--chat-color-message-date': messageDateColor,
-		'--chat-color-message-text': messageTextColor,
-		'--chat-bg-color-message-reply': messageReplyBg,
-		'--chat-color-message-reply-username': messageReplyUsernameColor,
-		'--chat-color-message-reply-content': messageReplyContentColor,
-		'--chat-color': textColor,
-		'--chat-bg-color-input': inputBg,
-		'--chat-bg-color-footer': footerBg,
-		'--chat-color-spinner': spinnerColor,
-		'--chat-border-color': borderColor,
-		'--chat-icon-color-search': iconsColor.search,
-		'--chat-icon-color-add': iconsColor.add,
-		'--chat-icon-color-menu': iconsColor.menu,
-		'--chat-icon-color-close': iconsColor.close,
-		'--chat-icon-color-close-image': iconsColor.closeImage,
-		'--chat-icon-color-file': iconsColor.file,
-		'--chat-icon-color-paperclip': iconsColor.paperclip,
-		'--chat-icon-color-close-outline': iconsColor.closeOutline,
-		'--chat-icon-color-send': iconsColor.send,
-		'--chat-icon-color-send-disabled': iconsColor.sendDisabled,
-		'--chat-icon-color-emoji': iconsColor.emoji,
-		'--chat-icon-color-document': iconsColor.document,
-		'--chat-icon-color-pencil': iconsColor.pencil,
-		'--chat-icon-color-checkmark': iconsColor.checkmark,
-		'--chat-icon-color-eye': iconsColor.eye,
-		'--chat-icon-color-dropdown': iconsColor.dropdown,
-		'--chat-icon-color-dropdown-scroll': iconsColor.dropdownScroll
+		// general
+		'--chat-color': general.color,
+		'--chat-bg-color-input': general.backgroundInput,
+		'--chat-color-spinner': general.colorSpinner,
+		'--chat-border-color': general.colorBorder,
+
+		// layout
+		'--chat-header-bg-color': header.background,
+		'--chat-bg-color-footer': footer.background,
+		'--chat-bg-color-content': content.background,
+
+		// sidemenu
+		'--chat-bg-color': sidemenu.background,
+		'--chat-bg-color-hover': sidemenu.backgroundHover,
+		'--chat-bg-color-active': sidemenu.backgroundActive,
+		'--chat-color-active': sidemenu.colorActive,
+
+		// dropdown
+		'--chat-bg-menu': dropdown.background,
+		'--chat-bg-menu-hover': dropdown.backgroundHover,
+
+		// message
+		'--chat-bg-color-message': message.background,
+		'--chat-bg-color-message-me': message.backgroundMe,
+		'--chat-bg-color-message-deleted': message.backgroundDeleted,
+		'--chat-color-message-deleted': message.colorDeleted,
+		'--chat-color-message-username': message.colorUsername,
+		'--chat-color-message-timestamp': message.colorTimestamp,
+		'--chat-bg-color-message-date': message.backgroundDate,
+		'--chat-color-message-date': message.colorDate,
+		'--chat-color-message-text': message.color,
+		'--chat-bg-color-message-reply': message.backgroundReply,
+		'--chat-color-message-reply-username': message.colorReplyUsername,
+		'--chat-color-message-reply-content': message.colorReply,
+
+		// room
+		'--chat-color-room-username': room.colorUsername,
+		'--chat-color-room-last': room.colorMessage,
+		'--chat-color-room-timestamp': room.colorTimestamp,
+
+		// icons
+		'--chat-icon-color-search': icons.search,
+		'--chat-icon-color-add': icons.add,
+		'--chat-icon-color-menu': icons.menu,
+		'--chat-icon-color-close': icons.close,
+		'--chat-icon-color-close-image': icons.closeImage,
+		'--chat-icon-color-file': icons.file,
+		'--chat-icon-color-paperclip': icons.paperclip,
+		'--chat-icon-color-close-outline': icons.closeOutline,
+		'--chat-icon-color-send': icons.send,
+		'--chat-icon-color-send-disabled': icons.sendDisabled,
+		'--chat-icon-color-emoji': icons.emoji,
+		'--chat-icon-color-document': icons.document,
+		'--chat-icon-color-pencil': icons.pencil,
+		'--chat-icon-color-checkmark': icons.checkmark,
+		'--chat-icon-color-eye': icons.eye,
+		'--chat-icon-color-dropdown': icons.dropdown,
+		'--chat-icon-color-dropdown-scroll': icons.dropdownScroll
 	}
 }
