@@ -95,7 +95,7 @@
 			</transition>
 
 			<div class="box-footer">
-				<div v-if="imageFile">
+				<div v-if="imageFile" class="image-container">
 					<div class="svg-button icon-image" @click="resetImageFile">
 						<svg-icon name="close" param="image" />
 					</div>
@@ -530,7 +530,7 @@ export default {
 }
 
 .image-file {
-	padding: 10px;
+	margin-right: 10px;
 	max-width: 250px;
 }
 
@@ -568,10 +568,15 @@ textarea {
 	}
 }
 
+.image-container {
+	display: flex;
+}
+
 .icon-image {
 	position: absolute;
-	top: 25px;
-	left: 25px;
+	top: 15px;
+	left: 15px;
+	z-index: 2;
 
 	svg {
 		height: 20px;
