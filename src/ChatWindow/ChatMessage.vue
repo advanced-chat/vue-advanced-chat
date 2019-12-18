@@ -505,6 +505,6 @@ export default {
 	height: 14px;
 	width: 14px;
 	vertical-align: middle;
-	margin: -3px 0 0 3px;
+	margin: -3px -3px 0 3px;
 }
 </style>

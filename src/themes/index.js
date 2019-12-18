@@ -117,8 +117,8 @@ export const defaultThemeColors = {
 		},
 
 		dropdown: {
-			background: '#343740',
-			backgroundHover: '#2b2e36'
+			background: '#2a2c33',
+			backgroundHover: '#26282e'
 		},
 
 		message: {

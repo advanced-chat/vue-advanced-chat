@@ -210,7 +210,7 @@ export default {
 			imageFile: null,
 			menuOpened: false,
 			emojiOpened: false,
-			scrollIcon: true
+			scrollIcon: false
 		}
 	},
 
