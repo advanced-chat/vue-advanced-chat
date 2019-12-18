@@ -116,12 +116,12 @@ export default {
 	width: 100%;
 	font-size: 16px;
 	outline: 0;
-	caret-color: #1976d2;
+	caret-color: var(--chat-color-caret);
 	border: none;
 	padding: 10px;
 
 	&::placeholder {
-		color: #9ca6af;
+		color: var(--chat-color-placeholder);
 	}
 }
 

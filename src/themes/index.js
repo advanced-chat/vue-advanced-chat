@@ -3,8 +3,11 @@ export const defaultThemeColors = {
 		general: {
 			color: '#0a0a0a',
 			backgroundInput: '#fff',
+			colorPlaceholder: '#0a0a0a',
+			colorCaret: '#1976d2',
 			colorSpinner: '#333',
-			colorBorder: '#d3dde7'
+			colorBorder: '#d3dde7',
+			backgroundScrollIcon: '#fff'
 		},
 
 		header: {
@@ -12,7 +15,8 @@ export const defaultThemeColors = {
 		},
 
 		footer: {
-			background: '#f0f0f0'
+			background: '#f0f0f0',
+			borderInputSelected: '#1976d2'
 		},
 
 		content: {
@@ -43,7 +47,8 @@ export const defaultThemeColors = {
 			colorDate: '#505a62',
 			backgroundReply: 'rgba(0, 0, 0, 0.08)',
 			colorReplyUsername: '#0a0a0a',
-			colorReply: '#6e6e6e'
+			colorReply: '#6e6e6e',
+			backgroundImage: '#ddd'
 		},
 
 		room: {
@@ -76,8 +81,11 @@ export const defaultThemeColors = {
 		general: {
 			color: '#fff',
 			backgroundInput: '#202223',
+			colorPlaceholder: '#fff',
+			colorCaret: '#1976d2',
 			colorSpinner: '#fff',
-			colorBorder: '#63686e'
+			colorBorder: '#63686e',
+			backgroundScrollIcon: '#fff'
 		},
 
 		header: {
@@ -85,7 +93,8 @@ export const defaultThemeColors = {
 		},
 
 		footer: {
-			background: '#181a1b'
+			background: '#181a1b',
+			borderInputSelected: '#1976d2'
 		},
 
 		content: {
@@ -116,7 +125,8 @@ export const defaultThemeColors = {
 			colorDate: '#9ca6af',
 			backgroundReply: 'rgba(0, 0, 0, 0.18)',
 			colorReplyUsername: '#fff',
-			colorReply: '#d6d6d6'
+			colorReply: '#d6d6d6',
+			backgroundImage: '#ddd'
 		},
 
 		room: {
@@ -163,11 +173,19 @@ export const cssThemeVars = ({
 		'--chat-color': general.color,
 		'--chat-bg-color-input': general.backgroundInput,
 		'--chat-color-spinner': general.colorSpinner,
+		'--chat-color-placeholder': general.colorPlaceholder,
+		'--chat-color-caret': general.colorCaret,
 		'--chat-border-color': general.colorBorder,
+		'--chat-bg-scroll-icon': general.backgroundScrollIcon,
 
-		// layout
+		// header
 		'--chat-header-bg-color': header.background,
+
+		// footer
 		'--chat-bg-color-footer': footer.background,
+		'--chat-border-color-input-selected': footer.borderInputSelected,
+
+		// content
 		'--chat-bg-color-content': content.background,
 
 		// sidemenu
@@ -193,6 +211,7 @@ export const cssThemeVars = ({
 		'--chat-bg-color-message-reply': message.backgroundReply,
 		'--chat-color-message-reply-username': message.colorReplyUsername,
 		'--chat-color-message-reply-content': message.colorReply,
+		'--chat-bg-color-message-image': message.backgroundImage,
 
 		// room
 		'--chat-color-room-username': room.colorUsername,

@@ -361,7 +361,7 @@ export default {
 
 .message-image {
 	position: relative;
-	background-color: #ddd !important;
+	background-color: var(--chat-bg-color-message-image) !important;
 	background-size: cover !important;
 	background-position: center center !important;
 	background-repeat: no-repeat !important;

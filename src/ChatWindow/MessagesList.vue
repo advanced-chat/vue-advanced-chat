@@ -462,7 +462,7 @@ export default {
 	bottom: 80px;
 	right: 20px;
 	padding: 8px;
-	background: #fff;
+	background: var(--chat-bg-scroll-icon);
 	border-radius: 50%;
 	box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
 		0 1px 2px 0 rgba(0, 0, 0, 0.12);
@@ -542,17 +542,17 @@ textarea {
 	width: 100%;
 	resize: none;
 	height: 32px;
-	caret-color: #1976d2;
+	caret-color: var(--chat-color-caret);
 	border: none;
 	font-size: 16px;
 
 	&::placeholder {
-		color: #9ca6af;
+		color: var(--chat-color-placeholder);
 	}
 }
 
 .textarea-outline {
-	box-shadow: inset 0px 0px 0px 1px #1976d2;
+	box-shadow: inset 0px 0px 0px 1px var(--chat-border-color-input-selected);
 }
 
 .icon-textarea {
