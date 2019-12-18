@@ -6,7 +6,7 @@ export const defaultThemeColors = {
 			colorPlaceholder: '#9ca6af',
 			colorCaret: '#1976d2',
 			colorSpinner: '#333',
-			colorBorder: '#d3dde7',
+			borderStyle: '1px solid #d3dde7',
 			backgroundScrollIcon: '#fff'
 		},
 
@@ -27,7 +27,8 @@ export const defaultThemeColors = {
 			background: '#fff',
 			backgroundHover: '#f6f6f6',
 			backgroundActive: '#e5effa',
-			colorActive: '#1976d2'
+			colorActive: '#1976d2',
+			borderColorSearch: '#e1e5e8'
 		},
 
 		dropdown: {
@@ -84,7 +85,7 @@ export const defaultThemeColors = {
 			colorPlaceholder: '#596269',
 			colorCaret: '#1976d2',
 			colorSpinner: '#fff',
-			colorBorder: '#63686e',
+			borderStyle: 'none',
 			backgroundScrollIcon: '#fff'
 		},
 
@@ -93,7 +94,7 @@ export const defaultThemeColors = {
 		},
 
 		footer: {
-			background: '#181a1b',
+			background: '#131415',
 			borderInputSelected: '#1976d2'
 		},
 
@@ -105,7 +106,8 @@ export const defaultThemeColors = {
 			background: '#181a1b',
 			backgroundHover: '#202224',
 			backgroundActive: '#151617',
-			colorActive: '#fff'
+			colorActive: '#fff',
+			borderColorSearch: '#181a1b'
 		},
 
 		dropdown: {
@@ -136,7 +138,7 @@ export const defaultThemeColors = {
 		},
 
 		icons: {
-			search: '#9ca6af',
+			search: '#596269',
 			add: '#fff',
 			menu: '#fff',
 			close: '#9ca6af',
@@ -175,7 +177,7 @@ export const cssThemeVars = ({
 		'--chat-color-spinner': general.colorSpinner,
 		'--chat-color-placeholder': general.colorPlaceholder,
 		'--chat-color-caret': general.colorCaret,
-		'--chat-border-color': general.colorBorder,
+		'--chat-border-style': general.borderStyle,
 		'--chat-bg-scroll-icon': general.backgroundScrollIcon,
 
 		// header
@@ -193,6 +195,7 @@ export const cssThemeVars = ({
 		'--chat-sidemenu-bg-color-hover': sidemenu.backgroundHover,
 		'--chat-sidemenu-bg-color-active': sidemenu.backgroundActive,
 		'--chat-sidemenu-color-active': sidemenu.colorActive,
+		'--chat-sidemenu-border-color-search': sidemenu.borderColorSearch,
 
 		// dropdown
 		'--chat-dropdown-bg-color': dropdown.background,

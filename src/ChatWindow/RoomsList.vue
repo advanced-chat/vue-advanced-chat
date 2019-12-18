@@ -8,7 +8,6 @@
 				type="text"
 				:placeholder="textMessages.SEARCH"
 				autocomplete="off"
-				class="rooms-search"
 				@input="searchRoom"
 			/>
 			<div class="svg-button" @click="addRoom">
@@ -112,19 +111,6 @@ export default {
 	position: relative;
 }
 
-.rooms-search {
-	width: 100%;
-	font-size: 16px;
-	outline: 0;
-	caret-color: var(--chat-color-caret);
-	border: none;
-	padding: 10px;
-
-	&::placeholder {
-		color: var(--chat-color-placeholder);
-	}
-}
-
 .box-search {
 	display: flex;
 	align-items: center;
@@ -134,13 +120,32 @@ export default {
 
 .icon-search {
 	display: flex;
+	position: absolute;
+	left: 30px;
+	margin-top: 1px;
+
+	svg {
+		width: 22px;
+		height: 22px;
+	}
 }
 
 input {
 	background: var(--chat-bg-color-input);
 	color: var(--chat-color);
 	border-radius: 4px;
-	margin: 0 10px;
+	margin-right: 20px;
+	width: 100%;
+	font-size: 15px;
+	outline: 0;
+	caret-color: var(--chat-color-caret);
+	padding: 10px 10px 10px 38px;
+	border: 1px solid var(--chat-sidemenu-border-color-search);
+	border-radius: 20px;
+
+	&::placeholder {
+		color: var(--chat-color-placeholder);
+	}
 }
 
 .rooms-empty {

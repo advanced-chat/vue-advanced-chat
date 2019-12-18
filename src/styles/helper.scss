@@ -1,19 +1,17 @@
-$borderStyle: 1px solid var(--chat-border-color);
-
 .app-border {
-	border: $borderStyle;
+	border: var(--chat-border-style);
 }
 
 .app-border-t {
-	border-top: $borderStyle;
+	border-top: var(--chat-border-style);
 }
 
 .app-border-r {
-	border-right: $borderStyle;
+	border-right: var(--chat-border-style);
 }
 
 .app-border-b {
-	border-bottom: $borderStyle;
+	border-bottom: var(--chat-border-style);
 }
 
 .vertical-center {
