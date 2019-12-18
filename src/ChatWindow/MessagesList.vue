@@ -21,7 +21,6 @@
 							<div class="menu-item" @click="menuActionHandler(action)">
 								{{ action.title }}
 							</div>
-							<hr class="menu-divider" />
 						</div>
 					</div>
 				</div>
@@ -504,7 +503,7 @@ export default {
 	.reply-box {
 		width: 100%;
 		overflow: hidden;
-		background: var(--chat-message-bg-color-reply);
+		background: var(--chat-footer-bg-color-reply);
 		border-radius: 4px;
 		padding: 8px 10px;
 	}

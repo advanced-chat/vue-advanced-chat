@@ -16,7 +16,8 @@ export const defaultThemeColors = {
 
 		footer: {
 			background: '#f0f0f0',
-			borderInputSelected: '#1976d2'
+			borderInputSelected: '#1976d2',
+			backgroundReply: 'rgba(0, 0, 0, 0.08)'
 		},
 
 		content: {
@@ -95,7 +96,8 @@ export const defaultThemeColors = {
 
 		footer: {
 			background: '#131415',
-			borderInputSelected: '#1976d2'
+			borderInputSelected: '#1976d2',
+			backgroundReply: '#1b1c1c'
 		},
 
 		content: {
@@ -117,13 +119,13 @@ export const defaultThemeColors = {
 
 		message: {
 			background: '#22242a',
-			backgroundMe: '#1F87EC',
+			backgroundMe: '#4fb381',
 			color: '#fff',
 			backgroundDeleted: '#1b1c21',
-			colorDeleted: '#dadfe2',
+			colorDeleted: '#a2a5a8',
 			colorUsername: '#b3bac9',
 			colorTimestamp: '#ebedf2',
-			backgroundDate: 'rgba(0, 0, 0, 0.2)',
+			backgroundDate: 'rgba(0, 0, 0, 0.1)',
 			colorDate: '#9ca6af',
 			backgroundReply: 'rgba(0, 0, 0, 0.18)',
 			colorReplyUsername: '#fff',
@@ -133,8 +135,8 @@ export const defaultThemeColors = {
 
 		room: {
 			colorUsername: '#fff',
-			colorMessage: '#a2aeb8',
-			colorTimestamp: '#67717a'
+			colorMessage: '#6c7278',
+			colorTimestamp: '#6c7278'
 		},
 
 		icons: {
@@ -186,6 +188,7 @@ export const cssThemeVars = ({
 		// footer
 		'--chat-footer-bg-color': footer.background,
 		'--chat-border-color-input-selected': footer.borderInputSelected,
+		'--chat-footer-bg-color-reply': footer.backgroundReply,
 
 		// content
 		'--chat-content-bg-color': content.background,
@@ -202,7 +205,6 @@ export const cssThemeVars = ({
 		'--chat-dropdown-bg-color-hover': dropdown.backgroundHover,
 
 		// message
-		// '--chat-bg-color-message-image': message.backgroundImage,
 		'--chat-message-bg-color': message.background,
 		'--chat-message-bg-color-me': message.backgroundMe,
 		'--chat-message-bg-color-deleted': message.backgroundDeleted,

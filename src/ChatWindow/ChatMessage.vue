@@ -126,7 +126,6 @@
 									<div class="menu-item" @click="messageActionHandler(action)">
 										{{ action.title }}
 									</div>
-									<hr class="menu-divider" />
 								</div>
 							</div>
 						</div>
@@ -321,7 +320,7 @@ export default {
 .message-card {
 	background: var(--chat-message-bg-color);
 	color: var(--chat-message-color);
-	border-radius: 4px;
+	border-radius: 8px;
 	font-size: 14px;
 	padding: 6px 9px 3px;
 	white-space: pre-wrap;
