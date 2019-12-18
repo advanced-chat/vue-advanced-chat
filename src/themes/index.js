@@ -6,7 +6,7 @@ export const defaultThemeColors = {
 			colorPlaceholder: '#9ca6af',
 			colorCaret: '#1976d2',
 			colorSpinner: '#333',
-			borderStyle: '1px solid #d3dde7',
+			borderStyle: '1px solid #e1e4e8',
 			backgroundScrollIcon: '#fff'
 		},
 

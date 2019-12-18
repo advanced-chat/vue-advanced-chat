@@ -1,6 +1,6 @@
 <template>
 	<div class="rooms-container app-border-r">
-		<div class="box-search app-border-b">
+		<div class="box-search">
 			<div class="icon-search">
 				<svg-icon name="search" />
 			</div>
@@ -23,30 +23,28 @@
 
 		<!-- :class="{ 'room-disabled': loadingMessages }" -->
 		<div v-if="!loadingRooms" class="room-list">
-			<div class="room-group">
+			<div
+				class="room-item"
+				v-for="room in filteredRooms"
+				:key="room.roomId"
+				:class="{ 'room-selected': selectedRoomId === room.roomId }"
+				@click="openRoom(room)"
+			>
 				<div
-					class="room-item"
-					v-for="room in filteredRooms"
-					:key="room.roomId"
-					:class="{ 'room-selected': selectedRoomId === room.roomId }"
-					@click="openRoom(room)"
-				>
-					<div
-						v-if="room.avatar"
-						class="room-avatar"
-						:style="{ background: `url(${room.avatar})` }"
-					></div>
-					<div class="name-container">
-						<div class="room-name">{{ room.roomName }}</div>
-						<div class="room-name text-last" v-if="room.lastMessage">
-							<span v-if="room.lastMessage.seen">
-								<svg-icon name="checkmark" class="icon-check" />
-							</span>
-							<span>{{ room.lastMessage.content }}</span>
-						</div>
-						<div class="room-name text-date" v-if="room.lastMessage">
-							{{ room.lastMessage.timestamp }}
-						</div>
+					v-if="room.avatar"
+					class="room-avatar"
+					:style="{ background: `url(${room.avatar})` }"
+				></div>
+				<div class="name-container">
+					<div class="room-name">{{ room.roomName }}</div>
+					<div class="room-name text-last" v-if="room.lastMessage">
+						<span v-if="room.lastMessage.seen">
+							<svg-icon name="checkmark" class="icon-check" />
+						</span>
+						<span>{{ room.lastMessage.content }}</span>
+					</div>
+					<div class="room-name text-date" v-if="room.lastMessage">
+						{{ room.lastMessage.timestamp }}
 					</div>
 				</div>
 			</div>
@@ -116,6 +114,7 @@ export default {
 	align-items: center;
 	height: 64px;
 	padding: 0 20px;
+	margin-top: 5px;
 }
 
 .icon-search {
@@ -156,29 +155,37 @@ input {
 	margin: 40px 0;
 }
 
-.rooms-list {
-	display: block;
-	position: static;
-}
-
-.room-group {
+.room-list {
 	-webkit-box-flex: 0;
 	flex: 0 1 auto;
 	position: relative;
 	max-width: 100%;
-	background: var(--chat-text-color);
 	cursor: pointer;
+	padding: 5px 10px;
+}
 
-	:not(:hover) {
-		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-	}
+.room-item {
+	border-radius: 8px;
+	-webkit-box-align: center;
+	align-items: center;
+	display: -webkit-box;
+	-webkit-box-flex: 1;
+	flex: 1 1 100%;
+	margin-bottom: 5px;
+	padding: 0 16px;
+	position: relative;
+	min-height: 71px;
+}
 
-	:hover {
-		background: var(--chat-sidemenu-bg-color-hover);
-		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-	}
+.room-item:hover {
+	background: var(--chat-sidemenu-bg-color-hover);
+	-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+	transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+}
+
+.room-item:not(:hover) {
+	-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+	transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 }
 
 .room-selected {
@@ -188,18 +195,6 @@ input {
 	:hover {
 		background: var(--chat-sidemenu-bg-color-active);
 	}
-}
-
-.room-item {
-	border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-	-webkit-box-align: center;
-	align-items: center;
-	display: -webkit-box;
-	-webkit-box-flex: 1;
-	flex: 1 1 100%;
-	padding: 0 16px;
-	position: relative;
-	min-height: 71px;
 }
 
 .name-container {
