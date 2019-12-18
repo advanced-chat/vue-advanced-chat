@@ -438,7 +438,7 @@ export default {
 }
 
 .container-scroll {
-	background: var(--chat-bg-color-content);
+	background: var(--chat-content-bg-color);
 	height: calc(100% - 120px);
 	overflow-y: auto;
 	margin-right: 1px;
@@ -485,7 +485,7 @@ export default {
 
 .box-footer {
 	display: flex;
-	background: var(--chat-bg-color-footer);
+	background: var(--chat-footer-bg-color);
 	padding: 8px;
 
 	* {
@@ -496,7 +496,7 @@ export default {
 .reply-container {
 	display: flex;
 	padding: 10px 10px 0;
-	background: var(--chat-bg-color-footer);
+	background: var(--chat-footer-bg-color);
 	z-index: -1;
 	align-items: center;
 	max-width: 100%;
@@ -504,13 +504,13 @@ export default {
 	.reply-box {
 		width: 100%;
 		overflow: hidden;
-		background: var(--chat-bg-color-message-reply);
+		background: var(--chat-message-bg-color-reply);
 		border-radius: 4px;
 		padding: 8px 10px;
 	}
 
 	.reply-username {
-		color: var(--chat-color-message-reply-username);
+		color: var(--chat-message-color-reply-username);
 		font-size: 12px;
 		line-height: 15px;
 		margin-bottom: 2px;
@@ -518,7 +518,7 @@ export default {
 
 	.reply-content {
 		font-size: 12px;
-		color: var(--chat-color-message-reply-content);
+		color: var(--chat-message-color-reply-content);
 	}
 
 	.icon-reply {

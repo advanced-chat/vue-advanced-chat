@@ -155,7 +155,7 @@ export default {
 	border-radius: 4px;
 	display: block;
 	max-width: 100%;
-	background: var(--chat-bg-color);
+	background: var(--chat-sidemenu-bg-color);
 	color: var(--chat-color);
 	overflow-wrap: break-word;
 	position: relative;

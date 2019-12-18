@@ -288,8 +288,8 @@ export default {
 	font-size: 12px;
 	text-transform: uppercase;
 	padding: 4px;
-	color: var(--chat-color-message-date);
-	background: var(--chat-bg-color-message-date);
+	color: var(--chat-message-color-date);
+	background: var(--chat-message-bg-color-date);
 	display: block;
 	overflow-wrap: break-word;
 	position: relative;
@@ -319,8 +319,8 @@ export default {
 }
 
 .message-card {
-	background: var(--chat-bg-color-message);
-	color: var(--chat-color-message-text);
+	background: var(--chat-message-bg-color);
+	color: var(--chat-message-color);
 	border-radius: 4px;
 	font-size: 14px;
 	padding: 6px 9px 3px;
@@ -344,14 +344,14 @@ export default {
 }
 
 .message-current {
-	background: var(--chat-bg-color-message-me) !important;
+	background: var(--chat-message-bg-color-me) !important;
 }
 
 .message-deleted {
-	color: var(--chat-color-message-deleted) !important;
+	color: var(--chat-message-color-deleted) !important;
 	font-size: 13px !important;
 	font-style: italic !important;
-	background: var(--chat-bg-color-message-deleted) !important;
+	background: var(--chat-message-bg-color-deleted) !important;
 }
 
 .image-container {
@@ -361,7 +361,7 @@ export default {
 
 .message-image {
 	position: relative;
-	background-color: var(--chat-bg-color-message-image) !important;
+	background-color: var(--chat-message-bg-color-image) !important;
 	background-size: cover !important;
 	background-position: center center !important;
 	background-repeat: no-repeat !important;
@@ -377,13 +377,13 @@ export default {
 }
 
 .reply-message {
-	background: var(--chat-bg-color-message-reply);
+	background: var(--chat-message-bg-color-reply);
 	border-radius: 4px;
 	margin: -1px -5px 8px;
 	padding: 8px 10px;
 
 	.reply-username {
-		color: var(--chat-color-message-reply-username);
+		color: var(--chat-message-color-reply-username);
 		font-size: 12px;
 		line-height: 15px;
 		margin-bottom: 2px;
@@ -391,13 +391,13 @@ export default {
 
 	.reply-content {
 		font-size: 12px;
-		color: var(--chat-color-message-reply-content);
+		color: var(--chat-message-color-reply-content);
 	}
 }
 
 .text-username {
 	font-size: 13px;
-	color: var(--chat-color-message-username);
+	color: var(--chat-message-color-username);
 	margin-bottom: 2px;
 }
 
@@ -407,7 +407,7 @@ export default {
 
 .text-timestamp {
 	font-size: 10px;
-	color: var(--chat-color-message-timestamp);
+	color: var(--chat-message-color-timestamp);
 	text-align: right;
 }
 

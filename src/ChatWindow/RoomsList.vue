@@ -170,18 +170,18 @@ input {
 	}
 
 	:hover {
-		background: var(--chat-bg-color-hover);
+		background: var(--chat-sidemenu-bg-color-hover);
 		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 	}
 }
 
 .room-selected {
-	color: var(--chat-color-active) !important;
-	background: var(--chat-bg-color-active) !important;
+	color: var(--chat-sidemenu-color-active) !important;
+	background: var(--chat-sidemenu-bg-color-active) !important;
 
 	:hover {
-		background: var(--chat-bg-color-active);
+		background: var(--chat-sidemenu-bg-color-active);
 	}
 }
 
@@ -217,16 +217,17 @@ input {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	line-height: 22px;
+	color: var(--chat-room-color-username);
 }
 
 .text-last {
-	color: var(--chat-color-room-last) !important;
+	color: var(--chat-room-color-message) !important;
 	font-size: 12px;
 	line-height: 16px;
 }
 
 .text-date {
-	color: var(--chat-color-room-timestamp) !important;
+	color: var(--chat-room-color-timestamp) !important;
 	font-size: 11px;
 	line-height: 16px;
 }

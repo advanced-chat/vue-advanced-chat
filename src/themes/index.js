@@ -3,7 +3,7 @@ export const defaultThemeColors = {
 		general: {
 			color: '#0a0a0a',
 			backgroundInput: '#fff',
-			colorPlaceholder: '#0a0a0a',
+			colorPlaceholder: '#9ca6af',
 			colorCaret: '#1976d2',
 			colorSpinner: '#333',
 			colorBorder: '#d3dde7',
@@ -81,7 +81,7 @@ export const defaultThemeColors = {
 		general: {
 			color: '#fff',
 			backgroundInput: '#202223',
-			colorPlaceholder: '#fff',
+			colorPlaceholder: '#596269',
 			colorCaret: '#1976d2',
 			colorSpinner: '#fff',
 			colorBorder: '#63686e',
@@ -103,7 +103,7 @@ export const defaultThemeColors = {
 
 		sidemenu: {
 			background: '#181a1b',
-			backgroundHover: '#202024',
+			backgroundHover: '#202224',
 			backgroundActive: '#151617',
 			colorActive: '#fff'
 		},
@@ -182,41 +182,42 @@ export const cssThemeVars = ({
 		'--chat-header-bg-color': header.background,
 
 		// footer
-		'--chat-bg-color-footer': footer.background,
+		'--chat-footer-bg-color': footer.background,
 		'--chat-border-color-input-selected': footer.borderInputSelected,
 
 		// content
-		'--chat-bg-color-content': content.background,
+		'--chat-content-bg-color': content.background,
 
 		// sidemenu
-		'--chat-bg-color': sidemenu.background,
-		'--chat-bg-color-hover': sidemenu.backgroundHover,
-		'--chat-bg-color-active': sidemenu.backgroundActive,
-		'--chat-color-active': sidemenu.colorActive,
+		'--chat-sidemenu-bg-color': sidemenu.background,
+		'--chat-sidemenu-bg-color-hover': sidemenu.backgroundHover,
+		'--chat-sidemenu-bg-color-active': sidemenu.backgroundActive,
+		'--chat-sidemenu-color-active': sidemenu.colorActive,
 
 		// dropdown
-		'--chat-bg-menu': dropdown.background,
-		'--chat-bg-menu-hover': dropdown.backgroundHover,
+		'--chat-dropdown-bg-color': dropdown.background,
+		'--chat-dropdown-bg-color-hover': dropdown.backgroundHover,
 
 		// message
-		'--chat-bg-color-message': message.background,
-		'--chat-bg-color-message-me': message.backgroundMe,
-		'--chat-bg-color-message-deleted': message.backgroundDeleted,
-		'--chat-color-message-deleted': message.colorDeleted,
-		'--chat-color-message-username': message.colorUsername,
-		'--chat-color-message-timestamp': message.colorTimestamp,
-		'--chat-bg-color-message-date': message.backgroundDate,
-		'--chat-color-message-date': message.colorDate,
-		'--chat-color-message-text': message.color,
-		'--chat-bg-color-message-reply': message.backgroundReply,
-		'--chat-color-message-reply-username': message.colorReplyUsername,
-		'--chat-color-message-reply-content': message.colorReply,
-		'--chat-bg-color-message-image': message.backgroundImage,
+		// '--chat-bg-color-message-image': message.backgroundImage,
+		'--chat-message-bg-color': message.background,
+		'--chat-message-bg-color-me': message.backgroundMe,
+		'--chat-message-bg-color-deleted': message.backgroundDeleted,
+		'--chat-message-color-deleted': message.colorDeleted,
+		'--chat-message-color-username': message.colorUsername,
+		'--chat-message-color-timestamp': message.colorTimestamp,
+		'--chat-message-bg-color-date': message.backgroundDate,
+		'--chat-message-color-date': message.colorDate,
+		'--chat-message-color': message.color,
+		'--chat-message-bg-color-reply': message.backgroundReply,
+		'--chat-message-color-reply-username': message.colorReplyUsername,
+		'--chat-message-color-reply-content': message.colorReply,
+		'--chat-message-bg-color-image': message.backgroundImage,
 
 		// room
-		'--chat-color-room-username': room.colorUsername,
-		'--chat-color-room-last': room.colorMessage,
-		'--chat-color-room-timestamp': room.colorTimestamp,
+		'--chat-room-color-username': room.colorUsername,
+		'--chat-room-color-message': room.colorMessage,
+		'--chat-room-color-timestamp': room.colorTimestamp,
 
 		// icons
 		'--chat-icon-color-search': icons.search,
