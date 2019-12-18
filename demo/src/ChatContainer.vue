@@ -257,7 +257,7 @@ export default {
 			const date = new Date(message.timestamp.seconds * 1000)
 			const timestampFormat = isSameDay(date, new Date())
 				? 'HH:mm'
-				: 'DD MMMM YYYY'
+				: 'DD/MM/YY'
 
 			let timestamp = parseTimestamp(message.timestamp, timestampFormat)
 			if (timestampFormat === 'HH:mm') timestamp = 'Today, ' + timestamp

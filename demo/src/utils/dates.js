@@ -10,6 +10,9 @@ export const parseTimestamp = (timestamp, format = '') => {
 	} else if (format === 'DD MMMM YYYY') {
 		const options = { month: 'long', year: 'numeric', day: 'numeric' }
 		return `${new Intl.DateTimeFormat('en-GB', options).format(date)}`
+	} else if (format === 'DD/MM/YY') {
+		const options = { month: 'numeric', year: 'numeric', day: 'numeric' }
+		return `${new Intl.DateTimeFormat('en-GB', options).format(date)}`
 	}
 	return date
 }

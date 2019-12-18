@@ -36,15 +36,17 @@
 					:style="{ background: `url(${room.avatar})` }"
 				></div>
 				<div class="name-container">
-					<div class="room-name">{{ room.roomName }}</div>
+					<div class="title-container">
+						<div class="room-name">{{ room.roomName }}</div>
+						<div class="room-name text-date" v-if="room.lastMessage">
+							{{ room.lastMessage.timestamp }}
+						</div>
+					</div>
 					<div class="room-name text-last" v-if="room.lastMessage">
 						<span v-if="room.lastMessage.seen">
 							<svg-icon name="checkmark" class="icon-check" />
 						</span>
 						<span>{{ room.lastMessage.content }}</span>
-					</div>
-					<div class="room-name text-date" v-if="room.lastMessage">
-						{{ room.lastMessage.timestamp }}
 					</div>
 				</div>
 			</div>
@@ -175,61 +177,57 @@ input {
 	padding: 0 16px;
 	position: relative;
 	min-height: 71px;
-}
 
-.room-item:hover {
-	background: var(--chat-sidemenu-bg-color-hover);
-	-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-	transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-}
+	&:hover {
+		background: var(--chat-sidemenu-bg-color-hover);
+		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+	}
 
-.room-item:not(:hover) {
-	-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-	transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+	&:not(:hover) {
+		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+	}
 }
 
 .room-selected {
 	color: var(--chat-sidemenu-color-active) !important;
 	background: var(--chat-sidemenu-bg-color-active) !important;
 
-	:hover {
-		background: var(--chat-sidemenu-bg-color-active);
+	&:hover {
+		background: var(--chat-sidemenu-bg-color-active) !important;
 	}
 }
 
 .name-container {
-	-webkit-box-align: center;
-	align-items: center;
-	align-self: center;
-	display: -webkit-box;
-	display: flex;
-	flex-wrap: wrap;
-	-webkit-box-flex: 1;
 	flex: 1 1;
-	overflow: hidden;
-	padding: 8px 0;
+}
+
+.title-container {
+	display: flex;
+	align-items: center;
 }
 
 .room-name {
-	-webkit-box-flex: 1;
-	flex: 1 1 100%;
+	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	flex: 1;
 	white-space: nowrap;
-	line-height: 22px;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	color: var(--chat-room-color-username);
 }
 
 .text-last {
-	color: var(--chat-room-color-message) !important;
+	color: var(--chat-room-color-message);
 	font-size: 12px;
-	line-height: 16px;
 }
 
 .text-date {
-	color: var(--chat-room-color-timestamp) !important;
+	color: var(--chat-room-color-timestamp);
 	font-size: 11px;
-	line-height: 16px;
+	text-align: right;
 }
 
 .room-disabled {
