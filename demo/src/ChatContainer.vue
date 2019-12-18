@@ -268,7 +268,9 @@ export default {
 				content,
 				timestamp,
 				seen: message.sender_id === this.currentUserId ? message.seen : null,
-				new: message.sender_id !== this.currentUserId && !message.seen
+				new:
+					message.sender_id !== this.currentUserId &&
+					(!message.seen || !message.seen[this.currentUserId])
 			}
 		},
 
@@ -323,15 +325,16 @@ export default {
 
 		markMessagesSeen(room, message) {
 			if (
-				room.users.length === 2 &&
-				!message.data().seen &&
-				message.data().sender_id !== this.currentUserId
+				message.data().sender_id !== this.currentUserId &&
+				(!message.data().seen || !message.data().seen[this.currentUserId])
 			) {
 				roomsRef
 					.doc(room.roomId)
 					.collection('messages')
 					.doc(message.id)
-					.update({ seen: new Date() })
+					.update({
+						[`seen.${this.currentUserId}`]: new Date()
+					})
 			}
 		},
 
