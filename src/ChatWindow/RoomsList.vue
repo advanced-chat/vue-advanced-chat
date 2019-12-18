@@ -42,10 +42,15 @@
 							{{ room.lastMessage.timestamp }}
 						</div>
 					</div>
-					<div class="room-name text-last" v-if="room.lastMessage">
+					<div
+						class="room-name text-last"
+						:class="{ 'message-new': room.lastMessage.new }"
+						v-if="room.lastMessage"
+					>
 						<span v-if="room.lastMessage.seen">
 							<svg-icon name="checkmark" class="icon-check" />
 						</span>
+						<span v-if="room.lastMessage.new" class="dot-new"></span>
 						<span>{{ room.lastMessage.content }}</span>
 					</div>
 				</div>
@@ -222,6 +227,19 @@ input {
 .text-last {
 	color: var(--chat-room-color-message);
 	font-size: 12px;
+}
+
+.message-new {
+	color: var(--chat-room-color-username);
+}
+
+.dot-new {
+	height: 8px;
+	width: 8px;
+	background-color: var(--chat-room-color-new-dot);
+	border-radius: 50%;
+	display: inline-block;
+	margin: 0 5px 0 0;
 }
 
 .text-date {

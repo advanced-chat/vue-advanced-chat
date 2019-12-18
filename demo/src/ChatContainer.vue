@@ -267,7 +267,8 @@ export default {
 			return {
 				content,
 				timestamp,
-				seen: message.sender_id === this.currentUserId ? message.seen : null
+				seen: message.sender_id === this.currentUserId ? message.seen : null,
+				new: message.sender_id !== this.currentUserId && !message.seen
 			}
 		},
 
