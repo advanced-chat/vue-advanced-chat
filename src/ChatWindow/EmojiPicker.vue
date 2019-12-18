@@ -81,14 +81,10 @@ export default {
 .regular-input {
 	padding: 0.5rem 1rem;
 	border-radius: 3px;
-	border: 1px solid #ccc;
+	border: var(--chat-border-style);
 	width: 20rem;
 	height: 12rem;
 	outline: none;
-}
-
-.regular-input:focus {
-	box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
 }
 
 .emoji-picker {
@@ -96,15 +92,14 @@ export default {
 	bottom: 50px;
 	right: 10px;
 	z-index: 1;
-	border: 1px solid #ccc;
+	border: var(--chat-border-style);
 	width: 15rem;
 	height: 20rem;
 	overflow: scroll;
 	padding: 1rem;
 	box-sizing: border-box;
 	border-radius: 0.5rem;
-	background: #fff;
-	box-shadow: 1px 1px 8px #c7dbe6;
+	background: var(--chat-emoji-bg-color);
 }
 
 .emoji-picker__search {
@@ -114,9 +109,11 @@ export default {
 .emoji-picker__search > input {
 	flex: 1;
 	border-radius: 10rem;
-	border: 1px solid #ccc;
+	border: var(--chat-border-style);
 	padding: 0.5rem 1rem;
 	outline: none;
+	background: var(--chat-bg-color-input);
+	color: var(--chat-color);
 }
 
 .emoji-picker h5 {
@@ -145,7 +142,7 @@ export default {
 }
 
 .emoji-picker .emojis span:hover {
-	background: #ececec;
+	background: var(--chat-sidemenu-bg-color-hover);
 	cursor: pointer;
 }
 </style>

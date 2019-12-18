@@ -59,6 +59,10 @@ export const defaultThemeColors = {
 			colorTimestamp: '#a2aeb8'
 		},
 
+		emoji: {
+			background: '#fff',
+		},
+
 		icons: {
 			search: '#9ca6af',
 			add: '#1976d2',
@@ -139,6 +143,10 @@ export const defaultThemeColors = {
 			colorTimestamp: '#6c7278'
 		},
 
+		emoji: {
+			background: '#343740',
+		},
+
 		icons: {
 			search: '#596269',
 			add: '#fff',
@@ -170,6 +178,7 @@ export const cssThemeVars = ({
 	dropdown,
 	message,
 	room,
+	emoji,
 	icons
 }) => {
 	return {
@@ -223,6 +232,9 @@ export const cssThemeVars = ({
 		'--chat-room-color-username': room.colorUsername,
 		'--chat-room-color-message': room.colorMessage,
 		'--chat-room-color-timestamp': room.colorTimestamp,
+
+		// emoji
+		'--chat-emoji-bg-color': emoji.background,
 
 		// icons
 		'--chat-icon-color-search': icons.search,
