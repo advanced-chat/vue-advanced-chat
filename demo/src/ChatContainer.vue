@@ -255,9 +255,7 @@ export default {
 		formatLastMessage(message) {
 			if (!message.timestamp) return
 			const date = new Date(message.timestamp.seconds * 1000)
-			const timestampFormat = isSameDay(date, new Date())
-				? 'HH:mm'
-				: 'DD/MM/YY'
+			const timestampFormat = isSameDay(date, new Date()) ? 'HH:mm' : 'DD/MM/YY'
 
 			let timestamp = parseTimestamp(message.timestamp, timestampFormat)
 			if (timestampFormat === 'HH:mm') timestamp = 'Today, ' + timestamp
@@ -266,7 +264,11 @@ export default {
 			if (message.file) content = `${message.file.name}.${message.file.type}`
 			if (message.deleted) content = 'This message was deleted'
 
-			return { content, timestamp, seen: message.seen }
+			return {
+				content,
+				timestamp,
+				seen: message.sender_id === this.currentUserId ? message.seen : null
+			}
 		},
 
 		fetchMessages({ room, options = {} }) {
