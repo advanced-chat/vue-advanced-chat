@@ -50,7 +50,10 @@
 					</div>
 
 					<div class="image-container" v-else-if="isImage">
-						<chat-loader :show="isImageLoading"></chat-loader>
+						<chat-loader
+							style="height: 220px"
+							:show="isImageLoading"
+						></chat-loader>
 						<div
 							class="message-image"
 							:class="{
