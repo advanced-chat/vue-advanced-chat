@@ -114,6 +114,7 @@ export default {
 	flex: 0 0 25%;
 	max-width: 25%;
 	position: relative;
+	background: var(--chat-sidemenu-bg-color);
 }
 
 .box-search {
