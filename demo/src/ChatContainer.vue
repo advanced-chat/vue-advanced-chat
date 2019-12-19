@@ -121,6 +121,9 @@ export default {
 	},
 
 	methods: {
+		messagesRef(roomId) {
+			return roomsRef.doc(roomId).collection('messages')
+		},
 		resetRooms() {
 			this.loadingRooms = true
 			this.rooms = []
@@ -223,9 +226,7 @@ export default {
 		},
 
 		getLastMessage(room) {
-			return roomsRef
-				.doc(room.id)
-				.collection('messages')
+			return this.messagesRef(room.id)
 				.orderBy('timestamp', 'desc')
 				.limit(1)
 				.get()
@@ -237,9 +238,7 @@ export default {
 		},
 
 		listenLastMessage(room, index) {
-			const listener = roomsRef
-				.doc(room.roomId)
-				.collection('messages')
+			const listener = this.messagesRef(room.roomId)
 				.orderBy('timestamp', 'desc')
 				.limit(1)
 				.onSnapshot(messages => {
@@ -279,7 +278,7 @@ export default {
 
 			if (this.end && !this.start) return (this.messagesLoaded = true)
 
-			let ref = roomsRef.doc(room.roomId).collection('messages')
+			let ref = this.messagesRef(room.roomId)
 
 			let query = ref.orderBy('timestamp', 'desc').limit(this.perPage)
 
@@ -328,9 +327,7 @@ export default {
 				message.data().sender_id !== this.currentUserId &&
 				(!message.data().seen || !message.data().seen[this.currentUserId])
 			) {
-				roomsRef
-					.doc(room.roomId)
-					.collection('messages')
+				this.messagesRef(room.roomId)
 					.doc(message.id)
 					.update({
 						[`seen.${this.currentUserId}`]: new Date()
@@ -385,10 +382,7 @@ export default {
 				}
 			}
 
-			const { id } = await roomsRef
-				.doc(roomId)
-				.collection('messages')
-				.add(message)
+			const { id } = await this.messagesRef(roomId).add(message)
 
 			if (file) this.uploadFile({ file, messageId: id, roomId })
 		},
@@ -412,17 +406,13 @@ export default {
 				newMessage.file = deleteDbField
 			}
 
-			await roomsRef
-				.doc(roomId)
-				.collection('messages')
+			await this.messagesRef(roomId)
 				.doc(messageId)
 				.update(newMessage)
 		},
 
 		async deleteMessage({ messageId, roomId }) {
-			await roomsRef
-				.doc(roomId)
-				.collection('messages')
+			await this.messagesRef(roomId)
 				.doc(messageId)
 				.update({ deleted: new Date() })
 		},
@@ -436,9 +426,7 @@ export default {
 			await uploadFileRef.put(file.blob, { contentType: file.type })
 			const url = await uploadFileRef.getDownloadURL()
 
-			await roomsRef
-				.doc(roomId)
-				.collection('messages')
+			await this.messagesRef(roomId)
 				.doc(messageId)
 				.update({
 					['file.url']: url
@@ -456,7 +444,7 @@ export default {
 			}
 		},
 
-		messageActionHandler({ action, roomId }) {
+		messageActionHandler() {
 			// do something
 		},
 
@@ -516,16 +504,12 @@ export default {
 		},
 
 		async deleteRoom(roomId) {
-			const ref = roomsRef.doc(roomId).collection('messages')
+			const ref = this.messagesRef(roomId)
 
-			roomsRef
-				.doc(roomId)
-				.collection('messages')
-				.get()
-				.then(res => {
-					if (res.empty) return
-					res.docs.map(doc => ref.doc(doc.id).delete())
-				})
+			ref.get().then(res => {
+				if (res.empty) return
+				res.docs.map(doc => ref.doc(doc.id).delete())
+			})
 
 			await roomsRef.doc(roomId).delete()
 
