@@ -278,7 +278,7 @@ export default {
 					height: this.$refs.imageFile.height + 2,
 					width: this.$refs.imageFile.width + 20
 				}
-			}, 20)
+			}, 10)
 		}
 	},
 

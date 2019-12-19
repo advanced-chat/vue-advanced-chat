@@ -51,7 +51,7 @@
 
 					<div class="image-container" v-else-if="isImage">
 						<chat-loader
-							style="height: 220px"
+							class="image-loader"
 							:show="isImageLoading"
 						></chat-loader>
 						<div
@@ -360,6 +360,10 @@ export default {
 .image-container {
 	padding-bottom: 2px;
 	width: 250px;
+}
+
+.image-loader {
+	top: 140px;
 }
 
 .message-image {
