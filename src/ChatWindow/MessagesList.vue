@@ -80,9 +80,10 @@
 							:src="messageReply.file.url"
 							class="image-reply"
 						/>
-
-						<div class="reply-username">{{ messageReply.username }}</div>
-						<div class="reply-content">{{ messageReply.content }}</div>
+						<div class="reply-info">
+							<div class="reply-username">{{ messageReply.username }}</div>
+							<div class="reply-content">{{ messageReply.content }}</div>
+						</div>
 					</div>
 
 					<div class="icon-reply">
@@ -506,6 +507,11 @@ export default {
 		background: var(--chat-footer-bg-color-reply);
 		border-radius: 4px;
 		padding: 8px 10px;
+		display: flex;
+	}
+
+	.reply-info {
+		overflow: hidden;
 	}
 
 	.reply-username {

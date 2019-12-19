@@ -159,7 +159,7 @@ export const defaultThemeColors = {
 			paperclip: '#fff',
 			closeOutline: '#fff',
 			send: '#fff',
-			sendDisabled: '#9ca6af',
+			sendDisabled: '#646a70',
 			emoji: '#fff',
 			document: '#1976d2',
 			pencil: '#ebedf2',
