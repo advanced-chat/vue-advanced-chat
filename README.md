@@ -172,34 +172,71 @@ textMessages="{
 
 ```javascript
 colors="{
-  headerBg: '#fff',
-  sidemenuBg: '#fff',
-  sidemenuBgHover: '#f6f6f6',
-  sidemenuBgActive: '#e5effa',
-  sidemenuColorActive: '#1976d2',
-  menuBg: '#fff',
-  menuBgHover: '#f6f6f6',
-  messagesBg: '#f8f9fa',
-  messageBg: '#fff',
-  messageMeBg: '#ccf2cf',
-  messageDeletedBg: '#dadfe2',
-  messageDeletedColor: '#757e85',
-  messageUsernameColor: '#9ca6af',
-  messageTimestampColor: '#828c94',
-  messageDateBg: 'rgba(33, 148, 243, 0.15)',
-  messageDateColor: '#505a62',
-  messageTextColor: '#0a0a0a',
-  messageReplyBg: 'rgba(0, 0, 0, 0.08)',
-  messageReplyUsernameColor: '#0a0a0a',
-  messageReplyContentColor: '#6e6e6e',
-  roomLastMessage: '#67717a',
-  roomTimestamp: '#a2aeb8',
-  textColor: '#0a0a0a',
-  inputBg: '#fff',
-  footerBg: '#f0f0f0',
-  spinnerColor: '#333',
-  borderColor: '#d3dde7',
-  iconsColor: {
+  general: {
+    color: '#0a0a0a',
+    backgroundInput: '#fff',
+    colorPlaceholder: '#9ca6af',
+    colorCaret: '#1976d2',
+    colorSpinner: '#333',
+    borderStyle: '1px solid #e1e4e8',
+    backgroundScrollIcon: '#fff'
+  },
+
+  header: {
+    background: '#fff'
+  },
+
+  footer: {
+    background: '#f0f0f0',
+    borderInputSelected: '#1976d2',
+    backgroundReply: 'rgba(0, 0, 0, 0.08)'
+  },
+
+  content: {
+    background: '#f8f9fa'
+  },
+
+  sidemenu: {
+    background: '#fff',
+    backgroundHover: '#f6f6f6',
+    backgroundActive: '#e5effa',
+    colorActive: '#1976d2',
+    borderColorSearch: '#e1e5e8'
+  },
+
+  dropdown: {
+    background: '#fff',
+    backgroundHover: '#f6f6f6'
+  },
+
+  message: {
+    background: '#fff',
+    backgroundMe: '#ccf2cf',
+    color: '#0a0a0a',
+    backgroundDeleted: '#dadfe2',
+    colorDeleted: '#757e85',
+    colorUsername: '#9ca6af',
+    colorTimestamp: '#828c94',
+    backgroundDate: '#e5effa',
+    colorDate: '#505a62',
+    backgroundReply: 'rgba(0, 0, 0, 0.08)',
+    colorReplyUsername: '#0a0a0a',
+    colorReply: '#6e6e6e',
+    backgroundImage: '#ddd'
+  },
+
+  room: {
+    colorUsername: '#0a0a0a',
+    colorMessage: '#67717a',
+    colorTimestamp: '#a2aeb8',
+    colorNewDot: '#1976d2'
+  },
+
+  emoji: {
+    background: '#fff'
+  },
+
+  icons: {
     search: '#9ca6af',
     add: '#1976d2',
     menu: '#0a0a0a',
@@ -207,7 +244,7 @@ colors="{
     closeImage: '#fff',
     file: '#1976d2',
     paperclip: '#1976d2',
-    closeOutline: '#1976d2',
+    closeOutline: '#000',
     send: '#1976d2',
     sendDisabled: '#9ca6af',
     emoji: '#1976d2',
@@ -217,7 +254,7 @@ colors="{
     eye: '#fff',
     dropdown: '#fff',
     dropdownScroll: '#0a0a0a'
-		}
+  }
 }"
 ```
 
@@ -232,6 +269,14 @@ rooms="[
   {
     roomId: 1,
     roomName: 'Room 1',
+    lastMessage: {
+      content: 'Last message received',
+      sender_id: 1234,
+      username: 'John Doe',
+      timestamp: '10:20',
+      seen: false,
+      new: true
+    },
     users: [
       {
         _id: 1234,
@@ -259,6 +304,7 @@ messages="[
     username: 'John Doe',
     date: '13 November',
     timestamp: '10:20',
+    seen: true,
     file: {
       name: 'My File',
       size: 67351,
@@ -376,7 +422,7 @@ messages: {
   MESSAGE_ID_1: {
     content: 'My first message',
     sender_id: 2,
-    timestamp: 'December 11, 2019 at 4:00:00 PM UTC+2',
+    timestamp: 'December 11, 2019 at 4:00:00 PM',
     seen: true
   }
 }
