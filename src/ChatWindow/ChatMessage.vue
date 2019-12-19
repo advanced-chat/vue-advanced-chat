@@ -239,7 +239,9 @@ export default {
 		},
 		messageActionHandler(action) {
 			this.closeOptions()
-			this.$emit('messageActionHandler', { action, message: this.message })
+			setTimeout(() => {
+				this.$emit('messageActionHandler', { action, message: this.message })
+			}, 300)
 		},
 		checkImageFile() {
 			if (!this.message.file) return
