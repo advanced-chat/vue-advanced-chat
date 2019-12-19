@@ -499,25 +499,19 @@ export default {
 	position: absolute;
 	bottom: 0;
 	width: calc(100% - 1px);
-	z-index: 10;
 	border-bottom-right-radius: 4px;
 }
 
 .box-footer {
 	display: flex;
 	background: var(--chat-footer-bg-color);
-	padding: 0 8px 8px;
-
-	* {
-		z-index: 1;
-	}
+	padding: 0 8px 10px;
 }
 
 .reply-container {
 	display: flex;
 	padding: 10px 10px 10px;
 	background: var(--chat-content-bg-color);
-	z-index: -1;
 	align-items: center;
 	max-width: 100%;
 
@@ -576,7 +570,7 @@ textarea {
 }
 
 .textarea-outline {
-	border: 1px solid var(--chat-border-color-input-selected);
+	border: 2px solid var(--chat-border-color-input-selected);
 }
 
 .textarea-image {
@@ -598,8 +592,7 @@ textarea {
 .image-container {
 	position: absolute;
 	left: 16px;
-	bottom: 15px;
-	z-index: 2;
+	bottom: 18px;
 }
 
 .image-file {
@@ -616,7 +609,6 @@ textarea {
 	position: absolute;
 	top: 10px;
 	left: 10px;
-	z-index: 2;
 
 	svg {
 		height: 20px;

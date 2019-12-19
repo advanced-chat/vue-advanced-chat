@@ -328,7 +328,6 @@ export default {
 	font-size: 14px;
 	padding: 6px 9px 3px;
 	white-space: pre-wrap;
-	z-index: 1;
 	display: block;
 	max-width: 100%;
 	-webkit-transition-property: box-shadow, opacity;

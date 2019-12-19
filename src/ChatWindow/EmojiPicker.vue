@@ -89,9 +89,8 @@ export default {
 
 .emoji-picker {
 	position: absolute;
-	bottom: 50px;
+	bottom: 32px;
 	right: 10px;
-	z-index: 1;
 	border: var(--chat-border-style);
 	width: 15rem;
 	height: 20rem;
