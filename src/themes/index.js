@@ -15,7 +15,8 @@ export const defaultThemeColors = {
 		},
 
 		footer: {
-			background: '#f0f0f0',
+			background: 'none',
+			borderStyleInput: '1px solid #e1e4e8',
 			borderInputSelected: '#1976d2',
 			backgroundReply: 'rgba(0, 0, 0, 0.08)'
 		},
@@ -100,7 +101,8 @@ export const defaultThemeColors = {
 		},
 
 		footer: {
-			background: '#131415',
+			background: 'none',
+			borderStyleInput: 'none',
 			borderInputSelected: '#1976d2',
 			backgroundReply: '#1b1c1c'
 		},
@@ -198,6 +200,7 @@ export const cssThemeVars = ({
 
 		// footer
 		'--chat-footer-bg-color': footer.background,
+		'--chat-border-style-input': footer.borderStyleInput,
 		'--chat-border-color-input-selected': footer.borderInputSelected,
 		'--chat-footer-bg-color-reply': footer.backgroundReply,
 

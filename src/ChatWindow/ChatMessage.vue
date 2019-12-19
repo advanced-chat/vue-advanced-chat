@@ -62,7 +62,7 @@
 							:style="{ background: `url(${message.file.url})` }"
 						>
 							<transition name="fade-image">
-								<div class="image-buttons" v-if="imageHover">
+								<div class="image-buttons" v-if="imageHover && !isImageLoading">
 									<div
 										class="svg-button button-view"
 										@click.stop="openFile(message.file)"

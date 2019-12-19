@@ -95,12 +95,12 @@
 			</transition>
 
 			<div class="box-footer">
-				<div v-if="imageFile">
+				<div class="image-container" v-if="imageFile">
 					<div class="svg-button icon-image" @click="resetImageFile">
 						<svg-icon name="close" param="image" />
 					</div>
 					<div class="image-file">
-						<img :src="imageFile" />
+						<img ref="imageFile" :src="imageFile" />
 					</div>
 				</div>
 
@@ -118,7 +118,15 @@
 					v-show="!file || imageFile"
 					ref="roomTextarea"
 					:placeholder="textMessages.TYPE_MESSAGE"
-					:class="{ 'textarea-outline': editedMessage._id }"
+					:class="{
+						'textarea-outline': editedMessage._id,
+						'textarea-image': imageFile
+					}"
+					:style="{
+						height: `${imageDimensions.height}px`,
+						'min-height': `${imageDimensions.height - 14}px`,
+						'padding-left': `${imageDimensions.width}px`
+					}"
 					v-model="message"
 					@input="autoGrow"
 					@keydown.esc="resetMessage"
@@ -209,6 +217,7 @@ export default {
 			loadingMessages: false,
 			file: null,
 			imageFile: null,
+			imageDimensions: { height: '32px', width: '10px' },
 			menuOpened: false,
 			emojiOpened: false,
 			scrollIcon: false
@@ -259,6 +268,17 @@ export default {
 		messagesLoaded(val) {
 			if (val) this.loadingMessages = false
 			if (this.infiniteState) this.infiniteState.complete()
+		},
+		imageFile() {
+			setTimeout(() => {
+				if (!this.$refs.imageFile)
+					return (this.imageDimensions = { height: 32, width: 10 })
+
+				this.imageDimensions = {
+					height: this.$refs.imageFile.height + 2,
+					width: this.$refs.imageFile.width + 20
+				}
+			}, 20)
 		}
 	},
 
@@ -439,7 +459,7 @@ export default {
 
 .container-scroll {
 	background: var(--chat-content-bg-color);
-	height: calc(100% - 120px);
+	height: calc(100% - 110px);
 	overflow-y: auto;
 	margin-right: 1px;
 }
@@ -486,7 +506,7 @@ export default {
 .box-footer {
 	display: flex;
 	background: var(--chat-footer-bg-color);
-	padding: 8px;
+	padding: 0 8px 8px;
 
 	* {
 		z-index: 1;
@@ -495,8 +515,8 @@ export default {
 
 .reply-container {
 	display: flex;
-	padding: 10px 10px 0;
-	background: var(--chat-footer-bg-color);
+	padding: 10px 10px 10px;
+	background: var(--chat-content-bg-color);
 	z-index: -1;
 	align-items: center;
 	max-width: 100%;
@@ -540,15 +560,14 @@ textarea {
 	background: var(--chat-bg-color-input);
 	color: var(--chat-color);
 	border-radius: 20px;
-	margin: 2px;
-	padding: 12px 15px 0 10px;
+	padding: 12px 140px 0 10px;
 	overflow: hidden;
 	outline: 0;
 	width: 100%;
 	resize: none;
 	height: 32px;
 	caret-color: var(--chat-color-caret);
-	border: none;
+	border: var(--chat-border-style-input);
 	font-size: 16px;
 
 	&::placeholder {
@@ -557,10 +576,16 @@ textarea {
 }
 
 .textarea-outline {
-	box-shadow: inset 0px 0px 0px 1px var(--chat-border-color-input-selected);
+	border: 1px solid var(--chat-border-color-input-selected);
+}
+
+.textarea-image {
+	padding-left: 200px;
 }
 
 .icon-textarea {
+	position: absolute;
+	right: 20px;
 	display: flex;
 	margin: 12px 0 0 5px;
 
@@ -570,11 +595,18 @@ textarea {
 	}
 }
 
+.image-container {
+	position: absolute;
+	left: 16px;
+	bottom: 15px;
+	z-index: 2;
+}
+
 .image-file {
 	display: flex;
-	margin-right: 10px;
 
 	img {
+		border-radius: 20px;
 		max-width: 250px;
 		max-height: 100%;
 	}
@@ -582,8 +614,8 @@ textarea {
 
 .icon-image {
 	position: absolute;
-	top: 15px;
-	left: 15px;
+	top: 10px;
+	left: 10px;
 	z-index: 2;
 
 	svg {
@@ -599,7 +631,10 @@ textarea {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: 48px;
+	height: 44px;
+	background: var(--chat-bg-color-input);
+	border: var(--chat-border-style-input);
+	border-radius: 20px;
 }
 
 .icon-file {
