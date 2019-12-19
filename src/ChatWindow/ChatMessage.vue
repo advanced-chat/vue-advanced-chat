@@ -257,6 +257,7 @@ export default {
 			if (!this.optionsOpened) return
 
 			setTimeout(() => {
+				if (!this.$refs.menuOptions || !this.roomFooterRef) return
 				const menuOptionsHeight = this.$refs.menuOptions.getBoundingClientRect()
 					.height
 
