@@ -5,7 +5,7 @@
 		</div>
 
 		<div class="line-new" v-if="newMessage._id === message._id">
-			New messages
+			{{ textMessages.NEW_MESSAGES }}
 		</div>
 
 		<div
