@@ -186,6 +186,7 @@ export default {
 			}
 		},
 		newMessages(val) {
+			if (!val.length) return
 			this.newMessage = val.reduce((res, obj) =>
 				obj.index < res.index ? obj : res
 			)
