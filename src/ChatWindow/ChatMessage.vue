@@ -116,7 +116,7 @@
 
 					<transition
 						:name="message.sender_id === 'me' ? 'slide-left' : 'slide-right'"
-						v-if="messageActions.length"
+						v-if="filteredMessageActions.length"
 					>
 						<div
 							ref="menuOptions"
@@ -127,7 +127,10 @@
 							:style="{ top: `${menuOptionsHeight}px` }"
 						>
 							<div class="menu-list">
-								<div v-for="action in messageActions" :key="action.name">
+								<div
+									v-for="action in filteredMessageActions"
+									:key="action.name"
+								>
 									<div class="menu-item" @click="messageActionHandler(action)">
 										{{ action.title }}
 									</div>
@@ -234,8 +237,15 @@ export default {
 		},
 		isMessageActions() {
 			return (
-				this.messageActions.length && this.messageReply && !this.message.deleted
+				this.filteredMessageActions.length &&
+				this.messageReply &&
+				!this.message.deleted
 			)
+		},
+		filteredMessageActions() {
+			return this.message.sender_id === 'me'
+				? this.messageActions
+				: this.messageActions.filter(message => !message.onlyMe)
 		}
 	},
 
