@@ -1,11 +1,13 @@
 <template>
 	<div>
-		<div
-			class="card-date"
-			v-if="index > 0 && message.date !== messages[index - 1].date"
-		>
+		<div class="card-date" v-if="showDate">
 			{{ message.date }}
 		</div>
+
+		<div class="line-new" v-if="newMessageIndex === index">
+			New messages
+		</div>
+
 		<div
 			class="message-box"
 			:class="{ 'offset-current': message.sender_id === 'me' }"
@@ -160,7 +162,8 @@ export default {
 		roomUsers: { type: Array, default: () => [] },
 		textMessages: { type: Object, required: true },
 		messageActions: { type: Array, required: true },
-		roomFooterRef: { type: HTMLDivElement }
+		roomFooterRef: { type: HTMLDivElement },
+		newMessages: { type: Array }
 	},
 
 	data() {
@@ -170,7 +173,8 @@ export default {
 			imageHover: false,
 			messageReply: false,
 			optionsOpened: false,
-			menuOptionsHeight: 0
+			menuOptionsHeight: 0,
+			newMessageIndex: null
 		}
 	},
 
@@ -180,10 +184,25 @@ export default {
 			handler() {
 				this.checkImgLoad()
 			}
+		},
+		newMessages(val) {
+			this.newMessageIndex = Math.min(...val)
+		}
+	},
+
+	mounted() {
+		if (!this.message.seen && this.message.sender_id !== 'me') {
+			this.$emit('addNewMessage', this.index)
 		}
 	},
 
 	computed: {
+		showDate() {
+			return (
+				this.index > 0 &&
+				this.message.date !== this.messages[this.index - 1].date
+			)
+		},
 		isImage() {
 			return this.checkImageFile()
 		},
@@ -301,6 +320,28 @@ export default {
 	white-space: normal;
 	box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
 		0 1px 2px 0 rgba(0, 0, 0, 0.12);
+}
+
+.line-new {
+	color: var(--chat-message-color-new-messages);
+	position: relative;
+	text-align: center;
+	font-size: 13px;
+}
+
+.line-new:after,
+.line-new:before {
+	border-top: 1px solid var(--chat-message-color-new-messages);
+	content: '';
+	left: 0;
+	position: absolute;
+	top: 50%;
+	width: calc(50% - 60px);
+}
+
+.line-new:before {
+	left: auto;
+	right: 0;
 }
 
 .message-box {

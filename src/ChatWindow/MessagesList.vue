@@ -59,8 +59,10 @@
 							:roomUsers="room.users"
 							:textMessages="textMessages"
 							:roomFooterRef="$refs.roomFooter"
+							:newMessages="newMessages"
 							@messageActionHandler="messageActionHandler"
 							@openFile="openFile"
+							@addNewMessage="addNewMessage"
 						></chat-message>
 					</div>
 				</transition-group>
@@ -220,7 +222,8 @@ export default {
 			imageDimensions: { height: '32px', width: '10px' },
 			menuOpened: false,
 			emojiOpened: false,
-			scrollIcon: false
+			scrollIcon: false,
+			newMessages: []
 		}
 	},
 
@@ -295,6 +298,9 @@ export default {
 	},
 
 	methods: {
+		addNewMessage(index) {
+			this.newMessages.push(index)
+		},
 		resetMessage() {
 			this.resetTextareaSize()
 			this.message = ''

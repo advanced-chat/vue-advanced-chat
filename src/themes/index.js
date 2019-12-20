@@ -51,7 +51,8 @@ export const defaultThemeColors = {
 			backgroundReply: 'rgba(0, 0, 0, 0.08)',
 			colorReplyUsername: '#0a0a0a',
 			colorReply: '#6e6e6e',
-			backgroundImage: '#ddd'
+			backgroundImage: '#ddd',
+			colorNewMessages: '#1976d2'
 		},
 
 		room: {
@@ -137,7 +138,8 @@ export const defaultThemeColors = {
 			backgroundReply: 'rgba(0, 0, 0, 0.18)',
 			colorReplyUsername: '#fff',
 			colorReply: '#d6d6d6',
-			backgroundImage: '#ddd'
+			backgroundImage: '#ddd',
+			colorNewMessages: '#fff'
 		},
 
 		room: {
@@ -232,6 +234,7 @@ export const cssThemeVars = ({
 		'--chat-message-color-reply-username': message.colorReplyUsername,
 		'--chat-message-color-reply-content': message.colorReply,
 		'--chat-message-bg-color-image': message.backgroundImage,
+		'--chat-message-color-new-messages': message.colorNewMessages,
 
 		// room
 		'--chat-room-color-username': room.colorUsername,

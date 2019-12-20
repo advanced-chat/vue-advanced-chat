@@ -19,7 +19,9 @@
 - Images, files & emojis
 - Edit messages
 - Reply to other messages
-- Dark mode
+- Flexible options
+- UI elements for seen, new and deleted messages
+- Custom theming - light and dark modes
 - Firestore example
 
 ## [Demo](https://antoine92190.github.io/vue-advanced-chat)
