@@ -228,6 +228,8 @@ export default {
 	},
 
 	mounted() {
+		this.newMessages = []
+
 		window.addEventListener('keypress', e => {
 			if (e.keyCode === 13 && !e.shiftKey) this.sendMessage()
 		})
