@@ -160,6 +160,7 @@ messageActions="[
 
 ```javascript
 textMessages="{
+  NEW_MESSAGES: 'Nouveaux messages',
   MESSAGE_DELETED: 'Ce message a été supprimé',
   MESSAGES_EMPTY: 'Aucun message',
   CONVERSATION_STARTED: 'La conversation a commencée le :',
@@ -189,7 +190,8 @@ colors="{
   },
 
   footer: {
-    background: '#f0f0f0',
+    background: 'none',
+    borderStyleInput: '1px solid #e1e4e8',
     borderInputSelected: '#1976d2',
     backgroundReply: 'rgba(0, 0, 0, 0.08)'
   },
@@ -224,7 +226,8 @@ colors="{
     backgroundReply: 'rgba(0, 0, 0, 0.08)',
     colorReplyUsername: '#0a0a0a',
     colorReply: '#6e6e6e',
-    backgroundImage: '#ddd'
+    backgroundImage: '#ddd',
+    colorNewMessages: '#1976d2'
   },
 
   room: {
