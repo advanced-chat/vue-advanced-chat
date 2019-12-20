@@ -127,7 +127,7 @@
 					:style="{
 						height: `${imageDimensions.height}px`,
 						'min-height': `${imageDimensions.height - 14}px`,
-						'padding-left': `${imageDimensions.width}px`
+						'padding-left': `${imageDimensions.width + 6}px`
 					}"
 					v-model="message"
 					@input="autoGrow"
@@ -562,7 +562,7 @@ textarea {
 	background: var(--chat-bg-color-input);
 	color: var(--chat-color);
 	border-radius: 20px;
-	padding: 12px 140px 0 10px;
+	padding: 12px 140px 0 16px;
 	overflow: hidden;
 	outline: 0;
 	width: 100%;
@@ -639,11 +639,11 @@ textarea {
 
 .icon-file {
 	display: flex;
-	margin: 0 10px;
+	margin: 0 8px 0 15px;
 }
 
 .icon-remove {
-	margin-left: 10px;
+	margin-left: 8px;
 
 	svg {
 		height: 18px;
