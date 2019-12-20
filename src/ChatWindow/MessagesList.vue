@@ -300,8 +300,8 @@ export default {
 	},
 
 	methods: {
-		addNewMessage(index) {
-			this.newMessages.push(index)
+		addNewMessage(message) {
+			this.newMessages.push(message)
 		},
 		resetMessage() {
 			this.resetTextareaSize()

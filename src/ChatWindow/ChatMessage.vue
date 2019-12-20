@@ -4,7 +4,7 @@
 			{{ message.date }}
 		</div>
 
-		<div class="line-new" v-if="newMessageIndex === index">
+		<div class="line-new" v-if="newMessage._id === message._id">
 			New messages
 		</div>
 
@@ -174,7 +174,7 @@ export default {
 			messageReply: false,
 			optionsOpened: false,
 			menuOptionsHeight: 0,
-			newMessageIndex: null
+			newMessage: {}
 		}
 	},
 
@@ -186,13 +186,18 @@ export default {
 			}
 		},
 		newMessages(val) {
-			this.newMessageIndex = Math.min(...val)
+			this.newMessage = val.reduce((res, obj) =>
+				obj.index < res.index ? obj : res
+			)
 		}
 	},
 
 	mounted() {
 		if (!this.message.seen && this.message.sender_id !== 'me') {
-			this.$emit('addNewMessage', this.index)
+			this.$emit('addNewMessage', {
+				_id: this.message._id,
+				index: this.index
+			})
 		}
 	},
 
