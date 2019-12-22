@@ -66,7 +66,6 @@ You can import it as a custom component:
     },
     data() {
       return {
-        userId: '1234'
         rooms: [],
         messages: []
       }
