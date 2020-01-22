@@ -380,6 +380,10 @@ export default {
 							? this.currentUserId
 							: replyMessage.sender_id
 				}
+
+				if (message.replyMessage.file) {
+					message.replyMessage.file = replyMessage.file
+				}
 			}
 
 			const { id } = await this.messagesRef(roomId).add(message)

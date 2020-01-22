@@ -40,6 +40,14 @@
 						class="reply-message"
 					>
 						<div class="reply-username">{{ replyUsername }}</div>
+
+						<div class="image-reply-container" v-if="isImageReply">
+							<div
+								class="message-image message-image-reply"
+								:style="{ background: `url(${message.replyMessage.file.url})` }"
+							></div>
+						</div>
+
 						<div class="reply-content">{{ message.replyMessage.content }}</div>
 					</div>
 
@@ -215,6 +223,9 @@ export default {
 		isImage() {
 			return this.checkImageFile()
 		},
+		isImageReply() {
+			return this.checkImageReplyFile()
+		},
 		isImageLoading() {
 			return (
 				this.message.file.url.indexOf('blob:http') !== -1 || this.imageLoading
@@ -279,9 +290,15 @@ export default {
 			}, 300)
 		},
 		checkImageFile() {
-			if (!this.message.file) return
+			return this.checkImageType(this.message.file)
+		},
+		checkImageReplyFile() {
+			return this.checkImageType(this.message.replyMessage.file)
+		},
+		checkImageType(file) {
+			if (!file) return
 			const imageTypes = ['png', 'jpg']
-			const { type } = this.message.file
+			const { type } = file
 			return imageTypes.some(t => type.includes(t))
 		},
 		checkImgLoad() {
@@ -416,8 +433,12 @@ export default {
 }
 
 .image-container {
-	padding-bottom: 2px;
+	// padding-bottom: 2px;
 	width: 250px;
+}
+
+.image-reply-container {
+	width: 70px;
 }
 
 .image-loader {
@@ -435,6 +456,12 @@ export default {
 	border-radius: 4px;
 	margin: 4px auto 5px;
 	transition: 0.4s filter linear;
+}
+
+.message-image-reply {
+	height: 70px;
+	width: 70px;
+	margin: 4px auto 3px;
 }
 
 .image-loading {
