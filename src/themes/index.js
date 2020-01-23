@@ -52,7 +52,17 @@ export const defaultThemeColors = {
 			colorReplyUsername: '#0a0a0a',
 			colorReply: '#6e6e6e',
 			backgroundImage: '#ddd',
-			colorNewMessages: '#1976d2'
+			colorNewMessages: '#1976d2',
+			backgroundReaction: '#eee',
+			borderStyleReaction: '1px solid #eee',
+			backgroundReactionHover: '#fff',
+			borderStyleReactionHover: '1px solid #ddd',
+			colorReactionCounter: '#0a0a0a',
+			backgroundReactionMe: '#cfecf5',
+			borderStyleReactionMe: '1px solid #3b98b8',
+			backgroundReactionHoverMe: '#cfecf5',
+			borderStyleReactionHoverMe: '1px solid #3b98b8',
+			colorReactionCounterMe: '#0b59b3'
 		},
 
 		room: {
@@ -78,6 +88,7 @@ export const defaultThemeColors = {
 			send: '#1976d2',
 			sendDisabled: '#9ca6af',
 			emoji: '#1976d2',
+			emojiReaction: '#828c94',
 			document: '#1976d2',
 			pencil: '#9e9e9e',
 			checkmark: '#0696c7',
@@ -139,7 +150,17 @@ export const defaultThemeColors = {
 			colorReplyUsername: '#fff',
 			colorReply: '#d6d6d6',
 			backgroundImage: '#ddd',
-			colorNewMessages: '#fff'
+			colorNewMessages: '#fff',
+			backgroundReaction: 'none',
+			borderStyleReaction: 'none',
+			backgroundReactionHover: '#202223',
+			borderStyleReactionHover: 'none',
+			colorReactionCounter: '#fff',
+			backgroundReactionMe: '#4e9ad1',
+			borderStyleReactionMe: 'none',
+			backgroundReactionHoverMe: '#4e9ad1',
+			borderStyleReactionHoverMe: 'none',
+			colorReactionCounterMe: '#fff'
 		},
 
 		room: {
@@ -165,6 +186,7 @@ export const defaultThemeColors = {
 			send: '#fff',
 			sendDisabled: '#646a70',
 			emoji: '#fff',
+			emojiReaction: '#ebedf2',
 			document: '#1976d2',
 			pencil: '#ebedf2',
 			checkmark: '#f0d90a',
@@ -235,6 +257,19 @@ export const cssThemeVars = ({
 		'--chat-message-color-reply-content': message.colorReply,
 		'--chat-message-bg-color-image': message.backgroundImage,
 		'--chat-message-color-new-messages': message.colorNewMessages,
+		'--chat-message-bg-color-reaction': message.backgroundReaction,
+		'--chat-message-border-style-reaction': message.borderStyleReaction,
+		'--chat-message-bg-color-reaction-hover': message.backgroundReactionHover,
+		'--chat-message-border-style-reaction-hover':
+			message.borderStyleReactionHover,
+		'--chat-message-color-reaction-counter': message.colorReactionCounter,
+		'--chat-message-bg-color-reaction-me': message.backgroundReactionMe,
+		'--chat-message-border-style-reaction-me': message.borderStyleReactionMe,
+		'--chat-message-bg-color-reaction-hover-me':
+			message.backgroundReactionHoverMe,
+		'--chat-message-border-style-reaction-hover-me':
+			message.borderStyleReactionHoverMe,
+		'--chat-message-color-reaction-counter-me': message.colorReactionCounterMe,
 
 		// room
 		'--chat-room-color-username': room.colorUsername,
@@ -257,6 +292,7 @@ export const cssThemeVars = ({
 		'--chat-icon-color-send': icons.send,
 		'--chat-icon-color-send-disabled': icons.sendDisabled,
 		'--chat-icon-color-emoji': icons.emoji,
+		'--chat-icon-color-emoji-reaction': icons.emojiReaction,
 		'--chat-icon-color-document': icons.document,
 		'--chat-icon-color-pencil': icons.pencil,
 		'--chat-icon-color-checkmark': icons.checkmark,

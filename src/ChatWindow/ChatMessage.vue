@@ -676,9 +676,9 @@ export default {
 .button-reaction {
 	display: inline-flex;
 	align-items: center;
-	border: 1px solid #eee;
+	border: var(--chat-message-border-style-reaction);
 	outline: none;
-	background: #eee;
+	background: var(--chat-message-bg-color-reaction);
 	border-radius: 4px;
 	margin: 4px 2px 0;
 	transition: 0.3s;
@@ -687,22 +687,30 @@ export default {
 	line-height: 23px;
 
 	span {
-		font-size: 12px;
+		font-size: 11px;
+		font-weight: 500;
+		min-width: 7px;
+		color: var(--chat-message-color-reaction-counter);
 	}
 
 	&:hover {
-		border: 1px solid #ddd;
-		background: #fff;
+		border: var(--chat-message-border-style-reaction-hover);
+		background: var(--chat-message-bg-color-reaction-hover);
+		cursor: pointer;
 	}
 }
 
 .reaction-me {
-	border: 1px solid #3b98b8;
-	background: #cfecf5;
+	border: var(--chat-message-border-style-reaction-me);
+	background: var(--chat-message-bg-color-reaction-me);
+
+	span {
+		color: var(--chat-message-color-reaction-counter-me);
+	}
 
 	&:hover {
-		border: 1px solid #3b98b8;
-		background: #cfecf5;
+		border: var(--chat-message-border-style-reaction-hover-me);
+		background: var(--chat-message-bg-color-reaction-hover-me);
 	}
 }
 </style>

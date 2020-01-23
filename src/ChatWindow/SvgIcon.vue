@@ -143,6 +143,10 @@ export default {
 	fill: var(--chat-icon-color-emoji);
 }
 
+#chat-icon-emoji-reaction {
+	fill: var(--chat-icon-color-emoji-reaction);
+}
+
 #chat-icon-document {
 	fill: var(--chat-icon-color-document);
 }
@@ -163,7 +167,7 @@ export default {
 	fill: var(--chat-icon-color-dropdown);
 }
 
-#chat-icon-dropdown-sroll {
+#chat-icon-dropdown-scroll {
 	fill: var(--chat-icon-color-dropdown-scroll);
 }
 </style>
