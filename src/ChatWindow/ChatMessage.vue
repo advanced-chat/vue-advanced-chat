@@ -170,6 +170,9 @@
 					:class="{
 						'reaction-me': reaction.indexOf(currentUserId) !== -1
 					}"
+					:style="{
+						float: message.sender_id === currentUserId ? 'right' : 'left'
+					}"
 					@click="sendMessageReaction({ name: key }, reaction)"
 				>
 					{{ getEmojiByName(key) }}<span>{{ reaction.length }}</span>
@@ -234,6 +237,9 @@ export default {
 			this.newMessage = val.reduce((res, obj) =>
 				obj.index < res.index ? obj : res
 			)
+		},
+		emojiOpened(val) {
+			if (val) this.closeOptions()
 		}
 	},
 
@@ -354,7 +360,9 @@ export default {
 			if (!this.optionsOpened) return
 
 			setTimeout(() => {
-				if (!this.$refs.menuOptions || !this.roomFooterRef) return
+				if (!this.roomFooterRef || !this.$refs.menuOptions || !this.actionIcon)
+					return
+
 				const menuOptionsHeight = this.$refs.menuOptions.getBoundingClientRect()
 					.height
 

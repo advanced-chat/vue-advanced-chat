@@ -405,7 +405,7 @@ export default {
 		},
 		resizeTextarea(textarea) {
 			textarea.style.height = 0
-			textarea.style.height = textarea.scrollHeight + 2 + 'px'
+			textarea.style.height = textarea.scrollHeight + 'px'
 		},
 		addEmoji(emoji) {
 			this.message += emoji.icon
