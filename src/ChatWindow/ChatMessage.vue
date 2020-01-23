@@ -122,6 +122,18 @@
 						</div>
 					</transition>
 
+					<emoji-picker
+						class="message-reactions"
+						v-if="isMessageReactions"
+						v-click-outside="closeEmoji"
+						:emojiOpened="emojiOpened"
+						:emojiReaction="true"
+						:roomFooterRef="roomFooterRef"
+						:positionRight="message.sender_id === 'me'"
+						@addEmoji="sendMessageReaction"
+						@openEmoji="emojiOpened = $event"
+					></emoji-picker>
+
 					<transition
 						:name="message.sender_id === 'me' ? 'slide-left' : 'slide-right'"
 						v-if="filteredMessageActions.length"
@@ -147,6 +159,15 @@
 						</div>
 					</transition>
 				</div>
+				<button
+					v-for="(reaction, key) in message.reactions"
+					:key="key"
+					class="button-reaction"
+					:class="{ 'reaction-me': reaction[message.sender_id] }"
+					@click="sendMessageReaction({ name: key })"
+				>
+					{{ getEmojiByName(key) }}<span>{{ reaction.length }}</span>
+				</button>
 			</div>
 		</div>
 	</div>
@@ -156,10 +177,11 @@
 import SvgIcon from './SvgIcon'
 import vClickOutside from 'v-click-outside'
 import ChatLoader from './ChatLoader'
+import EmojiPicker from './EmojiPicker'
 
 export default {
 	name: 'chat-message',
-	components: { SvgIcon, ChatLoader },
+	components: { SvgIcon, ChatLoader, EmojiPicker },
 
 	directives: {
 		clickOutside: vClickOutside.directive
@@ -174,7 +196,9 @@ export default {
 		textMessages: { type: Object, required: true },
 		messageActions: { type: Array, required: true },
 		roomFooterRef: { type: HTMLDivElement },
-		newMessages: { type: Array }
+		newMessages: { type: Array },
+		showReactionEmojis: { type: Boolean, required: true },
+		emojisList: { type: Object, required: true }
 	},
 
 	data() {
@@ -182,10 +206,12 @@ export default {
 			hoverMessageId: null,
 			imageLoading: false,
 			imageHover: false,
-			messageReply: false,
+			messageHover: false,
 			optionsOpened: false,
 			menuOptionsHeight: 0,
-			newMessage: {}
+			messageReaction: '',
+			newMessage: {},
+			emojiOpened: false
 		}
 	},
 
@@ -249,8 +275,13 @@ export default {
 		isMessageActions() {
 			return (
 				this.filteredMessageActions.length &&
-				this.messageReply &&
+				this.messageHover &&
 				!this.message.deleted
+			)
+		},
+		isMessageReactions() {
+			return (
+				this.showReactionEmojis && this.messageHover && !this.message.deleted
 			)
 		},
 		filteredMessageActions() {
@@ -269,7 +300,7 @@ export default {
 		},
 		onHoverMessage() {
 			this.imageHover = true
-			this.messageReply = true
+			this.messageHover = true
 			if (this.canEditMessage()) this.hoverMessageId = this.message._id
 		},
 		canEditMessage() {
@@ -277,7 +308,7 @@ export default {
 		},
 		onLeaveMessage() {
 			this.imageHover = false
-			if (!this.optionsOpened) this.messageReply = false
+			if (!this.optionsOpened && !this.emojiOpened) this.messageHover = false
 			this.hoverMessageId = null
 		},
 		openFile() {
@@ -330,7 +361,21 @@ export default {
 		},
 		closeOptions() {
 			this.optionsOpened = false
-			if (this.hoverMessageId !== this.message._id) this.messageReply = false
+			if (this.hoverMessageId !== this.message._id) this.messageHover = false
+		},
+		closeEmoji() {
+			this.emojiOpened = false
+			if (this.hoverMessageId !== this.message._id) this.messageHover = false
+		},
+		getEmojiByName(emojiName) {
+			return this.emojisList[emojiName]
+		},
+		sendMessageReaction(emoji) {
+			this.closeEmoji()
+			this.$emit('sendMessageReaction', {
+				messageId: this.message._id,
+				reaction: emoji
+			})
 		}
 	}
 }
@@ -586,6 +631,12 @@ export default {
 	}
 }
 
+.message-reactions {
+	position: absolute;
+	top: 6px;
+	right: 37px;
+}
+
 .menu-options {
 	right: 15px;
 }
@@ -599,5 +650,38 @@ export default {
 	width: 14px;
 	vertical-align: middle;
 	margin: -3px -3px 0 3px;
+}
+
+.button-reaction {
+	display: inline-flex;
+	align-items: center;
+	border: 1px solid #eee;
+	outline: none;
+	background: #eee;
+	border-radius: 4px;
+	margin: 4px 2px 0;
+	transition: 0.3s;
+	padding: 0 5px;
+	font-size: 18px;
+	line-height: 23px;
+
+	span {
+		font-size: 12px;
+	}
+
+	&:hover {
+		border: 1px solid #ddd;
+		background: #fff;
+	}
+}
+
+.reaction-me {
+	border: 1px solid #3b98b8;
+	background: #cfecf5;
+
+	&:hover {
+		border: 1px solid #3b98b8;
+		background: #cfecf5;
+	}
 }
 </style>

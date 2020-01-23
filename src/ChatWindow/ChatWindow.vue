@@ -18,6 +18,7 @@
 				:messageActions="messageActions"
 				:showFiles="showFiles"
 				:showEmojis="showEmojis"
+				:showReactionEmojis="showReactionEmojis"
 				:textMessages="t"
 				@fetchMessages="fetchMessages"
 				@sendMessage="sendMessage"
@@ -26,6 +27,7 @@
 				@openFile="openFile"
 				@menuActionHandler="menuActionHandler"
 				@messageActionHandler="messageActionHandler"
+				@sendMessageReaction="sendMessageReaction"
 			>
 			</messages-list>
 		</div>
@@ -63,6 +65,7 @@ export default {
 		},
 		showFiles: { type: Boolean, default: true },
 		showEmojis: { type: Boolean, default: true },
+		showReactionEmojis: { type: Boolean, default: true },
 		textMessages: { type: Object, default: null },
 		theme: { type: String, default: 'light' },
 		colors: { type: Object, default: null }
@@ -140,6 +143,12 @@ export default {
 		messageActionHandler(ev) {
 			this.$emit('messageActionHandler', {
 				action: ev,
+				roomId: this.room.roomId
+			})
+		},
+		sendMessageReaction(messageReaction) {
+			this.$emit('sendMessageReaction', {
+				...messageReaction,
 				roomId: this.room.roomId
 			})
 		}

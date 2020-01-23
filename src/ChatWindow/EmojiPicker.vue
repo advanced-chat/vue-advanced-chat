@@ -3,6 +3,7 @@
 		<emoji-picker @emoji="append" :search="search">
 			<div
 				class="svg-button"
+				:class="{ 'button-reaction': emojiReaction }"
 				slot="emoji-invoker"
 				slot-scope="{ events: { click: clickEvent } }"
 				@click.stop="clickEvent"
@@ -15,7 +16,15 @@
 				slot-scope="{ emojis, insert }"
 				v-if="emojiOpened"
 			>
-				<div class="emoji-picker">
+				<div
+					class="emoji-picker"
+					:class="{ 'picker-reaction': emojiReaction }"
+					:style="{
+						top: `${emojiPickerHeight}px`,
+						right: positionRight ? '85px' : '',
+						display: emojiPickerHeight || !emojiReaction ? 'initial' : 'none'
+					}"
+				>
 					<div class="emoji-picker__search">
 						<input type="text" v-model="search" v-focus />
 					</div>
@@ -26,10 +35,11 @@
 								<span
 									v-for="(emoji, emojiName) in emojiGroup"
 									:key="emojiName"
-									@click="insert(emoji)"
+									@click="insert({ emoji, emojiName })"
 									:title="emojiName"
-									>{{ emoji }}</span
 								>
+									{{ emoji }}
+								</span>
 							</div>
 						</div>
 					</div>
@@ -48,18 +58,31 @@ export default {
 		EmojiPicker,
 		SvgIcon
 	},
-	props: ['emojiOpened'],
+	props: ['emojiOpened', 'emojiReaction', 'roomFooterRef', 'positionRight'],
 	data() {
 		return {
-			search: ''
+			search: '',
+			emojiPickerHeight: ''
 		}
 	},
 	methods: {
-		append(emoji) {
-			this.$emit('addEmoji', emoji)
+		append({ emoji, emojiName }) {
+			this.$emit('addEmoji', { icon: emoji, name: emojiName })
 		},
-		openEmoji() {
+		openEmoji(ev) {
 			this.$emit('openEmoji', true)
+			this.setEmojiPickerHeight(ev.clientY)
+		},
+		setEmojiPickerHeight(clientY) {
+			setTimeout(() => {
+				if (!this.roomFooterRef) return
+
+				const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
+				const pickerTopPosition = roomFooterTop - clientY > 320
+
+				if (pickerTopPosition) this.emojiPickerHeight = clientY
+				else this.emojiPickerHeight = clientY - 320
+			}, 0)
 		}
 	},
 	directives: {
@@ -89,6 +112,7 @@ export default {
 
 .emoji-picker {
 	position: absolute;
+	z-index: 9999;
 	bottom: 32px;
 	right: 10px;
 	border: var(--chat-border-style);
@@ -99,6 +123,12 @@ export default {
 	box-sizing: border-box;
 	border-radius: 0.5rem;
 	background: var(--chat-emoji-bg-color);
+}
+
+.picker-reaction {
+	position: fixed;
+	top: initial;
+	right: initial;
 }
 
 .emoji-picker__search {
@@ -143,5 +173,10 @@ export default {
 .emoji-picker .emojis span:hover {
 	background: var(--chat-sidemenu-bg-color-hover);
 	cursor: pointer;
+}
+
+.button-reaction svg {
+	height: 19px;
+	width: 19px;
 }
 </style>

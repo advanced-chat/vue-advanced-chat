@@ -61,6 +61,7 @@
 			@addRoom="addRoom"
 			@menuActionHandler="menuActionHandler"
 			@messageActionHandler="messageActionHandler"
+			@sendMessageReaction="sendMessageReaction"
 		/>
 	</div>
 </template>
@@ -450,6 +451,26 @@ export default {
 
 		messageActionHandler() {
 			// do something
+		},
+
+		async sendMessageReaction({ reaction, messageId, roomId }) {
+			await this.messagesRef(roomId)
+				.doc(messageId)
+				.update({
+					[`reactions.${reaction.name}`]: firebase.firestore.FieldValue.arrayUnion(
+						this.currentUserId
+					)
+				})
+		},
+
+		async removeMessageReaction({ reaction, messageId, roomId }) {
+			await this.messagesRef(roomId)
+				.doc(messageId)
+				.update({
+					[`reactions.${reaction.name}`]: firebase.firestore.FieldValue.arrayRemove(
+						this.currentUserId
+					)
+				})
 		},
 
 		addRoom() {

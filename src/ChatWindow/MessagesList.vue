@@ -60,9 +60,12 @@
 							:textMessages="textMessages"
 							:roomFooterRef="$refs.roomFooter"
 							:newMessages="newMessages"
+							:showReactionEmojis="showReactionEmojis"
+							:emojisList="emojisList"
 							@messageActionHandler="messageActionHandler"
 							@openFile="openFile"
 							@addNewMessage="addNewMessage"
+							@sendMessageReaction="sendMessageReaction"
 						></chat-message>
 					</div>
 				</transition-group>
@@ -138,8 +141,8 @@
 				<div class="icon-textarea">
 					<emoji-picker
 						v-if="showEmojis && (!file || imageFile)"
-						@addEmoji="addEmoji"
 						:emojiOpened="emojiOpened"
+						@addEmoji="addEmoji"
 						@openEmoji="emojiOpened = $event"
 					></emoji-picker>
 
@@ -184,6 +187,7 @@ import ChatLoader from './ChatLoader'
 import ChatMessage from './ChatMessage'
 import SvgIcon from './SvgIcon'
 import EmojiPicker from './EmojiPicker'
+import emojis from 'vue-emoji-picker/src/emojis'
 
 export default {
 	name: 'messages-list',
@@ -207,6 +211,7 @@ export default {
 		messageActions: { type: Array, required: true },
 		showFiles: { type: Boolean, required: true },
 		showEmojis: { type: Boolean, required: true },
+		showReactionEmojis: { type: Boolean, required: true },
 		textMessages: { type: Object, required: true }
 	},
 
@@ -222,6 +227,7 @@ export default {
 			imageDimensions: { height: '32px', width: '10px' },
 			menuOpened: false,
 			emojiOpened: false,
+			emojisList: {},
 			scrollIcon: false,
 			newMessages: []
 		}
@@ -241,6 +247,9 @@ export default {
 					e.target.scrollHeight > 500 &&
 					e.target.scrollHeight - e.target.scrollTop > 1000
 			})
+
+		const emojisTable = Object.keys(emojis).map(key => emojis[key])
+		this.emojisList = Object.assign({}, ...emojisTable)
 	},
 
 	watch: {
@@ -369,6 +378,9 @@ export default {
 					return this.$emit('messageActionHandler', message)
 			}
 		},
+		sendMessageReaction(messageReaction) {
+			this.$emit('sendMessageReaction', messageReaction)
+		},
 		replyMessage(message) {
 			this.resetMessage()
 			this.messageReply = message
@@ -394,7 +406,7 @@ export default {
 			textarea.style.height = textarea.scrollHeight + 2 + 'px'
 		},
 		addEmoji(emoji) {
-			this.message += emoji
+			this.message += emoji.icon
 			this.focusTextarea()
 		},
 		launchFilePicker() {
