@@ -162,21 +162,24 @@
 						</div>
 					</transition>
 				</div>
-				<button
-					v-for="(reaction, key) in message.reactions"
-					v-show="reaction.length"
-					:key="key"
-					class="button-reaction"
-					:class="{
-						'reaction-me': reaction.indexOf(currentUserId) !== -1
-					}"
-					:style="{
-						float: message.sender_id === currentUserId ? 'right' : 'left'
-					}"
-					@click="sendMessageReaction({ name: key }, reaction)"
-				>
-					{{ getEmojiByName(key) }}<span>{{ reaction.length }}</span>
-				</button>
+
+				<transition-group name="slide-left">
+					<button
+						v-for="(reaction, key) in message.reactions"
+						v-show="reaction.length"
+						:key="key"
+						class="button-reaction"
+						:class="{
+							'reaction-me': reaction.indexOf(currentUserId) !== -1
+						}"
+						:style="{
+							float: message.sender_id === currentUserId ? 'right' : 'left'
+						}"
+						@click="sendMessageReaction({ name: key }, reaction)"
+					>
+						{{ getEmojiByName(key) }}<span>{{ reaction.length }}</span>
+					</button>
+				</transition-group>
 			</div>
 		</div>
 	</div>
