@@ -22,6 +22,10 @@
 				:theme="theme"
 				v-if="showChat"
 			/>
+
+			<div class="version-container">
+				v1.0.0
+			</div>
 		</div>
 	</div>
 </template>
@@ -174,5 +178,12 @@ select {
 			opacity: 0.6;
 		}
 	}
+}
+
+.version-container {
+	padding-top: 20px;
+	text-align: right;
+	font-size: 14px;
+	color: grey;
 }
 </style>
