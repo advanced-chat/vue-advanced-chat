@@ -164,10 +164,13 @@
 				</div>
 				<button
 					v-for="(reaction, key) in message.reactions"
+					v-show="reaction.length"
 					:key="key"
 					class="button-reaction"
-					:class="{ 'reaction-me': reaction[message.sender_id] }"
-					@click="sendMessageReaction({ name: key })"
+					:class="{
+						'reaction-me': reaction.indexOf(currentUserId) !== -1
+					}"
+					@click="sendMessageReaction({ name: key }, reaction)"
 				>
 					{{ getEmojiByName(key) }}<span>{{ reaction.length }}</span>
 				</button>
@@ -376,12 +379,13 @@ export default {
 		getEmojiByName(emojiName) {
 			return this.emojisList[emojiName]
 		},
-		sendMessageReaction(emoji) {
-			this.closeEmoji()
+		sendMessageReaction(emoji, reaction) {
 			this.$emit('sendMessageReaction', {
 				messageId: this.message._id,
-				reaction: emoji
+				reaction: emoji,
+				remove: reaction && reaction.indexOf(this.currentUserId) !== -1
 			})
+			this.closeEmoji()
 		}
 	}
 }

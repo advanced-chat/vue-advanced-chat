@@ -451,23 +451,15 @@ export default {
 			// do something
 		},
 
-		async sendMessageReaction({ reaction, messageId, roomId }) {
-			await this.messagesRef(roomId)
-				.doc(messageId)
-				.update({
-					[`reactions.${reaction.name}`]: firebase.firestore.FieldValue.arrayUnion(
-						this.currentUserId
-					)
-				})
-		},
+		async sendMessageReaction({ reaction, messageId, remove, roomId }) {
+			const dbAction = remove
+				? firebase.firestore.FieldValue.arrayRemove(this.currentUserId)
+				: firebase.firestore.FieldValue.arrayUnion(this.currentUserId)
 
-		async removeMessageReaction({ reaction, messageId, roomId }) {
 			await this.messagesRef(roomId)
 				.doc(messageId)
 				.update({
-					[`reactions.${reaction.name}`]: firebase.firestore.FieldValue.arrayRemove(
-						this.currentUserId
-					)
+					[`reactions.${reaction.name}`]: dbAction
 				})
 		},
 
