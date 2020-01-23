@@ -150,6 +150,10 @@ export default {
 <style lang="scss">
 @import '../styles/index.scss';
 
+* {
+	font-family: inherit;
+}
+
 .card-window {
 	width: 100%;
 	border-radius: 4px;
