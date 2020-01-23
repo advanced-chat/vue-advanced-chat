@@ -67,7 +67,8 @@ You can import it as a custom component:
     data() {
       return {
         rooms: [],
-        messages: []
+        messages: [],
+        currentUserId: '1234'
       }
     }
   }
@@ -79,23 +80,26 @@ You can import it as a custom component:
 | Prop               | Type    | Required | Default |
 | ------------------ | ------- | -------- | ------- |
 | height             | String  | -        | 600px   |
+| currentUserId (1)  | String  | true     | -       |
 | rooms              | Array   | -        | [ ]     |
-| loadingRooms (1)   | Boolean | -        | false   |
+| loadingRooms (2)   | Boolean | -        | false   |
 | messages           | Array   | -        | [ ]     |
-| messagesLoaded (2) | Boolean | -        | false   |
-| menuActions (3)    | Array   | -        | [ ]     |
-| messageActions (4) | Array   | -        | (4)     |
+| messagesLoaded (3) | Boolean | -        | false   |
+| menuActions (4)    | Array   | -        | [ ]     |
+| messageActions (5) | Array   | -        | (4)     |
 | showFiles          | Boolean | -        | true    |
 | showEmojis         | Boolean | -        | true    |
-| textMessages (5)   | Object  | -        | null    |
-| theme (6)          | Sring   | -        | light   |
-| colors (7)         | Object  | -        | (6)     |
+| textMessages (6)   | Object  | -        | null    |
+| theme (7)          | Sring   | -        | light   |
+| colors (8)         | Object  | -        | (8)     |
 
-(1) `loadingRooms` can be used to show/hide a spinner icon while rooms are loading
+(1) `currentUserId` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
-(2) `messagesLoaded` must be manually set to `true` when all messages of a conversation have been loaded. Meaning the user cannot scroll on top anymore
+(2) `loadingRooms` can be used to show/hide a spinner icon while rooms are loading
 
-(3) `menuActions` can be used to display your own buttons when clicking the vertical dots icon inside a room.<br>
+(3) `messagesLoaded` must be manually set to `true` when all messages of a conversation have been loaded. Meaning the user cannot scroll on top anymore
+
+(4) `menuActions` can be used to display your own buttons when clicking the vertical dots icon inside a room.<br>
 You can then use the [menuActionHandler](#events-api) event to call your own action after clicking a button. Ex:
 
 ```javascript
@@ -115,7 +119,7 @@ menuActions="[
 ]"
 ```
 
-(4) `messageActions` can be used to display your own buttons when clicking the dropdown icon inside a message.<br>
+(5) `messageActions` can be used to display your own buttons when clicking the dropdown icon inside a message.<br>
 You can then use the [messageActionHandler](#events-api) event to call your own action after clicking a button. Ex:
 
 ```javascript
@@ -155,7 +159,7 @@ messageActions="[
 ]"
 ```
 
-(5) `textMessages` can be used to replace default texts. Ex:
+(6) `textMessages` can be used to replace default texts. Ex:
 
 ```javascript
 textMessages="{
@@ -168,9 +172,9 @@ textMessages="{
 }"
 ```
 
-(6) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+(7) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
 
-(7) `colors` can be use to create your own theme. Ex:
+(8) `colors` can be use to create your own theme. Ex:
 
 ```javascript
 colors="{
@@ -298,7 +302,7 @@ rooms="[
 ### Messages prop
 
 Message objects are rendered differently depending on their type. Currently, only text, emoji and file types are supported.<br>
-Each message object has a `sender_id` field which can have the value 'me' or the id of the corresponding agent.
+Each message object has a `sender_id` field which holds the id of the corresponding agent. If `sender_id` matches the `currentUserId` prop, specific UI and actions will be implemented
 
 ```javascript
 messages="[

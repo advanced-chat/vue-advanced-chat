@@ -10,7 +10,7 @@
 
 		<div
 			class="message-box"
-			:class="{ 'offset-current': message.sender_id === 'me' }"
+			:class="{ 'offset-current': message.sender_id === currentUserId }"
 		>
 			<div
 				class="message-container"
@@ -21,12 +21,12 @@
 					class="message-card"
 					:class="{
 						'message-highlight': isMessageHover(message),
-						'message-current': message.sender_id === 'me',
+						'message-current': message.sender_id === currentUserId,
 						'message-deleted': message.deleted
 					}"
 				>
 					<div
-						v-if="roomUsers.length > 2 && message.sender_id !== 'me'"
+						v-if="roomUsers.length > 2 && message.sender_id !== currentUserId"
 						class="text-username"
 						:class="{
 							'username-reply': !message.deleted && message.replyMessage
@@ -67,7 +67,8 @@
 						<div
 							class="message-image"
 							:class="{
-								'image-loading': isImageLoading && message.sender_id === 'me'
+								'image-loading':
+									isImageLoading && message.sender_id === currentUserId
 							}"
 							:style="{ background: `url(${message.file.url})` }"
 						>
@@ -129,13 +130,15 @@
 						:emojiOpened="emojiOpened"
 						:emojiReaction="true"
 						:roomFooterRef="roomFooterRef"
-						:positionRight="message.sender_id === 'me'"
+						:positionRight="message.sender_id === currentUserId"
 						@addEmoji="sendMessageReaction"
 						@openEmoji="emojiOpened = $event"
 					></emoji-picker>
 
 					<transition
-						:name="message.sender_id === 'me' ? 'slide-left' : 'slide-right'"
+						:name="
+							message.sender_id === currentUserId ? 'slide-left' : 'slide-right'
+						"
 						v-if="filteredMessageActions.length"
 					>
 						<div
@@ -143,7 +146,7 @@
 							v-if="optionsOpened"
 							v-click-outside="closeOptions"
 							class="menu-options"
-							:class="{ 'menu-left': message.sender_id !== 'me' }"
+							:class="{ 'menu-left': message.sender_id !== currentUserId }"
 							:style="{ top: `${menuOptionsHeight}px` }"
 						>
 							<div class="menu-list">
@@ -188,12 +191,13 @@ export default {
 	},
 
 	props: {
+		currentUserId: { type: String, required: true },
+		textMessages: { type: Object, required: true },
 		index: { type: Number, required: true },
 		message: { type: Object, required: true },
 		messages: { type: Array, required: true },
 		editedMessage: { type: Object, required: true },
 		roomUsers: { type: Array, default: () => [] },
-		textMessages: { type: Object, required: true },
 		messageActions: { type: Array, required: true },
 		roomFooterRef: { type: HTMLDivElement },
 		newMessages: { type: Array },
@@ -231,7 +235,7 @@ export default {
 	},
 
 	mounted() {
-		if (!this.message.seen && this.message.sender_id !== 'me') {
+		if (!this.message.seen && this.message.sender_id !== this.currentUserId) {
 			this.$emit('addNewMessage', {
 				_id: this.message._id,
 				index: this.index
@@ -262,7 +266,7 @@ export default {
 		},
 		isMessageSeen() {
 			return (
-				this.message.sender_id === 'me' &&
+				this.message.sender_id === this.currentUserId &&
 				this.message.seen &&
 				!this.message.deleted
 			)
@@ -285,7 +289,7 @@ export default {
 			)
 		},
 		filteredMessageActions() {
-			return this.message.sender_id === 'me'
+			return this.message.sender_id === this.currentUserId
 				? this.messageActions
 				: this.messageActions.filter(message => !message.onlyMe)
 		}
@@ -304,7 +308,9 @@ export default {
 			if (this.canEditMessage()) this.hoverMessageId = this.message._id
 		},
 		canEditMessage() {
-			return this.message.sender_id === 'me' && !this.message.deleted
+			return (
+				this.message.sender_id === this.currentUserId && !this.message.deleted
+			)
 		},
 		onLeaveMessage() {
 			this.imageHover = false

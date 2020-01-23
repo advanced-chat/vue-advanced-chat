@@ -11,6 +11,7 @@
 			>
 			</rooms-list>
 			<messages-list
+				:currentUserId="currentUserId"
 				:room="room"
 				:messages="messages"
 				:messagesLoaded="messagesLoaded"
@@ -50,6 +51,10 @@ export default {
 
 	props: {
 		height: { type: String, default: '600px' },
+		theme: { type: String, default: 'light' },
+		colors: { type: Object, default: null },
+		textMessages: { type: Object, default: null },
+		currentUserId: { type: String, required: true },
 		rooms: { type: Array, default: () => [] },
 		loadingRooms: { type: Boolean, default: false },
 		messages: { type: Array, default: () => [] },
@@ -65,10 +70,7 @@ export default {
 		},
 		showFiles: { type: Boolean, default: true },
 		showEmojis: { type: Boolean, default: true },
-		showReactionEmojis: { type: Boolean, default: true },
-		textMessages: { type: Object, default: null },
-		theme: { type: String, default: 'light' },
-		colors: { type: Object, default: null }
+		showReactionEmojis: { type: Boolean, default: true }
 	},
 
 	data() {

@@ -48,6 +48,7 @@
 		<chat-window
 			height="calc(100vh - 80px)"
 			:theme="theme"
+			:currentUserId="currentUserId"
 			:rooms="rooms"
 			:loadingRooms="loadingRooms"
 			:messages="messages"
@@ -346,7 +347,7 @@ export default {
 			return {
 				...message.data(),
 				...{
-					sender_id: sender_id === this.currentUserId ? 'me' : sender_id,
+					sender_id,
 					_id: message.id,
 					seconds: timestamp.seconds,
 					timestamp: parseTimestamp(timestamp, 'HH:mm'),
@@ -376,10 +377,7 @@ export default {
 				message.replyMessage = {
 					_id: replyMessage._id,
 					content: replyMessage.content,
-					sender_id:
-						replyMessage.sender_id === 'me'
-							? this.currentUserId
-							: replyMessage.sender_id
+					sender_id: replyMessage.sender_id
 				}
 
 				if (message.replyMessage.file) {

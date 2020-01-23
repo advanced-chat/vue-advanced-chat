@@ -69,10 +69,10 @@ export default {
 	components: { ChatLoader, SvgIcon },
 
 	props: {
+		textMessages: { type: Object, required: true },
 		rooms: { type: Array, required: true },
 		loadingRooms: { type: Boolean, required: true },
-		room: { type: Object, required: true },
-		textMessages: { type: Object, required: true }
+		room: { type: Object, required: true }
 	},
 
 	data() {

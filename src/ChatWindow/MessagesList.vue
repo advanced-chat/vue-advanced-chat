@@ -51,6 +51,7 @@
 				<transition-group name="fade-message">
 					<div v-for="(message, i) in messages" :key="message._id">
 						<chat-message
+							:currentUserId="currentUserId"
 							:message="message"
 							:index="i"
 							:messages="messages"
@@ -204,6 +205,8 @@ export default {
 	},
 
 	props: {
+		currentUserId: { type: String, required: true },
+		textMessages: { type: Object, required: true },
 		room: { type: Object, required: true },
 		messages: { type: Array, required: true },
 		messagesLoaded: { type: Boolean, required: true },
@@ -211,8 +214,7 @@ export default {
 		messageActions: { type: Array, required: true },
 		showFiles: { type: Boolean, required: true },
 		showEmojis: { type: Boolean, required: true },
-		showReactionEmojis: { type: Boolean, required: true },
-		textMessages: { type: Object, required: true }
+		showReactionEmojis: { type: Boolean, required: true }
 	},
 
 	data() {
