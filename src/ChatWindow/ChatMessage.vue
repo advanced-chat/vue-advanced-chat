@@ -132,7 +132,7 @@
 						:roomFooterRef="roomFooterRef"
 						:positionRight="message.sender_id === currentUserId"
 						@addEmoji="sendMessageReaction"
-						@openEmoji="emojiOpened = $event"
+						@openEmoji="openEmoji"
 					></emoji-picker>
 
 					<transition
@@ -211,7 +211,8 @@ export default {
 		roomFooterRef: { type: HTMLDivElement },
 		newMessages: { type: Array },
 		showReactionEmojis: { type: Boolean, required: true },
-		emojisList: { type: Object, required: true }
+		emojisList: { type: Object, required: true },
+		hideOptions: { type: Boolean, required: true }
 	},
 
 	data() {
@@ -243,6 +244,12 @@ export default {
 		},
 		emojiOpened(val) {
 			if (val) this.optionsOpened = false
+		},
+		hideOptions(val) {
+			if (val) {
+				this.closeEmoji()
+				this.closeOptions()
+			}
 		}
 	},
 
@@ -362,6 +369,8 @@ export default {
 
 			if (!this.optionsOpened) return
 
+			this.$emit('hideOptions', false)
+
 			setTimeout(() => {
 				if (!this.roomFooterRef || !this.$refs.menuOptions || !this.actionIcon)
 					return
@@ -382,6 +391,10 @@ export default {
 		closeOptions() {
 			this.optionsOpened = false
 			if (this.hoverMessageId !== this.message._id) this.messageHover = false
+		},
+		openEmoji(ev) {
+			this.emojiOpened = ev
+			this.$emit('hideOptions', false)
 		},
 		closeEmoji() {
 			this.emojiOpened = false

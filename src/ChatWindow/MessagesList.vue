@@ -63,10 +63,12 @@
 							:newMessages="newMessages"
 							:showReactionEmojis="showReactionEmojis"
 							:emojisList="emojisList"
+							:hideOptions="hideOptions"
 							@messageActionHandler="messageActionHandler"
 							@openFile="openFile"
 							@addNewMessage="addNewMessage"
 							@sendMessageReaction="sendMessageReaction"
+							@hideOptions="hideOptions = $event"
 						></chat-message>
 					</div>
 				</transition-group>
@@ -230,6 +232,7 @@ export default {
 			menuOpened: false,
 			emojiOpened: false,
 			emojisList: {},
+			hideOptions: true,
 			scrollIcon: false,
 			newMessages: []
 		}
@@ -245,6 +248,7 @@ export default {
 		document
 			.getElementsByClassName('container-scroll')[0]
 			.addEventListener('scroll', e => {
+				this.hideOptions = true
 				this.scrollIcon =
 					e.target.scrollHeight > 500 &&
 					e.target.scrollHeight - e.target.scrollTop > 1000
