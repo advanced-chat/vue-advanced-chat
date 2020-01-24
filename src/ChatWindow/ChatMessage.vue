@@ -123,17 +123,19 @@
 						</div>
 					</transition>
 
-					<emoji-picker
-						class="message-reactions"
-						v-if="isMessageReactions"
-						v-click-outside="closeEmoji"
-						:emojiOpened="emojiOpened"
-						:emojiReaction="true"
-						:roomFooterRef="roomFooterRef"
-						:positionRight="message.sender_id === currentUserId"
-						@addEmoji="sendMessageReaction"
-						@openEmoji="openEmoji"
-					></emoji-picker>
+					<transition name="fade-image">
+						<emoji-picker
+							class="message-reactions"
+							v-if="isMessageReactions"
+							v-click-outside="closeEmoji"
+							:emojiOpened="emojiOpened"
+							:emojiReaction="true"
+							:roomFooterRef="roomFooterRef"
+							:positionRight="message.sender_id === currentUserId"
+							@addEmoji="sendMessageReaction"
+							@openEmoji="openEmoji"
+						></emoji-picker>
+					</transition>
 
 					<transition
 						:name="
@@ -666,6 +668,7 @@ export default {
 }
 
 .message-reactions {
+	z-index: 9999;
 	position: absolute;
 	top: 6px;
 	right: 37px;
