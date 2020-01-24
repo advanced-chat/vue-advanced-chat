@@ -89,6 +89,7 @@ You can import it as a custom component:
 | messageActions (5) | Array   | -        | (4)     |
 | showFiles          | Boolean | -        | true    |
 | showEmojis         | Boolean | -        | true    |
+| showReactionEmojis | Boolean | -        | true    |
 | textMessages (6)   | Object  | -        | null    |
 | theme (7)          | Sring   | -        | light   |
 | colors (8)         | Object  | -        | (8)     |
@@ -138,7 +139,7 @@ messageActions="[
 You can use built-in `messageActions` names to trigger specific UI modifications when clicked.<br>
 Currently, `replyMessage`, `editMessage` and `deleteMessage` action names are available.<br>
 If `messageActions` is not set, it will use the default values below.<br>
-If you don't want to display this `messageActions`menu, you can pass it an empty array.
+If you don't want to display this `messageActions` menu, you can pass it an empty array.
 
 ```javascript
 messageActions="[
@@ -230,7 +231,17 @@ colors="{
     colorReplyUsername: '#0a0a0a',
     colorReply: '#6e6e6e',
     backgroundImage: '#ddd',
-    colorNewMessages: '#1976d2'
+    colorNewMessages: '#1976d2',
+    backgroundReaction: '#eee',
+    borderStyleReaction: '1px solid #eee',
+    backgroundReactionHover: '#fff',
+    borderStyleReactionHover: '1px solid #ddd',
+    colorReactionCounter: '#0a0a0a',
+    backgroundReactionMe: '#cfecf5',
+    borderStyleReactionMe: '1px solid #3b98b8',
+    backgroundReactionHoverMe: '#cfecf5',
+    borderStyleReactionHoverMe: '1px solid #3b98b8',
+    colorReactionCounterMe: '#0b59b3'
   },
 
   room: {
@@ -256,6 +267,7 @@ colors="{
     send: '#1976d2',
     sendDisabled: '#9ca6af',
     emoji: '#1976d2',
+    emojiReaction: '#828c94',
     document: '#1976d2',
     pencil: '#9e9e9e',
     checkmark: '#0696c7',
@@ -318,6 +330,15 @@ messages="[
       size: 67351,
       type: 'png',
       url: 'https://firebasestorage.googleapis.com/...'
+    },
+    reactions: {
+      wink: [
+        1234, // USER_ID
+        4321
+      ],
+      laughing: [
+        1234
+      ]
     }
   }
 ]"
@@ -335,6 +356,7 @@ messages="[
 | addRoom                  | -                                                               | A user clicks on the plus icon next to searchbar      |
 | menuActionHandler (2)    | `{ roomId, action }`                                            | A user clicks on the vertical dots icon inside a room |
 | messageActionHandler (3) | `{ roomId, action }`                                            | A user clicks on the dropdown icon inside a message   |
+| sendMessageReaction      | `{ roomId, messageId, reaction, remove }`                       | A user clicks on the emoji icon inside a message      |
 
 (1) `fetchMessages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top
 
