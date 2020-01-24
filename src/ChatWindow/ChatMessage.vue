@@ -167,7 +167,7 @@
 					<button
 						v-for="(reaction, key) in message.reactions"
 						v-show="reaction.length"
-						:key="key"
+						:key="key + 0"
 						class="button-reaction"
 						:class="{
 							'reaction-me': reaction.indexOf(currentUserId) !== -1
