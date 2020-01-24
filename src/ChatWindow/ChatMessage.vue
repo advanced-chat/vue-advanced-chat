@@ -163,7 +163,7 @@
 					</transition>
 				</div>
 
-				<transition-group name="slide-left">
+				<transition-group name="slide-left" v-if="!message.deleted">
 					<button
 						v-for="(reaction, key) in message.reactions"
 						v-show="reaction.length"
@@ -242,7 +242,7 @@ export default {
 			)
 		},
 		emojiOpened(val) {
-			if (val) this.closeOptions()
+			if (val) this.optionsOpened = false
 		}
 	},
 
