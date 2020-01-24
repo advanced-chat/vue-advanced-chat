@@ -451,7 +451,7 @@ export default {
 			// do something
 		},
 
-		async sendMessageReaction({ reaction, messageId, remove, roomId }) {
+		async sendMessageReaction({ reaction, remove, messageId, roomId }) {
 			const dbAction = remove
 				? firebase.firestore.FieldValue.arrayRemove(this.currentUserId)
 				: firebase.firestore.FieldValue.arrayUnion(this.currentUserId)
