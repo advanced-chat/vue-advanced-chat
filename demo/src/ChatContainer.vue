@@ -380,7 +380,7 @@ export default {
 					sender_id: replyMessage.sender_id
 				}
 
-				if (message.replyMessage.file) {
+				if (replyMessage.file) {
 					message.replyMessage.file = replyMessage.file
 				}
 			}

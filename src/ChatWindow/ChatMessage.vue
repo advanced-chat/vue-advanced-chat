@@ -18,6 +18,7 @@
 				@mouseleave="onLeaveMessage"
 			>
 				<div
+					ref="imageRef"
 					class="message-card"
 					:class="{
 						'message-highlight': isMessageHover(message),
@@ -70,7 +71,10 @@
 								'image-loading':
 									isImageLoading && message.sender_id === currentUserId
 							}"
-							:style="{ background: `url(${message.file.url})` }"
+							:style="{
+								background: `url(${message.file.url})`,
+								'max-height': `${imageMaxHeight}px`
+							}"
 						>
 							<transition name="fade-image">
 								<div class="image-buttons" v-if="imageHover && !isImageLoading">
@@ -227,7 +231,8 @@ export default {
 			menuOptionsHeight: 0,
 			messageReaction: '',
 			newMessage: {},
-			emojiOpened: false
+			emojiOpened: false,
+			imageMaxHeight: ''
 		}
 	},
 
@@ -262,6 +267,7 @@ export default {
 				index: this.index
 			})
 		}
+		this.imageMaxHeight = this.$refs.imageRef.clientWidth - 18
 	},
 
 	computed: {
@@ -514,8 +520,8 @@ export default {
 }
 
 .image-container {
-	// padding-bottom: 2px;
 	width: 250px;
+	max-width: 100%;
 }
 
 .image-reply-container {
@@ -534,6 +540,7 @@ export default {
 	background-repeat: no-repeat !important;
 	height: 250px;
 	width: 250px;
+	max-width: 100%;
 	border-radius: 4px;
 	margin: 4px auto 5px;
 	transition: 0.4s filter linear;
