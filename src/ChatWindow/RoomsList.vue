@@ -1,5 +1,5 @@
 <template>
-	<div class="rooms-container app-border-r">
+	<div class="rooms-container app-border-r" v-if="showRoomsList">
 		<div class="box-search">
 			<div class="icon-search">
 				<svg-icon name="search" />
@@ -70,6 +70,7 @@ export default {
 
 	props: {
 		textMessages: { type: Object, required: true },
+		showRoomsList: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },
 		loadingRooms: { type: Boolean, required: true },
 		room: { type: Object, required: true }

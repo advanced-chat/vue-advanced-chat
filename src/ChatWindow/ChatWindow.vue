@@ -6,6 +6,7 @@
 				:loadingRooms="loadingRooms"
 				:room="room"
 				:textMessages="t"
+				:showRoomsList="showRoomsList"
 				@fetchRoom="fetchRoom"
 				@addRoom="addRoom"
 			>
@@ -21,6 +22,8 @@
 				:showEmojis="showEmojis"
 				:showReactionEmojis="showReactionEmojis"
 				:textMessages="t"
+				:showRoomsList="showRoomsList"
+				@toggleRoomsList="showRoomsList = !showRoomsList"
 				@fetchMessages="fetchMessages"
 				@sendMessage="sendMessage"
 				@editMessage="editMessage"
@@ -75,7 +78,8 @@ export default {
 
 	data() {
 		return {
-			room: {}
+			room: {},
+			showRoomsList: true
 		}
 	},
 

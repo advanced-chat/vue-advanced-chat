@@ -37,6 +37,11 @@ export default {
 						'M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z'
 				},
 				{
+					name: 'toggle',
+					path: 'M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z'
+				},
+
+				{
 					name: 'menu',
 					path:
 						'M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z'
@@ -105,6 +110,10 @@ export default {
 
 #chat-icon-add {
 	fill: var(--chat-icon-color-add);
+}
+
+#chat-icon-toggle {
+	fill: var(--chat-icon-color-toggle);
 }
 
 #chat-icon-menu {

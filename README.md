@@ -258,6 +258,7 @@ colors="{
   icons: {
     search: '#9ca6af',
     add: '#1976d2',
+    toggle: '#0a0a0a',
     menu: '#0a0a0a',
     close: '#9ca6af',
     closeImage: '#fff',

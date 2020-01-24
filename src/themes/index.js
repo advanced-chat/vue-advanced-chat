@@ -79,6 +79,7 @@ export const defaultThemeColors = {
 		icons: {
 			search: '#9ca6af',
 			add: '#1976d2',
+			toggle: '#0a0a0a',
 			menu: '#0a0a0a',
 			close: '#9ca6af',
 			closeImage: '#fff',
@@ -177,6 +178,7 @@ export const defaultThemeColors = {
 		icons: {
 			search: '#596269',
 			add: '#fff',
+			toggle: '#fff',
 			menu: '#fff',
 			close: '#9ca6af',
 			closeImage: '#fff',
@@ -283,6 +285,7 @@ export const cssThemeVars = ({
 		// icons
 		'--chat-icon-color-search': icons.search,
 		'--chat-icon-color-add': icons.add,
+		'--chat-icon-color-toggle': icons.toggle,
 		'--chat-icon-color-menu': icons.menu,
 		'--chat-icon-color-close': icons.close,
 		'--chat-icon-color-close-image': icons.closeImage,

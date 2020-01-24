@@ -1,6 +1,9 @@
 <template>
-	<div class="col-messages">
+	<div class="col-messages" :class="{ 'col-messages-full': !showRoomsList }">
 		<div class="room-header app-border-b">
+			<div class="svg-button toggle-button" @click="$emit('toggleRoomsList')">
+				<svg-icon name="toggle" />
+			</div>
 			<div
 				v-if="room.avatar"
 				class="room-avatar"
@@ -209,6 +212,7 @@ export default {
 	props: {
 		currentUserId: { type: String, required: true },
 		textMessages: { type: Object, required: true },
+		showRoomsList: { type: Boolean, required: true },
 		room: { type: Object, required: true },
 		messages: { type: Array, required: true },
 		messagesLoaded: { type: Boolean, required: true },
@@ -463,6 +467,11 @@ export default {
 	height: 100%;
 }
 
+.col-messages-full {
+	flex: 0 0 100%;
+	max-width: 100%;
+}
+
 .room-header {
 	align-items: center;
 	display: flex;
@@ -473,6 +482,10 @@ export default {
 	margin-right: 1px;
 	background: var(--chat-header-bg-color);
 	border-top-right-radius: 4px;
+}
+
+.toggle-button {
+	margin-right: 15px;
 }
 
 .room-name {
