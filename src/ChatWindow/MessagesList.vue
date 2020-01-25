@@ -426,7 +426,8 @@ export default {
 		},
 		resizeTextarea(textarea) {
 			textarea.style.height = 0
-			textarea.style.height = textarea.scrollHeight + 'px'
+			const offset = this.imageFile ? 2 : 0
+			textarea.style.height = textarea.scrollHeight + offset + 'px'
 		},
 		addEmoji(emoji) {
 			this.message += emoji.icon
