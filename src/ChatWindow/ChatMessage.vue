@@ -62,7 +62,7 @@
 
 					<div class="image-container" v-else-if="isImage">
 						<chat-loader
-							class="image-loader"
+							:style="{ top: `${imageResponsive.loaderTop}px` }"
 							:show="isImageLoading"
 						></chat-loader>
 						<div
@@ -73,7 +73,7 @@
 							}"
 							:style="{
 								background: `url(${message.file.url})`,
-								'max-height': `${imageMaxHeight}px`
+								'max-height': `${imageResponsive.maxHeight}px`
 							}"
 						>
 							<transition name="fade-image">
@@ -232,7 +232,7 @@ export default {
 			messageReaction: '',
 			newMessage: {},
 			emojiOpened: false,
-			imageMaxHeight: ''
+			imageResponsive: ''
 		}
 	},
 
@@ -267,7 +267,10 @@ export default {
 				index: this.index
 			})
 		}
-		this.imageMaxHeight = this.$refs.imageRef.clientWidth - 18
+		this.imageResponsive = {
+			maxHeight: this.$refs.imageRef.clientWidth - 18,
+			loaderTop: this.$refs.imageRef.clientWidth / 2
+		}
 	},
 
 	computed: {
@@ -526,10 +529,6 @@ export default {
 
 .image-reply-container {
 	width: 70px;
-}
-
-.image-loader {
-	top: 140px;
 }
 
 .message-image {
