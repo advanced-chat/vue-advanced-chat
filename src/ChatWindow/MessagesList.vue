@@ -5,7 +5,11 @@
 		v-if="(isMobile && !showRoomsList) || !isMobile"
 	>
 		<div class="room-header app-border-b">
-			<div class="svg-button toggle-button" @click="$emit('toggleRoomsList')">
+			<div
+				class="svg-button toggle-button"
+				:class="{ 'rotate-icon': !showRoomsList && !isMobile }"
+				@click="$emit('toggleRoomsList')"
+			>
 				<svg-icon name="toggle" />
 			</div>
 			<div
@@ -494,6 +498,15 @@ export default {
 
 .toggle-button {
 	margin-right: 15px;
+
+	svg {
+		height: 26px;
+		width: 26px;
+	}
+}
+
+.rotate-icon {
+	transform: rotate(180deg) !important;
 }
 
 .room-name {
