@@ -23,9 +23,9 @@
 				v-if="showChat"
 			/>
 
-			<div class="version-container">
+			<!-- <div class="version-container">
 				v1.0.0
-			</div>
+			</div> -->
 		</div>
 	</div>
 </template>
@@ -127,9 +127,9 @@ body {
 	line-height: 1.5;
 	padding: 10px 20px 20px;
 
-	// * {
-	// 	font-weight: 300;
-	// }
+	@media only screen and (max-width: 768px) {
+		padding: 0;
+	}
 }
 
 select {
@@ -176,6 +176,11 @@ select {
 
 		&:active {
 			opacity: 0.6;
+		}
+
+		@media only screen and (max-width: 768px) {
+			padding: 3px 6px;
+			font-size: 13px;
 		}
 	}
 }
