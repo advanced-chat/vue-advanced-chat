@@ -354,6 +354,7 @@ export default {
 			this.$refs['roomTextarea'].style.height = '32px'
 		},
 		focusTextarea() {
+			if (this.isMobile) return
 			this.$refs['roomTextarea'].focus()
 		},
 		isMessageEmpty() {
