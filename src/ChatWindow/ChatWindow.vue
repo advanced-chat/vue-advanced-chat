@@ -25,7 +25,7 @@
 				:textMessages="t"
 				:showRoomsList="showRoomsList"
 				:isMobile="isMobile"
-				@toggleRoomsList="showRoomsList = !showRoomsList"
+				@toggleRoomsList="toggleRoomsList"
 				@fetchMessages="fetchMessages"
 				@sendMessage="sendMessage"
 				@editMessage="editMessage"
@@ -133,6 +133,10 @@ export default {
 		updateResponsive() {
 			this.isMobile = window.innerWidth < this.mobileBreakpoint
 			this.showRoomsList = !this.isMobile
+		},
+		toggleRoomsList() {
+			this.showRoomsList = !this.showRoomsList
+			if (this.isMobile) this.room = {}
 		},
 		fetchRoom({ room }) {
 			this.room = room
