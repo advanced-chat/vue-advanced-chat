@@ -1,5 +1,9 @@
 <template>
-	<div class="col-messages" :class="{ 'col-messages-full': !showRoomsList }">
+	<div
+		class="col-messages"
+		:class="{ 'col-messages-full': !showRoomsList }"
+		v-if="(isMobile && !showRoomsList) || !isMobile"
+	>
 		<div class="room-header app-border-b">
 			<div class="svg-button toggle-button" @click="$emit('toggleRoomsList')">
 				<svg-icon name="toggle" />
@@ -213,6 +217,7 @@ export default {
 		currentUserId: { type: String, required: true },
 		textMessages: { type: Object, required: true },
 		showRoomsList: { type: Boolean, required: true },
+		isMobile: { type: Boolean, required: true },
 		room: { type: Object, required: true },
 		messages: { type: Array, required: true },
 		messagesLoaded: { type: Boolean, required: true },
@@ -273,6 +278,8 @@ export default {
 		},
 		messages(newVal, oldVal) {
 			const element = document.getElementsByClassName('container-scroll')[0]
+			if (!element) return
+
 			const options = { top: element.scrollHeight }
 
 			if (oldVal && newVal && oldVal.length === newVal.length - 1) {
@@ -339,6 +346,7 @@ export default {
 			this.focusTextarea()
 		},
 		resetTextareaSize() {
+			if (!this.$refs['roomTextarea']) return
 			this.$refs['roomTextarea'].style.height = '32px'
 		},
 		focusTextarea() {

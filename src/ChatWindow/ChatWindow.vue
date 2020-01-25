@@ -7,6 +7,7 @@
 				:room="room"
 				:textMessages="t"
 				:showRoomsList="showRoomsList"
+				:isMobile="isMobile"
 				@fetchRoom="fetchRoom"
 				@addRoom="addRoom"
 			>
@@ -23,6 +24,7 @@
 				:showReactionEmojis="showReactionEmojis"
 				:textMessages="t"
 				:showRoomsList="showRoomsList"
+				:isMobile="isMobile"
 				@toggleRoomsList="showRoomsList = !showRoomsList"
 				@fetchMessages="fetchMessages"
 				@sendMessage="sendMessage"
@@ -79,7 +81,9 @@ export default {
 	data() {
 		return {
 			room: {},
-			showRoomsList: true
+			showRoomsList: true,
+			mobileBreakpoint: 700,
+			isMobile: false
 		}
 	},
 
@@ -103,6 +107,11 @@ export default {
 		}
 	},
 
+	mounted() {
+		this.updateResponsive()
+		window.addEventListener('resize', () => this.updateResponsive())
+	},
+
 	computed: {
 		t() {
 			return {
@@ -121,9 +130,14 @@ export default {
 	},
 
 	methods: {
+		updateResponsive() {
+			this.isMobile = window.innerWidth < this.mobileBreakpoint
+			this.showRoomsList = !this.isMobile
+		},
 		fetchRoom({ room }) {
 			this.room = room
 			this.fetchMessages({ reset: true })
+			if (this.isMobile) this.showRoomsList = false
 		},
 		addRoom() {
 			this.$emit('addRoom')

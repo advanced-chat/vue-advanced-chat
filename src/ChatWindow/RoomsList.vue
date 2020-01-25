@@ -1,5 +1,9 @@
 <template>
-	<div class="rooms-container app-border-r" v-if="showRoomsList">
+	<div
+		class="rooms-container app-border-r"
+		:class="{ 'rooms-container-full': isMobile }"
+		v-if="showRoomsList"
+	>
 		<div class="box-search">
 			<div class="icon-search">
 				<svg-icon name="search" />
@@ -71,6 +75,7 @@ export default {
 	props: {
 		textMessages: { type: Object, required: true },
 		showRoomsList: { type: Boolean, required: true },
+		isMobile: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },
 		loadingRooms: { type: Boolean, required: true },
 		room: { type: Object, required: true }
@@ -99,7 +104,7 @@ export default {
 			)
 		},
 		openRoom(room) {
-			if (room.roomId === this.room.roomId) return
+			if (room.roomId === this.room.roomId && !this.isMobile) return
 			this.selectedRoomId = room.roomId
 			this.$emit('fetchRoom', { room })
 		},
@@ -113,9 +118,13 @@ export default {
 <style lang="scss" scoped>
 .rooms-container {
 	flex: 0 0 25%;
-	max-width: 25%;
 	position: relative;
 	background: var(--chat-sidemenu-bg-color);
+	height: 100%;
+}
+
+.rooms-container-full {
+	flex: 0 0 100%;
 }
 
 .box-search {
