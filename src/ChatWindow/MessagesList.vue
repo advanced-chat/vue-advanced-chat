@@ -652,6 +652,7 @@ textarea {
 
 .image-container {
 	position: absolute;
+	max-width: 20%;
 	left: 16px;
 	bottom: 18px;
 }
@@ -660,16 +661,17 @@ textarea {
 	display: flex;
 
 	img {
-		border-radius: 20px;
-		max-width: 250px;
+		border-radius: 15px;
+		width: 100%;
+		max-width: 150px;
 		max-height: 100%;
 	}
 }
 
 .icon-image {
 	position: absolute;
-	top: 10px;
-	left: 10px;
+	top: 8px;
+	left: 8px;
 
 	svg {
 		height: 20px;
