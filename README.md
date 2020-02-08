@@ -53,7 +53,7 @@ You can import it as a custom component:
 
 ```javascript
 <template>
-  <chat-window :rooms="rooms" :messages="messages" />
+  <chat-window :currentUserId="currentUserId" :rooms="rooms" :messages="messages" />
 </template>
 
 <script>
