@@ -2,7 +2,7 @@
 	<div
 		class="col-messages"
 		:class="{ 'col-messages-full': !showRoomsList }"
-		v-if="(isMobile && !showRoomsList) || !isMobile"
+		v-show="(isMobile && !showRoomsList) || !isMobile"
 	>
 		<div class="room-header app-border-b">
 			<div
