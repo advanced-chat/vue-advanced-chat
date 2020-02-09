@@ -75,7 +75,8 @@ export default {
 		},
 		showFiles: { type: Boolean, default: true },
 		showEmojis: { type: Boolean, default: true },
-		showReactionEmojis: { type: Boolean, default: true }
+		showReactionEmojis: { type: Boolean, default: true },
+		newMessage: { type: Object, default: null }
 	},
 
 	data() {
@@ -104,6 +105,10 @@ export default {
 				if (!partcipantsValid(user))
 					throw 'Participants object is not valid! Must contain _id[String, Number] and username[String]'
 			})
+		},
+
+		newMessage(val) {
+			this.$set(this.messages, val.index, val.message)
 		}
 	},
 
