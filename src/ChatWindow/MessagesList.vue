@@ -37,7 +37,7 @@
 				</div>
 			</transition>
 		</div>
-		<div id="container-scroll">
+		<div ref="scrollContainer" class="container-scroll">
 			<div class="messages-container">
 				<chat-loader :show="loadingMessages"></chat-loader>
 				<transition name="fade-message">
@@ -258,14 +258,12 @@ export default {
 			if (e.keyCode === 13 && !e.shiftKey) this.sendMessage()
 		})
 
-		document
-			.getElementById('container-scroll')
-			.addEventListener('scroll', e => {
-				this.hideOptions = true
-				this.scrollIcon =
-					e.target.scrollHeight > 500 &&
-					e.target.scrollHeight - e.target.scrollTop > 1000
-			})
+		this.$refs.scrollContainer.addEventListener('scroll', e => {
+			this.hideOptions = true
+			this.scrollIcon =
+				e.target.scrollHeight > 500 &&
+				e.target.scrollHeight - e.target.scrollTop > 1000
+		})
 
 		const emojisTable = Object.keys(emojis).map(key => emojis[key])
 		this.emojisList = Object.assign({}, ...emojisTable)
@@ -281,7 +279,7 @@ export default {
 			this.resetMessage()
 		},
 		messages(newVal, oldVal) {
-			const element = document.getElementById('container-scroll')
+			const element = this.$refs.scrollContainer
 			if (!element) return
 
 			const options = { top: element.scrollHeight }
@@ -418,7 +416,7 @@ export default {
 			setTimeout(() => this.resizeTextarea(this.$refs['roomTextarea']), 0)
 		},
 		scrollToBottom() {
-			const element = document.getElementById('container-scroll')
+			const element = this.$refs.scrollContainer
 			element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
 		},
 		autoGrow(el) {
@@ -519,7 +517,7 @@ export default {
 	margin-left: auto;
 }
 
-#container-scroll {
+.container-scroll {
 	background: var(--chat-content-bg-color);
 	height: calc(100% - 110px);
 	overflow-y: auto;
