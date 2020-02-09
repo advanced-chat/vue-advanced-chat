@@ -37,7 +37,7 @@
 				</div>
 			</transition>
 		</div>
-		<div class="container-scroll">
+		<div id="container-scroll">
 			<div class="messages-container">
 				<chat-loader :show="loadingMessages"></chat-loader>
 				<transition name="fade-message">
@@ -259,7 +259,7 @@ export default {
 		})
 
 		document
-			.getElementsByClassName('container-scroll')[0]
+			.getElementById('container-scroll')
 			.addEventListener('scroll', e => {
 				this.hideOptions = true
 				this.scrollIcon =
@@ -281,7 +281,7 @@ export default {
 			this.resetMessage()
 		},
 		messages(newVal, oldVal) {
-			const element = document.getElementsByClassName('container-scroll')[0]
+			const element = document.getElementById('container-scroll')
 			if (!element) return
 
 			const options = { top: element.scrollHeight }
@@ -418,7 +418,7 @@ export default {
 			setTimeout(() => this.resizeTextarea(this.$refs['roomTextarea']), 0)
 		},
 		scrollToBottom() {
-			const element = document.getElementsByClassName('container-scroll')[0]
+			const element = document.getElementById('container-scroll')
 			element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
 		},
 		autoGrow(el) {
@@ -519,7 +519,7 @@ export default {
 	margin-left: auto;
 }
 
-.container-scroll {
+#container-scroll {
 	background: var(--chat-content-bg-color);
 	height: calc(100% - 110px);
 	overflow-y: auto;
