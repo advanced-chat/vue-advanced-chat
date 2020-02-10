@@ -211,7 +211,7 @@ export default {
 				const roomAvatar =
 					roomContacts.length === 1 && roomContacts[0].avatar
 						? roomContacts[0].avatar
-						: require('@/assets/logo.svg')
+						: require('@/assets/logo.png')
 
 				formattedRooms.push({
 					...{
