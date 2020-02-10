@@ -55,6 +55,9 @@
 						direction="top"
 						@infinite="loadMoreMessages"
 					>
+						<div slot="spinner">
+							<chat-loader :show="true" :infinite="true"></chat-loader>
+						</div>
 						<div slot="no-results"></div>
 						<div slot="no-more"></div>
 					</infinite-loading>

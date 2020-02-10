@@ -1,6 +1,9 @@
 <template>
 	<transition name="fade-spinner" appear>
-		<div class="container-center" v-if="show">
+		<div
+			:class="{ 'container-center': !infinite, 'container-top': infinite }"
+			v-if="show"
+		>
 			<div id="circle"></div>
 		</div>
 	</transition>
@@ -9,7 +12,7 @@
 <script>
 export default {
 	name: 'chat-loader',
-	props: ['show']
+	props: ['show', 'infinite']
 }
 </script>
 
@@ -22,7 +25,17 @@ export default {
 	z-index: 9999;
 }
 
+.container-top {
+	padding: 21px;
+
+	#circle {
+		height: 20px;
+		width: 20px;
+	}
+}
+
 #circle {
+	margin: auto;
 	height: 32px;
 	width: 32px;
 	border: 3px rgba(0, 0, 0, 0.25) solid;
