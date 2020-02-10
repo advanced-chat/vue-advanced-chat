@@ -59,7 +59,7 @@ export default {
 		theme: { type: String, default: 'light' },
 		colors: { type: Object, default: null },
 		textMessages: { type: Object, default: null },
-		currentUserId: { type: String, required: true },
+		currentUserId: { type: String, default: '' },
 		rooms: { type: Array, default: () => [] },
 		loadingRooms: { type: Boolean, default: false },
 		messages: { type: Array, default: () => [] },
