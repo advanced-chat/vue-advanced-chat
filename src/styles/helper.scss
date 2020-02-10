@@ -38,9 +38,10 @@
 }
 
 .room-avatar {
-	background-size: cover !important;
-	background-position: center center !important;
-	background-repeat: no-repeat !important;
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-color: #9ca6af;
 	height: 42px;
 	width: 42px;
 	margin-right: 15px;

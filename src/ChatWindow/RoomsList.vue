@@ -37,7 +37,7 @@
 				<div
 					v-if="room.avatar"
 					class="room-avatar"
-					:style="{ background: `url(${room.avatar})` }"
+					:style="{ 'background-image': `url(${room.avatar})` }"
 				></div>
 				<div class="name-container">
 					<div class="title-container">
