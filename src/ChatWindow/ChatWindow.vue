@@ -6,6 +6,7 @@
 				:loadingRooms="loadingRooms"
 				:room="room"
 				:textMessages="t"
+				:showAddRoom="showAddRoom"
 				:showRoomsList="showRoomsList"
 				:isMobile="isMobile"
 				@fetchRoom="fetchRoom"
@@ -73,6 +74,7 @@ export default {
 				{ name: 'deleteMessage', title: 'Delete Message', onlyMe: true }
 			]
 		},
+		showAddRoom: { type: Boolean, default: true },
 		showFiles: { type: Boolean, default: true },
 		showEmojis: { type: Boolean, default: true },
 		showReactionEmojis: { type: Boolean, default: true },

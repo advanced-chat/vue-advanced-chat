@@ -87,6 +87,7 @@ You can import it as a custom component:
 | messagesLoaded (3) | Boolean | -        | false   |
 | menuActions (4)    | Array   | -        | [ ]     |
 | messageActions (5) | Array   | -        | (4)     |
+| showAddRoom        | Boolean | -        | true    |
 | showFiles          | Boolean | -        | true    |
 | showEmojis         | Boolean | -        | true    |
 | showReactionEmojis | Boolean | -        | true    |

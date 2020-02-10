@@ -14,7 +14,7 @@
 				autocomplete="off"
 				@input="searchRoom"
 			/>
-			<div class="svg-button" @click="addRoom">
+			<div v-if="showAddRoom" class="svg-button add-icon" @click="addRoom">
 				<svg-icon name="add" />
 			</div>
 		</div>
@@ -75,6 +75,7 @@ export default {
 	props: {
 		textMessages: { type: Object, required: true },
 		showRoomsList: { type: Boolean, required: true },
+		showAddRoom: { type: Boolean, required: true },
 		isMobile: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },
 		loadingRooms: { type: Boolean, required: true },
@@ -147,11 +148,14 @@ export default {
 	}
 }
 
+.add-icon {
+	margin-left: 20px;
+}
+
 input {
 	background: var(--chat-bg-color-input);
 	color: var(--chat-color);
 	border-radius: 4px;
-	margin-right: 20px;
 	width: 100%;
 	font-size: 15px;
 	outline: 0;
