@@ -37,3 +37,20 @@ export function partcipantsValid(obj) {
 
 	return validate(obj, participantsValidate)
 }
+
+export function messagesValid(obj) {
+	const participantsValidate = [
+		{ key: '_id', type: ['string', 'number'] },
+		{ key: 'content', type: ['string', 'number'] },
+		{ key: 'sender_id', type: ['string', 'number'] }
+	]
+
+	const validate = (obj, props) => {
+		return props.every(prop => {
+			const validType = prop.type.find(t => t === typeof obj[prop.key])
+			return validType && obj.hasOwnProperty(prop.key) && obj[prop.key]
+		})
+	}
+
+	return validate(obj, participantsValidate)
+}

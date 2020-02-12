@@ -205,6 +205,7 @@ import ChatMessage from './ChatMessage'
 import SvgIcon from './SvgIcon'
 import EmojiPicker from './EmojiPicker'
 import emojis from 'vue-emoji-picker/src/emojis'
+const { messagesValid } = require('../utils/roomValidation')
 
 export default {
 	name: 'messages-list',
@@ -283,6 +284,11 @@ export default {
 			this.resetMessage()
 		},
 		messages(newVal, oldVal) {
+			newVal.forEach(message => {
+				if (!messagesValid(message))
+					throw 'Messages object is not valid! Must contain _id[String, Number], content[String, Number] and sender_id[String, Number]'
+			})
+
 			const element = this.$refs.scrollContainer
 			if (!element) return
 
