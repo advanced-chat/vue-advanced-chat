@@ -30,6 +30,7 @@
 	min-height: 30px;
 	padding: 7px 16px;
 	position: relative;
+	white-space: nowrap;
 }
 
 .menu-options {
@@ -40,7 +41,6 @@
 	min-width: 150px;
 	display: inline-block;
 	border-radius: 4px;
-	max-width: 80%;
 	font-size: 15px;
 	overflow-y: auto;
 	overflow-x: hidden;
