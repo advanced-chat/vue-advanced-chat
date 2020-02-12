@@ -232,7 +232,8 @@ export default {
 		messageActions: { type: Array, required: true },
 		showFiles: { type: Boolean, required: true },
 		showEmojis: { type: Boolean, required: true },
-		showReactionEmojis: { type: Boolean, required: true }
+		showReactionEmojis: { type: Boolean, required: true },
+		loadingRooms: { type: Boolean, required: true }
 	},
 
 	data() {
@@ -320,7 +321,12 @@ export default {
 
 	computed: {
 		showNoMessages() {
-			return this.room.roomId && !this.messages.length && !this.loadingMessages
+			return (
+				this.room.roomId &&
+				!this.messages.length &&
+				!this.loadingMessages &&
+				!this.loadingRooms
+			)
 		},
 		showMessagesStarted() {
 			return this.messages.length && this.messagesLoaded

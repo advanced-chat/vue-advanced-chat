@@ -26,6 +26,7 @@
 				:textMessages="t"
 				:showRoomsList="showRoomsList"
 				:isMobile="isMobile"
+				:loadingRooms="loadingRooms"
 				@toggleRoomsList="toggleRoomsList"
 				@fetchMessages="fetchMessages"
 				@sendMessage="sendMessage"
