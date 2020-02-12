@@ -321,6 +321,7 @@ Each message object has a `sender_id` field which holds the id of the correspond
 ```javascript
 messages="[
   {
+    _id: 7890,
     content: 'message 1',
     sender_id: 1234,
     username: 'John Doe',
