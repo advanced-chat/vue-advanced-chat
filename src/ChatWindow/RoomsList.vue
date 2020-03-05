@@ -122,6 +122,7 @@ export default {
 	position: relative;
 	background: var(--chat-sidemenu-bg-color);
 	height: 100%;
+	overflow-y: auto;
 }
 
 .rooms-container-full {
