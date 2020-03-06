@@ -23,6 +23,7 @@
 - UI elements for seen, new and deleted messages
 - Custom theming - light and dark modes
 - Firestore example
+- Web Component support
 
 ## [Demo](https://antoine92190.github.io/vue-advanced-chat)
 
