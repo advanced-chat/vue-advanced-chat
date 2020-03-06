@@ -16,34 +16,36 @@
 				slot-scope="{ emojis, insert }"
 				v-if="emojiOpened"
 			>
-				<div
-					class="emoji-picker"
-					:class="{ 'picker-reaction': emojiReaction }"
-					:style="{
-						top: `${emojiPickerHeight}px`,
-						right: positionRight ? '85px' : '',
-						display: emojiPickerHeight || !emojiReaction ? 'initial' : 'none'
-					}"
-				>
-					<div class="emoji-picker__search">
-						<input type="text" v-model="search" v-focus />
-					</div>
-					<div>
-						<div v-for="(emojiGroup, category) in emojis" :key="category">
-							<h5 v-if="category !== 'Frequently used'">{{ category }}</h5>
-							<div class="emojis" v-if="category !== 'Frequently used'">
-								<span
-									v-for="(emoji, emojiName) in emojiGroup"
-									:key="emojiName"
-									@click="insert({ emoji, emojiName })"
-									:title="emojiName"
-								>
-									{{ emoji }}
-								</span>
+				<transition name="slide-up" appear>
+					<div
+						class="emoji-picker"
+						:class="{ 'picker-reaction': emojiReaction }"
+						:style="{
+							top: `${emojiPickerHeight}px`,
+							right: positionRight ? '85px' : '',
+							display: emojiPickerHeight || !emojiReaction ? 'initial' : 'none'
+						}"
+					>
+						<div class="emoji-picker__search">
+							<input type="text" v-model="search" v-focus />
+						</div>
+						<div>
+							<div v-for="(emojiGroup, category) in emojis" :key="category">
+								<h5 v-if="category !== 'Frequently used'">{{ category }}</h5>
+								<div class="emojis" v-if="category !== 'Frequently used'">
+									<span
+										v-for="(emoji, emojiName) in emojiGroup"
+										:key="emojiName"
+										@click="insert({ emoji, emojiName })"
+										:title="emojiName"
+									>
+										{{ emoji }}
+									</span>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+				</transition>
 			</div>
 		</emoji-picker>
 	</div>
