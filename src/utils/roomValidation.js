@@ -15,7 +15,7 @@ export function roomsValid(obj) {
 				validType = true
 			}
 
-			return validType && obj.hasOwnProperty(prop.key) && obj[prop.key]
+			return validType && checkObjectValid(obj, prop.key)
 		})
 	}
 
@@ -31,7 +31,7 @@ export function partcipantsValid(obj) {
 	const validate = (obj, props) => {
 		return props.every(prop => {
 			const validType = prop.type.find(t => t === typeof obj[prop.key])
-			return validType && obj.hasOwnProperty(prop.key) && obj[prop.key]
+			return validType && checkObjectValid(obj, prop.key)
 		})
 	}
 
@@ -48,9 +48,13 @@ export function messagesValid(obj) {
 	const validate = (obj, props) => {
 		return props.every(prop => {
 			const validType = prop.type.find(t => t === typeof obj[prop.key])
-			return validType && obj.hasOwnProperty(prop.key) && obj[prop.key]
+			return validType && checkObjectValid(obj, prop.key)
 		})
 	}
 
 	return validate(obj, participantsValidate)
+}
+
+function checkObjectValid(obj, key) {
+	return obj.hasOwnProperty(key) && obj[key] !== null && obj[key] !== undefined
 }

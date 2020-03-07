@@ -285,8 +285,9 @@ export default {
 		},
 		messages(newVal, oldVal) {
 			newVal.forEach(message => {
-				if (!messagesValid(message))
+				if (!messagesValid(message)) {
 					throw 'Messages object is not valid! Must contain _id[String, Number], content[String, Number] and sender_id[String, Number]'
+				}
 			})
 
 			const element = this.$refs.scrollContainer

@@ -101,12 +101,14 @@ export default {
 
 			if (Object.entries(val).length === 0) return
 
-			if (!roomsValid(val))
+			if (!roomsValid(val)) {
 				throw 'Rooms object is not valid! Must contain roomId[String, Number], roomName[String] and users[Array]'
+			}
 
 			val.users.forEach(user => {
-				if (!partcipantsValid(user))
+				if (!partcipantsValid(user)) {
 					throw 'Participants object is not valid! Must contain _id[String, Number] and username[String]'
+				}
 			})
 		},
 
