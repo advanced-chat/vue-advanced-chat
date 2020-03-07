@@ -37,6 +37,7 @@ Enjoy :smile:
 - [Props data structure](#props-data-structure)
 - [Events API](#events-api)
 - [Using with Firestore](#using-with-firestore)
+- [Use as a Web Component](#use-as-a-web-component)
 
 ## Installation
 
@@ -460,6 +461,41 @@ messages: {
     seen: true
   }
 }
+```
+
+## Use as a Web Component
+
+### Clone vue-advance-chat project
+
+```bash
+git clone https://github.com/antoine92190/vue-advanced-chat.git
+```
+
+### Build it as a Web Component
+
+```bash
+npm i && npm run build:wc
+```
+
+### Add Vue.js to your application
+
+```html
+<!-- index.html -->
+<script src="https://unpkg.com/vue"></script>
+```
+
+### Import the built minified component in your application
+
+#### Add vue-advanced-chat.min.js in your application files
+
+```
+vue-advance-chat/dist/vue-advanced-chat.min.js
+```
+
+#### Import the vue-advanced-chat.min.js file you just added
+
+```javascript
+import './vue-advanced-chat.min.js'
 ```
 
 ## License
