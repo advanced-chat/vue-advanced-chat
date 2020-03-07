@@ -48,7 +48,7 @@
 		"node-sass": "^4.13.0",
 		"sass": "^1.19.0",
 		"sass-loader": "^8.0.0",
-		"vue-template-compiler": "^2.6.11",
+		"vue-template-compiler": "^2.6.10",
 		"vue": "^2.6.10"
 	},
 	"dependencies": {
