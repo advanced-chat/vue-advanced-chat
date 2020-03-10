@@ -222,7 +222,7 @@ export default {
 	},
 
 	props: {
-		currentUserId: { type: String, required: true },
+		currentUserId: { type: [String, Number], required: true },
 		textMessages: { type: Object, required: true },
 		showRoomsList: { type: Boolean, required: true },
 		isMobile: { type: Boolean, required: true },

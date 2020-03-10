@@ -206,7 +206,7 @@ export default {
 	},
 
 	props: {
-		currentUserId: { type: String, required: true },
+		currentUserId: { type: [String, Number], required: true },
 		textMessages: { type: Object, required: true },
 		index: { type: Number, required: true },
 		message: { type: Object, required: true },
