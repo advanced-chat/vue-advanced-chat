@@ -47,7 +47,7 @@ import RoomsList from './RoomsList'
 import MessagesList from './MessagesList'
 const { roomsValid, partcipantsValid } = require('../utils/roomValidation')
 import locales from '../locales'
-import { defaultThemeColors, cssThemeVars } from '../themes'
+import { defaultThemeStyles, cssThemeVars } from '../themes'
 
 export default {
 	name: 'chat-container',
@@ -59,7 +59,7 @@ export default {
 	props: {
 		height: { type: String, default: '600px' },
 		theme: { type: String, default: 'light' },
-		colors: { type: Object, default: null },
+		styles: { type: Object, default: null },
 		textMessages: { type: Object, default: null },
 		currentUserId: { type: [String, Number], default: '' },
 		rooms: { type: Array, default: () => [] },
@@ -130,12 +130,12 @@ export default {
 			}
 		},
 		cssVars() {
-			const themeColors = {
-				...defaultThemeColors[this.theme],
-				...this.colors
+			const themeStyles = {
+				...defaultThemeStyles[this.theme],
+				...this.styles
 			}
 
-			return cssThemeVars(themeColors)
+			return cssThemeVars(themeStyles)
 		}
 	},
 

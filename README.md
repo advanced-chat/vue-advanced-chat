@@ -95,7 +95,7 @@ You can import it as a custom component:
 | showReactionEmojis | Boolean          | -        | true    |
 | textMessages (6)   | Object           | -        | null    |
 | theme (7)          | Sring            | -        | light   |
-| colors (8)         | Object           | -        | (8)     |
+| styles (8)         | Object           | -        | (8)     |
 
 (1) `currentUserId` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -178,10 +178,10 @@ textMessages="{
 
 (7) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
 
-(8) `colors` can be use to create your own theme. Ex:
+(8) `styles` can be use to customize your own theme. Ex:
 
 ```javascript
-colors="{
+styles="{
   general: {
     color: '#0a0a0a',
     backgroundInput: '#fff',

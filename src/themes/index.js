@@ -1,4 +1,4 @@
-export const defaultThemeColors = {
+export const defaultThemeStyles = {
 	light: {
 		general: {
 			color: '#0a0a0a',
