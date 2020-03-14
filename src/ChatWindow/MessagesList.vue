@@ -509,7 +509,7 @@ export default {
 	height: 64px;
 	margin-right: 1px;
 	background: var(--chat-header-bg-color);
-	border-top-right-radius: 4px;
+	border-top-right-radius: var(--chat-container-border-radius);
 }
 
 .toggle-button {

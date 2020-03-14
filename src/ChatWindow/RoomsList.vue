@@ -123,6 +123,8 @@ export default {
 	background: var(--chat-sidemenu-bg-color);
 	height: 100%;
 	overflow-y: auto;
+	border-top-left-radius: var(--chat-container-border-radius);
+	border-bottom-left-radius: var(--chat-container-border-radius);
 }
 
 .rooms-container-full {
