@@ -48,6 +48,7 @@
 		<chat-window
 			height="calc(100vh - 80px)"
 			:theme="theme"
+			:styles="styles"
 			:currentUserId="currentUserId"
 			:rooms="rooms"
 			:loadingRooms="loadingRooms"
@@ -110,7 +111,8 @@ export default {
 				{ name: 'inviteUser', title: 'Invite User' },
 				{ name: 'removeUser', title: 'Remove User' },
 				{ name: 'deleteRoom', title: 'Delete Room' }
-			]
+			],
+			styles: { container: { borderRadius: '4px' } }
 		}
 	},
 
