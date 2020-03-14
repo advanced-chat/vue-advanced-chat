@@ -199,7 +199,6 @@ export default {
 
 .card-window {
 	width: 100%;
-	border-radius: 4px;
 	display: block;
 	max-width: 100%;
 	background: var(--chat-content-bg-color);
@@ -207,8 +206,9 @@ export default {
 	overflow-wrap: break-word;
 	position: relative;
 	white-space: normal;
-	box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-		0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+	border: var(--chat-container-border);
+	border-radius: var(--chat-container-border-radius);
+	box-shadow: var(--chat-container-box-shadow);
 }
 
 .chat-container {

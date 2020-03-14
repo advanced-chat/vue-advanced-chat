@@ -192,6 +192,12 @@ colors="{
     backgroundScrollIcon: '#fff'
   },
 
+  container: {
+    border: 'none',
+    borderRadius: '4px',
+    boxShadow: '0px 3px 1px 1px #000'
+  },
+
   header: {
     background: '#fff'
   },

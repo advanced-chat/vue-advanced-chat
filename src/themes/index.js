@@ -10,6 +10,13 @@ export const defaultThemeColors = {
 			backgroundScrollIcon: '#fff'
 		},
 
+		container: {
+			border: 'none',
+			borderRadius: '4px',
+			boxShadow:
+				'0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)'
+		},
+
 		header: {
 			background: '#fff'
 		},
@@ -109,6 +116,13 @@ export const defaultThemeColors = {
 			backgroundScrollIcon: '#fff'
 		},
 
+		container: {
+			border: 'none',
+			borderRadius: '4px',
+			boxShadow:
+				'0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)'
+		},
+
 		header: {
 			background: '#181a1b'
 		},
@@ -201,6 +215,7 @@ export const defaultThemeColors = {
 
 export const cssThemeVars = ({
 	general,
+	container,
 	header,
 	footer,
 	sidemenu,
@@ -220,6 +235,11 @@ export const cssThemeVars = ({
 		'--chat-color-caret': general.colorCaret,
 		'--chat-border-style': general.borderStyle,
 		'--chat-bg-scroll-icon': general.backgroundScrollIcon,
+
+		// container
+		'--chat-container-border': container.border,
+		'--chat-container-border-radius': container.borderRadius,
+		'--chat-container-box-shadow': container.boxShadow,
 
 		// header
 		'--chat-header-bg-color': header.background,
