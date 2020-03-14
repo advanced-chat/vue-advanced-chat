@@ -59,7 +59,7 @@ export default {
 	props: {
 		height: { type: String, default: '600px' },
 		theme: { type: String, default: 'light' },
-		styles: { type: Object, default: null },
+		styles: { type: Object, default: () => ({}) },
 		textMessages: { type: Object, default: null },
 		currentUserId: { type: [String, Number], default: '' },
 		rooms: { type: Array, default: () => [] },
@@ -130,12 +130,17 @@ export default {
 			}
 		},
 		cssVars() {
-			const themeStyles = {
-				...defaultThemeStyles[this.theme],
-				...this.styles
-			}
+			const defaultStyles = defaultThemeStyles[this.theme]
+			const customStyles = {}
 
-			return cssThemeVars(themeStyles)
+			Object.keys(defaultStyles).map(key => {
+				customStyles[key] = {
+					...defaultStyles[key],
+					...(this.styles[key] || {})
+				}
+			})
+
+			return cssThemeVars(customStyles)
 		}
 	},
 
