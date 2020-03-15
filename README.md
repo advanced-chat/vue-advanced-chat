@@ -19,8 +19,9 @@
 - Images, files & emojis
 - Edit messages
 - Reply to other messages
+- UI elements for seen, new, deleted and typing messages
+- Online / Offline status
 - Flexible options
-- UI elements for seen, new and deleted messages
 - Custom theming - light and dark modes
 - Firestore example
 - Web Component support
@@ -199,7 +200,9 @@ styles="{
   },
 
   header: {
-    background: '#fff'
+    background: '#fff',
+    colorRoomName: '#0a0a0a',
+    colorRoomInfo: '#9ca6af'
   },
 
   footer: {
@@ -230,6 +233,7 @@ styles="{
     background: '#fff',
     backgroundMe: '#ccf2cf',
     color: '#0a0a0a',
+    colorStarted: '#9ca6af',
     backgroundDeleted: '#dadfe2',
     colorDeleted: '#757e85',
     colorUsername: '#9ca6af',
@@ -310,16 +314,32 @@ rooms="[
     users: [
       {
         _id: 1234,
-        username: 'John Doe'
+        username: 'John Doe',
+        status: {
+          state: 'online',
+          last_changed: 'today, 14:30'
+        }
       },
       {
         _id: 4321,
-        username: 'John Snow'
+        username: 'John Snow',
+        status: {
+          state: 'offline',
+          last_changed: '14 July, 20:00'
+        }
       }
-    ]
+    ],
+    typingUsers: [ 4321 ]
   }
 ]"
 ```
+
+- For each room user, you can add the `status` property, which can hold the `state` and `last_changed` properties:
+
+  - `state` can be `'online'` or `'offline'`
+  - `last_changed` is the date when `state` was last modified.
+
+- `typingUsers` is an array of all the users who are currently writing a message
 
 ### Messages prop
 
@@ -368,6 +388,7 @@ messages="[
 | menuActionHandler (2)    | `{ roomId, action }`                                            | A user clicks on the vertical dots icon inside a room |
 | messageActionHandler (3) | `{ roomId, action }`                                            | A user clicks on the dropdown icon inside a message   |
 | sendMessageReaction      | `{ roomId, messageId, reaction, remove }`                       | A user clicks on the emoji icon inside a message      |
+| typingMessage            | `{ message, roomId }`                                           | A user is typing a message                            |
 
 (1) `fetchMessages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top
 
