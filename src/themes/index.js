@@ -18,7 +18,9 @@ export const defaultThemeStyles = {
 		},
 
 		header: {
-			background: '#fff'
+			background: '#fff',
+			colorRoomName: '#0a0a0a',
+			colorRoomInfo: '#9ca6af'
 		},
 
 		footer: {
@@ -49,6 +51,7 @@ export const defaultThemeStyles = {
 			background: '#fff',
 			backgroundMe: '#ccf2cf',
 			color: '#0a0a0a',
+			colorStarted: '#9ca6af',
 			backgroundDeleted: '#dadfe2',
 			colorDeleted: '#757e85',
 			colorUsername: '#9ca6af',
@@ -124,7 +127,9 @@ export const defaultThemeStyles = {
 		},
 
 		header: {
-			background: '#181a1b'
+			background: '#181a1b',
+			colorRoomName: '#fff',
+			colorRoomInfo: '#9ca6af'
 		},
 
 		footer: {
@@ -155,6 +160,7 @@ export const defaultThemeStyles = {
 			background: '#22242a',
 			backgroundMe: '#4fb381',
 			color: '#fff',
+			colorStarted: '#9ca6af',
 			backgroundDeleted: '#1b1c21',
 			colorDeleted: '#a2a5a8',
 			colorUsername: '#b3bac9',
@@ -243,6 +249,8 @@ export const cssThemeVars = ({
 
 		// header
 		'--chat-header-bg-color': header.background,
+		'--chat-header-color-name': header.colorRoomName,
+		'--chat-header-color-info': header.colorRoomInfo,
 
 		// footer
 		'--chat-footer-bg-color': footer.background,
@@ -267,6 +275,7 @@ export const cssThemeVars = ({
 		// message
 		'--chat-message-bg-color': message.background,
 		'--chat-message-bg-color-me': message.backgroundMe,
+		'--chat-message-color-started': message.colorStarted,
 		'--chat-message-bg-color-deleted': message.backgroundDeleted,
 		'--chat-message-color-deleted': message.colorDeleted,
 		'--chat-message-color-username': message.colorUsername,

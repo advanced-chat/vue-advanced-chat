@@ -13,7 +13,13 @@ export const parseTimestamp = (timestamp, format = '') => {
 	} else if (format === 'DD/MM/YY') {
 		const options = { month: 'numeric', year: 'numeric', day: 'numeric' }
 		return `${new Intl.DateTimeFormat('en-GB', options).format(date)}`
+	} else if (format === 'DD MMMM, HH:mm') {
+		const options = { month: 'long', day: 'numeric' }
+		return `${new Intl.DateTimeFormat('en-GB', options).format(
+			date
+		)}, ${zeroPad(date.getHours(), 2)}:${zeroPad(date.getMinutes(), 2)}`
 	}
+
 	return date
 }
 

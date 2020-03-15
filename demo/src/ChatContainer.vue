@@ -64,17 +64,18 @@
 			@menuActionHandler="menuActionHandler"
 			@messageActionHandler="messageActionHandler"
 			@sendMessageReaction="sendMessageReaction"
+			@typingMessage="typingMessage"
 		/>
 	</div>
 </template>
 
 <script>
 import {
+	firebase,
 	roomsRef,
 	usersRef,
 	filesRef,
-	deleteDbField,
-	firebase
+	deleteDbField
 } from '@/firestore'
 import { parseTimestamp, isSameDay } from '@/utils/dates'
 import ChatWindow from './../../src/ChatWindow'
@@ -118,6 +119,7 @@ export default {
 
 	mounted() {
 		this.fetchRooms()
+		this.updateUserOnlineStatus()
 	},
 
 	destroyed() {
@@ -147,14 +149,21 @@ export default {
 		async fetchRooms() {
 			this.resetRooms()
 
-			const rooms = await roomsRef
-				.where('users', 'array-contains', this.currentUserId)
-				.get()
+			const query = roomsRef.where(
+				'users',
+				'array-contains',
+				this.currentUserId
+			)
 
+			const rooms = await query.get()
+
+			const roomList = []
 			const rawRoomUsers = []
 			const rawMessages = []
 
 			rooms.forEach(room => {
+				roomList[room.id] = { ...room.data(), users: [] }
+
 				const rawUsers = []
 
 				room.data().users.map(userId => {
@@ -178,14 +187,11 @@ export default {
 				rawMessages.push(this.getLastMessage(room))
 			})
 
-			let roomList = []
-
 			const users = await Promise.all(rawRoomUsers)
 
-			users.map(user => {
-				if (roomList[user.roomId]) roomList[user.roomId].users.push(user)
-				else roomList[user.roomId] = { users: [user] }
-			})
+			users.map(user => roomList[user.roomId].users.push(user))
+
+			this.listenUsersOnlineStatus(users)
 
 			const roomMessages = await Promise.all(rawMessages).then(messages => {
 				return messages.map(message => {
@@ -227,6 +233,8 @@ export default {
 			this.rooms = this.rooms.concat(formattedRooms)
 			this.loadingRooms = false
 			this.rooms.map((room, index) => this.listenLastMessage(room, index))
+
+			this.listenRoomsTypingUsers(query)
 		},
 
 		getLastMessage(room) {
@@ -261,7 +269,7 @@ export default {
 			const timestampFormat = isSameDay(date, new Date()) ? 'HH:mm' : 'DD/MM/YY'
 
 			let timestamp = parseTimestamp(message.timestamp, timestampFormat)
-			if (timestampFormat === 'HH:mm') timestamp = 'Today, ' + timestamp
+			if (timestampFormat === 'HH:mm') timestamp = `Today, ${timestamp}`
 
 			let content = message.content
 			if (message.file) content = `${message.file.name}.${message.file.type}`
@@ -463,6 +471,87 @@ export default {
 				.update({
 					[`reactions.${reaction.name}`]: dbAction
 				})
+		},
+
+		typingMessage({ message, roomId }) {
+			const dbAction = message
+				? firebase.firestore.FieldValue.arrayUnion(this.currentUserId)
+				: firebase.firestore.FieldValue.arrayRemove(this.currentUserId)
+
+			roomsRef.doc(roomId).update({
+				typingUsers: dbAction
+			})
+		},
+
+		async listenRoomsTypingUsers(query) {
+			query.onSnapshot(rooms => {
+				rooms.forEach(room => {
+					const foundRoom = this.rooms.find(r => r.roomId === room.id)
+					if (foundRoom) foundRoom.typingUsers = room.data().typingUsers
+				})
+			})
+		},
+
+		updateUserOnlineStatus() {
+			const userStatusRef = firebase
+				.database()
+				.ref('/status/' + this.currentUserId)
+
+			const isOfflineData = {
+				state: 'offline',
+				last_changed: firebase.database.ServerValue.TIMESTAMP
+			}
+
+			const isOnlineData = {
+				state: 'online',
+				last_changed: firebase.database.ServerValue.TIMESTAMP
+			}
+
+			firebase
+				.database()
+				.ref('.info/connected')
+				.on('value', snapshot => {
+					if (snapshot.val() == false) return
+
+					userStatusRef
+						.onDisconnect()
+						.set(isOfflineData)
+						.then(() => {
+							userStatusRef.set(isOnlineData)
+						})
+				})
+		},
+
+		listenUsersOnlineStatus(users) {
+			users.map(user => {
+				firebase
+					.database()
+					.ref('/status/' + user._id)
+					.on('value', snapshot => {
+						if (!snapshot.val()) return
+
+						const foundUser = users.find(u => snapshot.key === u._id)
+
+						if (foundUser) {
+							const timestampFormat = isSameDay(
+								new Date(snapshot.val().last_changed),
+								new Date()
+							)
+								? 'HH:mm'
+								: 'DD MMMM, HH:mm'
+
+							const timestamp = parseTimestamp(
+								new Date(snapshot.val().last_changed),
+								timestampFormat
+							)
+
+							const last_changed =
+								timestampFormat === 'HH:mm' ? `today, ${timestamp}` : timestamp
+
+							foundUser.status = { ...snapshot.val(), last_changed }
+						}
+					})
+			})
 		},
 
 		addRoom() {

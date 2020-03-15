@@ -36,6 +36,7 @@
 				@menuActionHandler="menuActionHandler"
 				@messageActionHandler="messageActionHandler"
 				@sendMessageReaction="sendMessageReaction"
+				@typingMessage="typingMessage"
 			>
 			</room>
 		</div>
@@ -92,8 +93,10 @@ export default {
 	},
 
 	watch: {
-		rooms(val) {
-			if (val[0]) this.fetchRoom({ room: val[0] })
+		rooms(newVal, oldVal) {
+			if (newVal[0] && newVal.length !== oldVal.length) {
+				this.fetchRoom({ room: newVal[0] })
+			}
 		},
 
 		room(val) {
@@ -188,6 +191,12 @@ export default {
 		sendMessageReaction(messageReaction) {
 			this.$emit('sendMessageReaction', {
 				...messageReaction,
+				roomId: this.room.roomId
+			})
+		},
+		typingMessage(message) {
+			this.$emit('typingMessage', {
+				message,
 				roomId: this.room.roomId
 			})
 		}

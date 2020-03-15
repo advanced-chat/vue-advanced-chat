@@ -1,5 +1,6 @@
 import * as app from 'firebase/app'
 import 'firebase/firestore'
+import 'firebase/database'
 import 'firebase/storage'
 
 const config =

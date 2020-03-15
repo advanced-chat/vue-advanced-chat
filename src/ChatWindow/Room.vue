@@ -17,7 +17,15 @@
 				class="room-avatar"
 				:style="{ 'background-image': `url(${room.avatar})` }"
 			></div>
-			<div class="room-name">{{ room.roomName }}</div>
+			<div>
+				<div class="room-name">{{ room.roomName }}</div>
+				<div v-if="typingUsers" class="room-info">
+					{{ typingUsers }} {{ textMessages.IS_TYPING }}
+				</div>
+				<div v-else-if="userStatus" class="room-info">
+					{{ userStatus }}
+				</div>
+			</div>
 			<div
 				class="svg-button room-options"
 				v-if="menuActions.length"
@@ -63,7 +71,7 @@
 					</infinite-loading>
 				</transition>
 				<transition-group name="fade-message">
-					<div v-for="(message, i) in messages" :key="message._id">
+					<div v-for="(message, i) in messages" :key="i">
 						<message
 							:currentUserId="currentUserId"
 							:message="message"
@@ -150,7 +158,7 @@
 						'padding-left': `${imageDimensions.width + 6}px`
 					}"
 					v-model="message"
-					@input="autoGrow"
+					@input="onChangeInput"
 					@keydown.esc="resetMessage"
 					@keydown.enter.exact.prevent="sendMessage"
 				></textarea>
@@ -279,9 +287,12 @@ export default {
 			if (val) this.infiniteState = null
 			else this.focusTextarea()
 		},
-		room() {
-			this.loadingMessages = true
-			this.resetMessage()
+		room(newVal, oldVal) {
+			if (newVal.roomId && newVal.roomId !== oldVal.roomId) {
+				this.loadingMessages = true
+				this.resetMessage()
+				this.$emit('typingMessage', this.message)
+			}
 		},
 		messages(newVal, oldVal) {
 			newVal.forEach(message => {
@@ -340,6 +351,35 @@ export default {
 		},
 		inputDisabled() {
 			return this.isMessageEmpty()
+		},
+		typingUsers() {
+			if (!this.room.typingUsers || !this.room.typingUsers.length) return
+
+			const typingUsers = this.room.users.filter(user => {
+				if (user._id === this.currentUserId) return
+				if (this.room.typingUsers.indexOf(user._id) === -1) return
+				if (user.status && user.status.state === 'offline') return
+				return true
+			})
+
+			return typingUsers.map(user => user.username).join(', ')
+		},
+		userStatus() {
+			if (!this.room.users || this.room.users.length !== 2) return
+
+			const user = this.room.users.find(u => u._id !== this.currentUserId)
+
+			if (!user.status) return
+
+			let text = ''
+
+			if (user.status.state === 'online') {
+				text = this.textMessages.IS_ONLINE
+			} else if (user.status.last_changed) {
+				text = this.textMessages.LAST_SEEN + user.status.last_changed
+			}
+
+			return text
 		}
 	},
 
@@ -435,6 +475,10 @@ export default {
 			const element = this.$refs.scrollContainer
 			element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
 		},
+		onChangeInput(el) {
+			this.autoGrow(el)
+			this.$emit('typingMessage', this.message)
+		},
 		autoGrow(el) {
 			this.resizeTextarea(el.srcElement)
 		},
@@ -527,6 +571,14 @@ export default {
 
 .room-name {
 	font-size: 17px;
+	line-height: 18px;
+	color: var(--chat-header-color-name);
+}
+
+.room-info {
+	font-size: 13px;
+	line-height: 18px;
+	color: var(--chat-header-color-info);
 }
 
 .room-options {
@@ -546,7 +598,7 @@ export default {
 
 .text-started {
 	font-size: 14px;
-	color: #9ca6af;
+	color: var(--chat-message-color-started);
 	font-style: italic;
 	text-align: center;
 	margin-top: 27px;
