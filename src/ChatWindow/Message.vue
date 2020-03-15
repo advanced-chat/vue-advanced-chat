@@ -61,10 +61,10 @@
 					</div>
 
 					<div class="image-container" v-else-if="isImage">
-						<chat-loader
+						<loader
 							:style="{ top: `${imageResponsive.loaderTop}px` }"
 							:show="isImageLoading"
-						></chat-loader>
+						></loader>
 						<div
 							class="message-image"
 							:class="{
@@ -194,12 +194,12 @@
 <script>
 import SvgIcon from './SvgIcon'
 import vClickOutside from 'v-click-outside'
-import ChatLoader from './ChatLoader'
+import Loader from './Loader'
 import EmojiPicker from './EmojiPicker'
 
 export default {
-	name: 'chat-message',
-	components: { SvgIcon, ChatLoader, EmojiPicker },
+	name: 'message',
+	components: { SvgIcon, Loader, EmojiPicker },
 
 	directives: {
 		clickOutside: vClickOutside.directive

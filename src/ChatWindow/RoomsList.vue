@@ -19,7 +19,7 @@
 			</div>
 		</div>
 
-		<chat-loader :show="loadingRooms"></chat-loader>
+		<loader :show="loadingRooms"></loader>
 
 		<div class="rooms-empty" v-if="!loadingRooms && !rooms.length">
 			No rooms
@@ -64,13 +64,13 @@
 </template>
 
 <script>
-import ChatLoader from './ChatLoader'
+import Loader from './Loader'
 import filteredUsers from '../utils/filterItems'
 import SvgIcon from './SvgIcon'
 
 export default {
 	name: 'rooms-list',
-	components: { ChatLoader, SvgIcon },
+	components: { Loader, SvgIcon },
 
 	props: {
 		textMessages: { type: Object, required: true },

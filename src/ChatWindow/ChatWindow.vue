@@ -13,7 +13,7 @@
 				@addRoom="addRoom"
 			>
 			</rooms-list>
-			<messages-list
+			<room
 				:currentUserId="currentUserId"
 				:room="room"
 				:messages="messages"
@@ -37,14 +37,14 @@
 				@messageActionHandler="messageActionHandler"
 				@sendMessageReaction="sendMessageReaction"
 			>
-			</messages-list>
+			</room>
 		</div>
 	</div>
 </template>
 
 <script>
 import RoomsList from './RoomsList'
-import MessagesList from './MessagesList'
+import Room from './Room'
 const { roomsValid, partcipantsValid } = require('../utils/roomValidation')
 import locales from '../locales'
 import { defaultThemeStyles, cssThemeVars } from '../themes'
@@ -53,7 +53,7 @@ export default {
 	name: 'chat-container',
 	components: {
 		RoomsList,
-		MessagesList
+		Room
 	},
 
 	props: {

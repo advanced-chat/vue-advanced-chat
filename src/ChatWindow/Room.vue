@@ -39,7 +39,7 @@
 		</div>
 		<div ref="scrollContainer" class="container-scroll">
 			<div class="messages-container">
-				<chat-loader :show="loadingMessages"></chat-loader>
+				<loader :show="loadingMessages"></loader>
 				<transition name="fade-message">
 					<div class="text-started" v-if="showNoMessages">
 						{{ textMessages.MESSAGES_EMPTY }}
@@ -56,7 +56,7 @@
 						@infinite="loadMoreMessages"
 					>
 						<div slot="spinner">
-							<chat-loader :show="true" :infinite="true"></chat-loader>
+							<loader :show="true" :infinite="true"></loader>
 						</div>
 						<div slot="no-results"></div>
 						<div slot="no-more"></div>
@@ -64,7 +64,7 @@
 				</transition>
 				<transition-group name="fade-message">
 					<div v-for="(message, i) in messages" :key="message._id">
-						<chat-message
+						<message
 							:currentUserId="currentUserId"
 							:message="message"
 							:index="i"
@@ -83,7 +83,7 @@
 							@addNewMessage="addNewMessage"
 							@sendMessageReaction="sendMessageReaction"
 							@hideOptions="hideOptions = $event"
-						></chat-message>
+						></message>
 					</div>
 				</transition-group>
 			</div>
@@ -200,19 +200,19 @@
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
 import vClickOutside from 'v-click-outside'
-import ChatLoader from './ChatLoader'
-import ChatMessage from './ChatMessage'
+import Loader from './Loader'
+import Message from './Message'
 import SvgIcon from './SvgIcon'
 import EmojiPicker from './EmojiPicker'
 import emojis from 'vue-emoji-picker/src/emojis'
 const { messagesValid } = require('../utils/roomValidation')
 
 export default {
-	name: 'messages-list',
+	name: 'room',
 	components: {
 		InfiniteLoading,
-		ChatLoader,
-		ChatMessage,
+		Loader,
+		Message,
 		SvgIcon,
 		EmojiPicker
 	},

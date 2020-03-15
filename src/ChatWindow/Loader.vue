@@ -11,7 +11,7 @@
 
 <script>
 export default {
-	name: 'chat-loader',
+	name: 'loader',
 	props: ['show', 'infinite']
 }
 </script>
