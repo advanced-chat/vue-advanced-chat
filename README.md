@@ -179,7 +179,7 @@ textMessages="{
 
 (7) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
 
-(8) `styles` can be use to customize your own theme. Ex:
+(8) `styles` can be used to customize your own theme. Ex:
 
 ```javascript
 styles="{
