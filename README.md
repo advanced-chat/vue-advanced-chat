@@ -80,23 +80,24 @@ You can import it as a custom component:
 
 ## Props API
 
-| Prop               | Type             | Required | Default |
-| ------------------ | ---------------- | -------- | ------- |
-| height             | String           | -        | 600px   |
-| currentUserId (1)  | [String, Number] | true     | -       |
-| rooms              | Array            | -        | [ ]     |
-| loadingRooms (2)   | Boolean          | -        | false   |
-| messages           | Array            | -        | [ ]     |
-| messagesLoaded (3) | Boolean          | -        | false   |
-| menuActions (4)    | Array            | -        | [ ]     |
-| messageActions (5) | Array            | -        | (4)     |
-| showAddRoom        | Boolean          | -        | true    |
-| showFiles          | Boolean          | -        | true    |
-| showEmojis         | Boolean          | -        | true    |
-| showReactionEmojis | Boolean          | -        | true    |
-| textMessages (6)   | Object           | -        | null    |
-| theme (7)          | Sring            | -        | light   |
-| styles (8)         | Object           | -        | (8)     |
+| Prop                     | Type             | Required | Default |
+| ------------------------ | ---------------- | -------- | ------- |
+| height                   | String           | -        | 600px   |
+| currentUserId (1)        | [String, Number] | true     | -       |
+| rooms                    | Array            | -        | [ ]     |
+| loadingRooms (2)         | Boolean          | -        | false   |
+| messages                 | Array            | -        | [ ]     |
+| messagesLoaded (3)       | Boolean          | -        | false   |
+| menuActions (4)          | Array            | -        | [ ]     |
+| messageActions (5)       | Array            | -        | (4)     |
+| showAddRoom              | Boolean          | -        | true    |
+| showFiles                | Boolean          | -        | true    |
+| showEmojis               | Boolean          | -        | true    |
+| showReactionEmojis       | Boolean          | -        | true    |
+| textMessages (6)         | Object           | -        | null    |
+| responsiveBreakpoint (7) | Number           | -        | 900     |
+| theme (8)                | Sring            | -        | light   |
+| styles (9)               | Object           | -        | (9)     |
 
 (1) `currentUserId` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -177,9 +178,11 @@ textMessages="{
 }"
 ```
 
-(7) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+(7) `responsiveBreakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width
 
-(8) `styles` can be used to customize your own theme. Ex:
+(8) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+
+(9) `styles` can be used to customize your own theme. Ex:
 
 ```javascript
 styles="{

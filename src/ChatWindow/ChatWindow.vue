@@ -63,6 +63,7 @@ export default {
 		height: { type: String, default: '600px' },
 		theme: { type: String, default: 'light' },
 		styles: { type: Object, default: () => ({}) },
+		responsiveBreakpoint: { type: Number, default: 900 },
 		textMessages: { type: Object, default: null },
 		currentUserId: { type: [String, Number], default: '' },
 		rooms: { type: Array, default: () => [] },
@@ -89,7 +90,6 @@ export default {
 		return {
 			room: {},
 			showRoomsList: true,
-			mobileBreakpoint: 700,
 			isMobile: false
 		}
 	},
@@ -151,7 +151,7 @@ export default {
 
 	methods: {
 		updateResponsive() {
-			this.isMobile = window.innerWidth < this.mobileBreakpoint
+			this.isMobile = window.innerWidth < this.responsiveBreakpoint
 			this.showRoomsList = !this.isMobile
 		},
 		toggleRoomsList() {
