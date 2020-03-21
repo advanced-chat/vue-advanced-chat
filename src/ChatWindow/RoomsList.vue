@@ -25,7 +25,6 @@
 			No rooms
 		</div>
 
-		<!-- :class="{ 'room-disabled': loadingMessages }" -->
 		<div v-if="!loadingRooms" class="room-list">
 			<div
 				class="room-item"
@@ -41,7 +40,13 @@
 				></div>
 				<div class="name-container">
 					<div class="title-container">
-						<div class="room-name">{{ room.roomName }}</div>
+						<div
+							class="state-circle"
+							:class="{ 'state-online': userStatus(room) }"
+						></div>
+						<div class="room-name">
+							{{ room.roomName }}
+						</div>
 						<div class="room-name text-date" v-if="room.lastMessage">
 							{{ room.lastMessage.timestamp }}
 						</div>
@@ -73,6 +78,7 @@ export default {
 	components: { Loader, SvgIcon },
 
 	props: {
+		currentUserId: { type: [String, Number], required: true },
 		textMessages: { type: Object, required: true },
 		showRoomsList: { type: Boolean, required: true },
 		showAddRoom: { type: Boolean, required: true },
@@ -111,6 +117,13 @@ export default {
 		},
 		addRoom() {
 			this.$emit('addRoom')
+		},
+		userStatus(room) {
+			if (!room.users || room.users.length !== 2) return
+
+			const user = room.users.find(u => u._id !== this.currentUserId)
+
+			return user.status && user.status.state === 'online'
 		}
 	}
 }
@@ -266,15 +279,23 @@ input {
 	text-align: right;
 }
 
-.room-disabled {
-	pointer-events: none;
-}
-
 .icon-check {
 	height: 14px;
 	width: 14px;
 	vertical-align: middle;
 	margin-top: -2px;
 	margin-right: 1px;
+}
+
+.state-circle {
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	background-color: #ccc;
+	margin-right: 6px;
+}
+
+.state-online {
+	background-color: #4caf50;
 }
 </style>
