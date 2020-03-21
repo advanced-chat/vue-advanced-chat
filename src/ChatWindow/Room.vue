@@ -308,7 +308,7 @@ export default {
 			const options = { top: element.scrollHeight }
 
 			if (oldVal && newVal && oldVal.length === newVal.length - 1) {
-				setTimeout(() => {
+				return setTimeout(() => {
 					options.behavior = 'smooth'
 					element.scrollTo(options)
 				}, 50)
@@ -317,8 +317,10 @@ export default {
 			if (this.infiniteState) {
 				this.infiniteState.loaded()
 			} else if (newVal.length) {
-				this.loadingMessages = false
-				setTimeout(() => element.scrollTo(options), 50)
+				setTimeout(() => {
+					element.scrollTo(options)
+					this.loadingMessages = false
+				}, 0)
 			}
 		},
 		messagesLoaded(val) {
