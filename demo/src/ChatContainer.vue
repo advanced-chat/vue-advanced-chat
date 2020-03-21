@@ -529,7 +529,7 @@ export default {
 		},
 
 		listenUsersOnlineStatus() {
-			this.rooms.map((room, index) => {
+			this.rooms.map(room => {
 				room.users.map(user => {
 					firebase
 						.database()
@@ -559,7 +559,11 @@ export default {
 
 								user.status = { ...snapshot.val(), last_changed }
 
-								this.$set(this.rooms, index, room)
+								const roomIndex = this.rooms.findIndex(
+									r => room.roomId === r.roomId
+								)
+
+								this.$set(this.rooms, roomIndex, room)
 							}
 						})
 				})
