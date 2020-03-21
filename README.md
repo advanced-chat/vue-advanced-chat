@@ -96,8 +96,9 @@ You can import it as a custom component:
 | showReactionEmojis       | Boolean          | -        | true    |
 | textMessages (6)         | Object           | -        | null    |
 | responsiveBreakpoint (7) | Number           | -        | 900     |
-| theme (8)                | Sring            | -        | light   |
-| styles (9)               | Object           | -        | (9)     |
+| singleRoom (8)           | Number           | -        | 900     |
+| theme (9)                | Sring            | -        | light   |
+| styles (10)              | Object           | -        | (10)    |
 
 (1) `currentUserId` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -178,11 +179,13 @@ textMessages="{
 }"
 ```
 
-(7) `responsiveBreakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width
+(7) `responsiveBreakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
 
-(8) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+(8) `singleRoom` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
 
-(9) `styles` can be used to customize your own theme. Ex:
+(9) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+
+(10) `styles` can be used to customize your own theme. Ex:
 
 ```javascript
 styles="{

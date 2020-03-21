@@ -2,6 +2,7 @@
 	<div class="card-window" :style="[{ height }, cssVars]">
 		<div class="chat-container">
 			<rooms-list
+				v-if="!singleRoom"
 				:currentUserId="currentUserId"
 				:rooms="rooms"
 				:loadingRooms="loadingRooms"
@@ -26,6 +27,7 @@
 				:showEmojis="showEmojis"
 				:showReactionEmojis="showReactionEmojis"
 				:textMessages="t"
+				:singleRoom="singleRoom"
 				:showRoomsList="showRoomsList"
 				:isMobile="isMobile"
 				:loadingRooms="loadingRooms"
@@ -64,6 +66,7 @@ export default {
 		theme: { type: String, default: 'light' },
 		styles: { type: Object, default: () => ({}) },
 		responsiveBreakpoint: { type: Number, default: 900 },
+		singleRoom: { type: Boolean, default: false },
 		textMessages: { type: Object, default: null },
 		currentUserId: { type: [String, Number], default: '' },
 		rooms: { type: Array, default: () => [] },

@@ -1,11 +1,12 @@
 <template>
 	<div
 		class="col-messages"
-		:class="{ 'col-messages-full': !showRoomsList }"
+		:class="{ 'col-messages-full': !showRoomsList || singleRoom }"
 		v-show="(isMobile && !showRoomsList) || !isMobile"
 	>
 		<div class="room-header app-border-b">
 			<div
+				v-if="!singleRoom"
 				class="svg-button toggle-button"
 				:class="{ 'rotate-icon': !showRoomsList && !isMobile }"
 				@click="$emit('toggleRoomsList')"
@@ -234,6 +235,7 @@ export default {
 	props: {
 		currentUserId: { type: [String, Number], required: true },
 		textMessages: { type: Object, required: true },
+		singleRoom: { type: Boolean, required: true },
 		showRoomsList: { type: Boolean, required: true },
 		isMobile: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },
