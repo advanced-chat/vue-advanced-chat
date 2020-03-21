@@ -94,6 +94,7 @@ export default {
 			perPage: 20,
 			rooms: [],
 			loadingRooms: true,
+			selectedRoom: null,
 			messages: [],
 			messagesLoaded: false,
 			start: null,
@@ -295,7 +296,11 @@ export default {
 
 			if (this.start) query = query.startAfter(this.start)
 
+			this.selectedRoom = room.roomId
+
 			query.get().then(messages => {
+				if (this.selectedRoom !== room.roomId) return
+
 				if (messages.empty) this.messagesLoaded = true
 
 				if (this.start) this.end = this.start
@@ -305,6 +310,8 @@ export default {
 
 				if (this.start) listenerQuery = listenerQuery.startAfter(this.start)
 				if (this.end) listenerQuery = listenerQuery.endAt(this.end)
+
+				if (options.reset) this.messages = []
 
 				messages.forEach(message => {
 					const formattedMessage = this.formatMessage(room, message)
