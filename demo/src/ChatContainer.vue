@@ -191,8 +191,6 @@ export default {
 
 			users.map(user => roomList[user.roomId].users.push(user))
 
-			this.listenUsersOnlineStatus(users)
-
 			const roomMessages = await Promise.all(rawMessages).then(messages => {
 				return messages.map(message => {
 					return {
@@ -234,6 +232,7 @@ export default {
 			this.loadingRooms = false
 			this.rooms.map((room, index) => this.listenLastMessage(room, index))
 
+			this.listenUsersOnlineStatus()
 			this.listenRoomsTypingUsers(query)
 		},
 
@@ -522,35 +521,41 @@ export default {
 				})
 		},
 
-		listenUsersOnlineStatus(users) {
-			users.map(user => {
-				firebase
-					.database()
-					.ref('/status/' + user._id)
-					.on('value', snapshot => {
-						if (!snapshot.val()) return
+		listenUsersOnlineStatus() {
+			this.rooms.map((room, index) => {
+				room.users.map(user => {
+					firebase
+						.database()
+						.ref('/status/' + user._id)
+						.on('value', snapshot => {
+							if (!snapshot.val()) return
 
-						const foundUser = users.find(u => snapshot.key === u._id)
+							const foundUser = room.users.find(u => snapshot.key === u._id)
 
-						if (foundUser) {
-							const timestampFormat = isSameDay(
-								new Date(snapshot.val().last_changed),
-								new Date()
-							)
-								? 'HH:mm'
-								: 'DD MMMM, HH:mm'
+							if (foundUser) {
+								const timestampFormat = isSameDay(
+									new Date(snapshot.val().last_changed),
+									new Date()
+								)
+									? 'HH:mm'
+									: 'DD MMMM, HH:mm'
 
-							const timestamp = parseTimestamp(
-								new Date(snapshot.val().last_changed),
-								timestampFormat
-							)
+								const timestamp = parseTimestamp(
+									new Date(snapshot.val().last_changed),
+									timestampFormat
+								)
 
-							const last_changed =
-								timestampFormat === 'HH:mm' ? `today, ${timestamp}` : timestamp
+								const last_changed =
+									timestampFormat === 'HH:mm'
+										? `today, ${timestamp}`
+										: timestamp
 
-							foundUser.status = { ...snapshot.val(), last_changed }
-						}
-					})
+								user.status = { ...snapshot.val(), last_changed }
+
+								this.$set(this.rooms, index, room)
+							}
+						})
+				})
 			})
 		},
 

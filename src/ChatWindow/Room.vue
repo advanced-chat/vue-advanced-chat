@@ -71,7 +71,7 @@
 					</infinite-loading>
 				</transition>
 				<transition-group name="fade-message">
-					<div v-for="(message, i) in messages" :key="i">
+					<div v-for="(message, i) in messages" :key="message._id">
 						<message
 							:currentUserId="currentUserId"
 							:message="message"
@@ -234,7 +234,8 @@ export default {
 		textMessages: { type: Object, required: true },
 		showRoomsList: { type: Boolean, required: true },
 		isMobile: { type: Boolean, required: true },
-		room: { type: Object, required: true },
+		rooms: { type: Array, required: true },
+		roomId: { type: String, required: true },
 		messages: { type: Array, required: true },
 		messagesLoaded: { type: Boolean, required: true },
 		menuActions: { type: Array, required: true },
@@ -310,14 +311,14 @@ export default {
 				setTimeout(() => {
 					options.behavior = 'smooth'
 					element.scrollTo(options)
-				}, 0)
+				}, 50)
 			}
 
 			if (this.infiniteState) {
 				this.infiniteState.loaded()
 			} else if (newVal.length) {
 				this.loadingMessages = false
-				setTimeout(() => element.scrollTo(options), 0)
+				setTimeout(() => element.scrollTo(options), 50)
 			}
 		},
 		messagesLoaded(val) {
@@ -338,6 +339,9 @@ export default {
 	},
 
 	computed: {
+		room() {
+			return this.rooms.find(room => room.roomId === this.roomId) || {}
+		},
 		showNoMessages() {
 			return (
 				this.room.roomId &&

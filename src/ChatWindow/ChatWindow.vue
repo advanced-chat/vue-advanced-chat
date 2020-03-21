@@ -2,6 +2,7 @@
 	<div class="card-window" :style="[{ height }, cssVars]">
 		<div class="chat-container">
 			<rooms-list
+				:currentUserId="currentUserId"
 				:rooms="rooms"
 				:loadingRooms="loadingRooms"
 				:room="room"
@@ -15,7 +16,8 @@
 			</rooms-list>
 			<room
 				:currentUserId="currentUserId"
-				:room="room"
+				:rooms="rooms"
+				:roomId="room.roomId || ''"
 				:messages="messages"
 				:messagesLoaded="messagesLoaded"
 				:menuActions="menuActions"
