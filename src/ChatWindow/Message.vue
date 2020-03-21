@@ -383,7 +383,7 @@ export default {
 			this.$emit('hideOptions', false)
 
 			setTimeout(() => {
-				if (!this.roomFooterRef || !this.$refs.menuOptions || !this.actionIcon)
+				if (!this.roomFooterRef || !this.$refs.menuOptions || !this.$refs.actionIcon)
 					return
 
 				const menuOptionsHeight = this.$refs.menuOptions.getBoundingClientRect()
