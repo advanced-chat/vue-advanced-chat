@@ -537,34 +537,28 @@ export default {
 						.on('value', snapshot => {
 							if (!snapshot.val()) return
 
-							const foundUser = room.users.find(u => snapshot.key === u._id)
+							const timestampFormat = isSameDay(
+								new Date(snapshot.val().last_changed),
+								new Date()
+							)
+								? 'HH:mm'
+								: 'DD MMMM, HH:mm'
 
-							if (foundUser) {
-								const timestampFormat = isSameDay(
-									new Date(snapshot.val().last_changed),
-									new Date()
-								)
-									? 'HH:mm'
-									: 'DD MMMM, HH:mm'
+							const timestamp = parseTimestamp(
+								new Date(snapshot.val().last_changed),
+								timestampFormat
+							)
 
-								const timestamp = parseTimestamp(
-									new Date(snapshot.val().last_changed),
-									timestampFormat
-								)
+							const last_changed =
+								timestampFormat === 'HH:mm' ? `today, ${timestamp}` : timestamp
 
-								const last_changed =
-									timestampFormat === 'HH:mm'
-										? `today, ${timestamp}`
-										: timestamp
+							user.status = { ...snapshot.val(), last_changed }
 
-								user.status = { ...snapshot.val(), last_changed }
+							const roomIndex = this.rooms.findIndex(
+								r => room.roomId === r.roomId
+							)
 
-								const roomIndex = this.rooms.findIndex(
-									r => room.roomId === r.roomId
-								)
-
-								this.$set(this.rooms, roomIndex, room)
-							}
+							this.$set(this.rooms, roomIndex, room)
 						})
 				})
 			})
