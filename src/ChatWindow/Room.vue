@@ -46,60 +46,62 @@
 			</transition>
 		</div>
 		<div ref="scrollContainer" class="container-scroll">
+			<loader :show="loadingMessages"></loader>
 			<div class="messages-container">
-				<loader :show="loadingMessages"></loader>
-				<transition name="fade-message">
-					<div class="text-started" v-if="showNoMessages">
-						{{ textMessages.MESSAGES_EMPTY }}
-					</div>
-					<div class="text-started" v-if="showMessagesStarted">
-						{{ textMessages.CONVERSATION_STARTED }} {{ messages[0].date }}
-					</div>
-				</transition>
-				<transition name="fade-message">
-					<infinite-loading
-						v-if="messages.length"
-						spinner="spiral"
-						direction="top"
-						@infinite="loadMoreMessages"
-					>
-						<div slot="spinner">
-							<loader :show="true" :infinite="true"></loader>
+				<div :class="{ 'messages-hidden': loadingMessages }">
+					<transition name="fade-message">
+						<div class="text-started" v-if="showNoMessages">
+							{{ textMessages.MESSAGES_EMPTY }}
 						</div>
-						<div slot="no-results"></div>
-						<div slot="no-more"></div>
-					</infinite-loading>
-				</transition>
-				<transition-group name="fade-message">
-					<div v-for="(message, i) in messages" :key="message._id">
-						<message
-							:currentUserId="currentUserId"
-							:message="message"
-							:index="i"
-							:messages="messages"
-							:editedMessage="editedMessage"
-							:messageActions="messageActions"
-							:roomUsers="room.users"
-							:textMessages="textMessages"
-							:roomFooterRef="$refs.roomFooter"
-							:newMessages="newMessages"
-							:showReactionEmojis="showReactionEmojis"
-							:emojisList="emojisList"
-							:hideOptions="hideOptions"
-							@messageActionHandler="messageActionHandler"
-							@openFile="openFile"
-							@addNewMessage="addNewMessage"
-							@sendMessageReaction="sendMessageReaction"
-							@hideOptions="hideOptions = $event"
-						></message>
-					</div>
-				</transition-group>
-			</div>
-			<transition name="bounce">
-				<div class="icon-scroll" v-if="scrollIcon" @click="scrollToBottom">
-					<svg-icon name="dropdown" param="scroll" />
+						<div class="text-started" v-if="showMessagesStarted">
+							{{ textMessages.CONVERSATION_STARTED }} {{ messages[0].date }}
+						</div>
+					</transition>
+					<transition name="fade-message">
+						<infinite-loading
+							v-if="messages.length"
+							spinner="spiral"
+							direction="top"
+							@infinite="loadMoreMessages"
+						>
+							<div slot="spinner">
+								<loader :show="true" :infinite="true"></loader>
+							</div>
+							<div slot="no-results"></div>
+							<div slot="no-more"></div>
+						</infinite-loading>
+					</transition>
+					<transition-group name="fade-message">
+						<div v-for="(message, i) in messages" :key="message._id">
+							<message
+								:currentUserId="currentUserId"
+								:message="message"
+								:index="i"
+								:messages="messages"
+								:editedMessage="editedMessage"
+								:messageActions="messageActions"
+								:roomUsers="room.users"
+								:textMessages="textMessages"
+								:roomFooterRef="$refs.roomFooter"
+								:newMessages="newMessages"
+								:showReactionEmojis="showReactionEmojis"
+								:emojisList="emojisList"
+								:hideOptions="hideOptions"
+								@messageActionHandler="messageActionHandler"
+								@openFile="openFile"
+								@addNewMessage="addNewMessage"
+								@sendMessageReaction="sendMessageReaction"
+								@hideOptions="hideOptions = $event"
+							></message>
+						</div>
+					</transition-group>
+					<transition name="bounce">
+						<div class="icon-scroll" v-if="scrollIcon" @click="scrollToBottom">
+							<svg-icon name="dropdown" param="scroll" />
+						</div>
+					</transition>
 				</div>
-			</transition>
+			</div>
 		</div>
 		<div ref="roomFooter" class="room-footer">
 			<transition name="slide-up">
@@ -784,5 +786,9 @@ textarea {
 	cursor: none !important;
 	pointer-events: none !important;
 	transform: none !important;
+}
+
+.messages-hidden {
+	opacity: 0;
 }
 </style>
