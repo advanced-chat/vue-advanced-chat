@@ -78,7 +78,9 @@ export const defaultThemeStyles = {
 		room: {
 			colorUsername: '#0a0a0a',
 			colorMessage: '#67717a',
-			colorTimestamp: '#a2aeb8'
+			colorTimestamp: '#a2aeb8',
+			colorStateOnline: '#4caf50',
+			colorStateOffline: '#9ca6af'
 		},
 
 		emoji: {
@@ -186,7 +188,9 @@ export const defaultThemeStyles = {
 		room: {
 			colorUsername: '#fff',
 			colorMessage: '#6c7278',
-			colorTimestamp: '#6c7278'
+			colorTimestamp: '#6c7278',
+			colorStateOnline: '#4caf50',
+			colorStateOffline: '#596269'
 		},
 
 		emoji: {
@@ -304,6 +308,8 @@ export const cssThemeVars = ({
 		'--chat-room-color-username': room.colorUsername,
 		'--chat-room-color-message': room.colorMessage,
 		'--chat-room-color-timestamp': room.colorTimestamp,
+		'--chat-room-color-online': room.colorStateOnline,
+		'--chat-room-color-offline': room.colorStateOffline,
 
 		// emoji
 		'--chat-emoji-bg-color': emoji.background,

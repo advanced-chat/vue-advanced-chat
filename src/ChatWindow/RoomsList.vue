@@ -282,11 +282,11 @@ input {
 	width: 9px;
 	height: 9px;
 	border-radius: 50%;
-	background-color: #ccc;
+	background-color: var(--chat-room-color-offline);
 	margin-right: 6px;
 }
 
 .state-online {
-	background-color: #4caf50;
+	background-color: var(--chat-room-color-online);
 }
 </style>

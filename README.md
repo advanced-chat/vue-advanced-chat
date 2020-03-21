@@ -260,7 +260,9 @@ styles="{
   room: {
     colorUsername: '#0a0a0a',
     colorMessage: '#67717a',
-    colorTimestamp: '#a2aeb8'
+    colorTimestamp: '#a2aeb8',
+    colorStateOnline: '#4caf50',
+		colorStateOffline: '#ccc'
   },
 
   emoji: {
