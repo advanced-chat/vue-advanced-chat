@@ -41,8 +41,9 @@
 				<div class="name-container">
 					<div class="title-container">
 						<div
+							v-if="userStatus(room)"
 							class="state-circle"
-							:class="{ 'state-online': userStatus(room) }"
+							:class="{ 'state-online': userStatus(room) === 'online' }"
 						></div>
 						<div class="room-name">
 							{{ room.roomName }}
@@ -122,7 +123,7 @@ export default {
 
 			const user = room.users.find(u => u._id !== this.currentUserId)
 
-			return user.status && user.status.state === 'online'
+			if (user.status) return user.status.state
 		}
 	}
 }
