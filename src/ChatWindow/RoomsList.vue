@@ -59,7 +59,6 @@
 						<span v-if="room.lastMessage.seen">
 							<svg-icon name="checkmark" class="icon-check" />
 						</span>
-						<span v-if="room.lastMessage.new" class="dot-new"></span>
 						<span>{{ room.lastMessage.content }}</span>
 					</div>
 				</div>
@@ -262,15 +261,7 @@ input {
 
 .message-new {
 	color: var(--chat-room-color-username);
-}
-
-.dot-new {
-	height: 8px;
-	width: 8px;
-	background-color: var(--chat-room-color-new-dot);
-	border-radius: 50%;
-	display: inline-block;
-	margin: 0 5px 0 0;
+	font-weight: 500;
 }
 
 .text-date {
