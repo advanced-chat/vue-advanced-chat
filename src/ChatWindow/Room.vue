@@ -22,7 +22,7 @@
 				<div v-if="typingUsers" class="room-info">
 					{{ typingUsers }} {{ textMessages.IS_TYPING }}
 				</div>
-				<div v-else-if="userStatus" class="room-info">
+				<div v-else class="room-info">
 					{{ userStatus }}
 				</div>
 			</div>
