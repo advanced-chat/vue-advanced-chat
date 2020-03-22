@@ -216,12 +216,10 @@ input {
 
 	&:hover {
 		background: var(--chat-sidemenu-bg-color-hover);
-		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 	}
 
 	&:not(:hover) {
-		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 	}
 }
@@ -285,6 +283,7 @@ input {
 	border-radius: 50%;
 	background-color: var(--chat-room-color-offline);
 	margin-right: 6px;
+	transition: 0.3s;
 }
 
 .state-online {

@@ -7,12 +7,10 @@
 
 	:hover {
 		background: var(--chat-dropdown-bg-color-hover);
-		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 	}
 
 	:not(:hover) {
-		-webkit-transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 	}
 }

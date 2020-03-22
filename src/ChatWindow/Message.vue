@@ -499,7 +499,6 @@ export default {
 	-webkit-transition-property: box-shadow, opacity;
 	transition-property: box-shadow, opacity;
 	overflow-wrap: break-word;
-	-webkit-transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
 	transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
 	will-change: box-shadow;
 	box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
