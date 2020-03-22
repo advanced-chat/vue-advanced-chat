@@ -257,6 +257,7 @@ export default {
 			messageReply: null,
 			infiniteState: null,
 			loadingMessages: false,
+			loadingMoreMessages: false,
 			file: null,
 			imageFile: null,
 			imageDimensions: { height: '32px', width: '10px' },
@@ -320,6 +321,7 @@ export default {
 
 			if (this.infiniteState) {
 				this.infiniteState.loaded()
+				setTimeout(() => (this.loadingMoreMessages = false), 0)
 			} else if (newVal.length) {
 				setTimeout(() => {
 					element.scrollTo(options)
@@ -447,11 +449,15 @@ export default {
 			this.resetMessage()
 		},
 		loadMoreMessages(infiniteState) {
+			if (this.loadingMoreMessages) return
+
 			if (this.messagesLoaded || !this.room.roomId) {
 				return infiniteState.complete()
 			}
+
 			this.infiniteState = infiniteState
 			this.$emit('fetchMessages')
+			this.loadingMoreMessages = true
 		},
 		messageActionHandler({ action, message }) {
 			switch (action.name) {
