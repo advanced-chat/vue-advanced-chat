@@ -240,6 +240,7 @@ input {
 .title-container {
 	display: flex;
 	align-items: center;
+	line-height: 25px;
 }
 
 .text-ellipsis {

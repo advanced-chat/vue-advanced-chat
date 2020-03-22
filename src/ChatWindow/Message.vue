@@ -383,7 +383,11 @@ export default {
 			this.$emit('hideOptions', false)
 
 			setTimeout(() => {
-				if (!this.roomFooterRef || !this.$refs.menuOptions || !this.$refs.actionIcon)
+				if (
+					!this.roomFooterRef ||
+					!this.$refs.menuOptions ||
+					!this.$refs.actionIcon
+				)
 					return
 
 				const menuOptionsHeight = this.$refs.menuOptions.getBoundingClientRect()
@@ -480,6 +484,7 @@ export default {
 	padding: 3px 10px;
 	align-items: end;
 	min-width: 100px;
+	box-sizing: content-box;
 }
 
 .offset-current {
@@ -494,11 +499,9 @@ export default {
 	font-size: 14px;
 	padding: 6px 9px 3px;
 	white-space: pre-wrap;
-	display: block;
 	max-width: 100%;
 	-webkit-transition-property: box-shadow, opacity;
 	transition-property: box-shadow, opacity;
-	overflow-wrap: break-word;
 	transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
 	will-change: box-shadow;
 	box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),

@@ -156,8 +156,10 @@
 						'textarea-image': imageFile
 					}"
 					:style="{
-						height: `${imageDimensions.height}px`,
-						'min-height': `${imageDimensions.height - 14}px`,
+						height: `${imageDimensions.height - 12}px`,
+						'min-height': `${
+							imageDimensions.height > 20 ? imageDimensions.height - 14 : 20
+						}px`,
 						'padding-left': `${imageDimensions.width + 6}px`
 					}"
 					v-model="message"
@@ -260,7 +262,7 @@ export default {
 			loadingMoreMessages: false,
 			file: null,
 			imageFile: null,
-			imageDimensions: { height: '32px', width: '10px' },
+			imageDimensions: { height: '20px', width: '10px' },
 			menuOpened: false,
 			emojiOpened: false,
 			emojisList: {},
@@ -336,7 +338,7 @@ export default {
 		imageFile() {
 			setTimeout(() => {
 				if (!this.$refs.imageFile)
-					return (this.imageDimensions = { height: 32, width: 10 })
+					return (this.imageDimensions = { height: 20, width: 10 })
 
 				this.imageDimensions = {
 					height: this.$refs.imageFile.height + 2,
@@ -417,7 +419,7 @@ export default {
 		},
 		resetTextareaSize() {
 			if (!this.$refs['roomTextarea']) return
-			this.$refs['roomTextarea'].style.height = '32px'
+			this.$refs['roomTextarea'].style.height = '20px'
 		},
 		focusTextarea() {
 			if (this.isMobile) return
@@ -501,7 +503,7 @@ export default {
 		resizeTextarea(textarea) {
 			textarea.style.height = 0
 			const offset = this.imageFile ? 2 : 0
-			textarea.style.height = textarea.scrollHeight + offset + 'px'
+			textarea.style.height = textarea.scrollHeight - 24 + offset + 'px'
 		},
 		addEmoji(emoji) {
 			this.message += emoji.icon
@@ -695,18 +697,19 @@ export default {
 }
 
 textarea {
-	background: var(--chat-bg-color-input);
-	color: var(--chat-color);
-	border-radius: 20px;
-	padding: 12px 140px 0 16px;
+	height: 20px;
+	width: 100%;
 	overflow: hidden;
 	outline: 0;
-	width: 100%;
 	resize: none;
-	height: 32px;
+	border-radius: 20px;
+	padding: 12px 140px 12px 16px;
+	box-sizing: content-box;
+	font-size: 16px;
+	background: var(--chat-bg-color-input);
+	color: var(--chat-color);
 	caret-color: var(--chat-color-caret);
 	border: var(--chat-border-style-input);
-	font-size: 16px;
 
 	&::placeholder {
 		color: var(--chat-color-placeholder);
@@ -769,7 +772,9 @@ textarea {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	height: 44px;
+	height: 20px;
+	padding: 12px 0;
+	box-sizing: content-box;
 	background: var(--chat-bg-color-input);
 	border: var(--chat-border-style-input);
 	border-radius: 20px;
