@@ -45,15 +45,15 @@
 							class="state-circle"
 							:class="{ 'state-online': userStatus(room) === 'online' }"
 						></div>
-						<div class="room-name">
+						<div class="room-name text-ellipsis">
 							{{ room.roomName }}
 						</div>
-						<div class="room-name text-date" v-if="room.lastMessage">
+						<div class="text-date" v-if="room.lastMessage">
 							{{ room.lastMessage.timestamp }}
 						</div>
 					</div>
 					<div
-						class="room-name text-last"
+						class="text-last text-ellipsis"
 						:class="{ 'message-new': room.lastMessage.new }"
 						v-if="room.lastMessage"
 					>
@@ -242,14 +242,14 @@ input {
 	align-items: center;
 }
 
+.text-ellipsis {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .room-name {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 	flex: 1;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 	color: var(--chat-room-color-username);
 }
 
@@ -264,9 +264,9 @@ input {
 }
 
 .text-date {
-	color: var(--chat-room-color-timestamp);
+	margin-left: 5px;
 	font-size: 11px;
-	text-align: right;
+	color: var(--chat-room-color-timestamp);
 }
 
 .icon-check {
