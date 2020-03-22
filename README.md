@@ -96,7 +96,7 @@ You can import it as a custom component:
 | showReactionEmojis       | Boolean          | -        | true    |
 | textMessages (6)         | Object           | -        | null    |
 | responsiveBreakpoint (7) | Number           | -        | 900     |
-| singleRoom (8)           | Number           | -        | 900     |
+| singleRoom (8)           | Number           | -        | false   |
 | theme (9)                | Sring            | -        | light   |
 | styles (10)              | Object           | -        | (10)    |
 
