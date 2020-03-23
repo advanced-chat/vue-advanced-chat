@@ -425,6 +425,7 @@ export default {
 				remove: reaction && reaction.indexOf(this.currentUserId) !== -1
 			})
 			this.closeEmoji()
+			this.messageHover = false
 		}
 	}
 }
