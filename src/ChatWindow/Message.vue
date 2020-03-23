@@ -116,6 +116,16 @@
 						</span>
 					</div>
 
+					<transition name="fade-message">
+						<div
+							v-if="messageHover"
+							class="options-container"
+							:class="{
+								'options-me': message.sender_id === currentUserId
+							}"
+						></div>
+					</transition>
+
 					<transition name="slide-left">
 						<div
 							ref="actionIcon"
@@ -127,7 +137,7 @@
 						</div>
 					</transition>
 
-					<transition name="fade-image">
+					<transition name="slide-left">
 						<emoji-picker
 							class="message-reactions"
 							v-if="isMessageReactions"
@@ -620,6 +630,21 @@ export default {
 		height: 12px;
 		width: 12px;
 	}
+}
+
+.options-container {
+	position: absolute;
+	top: 8px;
+	right: 15px;
+	height: 26px;
+	width: 60px;
+	border-radius: 0 8px;
+	background: var(--chat-message-bg-color);
+	filter: blur(4px);
+}
+
+.options-me {
+	background: var(--chat-message-bg-color-me);
 }
 
 .image-buttons {
