@@ -156,11 +156,8 @@
 						'textarea-image': imageFile
 					}"
 					:style="{
-						height: `${imageDimensions.height - 12}px`,
-						'min-height': `${
-							imageDimensions.height > 20 ? imageDimensions.height - 14 : 20
-						}px`,
-						'padding-left': `${imageDimensions.width + 6}px`
+						'min-height': `${imageDimensions ? imageDimensions.height : 20}px`,
+						'padding-left': `${imageDimensions ? imageDimensions.width : 16}px`
 					}"
 					v-model="message"
 					@input="onChangeInput"
@@ -262,7 +259,7 @@ export default {
 			loadingMoreMessages: false,
 			file: null,
 			imageFile: null,
-			imageDimensions: { height: '20px', width: '10px' },
+			imageDimensions: null,
 			menuOpened: false,
 			emojiOpened: false,
 			emojisList: {},
@@ -337,12 +334,14 @@ export default {
 		},
 		imageFile() {
 			setTimeout(() => {
-				if (!this.$refs.imageFile)
-					return (this.imageDimensions = { height: 20, width: 10 })
-
-				this.imageDimensions = {
-					height: this.$refs.imageFile.height + 2,
-					width: this.$refs.imageFile.width + 20
+				if (!this.$refs.imageFile) {
+					this.imageDimensions = null
+					setTimeout(() => this.resizeTextarea(), 0)
+				} else {
+					this.imageDimensions = {
+						height: this.$refs.imageFile.height - 10,
+						width: this.$refs.imageFile.width + 26
+					}
 				}
 			}, 20)
 		}
@@ -487,23 +486,20 @@ export default {
 			if (this.isImageCheck(this.file)) this.imageFile = message.file.url
 			this.message = message.content
 
-			setTimeout(() => this.resizeTextarea(this.$refs['roomTextarea']), 0)
+			setTimeout(() => this.resizeTextarea(), 0)
 		},
 		scrollToBottom() {
 			const element = this.$refs.scrollContainer
 			element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
 		},
-		onChangeInput(el) {
-			this.autoGrow(el)
+		onChangeInput() {
+			this.resizeTextarea()
 			this.$emit('typingMessage', this.message)
 		},
-		autoGrow(el) {
-			this.resizeTextarea(el.srcElement)
-		},
-		resizeTextarea(textarea) {
-			textarea.style.height = 0
-			const offset = this.imageFile ? 2 : 0
-			textarea.style.height = textarea.scrollHeight - 24 + offset + 'px'
+		resizeTextarea() {
+			const el = this.$refs['roomTextarea']
+			el.style.height = 0
+			el.style.height = el.scrollHeight - 24 + 'px'
 		},
 		addEmoji(emoji) {
 			this.message += emoji.icon
