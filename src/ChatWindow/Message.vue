@@ -677,7 +677,6 @@ export default {
 }
 
 .message-reactions {
-	z-index: 9999;
 	position: absolute;
 	top: 6px;
 	right: 37px;
