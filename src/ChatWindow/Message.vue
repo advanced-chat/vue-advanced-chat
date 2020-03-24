@@ -119,7 +119,8 @@
 					<div
 						class="options-container"
 						:class="{ 'options-image': isImage }"
-						v-if="isMessageActions"
+						:style="{ width: optionsBlurWidth }"
+						v-show="isMessageActions || isMessageReactions"
 					>
 						<transition name="slide-left">
 							<div
@@ -146,6 +147,7 @@
 					<transition name="slide-left">
 						<emoji-picker
 							class="message-reactions"
+							:style="{ right: isMessageActions ? '37px' : '14px' }"
 							v-if="isMessageReactions"
 							v-click-outside="closeEmoji"
 							:emojiOpened="emojiOpened"
@@ -338,6 +340,13 @@ export default {
 			return this.message.sender_id === this.currentUserId
 				? this.messageActions
 				: this.messageActions.filter(message => !message.onlyMe)
+		},
+		optionsBlurWidth() {
+			if (this.isMessageActions && this.isMessageReactions) {
+				return this.isImage ? '67px' : '70px'
+			} else {
+				return this.isImage ? '42px' : '45px'
+			}
 		}
 	},
 
