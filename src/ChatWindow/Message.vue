@@ -120,44 +120,42 @@
 						class="options-container"
 						:class="{ 'options-image': isImage }"
 						:style="{ width: optionsBlurWidth }"
-						v-show="isMessageActions || isMessageReactions"
 					>
-						<transition name="slide-left">
+						<transition-group name="slide-left">
 							<div
-								v-if="messageHover"
+								key="1"
 								class="blur-container"
 								:class="{
 									'options-me': message.sender_id === currentUserId
 								}"
+								v-if="isMessageActions || isMessageReactions"
 							></div>
-						</transition>
+
+							<div
+								ref="actionIcon"
+								key="2"
+								class="svg-button message-options"
+								v-if="isMessageActions"
+								@click="openOptions"
+							>
+								<svg-icon name="dropdown" />
+							</div>
+
+							<emoji-picker
+								key="3"
+								class="message-reactions"
+								:style="{ right: isMessageActions ? '28px' : '5px' }"
+								v-if="isMessageReactions"
+								v-click-outside="closeEmoji"
+								:emojiOpened="emojiOpened"
+								:emojiReaction="true"
+								:roomFooterRef="roomFooterRef"
+								:positionRight="message.sender_id === currentUserId"
+								@addEmoji="sendMessageReaction"
+								@openEmoji="openEmoji"
+							></emoji-picker>
+						</transition-group>
 					</div>
-
-					<transition name="slide-left">
-						<div
-							ref="actionIcon"
-							class="svg-button message-options"
-							v-if="isMessageActions"
-							@click="openOptions"
-						>
-							<svg-icon name="dropdown" />
-						</div>
-					</transition>
-
-					<transition name="slide-left">
-						<emoji-picker
-							class="message-reactions"
-							:style="{ right: isMessageActions ? '37px' : '14px' }"
-							v-if="isMessageReactions"
-							v-click-outside="closeEmoji"
-							:emojiOpened="emojiOpened"
-							:emojiReaction="true"
-							:roomFooterRef="roomFooterRef"
-							:positionRight="message.sender_id === currentUserId"
-							@addEmoji="sendMessageReaction"
-							@openEmoji="openEmoji"
-						></emoji-picker>
-					</transition>
 
 					<transition
 						:name="
@@ -342,7 +340,7 @@ export default {
 				: this.messageActions.filter(message => !message.onlyMe)
 		},
 		optionsBlurWidth() {
-			if (this.isMessageActions && this.isMessageReactions) {
+			if (this.filteredMessageActions.length && this.showReactionEmojis) {
 				return this.isImage ? '67px' : '70px'
 			} else {
 				return this.isImage ? '42px' : '45px'
@@ -728,7 +726,7 @@ export default {
 	border-radius: 50%;
 	position: absolute;
 	top: 7px;
-	right: 14px;
+	right: 5px;
 
 	svg {
 		height: 17px;
@@ -739,7 +737,7 @@ export default {
 .message-reactions {
 	position: absolute;
 	top: 6px;
-	right: 37px;
+	right: 28px;
 }
 
 .menu-options {
