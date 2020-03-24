@@ -116,14 +116,13 @@
 						</span>
 					</div>
 
-					<div class="options-container">
+					<div class="options-container" :class="{ 'options-image': isImage }">
 						<transition name="slide-left">
 							<div
 								v-if="messageHover"
 								class="blur-container"
 								:class="{
-									'options-me': message.sender_id === currentUserId,
-									'options-image': isImage
+									'options-me': message.sender_id === currentUserId
 								}"
 							></div>
 						</transition>
@@ -661,7 +660,13 @@ export default {
 }
 
 .options-image {
-	background: rgba(255, 255, 255, 0.8);
+	width: 67px;
+	height: 40px;
+
+	.blur-container {
+		background: rgba(255, 255, 255, 0.7);
+		border-bottom-left-radius: 15px;
+	}
 }
 
 .image-buttons {
