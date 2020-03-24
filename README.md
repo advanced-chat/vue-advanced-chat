@@ -37,6 +37,7 @@ Enjoy :smile:
 - [Props API](#props-api)
 - [Props data structure](#props-data-structure)
 - [Events API](#events-api)
+- [Named Slots](#named-slots)
 - [Using with Firestore](#using-with-firestore)
 - [Use as a Web Component](#use-as-a-web-component)
 
