@@ -116,15 +116,18 @@
 						</span>
 					</div>
 
-					<transition name="fade-message">
-						<div
-							v-if="messageHover"
-							class="options-container"
-							:class="{
-								'options-me': message.sender_id === currentUserId
-							}"
-						></div>
-					</transition>
+					<div class="options-container">
+						<transition name="slide-left">
+							<div
+								v-if="messageHover"
+								class="blur-container"
+								:class="{
+									'options-me': message.sender_id === currentUserId,
+									'options-image': isImage
+								}"
+							></div>
+						</transition>
+					</div>
 
 					<transition name="slide-left">
 						<div
@@ -634,17 +637,31 @@ export default {
 
 .options-container {
 	position: absolute;
-	top: 8px;
-	right: 15px;
-	height: 26px;
-	width: 60px;
-	border-radius: 0 8px;
+	top: 3px;
+	right: 10px;
+	height: 40px;
+	width: 70px;
+	overflow: hidden;
+	border-top-right-radius: 8px;
+}
+
+.blur-container {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	left: 10px;
+	bottom: 10px;
 	background: var(--chat-message-bg-color);
 	filter: blur(4px);
+	border-bottom-left-radius: 8px;
 }
 
 .options-me {
 	background: var(--chat-message-bg-color-me);
+}
+
+.options-image {
+	background: rgba(255, 255, 255, 0.8);
 }
 
 .image-buttons {
