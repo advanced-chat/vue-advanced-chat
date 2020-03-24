@@ -173,8 +173,8 @@ export default {
 	fill: var(--chat-icon-color-eye);
 }
 
-#chat-icon-dropdown {
-	fill: var(--chat-icon-color-dropdown);
+#chat-icon-dropdown-message {
+	fill: var(--chat-icon-color-dropdown-message);
 }
 
 #chat-icon-dropdown-scroll {

@@ -138,7 +138,7 @@
 								v-if="isMessageActions"
 								@click="openOptions"
 							>
-								<svg-icon name="dropdown" />
+								<svg-icon name="dropdown" param="message" />
 							</div>
 
 							<emoji-picker
@@ -722,7 +722,7 @@ export default {
 }
 
 .message-options {
-	background: rgba(0, 0, 0, 0.25);
+	background: var(--chat-icon-bg-dropdown-message);
 	border-radius: 50%;
 	position: absolute;
 	top: 7px;
