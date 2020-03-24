@@ -148,7 +148,7 @@ export default {
 }
 
 .emoji-picker h5 {
-	margin-bottom: 0;
+	margin: 20px 0 8px;
 	color: #b1b1b1;
 	text-transform: uppercase;
 	font-size: 0.8rem;
