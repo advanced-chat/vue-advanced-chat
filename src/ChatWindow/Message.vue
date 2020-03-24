@@ -116,7 +116,11 @@
 						</span>
 					</div>
 
-					<div class="options-container" :class="{ 'options-image': isImage }">
+					<div
+						class="options-container"
+						:class="{ 'options-image': isImage }"
+						v-if="isMessageActions"
+					>
 						<transition name="slide-left">
 							<div
 								v-if="messageHover"
