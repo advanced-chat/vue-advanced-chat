@@ -675,7 +675,7 @@ export default {
 	height: 40px;
 
 	.blur-container {
-		background: rgba(255, 255, 255, 0.7);
+		background: rgba(255, 255, 255, 0.6);
 		border-bottom-left-radius: 15px;
 	}
 }
