@@ -4,6 +4,8 @@
 		:class="{ 'rooms-container-full': isMobile }"
 		v-if="showRoomsList"
 	>
+		<slot name="rooms-header"></slot>
+
 		<div class="box-search">
 			<div class="icon-search">
 				<svg-icon name="search" />

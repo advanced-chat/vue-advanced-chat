@@ -436,6 +436,12 @@ messageActionHandler({ roomId, action }) {
 
 (5) `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked
 
+## Named Slots
+
+| Slot         | Action                                                     |
+| ------------ | ---------------------------------------------------------- |
+| rooms-header | Add a template on top of rooms list (above the search bar) |
+
 ## Using with Firestore
 
 ### Source code

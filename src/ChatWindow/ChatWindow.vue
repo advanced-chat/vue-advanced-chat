@@ -14,7 +14,11 @@
 				@fetchRoom="fetchRoom"
 				@addRoom="addRoom"
 			>
+				<template v-slot:rooms-header>
+					<slot name="rooms-header"></slot>
+				</template>
 			</rooms-list>
+
 			<room
 				:currentUserId="currentUserId"
 				:rooms="rooms"

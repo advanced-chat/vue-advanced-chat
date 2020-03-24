@@ -65,7 +65,8 @@
 			@messageActionHandler="messageActionHandler"
 			@sendMessageReaction="sendMessageReaction"
 			@typingMessage="typingMessage"
-		/>
+		>
+		</chat-window>
 	</div>
 </template>
 
