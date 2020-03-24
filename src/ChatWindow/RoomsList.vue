@@ -134,6 +134,8 @@ export default {
 <style lang="scss" scoped>
 .rooms-container {
 	flex: 0 0 25%;
+	min-width: 260px;
+	max-width: 500px;
 	position: relative;
 	background: var(--chat-sidemenu-bg-color);
 	height: 100%;
@@ -144,6 +146,7 @@ export default {
 
 .rooms-container-full {
 	flex: 0 0 100%;
+	max-width: 100%;
 }
 
 .box-search {

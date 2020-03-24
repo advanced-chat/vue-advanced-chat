@@ -1,9 +1,5 @@
 <template>
-	<div
-		class="col-messages"
-		:class="{ 'col-messages-full': !showRoomsList || singleRoom }"
-		v-show="(isMobile && !showRoomsList) || !isMobile"
-	>
+	<div class="col-messages" v-show="(isMobile && !showRoomsList) || !isMobile">
 		<div class="room-header app-border-b">
 			<div
 				v-if="!singleRoom"
@@ -547,25 +543,18 @@ export default {
 
 <style lang="scss" scoped>
 .col-messages {
-	flex: 0 0 75%;
-	max-width: 75%;
 	position: relative;
 	height: 100%;
-}
-
-.col-messages-full {
-	flex: 0 0 100%;
-	max-width: 100%;
+	flex: 1;
 }
 
 .room-header {
-	align-items: center;
-	display: flex;
-	flex: 1 1 100%;
-	padding: 0 16px;
 	position: relative;
+	display: flex;
+	align-items: center;
 	height: 64px;
 	margin-right: 1px;
+	padding: 0 16px;
 	background: var(--chat-header-bg-color);
 	border-top-right-radius: var(--chat-container-border-radius);
 }
