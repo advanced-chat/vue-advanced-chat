@@ -100,7 +100,7 @@
 				</div>
 			</div>
 		</div>
-		<div ref="roomFooter" class="room-footer">
+		<div ref="roomFooter" class="room-footer" v-if="Object.keys(room).length">
 			<transition name="slide-up">
 				<div v-if="messageReply" class="reply-container">
 					<div class="reply-box">
