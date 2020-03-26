@@ -604,7 +604,7 @@ export default {
 	color: var(--chat-message-color-started);
 	font-style: italic;
 	text-align: center;
-	margin-top: 27px;
+	margin-top: 30px;
 	margin-bottom: 20px;
 }
 
