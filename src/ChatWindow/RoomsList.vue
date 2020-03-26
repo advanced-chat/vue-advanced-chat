@@ -24,7 +24,7 @@
 		<loader :show="loadingRooms"></loader>
 
 		<div class="rooms-empty" v-if="!loadingRooms && !rooms.length">
-			No rooms
+			{{ textMessages.ROOMS_EMPTY }}
 		</div>
 
 		<div v-if="!loadingRooms" class="room-list">

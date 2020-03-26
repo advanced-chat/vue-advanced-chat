@@ -1,4 +1,5 @@
 export default {
+	ROOMS_EMPTY: 'No rooms',
 	NEW_MESSAGES: 'New Messages',
 	MESSAGE_DELETED: 'This message was deleted',
 	MESSAGES_EMPTY: 'No messages',
