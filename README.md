@@ -87,27 +87,30 @@ You can import it as a custom component:
 | currentUserId (1)        | [String, Number] | true     | -       |
 | rooms                    | Array            | -        | [ ]     |
 | loadingRooms (2)         | Boolean          | -        | false   |
+| roomId (3)               | [String, Number] | -        | null    |
 | messages                 | Array            | -        | [ ]     |
-| messagesLoaded (3)       | Boolean          | -        | false   |
-| menuActions (4)          | Array            | -        | [ ]     |
-| messageActions (5)       | Array            | -        | (4)     |
+| messagesLoaded (4)       | Boolean          | -        | false   |
+| menuActions (5)          | Array            | -        | [ ]     |
+| messageActions (6)       | Array            | -        | (4)     |
 | showAddRoom              | Boolean          | -        | true    |
 | showFiles                | Boolean          | -        | true    |
 | showEmojis               | Boolean          | -        | true    |
 | showReactionEmojis       | Boolean          | -        | true    |
-| textMessages (6)         | Object           | -        | null    |
-| responsiveBreakpoint (7) | Number           | -        | 900     |
-| singleRoom (8)           | Number           | -        | false   |
-| theme (9)                | Sring            | -        | light   |
-| styles (10)              | Object           | -        | (10)    |
+| textMessages (7)         | Object           | -        | null    |
+| responsiveBreakpoint (8) | Number           | -        | 900     |
+| singleRoom (9)           | Number           | -        | false   |
+| theme (10)               | Sring            | -        | light   |
+| styles (11)              | Object           | -        | (10)    |
 
 (1) `currentUserId` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
 (2) `loadingRooms` can be used to show/hide a spinner icon while rooms are loading
 
-(3) `messagesLoaded` must be manually set to `true` when all messages of a conversation have been loaded. Meaning the user cannot scroll on top anymore
+(3) `roomId` can be used to load a specific room at any time
 
-(4) `menuActions` can be used to display your own buttons when clicking the vertical dots icon inside a room.<br>
+(4) `messagesLoaded` must be manually set to `true` when all messages of a conversation have been loaded. Meaning the user cannot scroll on top anymore
+
+(5) `menuActions` can be used to display your own buttons when clicking the vertical dots icon inside a room.<br>
 You can then use the [menuActionHandler](#events-api) event to call your own action after clicking a button. Ex:
 
 ```javascript
@@ -127,7 +130,7 @@ menuActions="[
 ]"
 ```
 
-(5) `messageActions` can be used to display your own buttons when clicking the dropdown icon inside a message.<br>
+(6) `messageActions` can be used to display your own buttons when clicking the dropdown icon inside a message.<br>
 You can then use the [messageActionHandler](#events-api) event to call your own action after clicking a button. Ex:
 
 ```javascript
@@ -167,7 +170,7 @@ messageActions="[
 ]"
 ```
 
-(6) `textMessages` can be used to replace default texts. Ex:
+(7) `textMessages` can be used to replace default texts. Ex:
 
 ```javascript
 textMessages="{
@@ -180,13 +183,13 @@ textMessages="{
 }"
 ```
 
-(7) `responsiveBreakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
+(8) `responsiveBreakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
 
-(8) `singleRoom` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+(9) `singleRoom` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
 
-(9) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+(10) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
 
-(10) `styles` can be used to customize your own theme. Ex:
+(11) `styles` can be used to customize your own theme. Ex:
 
 ```javascript
 styles="{

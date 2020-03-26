@@ -99,8 +99,10 @@ export default {
 
 	watch: {
 		rooms(val) {
-			if (val[0]) this.selectedRoomId = val[0].roomId
 			this.filteredRooms = val
+		},
+		room(val) {
+			if (val) this.selectedRoomId = val.roomId
 		}
 	},
 

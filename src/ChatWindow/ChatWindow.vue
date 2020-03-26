@@ -75,6 +75,7 @@ export default {
 		currentUserId: { type: [String, Number], default: '' },
 		rooms: { type: Array, default: () => [] },
 		loadingRooms: { type: Boolean, default: false },
+		roomId: { type: [String, Number], default: null },
 		messages: { type: Array, default: () => [] },
 		messagesLoaded: { type: Boolean, default: false },
 		menuActions: { type: Array, default: () => [] },
@@ -104,7 +105,19 @@ export default {
 	watch: {
 		rooms(newVal, oldVal) {
 			if (newVal[0] && newVal.length !== oldVal.length) {
-				this.fetchRoom({ room: newVal[0] })
+				if (this.roomId) {
+					const room = newVal.find(r => r.roomId === this.roomId)
+					this.fetchRoom({ room })
+				} else {
+					this.fetchRoom({ room: newVal[0] })
+				}
+			}
+		},
+
+		roomId(val) {
+			if (!this.loadingRooms && this.rooms && this.rooms.length) {
+				const room = this.rooms.find(r => r.roomId === val)
+				this.fetchRoom({ room })
 			}
 		},
 
