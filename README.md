@@ -355,8 +355,9 @@ rooms="[
 
 ### Messages prop
 
-Message objects are rendered differently depending on their type. Currently, only text, emoji and file types are supported.<br>
-Each message object has a `sender_id` field which holds the id of the corresponding agent. If `sender_id` matches the `currentUserId` prop, specific UI and actions will be implemented
+Message objects are rendered differently depending on their type. Currently, only text, emoji and file types are supported.<br><br>
+Each message object has a `sender_id` field which holds the id of the corresponding agent. If `sender_id` matches the `currentUserId` prop, specific UI and actions will be implemented.<br><br>
+Note: `username` will be displayed on each message of corresponding agents if at least 3 users are in the room.
 
 ```javascript
 messages="[
