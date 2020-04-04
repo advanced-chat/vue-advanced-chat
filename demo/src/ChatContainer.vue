@@ -426,9 +426,7 @@ export default {
 				newMessage.file = deleteDbField
 			}
 
-			await this.messagesRef(roomId)
-				.doc(messageId)
-				.update(newMessage)
+			await this.messagesRef(roomId).doc(messageId).update(newMessage)
 		},
 
 		async deleteMessage({ messageId, roomId }) {

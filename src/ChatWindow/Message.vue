@@ -326,12 +326,16 @@ export default {
 			return (
 				this.filteredMessageActions.length &&
 				this.messageHover &&
-				!this.message.deleted
+				!this.message.deleted &&
+				!this.message.disable_actions
 			)
 		},
 		isMessageReactions() {
 			return (
-				this.showReactionEmojis && this.messageHover && !this.message.deleted
+				this.showReactionEmojis &&
+				this.messageHover &&
+				!this.message.deleted &&
+				!this.message.disable_reactions
 			)
 		},
 		filteredMessageActions() {

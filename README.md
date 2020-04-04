@@ -368,6 +368,8 @@ messages="[
     date: '13 November',
     timestamp: '10:20',
     seen: true,
+    disable_actions: false,
+    disable_reactions: false,
     file: {
       name: 'My File',
       size: 67351,
