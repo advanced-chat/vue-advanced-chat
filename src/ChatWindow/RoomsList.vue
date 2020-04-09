@@ -198,6 +198,8 @@ input {
 	font-style: italic;
 	text-align: center;
 	margin: 40px 0;
+	line-height: 20px;
+	white-space: pre-line;
 }
 
 .room-list {
