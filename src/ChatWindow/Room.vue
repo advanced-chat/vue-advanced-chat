@@ -546,6 +546,7 @@ export default {
 	position: relative;
 	height: 100%;
 	flex: 1;
+	overflow: hidden;
 }
 
 .room-header {
