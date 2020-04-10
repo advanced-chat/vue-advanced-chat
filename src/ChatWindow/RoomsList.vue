@@ -203,8 +203,7 @@ input {
 }
 
 .room-list {
-	-webkit-box-flex: 0;
-	flex: 0 1 auto;
+	flex: 1;
 	position: relative;
 	max-width: 100%;
 	cursor: pointer;
@@ -213,10 +212,8 @@ input {
 
 .room-item {
 	border-radius: 8px;
-	-webkit-box-align: center;
 	align-items: center;
-	display: -webkit-box;
-	-webkit-box-flex: 1;
+	display: flex;
 	flex: 1 1 100%;
 	margin-bottom: 5px;
 	padding: 0 16px;
@@ -243,7 +240,7 @@ input {
 }
 
 .name-container {
-	flex: 1 1;
+	flex: 1;
 }
 
 .title-container {
