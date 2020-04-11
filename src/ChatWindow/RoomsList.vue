@@ -40,7 +40,7 @@
 					class="room-avatar"
 					:style="{ 'background-image': `url(${room.avatar})` }"
 				></div>
-				<div class="name-container">
+				<div class="name-container text-ellipsis">
 					<div class="title-container">
 						<div
 							v-if="userStatus(room)"
