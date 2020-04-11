@@ -279,6 +279,7 @@ export default {
 			return {
 				content,
 				timestamp,
+				date: message.timestamp.seconds,
 				seen: message.sender_id === this.currentUserId ? message.seen : null,
 				new:
 					message.sender_id !== this.currentUserId &&
@@ -426,7 +427,9 @@ export default {
 				newMessage.file = deleteDbField
 			}
 
-			await this.messagesRef(roomId).doc(messageId).update(newMessage)
+			await this.messagesRef(roomId)
+				.doc(messageId)
+				.update(newMessage)
 		},
 
 		async deleteMessage({ messageId, roomId }) {

@@ -30,7 +30,7 @@
 		<div v-if="!loadingRooms" class="room-list">
 			<div
 				class="room-item"
-				v-for="room in filteredRooms"
+				v-for="room in orderedRooms"
 				:key="room.roomId"
 				:class="{ 'room-selected': selectedRoomId === room.roomId }"
 				@click="openRoom(room)"
@@ -103,6 +103,20 @@ export default {
 		},
 		room(val) {
 			if (val) this.selectedRoomId = val.roomId
+		}
+	},
+
+	computed: {
+		orderedRooms() {
+			return this.filteredRooms.slice().sort((a, b) => {
+				if (!a.lastMessage || !b.lastMessage) return -1
+
+				return a.lastMessage.date > b.lastMessage.date
+					? -1
+					: b.lastMessage.date > a.lastMessage.date
+					? 1
+					: 0
+			})
 		}
 	},
 

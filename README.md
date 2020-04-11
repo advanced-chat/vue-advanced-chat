@@ -320,6 +320,7 @@ rooms="[
       sender_id: 1234,
       username: 'John Doe',
       timestamp: '10:20',
+      date: 123242424,
       seen: false,
       new: true
     },
@@ -345,6 +346,8 @@ rooms="[
   }
 ]"
 ```
+
+- If you set a `date` to `lastMessage` property, your rooms will be ordered using this date value
 
 - For each room user, you can add the `status` property, which can hold the `state` and `last_changed` properties:
 
