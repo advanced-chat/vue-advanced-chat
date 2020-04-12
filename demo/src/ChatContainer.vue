@@ -631,8 +631,7 @@ export default {
 
 			await roomsRef.doc(roomId).delete()
 
-			const i = this.rooms.map(room => room.roomId).indexOf(roomId)
-			if (i !== -1) this.rooms.splice(i, 1)
+			this.fetchRooms()
 		},
 
 		resetForms() {
