@@ -30,7 +30,7 @@
 		<div v-if="!loadingRooms" class="room-list">
 			<div
 				class="room-item"
-				v-for="room in rooms"
+				v-for="room in filteredRooms"
 				:key="room.roomId"
 				:class="{ 'room-selected': selectedRoomId === room.roomId }"
 				@click="openRoom(room)"
