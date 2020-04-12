@@ -169,13 +169,10 @@ export default {
 		},
 		orderedRooms() {
 			return this.rooms.slice().sort((a, b) => {
-				if (!a.lastMessage || !b.lastMessage) return 0
+				const aVal = a.lastMessage || { date: 0 }
+				const bVal = b.lastMessage || { date: 0 }
 
-				return a.lastMessage.date > b.lastMessage.date
-					? -1
-					: b.lastMessage.date > a.lastMessage.date
-					? 1
-					: 0
+				return aVal.date > bVal.date ? -1 : bVal.date > aVal.date ? 1 : 0
 			})
 		}
 	},
