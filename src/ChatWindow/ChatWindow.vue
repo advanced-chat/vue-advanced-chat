@@ -108,7 +108,7 @@ export default {
 				if (this.roomId) {
 					const room = newVal.find(r => r.roomId === this.roomId)
 					this.fetchRoom({ room })
-				} else {
+				} else if (!this.isMobile) {
 					this.fetchRoom({ room: this.orderedRooms[0] })
 				}
 			}
@@ -144,7 +144,9 @@ export default {
 
 	mounted() {
 		this.updateResponsive()
-		window.addEventListener('resize', () => this.updateResponsive())
+		window.addEventListener('resize', ev => {
+			if (ev.isTrusted) this.updateResponsive()
+		})
 	},
 
 	computed: {
@@ -180,7 +182,6 @@ export default {
 	methods: {
 		updateResponsive() {
 			this.isMobile = window.innerWidth < this.responsiveBreakpoint
-			this.showRoomsList = !this.isMobile
 		},
 		toggleRoomsList() {
 			this.showRoomsList = !this.showRoomsList
