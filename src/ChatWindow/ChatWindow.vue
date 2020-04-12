@@ -169,7 +169,7 @@ export default {
 		},
 		orderedRooms() {
 			return this.rooms.slice().sort((a, b) => {
-				if (!a.lastMessage || !b.lastMessage) return -1
+				if (!a.lastMessage || !b.lastMessage) return 0
 
 				return a.lastMessage.date > b.lastMessage.date
 					? -1
