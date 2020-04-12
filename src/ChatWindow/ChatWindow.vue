@@ -4,7 +4,7 @@
 			<rooms-list
 				v-if="!singleRoom"
 				:currentUserId="currentUserId"
-				:rooms="rooms"
+				:rooms="orderedRooms"
 				:loadingRooms="loadingRooms"
 				:room="room"
 				:textMessages="t"
@@ -109,7 +109,7 @@ export default {
 					const room = newVal.find(r => r.roomId === this.roomId)
 					this.fetchRoom({ room })
 				} else {
-					this.fetchRoom({ room: newVal[0] })
+					this.fetchRoom({ room: this.orderedRooms[0] })
 				}
 			}
 		},
@@ -166,6 +166,17 @@ export default {
 			})
 
 			return cssThemeVars(customStyles)
+		},
+		orderedRooms() {
+			return this.rooms.slice().sort((a, b) => {
+				if (!a.lastMessage || !b.lastMessage) return -1
+
+				return a.lastMessage.date > b.lastMessage.date
+					? -1
+					: b.lastMessage.date > a.lastMessage.date
+					? 1
+					: 0
+			})
 		}
 	},
 
