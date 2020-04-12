@@ -110,6 +110,8 @@ export default {
 					this.fetchRoom({ room })
 				} else if (!this.isMobile) {
 					this.fetchRoom({ room: this.orderedRooms[0] })
+				} else {
+					this.showRoomsList = true
 				}
 			}
 		},
