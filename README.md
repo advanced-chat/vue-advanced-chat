@@ -9,7 +9,7 @@
 
 # vue-advanced-chat
 
-![Demo Image](demo/src/assets/demo.png?)
+![Demo Image](demo/src/assets/demo.png)
 
 ## Features
 
