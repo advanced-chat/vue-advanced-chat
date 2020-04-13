@@ -261,5 +261,10 @@ export default {
 .chat-container {
 	height: 100%;
 	display: flex;
+
+	textarea,
+	input[type='text'] {
+		-webkit-appearance: none;
+	}
 }
 </style>
