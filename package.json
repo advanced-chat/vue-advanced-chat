@@ -11,7 +11,9 @@
 		"vue",
 		"vuejs",
 		"chat",
-		"vue-js-chat"
+		"vue-js-chat",
+		"multiple",
+		"realtime"
 	],
 	"repository": {
 		"type": "git",
