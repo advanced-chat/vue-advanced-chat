@@ -7,14 +7,15 @@
 		<slot name="rooms-header"></slot>
 
 		<div class="box-search">
-			<div class="icon-search">
+			<div class="icon-search" v-if="rooms.length">
 				<svg-icon name="search" />
 			</div>
 			<input
-				type="text"
+				type="search"
 				:placeholder="textMessages.SEARCH"
 				autocomplete="off"
 				@input="searchRoom"
+				v-show="rooms.length"
 			/>
 			<div v-if="showAddRoom" class="svg-button add-icon" @click="addRoom">
 				<svg-icon name="add" />
@@ -172,7 +173,8 @@ export default {
 }
 
 .add-icon {
-	margin-left: 20px;
+	margin-left: auto;
+	padding-left: 20px;
 }
 
 input {
