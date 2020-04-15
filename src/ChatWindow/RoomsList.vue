@@ -2,7 +2,7 @@
 	<div
 		class="rooms-container app-border-r"
 		:class="{ 'rooms-container-full': isMobile }"
-		v-if="showRoomsList"
+		v-show="showRoomsList"
 	>
 		<slot name="rooms-header"></slot>
 
