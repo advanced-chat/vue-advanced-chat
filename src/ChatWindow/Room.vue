@@ -685,6 +685,7 @@ export default {
 textarea {
 	height: 20px;
 	width: 100%;
+	line-height: 20px;
 	overflow: hidden;
 	outline: 0;
 	resize: none;

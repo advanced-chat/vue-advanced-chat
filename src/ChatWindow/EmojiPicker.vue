@@ -27,7 +27,7 @@
 						}"
 					>
 						<div class="emoji-picker__search">
-							<input type="text" v-model="search" v-focus />
+							<input type="text" v-model="search" />
 						</div>
 						<div>
 							<div v-for="(emojiGroup, category) in emojis" :key="category">
@@ -85,13 +85,6 @@ export default {
 				if (pickerTopPosition) this.emojiPickerHeight = clientY
 				else this.emojiPickerHeight = clientY - 320
 			}, 0)
-		}
-	},
-	directives: {
-		focus: {
-			inserted(el) {
-				el.focus()
-			}
 		}
 	}
 }
