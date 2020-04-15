@@ -21,9 +21,10 @@
 						class="emoji-picker"
 						:class="{ 'picker-reaction': emojiReaction }"
 						:style="{
-							top: `${emojiPickerHeight}px`,
-							right: positionRight ? '85px' : '',
-							display: emojiPickerHeight || !emojiReaction ? 'initial' : 'none'
+							height: `${emojiPickerHeight}px`,
+							top: positionTop ? emojiPickerHeight : `${emojiPickerTop}px`,
+							right: positionTop ? '-50px' : positionRight ? '70px' : '',
+							display: emojiPickerTop || !emojiReaction ? 'initial' : 'none'
 						}"
 					>
 						<div class="emoji-picker__search">
@@ -60,11 +61,18 @@ export default {
 		EmojiPicker,
 		SvgIcon
 	},
-	props: ['emojiOpened', 'emojiReaction', 'roomFooterRef', 'positionRight'],
+	props: [
+		'emojiOpened',
+		'emojiReaction',
+		'roomFooterRef',
+		'positionTop',
+		'positionRight'
+	],
 	data() {
 		return {
 			search: '',
-			emojiPickerHeight: ''
+			emojiPickerHeight: 320,
+			emojiPickerTop: 0
 		}
 	},
 	methods: {
@@ -73,17 +81,20 @@ export default {
 		},
 		openEmoji(ev) {
 			this.$emit('openEmoji', true)
-			this.setEmojiPickerHeight(ev.clientY)
+			this.setEmojiPickerHeight(ev.clientY, ev.view.innerHeight)
 		},
-		setEmojiPickerHeight(clientY) {
+		setEmojiPickerHeight(clientY, innerHeight) {
 			setTimeout(() => {
 				if (!this.roomFooterRef) return
 
-				const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
-				const pickerTopPosition = roomFooterTop - clientY > 320
+				if (innerHeight < 700) this.emojiPickerHeight = 300
 
-				if (pickerTopPosition) this.emojiPickerHeight = clientY
-				else this.emojiPickerHeight = clientY - 320
+				const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
+				const pickerTopPosition =
+					roomFooterTop - clientY > this.emojiPickerHeight - 80
+
+				if (pickerTopPosition) this.emojiPickerTop = clientY
+				else this.emojiPickerTop = clientY - this.emojiPickerHeight
 			}, 0)
 		}
 	}
@@ -96,23 +107,13 @@ export default {
 	display: flex;
 }
 
-.regular-input {
-	padding: 0.5rem 1rem;
-	border-radius: 3px;
-	border: var(--chat-border-style);
-	width: 20rem;
-	height: 12rem;
-	outline: none;
-}
-
 .emoji-picker {
 	position: absolute;
 	z-index: 9999;
 	bottom: 32px;
 	right: 10px;
 	border: var(--chat-border-style);
-	width: 15rem;
-	height: 20rem;
+	width: 240px;
 	overflow: scroll;
 	padding: 1rem;
 	box-sizing: border-box;

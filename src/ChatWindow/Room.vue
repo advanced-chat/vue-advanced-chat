@@ -165,6 +165,7 @@
 					<emoji-picker
 						v-if="showEmojis && (!file || imageFile)"
 						:emojiOpened="emojiOpened"
+						:positionTop="true"
 						@addEmoji="addEmoji"
 						@openEmoji="emojiOpened = $event"
 					></emoji-picker>
