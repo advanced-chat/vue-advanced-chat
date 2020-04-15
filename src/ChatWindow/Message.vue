@@ -434,8 +434,8 @@ export default {
 			this.optionsOpened = false
 			if (this.hoverMessageId !== this.message._id) this.messageHover = false
 		},
-		openEmoji(ev) {
-			this.emojiOpened = ev
+		openEmoji() {
+			this.emojiOpened = !this.emojiOpened
 			this.$emit('hideOptions', false)
 		},
 		closeEmoji() {
