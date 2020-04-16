@@ -158,7 +158,7 @@
 					v-model="message"
 					@input="onChangeInput"
 					@keydown.esc="resetMessage"
-					@keydown.enter.exact.prevent="sendMessage"
+					@keydown.enter.exact.prevent=""
 				></textarea>
 
 				<div class="icon-textarea">
@@ -213,6 +213,7 @@ import SvgIcon from './SvgIcon'
 import EmojiPicker from './EmojiPicker'
 import emojis from 'vue-emoji-picker/src/emojis'
 const { messagesValid } = require('../utils/roomValidation')
+const { detectMobile } = require('../utils/mobileDetection')
 
 export default {
 	name: 'room',
@@ -269,8 +270,15 @@ export default {
 	mounted() {
 		this.newMessages = []
 
-		window.addEventListener('keypress', e => {
-			if (e.keyCode === 13 && !e.shiftKey) this.sendMessage()
+		window.addEventListener('keyup', e => {
+			if (e.keyCode === 13 && !e.shiftKey) {
+				if (detectMobile()) {
+					this.message = this.message + '\n'
+					setTimeout(() => this.onChangeInput(), 0)
+				} else {
+					this.sendMessage()
+				}
+			}
 		})
 
 		this.$refs.scrollContainer.addEventListener('scroll', e => {
