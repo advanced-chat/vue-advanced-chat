@@ -263,7 +263,8 @@ export default {
 	display: flex;
 
 	textarea,
-	input[type='text'] {
+	input[type='text'],
+	input[type='search'] {
 		-webkit-appearance: none;
 	}
 }
