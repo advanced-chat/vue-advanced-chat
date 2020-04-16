@@ -532,7 +532,7 @@ export default {
 		},
 		isImageCheck(file) {
 			if (!file) return
-			const imageTypes = ['png', 'jpg']
+			const imageTypes = ['png', 'jpg', 'jpeg', 'svg']
 			const { type } = file
 			return imageTypes.some(t => type.includes(t))
 		},

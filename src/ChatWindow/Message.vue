@@ -391,7 +391,7 @@ export default {
 		},
 		checkImageType(file) {
 			if (!file) return
-			const imageTypes = ['png', 'jpg']
+			const imageTypes = ['png', 'jpg', 'jpeg', 'svg']
 			const { type } = file
 			return imageTypes.some(t => type.includes(t))
 		},
@@ -625,6 +625,10 @@ export default {
 	flex-wrap: wrap;
 	align-items: center;
 	margin-top: 3px;
+
+	span {
+		max-width: 100%;
+	}
 
 	.icon-file svg {
 		margin-right: 5px;
