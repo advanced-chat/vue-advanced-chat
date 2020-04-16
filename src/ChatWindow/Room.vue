@@ -742,6 +742,7 @@ textarea {
 
 .image-file {
 	display: flex;
+	flex-direction: column;
 
 	img {
 		border-radius: 15px;
