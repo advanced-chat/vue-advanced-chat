@@ -137,7 +137,7 @@
 					<div class="icon-file">
 						<svg-icon name="file" />
 					</div>
-					<div>{{ message }}</div>
+					<div class="file-message">{{ message }}</div>
 					<div class="svg-button icon-remove" @click="resetMessage">
 						<svg-icon name="close" />
 					</div>
@@ -775,6 +775,13 @@ textarea {
 	background: var(--chat-bg-color-input);
 	border: var(--chat-border-style-input);
 	border-radius: 20px;
+}
+
+.file-message {
+	max-width: calc(100% - 170px);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .icon-file {
