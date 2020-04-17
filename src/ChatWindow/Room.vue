@@ -614,13 +614,14 @@ export default {
 	background: var(--chat-content-bg-color);
 	flex: 1;
 	overflow-y: auto;
+	margin-bottom: -10px;
 	margin-right: 1px;
 	padding-top: 60px;
 	-webkit-overflow-scrolling: touch;
 }
 
 .messages-container {
-	padding: 0 5px 10px;
+	padding: 0 5px 15px;
 }
 
 .text-started {
