@@ -560,13 +560,17 @@ export default {
 	height: 100%;
 	flex: 1;
 	overflow: hidden;
+	display: flex;
+	flex-flow: column;
 }
 
 .room-header {
-	position: relative;
+	position: absolute;
 	display: flex;
 	align-items: center;
 	height: 64px;
+	width: 100%;
+	z-index: 10;
 	margin-right: 1px;
 	padding: 0 16px;
 	background: var(--chat-header-bg-color);
@@ -604,14 +608,15 @@ export default {
 
 .container-scroll {
 	background: var(--chat-content-bg-color);
-	height: calc(100% - 110px);
+	flex: 1;
 	overflow-y: auto;
 	margin-right: 1px;
+	padding-top: 60px;
 	-webkit-overflow-scrolling: touch;
 }
 
 .messages-container {
-	padding: 0 5px 20px;
+	padding: 0 5px 10px;
 }
 
 .text-started {
@@ -642,8 +647,6 @@ export default {
 }
 
 .room-footer {
-	position: absolute;
-	bottom: 0;
 	width: calc(100% - 1px);
 	border-bottom-right-radius: 4px;
 	z-index: 10;
