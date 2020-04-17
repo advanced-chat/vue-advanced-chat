@@ -511,8 +511,14 @@ export default {
 		},
 		resizeTextarea() {
 			const el = this.$refs['roomTextarea']
+
+			const padding = window
+				.getComputedStyle(el, null)
+				.getPropertyValue('padding-top')
+				.replace('px', '')
+
 			el.style.height = 0
-			el.style.height = el.scrollHeight - 24 + 'px'
+			el.style.height = el.scrollHeight - padding * 2 + 'px'
 		},
 		addEmoji(emoji) {
 			this.message += emoji.icon
@@ -614,14 +620,13 @@ export default {
 	background: var(--chat-content-bg-color);
 	flex: 1;
 	overflow-y: auto;
-	margin-bottom: -10px;
 	margin-right: 1px;
 	padding-top: 60px;
 	-webkit-overflow-scrolling: touch;
 }
 
 .messages-container {
-	padding: 0 5px 15px;
+	padding: 0 5px 5px;
 }
 
 .text-started {
@@ -660,7 +665,7 @@ export default {
 .box-footer {
 	display: flex;
 	background: var(--chat-footer-bg-color);
-	padding: 0 8px 10px;
+	padding: 10px 8px 10px;
 }
 
 .reply-container {
@@ -713,7 +718,7 @@ textarea {
 	outline: 0;
 	resize: none;
 	border-radius: 20px;
-	padding: 12px 140px 12px 16px;
+	padding: 12px 16px;
 	box-sizing: content-box;
 	font-size: 16px;
 	background: var(--chat-bg-color-input);
@@ -734,8 +739,6 @@ textarea {
 }
 
 .icon-textarea {
-	position: absolute;
-	right: 20px;
 	display: flex;
 	margin: 12px 0 0 5px;
 
@@ -783,7 +786,7 @@ textarea {
 .file-container {
 	display: flex;
 	align-items: center;
-	width: 100%;
+	width: calc(100% - 83px);
 	height: 20px;
 	padding: 12px 0;
 	box-sizing: content-box;
@@ -793,7 +796,7 @@ textarea {
 }
 
 .file-message {
-	max-width: calc(100% - 170px);
+	max-width: calc(100% - 75px);
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -822,5 +825,42 @@ textarea {
 
 .messages-hidden {
 	opacity: 0;
+}
+
+@media only screen and (max-width: 768px) {
+	.box-footer {
+		border-top: var(--chat-border-style-input);
+		padding: 7px 2px 7px 7px;
+	}
+
+	textarea {
+		padding: 7px;
+		line-height: 18px;
+
+		&::placeholder {
+			color: transparent;
+		}
+	}
+
+	.icon-textarea {
+		margin: 6px 0 0 5px;
+	}
+
+	.image-container {
+		left: 10px;
+		bottom: 10px;
+	}
+
+	.room-footer {
+		width: 100%;
+	}
+
+	.file-container {
+		padding: 7px 0;
+
+		.icon-file {
+			margin-left: 10px;
+		}
+	}
 }
 </style>
