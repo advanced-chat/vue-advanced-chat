@@ -646,6 +646,7 @@ export default {
 	bottom: 0;
 	width: calc(100% - 1px);
 	border-bottom-right-radius: 4px;
+	z-index: 10;
 }
 
 .box-footer {
