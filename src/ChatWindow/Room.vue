@@ -148,12 +148,13 @@
 					ref="roomTextarea"
 					:placeholder="textMessages.TYPE_MESSAGE"
 					:class="{
-						'textarea-outline': editedMessage._id,
-						'textarea-image': imageFile
+						'textarea-outline': editedMessage._id
 					}"
 					:style="{
 						'min-height': `${imageDimensions ? imageDimensions.height : 20}px`,
-						'padding-left': `${imageDimensions ? imageDimensions.width : 16}px`
+						'padding-left': `${
+							imageDimensions ? imageDimensions.width - 10 : 16
+						}px`
 					}"
 					v-model="message"
 					@input="onChangeInput"
@@ -343,6 +344,9 @@ export default {
 					this.imageDimensions = null
 					setTimeout(() => this.resizeTextarea(), 0)
 				} else {
+					let height = this.$refs.imageFile.height
+					if (height < 30) height = 30
+
 					this.imageDimensions = {
 						height: this.$refs.imageFile.height - 10,
 						width: this.$refs.imageFile.width + 26
@@ -710,15 +714,14 @@ textarea {
 
 	&::placeholder {
 		color: var(--chat-color-placeholder);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 }
 
 .textarea-outline {
 	border: 2px solid var(--chat-border-color-input-selected);
-}
-
-.textarea-image {
-	padding-left: 200px;
 }
 
 .icon-textarea {
@@ -742,7 +745,9 @@ textarea {
 
 .image-file {
 	display: flex;
+	justify-content: center;
 	flex-direction: column;
+	min-height: 30px;
 
 	img {
 		border-radius: 15px;
