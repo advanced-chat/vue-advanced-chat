@@ -408,6 +408,8 @@ messages="[
 | sendMessageReaction      | `{ roomId, messageId, reaction, remove }`                       | A user clicks on the emoji icon inside a message      |
 | typingMessage            | `{ message, roomId }`                                           | A user is typing a message                            |
 
+(1) `fetchMessages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`
+
 (1) `fetchMessages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top
 
 (2) `menuActionHandler` is the result of the `menuActions` prop.<br>
