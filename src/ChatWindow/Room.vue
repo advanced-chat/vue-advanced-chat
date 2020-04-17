@@ -95,11 +95,13 @@
 				</div>
 			</div>
 		</div>
-		<transition name="bounce">
-			<div class="icon-scroll" v-if="scrollIcon" @click="scrollToBottom">
-				<svg-icon name="dropdown" param="scroll" />
-			</div>
-		</transition>
+		<div v-if="!loadingMessages">
+			<transition name="bounce">
+				<div class="icon-scroll" v-if="scrollIcon" @click="scrollToBottom">
+					<svg-icon name="dropdown" param="scroll" />
+				</div>
+			</transition>
+		</div>
 		<div ref="roomFooter" class="room-footer" v-if="Object.keys(room).length">
 			<transition name="slide-up">
 				<div v-if="messageReply" class="reply-container">
@@ -284,9 +286,11 @@ export default {
 
 		this.$refs.scrollContainer.addEventListener('scroll', e => {
 			this.hideOptions = true
-			this.scrollIcon =
-				e.target.scrollHeight > 500 &&
-				e.target.scrollHeight - e.target.scrollTop > 1000
+			setTimeout(() => {
+				this.scrollIcon =
+					e.target.scrollHeight > 500 &&
+					e.target.scrollHeight - e.target.scrollTop > 1000
+			}, 200)
 		})
 
 		const emojisTable = Object.keys(emojis).map(key => emojis[key])
