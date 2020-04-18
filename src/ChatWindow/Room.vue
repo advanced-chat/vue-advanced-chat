@@ -300,12 +300,12 @@ export default {
 	watch: {
 		loadingMessages(val) {
 			if (val) this.infiniteState = null
-			else this.focusTextarea()
+			else this.focusTextarea(true)
 		},
 		room(newVal, oldVal) {
 			if (newVal.roomId && newVal.roomId !== oldVal.roomId) {
 				this.loadingMessages = true
-				this.resetMessage()
+				this.resetMessage(true)
 				this.$emit('typingMessage', this.message)
 			}
 		},
@@ -413,7 +413,7 @@ export default {
 		addNewMessage(message) {
 			this.newMessages.push(message)
 		},
-		resetMessage() {
+		resetMessage(disableMobileFocus) {
 			this.resetTextareaSize()
 			this.message = ''
 			this.editedMessage = {}
@@ -421,7 +421,7 @@ export default {
 			this.file = null
 			this.imageFile = null
 			this.emojiOpened = false
-			setTimeout(() => this.focusTextarea(), 0)
+			setTimeout(() => this.focusTextarea(disableMobileFocus), 0)
 		},
 		resetImageFile() {
 			this.imageFile = null
@@ -433,8 +433,8 @@ export default {
 			if (!this.$refs['roomTextarea']) return
 			this.$refs['roomTextarea'].style.height = '20px'
 		},
-		focusTextarea() {
-			if (this.isMobile) return
+		focusTextarea(disableMobileFocus) {
+			if (detectMobile() && disableMobileFocus) return
 			this.$refs['roomTextarea'].focus()
 		},
 		isMessageEmpty() {
@@ -619,7 +619,7 @@ export default {
 .container-scroll {
 	background: var(--chat-content-bg-color);
 	flex: 1;
-	overflow-y: auto;
+	overflow-y: scroll;
 	margin-right: 1px;
 	padding-top: 60px;
 	-webkit-overflow-scrolling: touch;
@@ -671,7 +671,7 @@ export default {
 
 .reply-container {
 	display: flex;
-	padding: 10px 10px 10px;
+	padding: 10px 10px 0 10px;
 	background: var(--chat-content-bg-color);
 	align-items: center;
 	max-width: 100%;
@@ -867,6 +867,10 @@ textarea {
 		.icon-file {
 			margin-left: 10px;
 		}
+	}
+
+	.reply-container {
+		padding: 5px 8px;
 	}
 
 	.icon-scroll {
