@@ -868,5 +868,9 @@ textarea {
 			margin-left: 10px;
 		}
 	}
+
+	.icon-scroll {
+		bottom: 70px;
+	}
 }
 </style>

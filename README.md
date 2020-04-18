@@ -216,7 +216,7 @@ styles="{
   },
 
   footer: {
-    background: 'none',
+    background: '#f8f9fa',
     borderStyleInput: '1px solid #e1e4e8',
     borderInputSelected: '#1976d2',
     backgroundReply: 'rgba(0, 0, 0, 0.08)'
