@@ -135,12 +135,16 @@
 					</div>
 				</div>
 
-				<div class="file-container" v-else-if="file">
+				<div
+					v-else-if="file"
+					class="file-container"
+					:class="{ 'file-container-edit': editedMessage._id }"
+				>
 					<div class="icon-file">
 						<svg-icon name="file" />
 					</div>
 					<div class="file-message">{{ message }}</div>
-					<div class="svg-button icon-remove" @click="resetMessage">
+					<div class="svg-button icon-remove" @click="resetMessage(null, true)">
 						<svg-icon name="close" />
 					</div>
 				</div>
@@ -412,7 +416,13 @@ export default {
 		addNewMessage(message) {
 			this.newMessages.push(message)
 		},
-		resetMessage(disableMobileFocus) {
+		resetMessage(disableMobileFocus = null, editFile = null) {
+			if (editFile) {
+				this.file = null
+				this.message = ''
+				return
+			}
+
 			this.resetTextareaSize()
 			this.message = ''
 			this.editedMessage = {}
@@ -787,13 +797,17 @@ textarea {
 .file-container {
 	display: flex;
 	align-items: center;
-	width: calc(100% - 83px);
+	width: calc(100% - 75px);
 	height: 20px;
 	padding: 12px 0;
 	box-sizing: content-box;
 	background: var(--chat-bg-color-input);
 	border: var(--chat-border-style-input);
 	border-radius: 20px;
+}
+
+.file-container-edit {
+	width: calc(100% - 109px);
 }
 
 .file-message {
