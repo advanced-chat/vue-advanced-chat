@@ -169,7 +169,7 @@
 							v-click-outside="closeOptions"
 							class="menu-options"
 							:class="{ 'menu-left': message.sender_id !== currentUserId }"
-							:style="{ top: `${menuOptionsHeight}px` }"
+							:style="{ top: `${menuOptionsTop}px` }"
 						>
 							<div class="menu-list">
 								<div
@@ -244,7 +244,7 @@ export default {
 			imageHover: false,
 			messageHover: false,
 			optionsOpened: false,
-			menuOptionsHeight: 0,
+			menuOptionsTop: 0,
 			messageReaction: '',
 			newMessage: {},
 			emojiOpened: false,
@@ -417,17 +417,17 @@ export default {
 				)
 					return
 
-				const menuOptionsHeight = this.$refs.menuOptions.getBoundingClientRect()
+				const menuOptionsTop = this.$refs.menuOptions.getBoundingClientRect()
 					.height
 
 				const actionIconTop = this.$refs.actionIcon.getBoundingClientRect().top
 				const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
 
 				const optionsTopPosition =
-					roomFooterTop - actionIconTop > menuOptionsHeight + 50
+					roomFooterTop - actionIconTop > menuOptionsTop + 50
 
-				if (optionsTopPosition) this.menuOptionsHeight = 28
-				else this.menuOptionsHeight = -menuOptionsHeight
+				if (optionsTopPosition) this.menuOptionsTop = 30
+				else this.menuOptionsTop = -menuOptionsTop
 			}, 0)
 		},
 		closeOptions() {
@@ -819,6 +819,10 @@ export default {
 
 	.options-container {
 		right: 5px;
+	}
+
+	.menu-left {
+		right: -50px;
 	}
 }
 </style>
