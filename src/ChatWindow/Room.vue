@@ -761,7 +761,7 @@ textarea {
 
 .image-container {
 	position: absolute;
-	max-width: 20%;
+	max-width: 25%;
 	left: 16px;
 	top: 18px;
 }
@@ -782,8 +782,9 @@ textarea {
 
 .icon-image {
 	position: absolute;
-	top: 8px;
-	left: 8px;
+	top: 6px;
+	left: 6px;
+	z-index: 10;
 
 	svg {
 		height: 20px;
@@ -869,6 +870,10 @@ textarea {
 	.image-container {
 		top: 10px;
 		left: 10px;
+	}
+
+	.image-file img {
+		transform: scale(0.97);
 	}
 
 	.room-footer {
