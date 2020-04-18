@@ -90,7 +90,10 @@ export default {
 		},
 		setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
 			setTimeout(() => {
-				if (!this.roomFooterRef) return
+				if (!this.roomFooterRef) {
+					if (innerWidth < 500) this.emojiPickerRight = '0px'
+					return
+				}
 
 				if (innerHeight < 700) this.emojiPickerHeight = innerHeight / 2
 				const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
