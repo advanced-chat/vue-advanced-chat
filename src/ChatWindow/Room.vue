@@ -664,6 +664,7 @@ export default {
 
 .box-footer {
 	display: flex;
+	position: relative;
 	background: var(--chat-footer-bg-color);
 	padding: 10px 8px 10px;
 }
@@ -752,7 +753,7 @@ textarea {
 	position: absolute;
 	max-width: 20%;
 	left: 16px;
-	bottom: 18px;
+	top: 18px;
 }
 
 .image-file {
@@ -844,11 +845,16 @@ textarea {
 
 	.icon-textarea {
 		margin: 6px 0 0 5px;
+
+		svg,
+		.wrapper {
+			margin: 0 5px;
+		}
 	}
 
 	.image-container {
+		top: 10px;
 		left: 10px;
-		bottom: 10px;
 	}
 
 	.room-footer {

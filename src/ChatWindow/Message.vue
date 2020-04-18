@@ -803,4 +803,22 @@ export default {
 		background: var(--chat-message-bg-color-reaction-hover-me);
 	}
 }
+
+@media only screen and (max-width: 768px) {
+	.message-container {
+		padding: 3px;
+	}
+
+	.message-box {
+		flex: 0 0 80%;
+		max-width: 80%;
+	}
+	.offset-current {
+		margin-left: 20%;
+	}
+
+	.options-container {
+		right: 5px;
+	}
+}
 </style>

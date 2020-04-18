@@ -23,7 +23,7 @@
 						:style="{
 							height: `${emojiPickerHeight}px`,
 							top: positionTop ? emojiPickerHeight : `${emojiPickerTop}px`,
-							right: positionTop ? '-50px' : positionRight ? '70px' : '',
+							right: emojiPickerRight,
 							display: emojiPickerTop || !emojiReaction ? 'initial' : 'none'
 						}"
 					>
@@ -72,7 +72,8 @@ export default {
 		return {
 			search: '',
 			emojiPickerHeight: 320,
-			emojiPickerTop: 0
+			emojiPickerTop: 0,
+			emojiPickerRight: ''
 		}
 	},
 	methods: {
@@ -81,20 +82,33 @@ export default {
 		},
 		openEmoji(ev) {
 			this.$emit('openEmoji', true)
-			this.setEmojiPickerHeight(ev.clientY, ev.view.innerHeight)
+			this.setEmojiPickerPosition(
+				ev.clientY,
+				ev.view.innerWidth,
+				ev.view.innerHeight
+			)
 		},
-		setEmojiPickerHeight(clientY, innerHeight) {
+		setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
 			setTimeout(() => {
 				if (!this.roomFooterRef) return
 
-				if (innerHeight < 700) this.emojiPickerHeight = 300
-
+				if (innerHeight < 700) this.emojiPickerHeight = innerHeight / 2
 				const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
 				const pickerTopPosition =
-					roomFooterTop - clientY > this.emojiPickerHeight - 80
+					roomFooterTop - clientY > this.emojiPickerHeight - 50
 
-				if (pickerTopPosition) this.emojiPickerTop = clientY
-				else this.emojiPickerTop = clientY - this.emojiPickerHeight
+				if (pickerTopPosition) this.emojiPickerTop = clientY + 10
+				else this.emojiPickerTop = clientY - this.emojiPickerHeight - 10
+
+				if (innerWidth < 500 && !this.positionRight) {
+					this.emojiPickerRight = innerWidth / 5 + 'px'
+				} else {
+					this.emojiPickerRight = this.positionTop
+						? '-50px'
+						: this.positionRight
+						? '60px'
+						: ''
+				}
 			}, 0)
 		}
 	}
