@@ -440,7 +440,7 @@ export default {
 		},
 		closeEmoji() {
 			this.emojiOpened = false
-			if (this.hoverMessageId !== this.message._id) this.optionsOpened = false
+			if (this.hoverMessageId !== this.message._id) this.messageHover = false
 		},
 		getEmojiByName(emojiName) {
 			return this.emojisList[emojiName]
