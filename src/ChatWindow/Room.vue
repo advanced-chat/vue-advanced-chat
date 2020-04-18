@@ -165,6 +165,14 @@
 				></textarea>
 
 				<div class="icon-textarea">
+					<div
+						class="svg-button"
+						v-if="editedMessage._id"
+						@click="resetMessage"
+					>
+						<svg-icon name="close-outline" />
+					</div>
+
 					<emoji-picker
 						v-if="showEmojis && (!file || imageFile)"
 						:emojiOpened="emojiOpened"
@@ -186,15 +194,6 @@
 					/>
 
 					<div
-						class="svg-button"
-						v-if="editedMessage._id"
-						@click="resetMessage"
-					>
-						<svg-icon name="close-outline" />
-					</div>
-
-					<div
-						v-else
 						@click="sendMessage"
 						class="svg-button"
 						:class="{ 'send-disabled': inputDisabled }"
@@ -736,7 +735,8 @@ textarea {
 }
 
 .textarea-outline {
-	border: 2px solid var(--chat-border-color-input-selected);
+	border: 1px solid var(--chat-border-color-input-selected);
+	box-shadow: inset 0px 0px 0px 1px var(--chat-border-color-input-selected);
 }
 
 .icon-textarea {
