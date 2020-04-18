@@ -129,13 +129,14 @@ export default {
 	z-index: 9999;
 	bottom: 32px;
 	right: 10px;
-	border: var(--chat-border-style);
 	width: 240px;
 	overflow: scroll;
-	padding: 1rem;
+	padding: 16px;
 	box-sizing: border-box;
 	border-radius: 0.5rem;
 	background: var(--chat-emoji-bg-color);
+	box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.1),
+		0 1px 2px -1px rgba(0, 0, 0, 0.1), 0 1px 2px 1px rgba(0, 0, 0, 0.1);
 }
 
 .picker-reaction {
@@ -152,14 +153,14 @@ export default {
 	flex: 1;
 	border-radius: 10rem;
 	border: var(--chat-border-style);
-	padding: 0.5rem 1rem;
+	padding: 5px 10px;
 	outline: none;
 	background: var(--chat-bg-color-input);
 	color: var(--chat-color);
 }
 
 .emoji-picker h5 {
-	margin: 20px 0 8px;
+	margin: 15px 0 8px;
 	color: #b1b1b1;
 	text-transform: uppercase;
 	font-size: 0.8rem;
