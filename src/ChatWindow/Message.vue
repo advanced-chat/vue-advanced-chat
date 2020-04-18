@@ -307,9 +307,6 @@ export default {
 				this.message.file.url.indexOf('blob:http') !== -1 || this.imageLoading
 			)
 		},
-		isEditable() {
-			return this.canEditMessage()
-		},
 		isMessageSeen() {
 			return (
 				this.message.sender_id === this.currentUserId &&
@@ -365,9 +362,7 @@ export default {
 			if (this.canEditMessage()) this.hoverMessageId = this.message._id
 		},
 		canEditMessage() {
-			return (
-				this.message.sender_id === this.currentUserId && !this.message.deleted
-			)
+			return !this.message.deleted
 		},
 		onLeaveMessage() {
 			this.imageHover = false
@@ -440,7 +435,7 @@ export default {
 		},
 		closeEmoji() {
 			this.emojiOpened = false
-			if (this.hoverMessageId !== this.message._id) this.messageHover = false
+			if (this.hoverMessageId !== this.message._id) this.optionsOpened = false
 		},
 		getEmojiByName(emojiName) {
 			return this.emojisList[emojiName]
