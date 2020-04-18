@@ -244,6 +244,7 @@ export default {
 			imageHover: false,
 			messageHover: false,
 			optionsOpened: false,
+			optionsClosing: false,
 			menuOptionsTop: 0,
 			messageReaction: '',
 			newMessage: {},
@@ -398,8 +399,9 @@ export default {
 			image.addEventListener('load', () => (this.imageLoading = false))
 		},
 		openOptions() {
-			this.optionsOpened = !this.optionsOpened
+			if (this.optionsClosing) return
 
+			this.optionsOpened = !this.optionsOpened
 			if (!this.optionsOpened) return
 
 			this.$emit('hideOptions', false)
@@ -427,6 +429,9 @@ export default {
 		},
 		closeOptions() {
 			this.optionsOpened = false
+			this.optionsClosing = true
+			setTimeout(() => (this.optionsClosing = false), 100)
+
 			if (this.hoverMessageId !== this.message._id) this.messageHover = false
 		},
 		openEmoji() {
