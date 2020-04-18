@@ -12,7 +12,7 @@
 			<div
 				v-if="room.avatar"
 				class="room-avatar"
-				:style="{ 'background-image': `url(${room.avatar})` }"
+				:style="{ 'background-image': `url('${room.avatar}')` }"
 			></div>
 			<div>
 				<div class="room-name">{{ room.roomName }}</div>

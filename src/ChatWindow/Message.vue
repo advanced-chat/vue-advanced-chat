@@ -45,7 +45,9 @@
 						<div class="image-reply-container" v-if="isImageReply">
 							<div
 								class="message-image message-image-reply"
-								:style="{ background: `url(${message.replyMessage.file.url})` }"
+								:style="{
+									'background-image': `url('${message.replyMessage.file.url}')`
+								}"
 							></div>
 						</div>
 
@@ -72,7 +74,7 @@
 									isImageLoading && message.sender_id === currentUserId
 							}"
 							:style="{
-								background: `url(${message.file.url})`,
+								'background-image': `url('${message.file.url}')`,
 								'max-height': `${imageResponsive.maxHeight}px`
 							}"
 						>
