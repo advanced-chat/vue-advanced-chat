@@ -475,8 +475,8 @@ export default {
 	overflow-wrap: break-word;
 	position: relative;
 	white-space: normal;
-	box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
-		0 1px 2px 0 rgba(0, 0, 0, 0.12);
+	box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.1),
+		0 1px 1px -1px rgba(0, 0, 0, 0.11), 0 1px 2px -1px rgba(0, 0, 0, 0.11);
 }
 
 .line-new {
@@ -534,13 +534,13 @@ export default {
 	transition-property: box-shadow, opacity;
 	transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
 	will-change: box-shadow;
-	box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.2),
-		0 1px 1px -1px rgba(0, 0, 0, 0.14), 0 1px 2px -1px rgba(0, 0, 0, 0.12);
+	box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.1),
+		0 1px 1px -1px rgba(0, 0, 0, 0.11), 0 1px 2px -1px rgba(0, 0, 0, 0.11);
 }
 
 .message-highlight {
-	box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.2),
-		0 1px 2px -1px rgba(0, 0, 0, 0.14), 0 1px 5px -1px rgba(0, 0, 0, 0.12);
+	box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.1),
+		0 1px 2px -1px rgba(0, 0, 0, 0.11), 0 1px 5px -1px rgba(0, 0, 0, 0.11);
 }
 
 .message-current {
