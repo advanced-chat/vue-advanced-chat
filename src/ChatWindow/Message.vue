@@ -528,7 +528,7 @@ export default {
 }
 
 .message-container-offset {
-	padding-top: 10px;
+	margin-top: 10px;
 }
 
 .offset-current {
@@ -826,7 +826,7 @@ export default {
 	}
 
 	.message-container-offset {
-		padding-top: 10px;
+		margin-top: 10px;
 	}
 
 	.message-box {
