@@ -469,7 +469,7 @@ export default {
 				})
 			}
 
-			this.resetMessage()
+			this.resetMessage(true)
 		},
 		loadMoreMessages(infiniteState) {
 			if (this.loadingMoreMessages) return
@@ -531,7 +531,7 @@ export default {
 		},
 		addEmoji(emoji) {
 			this.message += emoji.icon
-			this.focusTextarea()
+			this.focusTextarea(true)
 		},
 		launchFilePicker() {
 			this.$refs.file.value = ''
