@@ -610,7 +610,7 @@ export default {
 
 .room-name {
 	font-size: 17px;
-	font-weight: 600;
+	font-weight: 500;
 	line-height: 22px;
 	color: var(--chat-header-color-name);
 }

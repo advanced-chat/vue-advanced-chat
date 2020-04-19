@@ -260,7 +260,7 @@ input {
 .room-name {
 	flex: 1;
 	color: var(--chat-room-color-username);
-	font-weight: 600;
+	font-weight: 500;
 }
 
 .text-last {
