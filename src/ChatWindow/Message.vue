@@ -149,7 +149,7 @@
 							<emoji-picker
 								key="3"
 								class="message-reactions"
-								:style="{ right: isMessageActions ? '28px' : '5px' }"
+								:style="{ right: isMessageActions ? '30px' : '5px' }"
 								v-if="isMessageReactions"
 								v-click-outside="closeEmoji"
 								:emojiOpened="emojiOpened"
@@ -354,9 +354,9 @@ export default {
 		},
 		optionsBlurWidth() {
 			if (this.filteredMessageActions.length && this.showReactionEmojis) {
-				return this.isImage ? '67px' : '70px'
+				return this.isImage ? '69px' : '72px'
 			} else {
-				return this.isImage ? '42px' : '45px'
+				return this.isImage ? '44px' : '47px'
 			}
 		}
 	},
@@ -674,7 +674,7 @@ export default {
 
 .options-container {
 	position: absolute;
-	top: 3px;
+	top: 2px;
 	right: 10px;
 	height: 40px;
 	width: 70px;
@@ -686,7 +686,7 @@ export default {
 	position: absolute;
 	height: 100%;
 	width: 100%;
-	left: 10px;
+	left: 8px;
 	bottom: 10px;
 	background: var(--chat-message-bg-color);
 	filter: blur(4px);
@@ -753,7 +753,7 @@ export default {
 	border-radius: 50%;
 	position: absolute;
 	top: 7px;
-	right: 5px;
+	right: 7px;
 
 	svg {
 		height: 17px;
@@ -766,7 +766,7 @@ export default {
 .message-reactions {
 	position: absolute;
 	top: 6px;
-	right: 28px;
+	right: 30px;
 }
 
 .menu-options {
@@ -843,7 +843,7 @@ export default {
 	}
 
 	.options-container {
-		right: 5px;
+		right: 3px;
 	}
 
 	.menu-left {
