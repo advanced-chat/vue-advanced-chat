@@ -12,7 +12,12 @@
 			class="message-box"
 			:class="{ 'offset-current': message.sender_id === currentUserId }"
 		>
-			<div class="message-container">
+			<div
+				class="message-container"
+				:class="{
+					'message-container-offset': messageOffset
+				}"
+			>
 				<div
 					ref="imageRef"
 					class="message-card"
@@ -297,6 +302,12 @@ export default {
 				this.message.date !== this.messages[this.index - 1].date
 			)
 		},
+		messageOffset() {
+			return (
+				this.index > 0 &&
+				this.message.sender_id !== this.messages[this.index - 1].sender_id
+			)
+		},
 		isImage() {
 			return this.checkImageFile()
 		},
@@ -482,6 +493,7 @@ export default {
 	position: relative;
 	text-align: center;
 	font-size: 13px;
+	padding: 10px 0;
 }
 
 .line-new:after,
@@ -509,10 +521,14 @@ export default {
 
 .message-container {
 	position: relative;
-	padding: 3px 10px;
+	padding: 2px 10px;
 	align-items: end;
 	min-width: 100px;
 	box-sizing: content-box;
+}
+
+.message-container-offset {
+	padding-top: 10px;
 }
 
 .offset-current {
@@ -806,7 +822,11 @@ export default {
 
 @media only screen and (max-width: 768px) {
 	.message-container {
-		padding: 3px;
+		padding: 2px 3px 1px;
+	}
+
+	.message-container-offset {
+		padding-top: 10px;
 	}
 
 	.message-box {
