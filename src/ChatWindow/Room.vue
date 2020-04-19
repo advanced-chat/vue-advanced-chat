@@ -631,7 +631,7 @@ export default {
 	flex: 1;
 	overflow-y: scroll;
 	margin-right: 1px;
-	padding-top: 60px;
+	margin-top: 60px;
 	-webkit-overflow-scrolling: touch;
 }
 
@@ -866,7 +866,7 @@ textarea {
 	}
 
 	.container-scroll {
-		padding-top: 50px;
+		margin-top: 50px;
 	}
 
 	.box-footer {
