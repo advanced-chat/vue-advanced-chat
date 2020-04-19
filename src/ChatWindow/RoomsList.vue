@@ -260,6 +260,7 @@ input {
 .room-name {
 	flex: 1;
 	color: var(--chat-room-color-username);
+	font-weight: 600;
 }
 
 .text-last {
@@ -297,5 +298,20 @@ input {
 
 .state-online {
 	background-color: var(--chat-room-color-online);
+}
+
+@media only screen and (max-width: 768px) {
+	.box-search {
+		height: 50px;
+	}
+
+	input {
+		padding: 8px 8px 8px 38px;
+	}
+
+	.room-item {
+		min-height: 60px;
+		padding: 0 8px;
+	}
 }
 </style>

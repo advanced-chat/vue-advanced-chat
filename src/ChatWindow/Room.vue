@@ -159,7 +159,7 @@
 					:style="{
 						'min-height': `${imageDimensions ? imageDimensions.height : 20}px`,
 						'padding-left': `${
-							imageDimensions ? imageDimensions.width - 10 : 16
+							imageDimensions ? imageDimensions.width - 10 : 12
 						}px`
 					}"
 					v-model="message"
@@ -611,7 +611,8 @@ export default {
 
 .room-name {
 	font-size: 17px;
-	line-height: 18px;
+	font-weight: 600;
+	line-height: 22px;
 	color: var(--chat-header-color-name);
 }
 
@@ -844,6 +845,26 @@ textarea {
 }
 
 @media only screen and (max-width: 768px) {
+	.room-header {
+		height: 50px;
+		padding: 0 10px;
+
+		.room-name {
+			font-size: 16px;
+			line-height: 22px;
+		}
+
+		.room-info {
+			font-size: 12px;
+			line-height: 16px;
+		}
+
+		.room-avatar {
+			height: 37px;
+			width: 37px;
+		}
+	}
+
 	.box-footer {
 		border-top: var(--chat-border-style-input);
 		padding: 7px 2px 7px 7px;
