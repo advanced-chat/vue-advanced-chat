@@ -755,6 +755,8 @@ export default {
 	svg {
 		height: 17px;
 		width: 17px;
+		padding: 5px;
+		margin: -5px;
 	}
 }
 
