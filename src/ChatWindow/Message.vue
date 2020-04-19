@@ -386,6 +386,9 @@ export default {
 		},
 		messageActionHandler(action) {
 			this.closeOptions()
+			this.messageHover = false
+			this.hoverMessageId = null
+
 			setTimeout(() => {
 				this.$emit('messageActionHandler', { action, message: this.message })
 			}, 300)
