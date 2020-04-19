@@ -12,11 +12,7 @@
 			class="message-box"
 			:class="{ 'offset-current': message.sender_id === currentUserId }"
 		>
-			<div
-				class="message-container"
-				@mouseover="onHoverMessage(message)"
-				@mouseleave="onLeaveMessage"
-			>
+			<div class="message-container">
 				<div
 					ref="imageRef"
 					class="message-card"
@@ -25,6 +21,8 @@
 						'message-current': message.sender_id === currentUserId,
 						'message-deleted': message.deleted
 					}"
+					@mouseover="onHoverMessage(message)"
+					@mouseleave="onLeaveMessage"
 				>
 					<div
 						v-if="roomUsers.length > 2 && message.sender_id !== currentUserId"
