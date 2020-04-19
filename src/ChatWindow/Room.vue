@@ -865,9 +865,17 @@ textarea {
 		}
 	}
 
+	.container-scroll {
+		padding-top: 50px;
+	}
+
 	.box-footer {
 		border-top: var(--chat-border-style-input);
 		padding: 7px 2px 7px 7px;
+	}
+
+	.text-started {
+		margin-top: 20px;
 	}
 
 	textarea {

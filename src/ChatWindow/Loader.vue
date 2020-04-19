@@ -36,8 +36,8 @@ export default {
 
 #circle {
 	margin: auto;
-	height: 32px;
-	width: 32px;
+	height: 28px;
+	width: 28px;
 	border: 3px rgba(0, 0, 0, 0.25) solid;
 	border-top: 3px var(--chat-color-spinner) solid;
 	border-right: 3px var(--chat-color-spinner) solid;
@@ -45,6 +45,22 @@ export default {
 	border-radius: 50%;
 	-webkit-animation: spin 1s infinite linear;
 	animation: spin 1s infinite linear;
+}
+
+@media only screen and (max-width: 768px) {
+	#circle {
+		height: 24px;
+		width: 24px;
+	}
+
+	.container-top {
+		padding: 18px;
+
+		#circle {
+			height: 16px;
+			width: 16px;
+		}
+	}
 }
 
 @-webkit-keyframes spin {
