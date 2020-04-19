@@ -123,7 +123,7 @@
 
 					<div
 						class="options-container"
-						:class="{ 'options-image': isImage }"
+						:class="{ 'options-image': isImage && !message.replyMessage }"
 						:style="{ width: optionsBlurWidth }"
 					>
 						<transition-group name="slide-left">
@@ -698,7 +698,7 @@ export default {
 }
 
 .options-image {
-	width: 67px;
+	width: 69px;
 	height: 40px;
 
 	.blur-container {
