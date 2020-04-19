@@ -584,7 +584,6 @@ export default {
 }
 
 .room-header {
-	position: absolute;
 	display: flex;
 	align-items: center;
 	height: 64px;

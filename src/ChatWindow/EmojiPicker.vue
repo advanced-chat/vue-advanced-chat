@@ -90,22 +90,25 @@ export default {
 		},
 		setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
 			setTimeout(() => {
+				const mobileSize = innerWidth < 500 || innerHeight < 700
+
 				if (!this.roomFooterRef) {
-					if (innerWidth < 500) this.emojiPickerRight = '0px'
+					if (mobileSize) this.emojiPickerRight = '0px'
 					return
 				}
 
-				if (innerHeight < 700) this.emojiPickerHeight = innerHeight / 2
-				const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
-				const pickerTopPosition =
-					roomFooterTop - clientY > this.emojiPickerHeight - 50
-
-				if (pickerTopPosition) this.emojiPickerTop = clientY + 10
-				else this.emojiPickerTop = clientY - this.emojiPickerHeight - 10
-
-				if (innerWidth < 500 && !this.positionRight) {
-					this.emojiPickerRight = innerWidth / 5 + 'px'
+				if (mobileSize) {
+					this.emojiPickerRight = innerWidth / 2 - 120 + 'px'
+					this.emojiPickerTop = 100
+					this.emojiPickerHeight = innerHeight - 200
 				} else {
+					const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
+					const pickerTopPosition =
+						roomFooterTop - clientY > this.emojiPickerHeight - 50
+
+					if (pickerTopPosition) this.emojiPickerTop = clientY + 10
+					else this.emojiPickerTop = clientY - this.emojiPickerHeight - 10
+
 					this.emojiPickerRight = this.positionTop
 						? '-50px'
 						: this.positionRight
