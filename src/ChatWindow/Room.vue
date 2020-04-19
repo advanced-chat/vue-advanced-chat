@@ -713,6 +713,11 @@ export default {
 
 	.icon-reply {
 		margin-left: 10px;
+
+		svg {
+			height: 20px;
+			width: 20px;
+		}
 	}
 
 	.image-reply {
