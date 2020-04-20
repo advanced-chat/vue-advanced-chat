@@ -124,7 +124,12 @@
 					<div
 						class="options-container"
 						:class="{ 'options-image': isImage && !message.replyMessage }"
-						:style="{ width: optionsBlurWidth }"
+						:style="{
+							width:
+								filteredMessageActions.length && showReactionEmojis
+									? '70px'
+									: '45px'
+						}"
 					>
 						<transition-group name="slide-left">
 							<div
@@ -351,13 +356,6 @@ export default {
 			return this.message.sender_id === this.currentUserId
 				? this.messageActions
 				: this.messageActions.filter(message => !message.onlyMe)
-		},
-		optionsBlurWidth() {
-			if (this.filteredMessageActions.length && this.showReactionEmojis) {
-				return this.isImage ? '69px' : '72px'
-			} else {
-				return this.isImage ? '44px' : '47px'
-			}
 		}
 	},
 
@@ -697,14 +695,9 @@ export default {
 	background: var(--chat-message-bg-color-me);
 }
 
-.options-image {
-	width: 69px;
-	height: 40px;
-
-	.blur-container {
-		background: rgba(255, 255, 255, 0.6);
-		border-bottom-left-radius: 15px;
-	}
+.options-image .blur-container {
+	background: rgba(255, 255, 255, 0.6);
+	border-bottom-left-radius: 15px;
 }
 
 .image-buttons {
