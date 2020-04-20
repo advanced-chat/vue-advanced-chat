@@ -796,8 +796,16 @@ textarea {
 		height: 20px;
 		width: 20px;
 		border-radius: 50%;
-		box-shadow: 0 1px 3px -1px rgba(0, 0, 0, 0.2),
-			0 1px 3px 1px rgba(0, 0, 0, 0.12), 0 1px 3px 1px rgba(0, 0, 0, 0.1);
+	}
+
+	&:before {
+		content: ' ';
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		border-radius: 50%;
+		z-index: -1;
 	}
 }
 
