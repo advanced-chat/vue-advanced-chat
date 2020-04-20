@@ -542,7 +542,7 @@ npm i && npm run build:wc
 #### Add vue-advanced-chat.min.js in your application files
 
 ```
-vue-advance-chat/dist/vue-advanced-chat.min.js
+vue-advanced-chat/dist/vue-advanced-chat.min.js
 ```
 
 #### Import the vue-advanced-chat.min.js file you just added
