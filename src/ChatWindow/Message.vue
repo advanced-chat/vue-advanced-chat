@@ -677,6 +677,7 @@ export default {
 	height: 40px;
 	width: 70px;
 	overflow: hidden;
+	z-index: 1;
 	border-top-right-radius: 8px;
 }
 
@@ -687,7 +688,7 @@ export default {
 	left: 8px;
 	bottom: 10px;
 	background: var(--chat-message-bg-color);
-	filter: blur(4px);
+	filter: blur(3px);
 	border-bottom-left-radius: 8px;
 }
 
