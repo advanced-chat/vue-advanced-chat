@@ -1,46 +1,52 @@
 <template>
 	<div class="col-messages" v-show="(isMobile && !showRoomsList) || !isMobile">
 		<div class="room-header app-border-b">
-			<div
-				v-if="!singleRoom"
-				class="svg-button toggle-button"
-				:class="{ 'rotate-icon': !showRoomsList && !isMobile }"
-				@click="$emit('toggleRoomsList')"
-			>
-				<svg-icon name="toggle" />
-			</div>
-			<div
-				v-if="room.avatar"
-				class="room-avatar"
-				:style="{ 'background-image': `url('${room.avatar}')` }"
-			></div>
-			<div>
-				<div class="room-name">{{ room.roomName }}</div>
-				<div v-if="typingUsers" class="room-info">
-					{{ typingUsers }} {{ textMessages.IS_TYPING }}
+			<div class="room-wrapper">
+				<div
+					v-if="!singleRoom"
+					class="svg-button toggle-button"
+					:class="{ 'rotate-icon': !showRoomsList && !isMobile }"
+					@click="$emit('toggleRoomsList')"
+				>
+					<svg-icon name="toggle" />
 				</div>
-				<div v-else class="room-info">
-					{{ userStatus }}
+				<div
+					v-if="room.avatar"
+					class="room-avatar"
+					:style="{ 'background-image': `url('${room.avatar}')` }"
+				></div>
+				<div>
+					<div class="room-name">{{ room.roomName }}</div>
+					<div v-if="typingUsers" class="room-info">
+						{{ typingUsers }} {{ textMessages.IS_TYPING }}
+					</div>
+					<div v-else class="room-info">
+						{{ userStatus }}
+					</div>
 				</div>
-			</div>
-			<div
-				class="svg-button room-options"
-				v-if="menuActions.length"
-				@click="menuOpened = !menuOpened"
-			>
-				<svg-icon name="menu" />
-			</div>
-			<transition name="slide-left" v-if="menuActions.length">
-				<div v-if="menuOpened" v-click-outside="closeMenu" class="menu-options">
-					<div class="menu-list">
-						<div v-for="action in menuActions" :key="action.name">
-							<div class="menu-item" @click="menuActionHandler(action)">
-								{{ action.title }}
+				<div
+					class="svg-button room-options"
+					v-if="menuActions.length"
+					@click="menuOpened = !menuOpened"
+				>
+					<svg-icon name="menu" />
+				</div>
+				<transition name="slide-left" v-if="menuActions.length">
+					<div
+						v-if="menuOpened"
+						v-click-outside="closeMenu"
+						class="menu-options"
+					>
+						<div class="menu-list">
+							<div v-for="action in menuActions" :key="action.name">
+								<div class="menu-item" @click="menuActionHandler(action)">
+									{{ action.title }}
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-			</transition>
+				</transition>
+			</div>
 		</div>
 		<div ref="scrollContainer" class="container-scroll">
 			<loader :show="loadingMessages"></loader>
@@ -592,9 +598,15 @@ export default {
 	width: 100%;
 	z-index: 10;
 	margin-right: 1px;
-	padding: 0 16px;
 	background: var(--chat-header-bg-color);
 	border-top-right-radius: var(--chat-container-border-radius);
+}
+
+.room-wrapper {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	padding: 0 16px;
 }
 
 .toggle-button {
@@ -861,7 +873,10 @@ textarea {
 @media only screen and (max-width: 768px) {
 	.room-header {
 		height: 50px;
-		padding: 0 10px;
+
+		.room-wrapper {
+			padding: 0 10px;
+		}
 
 		.room-name {
 			font-size: 16px;
