@@ -309,7 +309,6 @@ export default {
 			if (newVal.roomId && newVal.roomId !== oldVal.roomId) {
 				this.loadingMessages = true
 				this.resetMessage(true)
-				this.$emit('typingMessage', this.message)
 			}
 		},
 		messages(newVal, oldVal) {
@@ -417,6 +416,8 @@ export default {
 			this.newMessages.push(message)
 		},
 		resetMessage(disableMobileFocus = null, editFile = null) {
+			this.$emit('typingMessage', null)
+
 			if (editFile) {
 				this.file = null
 				this.message = ''
