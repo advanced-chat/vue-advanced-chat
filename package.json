@@ -13,6 +13,8 @@
 		"chat",
 		"vue-js-chat",
 		"multiple",
+		"group",
+		"rooms",
 		"realtime"
 	],
 	"repository": {
