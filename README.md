@@ -170,7 +170,7 @@ messageActions="[
 ]"
 ```
 
-(7) `textMessages` can be used to replace default texts. Ex:
+(7) `textMessages` can be used to replace default i18n texts. Ex:
 
 ```javascript
 textMessages="{
@@ -272,7 +272,7 @@ styles="{
     colorMessage: '#67717a',
     colorTimestamp: '#a2aeb8',
     colorStateOnline: '#4caf50',
-		colorStateOffline: '#ccc'
+    colorStateOffline: '#ccc'
   },
 
   emoji: {
@@ -297,8 +297,8 @@ styles="{
     pencil: '#9e9e9e',
     checkmark: '#0696c7',
     eye: '#fff',
-		dropdownMessage: '#fff',
-		dropdownMessageBackground: 'rgba(0, 0, 0, 0.25)',
+    dropdownMessage: '#fff',
+    dropdownMessageBackground: 'rgba(0, 0, 0, 0.25)',
     dropdownScroll: '#0a0a0a'
   }
 }"
