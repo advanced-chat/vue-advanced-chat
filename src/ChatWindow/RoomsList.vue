@@ -24,9 +24,11 @@
 
 		<loader :show="loadingRooms"></loader>
 
-		<div class="rooms-empty" v-if="!loadingRooms && !rooms.length">
-			{{ textMessages.ROOMS_EMPTY }}
-		</div>
+		<div
+			class="rooms-empty"
+			v-if="!loadingRooms && !rooms.length"
+			v-html="textMessages.ROOMS_EMPTY"
+		></div>
 
 		<div v-if="!loadingRooms" class="room-list">
 			<div
@@ -48,12 +50,12 @@
 							class="state-circle"
 							:class="{ 'state-online': userStatus(room) === 'online' }"
 						></div>
-						<div class="room-name text-ellipsis">
-							{{ room.roomName }}
-						</div>
-						<div class="text-date" v-if="room.lastMessage">
-							{{ room.lastMessage.timestamp }}
-						</div>
+						<div class="room-name text-ellipsis" v-html="room.roomName"></div>
+						<div
+							class="text-date"
+							v-if="room.lastMessage"
+							v-html="room.lastMessage.timestamp"
+						></div>
 					</div>
 					<div
 						class="text-last text-ellipsis"
@@ -63,7 +65,7 @@
 						<span v-if="room.lastMessage.seen">
 							<svg-icon name="checkmark" class="icon-check" />
 						</span>
-						<span>{{ room.lastMessage.content }}</span>
+						<span v-html="room.lastMessage.content"></span>
 					</div>
 				</div>
 			</div>

@@ -1,12 +1,11 @@
 <template>
 	<div>
-		<div class="card-date" v-if="showDate">
-			{{ message.date }}
-		</div>
-
-		<div class="line-new" v-if="newMessage._id === message._id">
-			{{ textMessages.NEW_MESSAGES }}
-		</div>
+		<div class="card-date" v-if="showDate" v-html="message.date"></div>
+		<div
+			class="line-new"
+			v-if="newMessage._id === message._id"
+			v-html="textMessages.NEW_MESSAGES"
+		></div>
 
 		<div
 			class="message-box"
@@ -36,14 +35,14 @@
 							'username-reply': !message.deleted && message.replyMessage
 						}"
 					>
-						<span>{{ message.username }}</span>
+						<span v-html="message.username"></span>
 					</div>
 
 					<div
 						v-if="!message.deleted && message.replyMessage"
 						class="reply-message"
 					>
-						<div class="reply-username">{{ replyUsername }}</div>
+						<div class="reply-username" v-html="replyUsername"></div>
 
 						<div class="image-reply-container" v-if="isImageReply">
 							<div
@@ -54,15 +53,18 @@
 							></div>
 						</div>
 
-						<div class="reply-content">{{ message.replyMessage.content }}</div>
+						<div
+							class="reply-content"
+							v-html="message.replyMessage.content"
+						></div>
 					</div>
 
 					<div v-if="message.deleted">
-						<span>{{ textMessages.MESSAGE_DELETED }}</span>
+						<span v-html="textMessages.MESSAGE_DELETED"></span>
 					</div>
 
 					<div v-else-if="!message.file">
-						<span>{{ message.content }}</span>
+						<span v-html="message.content"></span>
 					</div>
 
 					<div class="image-container" v-else-if="isImage">
@@ -98,7 +100,7 @@
 								</div>
 							</transition>
 						</div>
-						<span>{{ message.content }}</span>
+						<span v-html="message.content"></span>
 					</div>
 
 					<div v-else class="file-message">
@@ -108,14 +110,14 @@
 						>
 							<svg-icon name="document" />
 						</div>
-						<span>{{ message.content }}</span>
+						<span v-html="message.content"></span>
 					</div>
 
 					<div class="text-timestamp">
 						<div class="icon-edited" v-if="message.edited && !message.deleted">
 							<svg-icon name="pencil" />
 						</div>
-						<span>{{ message.timestamp }}</span>
+						<span v-html="message.timestamp"></span>
 						<span v-if="isMessageSeen">
 							<svg-icon name="checkmark" class="icon-check" />
 						</span>
@@ -186,9 +188,11 @@
 									v-for="action in filteredMessageActions"
 									:key="action.name"
 								>
-									<div class="menu-item" @click="messageActionHandler(action)">
-										{{ action.title }}
-									</div>
+									<div
+										class="menu-item"
+										v-html="action.title"
+										@click="messageActionHandler(action)"
+									></div>
 								</div>
 							</div>
 						</div>

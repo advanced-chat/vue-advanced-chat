@@ -16,13 +16,13 @@
 					:style="{ 'background-image': `url('${room.avatar}')` }"
 				></div>
 				<div>
-					<div class="room-name">{{ room.roomName }}</div>
-					<div v-if="typingUsers" class="room-info">
-						{{ typingUsers }} {{ textMessages.IS_TYPING }}
-					</div>
-					<div v-else class="room-info">
-						{{ userStatus }}
-					</div>
+					<div class="room-name" v-html="room.roomName"></div>
+					<div
+						v-if="typingUsers"
+						class="room-info"
+						v-html="typingUsers + '' + textMessages.IS_TYPING"
+					></div>
+					<div v-else class="room-info" v-html="userStatus"></div>
 				</div>
 				<div
 					class="svg-button room-options"
@@ -39,9 +39,11 @@
 					>
 						<div class="menu-list">
 							<div v-for="action in menuActions" :key="action.name">
-								<div class="menu-item" @click="menuActionHandler(action)">
-									{{ action.title }}
-								</div>
+								<div
+									class="menu-item"
+									v-html="action.title"
+									@click="menuActionHandler(action)"
+								></div>
 							</div>
 						</div>
 					</div>
@@ -53,12 +55,18 @@
 			<div class="messages-container">
 				<div :class="{ 'messages-hidden': loadingMessages }">
 					<transition name="fade-message">
-						<div class="text-started" v-if="showNoMessages">
-							{{ textMessages.MESSAGES_EMPTY }}
-						</div>
-						<div class="text-started" v-if="showMessagesStarted">
-							{{ textMessages.CONVERSATION_STARTED }} {{ messages[0].date }}
-						</div>
+						<div
+							class="text-started"
+							v-if="showNoMessages"
+							v-html="textMessages.MESSAGES_EMPTY"
+						></div>
+						<div
+							class="text-started"
+							v-if="showMessagesStarted"
+							v-html="
+								textMessages.CONVERSATION_STARTED + ' ' + messages[0].date
+							"
+						></div>
 					</transition>
 					<transition name="fade-message">
 						<infinite-loading
@@ -118,8 +126,8 @@
 							class="image-reply"
 						/>
 						<div class="reply-info">
-							<div class="reply-username">{{ messageReply.username }}</div>
-							<div class="reply-content">{{ messageReply.content }}</div>
+							<div class="reply-username" v-html="messageReply.username"></div>
+							<div class="reply-content" v-html="messageReply.content"></div>
 						</div>
 					</div>
 
@@ -149,7 +157,7 @@
 					<div class="icon-file">
 						<svg-icon name="file" />
 					</div>
-					<div class="file-message">{{ message }}</div>
+					<div class="file-message" v-html="message"></div>
 					<div class="svg-button icon-remove" @click="resetMessage(null, true)">
 						<svg-icon name="close" />
 					</div>
