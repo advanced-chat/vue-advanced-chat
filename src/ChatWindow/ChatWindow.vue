@@ -244,6 +244,10 @@ export default {
 	font-family: inherit;
 }
 
+a {
+	color: #0d579c;
+}
+
 .card-window {
 	width: 100%;
 	display: block;

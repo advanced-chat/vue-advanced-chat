@@ -64,7 +64,7 @@
 					</div>
 
 					<div v-else-if="!message.file">
-						<span v-html="message.content"></span>
+						<span v-html="linkifiedMessage"></span>
 					</div>
 
 					<div class="image-container" v-else-if="isImage">
@@ -100,7 +100,7 @@
 								</div>
 							</transition>
 						</div>
-						<span v-html="message.content"></span>
+						<span v-html="linkifiedMessage"></span>
 					</div>
 
 					<div v-else class="file-message">
@@ -110,7 +110,7 @@
 						>
 							<svg-icon name="document" />
 						</div>
-						<span v-html="message.content"></span>
+						<span v-html="linkifiedMessage"></span>
 					</div>
 
 					<div class="text-timestamp">
@@ -224,6 +224,7 @@
 <script>
 import SvgIcon from './SvgIcon'
 import vClickOutside from 'v-click-outside'
+import linkifyHtml from 'linkifyjs/html';
 import Loader from './Loader'
 import EmojiPicker from './EmojiPicker'
 
@@ -305,6 +306,11 @@ export default {
 	},
 
 	computed: {
+		linkifiedMessage() {
+			return linkifyHtml(this.message.content, {
+				defaultProtocol: 'https'
+			})
+		},
 		showDate() {
 			return (
 				this.index > 0 &&
