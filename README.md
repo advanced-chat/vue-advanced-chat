@@ -404,7 +404,7 @@ messages="[
 | openFile                 | `{ message }`                                                   | A user has clicked to view or download a file         |
 | addRoom                  | -                                                               | A user clicks on the plus icon next to searchbar      |
 | menuActionHandler (2)    | `{ roomId, action }`                                            | A user clicks on the vertical dots icon inside a room |
-| messageActionHandler (3) | `{ roomId, action }`                                            | A user clicks on the dropdown icon inside a message   |
+| messageActionHandler (3) | `{ roomId, action, message }`                                   | A user clicks on the dropdown icon inside a message   |
 | sendMessageReaction      | `{ roomId, messageId, reaction, remove }`                       | A user clicks on the emoji icon inside a message      |
 | typingMessage            | `{ message, roomId }`                                           | A user is typing a message                            |
 
@@ -430,11 +430,11 @@ menuActionHandler({ roomId, action }) {
 ```
 
 (3) `messageActionHandler` is the result of the `messageActions` prop.<br>
-When clicking a button from your `messageActions` array, `messageActionHandler` will give you the name of the button that was click.
+When clicking a message menu button from your `messageActions` array, `messageActionHandler` will give you the name of the button that was click and the corresponding message data.
 Then you can do whatever you want with it. Ex:
 
 ```javascript
-messageActionHandler({ roomId, action }) {
+messageActionHandler({ roomId, action, message }) {
   switch (action.name) {
     case 'addMessageToFavorite':
       // call a method to add a message to the favorite list
