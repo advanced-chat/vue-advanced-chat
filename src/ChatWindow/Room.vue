@@ -506,7 +506,7 @@ export default {
 				case 'deleteMessage':
 					return this.$emit('deleteMessage', message._id)
 				default:
-					return this.$emit('messageActionHandler', message)
+					return this.$emit('messageActionHandler', { action, message })
 			}
 		},
 		sendMessageReaction(messageReaction) {

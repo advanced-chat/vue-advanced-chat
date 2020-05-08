@@ -217,7 +217,7 @@ export default {
 		},
 		messageActionHandler(ev) {
 			this.$emit('messageActionHandler', {
-				action: ev,
+				...ev,
 				roomId: this.room.roomId
 			})
 		},
