@@ -322,6 +322,7 @@ export default {
 		room(newVal, oldVal) {
 			if (newVal.roomId && newVal.roomId !== oldVal.roomId) {
 				this.loadingMessages = true
+				this.scrollIcon = false
 				this.resetMessage(true)
 			}
 		},
@@ -680,6 +681,7 @@ export default {
 		0 1px 2px 0 rgba(0, 0, 0, 0.12);
 	display: flex;
 	cursor: pointer;
+	z-index: 10;
 
 	svg {
 		height: 25px;
