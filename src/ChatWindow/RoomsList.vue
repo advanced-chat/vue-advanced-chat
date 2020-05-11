@@ -210,7 +210,7 @@ input {
 	position: relative;
 	max-width: 100%;
 	cursor: pointer;
-	padding: 0 5px 5px;
+	padding: 0 10px 5px;
 	overflow-y: auto;
 	height: calc(100% - 69px);
 }
@@ -310,6 +310,7 @@ input {
 
 	.room-list {
 		height: calc(100% - 63px);
+		padding: 0 7px 5px;
 	}
 
 	input {
