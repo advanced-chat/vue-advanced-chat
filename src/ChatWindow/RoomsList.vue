@@ -144,7 +144,6 @@ export default {
 	position: relative;
 	background: var(--chat-sidemenu-bg-color);
 	height: 100%;
-	overflow-y: auto;
 	border-top-left-radius: var(--chat-container-border-radius);
 	border-bottom-left-radius: var(--chat-container-border-radius);
 }
@@ -155,35 +154,35 @@ export default {
 }
 
 .box-search {
+	position: sticky;
 	display: flex;
 	align-items: center;
-	height: 64px;
-	padding: 0 20px;
-	margin-top: 5px;
+	height: 44px;
+	padding: 10px;
 }
 
 .icon-search {
 	display: flex;
 	position: absolute;
-	left: 30px;
-	margin-top: 1px;
+	left: 25px;
 
 	svg {
-		width: 22px;
-		height: 22px;
+		width: 18px;
+		height: 18px;
 	}
 }
 
 .add-icon {
 	margin-left: auto;
-	padding-left: 20px;
+	padding-left: 10px;
 }
 
 input {
+	height: 38px;
+	width: 100%;
 	background: var(--chat-bg-color-input);
 	color: var(--chat-color);
 	border-radius: 4px;
-	width: 100%;
 	font-size: 15px;
 	outline: 0;
 	caret-color: var(--chat-color-caret);
@@ -211,7 +210,9 @@ input {
 	position: relative;
 	max-width: 100%;
 	cursor: pointer;
-	padding: 5px 10px;
+	padding: 0 5px 5px;
+	overflow-y: auto;
+	height: calc(100% - 69px);
 }
 
 .room-item {
@@ -304,7 +305,11 @@ input {
 
 @media only screen and (max-width: 768px) {
 	.box-search {
-		height: 50px;
+		height: 38px;
+	}
+
+	.room-list {
+		height: calc(100% - 63px);
 	}
 
 	input {
