@@ -158,13 +158,13 @@ export default {
 	display: flex;
 	align-items: center;
 	height: 44px;
-	padding: 10px;
+	padding: 10px 15px;
 }
 
 .icon-search {
 	display: flex;
 	position: absolute;
-	left: 25px;
+	left: 30px;
 
 	svg {
 		width: 18px;
@@ -186,7 +186,7 @@ input {
 	font-size: 15px;
 	outline: 0;
 	caret-color: var(--chat-color-caret);
-	padding: 10px 10px 10px 38px;
+	padding: 10px 10px 10px 40px;
 	border: 1px solid var(--chat-sidemenu-border-color-search);
 	border-radius: 20px;
 
@@ -311,10 +311,6 @@ input {
 	.room-list {
 		height: calc(100% - 63px);
 		padding: 0 7px 5px;
-	}
-
-	input {
-		padding: 8px 8px 8px 38px;
 	}
 
 	.room-item {
