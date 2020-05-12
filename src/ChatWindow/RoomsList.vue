@@ -157,8 +157,8 @@ export default {
 	position: sticky;
 	display: flex;
 	align-items: center;
-	height: 44px;
-	padding: 10px 15px;
+	height: 64px;
+	padding: 0 15px;
 }
 
 .icon-search {
@@ -305,7 +305,7 @@ input {
 
 @media only screen and (max-width: 768px) {
 	.box-search {
-		height: 38px;
+		height: 58px;
 	}
 
 	.room-list {
