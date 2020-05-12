@@ -211,7 +211,7 @@ export const defaultThemeStyles = {
 			send: '#fff',
 			sendDisabled: '#646a70',
 			emoji: '#fff',
-			emojiReaction: 'rgba(0, 0, 0, 0.3)',
+			emojiReaction: '#fff',
 			document: '#1976d2',
 			pencil: '#ebedf2',
 			checkmark: '#f0d90a',
