@@ -138,6 +138,8 @@ export default {
 
 <style lang="scss" scoped>
 .rooms-container {
+	display: flex;
+	flex-flow: column;
 	flex: 0 0 25%;
 	min-width: 260px;
 	max-width: 500px;
@@ -212,7 +214,6 @@ input {
 	cursor: pointer;
 	padding: 0 10px 5px;
 	overflow-y: auto;
-	height: calc(100% - 69px);
 }
 
 .room-item {
@@ -309,7 +310,6 @@ input {
 	}
 
 	.room-list {
-		height: calc(100% - 63px);
 		padding: 0 7px 5px;
 	}
 
