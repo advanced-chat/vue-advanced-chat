@@ -20,7 +20,7 @@
 					<div
 						v-if="typingUsers"
 						class="room-info"
-						v-html="typingUsers + '' + textMessages.IS_TYPING"
+						v-html="typingUsers + ' ' + textMessages.IS_TYPING"
 					></div>
 					<div v-else class="room-info" v-html="userStatus"></div>
 				</div>
