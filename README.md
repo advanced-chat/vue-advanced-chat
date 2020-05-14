@@ -30,6 +30,11 @@
 
 Enjoy :smile:
 
+## [Real World Application](https://vue-advanced-chat.herokuapp.com/)
+
+A real world example showcasing all features of the `vue-advanced-chat` component.<br>
+Built with Firestore & Vuetify.
+
 ## Table of Contents
 
 - [Installation](#installation)
