@@ -136,8 +136,8 @@ export default {
 		getLastUsername(room) {
 			if (room.users.length <= 2) return
 
-			const user = this.room.users.find(
-				user => user._id === this.room.lastMessage.sender_id
+			const user = room.users.find(
+				user => user._id === room.lastMessage.sender_id
 			)
 
 			if (user._id === this.currentUserId) return
