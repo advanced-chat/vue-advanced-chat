@@ -277,13 +277,16 @@ export default {
 			if (message.deleted) content = 'This message was deleted'
 
 			return {
-				content,
-				timestamp,
-				date: message.timestamp.seconds,
-				seen: message.sender_id === this.currentUserId ? message.seen : null,
-				new:
-					message.sender_id !== this.currentUserId &&
-					(!message.seen || !message.seen[this.currentUserId])
+				...message,
+				...{
+					content,
+					timestamp,
+					date: message.timestamp.seconds,
+					seen: message.sender_id === this.currentUserId ? message.seen : null,
+					new:
+						message.sender_id !== this.currentUserId &&
+						(!message.seen || !message.seen[this.currentUserId])
+				}
 			}
 		},
 

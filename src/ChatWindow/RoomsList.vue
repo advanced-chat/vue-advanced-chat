@@ -52,8 +52,8 @@
 						></div>
 						<div class="room-name text-ellipsis" v-html="room.roomName"></div>
 						<div
-							class="text-date"
 							v-if="room.lastMessage"
+							class="text-date"
 							v-html="room.lastMessage.timestamp"
 						></div>
 					</div>
@@ -65,6 +65,7 @@
 						<span v-if="room.lastMessage.seen">
 							<svg-icon name="checkmark" class="icon-check" />
 						</span>
+						<span v-html="getLastUsername(room)"></span>
 						<span v-html="room.lastMessage.content"></span>
 					</div>
 				</div>
@@ -131,6 +132,17 @@ export default {
 			const user = room.users.find(u => u._id !== this.currentUserId)
 
 			if (user.status) return user.status.state
+		},
+		getLastUsername(room) {
+			if (room.users.length <= 2) return
+
+			const user = this.room.users.find(
+				user => user._id === this.room.lastMessage.sender_id
+			)
+
+			if (user._id === this.currentUserId) return
+
+			return `${user.username} -&nbsp;`
 		}
 	}
 }
@@ -268,8 +280,12 @@ input {
 }
 
 .text-last {
-	color: var(--chat-room-color-message);
 	font-size: 12px;
+	color: var(--chat-room-color-message);
+
+	* {
+		display: inline-block;
+	}
 }
 
 .message-new {
