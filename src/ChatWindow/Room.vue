@@ -11,18 +11,24 @@
 					<svg-icon name="toggle" />
 				</div>
 				<div
-					v-if="room.avatar"
-					class="room-avatar"
-					:style="{ 'background-image': `url('${room.avatar}')` }"
-				></div>
-				<div>
-					<div class="room-name" v-html="room.roomName"></div>
+					class="info-wrapper"
+					:class="{ 'item-clickable': roomInfo }"
+					@click="$emit('roomInfo')"
+				>
 					<div
-						v-if="typingUsers"
-						class="room-info"
-						v-html="typingUsers + ' ' + textMessages.IS_TYPING"
+						v-if="room.avatar"
+						class="room-avatar"
+						:style="{ 'background-image': `url('${room.avatar}')` }"
 					></div>
-					<div v-else class="room-info" v-html="userStatus"></div>
+					<div>
+						<div class="room-name" v-html="room.roomName"></div>
+						<div
+							v-if="typingUsers"
+							class="room-info"
+							v-html="typingUsers + ' ' + textMessages.IS_TYPING"
+						></div>
+						<div v-else class="room-info" v-html="userStatus"></div>
+					</div>
 				</div>
 				<div
 					class="svg-button room-options"
@@ -264,7 +270,8 @@ export default {
 		showFiles: { type: Boolean, required: true },
 		showEmojis: { type: Boolean, required: true },
 		showReactionEmojis: { type: Boolean, required: true },
-		loadingRooms: { type: Boolean, required: true }
+		loadingRooms: { type: Boolean, required: true },
+		roomInfo: { type: Function }
 	},
 
 	data() {
@@ -614,8 +621,16 @@ export default {
 .room-wrapper {
 	display: flex;
 	align-items: center;
+	height: 100%;
 	width: 100%;
 	padding: 0 16px;
+}
+
+.info-wrapper {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
 }
 
 .toggle-button {

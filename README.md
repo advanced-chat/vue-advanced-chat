@@ -412,6 +412,7 @@ messages="[
 | messageActionHandler (3) | `{ roomId, action, message }`                                   | A user clicks on the dropdown icon inside a message   |
 | sendMessageReaction      | `{ roomId, messageId, reaction, remove }`                       | A user clicks on the emoji icon inside a message      |
 | typingMessage            | `{ message, roomId }`                                           | A user is typing a message                            |
+| roomInfo                 | -                                                               | A user has clicked the room header bar                |
 
 (1) `fetchMessages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`
 

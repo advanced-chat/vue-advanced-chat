@@ -35,7 +35,9 @@
 				:showRoomsList="showRoomsList"
 				:isMobile="isMobile"
 				:loadingRooms="loadingRooms"
+				:roomInfo="$listeners.roomInfo"
 				@toggleRoomsList="toggleRoomsList"
+				@roomInfo="roomInfo"
 				@fetchMessages="fetchMessages"
 				@sendMessage="sendMessage"
 				@editMessage="editMessage"
@@ -193,6 +195,9 @@ export default {
 			this.room = room
 			this.fetchMessages({ reset: true })
 			if (this.isMobile) this.showRoomsList = false
+		},
+		roomInfo() {
+			this.$emit('roomInfo')
 		},
 		addRoom() {
 			this.$emit('addRoom')
