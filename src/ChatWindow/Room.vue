@@ -13,7 +13,7 @@
 				<div
 					class="info-wrapper"
 					:class="{ 'item-clickable': roomInfo }"
-					@click="$emit('roomInfo')"
+					@click="$emit('roomInfo', room)"
 				>
 					<div
 						v-if="room.avatar"

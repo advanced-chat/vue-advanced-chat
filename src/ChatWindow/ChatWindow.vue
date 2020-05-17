@@ -197,7 +197,7 @@ export default {
 			if (this.isMobile) this.showRoomsList = false
 		},
 		roomInfo() {
-			this.$emit('roomInfo')
+			this.$emit('roomInfo', this.room)
 		},
 		addRoom() {
 			this.$emit('addRoom')
