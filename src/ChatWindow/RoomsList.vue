@@ -63,8 +63,7 @@
 						<span v-if="room.lastMessage.seen">
 							<svg-icon name="checkmark" class="icon-check" />
 						</span>
-						<span>{{ getLastUsername(room) }}</span>
-						<span>{{ room.lastMessage.content }}</span>
+						<span>{{ getLastMessage(room) }}</span>
 					</div>
 				</div>
 			</div>
@@ -131,16 +130,16 @@ export default {
 
 			if (user.status) return user.status.state
 		},
-		getLastUsername(room) {
-			if (room.users.length <= 2) return
+		getLastMessage(room) {
+			if (room.users.length <= 2) return room.lastMessage.content
 
 			const user = room.users.find(
 				user => user._id === room.lastMessage.sender_id
 			)
 
-			if (user._id === this.currentUserId) return
+			if (user._id === this.currentUserId) return room.lastMessage.content
 
-			return `${user.username} -&nbsp;`
+			return `${user.username} - ${room.lastMessage.content}`
 		}
 	}
 }
