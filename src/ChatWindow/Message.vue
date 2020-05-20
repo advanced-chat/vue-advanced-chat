@@ -318,7 +318,7 @@ export default {
 
 				let result = { content: string }
 
-				if (links.length) {
+				if (links.length && string === links[0].value) {
 					result = {
 						url: true,
 						content: linkifyHtml(links[0].value, {
