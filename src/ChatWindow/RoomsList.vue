@@ -63,7 +63,10 @@
 						<span v-if="room.lastMessage.seen">
 							<svg-icon name="checkmark" class="icon-check" />
 						</span>
-						<span>{{ getLastMessage(room) }}</span>
+						<span v-for="(message, i) in getLastMessage(room)" :key="i">
+							<span v-if="message.bind" v-html="message.content"></span>
+							<span v-else>{{ message.content }}</span>
+						</span>
 					</div>
 				</div>
 			</div>
@@ -76,6 +79,7 @@ import Loader from './Loader'
 import SvgIcon from './SvgIcon'
 
 import filteredUsers from '../utils/filterItems'
+import formatString from '../utils/formatString'
 
 export default {
 	name: 'rooms-list',
@@ -132,15 +136,19 @@ export default {
 			if (user.status) return user.status.state
 		},
 		getLastMessage(room) {
-			if (room.users.length <= 2) return room.lastMessage.content
+			if (room.users.length <= 2) {
+				return formatString(room.lastMessage.content)
+			}
 
 			const user = room.users.find(
 				user => user._id === room.lastMessage.sender_id
 			)
 
-			if (user._id === this.currentUserId) return room.lastMessage.content
+			if (user._id === this.currentUserId) {
+				return formatString(room.lastMessage.content)
+			}
 
-			return `${user.username} - ${room.lastMessage.content}`
+			return `${user.username} - ${formatString(room.lastMessage.content)}`
 		}
 	}
 }

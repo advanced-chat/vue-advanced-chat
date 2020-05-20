@@ -1,7 +1,7 @@
 const linkify = require('linkifyjs')
 import linkifyHtml from 'linkifyjs/html'
 
-export default text => {
+export default (text, doLinkify = false) => {
 	const strings = text.split(' ')
 
 	const formattedStrings = strings.map((string, i) => {
@@ -9,7 +9,7 @@ export default text => {
 
 		let result = ''
 
-		if (links.length && string === links[0].value) {
+		if (doLinkify && links.length && string === links[0].value) {
 			result = {
 				bind: true,
 				content: linkifyHtml(links[0].value, {

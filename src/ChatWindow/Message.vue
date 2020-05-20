@@ -311,7 +311,7 @@ export default {
 
 	computed: {
 		linkifiedMessage() {
-			return formatString(this.message.content)
+			return formatString(this.message.content, true)
 		},
 		showDate() {
 			return (
