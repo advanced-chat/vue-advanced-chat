@@ -73,8 +73,9 @@
 
 <script>
 import Loader from './Loader'
-import filteredUsers from '../utils/filterItems'
 import SvgIcon from './SvgIcon'
+
+import filteredUsers from '../utils/filterItems'
 
 export default {
 	name: 'rooms-list',

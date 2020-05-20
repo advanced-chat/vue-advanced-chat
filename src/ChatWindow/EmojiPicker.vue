@@ -54,6 +54,7 @@
 
 <script>
 import EmojiPicker from 'vue-emoji-picker'
+
 import SvgIcon from './SvgIcon'
 
 export default {

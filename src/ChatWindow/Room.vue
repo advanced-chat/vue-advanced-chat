@@ -225,11 +225,13 @@
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
 import vClickOutside from 'v-click-outside'
+import emojis from 'vue-emoji-picker/src/emojis'
+
 import Loader from './Loader'
 import Message from './Message'
 import SvgIcon from './SvgIcon'
 import EmojiPicker from './EmojiPicker'
-import emojis from 'vue-emoji-picker/src/emojis'
+
 const { messagesValid } = require('../utils/roomValidation')
 const { detectMobile } = require('../utils/mobileDetection')
 

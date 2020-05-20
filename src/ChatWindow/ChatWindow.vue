@@ -56,9 +56,10 @@
 <script>
 import RoomsList from './RoomsList'
 import Room from './Room'
-const { roomsValid, partcipantsValid } = require('../utils/roomValidation')
+
 import locales from '../locales'
 import { defaultThemeStyles, cssThemeVars } from '../themes'
+const { roomsValid, partcipantsValid } = require('../utils/roomValidation')
 
 export default {
 	name: 'chat-container',
