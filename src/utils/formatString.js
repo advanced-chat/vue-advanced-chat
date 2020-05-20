@@ -17,11 +17,28 @@ export default (text, doLinkify = false) => {
 				})
 			}
 		} else {
-			const firstChar = string.slice(0, 1)
-			const lastChar = string.slice(-1)
+			if (string.length > 2) {
+				const formats = []
 
-			if (string.length > 2 && firstChar === '*' && lastChar === '*') {
-				result = { bind: true, content: `<b>${string.slice(1, -1)}</b>` }
+				string = testString(string, '*', 'b', formats)
+				string = testString(string, '_', 'i', formats)
+
+				string = testString(string, '*', 'b', formats)
+				string = testString(string, '~', 'del', formats)
+
+				string = testString(string, '*', 'b', formats)
+				string = testString(string, '_', 'i', formats)
+				string = testString(string, '|', 'ins', formats)
+
+				string = testString(string, '*', 'b', formats)
+				string = testString(string, '_', 'i', formats)
+				string = testString(string, '~', 'del', formats)
+
+				formats.map(format => {
+					string = `<${format}>${string}</${format}>`
+				})
+
+				result = { bind: formats.length, content: string }
 			} else {
 				result = { content: string }
 			}
@@ -34,4 +51,13 @@ export default (text, doLinkify = false) => {
 	})
 
 	return formattedStrings
+}
+
+function testString(string, sign, type, formats) {
+	if (string.slice(0, 1) === sign && string.slice(-1) === sign) {
+		string = string.slice(1, -1)
+		formats.push(type)
+	}
+
+	return string
 }
