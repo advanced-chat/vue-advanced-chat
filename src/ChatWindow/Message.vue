@@ -63,7 +63,7 @@
 
 					<div v-else-if="!message.file">
 						<span v-for="(message, i) in linkifiedMessage" :key="i">
-							<span v-if="message.url" v-html="message.content"></span>
+							<span v-if="message.bind" v-html="message.content"></span>
 							<span v-else>{{ message.content }}</span>
 						</span>
 					</div>
@@ -102,7 +102,7 @@
 							</transition>
 						</div>
 						<span v-for="(message, i) in linkifiedMessage" :key="i">
-							<span v-if="message.url" v-html="message.content"></span>
+							<span v-if="message.bind" v-html="message.content"></span>
 							<span v-else>{{ message.content }}</span>
 						</span>
 					</div>
@@ -224,13 +224,13 @@
 </template>
 
 <script>
-const linkify = require('linkifyjs')
-import linkifyHtml from 'linkifyjs/html'
 import vClickOutside from 'v-click-outside'
 
 import SvgIcon from './SvgIcon'
 import Loader from './Loader'
 import EmojiPicker from './EmojiPicker'
+
+import formatString from '../utils/formatString'
 
 export default {
 	name: 'message',
@@ -311,29 +311,7 @@ export default {
 
 	computed: {
 		linkifiedMessage() {
-			const strings = this.message.content.split(' ')
-
-			const formattedStrings = strings.map((string, i) => {
-				const links = linkify.find(string)
-
-				let result = { content: string }
-
-				if (links.length && string === links[0].value) {
-					result = {
-						url: true,
-						content: linkifyHtml(links[0].value, {
-							defaultProtocol: 'https'
-						})
-					}
-				}
-
-				const space = i !== strings.length - 1 ? ' ' : ''
-				result.content = result.content + space
-
-				return result
-			})
-
-			return formattedStrings
+			return formatString(this.message.content)
 		},
 		showDate() {
 			return (
