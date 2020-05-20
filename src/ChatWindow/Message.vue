@@ -62,7 +62,10 @@
 					</div>
 
 					<div v-else-if="!message.file">
-						<span>{{ linkifiedMessage }}</span>
+						<span v-for="(message, i) in linkifiedMessage" :key="i">
+							<span v-if="message.url" v-html="message.content"></span>
+							<span v-else>{{ message.content }}</span>
+						</span>
 					</div>
 
 					<div class="image-container" v-else-if="isImage">
@@ -98,7 +101,10 @@
 								</div>
 							</transition>
 						</div>
-						<span>{{ linkifiedMessage }}</span>
+						<span v-for="(message, i) in linkifiedMessage" :key="i">
+							<span v-if="message.url" v-html="message.content"></span>
+							<span v-else>{{ message.content }}</span>
+						</span>
 					</div>
 
 					<div v-else class="file-message">
@@ -108,7 +114,7 @@
 						>
 							<svg-icon name="document" />
 						</div>
-						<span>{{ linkifiedMessage }}</span>
+						<span>{{ message.content }}</span>
 					</div>
 
 					<div class="text-timestamp">
@@ -218,9 +224,11 @@
 </template>
 
 <script>
-import SvgIcon from './SvgIcon'
-import vClickOutside from 'v-click-outside'
+const linkify = require('linkifyjs')
 import linkifyHtml from 'linkifyjs/html'
+import vClickOutside from 'v-click-outside'
+
+import SvgIcon from './SvgIcon'
 import Loader from './Loader'
 import EmojiPicker from './EmojiPicker'
 
@@ -303,9 +311,29 @@ export default {
 
 	computed: {
 		linkifiedMessage() {
-			return linkifyHtml(this.message.content, {
-				defaultProtocol: 'https'
+			const strings = this.message.content.split(' ')
+
+			const formattedStrings = strings.map((string, i) => {
+				const links = linkify.find(string)
+
+				let result = { content: string }
+
+				if (links.length) {
+					result = {
+						url: true,
+						content: linkifyHtml(links[0].value, {
+							defaultProtocol: 'https'
+						})
+					}
+				}
+
+				const space = i !== strings.length - 1 ? ' ' : ''
+				result.content = result.content + space
+
+				return result
 			})
+
+			return formattedStrings
 		},
 		showDate() {
 			return (
