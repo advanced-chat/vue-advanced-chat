@@ -62,10 +62,28 @@
 					</div>
 
 					<div v-else-if="!message.file">
-						<span v-for="(message, i) in linkifiedMessage" :key="i">
-							<span v-if="message.bind" v-html="message.content"></span>
-							<span v-else>{{ message.content }}</span>
-						</span>
+						<template v-for="(message, i) in linkifiedMessage">
+							<a
+								v-if="message.type === 'url'"
+								:href="message.href"
+								target="_blank"
+								:key="i"
+								>{{ message.value }}</a
+							>
+							<b v-else-if="message.type === 'bold'" :key="i">
+								{{ message.value }}
+							</b>
+							<i v-else-if="message.type === 'italic'" :key="i">
+								{{ message.value }}
+							</i>
+							<s v-else-if="message.type === 'strike'" :key="i">
+								{{ message.value }}
+							</s>
+							<u v-else-if="message.type === 'underline'" :key="i">
+								{{ message.value }}
+							</u>
+							<template v-else>{{ message.value }}</template>
+						</template>
 					</div>
 
 					<div class="image-container" v-else-if="isImage">
