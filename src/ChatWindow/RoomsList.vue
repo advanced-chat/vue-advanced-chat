@@ -65,6 +65,7 @@
 						</span>
 						<format-message
 							:content="getLastMessage(room)"
+							:deleted="!!room.lastMessage.deleted"
 							:formatLinks="false"
 							:textFormatting="textFormatting"
 						></format-message>

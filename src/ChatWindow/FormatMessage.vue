@@ -8,6 +8,7 @@
 					:class="{
 						'text-bold': message.types.indexOf('bold') !== -1,
 						'text-italic': message.types.indexOf('italic') !== -1,
+						'text-deleted': deleted,
 						'text-strike': message.types.indexOf('strike') !== -1,
 						'text-underline': message.types.indexOf('underline') !== -1
 					}"
@@ -29,6 +30,7 @@ export default {
 
 	props: {
 		content: { type: [String, Number], required: true },
+		deleted: { type: Boolean, default: false },
 		formatLinks: { type: Boolean, default: true },
 		textFormatting: { type: Boolean, required: true }
 	},
@@ -41,4 +43,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.text-deleted {
+	font-style: italic;
+}
+</style>
