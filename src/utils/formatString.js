@@ -1,15 +1,15 @@
 const linkify = require('linkifyjs')
 
 export default (text, doLinkify = false) => {
-	const j = compileToJSON(text)
+	const json = compileToJSON(text)
 
-	const h = compileToHTML(j)
+	const html = compileToHTML(json)
 
-	const f = flattenResult(h)
+	const flatten = flattenResult(html)
 
-	const r = [].concat.apply([], f)
+	const result = [].concat.apply([], flatten)
 
-	return r
+	return result
 }
 
 const pseudo_markdown = {
@@ -43,20 +43,6 @@ const pseudo_markdown = {
 		allowed_chars: '.',
 		object: child => `<div class="inline-code">${child}</div>`
 	}
-	// '°': {
-	// 	end: '°',
-	// 	allowed_chars: '.',
-	// 	object: child => `<div class="italic">${child}</div>`
-	// },
-	// '>>>': {
-	// 	end: false,
-	// 	allowed_chars: '(.|\n)',
-	// 	object: child => `<div class="italic">${child}</div>`
-	// },
-	// '>': {
-	// 	end: '$',
-	// 	object: child => `<div class="italic">${child}</div>`
-	// }
 	// ':': {
 	// 	allowed_chars: '[a-z_]',
 	// 	end: ':',

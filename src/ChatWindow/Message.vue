@@ -63,14 +63,8 @@
 
 					<div v-else-if="!message.file">
 						<template v-for="(message, i) in linkifiedMessage">
-							<!-- <a
-								v-if="message.type === 'url'"
-								:href="message.href"
-								target="_blank"
-								:key="i"
-								>{{ message.value }}</a
-							> -->
-							<span
+							<component
+								:is="message.types.indexOf('url') !== -1 ? 'a' : 'span'"
 								:key="i"
 								:class="{
 									'text-bold': message.types.indexOf('bold') !== -1,
@@ -78,7 +72,9 @@
 									'text-strike': message.types.indexOf('strike') !== -1,
 									'text-underline': message.types.indexOf('underline') !== -1
 								}"
-								>{{ message.value }}</span
+								:href="message.href"
+								target="_blank"
+								>{{ message.value }}</component
 							>
 						</template>
 					</div>
