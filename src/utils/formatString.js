@@ -34,17 +34,17 @@ const pseudo_markdown = {
 		end: '°',
 		allowed_chars: '.',
 		type: 'underline'
-	},
-	'```': {
-		end: '```',
-		allowed_chars: '(.|\n)',
-		object: child => `<div class="multiline-code">${child}</div>`
-	},
-	'`': {
-		end: '`',
-		allowed_chars: '.',
-		object: child => `<div class="inline-code">${child}</div>`
 	}
+	// '```': {
+	// 	end: '```',
+	// 	allowed_chars: '(.|\n)',
+	// 	object: child => `<div class="multiline-code">${child}</div>`
+	// },
+	// '`': {
+	// 	end: '`',
+	// 	allowed_chars: '.',
+	// 	object: child => `<div class="inline-code">${child}</div>`
+	// }
 	// ':': {
 	// 	allowed_chars: '[a-z_]',
 	// 	end: ':',
