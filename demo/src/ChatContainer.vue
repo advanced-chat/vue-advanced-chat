@@ -274,7 +274,6 @@ export default {
 
 			let content = message.content
 			if (message.file) content = `${message.file.name}.${message.file.type}`
-			if (message.deleted) content = 'This message was deleted'
 
 			return {
 				...message,

@@ -138,8 +138,12 @@ export default {
 			if (user.status) return user.status.state
 		},
 		getLastMessage(room) {
+			const content = room.lastMessage.deleted
+				? this.textMessages.MESSAGE_DELETED
+				: room.lastMessage.content
+
 			if (room.users.length <= 2) {
-				return room.lastMessage.content
+				return content
 			}
 
 			const user = room.users.find(
@@ -147,10 +151,10 @@ export default {
 			)
 
 			if (user._id === this.currentUserId) {
-				return room.lastMessage.content
+				return content
 			}
 
-			return `${user.username} - ${room.lastMessage.content}`
+			return `${user.username} - ${content}`
 		}
 	}
 }
