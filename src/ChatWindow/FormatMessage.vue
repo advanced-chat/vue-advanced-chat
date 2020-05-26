@@ -14,7 +14,9 @@
 					}"
 					:href="message.href"
 					target="_blank"
-					>{{ message.value }}</component
+					><svg-icon v-if="deleted" name="deleted" class="icon-deleted" />{{
+						message.value
+					}}</component
 				>
 			</template>
 		</div>
@@ -23,10 +25,13 @@
 </template>
 
 <script>
+import SvgIcon from './SvgIcon'
+
 import formatString from '../utils/formatString'
 
 export default {
 	name: 'format-message',
+	components: { SvgIcon },
 
 	props: {
 		content: { type: [String, Number], required: true },
@@ -46,5 +51,13 @@ export default {
 <style>
 .text-deleted {
 	font-style: italic;
+}
+
+.icon-deleted {
+	height: 14px;
+	width: 14px;
+	vertical-align: middle;
+	margin: -3px 1px 0 0;
+	fill: var(--chat-room-color-message);
 }
 </style>

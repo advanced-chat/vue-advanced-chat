@@ -58,6 +58,7 @@
 					</div>
 
 					<div v-if="message.deleted">
+						<svg-icon name="deleted" class="icon-deleted" />
 						<span>{{ textMessages.MESSAGE_DELETED }}</span>
 					</div>
 
@@ -576,6 +577,14 @@ export default {
 	font-size: 13px !important;
 	font-style: italic !important;
 	background: var(--chat-message-bg-color-deleted) !important;
+}
+
+.icon-deleted {
+	height: 14px;
+	width: 14px;
+	vertical-align: middle;
+	margin: -2px 2px 0 0;
+	fill: var(--chat-message-color-deleted);
 }
 
 .image-container {
