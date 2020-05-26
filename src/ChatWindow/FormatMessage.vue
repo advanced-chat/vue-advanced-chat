@@ -1,20 +1,23 @@
 <template>
 	<div>
-		<template v-for="(message, i) in linkifiedMessage">
-			<component
-				:is="message.types.indexOf('url') !== -1 ? 'a' : 'span'"
-				:key="i"
-				:class="{
-					'text-bold': message.types.indexOf('bold') !== -1,
-					'text-italic': message.types.indexOf('italic') !== -1,
-					'text-strike': message.types.indexOf('strike') !== -1,
-					'text-underline': message.types.indexOf('underline') !== -1
-				}"
-				:href="message.href"
-				target="_blank"
-				>{{ message.value }}</component
-			>
-		</template>
+		<div v-if="formatMessages">
+			<template v-for="(message, i) in linkifiedMessage">
+				<component
+					:is="message.types.indexOf('url') !== -1 ? 'a' : 'span'"
+					:key="i"
+					:class="{
+						'text-bold': message.types.indexOf('bold') !== -1,
+						'text-italic': message.types.indexOf('italic') !== -1,
+						'text-strike': message.types.indexOf('strike') !== -1,
+						'text-underline': message.types.indexOf('underline') !== -1
+					}"
+					:href="message.href"
+					target="_blank"
+					>{{ message.value }}</component
+				>
+			</template>
+		</div>
+		<div v-else>{{ content }}</div>
 	</div>
 </template>
 
@@ -26,7 +29,8 @@ export default {
 
 	props: {
 		content: { type: [String, Number], required: true },
-		formatLinks: { type: Boolean, default: true }
+		formatLinks: { type: Boolean, default: true },
+		formatMessages: { type: Boolean, required: true }
 	},
 
 	computed: {

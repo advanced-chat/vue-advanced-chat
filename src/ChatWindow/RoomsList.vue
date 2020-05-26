@@ -66,6 +66,7 @@
 						<format-message
 							:content="getLastMessage(room)"
 							:formatLinks="false"
+							:formatMessages="formatMessages"
 						></format-message>
 					</div>
 				</div>
@@ -90,6 +91,7 @@ export default {
 		textMessages: { type: Object, required: true },
 		showRoomsList: { type: Boolean, required: true },
 		showAddRoom: { type: Boolean, required: true },
+		formatMessages: { type: Boolean, required: true },
 		isMobile: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },
 		loadingRooms: { type: Boolean, required: true },

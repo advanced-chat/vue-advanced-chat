@@ -62,7 +62,10 @@
 					</div>
 
 					<div v-else-if="!message.file">
-						<format-message :content="this.message.content"></format-message>
+						<format-message
+							:content="this.message.content"
+							:formatMessages="formatMessages"
+						></format-message>
 					</div>
 
 					<div class="image-container" v-else-if="isImage">
@@ -98,7 +101,10 @@
 								</div>
 							</transition>
 						</div>
-						<format-message :content="this.message.content"></format-message>
+						<format-message
+							:content="this.message.content"
+							:formatMessages="formatMessages"
+						></format-message>
 					</div>
 
 					<div v-else class="file-message">
@@ -245,6 +251,7 @@ export default {
 		roomFooterRef: { type: HTMLDivElement },
 		newMessages: { type: Array },
 		showReactionEmojis: { type: Boolean, required: true },
+		formatMessages: { type: Boolean, required: true },
 		emojisList: { type: Object, required: true },
 		hideOptions: { type: Boolean, required: true }
 	},
