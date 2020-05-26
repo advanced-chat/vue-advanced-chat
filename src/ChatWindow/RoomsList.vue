@@ -63,10 +63,11 @@
 						<span v-if="room.lastMessage.seen">
 							<svg-icon name="checkmark" class="icon-check" />
 						</span>
-						<span v-for="(message, i) in getLastMessage(room)" :key="i">
-							<span v-if="message.bind" v-html="message.content"></span>
-							<span v-else>{{ message.content }}</span>
-						</span>
+						<format-message
+							:content="getLastMessage(room)"
+							:formatLinks="false"
+							:textFormatting="textFormatting"
+						></format-message>
 					</div>
 				</div>
 			</div>
@@ -77,19 +78,20 @@
 <script>
 import Loader from './Loader'
 import SvgIcon from './SvgIcon'
+import FormatMessage from './FormatMessage'
 
 import filteredUsers from '../utils/filterItems'
-import formatString from '../utils/formatString'
 
 export default {
 	name: 'rooms-list',
-	components: { Loader, SvgIcon },
+	components: { Loader, SvgIcon, FormatMessage },
 
 	props: {
 		currentUserId: { type: [String, Number], required: true },
 		textMessages: { type: Object, required: true },
 		showRoomsList: { type: Boolean, required: true },
 		showAddRoom: { type: Boolean, required: true },
+		textFormatting: { type: Boolean, required: true },
 		isMobile: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },
 		loadingRooms: { type: Boolean, required: true },
@@ -137,7 +139,7 @@ export default {
 		},
 		getLastMessage(room) {
 			if (room.users.length <= 2) {
-				return formatString(room.lastMessage.content)
+				return room.lastMessage.content
 			}
 
 			const user = room.users.find(
@@ -145,10 +147,10 @@ export default {
 			)
 
 			if (user._id === this.currentUserId) {
-				return formatString(room.lastMessage.content)
+				return room.lastMessage.content
 			}
 
-			return `${user.username} - ${formatString(room.lastMessage.content)}`
+			return `${user.username} - ${room.lastMessage.content}`
 		}
 	}
 }

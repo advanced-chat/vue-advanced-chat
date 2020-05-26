@@ -62,10 +62,10 @@
 					</div>
 
 					<div v-else-if="!message.file">
-						<span v-for="(message, i) in linkifiedMessage" :key="i">
-							<span v-if="message.bind" v-html="message.content"></span>
-							<span v-else>{{ message.content }}</span>
-						</span>
+						<format-message
+							:content="this.message.content"
+							:textFormatting="textFormatting"
+						></format-message>
 					</div>
 
 					<div class="image-container" v-else-if="isImage">
@@ -101,10 +101,10 @@
 								</div>
 							</transition>
 						</div>
-						<span v-for="(message, i) in linkifiedMessage" :key="i">
-							<span v-if="message.bind" v-html="message.content"></span>
-							<span v-else>{{ message.content }}</span>
-						</span>
+						<format-message
+							:content="this.message.content"
+							:textFormatting="textFormatting"
+						></format-message>
 					</div>
 
 					<div v-else class="file-message">
@@ -229,12 +229,11 @@ import vClickOutside from 'v-click-outside'
 import SvgIcon from './SvgIcon'
 import Loader from './Loader'
 import EmojiPicker from './EmojiPicker'
-
-import formatString from '../utils/formatString'
+import FormatMessage from './FormatMessage'
 
 export default {
 	name: 'message',
-	components: { SvgIcon, Loader, EmojiPicker },
+	components: { SvgIcon, Loader, EmojiPicker, FormatMessage },
 
 	directives: {
 		clickOutside: vClickOutside.directive
@@ -252,6 +251,7 @@ export default {
 		roomFooterRef: { type: HTMLDivElement },
 		newMessages: { type: Array },
 		showReactionEmojis: { type: Boolean, required: true },
+		textFormatting: { type: Boolean, required: true },
 		emojisList: { type: Object, required: true },
 		hideOptions: { type: Boolean, required: true }
 	},
@@ -310,9 +310,6 @@ export default {
 	},
 
 	computed: {
-		linkifiedMessage() {
-			return formatString(this.message.content, true)
-		},
 		showDate() {
 			return (
 				this.index > 0 &&
