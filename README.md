@@ -189,7 +189,7 @@ textMessages="{
 }"
 ```
 
-(8) `textFormatting` can be used to add text formatting. Currently, bold, italic, strikethrough and underline formatting are available. All text formatting can be used in conjonction. Ex:
+(8) `textFormatting` can be used to add text formatting. Currently, bold, italic, strikethrough and underline formatting are available and can be used in conjonction. You can disable text formatting by passing the prop as `:textFormatting="false"`.
 
 | Style             | Syntax          | Example                                | Output                                 |
 | ----------------- | --------------- | -------------------------------------- | -------------------------------------- |
