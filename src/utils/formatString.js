@@ -1,6 +1,6 @@
 const linkify = require('linkifyjs')
 
-export default (text, doLinkify = false) => {
+export default (text, doLinkify) => {
 	const json = compileToJSON(text)
 
 	const html = compileToHTML(json)
@@ -9,9 +9,9 @@ export default (text, doLinkify = false) => {
 
 	const result = [].concat.apply([], flatten)
 
-	const linkified = linkifyResult(result)
+	if (doLinkify) linkifyResult(result)
 
-	return doLinkify ? linkified : result
+	return result
 }
 
 const pseudo_markdown = {

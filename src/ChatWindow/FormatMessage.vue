@@ -31,7 +31,7 @@ export default {
 
 	computed: {
 		linkifiedMessage() {
-			return formatString(this.content, true)
+			return formatString(this.content, this.formatLinks)
 		}
 	}
 }
