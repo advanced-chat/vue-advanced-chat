@@ -183,15 +183,22 @@ function flattenResult(array, types = []) {
 }
 
 function linkifyResult(array) {
-	return array.map(arr => {
+	const result = []
+
+	array.forEach(arr => {
 		const links = linkify.find(arr.value)
 
 		if (links.length) {
+			const spaces = arr.value.replace(links[0].value, '')
+			result.push({ types: arr.types, value: spaces })
+
 			arr.types = ['url'].concat(arr.types)
 			arr.href = links[0].href
 			arr.value = links[0].value
 		}
 
-		return arr
+		result.push(arr)
 	})
+
+	return result
 }
