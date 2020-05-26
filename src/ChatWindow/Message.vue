@@ -63,26 +63,23 @@
 
 					<div v-else-if="!message.file">
 						<template v-for="(message, i) in linkifiedMessage">
-							<a
+							<!-- <a
 								v-if="message.type === 'url'"
 								:href="message.href"
 								target="_blank"
 								:key="i"
 								>{{ message.value }}</a
+							> -->
+							<span
+								:key="i"
+								:class="{
+									'text-bold': message.types.indexOf('bold') !== -1,
+									'text-italic': message.types.indexOf('italic') !== -1,
+									'text-strike': message.types.indexOf('strike') !== -1,
+									'text-underline': message.types.indexOf('underline') !== -1
+								}"
+								>{{ message.value }}</span
 							>
-							<b v-else-if="message.type === 'bold'" :key="i">
-								{{ message.value }}
-							</b>
-							<i v-else-if="message.type === 'italic'" :key="i">
-								{{ message.value }}
-							</i>
-							<s v-else-if="message.type === 'strike'" :key="i">
-								{{ message.value }}
-							</s>
-							<u v-else-if="message.type === 'underline'" :key="i">
-								{{ message.value }}
-							</u>
-							<template v-else>{{ message.value }}</template>
 						</template>
 					</div>
 

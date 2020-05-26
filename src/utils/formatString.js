@@ -3,35 +3,35 @@ const linkify = require('linkifyjs')
 export default (text, doLinkify = false) => {
 	const j = compileToJSON(text)
 
-	console.log(j);
-
 	const h = compileToHTML(j)
 
-	console.log(h)
+	const f = flattenResult(h)
 
-	return h
+	const r = [].concat.apply([], f)
+
+	return r
 }
 
 const pseudo_markdown = {
 	'*': {
 		end: '\\*',
 		allowed_chars: '.',
-		object: child => `<b>${child}</b>`
+		type: 'bold'
 	},
 	_: {
 		end: '_',
 		allowed_chars: '.',
-		object: child => `<i>${child}</i>`
+		type: 'italic'
 	},
 	'~': {
 		end: '~',
 		allowed_chars: '.',
-		object: child => `<s>${child}</s>`
+		type: 'strike'
 	},
-	'|': {
-		end: '|',
+	'°': {
+		end: '°',
 		allowed_chars: '.',
-		object: child => `<u>${child}</u>`
+		type: 'underline'
 	},
 	'```': {
 		end: '```',
@@ -110,7 +110,8 @@ function compileToJSON(str) {
 			const object = {
 				start: char,
 				content: compileToJSON(match[1]),
-				end: match[2]
+				end: match[2],
+				type: pseudo_markdown[char].type
 			}
 			result.push(object)
 			str_right = str_right.substr(match[0].length)
@@ -128,16 +129,67 @@ function compileToJSON(str) {
 
 function compileToHTML(json) {
 	const result = []
+
 	json.forEach(item => {
 		if (typeof item == 'string') {
-			result.push(item)
+			result.push({ types: [], value: item })
 		} else {
 			if (pseudo_markdown[item.start]) {
-				result.push(
-					pseudo_markdown[item.start].object(compileToHTML(item.content))
-				)
+				result.push(parseContent(item))
 			}
 		}
 	})
+
+	return result
+}
+
+function parseContent(item) {
+	const result = []
+
+	item.content.forEach(it => {
+		if (typeof it == 'string') {
+			result.push({
+				types: [item.type],
+				value: it
+			})
+		} else {
+			it.content.forEach(i => {
+				if (typeof i == 'string') {
+					result.push({
+						types: [it.type].concat([item.type]),
+						value: i
+					})
+				} else {
+					result.push({
+						types: [i.type].concat([it.type]).concat([item.type]),
+						value: parseContent(i)
+					})
+				}
+			})
+		}
+	})
+
+	return result
+}
+
+function flattenResult(array, types = []) {
+	const result = []
+
+	array.forEach(arr => {
+		if (typeof arr.value == 'string') {
+			arr.types = arr.types.concat(types)
+			result.push(arr)
+		} else {
+			arr.forEach(a => {
+				if (typeof a.value == 'string') {
+					a.types = a.types.concat(types)
+					result.push(a)
+				} else {
+					result.push(flattenResult(a.value, a.types))
+				}
+			})
+		}
+	})
+
 	return result
 }
