@@ -101,7 +101,7 @@ You can import it as a custom component:
 | showFiles                | Boolean          | -        | true    |
 | showEmojis               | Boolean          | -        | true    |
 | showReactionEmojis       | Boolean          | -        | true    |
-| formatMessages (7)       | Boolean          | -        | true    |
+| textFormatting (7)       | Boolean          | -        | true    |
 | textMessages (8)         | Object           | -        | null    |
 | responsiveBreakpoint (9) | Number           | -        | 900     |
 | singleRoom (10)          | Number           | -        | false   |
@@ -189,14 +189,14 @@ textMessages="{
 }"
 ```
 
-(8) `formatMessages` can be used to add text formatting. Currently, bold, italic, strikethrough and underline formatting are available. All text formatting can be used in conjonction. Ex:
+(8) `textFormatting` can be used to add text formatting. Currently, bold, italic, strikethrough and underline formatting are available. All text formatting can be used in conjonction. Ex:
 
 | Style             | Syntax          | Example                                | Output                                 |
 | ----------------- | --------------- | -------------------------------------- | -------------------------------------- |
 | Bold              | `* *`           | `*This is bold text*`                  | **This is bold text**                  |
 | Italic            | `_ _`           | `_This text is italicized_`            | _This text is italicized_              |
 | Strikethrough     | `~ ~`           | `~This was mistaken text~`             | ~~This was mistaken text~~             |
-| Underline         | `° °`           | `°This text is underlined°`            | <ins>This text is underlined</ins>    |
+| Underline         | `° °`           | `°This text is underlined°`            | <ins>This text is underlined</ins>     |
 | Nested formatting | `* *` and `_ _` | `*This text is _extremely_ important*` | **This text is _extremely_ important** |
 
 (9) `responsiveBreakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div v-if="formatMessages">
+		<div v-if="textFormatting">
 			<template v-for="(message, i) in linkifiedMessage">
 				<component
 					:is="message.types.indexOf('url') !== -1 ? 'a' : 'span'"
@@ -30,7 +30,7 @@ export default {
 	props: {
 		content: { type: [String, Number], required: true },
 		formatLinks: { type: Boolean, default: true },
-		formatMessages: { type: Boolean, required: true }
+		textFormatting: { type: Boolean, required: true }
 	},
 
 	computed: {

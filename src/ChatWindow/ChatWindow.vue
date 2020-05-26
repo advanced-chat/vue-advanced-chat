@@ -10,7 +10,7 @@
 				:textMessages="t"
 				:showAddRoom="showAddRoom"
 				:showRoomsList="showRoomsList"
-				:formatMessages="formatMessages"
+				:textFormatting="textFormatting"
 				:isMobile="isMobile"
 				@fetchRoom="fetchRoom"
 				@addRoom="addRoom"
@@ -34,7 +34,7 @@
 				:textMessages="t"
 				:singleRoom="singleRoom"
 				:showRoomsList="showRoomsList"
-				:formatMessages="formatMessages"
+				:textFormatting="textFormatting"
 				:isMobile="isMobile"
 				:loadingRooms="loadingRooms"
 				:roomInfo="$listeners.roomInfo"
@@ -96,7 +96,7 @@ export default {
 		showFiles: { type: Boolean, default: true },
 		showEmojis: { type: Boolean, default: true },
 		showReactionEmojis: { type: Boolean, default: true },
-		formatMessages: { type: Boolean, default: true },
+		textFormatting: { type: Boolean, default: true },
 		newMessage: { type: Object, default: null }
 	},
 

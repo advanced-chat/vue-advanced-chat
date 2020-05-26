@@ -64,7 +64,7 @@
 					<div v-else-if="!message.file">
 						<format-message
 							:content="this.message.content"
-							:formatMessages="formatMessages"
+							:textFormatting="textFormatting"
 						></format-message>
 					</div>
 
@@ -103,7 +103,7 @@
 						</div>
 						<format-message
 							:content="this.message.content"
-							:formatMessages="formatMessages"
+							:textFormatting="textFormatting"
 						></format-message>
 					</div>
 
@@ -251,7 +251,7 @@ export default {
 		roomFooterRef: { type: HTMLDivElement },
 		newMessages: { type: Array },
 		showReactionEmojis: { type: Boolean, required: true },
-		formatMessages: { type: Boolean, required: true },
+		textFormatting: { type: Boolean, required: true },
 		emojisList: { type: Object, required: true },
 		hideOptions: { type: Boolean, required: true }
 	},
