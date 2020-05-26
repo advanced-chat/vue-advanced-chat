@@ -62,21 +62,7 @@
 					</div>
 
 					<div v-else-if="!message.file">
-						<template v-for="(message, i) in linkifiedMessage">
-							<component
-								:is="message.types.indexOf('url') !== -1 ? 'a' : 'span'"
-								:key="i"
-								:class="{
-									'text-bold': message.types.indexOf('bold') !== -1,
-									'text-italic': message.types.indexOf('italic') !== -1,
-									'text-strike': message.types.indexOf('strike') !== -1,
-									'text-underline': message.types.indexOf('underline') !== -1
-								}"
-								:href="message.href"
-								target="_blank"
-								>{{ message.value }}</component
-							>
-						</template>
+						<format-message :content="this.message.content"></format-message>
 					</div>
 
 					<div class="image-container" v-else-if="isImage">
@@ -112,10 +98,7 @@
 								</div>
 							</transition>
 						</div>
-						<span v-for="(message, i) in linkifiedMessage" :key="i">
-							<span v-if="message.bind" v-html="message.content"></span>
-							<span v-else>{{ message.content }}</span>
-						</span>
+						<format-message :content="this.message.content"></format-message>
 					</div>
 
 					<div v-else class="file-message">
@@ -240,12 +223,11 @@ import vClickOutside from 'v-click-outside'
 import SvgIcon from './SvgIcon'
 import Loader from './Loader'
 import EmojiPicker from './EmojiPicker'
-
-import formatString from '../utils/formatString'
+import FormatMessage from './FormatMessage'
 
 export default {
 	name: 'message',
-	components: { SvgIcon, Loader, EmojiPicker },
+	components: { SvgIcon, Loader, EmojiPicker, FormatMessage },
 
 	directives: {
 		clickOutside: vClickOutside.directive
@@ -321,9 +303,6 @@ export default {
 	},
 
 	computed: {
-		linkifiedMessage() {
-			return formatString(this.message.content, true)
-		},
 		showDate() {
 			return (
 				this.index > 0 &&
