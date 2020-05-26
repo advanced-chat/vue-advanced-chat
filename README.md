@@ -101,11 +101,12 @@ You can import it as a custom component:
 | showFiles                | Boolean          | -        | true    |
 | showEmojis               | Boolean          | -        | true    |
 | showReactionEmojis       | Boolean          | -        | true    |
-| textMessages (7)         | Object           | -        | null    |
-| responsiveBreakpoint (8) | Number           | -        | 900     |
-| singleRoom (9)           | Number           | -        | false   |
-| theme (10)               | Sring            | -        | light   |
-| styles (11)              | Object           | -        | (10)    |
+| formatMessages (7)       | Boolean          | -        | true    |
+| textMessages (8)         | Object           | -        | null    |
+| responsiveBreakpoint (9) | Number           | -        | 900     |
+| singleRoom (10)          | Number           | -        | false   |
+| theme (11)               | Sring            | -        | light   |
+| styles (12)              | Object           | -        | (10)    |
 
 (1) `currentUserId` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -188,13 +189,23 @@ textMessages="{
 }"
 ```
 
-(8) `responsiveBreakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
+(8) `formatMessages` can be used to add text formatting. Currently, bold, italic, strikethrough and underline formatting are available. All text formatting can be used in conjonction. Ex:
 
-(9) `singleRoom` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+| Style             | Syntax          | Example                                | Output                                 |
+| ----------------- | --------------- | -------------------------------------- | -------------------------------------- |
+| Bold              | `* *`           | `*This is bold text*`                  | **This is bold text**                  |
+| Italic            | `_ _`           | `_This text is italicized_`            | _This text is italicized_              |
+| Strikethrough     | `~ ~`           | `~This was mistaken text~`             | ~~This was mistaken text~~             |
+| Underline         | `° °`           | `°This text is underlined°`            | <ins>This text is underlined</ins>    |
+| Nested formatting | `* *` and `_ _` | `*This text is _extremely_ important*` | **This text is _extremely_ important** |
 
-(10) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+(9) `responsiveBreakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
 
-(11) `styles` can be used to customize your own theme. Ex:
+(10) `singleRoom` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+
+(11) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+
+(12) `styles` can be used to customize your own theme. Ex:
 
 ```javascript
 styles="{
