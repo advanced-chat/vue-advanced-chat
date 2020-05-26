@@ -9,7 +9,9 @@ export default (text, doLinkify = false) => {
 
 	const result = [].concat.apply([], flatten)
 
-	return result
+	const linkified = linkifyResult(result)
+
+	return doLinkify ? linkified : result
 }
 
 const pseudo_markdown = {
@@ -178,4 +180,18 @@ function flattenResult(array, types = []) {
 	})
 
 	return result
+}
+
+function linkifyResult(array) {
+	return array.map(arr => {
+		const links = linkify.find(arr.value)
+
+		if (links.length) {
+			arr.types = ['url'].concat(arr.types)
+			arr.href = links[0].href
+			arr.value = links[0].value
+		}
+
+		return arr
+	})
 }
