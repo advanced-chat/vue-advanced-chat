@@ -294,12 +294,11 @@ input {
 }
 
 .text-last {
+	display: flex;
+	align-items: center;
 	font-size: 12px;
+	line-height: 15px;
 	color: var(--chat-room-color-message);
-
-	* {
-		display: inline-block;
-	}
 }
 
 .message-new {
@@ -314,11 +313,11 @@ input {
 }
 
 .icon-check {
+	display: flex;
 	height: 14px;
 	width: 14px;
-	vertical-align: middle;
 	margin-top: -2px;
-	margin-right: 1px;
+	margin-right: 2px;
 }
 
 .state-circle {
