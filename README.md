@@ -104,7 +104,7 @@ You can import it as a custom component:
 | textFormatting (7)       | Boolean          | -        | true    |
 | textMessages (8)         | Object           | -        | null    |
 | responsiveBreakpoint (9) | Number           | -        | 900     |
-| singleRoom (10)          | Number           | -        | false   |
+| singleRoom (10)          | Boolean          | -        | false   |
 | theme (11)               | Sring            | -        | light   |
 | styles (12)              | Object           | -        | (10)    |
 
