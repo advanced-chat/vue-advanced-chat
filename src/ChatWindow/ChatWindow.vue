@@ -122,10 +122,13 @@ export default {
 			}
 		},
 
-		roomId(val) {
-			if (!this.loadingRooms && this.rooms && this.rooms.length) {
-				const room = this.rooms.find(r => r.roomId === val)
-				this.fetchRoom({ room })
+		roomId: {
+			immediate: true,
+			handler(val) {
+				if (!this.loadingRooms && this.rooms && this.rooms.length) {
+					const room = this.rooms.find(r => r.roomId === val)
+					this.fetchRoom({ room })
+				}
 			}
 		},
 
