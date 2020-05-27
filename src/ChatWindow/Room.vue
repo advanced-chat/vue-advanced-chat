@@ -257,7 +257,7 @@ export default {
 		showRoomsList: { type: Boolean, required: true },
 		isMobile: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },
-		roomId: { type: String, required: true },
+		roomId: { type: [String, Number], required: true },
 		messages: { type: Array, required: true },
 		messagesLoaded: { type: Boolean, required: true },
 		menuActions: { type: Array, required: true },
