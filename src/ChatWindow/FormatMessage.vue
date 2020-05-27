@@ -1,16 +1,22 @@
 <template>
-	<div>
+	<div
+		:class="{
+			'text-ellipsis': singleLine
+		}"
+	>
 		<div v-if="textFormatting">
 			<template v-for="(message, i) in linkifiedMessage">
 				<component
-					:is="message.types.indexOf('url') !== -1 ? 'a' : 'span'"
+					:is="checkType(message, 'url') ? 'a' : 'span'"
 					:key="i"
 					:class="{
-						'text-bold': message.types.indexOf('bold') !== -1,
-						'text-italic': message.types.indexOf('italic') !== -1,
+						'text-block': singleLine,
+						'text-ellipsis': singleLine,
 						'text-deleted': deleted,
-						'text-strike': message.types.indexOf('strike') !== -1,
-						'text-underline': message.types.indexOf('underline') !== -1
+						'text-bold': checkType(message, 'bold'),
+						'text-italic': checkType(message, 'italic'),
+						'text-strike': checkType(message, 'strike'),
+						'text-underline': checkType(message, 'undeline')
 					}"
 					:href="message.href"
 					target="_blank"
@@ -37,12 +43,19 @@ export default {
 		content: { type: [String, Number], required: true },
 		deleted: { type: Boolean, default: false },
 		formatLinks: { type: Boolean, default: true },
+		singleLine: { type: Boolean, default: false },
 		textFormatting: { type: Boolean, required: true }
 	},
 
 	computed: {
 		linkifiedMessage() {
 			return formatString(this.content, this.formatLinks)
+		}
+	},
+
+	methods: {
+		checkType(message, type) {
+			return message.types.indexOf(type) !== -1
 		}
 	}
 }
@@ -59,5 +72,16 @@ export default {
 	vertical-align: middle;
 	margin: -3px 1px 0 0;
 	fill: var(--chat-room-color-message);
+}
+
+.text-block {
+	display: inline-block;
+}
+
+.text-ellipsis {
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 </style>

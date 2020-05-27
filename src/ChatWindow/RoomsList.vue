@@ -56,7 +56,7 @@
 						</div>
 					</div>
 					<div
-						class="text-last text-ellipsis"
+						class="text-last"
 						:class="{ 'message-new': room.lastMessage.new }"
 						v-if="room.lastMessage"
 					>
@@ -68,6 +68,7 @@
 							:deleted="!!room.lastMessage.deleted"
 							:formatLinks="false"
 							:textFormatting="textFormatting"
+							:singleLine="true"
 						></format-message>
 					</div>
 				</div>
