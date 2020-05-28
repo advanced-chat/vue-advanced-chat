@@ -9,29 +9,38 @@ export default (text, doLinkify) => {
 
 	const result = [].concat.apply([], flatten)
 
+	markdownResult(result)
+
 	if (doLinkify) linkifyResult(result)
 
 	return result
 }
 
+const type_markdown = {
+	bold: '*',
+	italic: '_',
+	strike: '~',
+	underline: '°'
+}
+
 const pseudo_markdown = {
-	'*': {
-		end: '\\*',
+	[type_markdown.bold]: {
+		end: '\\' + [type_markdown.bold],
 		allowed_chars: '.',
 		type: 'bold'
 	},
-	_: {
-		end: '_',
+	[type_markdown.italic]: {
+		end: [type_markdown.italic],
 		allowed_chars: '.',
 		type: 'italic'
 	},
-	'~': {
-		end: '~',
+	[type_markdown.strike]: {
+		end: [type_markdown.strike],
 		allowed_chars: '.',
 		type: 'strike'
 	},
-	'°': {
-		end: '°',
+	[type_markdown.underline]: {
+		end: [type_markdown.underline],
 		allowed_chars: '.',
 		type: 'underline'
 	},
@@ -180,6 +189,36 @@ function flattenResult(array, types = []) {
 	})
 
 	return result
+}
+
+function markdownResult(array) {
+	for (let i = 0; i < array.length; i) {
+		if (array[i - 1]) {
+			const isInline =
+				array[i].types.indexOf('inline-code') !== -1 &&
+				array[i - 1].types.indexOf('inline-code') !== -1
+
+			const isMultiline =
+				array[i].types.indexOf('multiline-code') !== -1 &&
+				array[i - 1].types.indexOf('multiline-code') !== -1
+
+			if (isInline || isMultiline) {
+				let value = array[i].value
+				array[i].types.forEach(type => {
+					const markdown = type_markdown[type] || ''
+					value = markdown + value + markdown
+				})
+
+				array[i - 1].value = array[i - 1].value + value
+
+				array.splice(i, 1)
+			} else {
+				i++
+			}
+		} else {
+			i++
+		}
+	}
 }
 
 function linkifyResult(array) {
