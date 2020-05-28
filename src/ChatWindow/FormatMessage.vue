@@ -10,7 +10,6 @@
 					:is="checkType(message, 'url') ? 'a' : 'span'"
 					:key="i"
 					:class="{
-						'text-block': singleLine,
 						'text-ellipsis': singleLine,
 						'text-deleted': deleted,
 						'text-bold': checkType(message, 'bold'),
@@ -72,10 +71,6 @@ export default {
 	vertical-align: middle;
 	margin: -3px 1px 0 0;
 	fill: var(--chat-room-color-message);
-}
-
-.text-block {
-	display: inline-block;
 }
 
 .text-ellipsis {

@@ -297,7 +297,7 @@ input {
 	display: flex;
 	align-items: center;
 	font-size: 12px;
-	line-height: 15px;
+	line-height: 17px;
 	color: var(--chat-room-color-message);
 }
 
