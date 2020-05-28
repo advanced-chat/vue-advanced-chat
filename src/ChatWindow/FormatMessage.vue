@@ -15,7 +15,11 @@
 						'text-bold': checkType(message, 'bold'),
 						'text-italic': checkType(message, 'italic'),
 						'text-strike': checkType(message, 'strike'),
-						'text-underline': checkType(message, 'underline')
+						'text-underline': checkType(message, 'underline'),
+						'text-inline-code':
+							!singleLine && checkType(message, 'inline-code'),
+						'text-multiline-code':
+							!singleLine && checkType(message, 'multiline-code')
 					}"
 					:href="message.href"
 					target="_blank"

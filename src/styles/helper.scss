@@ -67,3 +67,23 @@
 .text-underline {
 	text-decoration: underline;
 }
+
+.text-inline-code {
+	font-size: 12px;
+	color: var(--chat-markdown-color);
+	background: var(--chat-markdown-bg);
+	border: 1px solid var(--chat-markdown-border);
+	border-radius: 3px;
+	padding: 2px 3px;
+}
+
+.text-multiline-code {
+	display: block;
+	font-size: 12px;
+	color: var(--chat-markdown-color-multi);
+	background: var(--chat-markdown-bg);
+	border: 1px solid var(--chat-markdown-border);
+	border-radius: 3px;
+	margin: 4px 0;
+	padding: 7px;
+}

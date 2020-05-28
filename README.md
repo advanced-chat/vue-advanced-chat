@@ -199,6 +199,23 @@ textMessages="{
 | Underline         | `° °`           | `°This text is underlined°`            | <ins>This text is underlined</ins>     |
 | Nested formatting | `* *` and `_ _` | `*This text is _extremely_ important*` | **This text is _extremely_ important** |
 
+**Inline Code**
+
+Example: \`This is inline code\`
+
+Output: `This is inline code`
+
+**Multiline Code**
+
+Example: \```This is multiline code\```
+
+Output:
+
+```bash
+This is
+multiline code
+```
+
 (9) `responsiveBreakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
 
 (10) `singleRoom` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
@@ -281,6 +298,13 @@ styles="{
     backgroundReactionHoverMe: '#cfecf5',
     borderStyleReactionHoverMe: '1px solid #3b98b8',
     colorReactionCounterMe: '#0b59b3'
+  },
+
+  markdown: {
+    background: 'rgba(239, 239, 239, 0.7)',
+    border: 'rgba(212, 212, 212, 0.9)',
+    color: '#e01e5a',
+    colorMulti: '#0a0a0a'
   },
 
   room: {

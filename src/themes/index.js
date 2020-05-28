@@ -75,6 +75,13 @@ export const defaultThemeStyles = {
 			colorReactionCounterMe: '#0b59b3'
 		},
 
+		markdown: {
+			background: 'rgba(239, 239, 239, 0.7)',
+			border: 'rgba(212, 212, 212, 0.9)',
+			color: '#e01e5a',
+			colorMulti: '#0a0a0a'
+		},
+
 		room: {
 			colorUsername: '#0a0a0a',
 			colorMessage: '#67717a',
@@ -186,6 +193,13 @@ export const defaultThemeStyles = {
 			colorReactionCounterMe: '#fff'
 		},
 
+		markdown: {
+			background: 'rgba(239, 239, 239, 0.7)',
+			border: 'rgba(212, 212, 212, 0.9)',
+			color: '#e01e5a',
+			colorMulti: '#0a0a0a'
+		},
+
 		room: {
 			colorUsername: '#fff',
 			colorMessage: '#6c7278',
@@ -232,6 +246,7 @@ export const cssThemeVars = ({
 	content,
 	dropdown,
 	message,
+	markdown,
 	room,
 	emoji,
 	icons
@@ -305,6 +320,12 @@ export const cssThemeVars = ({
 		'--chat-message-border-style-reaction-hover-me':
 			message.borderStyleReactionHoverMe,
 		'--chat-message-color-reaction-counter-me': message.colorReactionCounterMe,
+
+		// markdown
+		'--chat-markdown-bg': markdown.background,
+		'--chat-markdown-border': markdown.border,
+		'--chat-markdown-color': markdown.color,
+		'--chat-markdown-color-multi': markdown.colorMulti,
 
 		// room
 		'--chat-room-color-username': room.colorUsername,
