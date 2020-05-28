@@ -15,7 +15,7 @@
 						'text-bold': checkType(message, 'bold'),
 						'text-italic': checkType(message, 'italic'),
 						'text-strike': checkType(message, 'strike'),
-						'text-underline': checkType(message, 'undeline')
+						'text-underline': checkType(message, 'underline')
 					}"
 					:href="message.href"
 					target="_blank"
