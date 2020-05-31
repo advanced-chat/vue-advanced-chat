@@ -125,7 +125,7 @@ export default {
 		roomId: {
 			immediate: true,
 			handler(val) {
-				if (!this.loadingRooms && this.rooms && this.rooms.length) {
+				if (val && !this.loadingRooms && this.rooms.length) {
 					const room = this.rooms.find(r => r.roomId === val)
 					this.fetchRoom({ room })
 				}
