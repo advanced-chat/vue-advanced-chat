@@ -22,7 +22,7 @@
 
 			<room
 				:currentUserId="currentUserId"
-				:rooms="rooms"
+				:rooms="_rooms"
 				:roomId="room.roomId || ''"
 				:messages="messages"
 				:messagesLoaded="messagesLoaded"
@@ -49,8 +49,7 @@
 				@messageActionHandler="messageActionHandler"
 				@sendMessageReaction="sendMessageReaction"
 				@typingMessage="typingMessage"
-			>
-			</room>
+			></room>
 		</div>
 	</div>
 </template>
@@ -107,9 +106,8 @@ export default {
 			isMobile: false
 		}
 	},
-
 	watch: {
-		rooms(newVal, oldVal) {
+		_rooms(newVal, oldVal) {
 			if (newVal[0] && newVal.length !== oldVal.length) {
 				if (this.roomId) {
 					const room = newVal.find(r => r.roomId === this.roomId)
@@ -125,14 +123,14 @@ export default {
 		roomId: {
 			immediate: true,
 			handler(val) {
-				if (val && !this.loadingRooms && this.rooms.length) {
-					const room = this.rooms.find(r => r.roomId === val)
+				if (val && !this.loadingRooms && this._rooms.length) {
+					const room = this._rooms.find(r => r.roomId === val)
 					this.fetchRoom({ room })
 				}
 			}
 		},
 
-		room(val) {
+		_room(val) {
 			if (!val) return
 
 			if (Object.entries(val).length === 0) return
@@ -181,12 +179,18 @@ export default {
 			return cssThemeVars(customStyles)
 		},
 		orderedRooms() {
-			return this.rooms.slice().sort((a, b) => {
-				const aVal = a.lastMessage || { date: 0 }
-				const bVal = b.lastMessage || { date: 0 }
+			return this.rooms
+				.map(room => toCamelCase(room))
+				.slice()
+				.sort((a, b) => {
+					const aVal = a.lastMessage || { date: 0 }
+					const bVal = b.lastMessage || { date: 0 }
 
-				return aVal.date > bVal.date ? -1 : bVal.date > aVal.date ? 1 : 0
-			})
+					return aVal.date > bVal.date ? -1 : bVal.date > aVal.date ? 1 : 0
+				})
+		},
+		_rooms() {
+			return this.rooms.map(room => toCamelCase(room))
 		}
 	},
 
@@ -246,6 +250,27 @@ export default {
 			})
 		}
 	}
+}
+
+function toCamelCase(_obj) {
+	const parseCamel = s => {
+		return s.replace(/([-_][a-z])/gi, $1 => {
+			return $1
+				.toUpperCase()
+				.replace('-', '')
+				.replace('_', '')
+		})
+	}
+	const NotCamel = str => {
+		return /([-_][a-z])/gi.test(str)
+	}
+	for (const key in _obj) {
+		if (NotCamel(key)) {
+			_obj[parseCamel(key)] = _obj[key]
+			delete _obj[key]
+		}
+	}
+	return _obj
 }
 </script>
 
