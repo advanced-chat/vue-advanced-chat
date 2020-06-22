@@ -179,8 +179,7 @@ export default {
 			return cssThemeVars(customStyles)
 		},
 		orderedRooms() {
-			return this.rooms
-				.map(room => toCamelCase(room))
+			return this._rooms
 				.slice()
 				.sort((a, b) => {
 					const aVal = a.lastMessage || { date: 0 }
@@ -190,7 +189,12 @@ export default {
 				})
 		},
 		_rooms() {
-			return this.rooms.map(room => toCamelCase(room))
+      return this.rooms.map(room => {
+        room = toCamelCase(room);
+        if (!room["lastMessage"]) delete room["lastMessage"];
+        if (!room["roomName"]) room["roomName"] = nameSeries(room["users"]);
+        return room;
+      });
 		}
 	},
 
@@ -271,6 +275,10 @@ function toCamelCase(_obj) {
 		}
 	}
 	return _obj
+}
+
+function nameSeries(_obj) {
+  return _obj.reduce((acc, curr) => acc + "," + curr.username, "").substring(1);
 }
 </script>
 
