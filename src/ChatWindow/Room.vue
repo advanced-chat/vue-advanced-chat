@@ -329,7 +329,10 @@ export default {
 				this.loadingMessages = true
 				this.scrollIcon = false
 				this.resetMessage(true)
-				this.message = this.roomMessage
+				if (this.roomMessage) {
+					this.message = this.roomMessage
+					setTimeout(() => this.onChangeInput(), 0)
+				}
 			}
 		},
 		messages(newVal, oldVal) {
@@ -542,6 +545,8 @@ export default {
 		},
 		resizeTextarea() {
 			const el = this.$refs['roomTextarea']
+
+			if (!el) return
 
 			const padding = window
 				.getComputedStyle(el, null)
