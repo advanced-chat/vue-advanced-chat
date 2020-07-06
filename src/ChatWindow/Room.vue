@@ -259,6 +259,7 @@ export default {
 		rooms: { type: Array, required: true },
 		roomId: { type: [String, Number], required: true },
 		messages: { type: Array, required: true },
+		roomMessage: { type: String },
 		messagesLoaded: { type: Boolean, required: true },
 		menuActions: { type: Array, required: true },
 		messageActions: { type: Array, required: true },
@@ -307,6 +308,7 @@ export default {
 		this.$refs.scrollContainer.addEventListener('scroll', e => {
 			this.hideOptions = true
 			setTimeout(() => {
+				if (!e.target) return
 				this.scrollIcon =
 					e.target.scrollHeight > 500 &&
 					e.target.scrollHeight - e.target.scrollTop > 1000
@@ -327,6 +329,7 @@ export default {
 				this.loadingMessages = true
 				this.scrollIcon = false
 				this.resetMessage(true)
+				this.message = this.roomMessage
 			}
 		},
 		messages(newVal, oldVal) {

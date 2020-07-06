@@ -87,27 +87,28 @@ You can import it as a custom component:
 
 ## Props API
 
-| Prop                     | Type             | Required | Default |
-| ------------------------ | ---------------- | -------- | ------- |
-| height                   | String           | -        | 600px   |
-| currentUserId (1)        | [String, Number] | true     | -       |
-| rooms                    | Array            | -        | [ ]     |
-| loadingRooms (2)         | Boolean          | -        | false   |
-| roomId (3)               | [String, Number] | -        | null    |
-| messages                 | Array            | -        | [ ]     |
-| messagesLoaded (4)       | Boolean          | -        | false   |
-| menuActions (5)          | Array            | -        | [ ]     |
-| messageActions (6)       | Array            | -        | (4)     |
-| showAddRoom              | Boolean          | -        | true    |
-| showFiles                | Boolean          | -        | true    |
-| showEmojis               | Boolean          | -        | true    |
-| showReactionEmojis       | Boolean          | -        | true    |
-| textFormatting (7)       | Boolean          | -        | true    |
-| textMessages (8)         | Object           | -        | null    |
-| responsiveBreakpoint (9) | Number           | -        | 900     |
-| singleRoom (10)          | Boolean          | -        | false   |
-| theme (11)               | Sring            | -        | light   |
-| styles (12)              | Object           | -        | (10)    |
+| Prop                      | Type             | Required | Default |
+| ------------------------- | ---------------- | -------- | ------- |
+| height                    | String           | -        | 600px   |
+| currentUserId (1)         | [String, Number] | true     | -       |
+| rooms                     | Array            | -        | [ ]     |
+| loadingRooms (2)          | Boolean          | -        | false   |
+| roomId (3)                | [String, Number] | -        | null    |
+| messages                  | Array            | -        | [ ]     |
+| roomMessage (4)           | Object           | -        | null    |
+| messagesLoaded (5)        | Boolean          | -        | false   |
+| menuActions (6)           | Array            | -        | [ ]     |
+| messageActions (7)        | Array            | -        | (4)     |
+| showAddRoom               | Boolean          | -        | true    |
+| showFiles                 | Boolean          | -        | true    |
+| showEmojis                | Boolean          | -        | true    |
+| showReactionEmojis        | Boolean          | -        | true    |
+| textMessages (8)          | Object           | -        | null    |
+| textFormatting (9)        | Boolean          | -        | true    |
+| responsiveBreakpoint (10) | Number           | -        | 900     |
+| singleRoom (11)           | Boolean          | -        | false   |
+| theme (12)                | Sring            | -        | light   |
+| styles (13)               | Object           | -        | (10)    |
 
 (1) `currentUserId` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -115,9 +116,11 @@ You can import it as a custom component:
 
 (3) `roomId` can be used to load a specific room at any time
 
-(4) `messagesLoaded` must be manually set to `true` when all messages of a conversation have been loaded. Meaning the user cannot scroll on top anymore
+(4) `roomMessage` can be used to add a default textarea value
 
-(5) `menuActions` can be used to display your own buttons when clicking the vertical dots icon inside a room.<br>
+(5) `messagesLoaded` must be manually set to `true` when all messages of a conversation have been loaded. Meaning the user cannot scroll on top anymore
+
+(6) `menuActions` can be used to display your own buttons when clicking the vertical dots icon inside a room.<br>
 You can then use the [menuActionHandler](#events-api) event to call your own action after clicking a button. Ex:
 
 ```javascript
@@ -137,7 +140,7 @@ menuActions="[
 ]"
 ```
 
-(6) `messageActions` can be used to display your own buttons when clicking the dropdown icon inside a message.<br>
+(7) `messageActions` can be used to display your own buttons when clicking the dropdown icon inside a message.<br>
 You can then use the [messageActionHandler](#events-api) event to call your own action after clicking a button. Ex:
 
 ```javascript
@@ -177,7 +180,7 @@ messageActions="[
 ]"
 ```
 
-(7) `textMessages` can be used to replace default i18n texts. Ex:
+(8) `textMessages` can be used to replace default i18n texts. Ex:
 
 ```javascript
 textMessages="{
@@ -190,7 +193,7 @@ textMessages="{
 }"
 ```
 
-(8) `textFormatting` can be used to add text formatting. Currently, bold, italic, strikethrough, underline, inline code and multiline code formatting are available and can be used in conjonction. You can disable text formatting by passing the prop as `:textFormatting="false"`.
+(9) `textFormatting` can be used to add text formatting. Currently, bold, italic, strikethrough, underline, inline code and multiline code formatting are available and can be used in conjonction. You can disable text formatting by passing the prop as `:textFormatting="false"`.
 
 | Style             | Syntax          | Example                                | Output                                 |
 | ----------------- | --------------- | -------------------------------------- | -------------------------------------- |
@@ -217,13 +220,13 @@ This is
 multiline code
 ```
 
-(9) `responsiveBreakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
+(10) `responsiveBreakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
 
-(10) `singleRoom` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+(11) `singleRoom` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
 
-(11) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+(12) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
 
-(12) `styles` can be used to customize your own theme. Ex:
+(13) `styles` can be used to customize your own theme. Ex:
 
 ```javascript
 styles="{

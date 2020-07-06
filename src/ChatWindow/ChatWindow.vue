@@ -25,6 +25,7 @@
 				:rooms="rooms"
 				:roomId="room.roomId || ''"
 				:messages="messages"
+				:roomMessage="roomMessage"
 				:messagesLoaded="messagesLoaded"
 				:menuActions="menuActions"
 				:messageActions="messageActions"
@@ -97,7 +98,8 @@ export default {
 		showEmojis: { type: Boolean, default: true },
 		showReactionEmojis: { type: Boolean, default: true },
 		textFormatting: { type: Boolean, default: true },
-		newMessage: { type: Object, default: null }
+		newMessage: { type: Object, default: null },
+		roomMessage: { type: String, default: '' }
 	},
 
 	data() {
