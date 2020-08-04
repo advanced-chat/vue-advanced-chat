@@ -79,9 +79,7 @@ import {
 	deleteDbField
 } from '@/firestore'
 import { parseTimestamp, isSameDay } from '@/utils/dates'
-import ChatWindow from './../../src/ChatWindow'
-// import ChatWindow from 'vue-advanced-chat'
-// import 'vue-advanced-chat/dist/vue-advanced-chat.css'
+import ChatWindow from './ChatWindow'
 
 export default {
 	components: {
@@ -121,6 +119,7 @@ export default {
 
 	mounted() {
 		this.fetchRooms()
+		console.log(JSON.stringify(this.rooms))
 		this.updateUserOnlineStatus()
 	},
 
@@ -130,7 +129,9 @@ export default {
 
 	methods: {
 		messagesRef(roomId) {
-			return roomsRef.doc(roomId).collection('messages')
+			return roomsRef
+				.doc(roomId)
+				.collection(process.env.VUE_APP_MESSAGES_COLLECTION)
 		},
 		resetRooms() {
 			this.loadingRooms = true
@@ -169,10 +170,12 @@ export default {
 				const rawUsers = []
 
 				room.data().users.map(userId => {
+					console.log(userId)
 					const promise = usersRef
 						.doc(userId)
 						.get()
 						.then(user => {
+							console.log(user.data())
 							return {
 								...user.data(),
 								...{

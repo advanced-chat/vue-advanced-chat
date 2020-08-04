@@ -1,11 +1,11 @@
-import ChatWindow from './ChatWindow'
+import ChatContainer from './ChatContainer'
 
-Object.defineProperty(ChatWindow, 'install', {
+Object.defineProperty(ChatContainer, 'install', {
 	configurable: false,
 	enumerable: false,
 	value(Vue) {
-		Vue.component('chat-window', ChatWindow)
+		Vue.component('chat-window', ChatContainer)
 	}
 })
 
-export default ChatWindow
+export default ChatContainer

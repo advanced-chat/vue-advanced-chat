@@ -608,6 +608,7 @@ export default {
 	overflow: hidden;
 	display: flex;
 	flex-flow: column;
+	background-color:red;
 }
 
 .room-header {

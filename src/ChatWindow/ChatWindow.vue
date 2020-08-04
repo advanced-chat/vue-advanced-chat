@@ -279,7 +279,7 @@ a {
 .chat-container {
 	height: 100%;
 	display: flex;
-
+	background-color: red;
 	textarea,
 	input[type='text'],
 	input[type='search'] {
