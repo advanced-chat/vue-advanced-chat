@@ -469,6 +469,7 @@ export default {
 		},
 		focusTextarea(disableMobileFocus) {
 			if (detectMobile() && disableMobileFocus) return
+			if (!this.$refs['roomTextarea']) return
 			this.$refs['roomTextarea'].focus()
 		},
 		isMessageEmpty() {
