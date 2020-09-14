@@ -252,6 +252,7 @@ export default {
 		roomFooterRef: { type: HTMLDivElement },
 		newMessages: { type: Array },
 		showReactionEmojis: { type: Boolean, required: true },
+		showNewMessagesDivider: { type: Boolean, required: true },
 		textFormatting: { type: Boolean, required: true },
 		emojisList: { type: Object, required: true },
 		hideOptions: { type: Boolean, required: true }
@@ -281,7 +282,7 @@ export default {
 			}
 		},
 		newMessages(val) {
-			if (!val.length) return
+			if (!val.length || !this.showNewMessagesDivider) return
 			this.newMessage = val.reduce((res, obj) =>
 				obj.index < res.index ? obj : res
 			)

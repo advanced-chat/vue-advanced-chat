@@ -32,6 +32,7 @@
 				:showFiles="showFiles"
 				:showEmojis="showEmojis"
 				:showReactionEmojis="showReactionEmojis"
+				:showNewMessagesDivider="showNewMessagesDivider"
 				:textMessages="t"
 				:singleRoom="singleRoom"
 				:showRoomsList="showRoomsList"
@@ -97,6 +98,7 @@ export default {
 		showFiles: { type: Boolean, default: true },
 		showEmojis: { type: Boolean, default: true },
 		showReactionEmojis: { type: Boolean, default: true },
+		showNewMessagesDivider: { type: Boolean, default: true },
 		textFormatting: { type: Boolean, default: true },
 		newMessage: { type: Object, default: null },
 		roomMessage: { type: String, default: '' }

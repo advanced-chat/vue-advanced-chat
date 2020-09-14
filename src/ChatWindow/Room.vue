@@ -94,6 +94,7 @@
 								:roomFooterRef="$refs.roomFooter"
 								:newMessages="newMessages"
 								:showReactionEmojis="showReactionEmojis"
+								:showNewMessagesDivider="showNewMessagesDivider"
 								:textFormatting="textFormatting"
 								:emojisList="emojisList"
 								:hideOptions="hideOptions"
@@ -266,6 +267,7 @@ export default {
 		showFiles: { type: Boolean, required: true },
 		showEmojis: { type: Boolean, required: true },
 		showReactionEmojis: { type: Boolean, required: true },
+		showNewMessagesDivider: { type: Boolean, required: true },
 		textFormatting: { type: Boolean, required: true },
 		loadingRooms: { type: Boolean, required: true },
 		roomInfo: { type: Function }
