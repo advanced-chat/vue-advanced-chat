@@ -410,7 +410,7 @@ export default {
 			if (file) this.uploadFile({ file, messageId: id, roomId })
 		},
 
-		openFile(message) {
+		openFile({ message, action }) {
 			window.open(message.file.url, '_blank')
 		},
 

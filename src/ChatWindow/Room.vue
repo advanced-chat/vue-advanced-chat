@@ -589,8 +589,8 @@ export default {
 			const { type } = file
 			return imageTypes.some(t => type.includes(t))
 		},
-		openFile(message) {
-			this.$emit('openFile', message)
+		openFile({ message, action }) {
+			this.$emit('openFile', { message, action })
 		},
 		menuActionHandler(action) {
 			this.closeMenu()

@@ -89,13 +89,13 @@
 								<div class="image-buttons" v-if="imageHover && !isImageLoading">
 									<div
 										class="svg-button button-view"
-										@click.stop="openFile(message.file)"
+										@click.stop="openFile('preview')"
 									>
 										<svg-icon name="eye" />
 									</div>
 									<div
 										class="svg-button button-download"
-										@click.stop="openFile(message.file)"
+										@click.stop="openFile('download')"
 									>
 										<svg-icon name="document" />
 									</div>
@@ -111,7 +111,7 @@
 					<div v-else class="file-message">
 						<div
 							class="svg-button icon-file"
-							@click.stop="openFile(message.file)"
+							@click.stop="openFile('download')"
 						>
 							<svg-icon name="document" />
 						</div>
@@ -390,8 +390,8 @@ export default {
 			if (!this.optionsOpened && !this.emojiOpened) this.messageHover = false
 			this.hoverMessageId = null
 		},
-		openFile() {
-			this.$emit('openFile', this.message)
+		openFile(action) {
+			this.$emit('openFile', { message: this.message, action })
 		},
 		messageActionHandler(action) {
 			this.closeOptions()

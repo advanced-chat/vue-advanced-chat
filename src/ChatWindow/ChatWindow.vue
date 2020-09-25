@@ -225,8 +225,8 @@ export default {
 		deleteMessage(messageId) {
 			this.$emit('deleteMessage', { messageId, roomId: this.room.roomId })
 		},
-		openFile(message) {
-			this.$emit('openFile', message)
+		openFile({ message, action }) {
+			this.$emit('openFile', { message, action })
 		},
 		menuActionHandler(ev) {
 			this.$emit('menuActionHandler', { action: ev, roomId: this.room.roomId })
