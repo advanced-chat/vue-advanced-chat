@@ -587,7 +587,7 @@ export default {
 			if (!file) return
 			const imageTypes = ['png', 'jpg', 'jpeg', 'svg']
 			const { type } = file
-			return imageTypes.some(t => type.includes(t))
+			return imageTypes.some(t => type.toLowerCase().includes(t))
 		},
 		openFile({ message, action }) {
 			this.$emit('openFile', { message, action })
