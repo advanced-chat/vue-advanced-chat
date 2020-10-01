@@ -85,7 +85,6 @@ function compileToJSON(str) {
 			min_index_of = io
 			min_index_of_key = starting_value
 			min_index_from_link = false
-			
 		}
 	})
 
