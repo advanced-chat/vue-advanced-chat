@@ -71,13 +71,33 @@ function compileToJSON(str) {
 	let min_index_of = -1
 	let min_index_of_key = null
 
+	let links = linkify.find(str)
+	let min_index_from_link = false
+	
+	if(links.length > 0) {
+		min_index_of = str.indexOf(links[0].value)
+		min_index_from_link = true
+	}
+
 	Object.keys(pseudo_markdown).forEach(starting_value => {
 		const io = str.indexOf(starting_value)
 		if (io >= 0 && (min_index_of < 0 || io < min_index_of)) {
 			min_index_of = io
 			min_index_of_key = starting_value
+			min_index_from_link = false
+			
 		}
 	})
+
+	if(min_index_from_link && min_index_of_key != -1) {
+		let str_left = str.substr(0, min_index_of)
+		let str_link = str.substr(min_index_of, links[0].value.length)
+		let str_right = str.substr(min_index_of + links[0].value.length)
+		result.push(str_left)
+		result.push(str_link)
+		result = result.concat(compileToJSON(str_right))
+		return result
+	}
 
 	if (min_index_of_key) {
 		let str_left = str.substr(0, min_index_of)
