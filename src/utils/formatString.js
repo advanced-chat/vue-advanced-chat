@@ -73,8 +73,8 @@ function compileToJSON(str) {
 
 	let links = linkify.find(str)
 	let min_index_from_link = false
-	
-	if(links.length > 0) {
+
+	if (links.length > 0) {
 		min_index_of = str.indexOf(links[0].value)
 		min_index_from_link = true
 	}
@@ -88,7 +88,7 @@ function compileToJSON(str) {
 		}
 	})
 
-	if(min_index_from_link && min_index_of_key != -1) {
+	if (min_index_from_link && min_index_of_key !== -1) {
 		let str_left = str.substr(0, min_index_of)
 		let str_link = str.substr(min_index_of, links[0].value.length)
 		let str_right = str.substr(min_index_of + links[0].value.length)
