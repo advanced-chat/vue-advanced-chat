@@ -282,6 +282,10 @@ a {
 	height: 100%;
 	display: flex;
 
+	input {
+		min-width: 10px;
+	}
+
 	textarea,
 	input[type='text'],
 	input[type='search'] {
