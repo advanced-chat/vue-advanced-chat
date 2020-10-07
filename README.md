@@ -319,7 +319,9 @@ styles="{
     colorMessage: '#67717a',
     colorTimestamp: '#a2aeb8',
     colorStateOnline: '#4caf50',
-    colorStateOffline: '#ccc'
+    colorStateOffline: '#ccc',
+    backgroundCounterBadge: '#0696c7',
+    colorCounterBadge: '#fff'
   },
 
   emoji: {
@@ -362,6 +364,7 @@ rooms="[
   {
     roomId: 1,
     roomName: 'Room 1',
+    unreadCount: 4,
     lastMessage: {
       content: 'Last message received',
       sender_id: 1234,

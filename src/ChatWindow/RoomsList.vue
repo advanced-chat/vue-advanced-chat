@@ -57,19 +57,22 @@
 					</div>
 					<div
 						class="text-last"
-						:class="{ 'message-new': room.lastMessage.new }"
-						v-if="room.lastMessage"
+						:class="{ 'message-new': room.lastMessage && room.lastMessage.new }"
 					>
-						<span v-if="room.lastMessage.seen">
+						<span v-if="room.lastMessage && room.lastMessage.seen">
 							<svg-icon name="checkmark" class="icon-check" />
 						</span>
 						<format-message
+							v-if="room.lastMessage"
 							:content="getLastMessage(room)"
 							:deleted="!!room.lastMessage.deleted"
 							:formatLinks="false"
 							:textFormatting="textFormatting"
 							:singleLine="true"
 						></format-message>
+						<div v-if="room.unreadCount" class="room-badge">
+							{{ room.unreadCount }}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -297,7 +300,7 @@ input {
 	display: flex;
 	align-items: center;
 	font-size: 12px;
-	line-height: 17px;
+	line-height: 19px;
 	color: var(--chat-room-color-message);
 }
 
@@ -331,6 +334,21 @@ input {
 
 .state-online {
 	background-color: var(--chat-room-color-online);
+}
+
+.room-badge {
+	background-color: var(--chat-room-bg-color-badge);
+	color: var(--chat-room-color-badge);
+	font-size: 11px;
+	font-weight: 500;
+	height: 13px;
+	width: auto;
+	min-width: 13px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 3px;
 }
 
 @media only screen and (max-width: 768px) {

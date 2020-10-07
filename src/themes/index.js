@@ -87,7 +87,9 @@ export const defaultThemeStyles = {
 			colorMessage: '#67717a',
 			colorTimestamp: '#a2aeb8',
 			colorStateOnline: '#4caf50',
-			colorStateOffline: '#9ca6af'
+			colorStateOffline: '#9ca6af',
+			backgroundCounterBadge: '#0696c7',
+			colorCounterBadge: '#fff'
 		},
 
 		emoji: {
@@ -205,7 +207,9 @@ export const defaultThemeStyles = {
 			colorMessage: '#6c7278',
 			colorTimestamp: '#6c7278',
 			colorStateOnline: '#4caf50',
-			colorStateOffline: '#596269'
+			colorStateOffline: '#596269',
+			backgroundCounterBadge: '#1976d2',
+			colorCounterBadge: '#fff'
 		},
 
 		emoji: {
@@ -333,6 +337,8 @@ export const cssThemeVars = ({
 		'--chat-room-color-timestamp': room.colorTimestamp,
 		'--chat-room-color-online': room.colorStateOnline,
 		'--chat-room-color-offline': room.colorStateOffline,
+		'--chat-room-bg-color-badge': room.backgroundCounterBadge,
+		'--chat-room-color-badge': room.colorCounterBadge,
 
 		// emoji
 		'--chat-emoji-bg-color': emoji.background,
