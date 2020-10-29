@@ -114,8 +114,12 @@ export default {
 		rooms(val) {
 			this.filteredRooms = val
 		},
-		room(val) {
-			if (val) this.selectedRoomId = val.roomId
+
+		room: {
+			immediate: true,
+			handler(val) {
+				if (val && !this.isMobile) this.selectedRoomId = val.roomId
+			}
 		}
 	},
 
@@ -129,7 +133,7 @@ export default {
 		},
 		openRoom(room) {
 			if (room.roomId === this.room.roomId && !this.isMobile) return
-			this.selectedRoomId = room.roomId
+			if (!this.isMobile) this.selectedRoomId = room.roomId
 			this.$emit('fetchRoom', { room })
 		},
 		addRoom() {
