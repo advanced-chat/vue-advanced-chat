@@ -1,5 +1,8 @@
 <template>
-	<div class="col-messages" v-show="(isMobile && !showRoomsList) || !isMobile">
+	<div
+		class="col-messages"
+		v-show="(isMobile && !showRoomsList) || !isMobile || singleRoom"
+	>
 		<div class="room-header app-border-b">
 			<div class="room-wrapper">
 				<div
