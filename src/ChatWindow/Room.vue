@@ -350,11 +350,9 @@ export default {
 			const element = this.$refs.scrollContainer
 			if (!element) return
 
-			const options = { top: element.scrollHeight }
-
 			if (oldVal && newVal && oldVal.length === newVal.length - 1) {
 				return setTimeout(() => {
-					options.behavior = 'smooth'
+					const options = { top: element.scrollHeight, behavior: 'smooth' }
 					element.scrollTo(options)
 				}, 50)
 			}
@@ -364,7 +362,7 @@ export default {
 				setTimeout(() => (this.loadingMoreMessages = false), 0)
 			} else if (newVal.length) {
 				setTimeout(() => {
-					element.scrollTo(options)
+					element.scrollTo({ top: element.scrollHeight })
 					this.loadingMessages = false
 				}, 0)
 			}
