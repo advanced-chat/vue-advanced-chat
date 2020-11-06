@@ -159,9 +159,11 @@ export default {
 				user => user._id === room.lastMessage.sender_id
 			)
 
-			if (user._id === this.currentUserId) {
-				return content
-			}
+      if (room.lastMessage.username) {
+        return `${room.lastMessage.username} - ${content}`
+      } else if (!user || user._id === this.currentUserId) {
+        return content
+      }
 
 			return `${user.username} - ${content}`
 		}
