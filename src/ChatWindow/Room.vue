@@ -351,6 +351,8 @@ export default {
 			if (!element) return
 
 			if (oldVal && newVal && oldVal.length === newVal.length - 1) {
+				this.loadingMessages = false
+
 				return setTimeout(() => {
 					const options = { top: element.scrollHeight, behavior: 'smooth' }
 					element.scrollTo(options)
