@@ -2,7 +2,7 @@
 name: Bug report
 about: Report any issues / bugs you've found. Could be a typo, visual issue, functional
   issue, etc.
-title: '(BUG)'
+title: ''
 labels: bug
 assignees: ''
 
