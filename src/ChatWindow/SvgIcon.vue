@@ -89,6 +89,11 @@ export default {
 					name: 'checkmark',
 					path: 'M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z'
 				},
+        {
+					name: 'double-checkmark',
+					path:
+            'M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z'
+				},
 				{
 					name: 'eye',
 					path:
@@ -170,8 +175,14 @@ export default {
 	fill: var(--chat-icon-color-pencil);
 }
 
-#chat-icon-checkmark {
+#chat-icon-checkmark,
+#chat-icon-double-checkmark {
 	fill: var(--chat-icon-color-checkmark);
+}
+
+#chat-icon-checkmark-seen,
+#chat-icon-double-checkmark-seen {
+	fill: var(--chat-icon-color-checkmark-seen);
 }
 
 #chat-icon-eye {

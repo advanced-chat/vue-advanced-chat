@@ -59,8 +59,12 @@
 						class="text-last"
 						:class="{ 'message-new': room.lastMessage && room.lastMessage.new }"
 					>
-						<span v-if="room.lastMessage && room.lastMessage.seen">
-							<svg-icon name="checkmark" class="icon-check" />
+						<span v-if="isMessageCheckmarkVisible(room)">
+							<svg-icon
+                :name="room.lastMessage.distributed ? 'double-checkmark' : 'checkmark'"
+                :param="room.lastMessage.seen ? 'seen' : ''"
+                class="icon-check"
+              ></svg-icon>
 						</span>
 						<format-message
 							v-if="room.lastMessage"
@@ -166,7 +170,18 @@ export default {
       }
 
 			return `${user.username} - ${content}`
-		}
+		},
+    isMessageCheckmarkVisible(room) {
+      return (
+        room.lastMessage &&
+        room.lastMessage.sender_id === this.currentUserId &&
+        (
+          room.lastMessage.saved ||
+          room.lastMessage.distributed ||
+          room.lastMessage.seen
+        )
+      )
+    }
 	}
 }
 </script>
