@@ -23,12 +23,12 @@
 						class="room-avatar"
 						:style="{ 'background-image': `url('${room.avatar}')` }"
 					></div>
-					<div>
-						<div class="room-name">{{ room.roomName }}</div>
-						<div v-if="typingUsers" class="room-info">
+					<div class="text-ellipsis">
+						<div class="room-name text-ellipsis">{{ room.roomName }}</div>
+						<div v-if="typingUsers" class="room-info text-ellipsis">
 							{{ typingUsers }} {{ textMessages.IS_TYPING }}
 						</div>
-						<div v-else class="room-info">
+						<div v-else class="room-info text-ellipsis">
 							{{ userStatus }}
 						</div>
 					</div>
@@ -631,16 +631,18 @@ export default {
 .room-wrapper {
 	display: flex;
 	align-items: center;
+	min-width: 0;
 	height: 100%;
 	width: 100%;
 	padding: 0 16px;
 }
 
 .info-wrapper {
-	width: 100%;
-	height: 100%;
 	display: flex;
 	align-items: center;
+	min-width: 0;
+	width: 100%;
+	height: 100%;
 }
 
 .toggle-button {
@@ -926,6 +928,8 @@ textarea {
 		.room-avatar {
 			height: 37px;
 			width: 37px;
+			min-height: 37px;
+			min-width: 37px;
 		}
 	}
 
