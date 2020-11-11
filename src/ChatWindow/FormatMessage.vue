@@ -1,10 +1,6 @@
 <template>
-	<div
-		:class="{
-			'text-ellipsis': singleLine
-		}"
-	>
-		<div v-if="textFormatting">
+	<div :class="{ 'text-ellipsis': singleLine }">
+		<div :class="{ 'text-ellipsis': singleLine }" v-if="textFormatting">
 			<template v-for="(message, i) in linkifiedMessage">
 				<component
 					:is="checkType(message, 'url') ? 'a' : 'span'"
