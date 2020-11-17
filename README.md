@@ -362,7 +362,8 @@ styles="{
     emojiReaction: '#828c94',
     document: '#1976d2',
     pencil: '#9e9e9e',
-    checkmark: '#0696c7',
+    checkmark: '#9e9e9e',
+    checkmarkSeen: '#0696c7',
     eye: '#fff',
     dropdownMessage: '#fff',
     dropdownMessageBackground: 'rgba(0, 0, 0, 0.25)',
@@ -389,6 +390,8 @@ rooms="[
       username: 'John Doe',
       timestamp: '10:20',
       date: 123242424,
+      saved: true,
+      distributed: false,
       seen: false,
       new: true
     },
@@ -428,7 +431,11 @@ rooms="[
 
 Message objects are rendered differently depending on their type. Currently, only text, emoji and file types are supported.<br><br>
 Each message object has a `sender_id` field which holds the id of the corresponding agent. If `sender_id` matches the `currentUserId` prop, specific UI and actions will be implemented.<br><br>
-Note: `username` will be displayed on each message of corresponding agents if at least 3 users are in the room.
+Note: `username` will be displayed on each message of corresponding agents if at least 3 users are in the room.<br><br>
+Message states:
+ - `saved: true` one checkmark
+ - `distributed: true` two checkmarks
+ - `seen: true` two blue checkmarks
 
 ```javascript
 messages="[
@@ -439,6 +446,8 @@ messages="[
     username: 'John Doe',
     date: '13 November',
     timestamp: '10:20',
+    saved: true,
+    distributed: true,
     seen: true,
     disable_actions: false,
     disable_reactions: false,

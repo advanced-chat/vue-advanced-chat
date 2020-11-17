@@ -123,9 +123,13 @@
 							<svg-icon name="pencil" />
 						</div>
 						<span>{{ message.timestamp }}</span>
-						<span v-if="isMessageSeen">
-							<svg-icon name="checkmark" class="icon-check" />
-						</span>
+						<span v-if="isCheckmarkVisible">
+							<svg-icon
+                :name="message.distributed ? 'double-checkmark' : 'checkmark'"
+                :param="message.seen ? 'seen' : ''"
+                class="icon-check"
+              ></svg-icon>
+            </span>
 					</div>
 
 					<div
@@ -335,13 +339,17 @@ export default {
 				this.message.file.url.indexOf('blob:http') !== -1 || this.imageLoading
 			)
 		},
-		isMessageSeen() {
-			return (
-				this.message.sender_id === this.currentUserId &&
-				this.message.seen &&
-				!this.message.deleted
-			)
-		},
+		isCheckmarkVisible() {
+		  return (
+		    this.message.sender_id === this.currentUserId &&
+        !this.message.deleted &&
+        (
+          this.message.saved ||
+          this.message.distributed ||
+          this.message.seen
+        )
+      )
+    },
 		replyUsername() {
 			const { sender_id } = this.message.replyMessage
 			const replyUser = this.roomUsers.find(user => user._id === sender_id)
