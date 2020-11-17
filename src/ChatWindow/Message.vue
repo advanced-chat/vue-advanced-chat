@@ -12,218 +12,242 @@
 			class="message-box"
 			:class="{ 'offset-current': message.sender_id === currentUserId }"
 		>
-			<div
-				class="message-container"
-				:class="{
-					'message-container-offset': messageOffset
-				}"
-			>
+			<slot name="message" v-bind="{ message }">
 				<div
-					ref="imageRef"
-					class="message-card"
+					class="message-container"
 					:class="{
-						'message-highlight': isMessageHover(message),
-						'message-current': message.sender_id === currentUserId,
-						'message-deleted': message.deleted
+						'message-container-offset': messageOffset
 					}"
-					@mouseover="onHoverMessage(message)"
-					@mouseleave="onLeaveMessage"
 				>
 					<div
-						v-if="roomUsers.length > 2 && message.sender_id !== currentUserId"
-						class="text-username"
+						ref="imageRef"
+						class="message-card"
 						:class="{
-							'username-reply': !message.deleted && message.replyMessage
+							'message-highlight': isMessageHover(message),
+							'message-current': message.sender_id === currentUserId,
+							'message-deleted': message.deleted
 						}"
+						@mouseover="onHoverMessage(message)"
+						@mouseleave="onLeaveMessage"
 					>
-						<span>{{ message.username }}</span>
-					</div>
-
-					<div
-						v-if="!message.deleted && message.replyMessage"
-						class="reply-message"
-					>
-						<div class="reply-username">{{ replyUsername }}</div>
-
-						<div class="image-reply-container" v-if="isImageReply">
-							<div
-								class="message-image message-image-reply"
-								:style="{
-									'background-image': `url('${message.replyMessage.file.url}')`
-								}"
-							></div>
+						<div
+							v-if="roomUsers.length > 2 && message.sender_id !== currentUserId"
+							class="text-username"
+							:class="{
+								'username-reply': !message.deleted && message.replyMessage
+							}"
+						>
+							<span>{{ message.username }}</span>
 						</div>
 
-						<div class="reply-content">{{ message.replyMessage.content }}</div>
-					</div>
-
-					<div v-if="message.deleted">
-						<svg-icon name="deleted" class="icon-deleted" />
-						<span>{{ textMessages.MESSAGE_DELETED }}</span>
-					</div>
-
-					<div v-else-if="!message.file">
-						<format-message
-							:content="this.message.content"
-							:textFormatting="textFormatting"
-						></format-message>
-					</div>
-
-					<div class="image-container" v-else-if="isImage">
-						<loader
-							:style="{ top: `${imageResponsive.loaderTop}px` }"
-							:show="isImageLoading"
-						></loader>
 						<div
-							class="message-image"
+							v-if="!message.deleted && message.replyMessage"
+							class="reply-message"
+						>
+							<div class="reply-username">{{ replyUsername }}</div>
+
+							<div class="image-reply-container" v-if="isImageReply">
+								<div
+									class="message-image message-image-reply"
+									:style="{
+										'background-image': `url('${message.replyMessage.file.url}')`
+									}"
+								></div>
+							</div>
+
+							<div class="reply-content">{{ message.replyMessage.content }}</div>
+						</div>
+
+						<div v-if="message.deleted">
+							<slot name="deleted-icon">
+								<svg-icon name="deleted" class="icon-deleted" />
+							</slot>
+							<span>{{ textMessages.MESSAGE_DELETED }}</span>
+						</div>
+
+						<div v-else-if="!message.file">
+							<format-message
+								:content="this.message.content"
+								:textFormatting="textFormatting"
+							>
+								<template v-slot:deleted-icon="data">
+									<slot name="deleted-icon" v-bind="data"></slot>
+								</template>
+							</format-message>
+						</div>
+
+						<div class="image-container" v-else-if="isImage">
+							<loader
+								:style="{ top: `${imageResponsive.loaderTop}px` }"
+								:show="isImageLoading"
+							></loader>
+							<div
+								class="message-image"
+								:class="{
+									'image-loading':
+										isImageLoading && message.sender_id === currentUserId
+								}"
+								:style="{
+									'background-image': `url('${message.file.url}')`,
+									'max-height': `${imageResponsive.maxHeight}px`
+								}"
+							>
+								<transition name="fade-image">
+									<div class="image-buttons" v-if="imageHover && !isImageLoading">
+										<div
+											class="svg-button button-view"
+											@click.stop="openFile('preview')"
+										>
+											<slot name="eye-icon">
+												<svg-icon name="eye" />
+											</slot>
+										</div>
+										<div
+											class="svg-button button-download"
+											@click.stop="openFile('download')"
+										>
+											<slot name="document-icon">
+												<svg-icon name="document" />
+											</slot>
+										</div>
+									</div>
+								</transition>
+							</div>
+							<format-message
+								:content="this.message.content"
+								:textFormatting="textFormatting"
+							></format-message>
+						</div>
+
+						<div v-else class="file-message">
+							<div
+								class="svg-button icon-file"
+								@click.stop="openFile('download')"
+							>
+								<slot name="document-icon">
+									<svg-icon name="document" />
+								</slot>
+							</div>
+							<span>{{ message.content }}</span>
+						</div>
+
+						<div class="text-timestamp">
+							<div class="icon-edited" v-if="message.edited && !message.deleted">
+								<slot name="pencil-icon">
+									<svg-icon name="pencil" />
+								</slot>
+							</div>
+							<span>{{ message.timestamp }}</span>
+							<span v-if="isCheckmarkVisible">
+								<slot name="checkmark-icon" v-bind="{ message }">
+									<svg-icon
+										:name="message.distributed ? 'double-checkmark' : 'checkmark'"
+										:param="message.seen ? 'seen' : ''"
+										class="icon-check"
+									></svg-icon>
+								</slot>
+							</span>
+						</div>
+
+						<div
+							class="options-container"
+							:class="{ 'options-image': isImage && !message.replyMessage }"
+							:style="{
+								width:
+									filteredMessageActions.length && showReactionEmojis
+										? '70px'
+										: '45px'
+							}"
+						>
+							<transition-group name="slide-left">
+								<div
+									key="1"
+									class="blur-container"
+									:class="{
+										'options-me': message.sender_id === currentUserId
+									}"
+									v-if="isMessageActions || isMessageReactions"
+								></div>
+
+								<div
+									ref="actionIcon"
+									key="2"
+									class="svg-button message-options"
+									v-if="isMessageActions"
+									@click="openOptions"
+								>
+									<slot name="dropdown-icon">
+										<svg-icon name="dropdown" param="message" />
+									</slot>
+								</div>
+
+								<emoji-picker
+									key="3"
+									class="message-reactions"
+									:style="{ right: isMessageActions ? '30px' : '5px' }"
+									v-if="isMessageReactions"
+									v-click-outside="closeEmoji"
+									:emojiOpened="emojiOpened"
+									:emojiReaction="true"
+									:roomFooterRef="roomFooterRef"
+									:positionRight="message.sender_id === currentUserId"
+									@addEmoji="sendMessageReaction"
+									@openEmoji="openEmoji"
+								>
+									<template v-slot:emoji-picker-icon>
+										<slot name="emoji-picker-reaction-icon"></slot>
+									</template>
+								</emoji-picker>
+							</transition-group>
+						</div>
+
+						<transition
+							:name="
+								message.sender_id === currentUserId ? 'slide-left' : 'slide-right'
+							"
+							v-if="filteredMessageActions.length"
+						>
+							<div
+								ref="menuOptions"
+								v-if="optionsOpened"
+								v-click-outside="closeOptions"
+								class="menu-options"
+								:class="{ 'menu-left': message.sender_id !== currentUserId }"
+								:style="{ top: `${menuOptionsTop}px` }"
+							>
+								<div class="menu-list">
+									<div
+										v-for="action in filteredMessageActions"
+										:key="action.name"
+									>
+										<div class="menu-item" @click="messageActionHandler(action)">
+											{{ action.title }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</transition>
+					</div>
+
+					<transition-group name="slide-left" v-if="!message.deleted">
+						<button
+							v-for="(reaction, key) in message.reactions"
+							v-show="reaction.length"
+							:key="key + 0"
+							class="button-reaction"
 							:class="{
-								'image-loading':
-									isImageLoading && message.sender_id === currentUserId
+								'reaction-me': reaction.indexOf(currentUserId) !== -1
 							}"
 							:style="{
-								'background-image': `url('${message.file.url}')`,
-								'max-height': `${imageResponsive.maxHeight}px`
+								float: message.sender_id === currentUserId ? 'right' : 'left'
 							}"
+							@click="sendMessageReaction({ name: key }, reaction)"
 						>
-							<transition name="fade-image">
-								<div class="image-buttons" v-if="imageHover && !isImageLoading">
-									<div
-										class="svg-button button-view"
-										@click.stop="openFile('preview')"
-									>
-										<svg-icon name="eye" />
-									</div>
-									<div
-										class="svg-button button-download"
-										@click.stop="openFile('download')"
-									>
-										<svg-icon name="document" />
-									</div>
-								</div>
-							</transition>
-						</div>
-						<format-message
-							:content="this.message.content"
-							:textFormatting="textFormatting"
-						></format-message>
-					</div>
-
-					<div v-else class="file-message">
-						<div
-							class="svg-button icon-file"
-							@click.stop="openFile('download')"
-						>
-							<svg-icon name="document" />
-						</div>
-						<span>{{ message.content }}</span>
-					</div>
-
-					<div class="text-timestamp">
-						<div class="icon-edited" v-if="message.edited && !message.deleted">
-							<svg-icon name="pencil" />
-						</div>
-						<span>{{ message.timestamp }}</span>
-						<span v-if="isCheckmarkVisible">
-							<svg-icon
-								:name="message.distributed ? 'double-checkmark' : 'checkmark'"
-								:param="message.seen ? 'seen' : ''"
-								class="icon-check"
-							></svg-icon>
-						</span>
-					</div>
-
-					<div
-						class="options-container"
-						:class="{ 'options-image': isImage && !message.replyMessage }"
-						:style="{
-							width:
-								filteredMessageActions.length && showReactionEmojis
-									? '70px'
-									: '45px'
-						}"
-					>
-						<transition-group name="slide-left">
-							<div
-								key="1"
-								class="blur-container"
-								:class="{
-									'options-me': message.sender_id === currentUserId
-								}"
-								v-if="isMessageActions || isMessageReactions"
-							></div>
-
-							<div
-								ref="actionIcon"
-								key="2"
-								class="svg-button message-options"
-								v-if="isMessageActions"
-								@click="openOptions"
-							>
-								<svg-icon name="dropdown" param="message" />
-							</div>
-
-							<emoji-picker
-								key="3"
-								class="message-reactions"
-								:style="{ right: isMessageActions ? '30px' : '5px' }"
-								v-if="isMessageReactions"
-								v-click-outside="closeEmoji"
-								:emojiOpened="emojiOpened"
-								:emojiReaction="true"
-								:roomFooterRef="roomFooterRef"
-								:positionRight="message.sender_id === currentUserId"
-								@addEmoji="sendMessageReaction"
-								@openEmoji="openEmoji"
-							></emoji-picker>
-						</transition-group>
-					</div>
-
-					<transition
-						:name="
-							message.sender_id === currentUserId ? 'slide-left' : 'slide-right'
-						"
-						v-if="filteredMessageActions.length"
-					>
-						<div
-							ref="menuOptions"
-							v-if="optionsOpened"
-							v-click-outside="closeOptions"
-							class="menu-options"
-							:class="{ 'menu-left': message.sender_id !== currentUserId }"
-							:style="{ top: `${menuOptionsTop}px` }"
-						>
-							<div class="menu-list">
-								<div
-									v-for="action in filteredMessageActions"
-									:key="action.name"
-								>
-									<div class="menu-item" @click="messageActionHandler(action)">
-										{{ action.title }}
-									</div>
-								</div>
-							</div>
-						</div>
-					</transition>
+							{{ getEmojiByName(key) }}<span>{{ reaction.length }}</span>
+						</button>
+					</transition-group>
 				</div>
-
-				<transition-group name="slide-left" v-if="!message.deleted">
-					<button
-						v-for="(reaction, key) in message.reactions"
-						v-show="reaction.length"
-						:key="key + 0"
-						class="button-reaction"
-						:class="{
-							'reaction-me': reaction.indexOf(currentUserId) !== -1
-						}"
-						:style="{
-							float: message.sender_id === currentUserId ? 'right' : 'left'
-						}"
-						@click="sendMessageReaction({ name: key }, reaction)"
-					>
-						{{ getEmojiByName(key) }}<span>{{ reaction.length }}</span>
-					</button>
-				</transition-group>
-			</div>
+			</slot>
 		</div>
 	</div>
 </template>

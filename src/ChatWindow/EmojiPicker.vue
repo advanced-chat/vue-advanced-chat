@@ -9,7 +9,9 @@
 				@click.stop="clickEvent"
 				@click="openEmoji"
 			>
-				<svg-icon name="emoji" :param="emojiReaction ? 'reaction' : ''" />
+				<slot name="emoji-picker-icon">
+					<svg-icon name="emoji" :param="emojiReaction ? 'reaction' : ''" />
+				</slot>
 			</div>
 			<div
 				slot="emoji-picker"
