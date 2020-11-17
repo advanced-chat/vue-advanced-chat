@@ -61,10 +61,14 @@
 					>
 						<span v-if="isMessageCheckmarkVisible(room)">
 							<svg-icon
-                :name="room.lastMessage.distributed ? 'double-checkmark' : 'checkmark'"
-                :param="room.lastMessage.seen ? 'seen' : ''"
-                class="icon-check"
-              ></svg-icon>
+								:name="
+									room.lastMessage.distributed
+										? 'double-checkmark'
+										: 'checkmark'
+								"
+								:param="room.lastMessage.seen ? 'seen' : ''"
+								class="icon-check"
+							></svg-icon>
 						</span>
 						<format-message
 							v-if="room.lastMessage"
@@ -163,25 +167,23 @@ export default {
 				user => user._id === room.lastMessage.sender_id
 			)
 
-      if (room.lastMessage.username) {
-        return `${room.lastMessage.username} - ${content}`
-      } else if (!user || user._id === this.currentUserId) {
-        return content
-      }
+			if (room.lastMessage.username) {
+				return `${room.lastMessage.username} - ${content}`
+			} else if (!user || user._id === this.currentUserId) {
+				return content
+			}
 
 			return `${user.username} - ${content}`
 		},
-    isMessageCheckmarkVisible(room) {
-      return (
-        room.lastMessage &&
-        room.lastMessage.sender_id === this.currentUserId &&
-        (
-          room.lastMessage.saved ||
-          room.lastMessage.distributed ||
-          room.lastMessage.seen
-        )
-      )
-    }
+		isMessageCheckmarkVisible(room) {
+			return (
+				room.lastMessage &&
+				room.lastMessage.sender_id === this.currentUserId &&
+				(room.lastMessage.saved ||
+					room.lastMessage.distributed ||
+					room.lastMessage.seen)
+			)
+		}
 	}
 }
 </script>

@@ -125,11 +125,11 @@
 						<span>{{ message.timestamp }}</span>
 						<span v-if="isCheckmarkVisible">
 							<svg-icon
-                :name="message.distributed ? 'double-checkmark' : 'checkmark'"
-                :param="message.seen ? 'seen' : ''"
-                class="icon-check"
-              ></svg-icon>
-            </span>
+								:name="message.distributed ? 'double-checkmark' : 'checkmark'"
+								:param="message.seen ? 'seen' : ''"
+								class="icon-check"
+							></svg-icon>
+						</span>
 					</div>
 
 					<div
@@ -340,16 +340,12 @@ export default {
 			)
 		},
 		isCheckmarkVisible() {
-		  return (
-		    this.message.sender_id === this.currentUserId &&
-        !this.message.deleted &&
-        (
-          this.message.saved ||
-          this.message.distributed ||
-          this.message.seen
-        )
-      )
-    },
+			return (
+				this.message.sender_id === this.currentUserId &&
+				!this.message.deleted &&
+				(this.message.saved || this.message.distributed || this.message.seen)
+			)
+		},
 		replyUsername() {
 			const { sender_id } = this.message.replyMessage
 			const replyUser = this.roomUsers.find(user => user._id === sender_id)
