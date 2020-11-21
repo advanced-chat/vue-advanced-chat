@@ -55,7 +55,9 @@
 								></div>
 							</div>
 
-							<div class="reply-content">{{ message.replyMessage.content }}</div>
+							<div class="reply-content">
+								{{ message.replyMessage.content }}
+							</div>
 						</div>
 
 						<div v-if="message.deleted">
@@ -93,7 +95,10 @@
 								}"
 							>
 								<transition name="fade-image">
-									<div class="image-buttons" v-if="imageHover && !isImageLoading">
+									<div
+										class="image-buttons"
+										v-if="imageHover && !isImageLoading"
+									>
 										<div
 											class="svg-button button-view"
 											@click.stop="openFile('preview')"
@@ -132,7 +137,10 @@
 						</div>
 
 						<div class="text-timestamp">
-							<div class="icon-edited" v-if="message.edited && !message.deleted">
+							<div
+								class="icon-edited"
+								v-if="message.edited && !message.deleted"
+							>
 								<slot name="pencil-icon">
 									<svg-icon name="pencil" />
 								</slot>
@@ -141,7 +149,9 @@
 							<span v-if="isCheckmarkVisible">
 								<slot name="checkmark-icon" v-bind="{ message }">
 									<svg-icon
-										:name="message.distributed ? 'double-checkmark' : 'checkmark'"
+										:name="
+											message.distributed ? 'double-checkmark' : 'checkmark'
+										"
 										:param="message.seen ? 'seen' : ''"
 										class="icon-check"
 									></svg-icon>
@@ -203,7 +213,9 @@
 
 						<transition
 							:name="
-								message.sender_id === currentUserId ? 'slide-left' : 'slide-right'
+								message.sender_id === currentUserId
+									? 'slide-left'
+									: 'slide-right'
 							"
 							v-if="filteredMessageActions.length"
 						>
@@ -220,7 +232,10 @@
 										v-for="action in filteredMessageActions"
 										:key="action.name"
 									>
-										<div class="menu-item" @click="messageActionHandler(action)">
+										<div
+											class="menu-item"
+											@click="messageActionHandler(action)"
+										>
 											{{ action.title }}
 										</div>
 									</div>

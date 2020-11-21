@@ -4,9 +4,7 @@
 		v-show="(isMobile && !showRoomsList) || !isMobile || singleRoom"
 	>
 		<div class="room-header app-border-b">
-			<slot
-				name="room-header"
-				v-bind="{ room, typingUsers, userStatus }">
+			<slot name="room-header" v-bind="{ room, typingUsers, userStatus }">
 				<div class="room-wrapper">
 					<div
 						v-if="!singleRoom"
@@ -119,7 +117,10 @@
 								@sendMessageReaction="sendMessageReaction"
 								@hideOptions="hideOptions = $event"
 							>
-								<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+								<template
+									v-for="(index, name) in $scopedSlots"
+									v-slot:[name]="data"
+								>
 									<slot :name="name" v-bind="data"></slot>
 								</template>
 							</message>

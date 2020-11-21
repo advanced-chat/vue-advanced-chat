@@ -21,9 +21,9 @@
 					target="_blank"
 				>
 					<slot name="deleted-icon" v-bind="{ deleted }">
-						<svg-icon v-if="deleted" name="deleted" class="icon-deleted" />{{
-						message.value
-					}}</slot>
+						<svg-icon v-if="deleted" name="deleted" class="icon-deleted" />
+						{{ message.value }}
+					</slot>
 				</component>
 			</template>
 		</div>

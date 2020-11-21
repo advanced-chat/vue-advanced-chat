@@ -64,7 +64,9 @@
 						</div>
 						<div
 							class="text-last"
-							:class="{ 'message-new': room.lastMessage && room.lastMessage.new }"
+							:class="{
+								'message-new': room.lastMessage && room.lastMessage.new
+							}"
 						>
 							<span v-if="isMessageCheckmarkVisible(room)">
 								<slot name="checkmark-icon" v-bind="room.lastMessage">
