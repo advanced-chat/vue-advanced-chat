@@ -418,7 +418,8 @@ rooms="[
 ]"
 ```
 
-- If you set a `date` to `lastMessage` property, your rooms will be ordered using this date value
+- If you set a `date` to `lastMessage` property, your rooms will be ordered using this date value.
+  `date` can be any sortable value, like a `string`, `datetime`, `timestamp`, etc.
 
 - For each room user, you can add the `status` property, which can hold the `state` and `last_changed` properties:
 
