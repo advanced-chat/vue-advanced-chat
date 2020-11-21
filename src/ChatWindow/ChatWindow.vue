@@ -15,8 +15,8 @@
 				@fetchRoom="fetchRoom"
 				@addRoom="addRoom"
 			>
-				<template v-slot:rooms-header>
-					<slot name="rooms-header"></slot>
+				<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+					<slot :name="name" v-bind="data"></slot>
 				</template>
 			</rooms-list>
 
@@ -52,6 +52,9 @@
 				@sendMessageReaction="sendMessageReaction"
 				@typingMessage="typingMessage"
 			>
+				<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+					<slot :name="name" v-bind="data"></slot>
+				</template>
 			</room>
 		</div>
 	</div>

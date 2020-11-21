@@ -8,7 +8,9 @@
 
 		<div class="box-search">
 			<div class="icon-search" v-if="rooms.length">
-				<svg-icon name="search" />
+				<slot name="search-icon">
+					<svg-icon name="search" />
+				</slot>
 			</div>
 			<input
 				type="search"
@@ -18,14 +20,18 @@
 				v-show="rooms.length"
 			/>
 			<div v-if="showAddRoom" class="svg-button add-icon" @click="addRoom">
-				<svg-icon name="add" />
+				<slot name="add-icon">
+					<svg-icon name="add" />
+				</slot>
 			</div>
 		</div>
 
 		<loader :show="loadingRooms"></loader>
 
 		<div v-if="!loadingRooms && !rooms.length" class="rooms-empty">
-			{{ textMessages.ROOMS_EMPTY }}
+			<slot name="rooms-empty">
+				{{ textMessages.ROOMS_EMPTY }}
+			</slot>
 		</div>
 
 		<div v-if="!loadingRooms" class="room-list">
@@ -36,53 +42,61 @@
 				:class="{ 'room-selected': selectedRoomId === room.roomId }"
 				@click="openRoom(room)"
 			>
-				<div
-					v-if="room.avatar"
-					class="room-avatar"
-					:style="{ 'background-image': `url('${room.avatar}')` }"
-				></div>
-				<div class="name-container text-ellipsis">
-					<div class="title-container">
-						<div
-							v-if="userStatus(room)"
-							class="state-circle"
-							:class="{ 'state-online': userStatus(room) === 'online' }"
-						></div>
-						<div class="room-name text-ellipsis">
-							{{ room.roomName }}
-						</div>
-						<div v-if="room.lastMessage" class="text-date">
-							{{ room.lastMessage.timestamp }}
-						</div>
-					</div>
+				<slot name="room-list-item" v-bind="{ room }">
 					<div
-						class="text-last"
-						:class="{ 'message-new': room.lastMessage && room.lastMessage.new }"
-					>
-						<span v-if="isMessageCheckmarkVisible(room)">
-							<svg-icon
-								:name="
-									room.lastMessage.distributed
-										? 'double-checkmark'
-										: 'checkmark'
-								"
-								:param="room.lastMessage.seen ? 'seen' : ''"
-								class="icon-check"
-							></svg-icon>
-						</span>
-						<format-message
-							v-if="room.lastMessage"
-							:content="getLastMessage(room)"
-							:deleted="!!room.lastMessage.deleted"
-							:formatLinks="false"
-							:textFormatting="textFormatting"
-							:singleLine="true"
-						></format-message>
-						<div v-if="room.unreadCount" class="room-badge">
-							{{ room.unreadCount }}
+						v-if="room.avatar"
+						class="room-avatar"
+						:style="{ 'background-image': `url('${room.avatar}')` }"
+					></div>
+					<div class="name-container text-ellipsis">
+						<div class="title-container">
+							<div
+								v-if="userStatus(room)"
+								class="state-circle"
+								:class="{ 'state-online': userStatus(room) === 'online' }"
+							></div>
+							<div class="room-name text-ellipsis">
+								{{ room.roomName }}
+							</div>
+							<div v-if="room.lastMessage" class="text-date">
+								{{ room.lastMessage.timestamp }}
+							</div>
+						</div>
+						<div
+							class="text-last"
+							:class="{ 'message-new': room.lastMessage && room.lastMessage.new }"
+						>
+							<span v-if="isMessageCheckmarkVisible(room)">
+								<slot name="checkmark-icon" v-bind="room.lastMessage">
+									<svg-icon
+										:name="
+											room.lastMessage.distributed
+												? 'double-checkmark'
+												: 'checkmark'
+										"
+										:param="room.lastMessage.seen ? 'seen' : ''"
+										class="icon-check"
+									></svg-icon>
+								</slot>
+							</span>
+							<format-message
+								v-if="room.lastMessage"
+								:content="getLastMessage(room)"
+								:deleted="!!room.lastMessage.deleted"
+								:formatLinks="false"
+								:textFormatting="textFormatting"
+								:singleLine="true"
+							>
+								<template v-slot:deleted-icon="data">
+									<slot name="deleted-icon" v-bind="data"></slot>
+								</template>
+							</format-message>
+							<div v-if="room.unreadCount" class="room-badge">
+								{{ room.unreadCount }}
+							</div>
 						</div>
 					</div>
-				</div>
+				</slot>
 			</div>
 		</div>
 	</div>

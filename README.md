@@ -528,9 +528,35 @@ messageActionHandler({ roomId, action, message }) {
 
 ## Named Slots
 
-| Slot         | Action                                                     |
-| ------------ | ---------------------------------------------------------- |
-| rooms-header | Add a template on top of rooms list (above the search bar) |
+| Slot                       | Action                                                      | Data                          | Overridden slots                                                                                     |
+|----------------------------|-------------------------------------------------------------|-------------------------------|------------------------------------------------------------------------------------------------------|
+| rooms-header               | Add a template on top of rooms list (above the search bar)  | -                             | -                                                                                                    |
+| room-list-item             | Replace the template of the room list items                 | rooms                         | -                                                                                                    |
+| room-header                | Replace the template of the room header                     | room, typingUsers, userStatus | room-options, menu-icon, toggle-icon                                                                 |
+| room-options               | Replace the template of the room options                    | -                             | menu-icon                                                                                            |
+| message                    | Replace the template of the message box                     | message                       | deleted-icon, eye-icon, document-icon, pencil-icon, checkmark-icon, dropdown-icon, emoji-picker-icon |
+| messages-empty             | Replace the empty message template                          | -                             | -                                                                                                    |
+| rooms-empty                | Replace the empty room template                             | -                             | -                                                                                                    |
+| menu-icon                  | Replace the room menu icon                                  | -                             | -                                                                                                    |
+| toggle-icon                | Replace the toggle room list icon                           | -                             | -                                                                                                    |
+| scroll-icon                | Replace the scroll to newest message icon                   | -                             | -                                                                                                    |
+| reply-close-icon           | Replace the reply close icon                                | -                             | -                                                                                                    |
+| image-close-icon           | Replace the image close icon                                | -                             | -                                                                                                    |
+| file-icon                  | Replace the file icon                                       | -                             | -                                                                                                    |
+| file-close-icon            | Replace the file close icon                                 | -                             | -                                                                                                    |
+| edit-close-icon            | Replace the edit close icon                                 | -                             | -                                                                                                    |
+| emoji-picker-icon          | Replace the emoji picker icon                               | -                             | -                                                                                                    |
+| emoji-picker-reaction-icon | Replace the emoji picker reaction icon (in the message box) | -                             | -                                                                                                    |
+| paperclip-icon             | Replace the paperclip icon                                  | -                             | -                                                                                                    |
+| send-icon                  | Replace the message send icon                               | -                             | -                                                                                                    |
+| eye-icon                   | Replace the eye icon (image message)                        | -                             | -                                                                                                    |
+| document-icon              | Replace the document icon                                   | -                             | -                                                                                                    |
+| pencil-icon                | Replace the pencil icon                                     | -                             | -                                                                                                    |
+| checkmark-icon             | Replace the checkmark icon                                  | message                       | -                                                                                                    |
+| deleted-icon               | Replace the deleted icon                                    | deleted                       | -                                                                                                    |
+| dropdown-icon              | Replace the dropdown icon                                   | -                             | -                                                                                                    |
+| search-icon                | Replace the search icon                                     | -                             | -                                                                                                    |
+| add-icon                   | Replace the add room icon                                   | -                             | -                                                                                                    |
 
 ## Using with Firestore
 

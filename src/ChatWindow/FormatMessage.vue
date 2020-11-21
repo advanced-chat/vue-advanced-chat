@@ -19,10 +19,12 @@
 					}"
 					:href="message.href"
 					target="_blank"
-					><svg-icon v-if="deleted" name="deleted" class="icon-deleted" />{{
-						message.value
-					}}</component
 				>
+					<slot name="deleted-icon" v-bind="{ deleted }">
+						<svg-icon v-if="deleted" name="deleted" class="icon-deleted" />{{
+						message.value
+					}}</slot>
+				</component>
 			</template>
 		</div>
 		<div v-else>{{ content }}</div>

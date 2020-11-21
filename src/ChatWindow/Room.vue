@@ -4,58 +4,68 @@
 		v-show="(isMobile && !showRoomsList) || !isMobile || singleRoom"
 	>
 		<div class="room-header app-border-b">
-			<div class="room-wrapper">
-				<div
-					v-if="!singleRoom"
-					class="svg-button toggle-button"
-					:class="{ 'rotate-icon': !showRoomsList && !isMobile }"
-					@click="$emit('toggleRoomsList')"
-				>
-					<svg-icon name="toggle" />
-				</div>
-				<div
-					class="info-wrapper"
-					:class="{ 'item-clickable': roomInfo }"
-					@click="$emit('roomInfo', room)"
-				>
+			<slot
+				name="room-header"
+				v-bind="{ room, typingUsers, userStatus }">
+				<div class="room-wrapper">
 					<div
-						v-if="room.avatar"
-						class="room-avatar"
-						:style="{ 'background-image': `url('${room.avatar}')` }"
-					></div>
-					<div class="text-ellipsis">
-						<div class="room-name text-ellipsis">{{ room.roomName }}</div>
-						<div v-if="typingUsers" class="room-info text-ellipsis">
-							{{ typingUsers }} {{ textMessages.IS_TYPING }}
-						</div>
-						<div v-else class="room-info text-ellipsis">
-							{{ userStatus }}
-						</div>
-					</div>
-				</div>
-				<div
-					class="svg-button room-options"
-					v-if="menuActions.length"
-					@click="menuOpened = !menuOpened"
-				>
-					<svg-icon name="menu" />
-				</div>
-				<transition name="slide-left" v-if="menuActions.length">
-					<div
-						v-if="menuOpened"
-						v-click-outside="closeMenu"
-						class="menu-options"
+						v-if="!singleRoom"
+						class="svg-button toggle-button"
+						:class="{ 'rotate-icon': !showRoomsList && !isMobile }"
+						@click="$emit('toggleRoomsList')"
 					>
-						<div class="menu-list">
-							<div v-for="action in menuActions" :key="action.name">
-								<div class="menu-item" @click="menuActionHandler(action)">
-									{{ action.title }}
-								</div>
+						<slot name="toggle-icon">
+							<svg-icon name="toggle" />
+						</slot>
+					</div>
+					<div
+						class="info-wrapper"
+						:class="{ 'item-clickable': roomInfo }"
+						@click="$emit('roomInfo', room)"
+					>
+						<div
+							v-if="room.avatar"
+							class="room-avatar"
+							:style="{ 'background-image': `url('${room.avatar}')` }"
+						></div>
+						<div class="text-ellipsis">
+							<div class="room-name text-ellipsis">{{ room.roomName }}</div>
+							<div v-if="typingUsers" class="room-info text-ellipsis">
+								{{ typingUsers }} {{ textMessages.IS_TYPING }}
+							</div>
+							<div v-else class="room-info text-ellipsis">
+								{{ userStatus }}
 							</div>
 						</div>
 					</div>
-				</transition>
-			</div>
+					<slot name="room-options">
+						<div
+							class="svg-button room-options"
+							v-if="menuActions.length"
+							@click="menuOpened = !menuOpened"
+						>
+							<slot name="menu-icon">
+								<svg-icon name="menu" />
+							</slot>
+						</div>
+						<transition name="slide-left" v-if="menuActions.length">
+							<div
+								v-if="menuOpened"
+								v-click-outside="closeMenu"
+								class="menu-options"
+							>
+								<div class="menu-list">
+									<div v-for="action in menuActions" :key="action.name">
+										<div class="menu-item" @click="menuActionHandler(action)">
+											{{ action.title }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</transition>
+					</slot>
+				</div>
+			</slot>
 		</div>
 		<div ref="scrollContainer" class="container-scroll">
 			<loader :show="loadingMessages"></loader>
@@ -63,7 +73,9 @@
 				<div :class="{ 'messages-hidden': loadingMessages }">
 					<transition name="fade-message">
 						<div class="text-started" v-if="showNoMessages">
-							{{ textMessages.MESSAGES_EMPTY }}
+							<slot name="messages-empty">
+								{{ textMessages.MESSAGES_EMPTY }}
+							</slot>
 						</div>
 						<div class="text-started" v-if="showMessagesStarted">
 							{{ textMessages.CONVERSATION_STARTED }} {{ messages[0].date }}
@@ -106,7 +118,11 @@
 								@addNewMessage="addNewMessage"
 								@sendMessageReaction="sendMessageReaction"
 								@hideOptions="hideOptions = $event"
-							></message>
+							>
+								<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+									<slot :name="name" v-bind="data"></slot>
+								</template>
+							</message>
 						</div>
 					</transition-group>
 				</div>
@@ -115,7 +131,9 @@
 		<div v-if="!loadingMessages">
 			<transition name="bounce">
 				<div class="icon-scroll" v-if="scrollIcon" @click="scrollToBottom">
-					<svg-icon name="dropdown" param="scroll" />
+					<slot name="scroll-icon">
+						<svg-icon name="dropdown" param="scroll" />
+					</slot>
 				</div>
 			</transition>
 		</div>
@@ -136,7 +154,9 @@
 
 					<div class="icon-reply">
 						<div class="svg-button" @click="resetMessage">
-							<svg-icon name="close-outline" />
+							<slot name="reply-close-icon">
+								<svg-icon name="close-outline" />
+							</slot>
 						</div>
 					</div>
 				</div>
@@ -145,7 +165,9 @@
 			<div class="box-footer">
 				<div class="image-container" v-if="imageFile">
 					<div class="svg-button icon-image" @click="resetImageFile">
-						<svg-icon name="close" param="image" />
+						<slot name="image-close-icon">
+							<svg-icon name="close" param="image" />
+						</slot>
 					</div>
 					<div class="image-file">
 						<img ref="imageFile" :src="imageFile" />
@@ -158,11 +180,15 @@
 					:class="{ 'file-container-edit': editedMessage._id }"
 				>
 					<div class="icon-file">
-						<svg-icon name="file" />
+						<slot name="file-icon">
+							<svg-icon name="file" />
+						</slot>
 					</div>
 					<div class="file-message">{{ message }}</div>
 					<div class="svg-button icon-remove" @click="resetMessage(null, true)">
-						<svg-icon name="close" />
+						<slot name="file-close-icon">
+							<svg-icon name="close" />
+						</slot>
 					</div>
 				</div>
 
@@ -191,7 +217,9 @@
 						v-if="editedMessage._id"
 						@click="resetMessage"
 					>
-						<svg-icon name="close-outline" />
+						<slot name="edit-close-icon">
+							<svg-icon name="close-outline" />
+						</slot>
 					</div>
 
 					<emoji-picker
@@ -200,10 +228,16 @@
 						:positionTop="true"
 						@addEmoji="addEmoji"
 						@openEmoji="emojiOpened = $event"
-					></emoji-picker>
+					>
+						<template v-slot:emoji-picker-icon>
+							<slot name="emoji-picker-icon"></slot>
+						</template>
+					</emoji-picker>
 
 					<div v-if="showFiles" class="svg-button" @click="launchFilePicker">
-						<svg-icon name="paperclip" />
+						<slot name="paperclip-icon">
+							<svg-icon name="paperclip" />
+						</slot>
 					</div>
 
 					<input
@@ -219,7 +253,9 @@
 						class="svg-button"
 						:class="{ 'send-disabled': inputDisabled }"
 					>
-						<svg-icon name="send" :param="inputDisabled ? 'disabled' : ''" />
+						<slot name="send-icon">
+							<svg-icon name="send" :param="inputDisabled ? 'disabled' : ''" />
+						</slot>
 					</div>
 				</div>
 			</div>
