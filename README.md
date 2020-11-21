@@ -433,9 +433,10 @@ Message objects are rendered differently depending on their type. Currently, onl
 Each message object has a `sender_id` field which holds the id of the corresponding agent. If `sender_id` matches the `currentUserId` prop, specific UI and actions will be implemented.<br><br>
 Note: `username` will be displayed on each message of corresponding agents if at least 3 users are in the room.<br><br>
 Message states:
- - `saved: true` one checkmark
- - `distributed: true` two checkmarks
- - `seen: true` two blue checkmarks
+
+- `saved: true` one checkmark
+- `distributed: true` two checkmarks
+- `seen: true` two blue checkmarks
 
 ```javascript
 messages="[
@@ -528,8 +529,16 @@ messageActionHandler({ roomId, action, message }) {
 
 ## Named Slots
 
+Example:
+
+```html
+<template v-slot:rooms-header>
+	This is the new rooms header
+</template>
+```
+
 | Slot                       | Action                                                      | Data                          | Overridden slots                                                                                     |
-|----------------------------|-------------------------------------------------------------|-------------------------------|------------------------------------------------------------------------------------------------------|
+| -------------------------- | ----------------------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------- |
 | rooms-header               | Add a template on top of rooms list (above the search bar)  | -                             | -                                                                                                    |
 | room-list-item             | Replace the template of the room list items                 | rooms                         | -                                                                                                    |
 | room-header                | Replace the template of the room header                     | room, typingUsers, userStatus | room-options, menu-icon, toggle-icon                                                                 |
