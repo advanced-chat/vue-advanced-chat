@@ -383,6 +383,7 @@ rooms="[
   {
     roomId: 1,
     roomName: 'Room 1',
+    avatar: 'assets/imgs/people.png',
     unreadCount: 4,
     lastMessage: {
       content: 'Last message received',
@@ -399,6 +400,7 @@ rooms="[
       {
         _id: 1234,
         username: 'John Doe',
+        avatar: 'assets/imgs/doe.png',
         status: {
           state: 'online',
           last_changed: 'today, 14:30'
@@ -407,6 +409,7 @@ rooms="[
       {
         _id: 4321,
         username: 'John Snow',
+        avatar: 'assets/imgs/snow.png',
         status: {
           state: 'offline',
           last_changed: '14 July, 20:00'
