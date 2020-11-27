@@ -102,6 +102,7 @@ export default {
 			end: null,
 			roomsListeners: [],
 			listeners: [],
+			typingMessageCache: '',
 			disableForm: false,
 			addNewRoom: null,
 			addRoomUsername: '',
@@ -484,6 +485,16 @@ export default {
 		},
 
 		typingMessage({ message, roomId }) {
+			if (message?.length > 1) {
+				return (this.typingMessageCache = message)
+			}
+
+			if (message?.length === 1 && this.typingMessageCache) {
+				return (this.typingMessageCache = message)
+			}
+
+			this.typingMessageCache = message
+
 			const dbAction = message
 				? firebase.firestore.FieldValue.arrayUnion(this.currentUserId)
 				: firebase.firestore.FieldValue.arrayRemove(this.currentUserId)
