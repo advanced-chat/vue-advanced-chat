@@ -56,7 +56,6 @@
 			:messagesLoaded="messagesLoaded"
 			:menuActions="menuActions"
 			:roomMessage="roomMessage"
-			:showSendIcon="false"
 			@fetchMessages="fetchMessages"
 			@sendMessage="sendMessage"
 			@editMessage="editMessage"
@@ -67,7 +66,6 @@
 			@messageActionHandler="messageActionHandler"
 			@sendMessageReaction="sendMessageReaction"
 			@typingMessage="typingMessage"
-			@textareaActionHandler="textareaActionHandler"
 		>
 		</chat-window>
 	</div>
