@@ -169,7 +169,11 @@
 			</transition>
 
 			<div class="box-footer">
-				<div class="image-container" v-if="imageFile">
+				<div
+					class="image-container"
+					:class="{ 'image-container-right': textareaAction }"
+					v-if="imageFile"
+				>
 					<div class="svg-button icon-image" @click="resetImageFile">
 						<slot name="image-close-icon">
 							<svg-icon name="close" param="image" />
@@ -194,6 +198,14 @@
 					<div class="svg-button icon-remove" @click="resetMessage(null, true)">
 						<slot name="file-close-icon">
 							<svg-icon name="close" />
+						</slot>
+					</div>
+				</div>
+
+				<div class="icon-textarea-left" v-if="textareaAction">
+					<div class="svg-button" @click="textareaActionHandler">
+						<slot name="custom-action-icon">
+							<svg-icon name="microphone" />
 						</slot>
 					</div>
 				</div>
@@ -315,7 +327,8 @@ export default {
 		showNewMessagesDivider: { type: Boolean, required: true },
 		textFormatting: { type: Boolean, required: true },
 		loadingRooms: { type: Boolean, required: true },
-		roomInfo: { type: Function }
+		roomInfo: { type: Function },
+		textareaAction: { type: Function }
 	},
 
 	data() {
@@ -381,6 +394,9 @@ export default {
 					setTimeout(() => this.onChangeInput(), 0)
 				}
 			}
+		},
+		roomMessage(val) {
+			if (val) this.message = this.roomMessage
 		},
 		messages(newVal, oldVal) {
 			newVal.forEach(message => {
@@ -643,6 +659,9 @@ export default {
 		},
 		closeMenu() {
 			this.menuOpened = false
+		},
+		textareaActionHandler() {
+			this.$emit('textareaActionHandler', this.message)
 		}
 	}
 }
@@ -847,6 +866,16 @@ textarea {
 	box-shadow: inset 0px 0px 0px 1px var(--chat-border-color-input-selected);
 }
 
+.icon-textarea-left {
+	display: flex;
+	margin: 12px 5px 0 0;
+
+	svg,
+	.wrapper {
+		margin: 0 7px;
+	}
+}
+
 .icon-textarea {
 	display: flex;
 	margin: 12px 0 0 5px;
@@ -862,6 +891,10 @@ textarea {
 	max-width: 25%;
 	left: 16px;
 	top: 18px;
+}
+
+.image-container-right {
+	left: calc(16px + 43px);
 }
 
 .image-file {
@@ -997,6 +1030,15 @@ textarea {
 		}
 	}
 
+	.icon-textarea-left {
+		margin: 6px 5px 0 0;
+
+		svg,
+		.wrapper {
+			margin: 0 5px;
+		}
+	}
+
 	.icon-textarea {
 		margin: 6px 0 0 5px;
 
@@ -1009,6 +1051,10 @@ textarea {
 	.image-container {
 		top: 10px;
 		left: 10px;
+	}
+
+	.image-container-right {
+		left: calc(10px + 39px);
 	}
 
 	.image-file img {

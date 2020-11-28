@@ -40,6 +40,7 @@
 				:isMobile="isMobile"
 				:loadingRooms="loadingRooms"
 				:roomInfo="$listeners.roomInfo"
+				:textareaAction="$listeners.textareaActionHandler"
 				@toggleRoomsList="toggleRoomsList"
 				@roomInfo="roomInfo"
 				@fetchMessages="fetchMessages"
@@ -51,6 +52,7 @@
 				@messageActionHandler="messageActionHandler"
 				@sendMessageReaction="sendMessageReaction"
 				@typingMessage="typingMessage"
+				@textareaActionHandler="textareaActionHandler"
 			>
 				<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
 					<slot :name="name" v-bind="data"></slot>
@@ -251,6 +253,12 @@ export default {
 		},
 		typingMessage(message) {
 			this.$emit('typingMessage', {
+				message,
+				roomId: this.room.roomId
+			})
+		},
+		textareaActionHandler(message) {
+			this.$emit('textareaActionHandler', {
 				message,
 				roomId: this.room.roomId
 			})

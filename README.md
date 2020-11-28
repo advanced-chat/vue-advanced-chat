@@ -543,22 +543,22 @@ messages="[
 
 ## Events API
 
-| Event                    | Params                                                          | Fires when                                            |
-| ------------------------ | --------------------------------------------------------------- | ----------------------------------------------------- |
-| fetchMessages (1)        | `{ room, options }`                                             | A user has scrolled on top to load more messages      |
-| sendMessage              | `{ roomId, content, file (4), replyMessage (5) }`               | A user has sent a message                             |
-| editMessage              | `{ roomId, messageId, newContent, file (4), replyMessage (5) }` | A user has edited a message                           |
-| deleteMessage            | `{ roomId, messageId }`                                         | A user has deleted a message                          |
-| openFile                 | `{ message, action }`                                           | A user has clicked to view or download a file         |
-| addRoom                  | -                                                               | A user clicks on the plus icon next to searchbar      |
-| menuActionHandler (2)    | `{ roomId, action }`                                            | A user clicks on the vertical dots icon inside a room |
-| messageActionHandler (3) | `{ roomId, action, message }`                                   | A user clicks on the dropdown icon inside a message   |
-| sendMessageReaction      | `{ roomId, messageId, reaction, remove }`                       | A user clicks on the emoji icon inside a message      |
-| typingMessage            | `{ message, roomId }`                                           | A user is typing a message                            |
-| roomInfo                 | `{ room }`                                                      | A user has clicked the room header bar                |
+| Event                     | Params                                                          | Fires when                                            |
+| ------------------------- | --------------------------------------------------------------- | ----------------------------------------------------- |
+| fetchMessages (1)         | `{ room, options }`                                             | A user has scrolled on top to load more messages      |
+| sendMessage               | `{ roomId, content, file (5), replyMessage (6) }`               | A user has sent a message                             |
+| editMessage               | `{ roomId, messageId, newContent, file (5), replyMessage (6) }` | A user has edited a message                           |
+| deleteMessage             | `{ roomId, messageId }`                                         | A user has deleted a message                          |
+| openFile                  | `{ message, action }`                                           | A user has clicked to view or download a file         |
+| addRoom                   | -                                                               | A user clicks on the plus icon next to searchbar      |
+| menuActionHandler (2)     | `{ roomId, action }`                                            | A user clicks on the vertical dots icon inside a room |
+| messageActionHandler (3)  | `{ roomId, action, message }`                                   | A user clicks on the dropdown icon inside a message   |
+| sendMessageReaction       | `{ roomId, messageId, reaction, remove }`                       | A user clicks on the emoji icon inside a message      |
+| roomInfo                  | `{ room }`                                                      | A user clicks the room header bar                     |
+| textareaActionHandler (4) | `{ roomId, message }`                                           | A user clicks on the left icon inside the footer      |
+| typingMessage             | `{ message, roomId }`                                           | A user is typing a message                            |
 
 (1) `fetchMessages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`
-
 (1) `fetchMessages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top
 
 (2) `menuActionHandler` is the result of the `menuActions` prop.<br>
@@ -593,9 +593,12 @@ messageActionHandler({ roomId, action, message }) {
 }
 ```
 
-(4) All file params contain: `{ blob, localURL, name, size, type }`
+(4) `textareaActionHandler` can be used to add an extra icon on the left of the textarea.<br>
+By default, adding this event will automatically display a microphone icon. In that case, you can implement a speech recognition system and update the textarea value by using `roomMessage` prop.
 
-(5) `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked
+(5) All file params contain: `{ blob, localURL, name, size, type }`
+
+(6) `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked
 
 ## Named Slots
 
