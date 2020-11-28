@@ -56,6 +56,7 @@
 			:messagesLoaded="messagesLoaded"
 			:menuActions="menuActions"
 			:roomMessage="roomMessage"
+			:showSendIcon="false"
 			@fetchMessages="fetchMessages"
 			@sendMessage="sendMessage"
 			@editMessage="editMessage"

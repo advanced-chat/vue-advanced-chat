@@ -177,6 +177,7 @@ fetchMessages({ room, options }) {
 | menuActions (6)            | Array            | -        | [ ]     |
 | messageActions (7)         | Array            | -        | (4)     |
 | showAddRoom                | Boolean          | -        | true    |
+| showSendIcon               | Boolean          | -        | true    |
 | showFiles                  | Boolean          | -        | true    |
 | showEmojis                 | Boolean          | -        | true    |
 | showReactionEmojis         | Boolean          | -        | true    |

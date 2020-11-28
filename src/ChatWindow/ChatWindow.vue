@@ -29,6 +29,7 @@
 				:messagesLoaded="messagesLoaded"
 				:menuActions="menuActions"
 				:messageActions="messageActions"
+				:showSendIcon="showSendIcon"
 				:showFiles="showFiles"
 				:showEmojis="showEmojis"
 				:showReactionEmojis="showReactionEmojis"
@@ -100,6 +101,7 @@ export default {
 			]
 		},
 		showAddRoom: { type: Boolean, default: true },
+		showSendIcon: { type: Boolean, default: true },
 		showFiles: { type: Boolean, default: true },
 		showEmojis: { type: Boolean, default: true },
 		showReactionEmojis: { type: Boolean, default: true },

@@ -267,6 +267,7 @@
 					/>
 
 					<div
+						v-if="showSendIcon"
 						@click="sendMessage"
 						class="svg-button"
 						:class="{ 'send-disabled': inputDisabled }"
@@ -321,6 +322,7 @@ export default {
 		messagesLoaded: { type: Boolean, required: true },
 		menuActions: { type: Array, required: true },
 		messageActions: { type: Array, required: true },
+		showSendIcon: { type: Boolean, required: true },
 		showFiles: { type: Boolean, required: true },
 		showEmojis: { type: Boolean, required: true },
 		showReactionEmojis: { type: Boolean, required: true },
