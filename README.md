@@ -148,6 +148,20 @@ this.rooms[roomIndex] = room
 this.rooms.push(room)
 ```
 
+- Follow the UI loading pattern by updating `messagesLoaded` prop every time a new room is fetched
+
+```javascript
+fetchMessages({ room, options }) {
+  this.messagesLoaded = false
+  this.messages = []
+
+  // use timeout to imitate async server fetched data
+  setTimeout(() => {
+    this.messagesLoaded = true
+  }, 0)
+}
+```
+
 ## Props API
 
 | Prop                       | Type             | Required | Default |
