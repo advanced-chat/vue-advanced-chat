@@ -103,6 +103,49 @@ You can import it as a custom component:
 </script>
 ```
 
+### Important notes
+
+`vue-advanced-chat` component is performance oriented, hence you have to follow specific rules to make it work properly.
+
+- Use array assignement instead of `push` method
+
+```javascript
+// DO THIS
+const rooms = []
+for (let i = 0; i < res.length; i++) {
+	rooms.push(res)
+}
+this.rooms = rooms
+
+// DON'T DO THIS
+for (let i = 0; i < res.length; i++) {
+	this.rooms.push(res)
+}
+```
+
+```javascript
+// DO THIS
+this.rooms[i].typingUsers = [...this.rooms[i].typingUsers, typingUserId]
+
+// DON'T DO THIS
+this.rooms[i].typingUsers.push(typingUserId)
+```
+
+- To add or replace an item inside an array, use `$set` method or spread operator
+
+```javascript
+// DO THIS
+this.$set(this.rooms, roomIndex, room)
+// OR THIS
+this.rooms[roomIndex] = room
+this.rooms = [...this.rooms]
+
+// DON'T DO THIS
+this.rooms[roomIndex] = room
+// OR THIS
+this.rooms.push(room)
+```
+
 ## Props API
 
 | Prop                       | Type             | Required | Default |
