@@ -391,7 +391,7 @@ input {
 	height: 15px;
 	width: 15px;
 	vertical-align: middle;
-	margin: -3px 1px 0 -1px;
+	margin: -3px 1px 0 -2px;
 	fill: var(--chat-room-color-message);
 }
 

@@ -207,10 +207,6 @@ export default {
 	fill: var(--chat-icon-color-dropdown-scroll);
 }
 
-#chat-icon-microphone {
-	fill: var(--chat-icon-color-microphone);
-}
-
 #chat-icon-microphone-off {
 	fill: var(--chat-icon-color-microphone-off);
 }

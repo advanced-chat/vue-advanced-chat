@@ -178,7 +178,7 @@
 							<svg-icon name="microphone-off" />
 						</slot>
 						<slot v-else name="microphone-icon">
-							<svg-icon name="microphone" />
+							<svg-icon name="microphone" class="icon-microphone" />
 						</slot>
 					</div>
 				</div>
@@ -943,6 +943,10 @@ textarea {
 	.wrapper {
 		margin: 0 7px;
 	}
+}
+
+.icon-microphone {
+	fill: var(--chat-icon-color-microphone);
 }
 
 .image-container {
