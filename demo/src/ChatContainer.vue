@@ -394,7 +394,10 @@ export default {
 					type: file.type,
 					url: file.localUrl
 				}
-				if (file.audio) message.file.audio = true
+				if (file.audio) {
+					message.file.audio = true
+					message.file.duration = file.duration
+				}
 			}
 
 			if (replyMessage) {
@@ -429,7 +432,10 @@ export default {
 					type: file.type,
 					url: file.url || file.localUrl
 				}
-				if (file.audio) message.file.audio = true
+				if (file.audio) {
+					message.file.audio = true
+					message.file.duration = file.duration
+				}
 			} else {
 				newMessage.file = deleteDbField
 			}

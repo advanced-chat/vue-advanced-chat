@@ -92,6 +92,7 @@
 								<slot name="microphone-icon">
 									<svg-icon name="microphone" class="icon-microphone" />
 								</slot>
+								{{ formattedDuration(room.lastMessage.file.duration) }}
 							</div>
 							<format-message
 								v-else-if="room.lastMessage"
@@ -202,6 +203,10 @@ export default {
 			}
 
 			return `${user.username} - ${content}`
+		},
+		formattedDuration(s) {
+			s = Math.round(s)
+			return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s
 		},
 		isMessageCheckmarkVisible(room) {
 			return (

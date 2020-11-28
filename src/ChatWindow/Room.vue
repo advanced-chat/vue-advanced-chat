@@ -541,22 +541,48 @@ export default {
 				this.recorder.onerror = event => reject(event.name)
 			})
 
-			stopped.then(() => {
+			stopped.then(async () => {
 				stream.getTracks().forEach(track => track.stop())
 
-				const recordedBlob = new Blob(this.recordedChunks, {
+				const blob = new Blob(this.recordedChunks, {
 					type: 'audio/ogg; codecs="opus"'
 				})
 
+				const duration = await this.getBlobDuration(blob)
+
 				this.file = {
-					blob: recordedBlob,
+					blob: blob,
 					name: 'audio',
-					size: recordedBlob.size,
-					type: recordedBlob.type,
+					size: blob.size,
+					duration: duration,
+					type: blob.type,
 					audio: true,
-					localUrl: URL.createObjectURL(recordedBlob)
+					localUrl: URL.createObjectURL(blob)
 				}
 			})
+		},
+		getBlobDuration(blob) {
+			const tempVideoEl = document.createElement('video')
+
+			const durationP = new Promise(resolve =>
+				tempVideoEl.addEventListener('loadedmetadata', () => {
+					if (tempVideoEl.duration === Infinity) {
+						tempVideoEl.currentTime = Number.MAX_SAFE_INTEGER
+						tempVideoEl.ontimeupdate = () => {
+							tempVideoEl.ontimeupdate = null
+							resolve(tempVideoEl.duration)
+							tempVideoEl.currentTime = 0
+						}
+					} else resolve(tempVideoEl.duration)
+				})
+			)
+
+			tempVideoEl.src =
+				typeof blob === 'string' || blob instanceof String
+					? blob
+					: window.URL.createObjectURL(blob)
+
+			return durationP
 		},
 		addNewMessage(message) {
 			this.newMessages.push(message)

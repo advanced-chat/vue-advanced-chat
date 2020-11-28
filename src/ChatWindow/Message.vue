@@ -132,7 +132,7 @@
 						<div v-else-if="message.file.audio" class="audio-message">
 							<div id="player">
 								<audio controls v-if="message.file.audio">
-									<source :src="message.file.url" type="audio/mpeg" />
+									<source :src="message.file.url" />
 								</audio>
 							</div>
 						</div>

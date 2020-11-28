@@ -532,6 +532,8 @@ messages="[
       name: 'My File',
       size: 67351,
       type: 'png',
+      audio: true,
+      duration: 14.4,
       url: 'https://firebasestorage.googleapis.com/...'
     },
     reactions: {
