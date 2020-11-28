@@ -26,15 +26,20 @@
 							class="room-avatar"
 							:style="{ 'background-image': `url('${room.avatar}')` }"
 						></div>
-						<div class="text-ellipsis">
-							<div class="room-name text-ellipsis">{{ room.roomName }}</div>
-							<div v-if="typingUsers" class="room-info text-ellipsis">
-								{{ typingUsers }} {{ textMessages.IS_TYPING }}
+						<slot
+							name="room-header-info"
+							v-bind="{ room, typingUsers, userStatus }"
+						>
+							<div class="text-ellipsis">
+								<div class="room-name text-ellipsis">{{ room.roomName }}</div>
+								<div v-if="typingUsers" class="room-info text-ellipsis">
+									{{ typingUsers }} {{ textMessages.IS_TYPING }}
+								</div>
+								<div v-else class="room-info text-ellipsis">
+									{{ userStatus }}
+								</div>
 							</div>
-							<div v-else class="room-info text-ellipsis">
-								{{ userStatus }}
-							</div>
-						</div>
+						</slot>
 					</div>
 					<slot name="room-options">
 						<div
