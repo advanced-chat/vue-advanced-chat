@@ -536,8 +536,8 @@ messageActionHandler({ roomId, action, message }) {
 Example:
 
 ```html
-<template v-slot:rooms-header>
-	This is the new rooms header
+<template v-slot:room-header="{ room, userStatus }">
+	{{ room.roomName }} - {{ userStatus }}
 </template>
 ```
 
