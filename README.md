@@ -555,7 +555,7 @@ messages="[
 | menuActionHandler (2)     | `{ roomId, action }`                                            | A user clicks on the vertical dots icon inside a room |
 | messageActionHandler (3)  | `{ roomId, action, message }`                                   | A user clicks on the dropdown icon inside a message   |
 | sendMessageReaction       | `{ roomId, messageId, reaction, remove }`                       | A user clicks on the emoji icon inside a message      |
-| roomInfo                  | `{ room }`                                                      | A user clicks the room header bar                     |
+| roomInfo                  | `room`                                                          | A user clicks the room header bar                     |
 | textareaActionHandler (4) | `{ roomId, message }`                                           | A user clicks on the left icon inside the footer      |
 | typingMessage             | `{ message, roomId }`                                           | A user is typing a message                            |
 
