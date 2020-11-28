@@ -609,7 +609,7 @@ messageActionHandler({ roomId, action, message }) {
 
 Example:
 
-```html
+```javascript
 <template v-slot:room-header="{ room, userStatus }">
 	{{ room.roomName }} - {{ userStatus }}
 </template>
