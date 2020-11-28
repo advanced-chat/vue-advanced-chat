@@ -136,13 +136,15 @@ this.rooms[i].typingUsers.push(typingUserId)
 ```javascript
 // DO THIS
 this.$set(this.rooms, roomIndex, room)
-// OR THIS
+
+// OR DO THIS
 this.rooms[roomIndex] = room
 this.rooms = [...this.rooms]
 
 // DON'T DO THIS
 this.rooms[roomIndex] = room
-// OR THIS
+
+// AND DON'T DO THIS
 this.rooms.push(room)
 ```
 
