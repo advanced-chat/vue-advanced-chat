@@ -55,6 +55,7 @@
 			:messages="messages"
 			:messagesLoaded="messagesLoaded"
 			:menuActions="menuActions"
+			:roomMessage="roomMessage"
 			@fetchMessages="fetchMessages"
 			@sendMessage="sendMessage"
 			@editMessage="editMessage"
@@ -65,6 +66,7 @@
 			@messageActionHandler="messageActionHandler"
 			@sendMessageReaction="sendMessageReaction"
 			@typingMessage="typingMessage"
+			@textareaActionHandler="textareaActionHandler"
 		>
 		</chat-window>
 	</div>
@@ -98,6 +100,7 @@ export default {
 			selectedRoom: null,
 			messages: [],
 			messagesLoaded: false,
+			roomMessage: '',
 			start: null,
 			end: null,
 			roomsListeners: [],
@@ -470,6 +473,10 @@ export default {
 
 		messageActionHandler() {
 			// do something
+		},
+
+		textareaActionHandler({ message, roomId }) {
+			this.roomMessage = 'Implement your own speech recognition system!'
 		},
 
 		async sendMessageReaction({ reaction, remove, messageId, roomId }) {
