@@ -15,7 +15,7 @@
 - Realtime chat messaging
 - Customizeable
 - Backend agnostic
-- Images, files & emojis
+- Images, files, voice messages & emojis
 - Edit messages
 - Reply to other messages
 - UI elements for seen, new, deleted, typing and system messages
