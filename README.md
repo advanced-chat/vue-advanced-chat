@@ -561,7 +561,7 @@ messages="[
 | messageActionHandler (3)  | `{ roomId, action, message }`                                   | A user clicks on the dropdown icon inside a message   |
 | sendMessageReaction       | `{ roomId, messageId, reaction, remove }`                       | A user clicks on the emoji icon inside a message      |
 | roomInfo                  | `room`                                                          | A user clicks the room header bar                     |
-| textareaActionHandler (4) | `{ roomId, message }`                                           | A user clicks on the left icon inside the footer      |
+| textareaActionHandler (4) | `{ roomId, message }`                                           | A user clicks on custom icon inside the footer        |
 | typingMessage             | `{ message, roomId }`                                           | A user is typing a message                            |
 
 (1) `fetchMessages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`
@@ -599,8 +599,7 @@ messageActionHandler({ roomId, action, message }) {
 }
 ```
 
-(4) `textareaActionHandler` can be used to add an extra icon on the left of the textarea.<br>
-By default, adding this event will automatically display a microphone icon. In that case, you can implement a speech recognition system and update the textarea value by using `roomMessage` prop.
+(4) `textareaActionHandler` can be used to add an extra icon on the right of the textarea, and recieve an event when clicking it.
 
 (5) All file params contain: `{ blob, localURL, name, size, type }`
 

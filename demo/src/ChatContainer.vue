@@ -477,7 +477,7 @@ export default {
 		},
 
 		textareaActionHandler({ message, roomId }) {
-			this.roomMessage = 'Implement your own speech recognition system!'
+			this.roomMessage = 'Implement your own action!'
 		},
 
 		async sendMessageReaction({ reaction, remove, messageId, roomId }) {

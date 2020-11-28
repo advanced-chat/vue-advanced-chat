@@ -169,7 +169,7 @@
 			</transition>
 
 			<div class="box-footer">
-				<div class="icon-textarea-left" v-if="showAudio">
+				<div class="icon-textarea-left" v-if="showAudio && !imageFile">
 					<div class="svg-button" @click="recordAudio">
 						<slot
 							v-if="recorder.state === 'recording'"
@@ -183,11 +183,7 @@
 					</div>
 				</div>
 
-				<div
-					class="image-container"
-					:class="{ 'image-container-right': textareaAction }"
-					v-if="imageFile"
-				>
+				<div class="image-container" v-if="imageFile">
 					<div class="svg-button icon-image" @click="resetImageFile">
 						<slot name="image-close-icon">
 							<svg-icon name="close" param="image" />
@@ -208,7 +204,8 @@
 							<svg-icon name="file" />
 						</slot>
 					</div>
-					<div class="file-message">{{ message }}</div>
+					<div class="file-message" v-if="file && file.audio">audio</div>
+					<div class="file-message" v-else>{{ message }}</div>
 					<div class="svg-button icon-remove" @click="resetMessage(null, true)">
 						<slot name="file-close-icon">
 							<svg-icon name="close" />
@@ -261,6 +258,16 @@
 					<div v-if="showFiles" class="svg-button" @click="launchFilePicker">
 						<slot name="paperclip-icon">
 							<svg-icon name="paperclip" />
+						</slot>
+					</div>
+
+					<div
+						v-if="textareaAction"
+						@click="textareaActionHandler"
+						class="svg-button"
+					>
+						<slot name="custom-action-icon">
+							<svg-icon name="deleted" />
 						</slot>
 					</div>
 
@@ -549,8 +556,6 @@ export default {
 					audio: true,
 					localUrl: URL.createObjectURL(recordedBlob)
 				}
-
-				this.message = 'audio'
 			})
 		},
 		addNewMessage(message) {
@@ -947,10 +952,6 @@ textarea {
 	top: 18px;
 }
 
-.image-container-right {
-	left: calc(16px + 43px);
-}
-
 .image-file {
 	display: flex;
 	justify-content: center;
@@ -1105,10 +1106,6 @@ textarea {
 	.image-container {
 		top: 10px;
 		left: 10px;
-	}
-
-	.image-container-right {
-		left: calc(10px + 39px);
 	}
 
 	.image-file img {
