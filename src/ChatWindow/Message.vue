@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div v-if="showDate" class="card-date">
+		<div v-if="showDate" class="card-info card-date">
 			{{ message.date }}
 		</div>
 
@@ -8,7 +8,12 @@
 			{{ textMessages.NEW_MESSAGES }}
 		</div>
 
+		<div v-if="message.system" class="card-info card-system">
+			{{ message.content }}
+		</div>
+
 		<div
+			v-else
 			class="message-box"
 			:class="{ 'offset-current': message.sender_id === currentUserId }"
 		>
@@ -525,22 +530,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.card-date {
+.card-info {
 	border-radius: 4px;
-	max-width: 150px;
 	text-align: center;
 	margin: 10px auto;
 	font-size: 12px;
-	text-transform: uppercase;
 	padding: 4px;
-	color: var(--chat-message-color-date);
-	background: var(--chat-message-bg-color-date);
 	display: block;
 	overflow-wrap: break-word;
 	position: relative;
 	white-space: normal;
 	box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.1),
 		0 1px 1px -1px rgba(0, 0, 0, 0.11), 0 1px 2px -1px rgba(0, 0, 0, 0.11);
+}
+
+.card-date {
+	max-width: 150px;
+	font-weight: 500;
+	text-transform: uppercase;
+	color: var(--chat-message-color-date);
+	background: var(--chat-message-bg-color-date);
+}
+
+.card-system {
+	max-width: 250px;
+	padding: 8px 4px;
+	color: var(--chat-message-color-system);
+	background: var(--chat-message-bg-color-system);
 }
 
 .line-new {

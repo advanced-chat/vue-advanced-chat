@@ -18,7 +18,7 @@
 - Images, files & emojis
 - Edit messages
 - Reply to other messages
-- UI elements for seen, new, deleted and typing messages
+- UI elements for seen, new, deleted, typing and system messages
 - Text formatting - bold, italic, strikethrough, code
 - Online / Offline status
 - Flexible options
@@ -113,13 +113,13 @@ You can import it as a custom component:
 // DO THIS
 const rooms = []
 for (let i = 0; i < res.length; i++) {
-  rooms.push(res)
+	rooms.push(res)
 }
 this.rooms = rooms
 
 // DON'T DO THIS
 for (let i = 0; i < res.length; i++) {
-  this.rooms.push(res)
+	this.rooms.push(res)
 }
 ```
 
@@ -367,6 +367,8 @@ styles="{
     colorTimestamp: '#828c94',
     backgroundDate: '#e5effa',
     colorDate: '#505a62',
+    backgroundSystem: '#e5effa',
+    colorSystem: '#505a62',
     backgroundReply: 'rgba(0, 0, 0, 0.08)',
     colorReplyUsername: '#0a0a0a',
     colorReply: '#6e6e6e',
@@ -494,7 +496,11 @@ rooms="[
 
 Message objects are rendered differently depending on their type. Currently, only text, emoji and file types are supported.<br><br>
 Each message object has a `sender_id` field which holds the id of the corresponding agent. If `sender_id` matches the `currentUserId` prop, specific UI and actions will be implemented.<br><br>
-Note: `username` will be displayed on each message of corresponding agents if at least 3 users are in the room.<br><br>
+Notes:
+
+- `username` will be displayed on each message of corresponding agents if at least 3 users are in the room
+- `system` is used to show messages with a specific centered display
+
 Message states:
 
 - `saved: true` one checkmark
@@ -510,6 +516,7 @@ messages="[
     username: 'John Doe',
     date: '13 November',
     timestamp: '10:20',
+    system: false,
     saved: true,
     distributed: true,
     seen: true,
