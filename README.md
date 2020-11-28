@@ -265,12 +265,16 @@ messageActions="[
 
 ```javascript
 textMessages="{
+  ROOMS_EMPTY: 'No rooms',
   NEW_MESSAGES: 'Nouveaux messages',
   MESSAGE_DELETED: 'Ce message a été supprimé',
   MESSAGES_EMPTY: 'Aucun message',
   CONVERSATION_STARTED: 'La conversation a commencée le :',
   TYPE_MESSAGE: 'Taper votre message',
   SEARCH: 'Rechercher'
+	IS_ONLINE: 'est en ligne',
+	LAST_SEEN: 'dernière connexion ',
+	IS_TYPING: 'est en train d'écrire...'
 }"
 ```
 
