@@ -354,8 +354,8 @@ export default {
 			})
 		}
 		this.imageResponsive = {
-			maxHeight: this.$refs.imageRef.clientWidth - 18,
-			loaderTop: this.$refs.imageRef.clientWidth / 2
+			maxHeight: this.$refs.imageRef?.clientWidth - 18,
+			loaderTop: this.$refs.imageRef?.clientWidth / 2
 		}
 	},
 
