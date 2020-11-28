@@ -169,6 +169,20 @@
 			</transition>
 
 			<div class="box-footer">
+				<div class="icon-textarea-left" v-if="showAudio">
+					<div class="svg-button" @click="recordAudio">
+						<slot
+							v-if="recorder.state === 'recording'"
+							name="microphone-off-icon"
+						>
+							<svg-icon name="microphone-off" />
+						</slot>
+						<slot v-else name="microphone-icon">
+							<svg-icon name="microphone" />
+						</slot>
+					</div>
+				</div>
+
 				<div
 					class="image-container"
 					:class="{ 'image-container-right': textareaAction }"
@@ -198,14 +212,6 @@
 					<div class="svg-button icon-remove" @click="resetMessage(null, true)">
 						<slot name="file-close-icon">
 							<svg-icon name="close" />
-						</slot>
-					</div>
-				</div>
-
-				<div class="icon-textarea-left" v-if="textareaAction">
-					<div class="svg-button" @click="textareaActionHandler">
-						<slot name="custom-action-icon">
-							<svg-icon name="microphone" />
 						</slot>
 					</div>
 				</div>
@@ -324,6 +330,7 @@ export default {
 		messageActions: { type: Array, required: true },
 		showSendIcon: { type: Boolean, required: true },
 		showFiles: { type: Boolean, required: true },
+		showAudio: { type: Boolean, required: true },
 		showEmojis: { type: Boolean, required: true },
 		showReactionEmojis: { type: Boolean, required: true },
 		showNewMessagesDivider: { type: Boolean, required: true },
@@ -349,7 +356,10 @@ export default {
 			emojisList: {},
 			hideOptions: true,
 			scrollIcon: false,
-			newMessages: []
+			newMessages: [],
+			recorderStream: {},
+			recorder: {},
+			recordedChunks: []
 		}
 	},
 
@@ -501,6 +511,48 @@ export default {
 	},
 
 	methods: {
+		async recordAudio() {
+			if (this.recorder.state === 'recording') {
+				this.recorder.stop()
+			} else {
+				this.recordedChunk = await this.startRecording()
+			}
+		},
+		async startRecording() {
+			const stream = await navigator.mediaDevices.getUserMedia({
+				audio: true,
+				video: false
+			})
+
+			this.recorder = new MediaRecorder(stream)
+
+			this.recorder.ondataavailable = e => this.recordedChunks.push(e.data)
+			this.recorder.start()
+
+			const stopped = new Promise((resolve, reject) => {
+				this.recorder.onstop = resolve
+				this.recorder.onerror = event => reject(event.name)
+			})
+
+			stopped.then(() => {
+				stream.getTracks().forEach(track => track.stop())
+
+				const recordedBlob = new Blob(this.recordedChunks, {
+					type: 'audio/ogg; codecs="opus"'
+				})
+
+				this.file = {
+					blob: recordedBlob,
+					name: 'audio',
+					size: recordedBlob.size,
+					type: recordedBlob.type,
+					audio: true,
+					localUrl: URL.createObjectURL(recordedBlob)
+				}
+
+				this.message = 'audio'
+			})
+		},
 		addNewMessage(message) {
 			this.newMessages.push(message)
 		},

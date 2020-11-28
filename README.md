@@ -179,6 +179,7 @@ fetchMessages({ room, options }) {
 | showAddRoom                | Boolean          | -        | true    |
 | showSendIcon               | Boolean          | -        | true    |
 | showFiles                  | Boolean          | -        | true    |
+| showAudio                  | Boolean          | -        | true    |
 | showEmojis                 | Boolean          | -        | true    |
 | showReactionEmojis         | Boolean          | -        | true    |
 | showNewMessagesDivider (8) | Boolean          | -        | true    |
@@ -642,6 +643,8 @@ Example:
 | pencil-icon                | Replace the pencil icon                                     | -                             | -                                                                                                    |
 | checkmark-icon             | Replace the checkmark icon                                  | message                       | -                                                                                                    |
 | deleted-icon               | Replace the deleted icon                                    | deleted                       | -                                                                                                    |
+| microphone-icon            | Replace the microphone icon                                 |                               | -                                                                                                    |
+| microphone-off-icon        | Replace the microphone-off icon                             |                               | -                                                                                                    |
 | dropdown-icon              | Replace the dropdown icon                                   | -                             | -                                                                                                    |
 | search-icon                | Replace the search icon                                     | -                             | -                                                                                                    |
 | add-icon                   | Replace the add room icon                                   | -                             | -                                                                                                    |

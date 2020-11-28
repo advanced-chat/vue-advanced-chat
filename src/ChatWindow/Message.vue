@@ -129,6 +129,12 @@
 							></format-message>
 						</div>
 
+						<div v-else-if="message.file.audio" class="audio-message">
+							<audio controls v-if="message.file.audio">
+								<source :src="message.file.url" />
+							</audio>
+						</div>
+
 						<div v-else class="file-message">
 							<div
 								class="svg-button icon-file"
@@ -713,6 +719,10 @@ export default {
 	font-size: 10px;
 	color: var(--chat-message-color-timestamp);
 	text-align: right;
+}
+
+.audio-message {
+	margin-top: 3px;
 }
 
 .file-message {

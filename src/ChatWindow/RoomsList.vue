@@ -81,8 +81,20 @@
 									></svg-icon>
 								</slot>
 							</span>
+							<div
+								v-if="
+									room.lastMessage &&
+										room.lastMessage.file &&
+										room.lastMessage.file.audio
+								"
+								class="text-ellipsis"
+							>
+								<slot name="microphone-icon">
+									<svg-icon name="microphone" class="icon-microphone" />
+								</slot>
+							</div>
 							<format-message
-								v-if="room.lastMessage"
+								v-else-if="room.lastMessage"
 								:content="getLastMessage(room)"
 								:deleted="!!room.lastMessage.deleted"
 								:formatLinks="false"
@@ -373,6 +385,14 @@ input {
 
 .state-online {
 	background-color: var(--chat-room-color-online);
+}
+
+.icon-microphone {
+	height: 15px;
+	width: 15px;
+	vertical-align: middle;
+	margin: -3px 1px 0 -1px;
+	fill: var(--chat-room-color-message);
 }
 
 .room-badge {

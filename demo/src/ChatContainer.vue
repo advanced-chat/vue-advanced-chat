@@ -394,6 +394,7 @@ export default {
 					type: file.type,
 					url: file.localUrl
 				}
+				if (file.audio) message.file.audio = true
 			}
 
 			if (replyMessage) {
@@ -428,6 +429,7 @@ export default {
 					type: file.type,
 					url: file.url || file.localUrl
 				}
+				if (file.audio) message.file.audio = true
 			} else {
 				newMessage.file = deleteDbField
 			}
