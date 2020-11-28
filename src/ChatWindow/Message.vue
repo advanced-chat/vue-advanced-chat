@@ -130,9 +130,11 @@
 						</div>
 
 						<div v-else-if="message.file.audio" class="audio-message">
-							<audio controls v-if="message.file.audio">
-								<source :src="message.file.url" />
-							</audio>
+							<div id="player">
+								<audio controls v-if="message.file.audio">
+									<source :src="message.file.url" type="audio/mpeg" />
+								</audio>
+							</div>
 						</div>
 
 						<div v-else class="file-message">
@@ -719,6 +721,35 @@ export default {
 	font-size: 10px;
 	color: var(--chat-message-color-timestamp);
 	text-align: right;
+}
+
+.selector:not(*:root),
+#player {
+	width: 250px;
+	overflow: hidden;
+	border-top-right-radius: 1em;
+	border-bottom-right-radius: 2.5em 1em;
+
+	audio {
+		height: 40px;
+
+		&::-webkit-media-controls-panel {
+			height: 40px;
+		}
+
+		&::-webkit-media-controls-mute-button {
+			display: none;
+		}
+
+		&::-webkit-media-controls-timeline {
+			min-width: 103px;
+			max-width: 142px;
+		}
+
+		&:focus {
+			outline: none;
+		}
+	}
 }
 
 .audio-message {
