@@ -75,6 +75,7 @@
 import {
 	firebase,
 	roomsRef,
+	messagesRef,
 	usersRef,
 	filesRef,
 	deleteDbField
@@ -134,9 +135,6 @@ export default {
 	},
 
 	methods: {
-		messagesRef(roomId) {
-			return roomsRef.doc(roomId).collection('messages')
-		},
 		resetRooms() {
 			this.loadingRooms = true
 			this.loadingLastMessageByRoom = 0
@@ -235,7 +233,7 @@ export default {
 		},
 
 		listenLastMessage(room, index) {
-			const listener = this.messagesRef(room.roomId)
+			const listener = messagesRef(room.roomId)
 				.orderBy('timestamp', 'desc')
 				.limit(1)
 				.onSnapshot(messages => {
@@ -289,7 +287,7 @@ export default {
 
 			if (this.end && !this.start) return (this.messagesLoaded = true)
 
-			let ref = this.messagesRef(room.roomId)
+			let ref = messagesRef(room.roomId)
 
 			let query = ref.orderBy('timestamp', 'desc').limit(this.perPage)
 
@@ -346,7 +344,7 @@ export default {
 				message.data().sender_id !== this.currentUserId &&
 				(!message.data().seen || !message.data().seen[this.currentUserId])
 			) {
-				this.messagesRef(room.roomId)
+				messagesRef(room.roomId)
 					.doc(message.id)
 					.update({
 						[`seen.${this.currentUserId}`]: new Date()
@@ -406,7 +404,7 @@ export default {
 				}
 			}
 
-			const { id } = await this.messagesRef(roomId).add(message)
+			const { id } = await messagesRef(roomId).add(message)
 
 			if (file) this.uploadFile({ file, messageId: id, roomId })
 		},
@@ -434,13 +432,13 @@ export default {
 				newMessage.file = deleteDbField
 			}
 
-			await this.messagesRef(roomId)
+			await messagesRef(roomId)
 				.doc(messageId)
 				.update(newMessage)
 		},
 
 		async deleteMessage({ messageId, roomId }) {
-			await this.messagesRef(roomId)
+			await messagesRef(roomId)
 				.doc(messageId)
 				.update({ deleted: new Date() })
 		},
@@ -454,7 +452,7 @@ export default {
 			await uploadFileRef.put(file.blob, { contentType: file.type })
 			const url = await uploadFileRef.getDownloadURL()
 
-			await this.messagesRef(roomId)
+			await messagesRef(roomId)
 				.doc(messageId)
 				.update({
 					['file.url']: url
@@ -485,7 +483,7 @@ export default {
 				? firebase.firestore.FieldValue.arrayRemove(this.currentUserId)
 				: firebase.firestore.FieldValue.arrayUnion(this.currentUserId)
 
-			await this.messagesRef(roomId)
+			await messagesRef(roomId)
 				.doc(messageId)
 				.update({
 					[`reactions.${reaction.name}`]: dbAction
@@ -646,7 +644,7 @@ export default {
 		},
 
 		async deleteRoom(roomId) {
-			const ref = this.messagesRef(roomId)
+			const ref = messagesRef(roomId)
 
 			ref.get().then(res => {
 				if (res.empty) return
