@@ -122,7 +122,7 @@ export default {
 				{ name: 'deleteRoom', title: 'Delete Room' }
 			],
 			styles: { container: { borderRadius: '4px' } }
-			// dbRequestCount: 0
+			// ,dbRequestCount: 0
 		}
 	},
 
@@ -664,7 +664,7 @@ export default {
 			this.removeUserId = ''
 		}
 
-		// incrementDbCounter(type, size) {
+		// ,incrementDbCounter(type, size) {
 		// 	size = size || 1
 		// 	this.dbRequestCount += size
 		// 	console.log(type, size)
