@@ -50,8 +50,8 @@
 			:theme="theme"
 			:styles="styles"
 			:currentUserId="currentUserId"
-			:rooms="rooms"
-			:loadingRooms="loadingRooms || loadingLastMessageByRoom !== rooms.length"
+			:rooms="loadingRooms ? [] : rooms"
+			:loadingRooms="loadingRooms"
 			:messages="messages"
 			:messagesLoaded="messagesLoaded"
 			:menuActions="menuActions"
@@ -228,7 +228,6 @@ export default {
 
 			this.rooms = this.rooms.concat(formattedRooms)
 			this.rooms.map((room, index) => this.listenLastMessage(room, index))
-			this.loadingRooms = false
 
 			this.listenUsersOnlineStatus()
 			this.listenRoomsTypingUsers(query)
@@ -243,10 +242,17 @@ export default {
 					// this.incrementDbCounter('Listen Last Room Message', messages.size)
 					messages.forEach(message => {
 						const lastMessage = this.formatLastMessage(message.data())
-						this.rooms[index].lastMessage = lastMessage
+						this.$set(this.rooms, index, {
+							...this.rooms[index],
+							lastMessage
+						})
 					})
 					if (this.loadingLastMessageByRoom < this.rooms.length) {
 						this.loadingLastMessageByRoom++
+
+						if (this.loadingLastMessageByRoom === this.rooms.length) {
+							this.loadingRooms = false
+						}
 					}
 				})
 
