@@ -519,12 +519,13 @@ export default {
 		},
 
 		async listenRoomsTypingUsers(query) {
-			query.onSnapshot(rooms => {
+			const listener = query.onSnapshot(rooms => {
 				rooms.forEach(room => {
 					const foundRoom = this.rooms.find(r => r.roomId === room.id)
 					if (foundRoom) foundRoom.typingUsers = room.data().typingUsers
 				})
 			})
+			this.roomsListeners.push(listener)
 		},
 
 		updateUserOnlineStatus() {
@@ -560,11 +561,11 @@ export default {
 		listenUsersOnlineStatus() {
 			this.rooms.map(room => {
 				room.users.map(user => {
-					firebase
+					const listener = firebase
 						.database()
 						.ref('/status/' + user._id)
 						.on('value', snapshot => {
-							if (!snapshot.val()) return
+							if (!snapshot || !snapshot.val()) return
 
 							const timestampFormat = isSameDay(
 								new Date(snapshot.val().last_changed),
@@ -589,6 +590,7 @@ export default {
 
 							this.$set(this.rooms, roomIndex, room)
 						})
+					this.roomsListeners.push(listener)
 				})
 			})
 		},
