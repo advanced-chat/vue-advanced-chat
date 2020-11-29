@@ -65,7 +65,8 @@
 						<div
 							class="text-last"
 							:class="{
-								'message-new': room.lastMessage && room.lastMessage.new
+								'message-new':
+									room.lastMessage && room.lastMessage.new && !typingUsers(room)
 							}"
 						>
 							<span v-if="isMessageCheckmarkVisible(room)">
@@ -106,6 +107,12 @@
 									<slot name="deleted-icon" v-bind="data"></slot>
 								</template>
 							</format-message>
+							<div
+								v-if="!room.lastMessage && typingUsers(room)"
+								class="text-ellipsis"
+							>
+								{{ typingUsers(room) }}
+							</div>
 							<div v-if="room.unreadCount" class="room-badge">
 								{{ room.unreadCount }}
 							</div>
