@@ -7,17 +7,17 @@
 		<slot name="rooms-header"></slot>
 
 		<div class="box-search">
-			<div class="icon-search" v-if="rooms.length">
+			<div class="icon-search" v-if="!loadingRooms && rooms.length">
 				<slot name="search-icon">
 					<svg-icon name="search" />
 				</slot>
 			</div>
 			<input
+				v-if="!loadingRooms && rooms.length"
 				type="search"
 				:placeholder="textMessages.SEARCH"
 				autocomplete="off"
 				@input="searchRoom"
-				v-show="rooms.length"
 			/>
 			<div v-if="showAddRoom" class="svg-button add-icon" @click="addRoom">
 				<slot name="add-icon">
