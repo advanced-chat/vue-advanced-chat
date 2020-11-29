@@ -113,13 +113,13 @@ You can import it as a custom component:
 // DO THIS
 const rooms = []
 for (let i = 0; i < res.length; i++) {
-	rooms.push(res)
+  rooms.push(res)
 }
 this.rooms = rooms
 
 // DON'T DO THIS
 for (let i = 0; i < res.length; i++) {
-	this.rooms.push(res)
+  this.rooms.push(res)
 }
 ```
 
