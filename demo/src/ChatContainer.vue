@@ -240,10 +240,8 @@ export default {
 					// this.incrementDbCounter('Listen Last Room Message', messages.size)
 					messages.forEach(message => {
 						const lastMessage = this.formatLastMessage(message.data())
-						this.$set(this.rooms, index, {
-							...this.rooms[index],
-							lastMessage
-						})
+						this.rooms[index].lastMessage = lastMessage
+						this.rooms = [...this.rooms]
 					})
 					if (this.loadingLastMessageByRoom < this.rooms.length) {
 						this.loadingLastMessageByRoom++
