@@ -273,9 +273,9 @@ textMessages="{
   CONVERSATION_STARTED: 'La conversation a commencée le :',
   TYPE_MESSAGE: 'Taper votre message',
   SEARCH: 'Rechercher'
-	IS_ONLINE: 'est en ligne',
-	LAST_SEEN: 'dernière connexion ',
-	IS_TYPING: 'est en train d'écrire...'
+  IS_ONLINE: 'est en ligne',
+  LAST_SEEN: 'dernière connexion ',
+  IS_TYPING: 'est en train d'écrire...'
 }"
 ```
 
@@ -613,7 +613,7 @@ Example:
 
 ```javascript
 <template v-slot:room-header="{ room, userStatus }">
-	{{ room.roomName }} - {{ userStatus }}
+  {{ room.roomName }} - {{ userStatus }}
 </template>
 ```
 
@@ -644,8 +644,8 @@ Example:
 | pencil-icon                | Replace the pencil icon                                     | -                             | -                                                                                                    |
 | checkmark-icon             | Replace the checkmark icon                                  | message                       | -                                                                                                    |
 | deleted-icon               | Replace the deleted icon                                    | deleted                       | -                                                                                                    |
-| microphone-icon            | Replace the microphone icon                                 |                               | -                                                                                                    |
-| microphone-off-icon        | Replace the microphone-off icon                             |                               | -                                                                                                    |
+| microphone-icon            | Replace the microphone icon                                 | -                              | -                                                                                                    |
+| microphone-off-icon        | Replace the microphone-off icon                             | -                              | -                                                                                                    |
 | dropdown-icon              | Replace the dropdown icon                                   | -                             | -                                                                                                    |
 | search-icon                | Replace the search icon                                     | -                             | -                                                                                                    |
 | add-icon                   | Replace the add room icon                                   | -                             | -                                                                                                    |
