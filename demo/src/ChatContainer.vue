@@ -169,11 +169,13 @@ export default {
 			rooms.forEach(room => {
 				room.data().users.forEach(userId => {
 					const foundUser = this.allUsers.find(user => user._id === userId)
-					if (!foundUser) roomUserIds.push(userId)
+					if (!foundUser && roomUserIds.indexOf(userId) === -1) {
+						roomUserIds.push(userId)
+					}
 				})
 			})
 
-			// this.incrementDbCounter('Fetch Room Users', this.roomUserIds.length)
+			// this.incrementDbCounter('Fetch Room Users', roomUserIds.length)
 			const rawUsers = []
 			roomUserIds.forEach(userId => {
 				const promise = usersRef
