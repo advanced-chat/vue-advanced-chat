@@ -33,7 +33,7 @@
 							<div class="text-ellipsis">
 								<div class="room-name text-ellipsis">{{ room.roomName }}</div>
 								<div v-if="typingUsers" class="room-info text-ellipsis">
-									{{ typingUsers }} {{ textMessages.IS_TYPING }}
+									{{ typingUsers }}
 								</div>
 								<div v-else class="room-info text-ellipsis">
 									{{ userStatus }}
@@ -307,6 +307,7 @@ import EmojiPicker from './EmojiPicker'
 
 const { messagesValid } = require('../utils/roomValidation')
 const { detectMobile } = require('../utils/mobileDetection')
+import typingText from '../utils/typingText'
 
 export default {
 	name: 'room',
@@ -487,16 +488,7 @@ export default {
 			return this.isMessageEmpty()
 		},
 		typingUsers() {
-			if (!this.room.typingUsers || !this.room.typingUsers.length) return
-
-			const typingUsers = this.room.users.filter(user => {
-				if (user._id === this.currentUserId) return
-				if (this.room.typingUsers.indexOf(user._id) === -1) return
-				if (user.status && user.status.state === 'offline') return
-				return true
-			})
-
-			return typingUsers.map(user => user.username).join(', ')
+			return typingText(this.room, this.currentUserId, this.textMessages)
 		},
 		userStatus() {
 			if (!this.room.users || this.room.users.length !== 2) return

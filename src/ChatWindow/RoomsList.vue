@@ -97,7 +97,7 @@
 							<format-message
 								v-else-if="room.lastMessage"
 								:content="getLastMessage(room)"
-								:deleted="!!room.lastMessage.deleted"
+								:deleted="!!room.lastMessage.deleted && !typingUsers(room)"
 								:formatLinks="false"
 								:textFormatting="textFormatting"
 								:singleLine="true"
@@ -123,6 +123,7 @@ import SvgIcon from './SvgIcon'
 import FormatMessage from './FormatMessage'
 
 import filteredUsers from '../utils/filterItems'
+import typingText from '../utils/typingText'
 
 export default {
 	name: 'rooms-list',
@@ -183,7 +184,13 @@ export default {
 
 			if (user.status) return user.status.state
 		},
+		typingUsers(room) {
+			return typingText(room, this.currentUserId, this.textMessages)
+		},
 		getLastMessage(room) {
+			const isTyping = this.typingUsers(room)
+			if (isTyping) return isTyping
+
 			const content = room.lastMessage.deleted
 				? this.textMessages.MESSAGE_DELETED
 				: room.lastMessage.content
@@ -210,7 +217,9 @@ export default {
 		},
 		isMessageCheckmarkVisible(room) {
 			return (
+				!this.typingUsers(room) &&
 				room.lastMessage &&
+				!room.lastMessage.deleted &&
 				room.lastMessage.sender_id === this.currentUserId &&
 				(room.lastMessage.saved ||
 					room.lastMessage.distributed ||
