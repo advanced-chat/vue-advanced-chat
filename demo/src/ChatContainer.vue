@@ -120,6 +120,7 @@ export default {
 				{ name: 'deleteRoom', title: 'Delete Room' }
 			],
 			styles: { container: { borderRadius: '4px' } }
+			// dbRequestCount: 0
 		}
 	},
 
@@ -163,12 +164,14 @@ export default {
 			)
 
 			const rooms = await query.get()
+			// this.incrementDbCounter('Fetch Rooms', rooms.size)
 
 			const roomList = []
 			const rawRoomUsers = []
 			const rawMessages = []
 
 			rooms.forEach(room => {
+				// this.incrementDbCounter('Fetch Room Users', room.data().users.length)
 				roomList[room.id] = { ...room.data(), users: [] }
 
 				const rawUsers = []
@@ -229,6 +232,7 @@ export default {
 
 			this.listenUsersOnlineStatus()
 			this.listenRoomsTypingUsers(query)
+			// setTimeout(() => console.log('TOTAL', this.dbRequestCount), 2000)
 		},
 
 		listenLastMessage(room, index) {
@@ -236,6 +240,7 @@ export default {
 				.orderBy('timestamp', 'desc')
 				.limit(1)
 				.onSnapshot(messages => {
+					// this.incrementDbCounter('Listen Last Room Message', messages.size)
 					messages.forEach(message => {
 						const lastMessage = this.formatLastMessage(message.data())
 						this.rooms[index].lastMessage = lastMessage
@@ -287,6 +292,7 @@ export default {
 			this.selectedRoom = room.roomId
 
 			query.get().then(messages => {
+				// this.incrementDbCounter('Fetch Room Messages', messages.size)
 				if (this.selectedRoom !== room.roomId) return
 
 				if (messages.empty) this.messagesLoaded = true
@@ -307,6 +313,7 @@ export default {
 				})
 
 				const listener = listenerQuery.onSnapshot(snapshots => {
+					// this.incrementDbCounter('Listen Room Messages', snapshots.size)
 					this.listenMessages(snapshots, room)
 				})
 				this.listeners.push(listener)
@@ -501,6 +508,7 @@ export default {
 
 		async listenRoomsTypingUsers(query) {
 			const listener = query.onSnapshot(rooms => {
+				// this.incrementDbCounter('Listen Rooms Typing Users', rooms.size)
 				rooms.forEach(room => {
 					const foundRoom = this.rooms.find(r => r.roomId === room.id)
 					if (foundRoom) foundRoom.typingUsers = room.data().typingUsers
@@ -653,6 +661,12 @@ export default {
 			this.removeRoomId = null
 			this.removeUserId = ''
 		}
+
+		// incrementDbCounter(type, size) {
+		// 	size = size || 1
+		// 	this.dbRequestCount += size
+		// 	console.log(type, size)
+		// }
 	}
 }
 </script>
