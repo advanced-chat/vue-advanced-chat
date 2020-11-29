@@ -96,6 +96,7 @@ export default {
 		return {
 			perPage: 20,
 			rooms: [],
+			allUsers: [],
 			loadingRooms: true,
 			loadingLastMessageByRoom: 0,
 			selectedRoom: null,
@@ -164,39 +165,36 @@ export default {
 			const rooms = await query.get()
 			// this.incrementDbCounter('Fetch Rooms', rooms.size)
 
-			const roomList = []
-			const rawRoomUsers = []
-			const rawMessages = []
-
+			const roomUserIds = []
 			rooms.forEach(room => {
-				// this.incrementDbCounter('Fetch Room Users', room.data().users.length)
-				roomList[room.id] = { ...room.data(), users: [] }
-
-				const rawUsers = []
-
-				room.data().users.map(userId => {
-					const promise = usersRef
-						.doc(userId)
-						.get()
-						.then(user => {
-							return {
-								...user.data(),
-								...{
-									roomId: room.id,
-									username: user.data().username
-								}
-							}
-						})
-
-					rawUsers.push(promise)
+				room.data().users.forEach(userId => {
+					const foundUser = this.allUsers.find(user => user._id === userId)
+					if (!foundUser) roomUserIds.push(userId)
 				})
-
-				rawUsers.map(users => rawRoomUsers.push(users))
 			})
 
-			const users = await Promise.all(rawRoomUsers)
+			// this.incrementDbCounter('Fetch Room Users', this.roomUserIds.length)
+			const rawUsers = []
+			roomUserIds.forEach(userId => {
+				const promise = usersRef
+					.doc(userId)
+					.get()
+					.then(user => user.data())
 
-			users.map(user => roomList[user.roomId].users.push(user))
+				rawUsers.push(promise)
+			})
+
+			this.allUsers = [...this.allUsers, ...(await Promise.all(rawUsers))]
+
+			const roomList = {}
+			rooms.forEach(room => {
+				roomList[room.id] = { ...room.data(), users: [] }
+
+				room.data().users.forEach(userId => {
+					const foundUser = this.allUsers.find(user => user._id === userId)
+					if (foundUser) roomList[room.id].users.push(foundUser)
+				})
+			})
 
 			const formattedRooms = []
 
