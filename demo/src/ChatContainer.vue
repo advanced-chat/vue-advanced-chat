@@ -51,7 +51,7 @@
 			:styles="styles"
 			:currentUserId="currentUserId"
 			:rooms="rooms"
-			:loadingRooms="loadingRooms"
+			:loadingRooms="loadingRooms || loadingLastMessageByRoom !== rooms.length"
 			:messages="messages"
 			:messagesLoaded="messagesLoaded"
 			:menuActions="menuActions"
@@ -96,6 +96,7 @@ export default {
 			perPage: 20,
 			rooms: [],
 			loadingRooms: true,
+			loadingLastMessageByRoom: 0,
 			selectedRoom: null,
 			messages: [],
 			messagesLoaded: false,
@@ -137,6 +138,7 @@ export default {
 		},
 		resetRooms() {
 			this.loadingRooms = true
+			this.loadingLastMessageByRoom = 0
 			this.rooms = []
 			this.roomsListeners.forEach(listener => listener())
 			this.resetMessages()
@@ -189,23 +191,11 @@ export default {
 				})
 
 				rawUsers.map(users => rawRoomUsers.push(users))
-				rawMessages.push(this.getLastMessage(room))
 			})
 
 			const users = await Promise.all(rawRoomUsers)
 
 			users.map(user => roomList[user.roomId].users.push(user))
-
-			const roomMessages = await Promise.all(rawMessages).then(messages => {
-				return messages.map(message => {
-					return {
-						lastMessage: this.formatLastMessage(message),
-						roomId: message.roomId
-					}
-				})
-			})
-
-			roomMessages.map(ms => (roomList[ms.roomId].lastMessage = ms.lastMessage))
 
 			const formattedRooms = []
 
@@ -234,23 +224,11 @@ export default {
 			})
 
 			this.rooms = this.rooms.concat(formattedRooms)
-			this.loadingRooms = false
 			this.rooms.map((room, index) => this.listenLastMessage(room, index))
+			this.loadingRooms = false
 
 			this.listenUsersOnlineStatus()
 			this.listenRoomsTypingUsers(query)
-		},
-
-		getLastMessage(room) {
-			return this.messagesRef(room.id)
-				.orderBy('timestamp', 'desc')
-				.limit(1)
-				.get()
-				.then(messages => {
-					const array = []
-					messages.forEach(m => array.push(m.data()))
-					return { ...array[0], roomId: room.id }
-				})
 		},
 
 		listenLastMessage(room, index) {
@@ -262,6 +240,9 @@ export default {
 						const lastMessage = this.formatLastMessage(message.data())
 						this.rooms[index].lastMessage = lastMessage
 					})
+					if (this.loadingLastMessageByRoom < this.rooms.length) {
+						this.loadingLastMessageByRoom++
+					}
 				})
 
 			this.roomsListeners.push(listener)
