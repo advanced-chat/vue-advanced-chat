@@ -3,7 +3,17 @@
 		class="col-messages"
 		v-show="(isMobile && !showRoomsList) || !isMobile || singleRoom"
 	>
-		<div class="room-header app-border-b">
+		<slot
+			v-if="
+				(!rooms.length && !loadingRooms) || (!room.roomId && !loadFirstRoom)
+			"
+			name="no-room-selected"
+		>
+			<div class="container-center room-empty">
+				<div>{{ textMessages.ROOM_EMPTY }}</div>
+			</div>
+		</slot>
+		<div v-else class="room-header app-border-b">
 			<slot name="room-header" v-bind="{ room, typingUsers, userStatus }">
 				<div class="room-wrapper">
 					<div
@@ -331,6 +341,7 @@ export default {
 		isMobile: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },
 		roomId: { type: [String, Number], required: true },
+		loadFirstRoom: { type: Boolean, required: true },
 		messages: { type: Array, required: true },
 		roomMessage: { type: String },
 		messagesLoaded: { type: Boolean, required: true },
@@ -746,6 +757,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.container-center {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+.room-empty {
+	font-size: 14px;
+	color: #9ca6af;
+	font-style: italic;
+	line-height: 20px;
+	white-space: pre-line;
+
+	div {
+		padding: 0 10%;
+	}
+}
+
 .col-messages {
 	position: relative;
 	height: 100%;
