@@ -175,7 +175,7 @@
 							v-if="recorder.state === 'recording'"
 							name="microphone-off-icon"
 						>
-							<svg-icon name="microphone-off" />
+							<svg-icon name="microphone-off" class="icon-microphone-off" />
 						</slot>
 						<slot v-else name="microphone-icon">
 							<svg-icon name="microphone" class="icon-microphone" />
@@ -514,6 +514,7 @@ export default {
 			if (this.recorder.state === 'recording') {
 				this.recorder.stop()
 			} else {
+				this.file = null
 				this.recordedChunk = await this.startRecording()
 			}
 		},
@@ -965,6 +966,19 @@ textarea {
 
 .icon-microphone {
 	fill: var(--chat-icon-color-microphone);
+}
+
+.icon-microphone-off {
+	animation: scaling .8s ease-in-out infinite alternate;
+}
+
+@keyframes scaling {
+	0% {
+		transform: scale(1);
+	}
+	100% {
+		transform: scale(1.2);
+	}
 }
 
 .image-container {
