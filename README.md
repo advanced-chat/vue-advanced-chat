@@ -171,24 +171,25 @@ fetchMessages({ room, options }) {
 | rooms                      | Array            | -        | [ ]     |
 | loadingRooms (2)           | Boolean          | -        | false   |
 | roomId (3)                 | [String, Number] | -        | null    |
+| loadFirstRoom (4)         | Boolean          | -        | true    |
 | messages                   | Array            | -        | [ ]     |
-| roomMessage (4)            | Object           | -        | null    |
-| messagesLoaded (5)         | Boolean          | -        | false   |
-| menuActions (6)            | Array            | -        | [ ]     |
-| messageActions (7)         | Array            | -        | (4)     |
+| roomMessage (5)            | Object           | -        | null    |
+| messagesLoaded (6)         | Boolean          | -        | false   |
+| menuActions (7)            | Array            | -        | [ ]     |
+| messageActions (8)         | Array            | -        | (4)     |
 | showAddRoom                | Boolean          | -        | true    |
 | showSendIcon               | Boolean          | -        | true    |
 | showFiles                  | Boolean          | -        | true    |
 | showAudio                  | Boolean          | -        | true    |
 | showEmojis                 | Boolean          | -        | true    |
 | showReactionEmojis         | Boolean          | -        | true    |
-| showNewMessagesDivider (8) | Boolean          | -        | true    |
-| textMessages (9)           | Object           | -        | null    |
-| textFormatting (10)        | Boolean          | -        | true    |
-| responsiveBreakpoint (11)  | Number           | -        | 900     |
-| singleRoom (12)            | Boolean          | -        | false   |
-| theme (13)                 | Sring            | -        | light   |
-| styles (14)                | Object           | -        | (10)    |
+| showNewMessagesDivider (9) | Boolean          | -        | true    |
+| textMessages (10)           | Object           | -        | null    |
+| textFormatting (11)        | Boolean          | -        | true    |
+| responsiveBreakpoint (12)  | Number           | -        | 900     |
+| singleRoom (13)            | Boolean          | -        | false   |
+| theme (14)                 | Sring            | -        | light   |
+| styles (15)                | Object           | -        | (10)    |
 
 (1) `currentUserId` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -196,11 +197,13 @@ fetchMessages({ room, options }) {
 
 (3) `roomId` can be used to load a specific room at any time
 
-(4) `roomMessage` can be used to add a default textarea value
+(4) `loadFirstRoom` can be used to remove the default behaviour of opening the first room at initialization
 
-(5) `messagesLoaded` must be manually set to `true` when all messages of a conversation have been loaded. Meaning the user cannot scroll on top anymore
+(5) `roomMessage` can be used to add a default textarea value
 
-(6) `menuActions` can be used to display your own buttons when clicking the vertical dots icon inside a room.<br>
+(6) `messagesLoaded` must be manually set to `true` when all messages of a conversation have been loaded. Meaning the user cannot scroll on top anymore
+
+(7) `menuActions` can be used to display your own buttons when clicking the vertical dots icon inside a room.<br>
 You can then use the [menuActionHandler](#events-api) event to call your own action after clicking a button. Ex:
 
 ```javascript
@@ -220,7 +223,7 @@ menuActions="[
 ]"
 ```
 
-(7) `messageActions` can be used to display your own buttons when clicking the dropdown icon inside a message.<br>
+(8) `messageActions` can be used to display your own buttons when clicking the dropdown icon inside a message.<br>
 You can then use the [messageActionHandler](#events-api) event to call your own action after clicking a button. Ex:
 
 ```javascript
@@ -260,9 +263,9 @@ messageActions="[
 ]"
 ```
 
-(8) `showNewMessagesDivider` can be used to show/hide the blue line divider between seen and unseen messages.
+(9) `showNewMessagesDivider` can be used to show/hide the blue line divider between seen and unseen messages.
 
-(9) `textMessages` can be used to replace default i18n texts. Ex:
+(10) `textMessages` can be used to replace default i18n texts. Ex:
 
 ```javascript
 textMessages="{
@@ -279,7 +282,7 @@ textMessages="{
 }"
 ```
 
-(10) `textFormatting` can be used to add text formatting. Currently, bold, italic, strikethrough, underline, inline code and multiline code formatting are available and can be used in conjonction. You can disable text formatting by passing the prop as `:textFormatting="false"`.
+(11) `textFormatting` can be used to add text formatting. Currently, bold, italic, strikethrough, underline, inline code and multiline code formatting are available and can be used in conjonction. You can disable text formatting by passing the prop as `:textFormatting="false"`.
 
 | Style             | Syntax          | Example                                | Output                                 |
 | ----------------- | --------------- | -------------------------------------- | -------------------------------------- |
@@ -306,13 +309,13 @@ This is
 multiline code
 ```
 
-(11) `responsiveBreakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
+(12) `responsiveBreakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
 
-(12) `singleRoom` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+(13) `singleRoom` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
 
-(13) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+(14) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
 
-(14) `styles` can be used to customize your own theme. Ex:
+(15) `styles` can be used to customize your own theme. Ex:
 
 ```javascript
 styles="{

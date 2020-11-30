@@ -90,6 +90,7 @@ export default {
 		rooms: { type: Array, default: () => [] },
 		loadingRooms: { type: Boolean, default: false },
 		roomId: { type: [String, Number], default: null },
+		loadFirstRoom: { type: Boolean, default: true },
 		messages: { type: Array, default: () => [] },
 		messagesLoaded: { type: Boolean, default: false },
 		menuActions: { type: Array, default: () => [] },
@@ -125,6 +126,8 @@ export default {
 		rooms: {
 			immediate: true,
 			handler(newVal, oldVal) {
+				if (!this.loadFirstRoom) return (this.showRoomsList = true)
+
 				if (
 					!newVal[0] ||
 					!newVal.find(room => room.roomId === this.room.roomId)

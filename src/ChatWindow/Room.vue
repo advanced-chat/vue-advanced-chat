@@ -41,7 +41,7 @@
 							</div>
 						</slot>
 					</div>
-					<slot name="room-options">
+					<slot v-if="room.roomId" name="room-options">
 						<div
 							class="svg-button room-options"
 							v-if="menuActions.length"
@@ -969,7 +969,7 @@ textarea {
 }
 
 .icon-microphone-off {
-	animation: scaling .8s ease-in-out infinite alternate;
+	animation: scaling 0.8s ease-in-out infinite alternate;
 }
 
 @keyframes scaling {
