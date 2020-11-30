@@ -171,7 +171,7 @@ fetchMessages({ room, options }) {
 | rooms                      | Array            | -        | [ ]     |
 | loadingRooms (2)           | Boolean          | -        | false   |
 | roomId (3)                 | [String, Number] | -        | null    |
-| loadFirstRoom (4)         | Boolean          | -        | true    |
+| loadFirstRoom (4)          | Boolean          | -        | true    |
 | messages                   | Array            | -        | [ ]     |
 | roomMessage (5)            | Object           | -        | null    |
 | messagesLoaded (6)         | Boolean          | -        | false   |
@@ -184,7 +184,7 @@ fetchMessages({ room, options }) {
 | showEmojis                 | Boolean          | -        | true    |
 | showReactionEmojis         | Boolean          | -        | true    |
 | showNewMessagesDivider (9) | Boolean          | -        | true    |
-| textMessages (10)           | Object           | -        | null    |
+| textMessages (10)          | Object           | -        | null    |
 | textFormatting (11)        | Boolean          | -        | true    |
 | responsiveBreakpoint (12)  | Number           | -        | 900     |
 | singleRoom (13)            | Boolean          | -        | false   |
@@ -629,7 +629,8 @@ Example:
 | room-options               | Replace the template of the room options                    | -                             | menu-icon                                                                                            |
 | message                    | Replace the template of the message box                     | message                       | deleted-icon, eye-icon, document-icon, pencil-icon, checkmark-icon, dropdown-icon, emoji-picker-icon |
 | messages-empty             | Replace the empty message template                          | -                             | -                                                                                                    |
-| rooms-empty                | Replace the empty room template                             | -                             | -                                                                                                    |
+| rooms-empty                | Replace the empty rooms template                            | -                             | -                                                                                                    |
+| no-room-selected           | Replace the no room selected template                       | -                             | -                                                                                                    |
 | menu-icon                  | Replace the room menu icon                                  | -                             | -                                                                                                    |
 | toggle-icon                | Replace the toggle room list icon                           | -                             | -                                                                                                    |
 | scroll-icon                | Replace the scroll to newest message icon                   | -                             | -                                                                                                    |

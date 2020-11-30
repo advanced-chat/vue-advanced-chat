@@ -21,6 +21,7 @@
 			</rooms-list>
 
 			<room
+				v-if="room.roomId || loadFirstRoom"
 				:currentUserId="currentUserId"
 				:rooms="rooms"
 				:roomId="room.roomId || ''"
@@ -60,6 +61,11 @@
 					<slot :name="name" v-bind="data"></slot>
 				</template>
 			</room>
+			<slot v-else name="no-room-selected">
+				<div class="container-center room-empty">
+					{{ t.ROOM_EMPTY }}
+				</div>
+			</slot>
 		</div>
 	</div>
 </template>
@@ -319,5 +325,24 @@ a {
 	input[type='search'] {
 		-webkit-appearance: none;
 	}
+}
+
+.container-center {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+.room-empty {
+	font-size: 14px;
+	color: #9ca6af;
+	font-style: italic;
+	padding: 0 10%;
+	line-height: 20px;
+	white-space: pre-line;
 }
 </style>
