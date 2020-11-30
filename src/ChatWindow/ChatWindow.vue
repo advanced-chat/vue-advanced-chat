@@ -127,12 +127,6 @@ export default {
 		rooms: {
 			immediate: true,
 			handler(newVal, oldVal) {
-				if (!this.loadFirstRoom) {
-					this.room = {}
-					this.showRoomsList = true
-					return
-				}
-
 				if (
 					!newVal[0] ||
 					!newVal.find(room => room.roomId === this.room.roomId)
@@ -140,7 +134,11 @@ export default {
 					this.showRoomsList = true
 				}
 
-				if (newVal[0] && (!oldVal || newVal.length !== oldVal.length)) {
+				if (
+					this.loadFirstRoom &&
+					newVal[0] &&
+					(!oldVal || newVal.length !== oldVal.length)
+				) {
 					if (this.roomId) {
 						const room = newVal.find(r => r.roomId === this.roomId)
 						this.fetchRoom({ room })
@@ -151,6 +149,10 @@ export default {
 					}
 				}
 			}
+		},
+
+		loadingRooms(val) {
+			if (val) this.room = {}
 		},
 
 		roomId: {
