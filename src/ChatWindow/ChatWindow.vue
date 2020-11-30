@@ -125,6 +125,8 @@ export default {
 		rooms: {
 			immediate: true,
 			handler(newVal, oldVal) {
+				if (!newVal[0]) return (this.showRoomsList = true)
+
 				if (newVal[0] && (!oldVal || newVal.length !== oldVal.length)) {
 					if (this.roomId) {
 						const room = newVal.find(r => r.roomId === this.roomId)
