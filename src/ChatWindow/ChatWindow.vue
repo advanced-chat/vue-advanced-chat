@@ -132,7 +132,11 @@ export default {
 		rooms: {
 			immediate: true,
 			handler(newVal, oldVal) {
-				if (!this.loadFirstRoom) return (this.showRoomsList = true)
+				if (!this.loadFirstRoom) {
+					this.room = {}
+					this.showRoomsList = true
+					return
+				}
 
 				if (
 					!newVal[0] ||
