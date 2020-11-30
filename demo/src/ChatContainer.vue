@@ -227,6 +227,8 @@ export default {
 			this.rooms = this.rooms.concat(formattedRooms)
 			this.rooms.map((room, index) => this.listenLastMessage(room, index))
 
+			if (!this.rooms.length) this.loadingRooms = false
+
 			this.listenUsersOnlineStatus()
 			this.listenRoomsTypingUsers(query)
 			// setTimeout(() => console.log('TOTAL', this.dbRequestCount), 2000)
@@ -642,6 +644,14 @@ export default {
 		},
 
 		async deleteRoom(roomId) {
+			const room = this.rooms.find(r => r.roomId === roomId)
+			if (
+				room.users.find(user => user._id === 'SGmFnBZB4xxMv9V4CVlW') ||
+				room.users.find(user => user._id === '6jMsIXUrBHBj7o2cRlau')
+			) {
+				return alert('Nope, for demo purposes you cannot delete this room')
+			}
+
 			const ref = messagesRef(roomId)
 
 			ref.get().then(res => {
