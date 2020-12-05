@@ -85,6 +85,7 @@
 							<div
 								v-if="
 									room.lastMessage &&
+										!room.lastMessage.deleted &&
 										room.lastMessage.file &&
 										room.lastMessage.file.audio
 								"
