@@ -425,8 +425,8 @@ export default {
 					url: file.url || file.localUrl
 				}
 				if (file.audio) {
-					message.file.audio = true
-					message.file.duration = file.duration
+					newMessage.file.audio = true
+					newMessage.file.duration = file.duration
 				}
 			} else {
 				newMessage.file = deleteDbField
@@ -435,6 +435,8 @@ export default {
 			await messagesRef(roomId)
 				.doc(messageId)
 				.update(newMessage)
+
+			if (file) this.uploadFile({ file, messageId, roomId })
 		},
 
 		async deleteMessage({ messageId, roomId }) {
