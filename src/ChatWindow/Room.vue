@@ -209,7 +209,7 @@
 						</slot>
 					</div>
 					<div class="vac-image-file">
-						<img ref="imageFile" :src="imageFile" />
+						<img ref="imageFile" :src="imageFile" @load="onImgLoad" />
 					</div>
 				</div>
 
@@ -478,22 +478,6 @@ export default {
 		messagesLoaded(val) {
 			if (val) this.loadingMessages = false
 			if (this.infiniteState) this.infiniteState.complete()
-		},
-		imageFile() {
-			setTimeout(() => {
-				if (!this.$refs.imageFile) {
-					this.imageDimensions = null
-					setTimeout(() => this.resizeTextarea(), 0)
-				} else {
-					let height = this.$refs.imageFile.height
-					if (height < 30) height = 30
-
-					this.imageDimensions = {
-						height: this.$refs.imageFile.height - 10,
-						width: this.$refs.imageFile.width + 26
-					}
-				}
-			}, 20)
 		}
 	},
 
@@ -538,6 +522,15 @@ export default {
 	},
 
 	methods: {
+		onImgLoad() {
+			let height = this.$refs.imageFile.height
+			if (height < 30) height = 30
+
+			this.imageDimensions = {
+				height: this.$refs.imageFile.height - 10,
+				width: this.$refs.imageFile.width + 26
+			}
+		},
 		async recordAudio() {
 			if (this.recorder.state === 'recording') {
 				this.recorder.stop()
@@ -622,15 +615,18 @@ export default {
 			this.editedMessage = {}
 			this.messageReply = null
 			this.file = null
+			this.imageDimensions = null
 			this.imageFile = null
 			this.emojiOpened = false
 			setTimeout(() => this.focusTextarea(disableMobileFocus), 0)
 		},
 		resetImageFile() {
+			this.imageDimensions = null
 			this.imageFile = null
 			this.editedMessage.file = null
 			this.file = null
 			this.focusTextarea()
+			setTimeout(() => this.resizeTextarea(), 0)
 		},
 		resetTextareaSize() {
 			if (!this.$refs['roomTextarea']) return
