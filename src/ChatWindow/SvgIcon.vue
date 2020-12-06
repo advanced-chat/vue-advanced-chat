@@ -19,7 +19,7 @@ export default {
 	computed: {
 		svgId() {
 			const param = this.param ? '-' + this.param : ''
-			return `chat-icon-${this.name}${param}`
+			return `vac-icon-${this.name}${param}`
 		},
 		size() {
 			return this.svgItem.find(item => item.name === this.name).large
@@ -132,89 +132,89 @@ export default {
 </script>
 
 <style lang="scss">
-#chat-icon-search {
+#vac-icon-search {
 	fill: var(--chat-icon-color-search);
 }
 
-#chat-icon-add {
+#vac-icon-add {
 	fill: var(--chat-icon-color-add);
 }
 
-#chat-icon-toggle {
+#vac-icon-toggle {
 	fill: var(--chat-icon-color-toggle);
 }
 
-#chat-icon-menu {
+#vac-icon-menu {
 	fill: var(--chat-icon-color-menu);
 }
 
-#chat-icon-close {
+#vac-icon-close {
 	fill: var(--chat-icon-color-close);
 }
 
-#chat-icon-close-image {
+#vac-icon-close-image {
 	fill: var(--chat-icon-color-close-image);
 }
 
-#chat-icon-file {
+#vac-icon-file {
 	fill: var(--chat-icon-color-file);
 }
 
-#chat-icon-paperclip {
+#vac-icon-paperclip {
 	fill: var(--chat-icon-color-paperclip);
 }
 
-#chat-icon-close-outline {
+#vac-icon-close-outline {
 	fill: var(--chat-icon-color-close-outline);
 }
 
-#chat-icon-send {
+#vac-icon-send {
 	fill: var(--chat-icon-color-send);
 }
 
-#chat-icon-send-disabled {
+#vac-icon-send-disabled {
 	fill: var(--chat-icon-color-send-disabled);
 }
 
-#chat-icon-emoji {
+#vac-icon-emoji {
 	fill: var(--chat-icon-color-emoji);
 }
 
-#chat-icon-emoji-reaction {
+#vac-icon-emoji-reaction {
 	fill: var(--chat-icon-color-emoji-reaction);
 }
 
-#chat-icon-document {
+#vac-icon-document {
 	fill: var(--chat-icon-color-document);
 }
 
-#chat-icon-pencil {
+#vac-icon-pencil {
 	fill: var(--chat-icon-color-pencil);
 }
 
-#chat-icon-checkmark,
-#chat-icon-double-checkmark {
+#vac-icon-checkmark,
+#vac-icon-double-checkmark {
 	fill: var(--chat-icon-color-checkmark);
 }
 
-#chat-icon-checkmark-seen,
-#chat-icon-double-checkmark-seen {
+#vac-icon-checkmark-seen,
+#vac-icon-double-checkmark-seen {
 	fill: var(--chat-icon-color-checkmark-seen);
 }
 
-#chat-icon-eye {
+#vac-icon-eye {
 	fill: var(--chat-icon-color-eye);
 }
 
-#chat-icon-dropdown-message {
+#vac-icon-dropdown-message {
 	fill: var(--chat-icon-color-dropdown-message);
 }
 
-#chat-icon-dropdown-scroll {
+#vac-icon-dropdown-scroll {
 	fill: var(--chat-icon-color-dropdown-scroll);
 }
 
-#chat-icon-microphone-off {
+#vac-icon-microphone-off {
 	fill: var(--chat-icon-color-microphone-off);
 }
 </style>

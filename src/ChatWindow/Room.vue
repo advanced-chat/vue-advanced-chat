@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="col-messages"
+		class="vac-col-messages"
 		v-show="(isMobile && !showRoomsList) || !isMobile || singleRoom"
 	>
 		<slot
@@ -9,17 +9,17 @@
 			"
 			name="no-room-selected"
 		>
-			<div class="container-center room-empty">
+			<div class="vac-container-center vac-room-empty">
 				<div>{{ textMessages.ROOM_EMPTY }}</div>
 			</div>
 		</slot>
-		<div v-else class="room-header app-border-b">
+		<div v-else class="vac-room-header vac-app-border-b">
 			<slot name="room-header" v-bind="{ room, typingUsers, userStatus }">
-				<div class="room-wrapper">
+				<div class="vac-room-wrapper">
 					<div
 						v-if="!singleRoom"
-						class="svg-button toggle-button"
-						:class="{ 'rotate-icon': !showRoomsList && !isMobile }"
+						class="vac-svg-button vac-toggle-button"
+						:class="{ 'vac-rotate-icon': !showRoomsList && !isMobile }"
 						@click="$emit('toggleRoomsList')"
 					>
 						<slot name="toggle-icon">
@@ -27,25 +27,27 @@
 						</slot>
 					</div>
 					<div
-						class="info-wrapper"
-						:class="{ 'item-clickable': roomInfo }"
+						class="vac-info-wrapper"
+						:class="{ 'vac-item-clickable': roomInfo }"
 						@click="$emit('roomInfo', room)"
 					>
 						<div
 							v-if="room.avatar"
-							class="room-avatar"
+							class="vac-room-avatar"
 							:style="{ 'background-image': `url('${room.avatar}')` }"
 						></div>
 						<slot
 							name="room-header-info"
 							v-bind="{ room, typingUsers, userStatus }"
 						>
-							<div class="text-ellipsis">
-								<div class="room-name text-ellipsis">{{ room.roomName }}</div>
-								<div v-if="typingUsers" class="room-info text-ellipsis">
+							<div class="vac-text-ellipsis">
+								<div class="vac-room-name vac-text-ellipsis">
+									{{ room.roomName }}
+								</div>
+								<div v-if="typingUsers" class="vac-room-info vac-text-ellipsis">
 									{{ typingUsers }}
 								</div>
-								<div v-else class="room-info text-ellipsis">
+								<div v-else class="vac-room-info vac-text-ellipsis">
 									{{ userStatus }}
 								</div>
 							</div>
@@ -53,7 +55,7 @@
 					</div>
 					<slot v-if="room.roomId" name="room-options">
 						<div
-							class="svg-button room-options"
+							class="vac-svg-button vac-room-options"
 							v-if="menuActions.length"
 							@click="menuOpened = !menuOpened"
 						>
@@ -61,15 +63,18 @@
 								<svg-icon name="menu" />
 							</slot>
 						</div>
-						<transition name="slide-left" v-if="menuActions.length">
+						<transition name="vac-slide-left" v-if="menuActions.length">
 							<div
 								v-if="menuOpened"
 								v-click-outside="closeMenu"
-								class="menu-options"
+								class="vac-menu-options"
 							>
-								<div class="menu-list">
+								<div class="vac-menu-list">
 									<div v-for="action in menuActions" :key="action.name">
-										<div class="menu-item" @click="menuActionHandler(action)">
+										<div
+											class="vac-menu-item"
+											@click="menuActionHandler(action)"
+										>
 											{{ action.title }}
 										</div>
 									</div>
@@ -80,21 +85,21 @@
 				</div>
 			</slot>
 		</div>
-		<div ref="scrollContainer" class="container-scroll">
+		<div ref="scrollContainer" class="vac-container-scroll">
 			<loader :show="loadingMessages"></loader>
-			<div class="messages-container">
-				<div :class="{ 'messages-hidden': loadingMessages }">
-					<transition name="fade-message">
-						<div class="text-started" v-if="showNoMessages">
+			<div class="vac-messages-container">
+				<div :class="{ 'vac-messages-hidden': loadingMessages }">
+					<transition name="vac-fade-message">
+						<div class="vac-text-started" v-if="showNoMessages">
 							<slot name="messages-empty">
 								{{ textMessages.MESSAGES_EMPTY }}
 							</slot>
 						</div>
-						<div class="text-started" v-if="showMessagesStarted">
+						<div class="vac-text-started" v-if="showMessagesStarted">
 							{{ textMessages.CONVERSATION_STARTED }} {{ messages[0].date }}
 						</div>
 					</transition>
-					<transition name="fade-message">
+					<transition name="vac-fade-message">
 						<infinite-loading
 							v-if="messages.length"
 							spinner="spiral"
@@ -108,7 +113,7 @@
 							<div slot="no-more"></div>
 						</infinite-loading>
 					</transition>
-					<transition-group name="fade-message">
+					<transition-group name="vac-fade-message">
 						<div v-for="(message, i) in messages" :key="message._id">
 							<message
 								:currentUserId="currentUserId"
@@ -145,31 +150,35 @@
 			</div>
 		</div>
 		<div v-if="!loadingMessages">
-			<transition name="bounce">
-				<div class="icon-scroll" v-if="scrollIcon" @click="scrollToBottom">
+			<transition name="vac-bounce">
+				<div class="vac-icon-scroll" v-if="scrollIcon" @click="scrollToBottom">
 					<slot name="scroll-icon">
 						<svg-icon name="dropdown" param="scroll" />
 					</slot>
 				</div>
 			</transition>
 		</div>
-		<div ref="roomFooter" class="room-footer" v-if="Object.keys(room).length">
-			<transition name="slide-up">
-				<div v-if="messageReply" class="reply-container">
-					<div class="reply-box">
+		<div
+			ref="roomFooter"
+			class="vac-room-footer"
+			v-if="Object.keys(room).length"
+		>
+			<transition name="vac-slide-up">
+				<div v-if="messageReply" class="vac-reply-container">
+					<div class="vac-reply-box">
 						<img
 							v-if="isImageCheck(messageReply.file)"
 							:src="messageReply.file.url"
-							class="image-reply"
+							class="vac-image-reply"
 						/>
-						<div class="reply-info">
-							<div class="reply-username">{{ messageReply.username }}</div>
-							<div class="reply-content">{{ messageReply.content }}</div>
+						<div class="vac-reply-info">
+							<div class="vac-reply-username">{{ messageReply.username }}</div>
+							<div class="vac-reply-content">{{ messageReply.content }}</div>
 						</div>
 					</div>
 
-					<div class="icon-reply">
-						<div class="svg-button" @click="resetMessage">
+					<div class="vac-icon-reply">
+						<div class="vac-svg-button" @click="resetMessage">
 							<slot name="reply-close-icon">
 								<svg-icon name="close-outline" />
 							</slot>
@@ -178,45 +187,48 @@
 				</div>
 			</transition>
 
-			<div class="box-footer">
-				<div class="icon-textarea-left" v-if="showAudio && !imageFile">
-					<div class="svg-button" @click="recordAudio">
+			<div class="vac-box-footer">
+				<div class="vac-icon-textarea-left" v-if="showAudio && !imageFile">
+					<div class="vac-svg-button" @click="recordAudio">
 						<slot
 							v-if="recorder.state === 'recording'"
 							name="microphone-off-icon"
 						>
-							<svg-icon name="microphone-off" class="icon-microphone-off" />
+							<svg-icon name="microphone-off" class="vac-icon-microphone-off" />
 						</slot>
 						<slot v-else name="microphone-icon">
-							<svg-icon name="microphone" class="icon-microphone" />
+							<svg-icon name="microphone" class="vac-icon-microphone" />
 						</slot>
 					</div>
 				</div>
 
-				<div class="image-container" v-if="imageFile">
-					<div class="svg-button icon-image" @click="resetImageFile">
+				<div class="vac-image-container" v-if="imageFile">
+					<div class="vac-svg-button vac-icon-image" @click="resetImageFile">
 						<slot name="image-close-icon">
 							<svg-icon name="close" param="image" />
 						</slot>
 					</div>
-					<div class="image-file">
+					<div class="vac-image-file">
 						<img ref="imageFile" :src="imageFile" />
 					</div>
 				</div>
 
 				<div
 					v-else-if="file"
-					class="file-container"
-					:class="{ 'file-container-edit': editedMessage._id }"
+					class="vac-file-container"
+					:class="{ 'vac-file-container-edit': editedMessage._id }"
 				>
-					<div class="icon-file">
+					<div class="vac-icon-file">
 						<slot name="file-icon">
 							<svg-icon name="file" />
 						</slot>
 					</div>
-					<div class="file-message" v-if="file && file.audio">audio</div>
-					<div class="file-message" v-else>{{ message }}</div>
-					<div class="svg-button icon-remove" @click="resetMessage(null, true)">
+					<div class="vac-file-message" v-if="file && file.audio">audio</div>
+					<div class="vac-file-message" v-else>{{ message }}</div>
+					<div
+						class="vac-svg-button vac-icon-remove"
+						@click="resetMessage(null, true)"
+					>
 						<slot name="file-close-icon">
 							<svg-icon name="close" />
 						</slot>
@@ -227,8 +239,9 @@
 					v-show="!file || imageFile"
 					ref="roomTextarea"
 					:placeholder="textMessages.TYPE_MESSAGE"
+					class="vac-textarea"
 					:class="{
-						'textarea-outline': editedMessage._id
+						'vac-textarea-outline': editedMessage._id
 					}"
 					:style="{
 						'min-height': `${imageDimensions ? imageDimensions.height : 20}px`,
@@ -242,9 +255,9 @@
 					@keydown.enter.exact.prevent=""
 				></textarea>
 
-				<div class="icon-textarea">
+				<div class="vac-icon-textarea">
 					<div
-						class="svg-button"
+						class="vac-svg-button"
 						v-if="editedMessage._id"
 						@click="resetMessage"
 					>
@@ -265,7 +278,11 @@
 						</template>
 					</emoji-picker>
 
-					<div v-if="showFiles" class="svg-button" @click="launchFilePicker">
+					<div
+						v-if="showFiles"
+						class="vac-svg-button"
+						@click="launchFilePicker"
+					>
 						<slot name="paperclip-icon">
 							<svg-icon name="paperclip" />
 						</slot>
@@ -274,7 +291,7 @@
 					<div
 						v-if="textareaAction"
 						@click="textareaActionHandler"
-						class="svg-button"
+						class="vac-svg-button"
 					>
 						<slot name="custom-action-icon">
 							<svg-icon name="deleted" />
@@ -292,8 +309,8 @@
 					<div
 						v-if="showSendIcon"
 						@click="sendMessage"
-						class="svg-button"
-						:class="{ 'send-disabled': inputDisabled }"
+						class="vac-svg-button"
+						:class="{ 'vac-send-disabled': inputDisabled }"
 					>
 						<slot name="send-icon">
 							<svg-icon name="send" :param="inputDisabled ? 'disabled' : ''" />
@@ -757,7 +774,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container-center {
+.vac-container-center {
 	height: 100%;
 	width: 100%;
 	display: flex;
@@ -767,7 +784,7 @@ export default {
 	text-align: center;
 }
 
-.room-empty {
+.vac-room-empty {
 	font-size: 14px;
 	color: #9ca6af;
 	font-style: italic;
@@ -779,7 +796,7 @@ export default {
 	}
 }
 
-.col-messages {
+.vac-col-messages {
 	position: relative;
 	height: 100%;
 	flex: 1;
@@ -788,7 +805,7 @@ export default {
 	flex-flow: column;
 }
 
-.room-header {
+.vac-room-header {
 	position: absolute;
 	display: flex;
 	align-items: center;
@@ -800,7 +817,7 @@ export default {
 	border-top-right-radius: var(--chat-container-border-radius);
 }
 
-.room-wrapper {
+.vac-room-wrapper {
 	display: flex;
 	align-items: center;
 	min-width: 0;
@@ -809,7 +826,7 @@ export default {
 	padding: 0 16px;
 }
 
-.info-wrapper {
+.vac-info-wrapper {
 	display: flex;
 	align-items: center;
 	min-width: 0;
@@ -817,7 +834,7 @@ export default {
 	height: 100%;
 }
 
-.toggle-button {
+.vac-toggle-button {
 	margin-right: 15px;
 
 	svg {
@@ -826,28 +843,28 @@ export default {
 	}
 }
 
-.rotate-icon {
+.vac-rotate-icon {
 	transform: rotate(180deg) !important;
 }
 
-.room-name {
+.vac-room-name {
 	font-size: 17px;
 	font-weight: 500;
 	line-height: 22px;
 	color: var(--chat-header-color-name);
 }
 
-.room-info {
+.vac-room-info {
 	font-size: 13px;
 	line-height: 18px;
 	color: var(--chat-header-color-info);
 }
 
-.room-options {
+.vac-room-options {
 	margin-left: auto;
 }
 
-.container-scroll {
+.vac-container-scroll {
 	background: var(--chat-content-bg-color);
 	flex: 1;
 	overflow-y: scroll;
@@ -856,11 +873,11 @@ export default {
 	-webkit-overflow-scrolling: touch;
 }
 
-.messages-container {
+.vac-messages-container {
 	padding: 0 5px 5px;
 }
 
-.text-started {
+.vac-text-started {
 	font-size: 14px;
 	color: var(--chat-message-color-started);
 	font-style: italic;
@@ -869,7 +886,7 @@ export default {
 	margin-bottom: 20px;
 }
 
-.icon-scroll {
+.vac-icon-scroll {
 	position: absolute;
 	bottom: 80px;
 	right: 20px;
@@ -888,27 +905,27 @@ export default {
 	}
 }
 
-.room-footer {
+.vac-room-footer {
 	width: calc(100% - 1px);
 	border-bottom-right-radius: 4px;
 	z-index: 10;
 }
 
-.box-footer {
+.vac-box-footer {
 	display: flex;
 	position: relative;
 	background: var(--chat-footer-bg-color);
 	padding: 10px 8px 10px;
 }
 
-.reply-container {
+.vac-reply-container {
 	display: flex;
 	padding: 10px 10px 0 10px;
 	background: var(--chat-content-bg-color);
 	align-items: center;
 	max-width: 100%;
 
-	.reply-box {
+	.vac-reply-box {
 		width: 100%;
 		overflow: hidden;
 		background: var(--chat-footer-bg-color-reply);
@@ -917,23 +934,23 @@ export default {
 		display: flex;
 	}
 
-	.reply-info {
+	.vac-reply-info {
 		overflow: hidden;
 	}
 
-	.reply-username {
+	.vac-reply-username {
 		color: var(--chat-message-color-reply-username);
 		font-size: 12px;
 		line-height: 15px;
 		margin-bottom: 2px;
 	}
 
-	.reply-content {
+	.vac-reply-content {
 		font-size: 12px;
 		color: var(--chat-message-color-reply-content);
 	}
 
-	.icon-reply {
+	.vac-icon-reply {
 		margin-left: 10px;
 
 		svg {
@@ -942,13 +959,13 @@ export default {
 		}
 	}
 
-	.image-reply {
+	.vac-image-reply {
 		max-height: 100px;
 		margin-right: 10px;
 	}
 }
 
-textarea {
+.vac-textarea {
 	height: 20px;
 	width: 100%;
 	line-height: 20px;
@@ -972,40 +989,40 @@ textarea {
 	}
 }
 
-.textarea-outline {
+.vac-textarea-outline {
 	border: 1px solid var(--chat-border-color-input-selected);
 	box-shadow: inset 0px 0px 0px 1px var(--chat-border-color-input-selected);
 }
 
-.icon-textarea-left {
+.vac-icon-textarea-left {
 	display: flex;
 	margin: 12px 5px 0 0;
 
 	svg,
-	.wrapper {
+	.vac-wrapper {
 		margin: 0 7px;
 	}
 }
 
-.icon-textarea {
+.vac-icon-textarea {
 	display: flex;
 	margin: 12px 0 0 5px;
 
 	svg,
-	.wrapper {
+	.vac-wrapper {
 		margin: 0 7px;
 	}
 }
 
-.icon-microphone {
+.vac-icon-microphone {
 	fill: var(--chat-icon-color-microphone);
 }
 
-.icon-microphone-off {
-	animation: scaling 0.8s ease-in-out infinite alternate;
+.vac-icon-microphone-off {
+	animation: vac-scaling 0.8s ease-in-out infinite alternate;
 }
 
-@keyframes scaling {
+@keyframes vac-scaling {
 	0% {
 		transform: scale(1);
 	}
@@ -1014,14 +1031,14 @@ textarea {
 	}
 }
 
-.image-container {
+.vac-image-container {
 	position: absolute;
 	max-width: 25%;
 	left: 16px;
 	top: 18px;
 }
 
-.image-file {
+.vac-image-file {
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
@@ -1035,7 +1052,7 @@ textarea {
 	}
 }
 
-.icon-image {
+.vac-icon-image {
 	position: absolute;
 	top: 6px;
 	left: 6px;
@@ -1058,7 +1075,7 @@ textarea {
 	}
 }
 
-.file-container {
+.vac-file-container {
 	display: flex;
 	align-items: center;
 	width: calc(100% - 75px);
@@ -1070,23 +1087,23 @@ textarea {
 	border-radius: 20px;
 }
 
-.file-container-edit {
+.vac-file-container-edit {
 	width: calc(100% - 109px);
 }
 
-.file-message {
+.vac-file-message {
 	max-width: calc(100% - 75px);
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-.icon-file {
+.vac-icon-file {
 	display: flex;
 	margin: 0 8px 0 15px;
 }
 
-.icon-remove {
+.vac-icon-remove {
 	margin-left: 8px;
 
 	svg {
@@ -1095,36 +1112,36 @@ textarea {
 	}
 }
 
-.send-disabled,
-.send-disabled svg {
+.vac-send-disabled,
+.vac-send-disabled svg {
 	cursor: none !important;
 	pointer-events: none !important;
 	transform: none !important;
 }
 
-.messages-hidden {
+.vac-messages-hidden {
 	opacity: 0;
 }
 
 @media only screen and (max-width: 768px) {
-	.room-header {
+	.vac-room-header {
 		height: 50px;
 
-		.room-wrapper {
+		.vac-room-wrapper {
 			padding: 0 10px;
 		}
 
-		.room-name {
+		.vac-room-name {
 			font-size: 16px;
 			line-height: 22px;
 		}
 
-		.room-info {
+		.vac-room-info {
 			font-size: 12px;
 			line-height: 16px;
 		}
 
-		.room-avatar {
+		.vac-room-avatar {
 			height: 37px;
 			width: 37px;
 			min-height: 37px;
@@ -1132,20 +1149,20 @@ textarea {
 		}
 	}
 
-	.container-scroll {
+	.vac-container-scroll {
 		margin-top: 50px;
 	}
 
-	.box-footer {
+	.vac-box-footer {
 		border-top: var(--chat-border-style-input);
 		padding: 7px 2px 7px 7px;
 	}
 
-	.text-started {
+	.vac-text-started {
 		margin-top: 20px;
 	}
 
-	textarea {
+	.vac-textarea {
 		padding: 7px;
 		line-height: 18px;
 
@@ -1154,7 +1171,7 @@ textarea {
 		}
 	}
 
-	.icon-textarea-left {
+	.vac-icon-textarea-left {
 		margin: 6px 5px 0 0;
 
 		svg,
@@ -1163,7 +1180,7 @@ textarea {
 		}
 	}
 
-	.icon-textarea {
+	.vac-icon-textarea {
 		margin: 6px 0 0 5px;
 
 		svg,
@@ -1172,20 +1189,20 @@ textarea {
 		}
 	}
 
-	.image-container {
+	.vac-image-container {
 		top: 10px;
 		left: 10px;
 	}
 
-	.image-file img {
+	.vac-image-file img {
 		transform: scale(0.97);
 	}
 
-	.room-footer {
+	.vac-room-footer {
 		width: 100%;
 	}
 
-	.file-container {
+	.vac-file-container {
 		padding: 7px 0;
 
 		.icon-file {
@@ -1193,11 +1210,11 @@ textarea {
 		}
 	}
 
-	.reply-container {
+	.vac-reply-container {
 		padding: 5px 8px;
 	}
 
-	.icon-scroll {
+	.vac-icon-scroll {
 		bottom: 70px;
 	}
 }

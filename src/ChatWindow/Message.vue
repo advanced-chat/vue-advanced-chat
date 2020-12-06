@@ -1,45 +1,45 @@
 <template>
 	<div>
-		<div v-if="showDate" class="card-info card-date">
+		<div v-if="showDate" class="vac-card-info vac-card-date">
 			{{ message.date }}
 		</div>
 
-		<div v-if="newMessage._id === message._id" class="line-new">
+		<div v-if="newMessage._id === message._id" class="vac-line-new">
 			{{ textMessages.NEW_MESSAGES }}
 		</div>
 
-		<div v-if="message.system" class="card-info card-system">
+		<div v-if="message.system" class="vac-card-info vac-card-system">
 			{{ message.content }}
 		</div>
 
 		<div
 			v-else
-			class="message-box"
-			:class="{ 'offset-current': message.sender_id === currentUserId }"
+			class="vac-message-box"
+			:class="{ 'vac-offset-current': message.sender_id === currentUserId }"
 		>
 			<slot name="message" v-bind="{ message }">
 				<div
-					class="message-container"
+					class="vac-message-container"
 					:class="{
-						'message-container-offset': messageOffset
+						'vac-message-container-offset': messageOffset
 					}"
 				>
 					<div
 						ref="imageRef"
-						class="message-card"
+						class="vac-message-card"
 						:class="{
-							'message-highlight': isMessageHover(message),
-							'message-current': message.sender_id === currentUserId,
-							'message-deleted': message.deleted
+							'vac-message-highlight': isMessageHover(message),
+							'vac-message-current': message.sender_id === currentUserId,
+							'vac-message-deleted': message.deleted
 						}"
 						@mouseover="onHoverMessage(message)"
 						@mouseleave="onLeaveMessage"
 					>
 						<div
 							v-if="roomUsers.length > 2 && message.sender_id !== currentUserId"
-							class="text-username"
+							class="vac-text-username"
 							:class="{
-								'username-reply': !message.deleted && message.replyMessage
+								'vac-username-reply': !message.deleted && message.replyMessage
 							}"
 						>
 							<span>{{ message.username }}</span>
@@ -47,27 +47,27 @@
 
 						<div
 							v-if="!message.deleted && message.replyMessage"
-							class="reply-message"
+							class="vac-reply-message"
 						>
-							<div class="reply-username">{{ replyUsername }}</div>
+							<div class="vac-reply-username">{{ replyUsername }}</div>
 
-							<div class="image-reply-container" v-if="isImageReply">
+							<div class="vac-image-reply-container" v-if="isImageReply">
 								<div
-									class="message-image message-image-reply"
+									class="vac-message-image vac-message-image-reply"
 									:style="{
 										'background-image': `url('${message.replyMessage.file.url}')`
 									}"
 								></div>
 							</div>
 
-							<div class="reply-content">
+							<div class="vac-reply-content">
 								{{ message.replyMessage.content }}
 							</div>
 						</div>
 
 						<div v-if="message.deleted">
 							<slot name="deleted-icon">
-								<svg-icon name="deleted" class="icon-deleted" />
+								<svg-icon name="deleted" class="vac-icon-deleted" />
 							</slot>
 							<span>{{ textMessages.MESSAGE_DELETED }}</span>
 						</div>
@@ -83,15 +83,15 @@
 							</format-message>
 						</div>
 
-						<div class="image-container" v-else-if="isImage">
+						<div class="vac-image-container" v-else-if="isImage">
 							<loader
 								:style="{ top: `${imageResponsive.loaderTop}px` }"
 								:show="isImageLoading"
 							></loader>
 							<div
-								class="message-image"
+								class="vac-message-image"
 								:class="{
-									'image-loading':
+									'vac-image-loading':
 										isImageLoading && message.sender_id === currentUserId
 								}"
 								:style="{
@@ -99,13 +99,13 @@
 									'max-height': `${imageResponsive.maxHeight}px`
 								}"
 							>
-								<transition name="fade-image">
+								<transition name="vac-fade-image">
 									<div
-										class="image-buttons"
+										class="vac-image-buttons"
 										v-if="imageHover && !isImageLoading"
 									>
 										<div
-											class="svg-button button-view"
+											class="vac-svg-button vac-button-view"
 											@click.stop="openFile('preview')"
 										>
 											<slot name="eye-icon">
@@ -113,7 +113,7 @@
 											</slot>
 										</div>
 										<div
-											class="svg-button button-download"
+											class="vac-svg-button vac-button-download"
 											@click.stop="openFile('download')"
 										>
 											<slot name="document-icon">
@@ -129,17 +129,17 @@
 							></format-message>
 						</div>
 
-						<div v-else-if="message.file.audio" class="audio-message">
-							<div id="player">
+						<div v-else-if="message.file.audio" class="vac-audio-message">
+							<div id="vac-player">
 								<audio controls v-if="message.file.audio">
 									<source :src="message.file.url" />
 								</audio>
 							</div>
 						</div>
 
-						<div v-else class="file-message">
+						<div v-else class="vac-file-message">
 							<div
-								class="svg-button icon-file"
+								class="vac-svg-button vac-icon-file"
 								@click.stop="openFile('download')"
 							>
 								<slot name="document-icon">
@@ -149,9 +149,9 @@
 							<span>{{ message.content }}</span>
 						</div>
 
-						<div class="text-timestamp">
+						<div class="vac-text-timestamp">
 							<div
-								class="icon-edited"
+								class="vac-icon-edited"
 								v-if="message.edited && !message.deleted"
 							>
 								<slot name="pencil-icon">
@@ -166,15 +166,15 @@
 											message.distributed ? 'double-checkmark' : 'checkmark'
 										"
 										:param="message.seen ? 'seen' : ''"
-										class="icon-check"
+										class="vac-icon-check"
 									></svg-icon>
 								</slot>
 							</span>
 						</div>
 
 						<div
-							class="options-container"
-							:class="{ 'options-image': isImage && !message.replyMessage }"
+							class="vac-options-container"
+							:class="{ 'vac-options-image': isImage && !message.replyMessage }"
 							:style="{
 								width:
 									filteredMessageActions.length && showReactionEmojis
@@ -182,12 +182,12 @@
 										: '45px'
 							}"
 						>
-							<transition-group name="slide-left">
+							<transition-group name="vac-slide-left">
 								<div
 									key="1"
-									class="blur-container"
+									class="vac-blur-container"
 									:class="{
-										'options-me': message.sender_id === currentUserId
+										'vac-options-me': message.sender_id === currentUserId
 									}"
 									v-if="isMessageActions || isMessageReactions"
 								></div>
@@ -195,7 +195,7 @@
 								<div
 									ref="actionIcon"
 									key="2"
-									class="svg-button message-options"
+									class="vac-svg-button vac-message-options"
 									v-if="isMessageActions"
 									@click="openOptions"
 								>
@@ -206,7 +206,7 @@
 
 								<emoji-picker
 									key="3"
-									class="message-reactions"
+									class="vac-message-reactions"
 									:style="{ right: isMessageActions ? '30px' : '5px' }"
 									v-if="isMessageReactions"
 									v-click-outside="closeEmoji"
@@ -227,8 +227,8 @@
 						<transition
 							:name="
 								message.sender_id === currentUserId
-									? 'slide-left'
-									: 'slide-right'
+									? 'vac-slide-left'
+									: 'vac-slide-right'
 							"
 							v-if="filteredMessageActions.length"
 						>
@@ -236,17 +236,19 @@
 								ref="menuOptions"
 								v-if="optionsOpened"
 								v-click-outside="closeOptions"
-								class="menu-options"
-								:class="{ 'menu-left': message.sender_id !== currentUserId }"
+								class="vac-menu-options"
+								:class="{
+									'vac-menu-left': message.sender_id !== currentUserId
+								}"
 								:style="{ top: `${menuOptionsTop}px` }"
 							>
-								<div class="menu-list">
+								<div class="vac-menu-list">
 									<div
 										v-for="action in filteredMessageActions"
 										:key="action.name"
 									>
 										<div
-											class="menu-item"
+											class="vac-menu-item"
 											@click="messageActionHandler(action)"
 										>
 											{{ action.title }}
@@ -257,14 +259,14 @@
 						</transition>
 					</div>
 
-					<transition-group name="slide-left" v-if="!message.deleted">
+					<transition-group name="vac-slide-left" v-if="!message.deleted">
 						<button
 							v-for="(reaction, key) in message.reactions"
 							v-show="reaction.length"
 							:key="key + 0"
-							class="button-reaction"
+							class="vac-button-reaction"
 							:class="{
-								'reaction-me': reaction.indexOf(currentUserId) !== -1
+								'vac-reaction-me': reaction.indexOf(currentUserId) !== -1
 							}"
 							:style="{
 								float: message.sender_id === currentUserId ? 'right' : 'left'
@@ -541,7 +543,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.card-info {
+.vac-card-info {
 	border-radius: 4px;
 	text-align: center;
 	margin: 10px auto;
@@ -555,7 +557,7 @@ export default {
 		0 1px 1px -1px rgba(0, 0, 0, 0.11), 0 1px 2px -1px rgba(0, 0, 0, 0.11);
 }
 
-.card-date {
+.vac-card-date {
 	max-width: 150px;
 	font-weight: 500;
 	text-transform: uppercase;
@@ -563,14 +565,14 @@ export default {
 	background: var(--chat-message-bg-color-date);
 }
 
-.card-system {
+.vac-card-system {
 	max-width: 250px;
 	padding: 8px 4px;
 	color: var(--chat-message-color-system);
 	background: var(--chat-message-bg-color-system);
 }
 
-.line-new {
+.vac-line-new {
 	color: var(--chat-message-color-new-messages);
 	position: relative;
 	text-align: center;
@@ -578,8 +580,8 @@ export default {
 	padding: 10px 0;
 }
 
-.line-new:after,
-.line-new:before {
+.vac-line-new:after,
+.vac-line-new:before {
 	border-top: 1px solid var(--chat-message-color-new-messages);
 	content: '';
 	left: 0;
@@ -588,12 +590,12 @@ export default {
 	width: calc(50% - 60px);
 }
 
-.line-new:before {
+.vac-line-new:before {
 	left: auto;
 	right: 0;
 }
 
-.message-box {
+.vac-message-box {
 	display: flex;
 	flex: 0 0 50%;
 	max-width: 50%;
@@ -601,7 +603,7 @@ export default {
 	line-height: 1.4;
 }
 
-.message-container {
+.vac-message-container {
 	position: relative;
 	padding: 2px 10px;
 	align-items: end;
@@ -609,16 +611,16 @@ export default {
 	box-sizing: content-box;
 }
 
-.message-container-offset {
+.vac-message-container-offset {
 	margin-top: 10px;
 }
 
-.offset-current {
+.vac-offset-current {
 	margin-left: 50%;
 	justify-content: flex-end;
 }
 
-.message-card {
+.vac-message-card {
 	background: var(--chat-message-bg-color);
 	color: var(--chat-message-color);
 	border-radius: 8px;
@@ -634,23 +636,23 @@ export default {
 		0 1px 1px -1px rgba(0, 0, 0, 0.11), 0 1px 2px -1px rgba(0, 0, 0, 0.11);
 }
 
-.message-highlight {
+.vac-message-highlight {
 	box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.1),
 		0 1px 2px -1px rgba(0, 0, 0, 0.11), 0 1px 5px -1px rgba(0, 0, 0, 0.11);
 }
 
-.message-current {
+.vac-message-current {
 	background: var(--chat-message-bg-color-me) !important;
 }
 
-.message-deleted {
+.vac-message-deleted {
 	color: var(--chat-message-color-deleted) !important;
 	font-size: 13px !important;
 	font-style: italic !important;
 	background: var(--chat-message-bg-color-deleted) !important;
 }
 
-.icon-deleted {
+.vac-icon-deleted {
 	height: 14px;
 	width: 14px;
 	vertical-align: middle;
@@ -658,16 +660,16 @@ export default {
 	fill: var(--chat-message-color-deleted);
 }
 
-.image-container {
+.vac-image-container {
 	width: 250px;
 	max-width: 100%;
 }
 
-.image-reply-container {
+.vac-image-reply-container {
 	width: 70px;
 }
 
-.message-image {
+.vac-message-image {
 	position: relative;
 	background-color: var(--chat-message-bg-color-image) !important;
 	background-size: cover !important;
@@ -681,53 +683,53 @@ export default {
 	transition: 0.4s filter linear;
 }
 
-.message-image-reply {
+.vac-message-image-reply {
 	height: 70px;
 	width: 70px;
 	margin: 4px auto 3px;
 }
 
-.image-loading {
+.vac-image-loading {
 	filter: blur(3px);
 }
 
-.reply-message {
+.vac-reply-message {
 	background: var(--chat-message-bg-color-reply);
 	border-radius: 4px;
 	margin: -1px -5px 8px;
 	padding: 8px 10px;
 
-	.reply-username {
+	.vac-reply-username {
 		color: var(--chat-message-color-reply-username);
 		font-size: 12px;
 		line-height: 15px;
 		margin-bottom: 2px;
 	}
 
-	.reply-content {
+	.vac-reply-content {
 		font-size: 12px;
 		color: var(--chat-message-color-reply-content);
 	}
 }
 
-.text-username {
+.vac-text-username {
 	font-size: 13px;
 	color: var(--chat-message-color-username);
 	margin-bottom: 2px;
 }
 
-.username-reply {
+.vac-username-reply {
 	margin-bottom: 5px;
 }
 
-.text-timestamp {
+.vac-text-timestamp {
 	font-size: 10px;
 	color: var(--chat-message-color-timestamp);
 	text-align: right;
 }
 
 .selector:not(*:root),
-#player {
+#vac-player {
 	width: 250px;
 	overflow: hidden;
 	border-top-right-radius: 1em;
@@ -755,11 +757,11 @@ export default {
 	}
 }
 
-.audio-message {
+.vac-audio-message {
 	margin-top: 3px;
 }
 
-.file-message {
+.vac-file-message {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -769,12 +771,12 @@ export default {
 		max-width: 100%;
 	}
 
-	.icon-file svg {
+	.vac-icon-file svg {
 		margin-right: 5px;
 	}
 }
 
-.icon-edited {
+.vac-icon-edited {
 	-webkit-box-align: center;
 	align-items: center;
 	display: -webkit-inline-box;
@@ -792,7 +794,7 @@ export default {
 	}
 }
 
-.options-container {
+.vac-options-container {
 	position: absolute;
 	top: 2px;
 	right: 10px;
@@ -803,7 +805,7 @@ export default {
 	border-top-right-radius: 8px;
 }
 
-.blur-container {
+.vac-blur-container {
 	position: absolute;
 	height: 100%;
 	width: 100%;
@@ -814,16 +816,16 @@ export default {
 	border-bottom-left-radius: 8px;
 }
 
-.options-me {
+.vac-options-me {
 	background: var(--chat-message-bg-color-me);
 }
 
-.options-image .blur-container {
+.vac-options-image .vac-blur-container {
 	background: rgba(255, 255, 255, 0.6);
 	border-bottom-left-radius: 15px;
 }
 
-.image-buttons {
+.vac-image-buttons {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -847,8 +849,8 @@ export default {
 		width: 26px;
 	}
 
-	.button-view,
-	.button-download {
+	.vac-button-view,
+	.vac-button-download {
 		position: absolute;
 		bottom: 6px;
 		left: 7px;
@@ -858,13 +860,13 @@ export default {
 		left: 40px;
 	}
 
-	.button-view {
+	.vac-button-view {
 		max-width: 18px;
 		bottom: 8px;
 	}
 }
 
-.message-options {
+.vac-message-options {
 	background: var(--chat-icon-bg-dropdown-message);
 	border-radius: 50%;
 	position: absolute;
@@ -879,28 +881,28 @@ export default {
 	}
 }
 
-.message-reactions {
+.vac-message-reactions {
 	position: absolute;
 	top: 6px;
 	right: 30px;
 }
 
-.menu-options {
+.vac-menu-options {
 	right: 15px;
 }
 
-.menu-left {
+.vac-menu-left {
 	right: -118px;
 }
 
-.icon-check {
+.vac-icon-check {
 	height: 14px;
 	width: 14px;
 	vertical-align: middle;
 	margin: -3px -3px 0 3px;
 }
 
-.button-reaction {
+.vac-button-reaction {
 	display: inline-flex;
 	align-items: center;
 	border: var(--chat-message-border-style-reaction);
@@ -927,7 +929,7 @@ export default {
 	}
 }
 
-.reaction-me {
+.vac-reaction-me {
 	border: var(--chat-message-border-style-reaction-me);
 	background: var(--chat-message-bg-color-reaction-me);
 
@@ -942,27 +944,28 @@ export default {
 }
 
 @media only screen and (max-width: 768px) {
-	.message-container {
+	.vac-message-container {
 		padding: 2px 3px 1px;
 	}
 
-	.message-container-offset {
+	.vac-message-container-offset {
 		margin-top: 10px;
 	}
 
-	.message-box {
+	.vac-message-box {
 		flex: 0 0 80%;
 		max-width: 80%;
 	}
-	.offset-current {
+
+	.vac-offset-current {
 		margin-left: 20%;
 	}
 
-	.options-container {
+	.vac-options-container {
 		right: 3px;
 	}
 
-	.menu-left {
+	.vac-menu-left {
 		right: -50px;
 	}
 }

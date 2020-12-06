@@ -1,93 +1,93 @@
 // Spinner animation
-.fade-spinner-enter {
+.vac-fade-spinner-enter {
 	opacity: 0;
 }
 
-.fade-spinner-enter-active {
+.vac-fade-spinner-enter-active {
 	transition: opacity 0.8s;
 }
 
-.fade-spinner-leave-active {
+.vac-fade-spinner-leave-active {
 	transition: opacity 0.2s;
 	opacity: 0;
 }
 
 // Image hover animation
-.fade-image-enter {
+.vac-fade-image-enter {
 	opacity: 0;
 }
 
-.fade-image-enter-active {
+.vac-fade-image-enter-active {
 	transition: opacity 1s;
 }
 
-.fade-image-leave-active {
+.vac-fade-image-leave-active {
 	transition: opacity 0.5s;
 	opacity: 0;
 }
 
 // Messages box and text animation
-.fade-message-enter {
+.vac-fade-message-enter {
 	opacity: 0;
 }
 
-.fade-message-enter-active {
+.vac-fade-message-enter-active {
 	transition: opacity 0.5s;
 }
 
-.fade-message-leave-active {
+.vac-fade-message-leave-active {
 	transition: opacity 0.2s;
 	opacity: 0;
 }
 
 // Menu animation
-.slide-left-enter-active,
-.slide-right-enter-active {
+.vac-slide-left-enter-active,
+.vac-slide-right-enter-active {
 	transition: all 0.3s ease;
 	transition-property: transform, opacity;
 }
 
-.slide-left-leave-active,
-.slide-right-leave-active {
+.vac-slide-left-leave-active,
+.vac-slide-right-leave-active {
 	transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
 	transition-property: transform, opacity;
 }
 
-.slide-left-enter,
-.slide-left-leave-to {
+.vac-slide-left-enter,
+.vac-slide-left-leave-to {
 	transform: translateX(10px);
 	opacity: 0;
 }
 
-.slide-right-enter,
-.slide-right-leave-to {
+.vac-slide-right-enter,
+.vac-slide-right-leave-to {
 	transform: translateX(-10px);
 	opacity: 0;
 }
 
 // Reply message box animation
-.slide-up-enter-active {
+.vac-slide-up-enter-active {
 	transition: all 0.3s ease;
 }
-.slide-up-leave-active {
+.vac-slide-up-leave-active {
 	transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
 }
-.slide-up-enter,
-.slide-up-leave-to {
+.vac-slide-up-enter,
+.vac-slide-up-leave-to {
 	transform: translateY(10px);
 	opacity: 0;
 }
 
 // Scroll down icon animation
-.bounce-enter-active {
-	animation: bounce-in 0.5s;
+.vac-bounce-enter-active {
+	animation: vac-bounce-in 0.5s;
 }
 
-.bounce-leave-active {
-	animation: bounce-in 0.3s reverse;
+.vac-bounce-leave-active {
+	animation: vac-bounce-in 0.3s reverse;
 }
 
-@keyframes bounce-in {
+@keyframes vac-bounce-in {
 	0% {
 		transform: scale(0);
 	}

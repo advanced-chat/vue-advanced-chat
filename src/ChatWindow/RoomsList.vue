@@ -1,13 +1,13 @@
 <template>
 	<div
-		class="rooms-container app-border-r"
-		:class="{ 'rooms-container-full': isMobile }"
+		class="vac-rooms-container vac-app-border-r"
+		:class="{ 'vac-rooms-container-full': isMobile }"
 		v-show="showRoomsList"
 	>
 		<slot name="rooms-header"></slot>
 
-		<div class="box-search">
-			<div class="icon-search" v-if="!loadingRooms && rooms.length">
+		<div class="vac-box-search">
+			<div class="vac-icon-search" v-if="!loadingRooms && rooms.length">
 				<slot name="search-icon">
 					<svg-icon name="search" />
 				</slot>
@@ -17,9 +17,14 @@
 				type="search"
 				:placeholder="textMessages.SEARCH"
 				autocomplete="off"
+				class="vac-input"
 				@input="searchRoom"
 			/>
-			<div v-if="showAddRoom" class="svg-button add-icon" @click="addRoom">
+			<div
+				v-if="showAddRoom"
+				class="vac-svg-button vac-add-icon"
+				@click="addRoom"
+			>
 				<slot name="add-icon">
 					<svg-icon name="add" />
 				</slot>
@@ -28,44 +33,44 @@
 
 		<loader :show="loadingRooms"></loader>
 
-		<div v-if="!loadingRooms && !rooms.length" class="rooms-empty">
+		<div v-if="!loadingRooms && !rooms.length" class="vac-rooms-empty">
 			<slot name="rooms-empty">
 				{{ textMessages.ROOMS_EMPTY }}
 			</slot>
 		</div>
 
-		<div v-if="!loadingRooms" class="room-list">
+		<div v-if="!loadingRooms" class="vac-room-list">
 			<div
-				class="room-item"
+				class="vac-room-item"
 				v-for="room in filteredRooms"
 				:key="room.roomId"
-				:class="{ 'room-selected': selectedRoomId === room.roomId }"
+				:class="{ 'vac-room-selected': selectedRoomId === room.roomId }"
 				@click="openRoom(room)"
 			>
 				<slot name="room-list-item" v-bind="{ room }">
 					<div
 						v-if="room.avatar"
-						class="room-avatar"
+						class="vac-room-avatar"
 						:style="{ 'background-image': `url('${room.avatar}')` }"
 					></div>
-					<div class="name-container text-ellipsis">
-						<div class="title-container">
+					<div class="vac-name-container vac-text-ellipsis">
+						<div class="vac-title-container">
 							<div
 								v-if="userStatus(room)"
-								class="state-circle"
-								:class="{ 'state-online': userStatus(room) === 'online' }"
+								class="vac-state-circle"
+								:class="{ 'vac-state-online': userStatus(room) === 'online' }"
 							></div>
-							<div class="room-name text-ellipsis">
+							<div class="vac-room-name vac-text-ellipsis">
 								{{ room.roomName }}
 							</div>
-							<div v-if="room.lastMessage" class="text-date">
+							<div v-if="room.lastMessage" class="vac-text-date">
 								{{ room.lastMessage.timestamp }}
 							</div>
 						</div>
 						<div
-							class="text-last"
+							class="vac-text-last"
 							:class="{
-								'message-new':
+								'vac-message-new':
 									room.lastMessage && room.lastMessage.new && !typingUsers(room)
 							}"
 						>
@@ -78,7 +83,7 @@
 												: 'checkmark'
 										"
 										:param="room.lastMessage.seen ? 'seen' : ''"
-										class="icon-check"
+										class="vac-icon-check"
 									></svg-icon>
 								</slot>
 							</span>
@@ -89,10 +94,10 @@
 										room.lastMessage.file &&
 										room.lastMessage.file.audio
 								"
-								class="text-ellipsis"
+								class="vac-text-ellipsis"
 							>
 								<slot name="microphone-icon">
-									<svg-icon name="microphone" class="icon-microphone" />
+									<svg-icon name="microphone" class="vac-icon-microphone" />
 								</slot>
 								{{ formattedDuration(room.lastMessage.file.duration) }}
 							</div>
@@ -110,11 +115,11 @@
 							</format-message>
 							<div
 								v-if="!room.lastMessage && typingUsers(room)"
-								class="text-ellipsis"
+								class="vac-text-ellipsis"
 							>
 								{{ typingUsers(room) }}
 							</div>
-							<div v-if="room.unreadCount" class="room-badge">
+							<div v-if="room.unreadCount" class="vac-room-badge">
 								{{ room.unreadCount }}
 							</div>
 						</div>
@@ -239,7 +244,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.rooms-container {
+.vac-rooms-container {
 	display: flex;
 	flex-flow: column;
 	flex: 0 0 25%;
@@ -252,12 +257,12 @@ export default {
 	border-bottom-left-radius: var(--chat-container-border-radius);
 }
 
-.rooms-container-full {
+.vac-rooms-container-full {
 	flex: 0 0 100%;
 	max-width: 100%;
 }
 
-.box-search {
+.vac-box-search {
 	position: sticky;
 	display: flex;
 	align-items: center;
@@ -265,7 +270,7 @@ export default {
 	padding: 0 15px;
 }
 
-.icon-search {
+.vac-icon-search {
 	display: flex;
 	position: absolute;
 	left: 30px;
@@ -276,12 +281,12 @@ export default {
 	}
 }
 
-.add-icon {
+.vac-add-icon {
 	margin-left: auto;
 	padding-left: 10px;
 }
 
-input {
+.vac-input {
 	height: 38px;
 	width: 100%;
 	background: var(--chat-bg-color-input);
@@ -299,7 +304,7 @@ input {
 	}
 }
 
-.rooms-empty {
+.vac-rooms-empty {
 	font-size: 14px;
 	color: #9ca6af;
 	font-style: italic;
@@ -309,7 +314,7 @@ input {
 	white-space: pre-line;
 }
 
-.room-list {
+.vac-room-list {
 	flex: 1;
 	position: relative;
 	max-width: 100%;
@@ -318,7 +323,7 @@ input {
 	overflow-y: auto;
 }
 
-.room-item {
+.vac-room-item {
 	border-radius: 8px;
 	align-items: center;
 	display: flex;
@@ -338,7 +343,7 @@ input {
 	}
 }
 
-.room-selected {
+.vac-room-selected {
 	color: var(--chat-sidemenu-color-active) !important;
 	background: var(--chat-sidemenu-bg-color-active) !important;
 
@@ -347,29 +352,29 @@ input {
 	}
 }
 
-.name-container {
+.vac-name-container {
 	flex: 1;
 }
 
-.title-container {
+.vac-title-container {
 	display: flex;
 	align-items: center;
 	line-height: 25px;
 }
 
-.text-ellipsis {
+.vac-text-ellipsis {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-.room-name {
+.vac-room-name {
 	flex: 1;
 	color: var(--chat-room-color-username);
 	font-weight: 500;
 }
 
-.text-last {
+.vac-text-last {
 	display: flex;
 	align-items: center;
 	font-size: 12px;
@@ -377,18 +382,18 @@ input {
 	color: var(--chat-room-color-message);
 }
 
-.message-new {
+.vac-message-new {
 	color: var(--chat-room-color-username);
 	font-weight: 500;
 }
 
-.text-date {
+.vac-text-date {
 	margin-left: 5px;
 	font-size: 11px;
 	color: var(--chat-room-color-timestamp);
 }
 
-.icon-check {
+.vac-icon-check {
 	display: flex;
 	height: 14px;
 	width: 14px;
@@ -396,7 +401,7 @@ input {
 	margin-right: 2px;
 }
 
-.state-circle {
+.vac-state-circle {
 	width: 9px;
 	height: 9px;
 	border-radius: 50%;
@@ -405,11 +410,11 @@ input {
 	transition: 0.3s;
 }
 
-.state-online {
+.vac-state-online {
 	background-color: var(--chat-room-color-online);
 }
 
-.icon-microphone {
+.vac-icon-microphone {
 	height: 15px;
 	width: 15px;
 	vertical-align: middle;
@@ -417,7 +422,7 @@ input {
 	fill: var(--chat-room-color-message);
 }
 
-.room-badge {
+.vac-room-badge {
 	background-color: var(--chat-room-bg-color-badge);
 	color: var(--chat-room-color-badge);
 	font-size: 11px;
@@ -433,15 +438,15 @@ input {
 }
 
 @media only screen and (max-width: 768px) {
-	.box-search {
+	.vac-box-search {
 		height: 58px;
 	}
 
-	.room-list {
+	.vac-room-list {
 		padding: 0 7px 5px;
 	}
 
-	.room-item {
+	.vac-room-item {
 		min-height: 60px;
 		padding: 0 8px;
 	}

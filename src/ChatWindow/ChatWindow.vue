@@ -1,6 +1,6 @@
 <template>
-	<div class="card-window" :style="[{ height }, cssVars]">
-		<div class="chat-container">
+	<div class="vac-card-window" :style="[{ height }, cssVars]">
+		<div class="vac-chat-container">
 			<rooms-list
 				v-if="!singleRoom"
 				:currentUserId="currentUserId"
@@ -291,15 +291,7 @@ export default {
 <style lang="scss">
 @import '../styles/index.scss';
 
-* {
-	font-family: inherit;
-}
-
-a {
-	color: #0d579c;
-}
-
-.card-window {
+.vac-card-window {
 	width: 100%;
 	display: block;
 	max-width: 100%;
@@ -311,20 +303,28 @@ a {
 	border: var(--chat-container-border);
 	border-radius: var(--chat-container-border-radius);
 	box-shadow: var(--chat-container-box-shadow);
-}
 
-.chat-container {
-	height: 100%;
-	display: flex;
-
-	input {
-		min-width: 10px;
+	* {
+		font-family: inherit;
 	}
 
-	textarea,
-	input[type='text'],
-	input[type='search'] {
-		-webkit-appearance: none;
+	a {
+		color: #0d579c;
+	}
+
+	.vac-chat-container {
+		height: 100%;
+		display: flex;
+
+		input {
+			min-width: 10px;
+		}
+
+		textarea,
+		input[type='text'],
+		input[type='search'] {
+			-webkit-appearance: none;
+		}
 	}
 }
 </style>

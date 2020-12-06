@@ -1,27 +1,27 @@
 <template>
-	<div :class="{ 'text-ellipsis': singleLine }">
-		<div :class="{ 'text-ellipsis': singleLine }" v-if="textFormatting">
+	<div :class="{ 'vac-text-ellipsis': singleLine }">
+		<div :class="{ 'vac-text-ellipsis': singleLine }" v-if="textFormatting">
 			<template v-for="(message, i) in linkifiedMessage">
 				<component
 					:is="checkType(message, 'url') ? 'a' : 'span'"
 					:key="i"
 					:class="{
-						'text-ellipsis': singleLine,
-						'text-deleted': deleted,
-						'text-bold': checkType(message, 'bold'),
-						'text-italic': checkType(message, 'italic'),
-						'text-strike': checkType(message, 'strike'),
-						'text-underline': checkType(message, 'underline'),
-						'text-inline-code':
+						'vac-text-ellipsis': singleLine,
+						'vac-text-deleted': deleted,
+						'vac-text-bold': checkType(message, 'bold'),
+						'vac-text-italic': checkType(message, 'italic'),
+						'vac-text-strike': checkType(message, 'strike'),
+						'vac-text-underline': checkType(message, 'underline'),
+						'vac-text-inline-code':
 							!singleLine && checkType(message, 'inline-code'),
-						'text-multiline-code':
+						'vac-text-multiline-code':
 							!singleLine && checkType(message, 'multiline-code')
 					}"
 					:href="message.href"
 					target="_blank"
 				>
 					<slot name="deleted-icon" v-bind="{ deleted }">
-						<svg-icon v-if="deleted" name="deleted" class="icon-deleted" />
+						<svg-icon v-if="deleted" name="deleted" class="vac-icon-deleted" />
 					</slot>
 					{{ message.value }}
 				</component>
@@ -63,11 +63,11 @@ export default {
 </script>
 
 <style>
-.text-deleted {
+.vac-text-deleted {
 	font-style: italic;
 }
 
-.icon-deleted {
+.vac-icon-deleted {
 	height: 14px;
 	width: 14px;
 	vertical-align: middle;
@@ -75,7 +75,7 @@ export default {
 	fill: var(--chat-room-color-message);
 }
 
-.text-ellipsis {
+.vac-text-ellipsis {
 	width: 100%;
 	white-space: nowrap;
 	overflow: hidden;

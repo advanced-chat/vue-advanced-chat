@@ -1,47 +1,47 @@
-.app-border {
+.vac-app-border {
 	border: var(--chat-border-style);
 }
 
-.app-border-t {
+.vac-app-border-t {
 	border-top: var(--chat-border-style);
 }
 
-.app-border-r {
+.vac-app-border-r {
 	border-right: var(--chat-border-style);
 }
 
-.app-border-b {
+.vac-app-border-b {
 	border-bottom: var(--chat-border-style);
 }
 
-.item-clickable {
+.vac-item-clickable {
 	cursor: pointer;
 }
 
-.vertical-center {
+.vac-vertical-center {
 	display: flex;
 	align-items: center;
 	height: 100%;
 
-	.vertical-container {
+	.vac-vertical-container {
 		width: 100%;
 		text-align: center;
 	}
 }
 
-.svg-button {
+.vac-svg-button {
 	max-height: 30px;
 	display: flex;
 	cursor: pointer;
 	transition: all 0.2s;
 }
 
-.svg-button:hover {
+.vac-svg-button:hover {
 	transform: scale(1.1);
 	opacity: 0.7;
 }
 
-.room-avatar {
+.vac-room-avatar {
 	background-size: cover;
 	background-position: center center;
 	background-repeat: no-repeat;
@@ -54,23 +54,23 @@
 	border-radius: 50%;
 }
 
-.text-bold {
+.vac-text-bold {
 	font-weight: bold;
 }
 
-.text-italic {
+.vac-text-italic {
 	font-style: italic;
 }
 
-.text-strike {
+.vac-text-strike {
 	text-decoration: line-through;
 }
 
-.text-underline {
+.vac-text-underline {
 	text-decoration: underline;
 }
 
-.text-inline-code {
+.vac-text-inline-code {
 	display: inline-block;
 	font-size: 12px;
 	color: var(--chat-markdown-color);
@@ -81,7 +81,7 @@
 	padding: 2px 3px;
 }
 
-.text-multiline-code {
+.vac-text-multiline-code {
 	display: block;
 	font-size: 12px;
 	color: var(--chat-markdown-color-multi);
