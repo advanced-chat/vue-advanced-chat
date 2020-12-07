@@ -741,6 +741,7 @@ export default {
 				name: file.name.split('.')[0],
 				size: file.size,
 				type: file.name.split('.')[1] || file.type,
+        mime: file.type,
 				localUrl: fileURL
 			}
 			if (this.isImageCheck(this.file)) this.imageFile = fileURL
