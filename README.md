@@ -173,7 +173,7 @@ fetchMessages({ room, options }) {
 | roomId (3)                 | [String, Number] | -        | null    |
 | loadFirstRoom (4)          | Boolean          | -        | true    |
 | messages                   | Array            | -        | [ ]     |
-| roomMessage (5)            | Object           | -        | null    |
+| roomMessage (5)            | String           | -        | null    |
 | messagesLoaded (6)         | Boolean          | -        | false   |
 | menuActions (7)            | Array            | -        | [ ]     |
 | messageActions (8)         | Array            | -        | (4)     |
@@ -269,12 +269,13 @@ messageActions="[
 
 ```javascript
 textMessages="{
-  ROOMS_EMPTY: 'No rooms',
+  ROOMS_EMPTY: 'Aucun groupe',
+  ROOM_EMPTY: 'Aucun groupe sélectionné',
   NEW_MESSAGES: 'Nouveaux messages',
   MESSAGE_DELETED: 'Ce message a été supprimé',
   MESSAGES_EMPTY: 'Aucun message',
   CONVERSATION_STARTED: 'La conversation a commencée le :',
-  TYPE_MESSAGE: 'Taper votre message',
+  TYPE_MESSAGE: 'Tapez votre message',
   SEARCH: 'Rechercher',
   IS_ONLINE: 'est en ligne',
   LAST_SEEN: 'dernière connexion ',
