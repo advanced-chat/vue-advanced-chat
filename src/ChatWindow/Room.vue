@@ -443,8 +443,11 @@ export default {
 				}
 			}
 		},
-		roomMessage(val) {
-			if (val) this.message = this.roomMessage
+		roomMessage: {
+			immediate: true,
+			handler(val) {
+				if (val) this.message = this.roomMessage
+			}
 		},
 		messages(newVal, oldVal) {
 			newVal.forEach(message => {
