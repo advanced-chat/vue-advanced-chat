@@ -269,8 +269,8 @@ messageActions="[
 
 ```javascript
 textMessages="{
-  ROOMS_EMPTY: 'Aucun groupe',
-  ROOM_EMPTY: 'Aucun groupe sélectionné',
+  ROOMS_EMPTY: 'Aucune conversation',
+  ROOM_EMPTY: 'Aucune conversation sélectionnée',
   NEW_MESSAGES: 'Nouveaux messages',
   MESSAGE_DELETED: 'Ce message a été supprimé',
   MESSAGES_EMPTY: 'Aucun message',
