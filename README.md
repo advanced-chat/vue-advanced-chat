@@ -189,8 +189,8 @@ fetchMessages({ room, options }) {
 | responsiveBreakpoint (12)  | Number           | -        | 900     |
 | singleRoom (13)            | Boolean          | -        | false   |
 | theme (14)                 | Sring            | -        | light   |
-| styles (15)                | Object           | -        | (10)    |
-| acceptedFiles (16)         | String           | -        | "*"     |
+| acceptedFiles (15)         | String           | -        | "*"     |
+| styles (16)                | Object           | -        | (10)    |
 
 (1) `currentUserId` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -317,7 +317,9 @@ multiline code
 
 (14) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
 
-(15) `styles` can be used to customize your own theme. Ex:
+(15) `acceptedFiles` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
+
+(16) `styles` can be used to customize your own theme. Ex:
 
 ```javascript
 styles="{
@@ -444,7 +446,6 @@ styles="{
 }"
 ```
 
-(16) `acceptedFiles` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
 
 Example: set `accepted-files="image/png, image/peg, application/pdf"` to allow `JPG` `PNG` and `PDF` files
 
