@@ -165,7 +165,7 @@ fetchMessages({ room, options }) {
 ## Props API
 
 | Prop                       | Type             | Required | Default |
-| -------------------------- | ---------------- | -------- | ------- |
+|----------------------------|------------------|----------|---------|
 | height                     | String           | -        | 600px   |
 | currentUserId (1)          | [String, Number] | true     | -       |
 | rooms                      | Array            | -        | [ ]     |
@@ -190,6 +190,7 @@ fetchMessages({ room, options }) {
 | singleRoom (13)            | Boolean          | -        | false   |
 | theme (14)                 | Sring            | -        | light   |
 | styles (15)                | Object           | -        | (10)    |
+| acceptedFiles (16)         | String           | -        | "*"     |
 
 (1) `currentUserId` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -286,7 +287,7 @@ textMessages="{
 (11) `textFormatting` can be used to add text formatting. Currently, bold, italic, strikethrough, underline, inline code and multiline code formatting are available and can be used in conjonction. You can disable text formatting by passing the prop as `:textFormatting="false"`.
 
 | Style             | Syntax          | Example                                | Output                                 |
-| ----------------- | --------------- | -------------------------------------- | -------------------------------------- |
+|-------------------|-----------------|----------------------------------------|----------------------------------------|
 | Bold              | `* *`           | `*This is bold text*`                  | **This is bold text**                  |
 | Italic            | `_ _`           | `_This text is italicized_`            | _This text is italicized_              |
 | Strikethrough     | `~ ~`           | `~This was mistaken text~`             | ~~This was mistaken text~~             |
@@ -443,6 +444,10 @@ styles="{
 }"
 ```
 
+(16) `acceptedFiles` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
+
+Example: set `accepted-files="image/png, image/peg, application/pdf"` to allow `JPG` `PNG` and `PDF` files
+
 ## Props data structure
 
 Your props must follow a specific structure to display rooms and messages correctly:
@@ -556,7 +561,7 @@ messages="[
 ## Events API
 
 | Event                     | Params                                                          | Fires when                                            |
-| ------------------------- | --------------------------------------------------------------- | ----------------------------------------------------- |
+|---------------------------|-----------------------------------------------------------------|-------------------------------------------------------|
 | fetchMessages (1)         | `{ room, options }`                                             | A user has scrolled on top to load more messages      |
 | sendMessage               | `{ roomId, content, file (5), replyMessage (6) }`               | A user has sent a message                             |
 | editMessage               | `{ roomId, messageId, newContent, file (5), replyMessage (6) }` | A user has edited a message                           |
@@ -621,11 +626,11 @@ Example:
 </template>
 ```
 
-| Slot                       | Action                                                      | Data                          | Overridden slots                                                                                     |
-| -------------------------- | ----------------------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------- |
-| rooms-header               | Add a template on top of rooms list (above the search bar)  | -                             | -                                                                                                    |
-| room-list-item             | Replace the template of the room list items                 | rooms                         | -                                                                                                    |
-| room-header                | Replace the template of the room header                     | room, typingUsers, userStatus | room-options, menu-icon, toggle-icon                                                                 |
+| Slot           | Action                                                     | Data                          | Overridden slots                     |
+|----------------|------------------------------------------------------------|-------------------------------|--------------------------------------|
+| rooms-header   | Add a template on top of rooms list (above the search bar) | -                             | -                                    |
+| room-list-item | Replace the template of the room list items                | rooms                         | -                                    |
+| room-header    | Replace the template of the room header                    | room, typingUsers, userStatus | room-options, menu-icon, toggle-icon |
 | room-header-info           | Replace the template of the room header text                | room, typingUsers, userStatus |
 | room-options               | Replace the template of the room options                    | -                             | menu-icon                                                                                            |
 | message                    | Replace the template of the message box                     | message                       | deleted-icon, eye-icon, document-icon, pencil-icon, checkmark-icon, dropdown-icon, emoji-picker-icon |
