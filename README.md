@@ -319,6 +319,8 @@ multiline code
 
 (15) `acceptedFiles` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
 
+Example: set `accepted-files="image/png, image/peg, application/pdf"` to allow `JPG` `PNG` and `PDF` files
+
 (16) `styles` can be used to customize your own theme. Ex:
 
 ```javascript
@@ -445,9 +447,6 @@ styles="{
   }
 }"
 ```
-
-
-Example: set `accepted-files="image/png, image/peg, application/pdf"` to allow `JPG` `PNG` and `PDF` files
 
 ## Props data structure
 
