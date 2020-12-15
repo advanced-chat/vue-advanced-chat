@@ -417,9 +417,11 @@ export default {
 			this.hideOptions = true
 			setTimeout(() => {
 				if (!e.target) return
-				this.scrollIcon =
-					e.target.scrollHeight > 500 &&
-					e.target.scrollHeight - e.target.scrollTop > 1000
+
+				const { scrollHeight, clientHeight, scrollTop } = e.target
+				const bottomScroll = scrollHeight - clientHeight - scrollTop
+
+				this.scrollIcon = bottomScroll > 1000
 			}, 200)
 		})
 
