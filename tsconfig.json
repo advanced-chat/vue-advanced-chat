@@ -1,7 +1,7 @@
 {
   // Change this to match your project
   "include": [
-    "dist"
+    "dist/**/*"
   ],
 
   "compilerOptions": {
@@ -16,6 +16,6 @@
     // Types should go into this directory.
     // Removing this would place the .d.ts files
     // next to the .js files
-    "outDir": "dist/types",
+    "outDir": "types",
   },
 }

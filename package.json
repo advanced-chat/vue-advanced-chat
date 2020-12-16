@@ -39,7 +39,8 @@
 		"gen:types": "tsc --declaration"
 	},
 	"files": [
-		"dist/*"
+		"dist/*",
+		"types/*"
 	],
 	"peerDependencies": {
 		"vue": "^2.6.10"
