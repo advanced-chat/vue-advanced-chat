@@ -7,6 +7,7 @@
 		"email": "antoindupontdev@gmail.com",
 		"name": "Antoine Dupont"
 	},
+	"types": "./types/vue-advanced-chat.common.d.ts",
 	"keywords": [
 		"vue",
 		"vuejs",
@@ -28,15 +29,18 @@
 	"main": "./dist/vue-advanced-chat.common.js",
 	"scripts": {
 		"serve": "vue-cli-service serve",
-		"build": "vue-cli-service build",
-		"build:lib": "vue-cli-service build --target lib --name vue-advanced-chat ./src/ChatWindow/index.js",
-		"build:wc": "vue-cli-service build --target wc --name vue-advanced-chat ./src/ChatWindow/ChatWindow.vue",
-		"prepublish": "npm run build:lib",
+		"build": "npm run clean:lib && npm run build:lib && npm run build:wc && npm run gen:types",
+		"clean:lib": "rimraf dist",
+		"build:lib": "vue-cli-service build --target lib --no-clean --name vue-advanced-chat ./src/ChatWindow/index.js",
+		"build:wc": "vue-cli-service build --target wc --no-clean --name vue-advanced-chat ./src/ChatWindow/ChatWindow.vue",
+		"prepublish": "npm run lint && npm run build",
 		"publish-beta": "npm publish --tag beta",
-		"lint": "vue-cli-service lint"
+		"lint": "vue-cli-service lint",
+		"gen:types": "tsc --declaration"
 	},
 	"files": [
-		"dist/*"
+		"dist/*",
+		"types/*"
 	],
 	"peerDependencies": {
 		"vue": "^2.6.10"
@@ -50,8 +54,10 @@
 		"eslint": "^5.16.0",
 		"eslint-plugin-vue": "^5.0.0",
 		"node-sass": "^4.13.0",
+		"rimraf": "^2.7.1",
 		"sass": "^1.19.0",
 		"sass-loader": "^8.0.0",
+		"typescript": "^3.9.7",
 		"vue": "^2.6.10",
 		"vue-template-compiler": "^2.6.10"
 	},
