@@ -302,6 +302,7 @@
 						v-if="showFiles"
 						type="file"
 						ref="file"
+						:accept="acceptedFiles"
 						@change="onFileChange($event.target.files)"
 						style="display:none"
 					/>
@@ -373,7 +374,8 @@ export default {
 		textFormatting: { type: Boolean, required: true },
 		loadingRooms: { type: Boolean, required: true },
 		roomInfo: { type: Function },
-		textareaAction: { type: Function }
+		textareaAction: { type: Function },
+		acceptedFiles: { type: String, default: '*' }
 	},
 
 	data() {

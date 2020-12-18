@@ -44,6 +44,7 @@
 				:loadingRooms="loadingRooms"
 				:roomInfo="$listeners.roomInfo"
 				:textareaAction="$listeners.textareaActionHandler"
+				:accepted-files="acceptedFiles"
 				@toggleRoomsList="toggleRoomsList"
 				@roomInfo="roomInfo"
 				@fetchMessages="fetchMessages"
@@ -112,7 +113,8 @@ export default {
 		showNewMessagesDivider: { type: Boolean, default: true },
 		textFormatting: { type: Boolean, default: true },
 		newMessage: { type: Object, default: null },
-		roomMessage: { type: String, default: '' }
+		roomMessage: { type: String, default: '' },
+		acceptedFiles: { type: String, default: '*' }
 	},
 
 	data() {

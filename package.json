@@ -57,7 +57,6 @@
 		"rimraf": "^2.7.1",
 		"sass": "^1.19.0",
 		"sass-loader": "^8.0.0",
-		"ts": "^0.2.2",
 		"typescript": "^3.9.7",
 		"vue": "^2.6.10",
 		"vue-template-compiler": "^2.6.10"
