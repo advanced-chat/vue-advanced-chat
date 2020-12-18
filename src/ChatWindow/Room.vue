@@ -371,11 +371,11 @@ export default {
 		showEmojis: { type: Boolean, required: true },
 		showReactionEmojis: { type: Boolean, required: true },
 		showNewMessagesDivider: { type: Boolean, required: true },
+		acceptedFiles: { type: String, required: true },
 		textFormatting: { type: Boolean, required: true },
 		loadingRooms: { type: Boolean, required: true },
 		roomInfo: { type: Function },
-		textareaAction: { type: Function },
-		acceptedFiles: { type: String, default: '*' }
+		textareaAction: { type: Function }
 	},
 
 	data() {
