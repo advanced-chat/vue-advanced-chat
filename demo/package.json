@@ -14,7 +14,7 @@
 	"dependencies": {
 		"firebase": "^7.5.0",
 		"vue": "^2.6.10",
-		"vue-advanced-chat": "0.5.6"
+		"vue-advanced-chat": "0.5.7"
 	},
 	"devDependencies": {
 		"@vue/cli-plugin-babel": "^4.1.0",
