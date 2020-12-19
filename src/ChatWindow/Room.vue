@@ -31,11 +31,13 @@
 						:class="{ 'vac-item-clickable': roomInfo }"
 						@click="$emit('roomInfo', room)"
 					>
-						<div
-							v-if="room.avatar"
-							class="vac-room-avatar"
-							:style="{ 'background-image': `url('${room.avatar}')` }"
-						></div>
+						<slot name="room-header-avatar" v-bind="{ room }">
+							<div
+								v-if="room.avatar"
+								class="vac-room-avatar"
+								:style="{ 'background-image': `url('${room.avatar}')` }"
+							></div>
+						</slot>
 						<slot
 							name="room-header-info"
 							v-bind="{ room, typingUsers, userStatus }"
