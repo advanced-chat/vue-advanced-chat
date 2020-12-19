@@ -75,7 +75,7 @@
 						<div v-else-if="!message.file">
 							<format-message
 								:content="this.message.content"
-								:textFormatting="textFormatting"
+								:text-formatting="textFormatting"
 							>
 								<template v-slot:deleted-icon="data">
 									<slot name="deleted-icon" v-bind="data"></slot>
@@ -125,7 +125,7 @@
 							</div>
 							<format-message
 								:content="this.message.content"
-								:textFormatting="textFormatting"
+								:text-formatting="textFormatting"
 							></format-message>
 						</div>
 
@@ -210,12 +210,12 @@
 									:style="{ right: isMessageActions ? '30px' : '5px' }"
 									v-if="isMessageReactions"
 									v-click-outside="closeEmoji"
-									:emojiOpened="emojiOpened"
-									:emojiReaction="true"
-									:roomFooterRef="roomFooterRef"
-									:positionRight="message.sender_id === currentUserId"
-									@addEmoji="sendMessageReaction"
-									@openEmoji="openEmoji"
+									:emoji-opened="emojiOpened"
+									:emoji-reaction="true"
+									:room-footer-ref="roomFooterRef"
+									:position-right="message.sender_id === currentUserId"
+									@add-emoji="sendMessageReaction"
+									@open-emoji="openEmoji"
 								>
 									<template v-slot:emoji-picker-icon>
 										<slot name="emoji-picker-reaction-icon"></slot>
@@ -358,7 +358,7 @@ export default {
 
 	mounted() {
 		if (!this.message.seen && this.message.sender_id !== this.currentUserId) {
-			this.$emit('addNewMessage', {
+			this.$emit('add-new-message', {
 				_id: this.message._id,
 				index: this.index
 			})
@@ -452,7 +452,7 @@ export default {
 			this.hoverMessageId = null
 		},
 		openFile(action) {
-			this.$emit('openFile', { message: this.message, action })
+			this.$emit('open-file', { message: this.message, action })
 		},
 		messageActionHandler(action) {
 			this.closeOptions()
@@ -460,7 +460,7 @@ export default {
 			this.hoverMessageId = null
 
 			setTimeout(() => {
-				this.$emit('messageActionHandler', { action, message: this.message })
+				this.$emit('message-action-handler', { action, message: this.message })
 			}, 300)
 		},
 		checkImageFile() {
@@ -488,7 +488,7 @@ export default {
 			this.optionsOpened = !this.optionsOpened
 			if (!this.optionsOpened) return
 
-			this.$emit('hideOptions', false)
+			this.$emit('hide-options', false)
 
 			setTimeout(() => {
 				if (
@@ -520,7 +520,7 @@ export default {
 		},
 		openEmoji() {
 			this.emojiOpened = !this.emojiOpened
-			this.$emit('hideOptions', false)
+			this.$emit('hide-options', false)
 		},
 		closeEmoji() {
 			this.emojiOpened = false
@@ -530,7 +530,7 @@ export default {
 			return this.emojisList[emojiName]
 		},
 		sendMessageReaction(emoji, reaction) {
-			this.$emit('sendMessageReaction', {
+			this.$emit('send-message-reaction', {
 				messageId: this.message._id,
 				reaction: emoji,
 				remove: reaction && reaction.indexOf(this.currentUserId) !== -1

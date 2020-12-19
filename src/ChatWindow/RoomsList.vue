@@ -105,9 +105,9 @@
 								v-else-if="room.lastMessage"
 								:content="getLastMessage(room)"
 								:deleted="!!room.lastMessage.deleted && !typingUsers(room)"
-								:formatLinks="false"
-								:textFormatting="textFormatting"
-								:singleLine="true"
+								:format-links="false"
+								:text-formatting="textFormatting"
+								:single-line="true"
 							>
 								<template v-slot:deleted-icon="data">
 									<slot name="deleted-icon" v-bind="data"></slot>
@@ -185,10 +185,10 @@ export default {
 		openRoom(room) {
 			if (room.roomId === this.room.roomId && !this.isMobile) return
 			if (!this.isMobile) this.selectedRoomId = room.roomId
-			this.$emit('fetchRoom', { room })
+			this.$emit('fetch-room', { room })
 		},
 		addRoom() {
-			this.$emit('addRoom')
+			this.$emit('add-room')
 		},
 		userStatus(room) {
 			if (!room.users || room.users.length !== 2) return

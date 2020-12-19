@@ -3,17 +3,17 @@
 		<div class="vac-chat-container">
 			<rooms-list
 				v-if="!singleRoom"
-				:currentUserId="currentUserId"
+				:current-user-id="currentUserId"
 				:rooms="orderedRooms"
-				:loadingRooms="loadingRooms"
+				:loading-rooms="loadingRooms"
 				:room="room"
-				:textMessages="t"
-				:showAddRoom="showAddRoom"
-				:showRoomsList="showRoomsList"
-				:textFormatting="textFormatting"
-				:isMobile="isMobile"
-				@fetchRoom="fetchRoom"
-				@addRoom="addRoom"
+				:text-messages="t"
+				:show-add-room="showAddRoom"
+				:show-rooms-list="showRoomsList"
+				:text-formatting="textFormatting"
+				:is-mobile="isMobile"
+				@fetch-room="fetchRoom"
+				@add-room="addRoom"
 			>
 				<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
 					<slot :name="name" v-bind="data"></slot>
@@ -21,42 +21,42 @@
 			</rooms-list>
 
 			<room
-				:currentUserId="currentUserId"
+				:current-user-id="currentUserId"
 				:rooms="rooms"
-				:roomId="room.roomId || ''"
-				:loadFirstRoom="loadFirstRoom"
+				:room-id="room.roomId || ''"
+				:load-first-room="loadFirstRoom"
 				:messages="messages"
-				:roomMessage="roomMessage"
-				:messagesLoaded="messagesLoaded"
-				:menuActions="menuActions"
-				:messageActions="messageActions"
-				:showSendIcon="showSendIcon"
-				:showFiles="showFiles"
-				:showAudio="showAudio"
-				:showEmojis="showEmojis"
-				:showReactionEmojis="showReactionEmojis"
-				:showNewMessagesDivider="showNewMessagesDivider"
-				:textMessages="t"
-				:singleRoom="singleRoom"
-				:showRoomsList="showRoomsList"
-				:textFormatting="textFormatting"
-				:isMobile="isMobile"
-				:loadingRooms="loadingRooms"
-				:roomInfo="$listeners.roomInfo"
-				:textareaAction="$listeners.textareaActionHandler"
+				:room-message="roomMessage"
+				:messages-loaded="messagesLoaded"
+				:menu-actions="menuActions"
+				:message-actions="messageActions"
+				:show-send-icon="showSendIcon"
+				:show-files="showFiles"
+				:show-audio="showAudio"
+				:show-emojis="showEmojis"
+				:show-reaction-emojis="showReactionEmojis"
+				:show-new-messages-divider="showNewMessagesDivider"
+				:text-messages="t"
+				:single-room="singleRoom"
+				:show-rooms-list="showRoomsList"
+				:text-formatting="textFormatting"
+				:is-mobile="isMobile"
+				:loading-rooms="loadingRooms"
+				:room-info="$listeners.roomInfo"
+				:textarea-action="$listeners.textareaActionHandler"
 				:accepted-files="acceptedFiles"
-				@toggleRoomsList="toggleRoomsList"
-				@roomInfo="roomInfo"
-				@fetchMessages="fetchMessages"
-				@sendMessage="sendMessage"
-				@editMessage="editMessage"
-				@deleteMessage="deleteMessage"
-				@openFile="openFile"
-				@menuActionHandler="menuActionHandler"
-				@messageActionHandler="messageActionHandler"
-				@sendMessageReaction="sendMessageReaction"
-				@typingMessage="typingMessage"
-				@textareaActionHandler="textareaActionHandler"
+				@toggle-rooms-list="toggleRoomsList"
+				@room-info="roomInfo"
+				@fetch-messages="fetchMessages"
+				@send-message="sendMessage"
+				@edit-message="editMessage"
+				@delete-message="deleteMessage"
+				@open-file="openFile"
+				@menu-action-handler="menuActionHandler"
+				@message-action-handler="messageActionHandler"
+				@send-message-reaction="sendMessageReaction"
+				@typing-message="typingMessage"
+				@textarea-action-handler="textareaActionHandler"
 			>
 				<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
 					<slot :name="name" v-bind="data"></slot>
@@ -239,49 +239,49 @@ export default {
 			if (this.isMobile) this.showRoomsList = false
 		},
 		roomInfo() {
-			this.$emit('roomInfo', this.room)
+			this.$emit('room-info', this.room)
 		},
 		addRoom() {
-			this.$emit('addRoom')
+			this.$emit('add-room')
 		},
 		fetchMessages(options) {
-			this.$emit('fetchMessages', { room: this.room, options })
+			this.$emit('fetch-messages', { room: this.room, options })
 		},
 		sendMessage(message) {
-			this.$emit('sendMessage', { ...message, roomId: this.room.roomId })
+			this.$emit('send-message', { ...message, roomId: this.room.roomId })
 		},
 		editMessage(message) {
-			this.$emit('editMessage', { ...message, roomId: this.room.roomId })
+			this.$emit('edit-message', { ...message, roomId: this.room.roomId })
 		},
 		deleteMessage(messageId) {
-			this.$emit('deleteMessage', { messageId, roomId: this.room.roomId })
+			this.$emit('delete-message', { messageId, roomId: this.room.roomId })
 		},
 		openFile({ message, action }) {
-			this.$emit('openFile', { message, action })
+			this.$emit('open-file', { message, action })
 		},
 		menuActionHandler(ev) {
-			this.$emit('menuActionHandler', { action: ev, roomId: this.room.roomId })
+			this.$emit('menu-action-handler', { action: ev, roomId: this.room.roomId })
 		},
 		messageActionHandler(ev) {
-			this.$emit('messageActionHandler', {
+			this.$emit('message-action-handler', {
 				...ev,
 				roomId: this.room.roomId
 			})
 		},
 		sendMessageReaction(messageReaction) {
-			this.$emit('sendMessageReaction', {
+			this.$emit('send-message-reaction', {
 				...messageReaction,
 				roomId: this.room.roomId
 			})
 		},
 		typingMessage(message) {
-			this.$emit('typingMessage', {
+			this.$emit('typing-message', {
 				message,
 				roomId: this.room.roomId
 			})
 		},
 		textareaActionHandler(message) {
-			this.$emit('textareaActionHandler', {
+			this.$emit('textarea-action-handler', {
 				message,
 				roomId: this.room.roomId
 			})

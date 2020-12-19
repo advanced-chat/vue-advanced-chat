@@ -81,10 +81,10 @@ export default {
 	},
 	methods: {
 		append({ emoji, emojiName }) {
-			this.$emit('addEmoji', { icon: emoji, name: emojiName })
+			this.$emit('add-emoji', { icon: emoji, name: emojiName })
 		},
 		openEmoji(ev) {
-			this.$emit('openEmoji', true)
+			this.$emit('open-emoji', true)
 			this.setEmojiPickerPosition(
 				ev.clientY,
 				ev.view.innerWidth,

@@ -116,26 +116,26 @@
 					<transition-group name="vac-fade-message">
 						<div v-for="(message, i) in messages" :key="message._id">
 							<message
-								:currentUserId="currentUserId"
+								:current-user-id="currentUserId"
 								:message="message"
 								:index="i"
 								:messages="messages"
-								:editedMessage="editedMessage"
-								:messageActions="messageActions"
-								:roomUsers="room.users"
-								:textMessages="textMessages"
-								:roomFooterRef="$refs.roomFooter"
-								:newMessages="newMessages"
-								:showReactionEmojis="showReactionEmojis"
-								:showNewMessagesDivider="showNewMessagesDivider"
-								:textFormatting="textFormatting"
-								:emojisList="emojisList"
-								:hideOptions="hideOptions"
-								@messageActionHandler="messageActionHandler"
-								@openFile="openFile"
-								@addNewMessage="addNewMessage"
-								@sendMessageReaction="sendMessageReaction"
-								@hideOptions="hideOptions = $event"
+								:edited-message="editedMessage"
+								:message-actions="messageActions"
+								:room-users="room.users"
+								:text-messages="textMessages"
+								:room-footer-ref="$refs.roomFooter"
+								:new-messages="newMessages"
+								:show-reaction-emojis="showReactionEmojis"
+								:show-new-messages-divider="showNewMessagesDivider"
+								:text-formatting="textFormatting"
+								:emojis-list="emojisList"
+								:hide-options="hideOptions"
+								@message-action-handler="messageActionHandler"
+								@open-file="openFile"
+								@add-new-message="addNewMessage"
+								@send-message-reaction="sendMessageReaction"
+								@hide-options="hideOptions = $event"
 							>
 								<template
 									v-for="(index, name) in $scopedSlots"
@@ -268,10 +268,10 @@
 
 					<emoji-picker
 						v-if="showEmojis && (!file || imageFile)"
-						:emojiOpened="emojiOpened"
-						:positionTop="true"
-						@addEmoji="addEmoji"
-						@openEmoji="emojiOpened = $event"
+						:emoji-opened="emojiOpened"
+						:position-top="true"
+						@add-emoji="addEmoji"
+						@open-emoji="emojiOpened = $event"
 					>
 						<template v-slot:emoji-picker-icon>
 							<slot name="emoji-picker-icon"></slot>
@@ -609,7 +609,7 @@ export default {
 			this.newMessages.push(message)
 		},
 		resetMessage(disableMobileFocus = null, editFile = null) {
-			this.$emit('typingMessage', null)
+			this.$emit('typing-message', null)
 
 			if (editFile) {
 				this.file = null
@@ -652,7 +652,7 @@ export default {
 
 			if (this.editedMessage._id) {
 				if (this.editedMessage.content !== this.message || this.file) {
-					this.$emit('editMessage', {
+					this.$emit('edit-message', {
 						messageId: this.editedMessage._id,
 						newContent: this.message.trim(),
 						file: this.file,
@@ -660,7 +660,7 @@ export default {
 					})
 				}
 			} else {
-				this.$emit('sendMessage', {
+				this.$emit('send-message', {
 					content: this.message.trim(),
 					file: this.file,
 					replyMessage: this.messageReply
@@ -677,7 +677,7 @@ export default {
 			}
 
 			this.infiniteState = infiniteState
-			this.$emit('fetchMessages')
+			this.$emit('fetch-messages')
 			this.loadingMoreMessages = true
 		},
 		messageActionHandler({ action, message }) {
@@ -687,13 +687,13 @@ export default {
 				case 'editMessage':
 					return this.editMessage(message)
 				case 'deleteMessage':
-					return this.$emit('deleteMessage', message._id)
+					return this.$emit('delete-message', message._id)
 				default:
-					return this.$emit('messageActionHandler', { action, message })
+					return this.$emit('message-action-handler', { action, message })
 			}
 		},
 		sendMessageReaction(messageReaction) {
-			this.$emit('sendMessageReaction', messageReaction)
+			this.$emit('send-message-reaction', messageReaction)
 		},
 		replyMessage(message) {
 			this.resetMessage()
@@ -714,7 +714,7 @@ export default {
 		},
 		onChangeInput() {
 			this.resizeTextarea()
-			this.$emit('typingMessage', this.message)
+			this.$emit('typing-message', this.message)
 		},
 		resizeTextarea() {
 			const el = this.$refs['roomTextarea']
@@ -760,17 +760,17 @@ export default {
 			return imageTypes.some(t => type.toLowerCase().includes(t))
 		},
 		openFile({ message, action }) {
-			this.$emit('openFile', { message, action })
+			this.$emit('open-file', { message, action })
 		},
 		menuActionHandler(action) {
 			this.closeMenu()
-			this.$emit('menuActionHandler', action)
+			this.$emit('menu-action-handler', action)
 		},
 		closeMenu() {
 			this.menuOpened = false
 		},
 		textareaActionHandler() {
-			this.$emit('textareaActionHandler', this.message)
+			this.$emit('textarea-action-handler', this.message)
 		}
 	}
 }
