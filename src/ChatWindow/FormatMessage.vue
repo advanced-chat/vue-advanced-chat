@@ -43,14 +43,14 @@ export default {
 	props: {
 		content: { type: [String, Number], required: true },
 		deleted: { type: Boolean, default: false },
-		formatLinks: { type: Boolean, default: true },
+		linkify: { type: Boolean, default: true },
 		singleLine: { type: Boolean, default: false },
 		textFormatting: { type: Boolean, required: true }
 	},
 
 	computed: {
 		linkifiedMessage() {
-			return formatString(this.content, this.formatLinks)
+			return formatString(this.content, this.linkify)
 		}
 	},
 
