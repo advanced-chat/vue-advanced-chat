@@ -629,7 +629,7 @@ Example:
 | Slot                       | Action                                                      | Data                          | Overridden slots                                                                                     |
 | -------------------------- | ----------------------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------- |
 | rooms-header               | Add a template on top of rooms list (above the search bar)  | -                             | -                                                                                                    |
-| room-list-item             | Replace the template of the room list items                 | rooms                         | -                                                                                                    |
+| room-list-item             | Replace the template of the room list items                 | room                          | -                                                                                                    |
 | room-header                | Replace the template of the room header                     | room, typingUsers, userStatus | room-options, menu-icon, toggle-icon                                                                 |
 | room-header-avatar         | Replace the template of the room header avatar              | room                          |
 | room-header-info           | Replace the template of the room header text                | room, typingUsers, userStatus |
