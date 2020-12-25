@@ -744,12 +744,13 @@ export default {
 			const file = files[0]
 			const fileURL = URL.createObjectURL(file)
 			const blobFile = await fetch(fileURL).then(res => res.blob())
+			const typeIndex = file.name.lastIndexOf('.');
 
 			this.file = {
 				blob: blobFile,
-				name: file.name.split('.')[0],
+				name: file.name.substring(0, typeIndex),
 				size: file.size,
-				type: file.name.split('.')[1] || file.type,
+				type: file.name.substring(typeIndex) || file.type,
 				localUrl: fileURL
 			}
 			if (this.isImageCheck(this.file)) this.imageFile = fileURL
