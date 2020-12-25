@@ -20,7 +20,7 @@
 						v-if="!singleRoom"
 						class="vac-svg-button vac-toggle-button"
 						:class="{ 'vac-rotate-icon': !showRoomsList && !isMobile }"
-						@click="$emit('toggleRoomsList')"
+						@click="$emit('toggle-rooms-list')"
 					>
 						<slot name="toggle-icon">
 							<svg-icon name="toggle" />
@@ -29,7 +29,7 @@
 					<div
 						class="vac-info-wrapper"
 						:class="{ 'vac-item-clickable': roomInfo }"
-						@click="$emit('roomInfo', room)"
+						@click="$emit('room-info', room)"
 					>
 						<slot name="room-header-avatar" v-bind="{ room }">
 							<div
