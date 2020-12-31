@@ -309,6 +309,7 @@
 						style="display:none"
 					/>
 
+						<slot name="before-send-btn">  	</slot>
 					<div
 						v-if="showSendIcon"
 						@click="sendMessage"
@@ -319,6 +320,8 @@
 							<svg-icon name="send" :param="inputDisabled ? 'disabled' : ''" />
 						</slot>
 					</div>
+          
+						<slot name="after-send-btn">  	</slot>
 				</div>
 			</div>
 		</div>
