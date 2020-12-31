@@ -184,13 +184,14 @@ fetchMessages({ room, options }) {
 | show-emojis                   | Boolean          | -        | true    |
 | show-reaction-emojis          | Boolean          | -        | true    |
 | show-new-messages-divider (9) | Boolean          | -        | true    |
-| text-messages (10)            | Object           | -        | null    |
-| text-formatting (11)          | Boolean          | -        | true    |
-| responsive-breakpoint (12)    | Number           | -        | 900     |
-| single-room (13)              | Boolean          | -        | false   |
-| theme (14)                    | Sring            | -        | light   |
-| accepted-files (15)           | String           | -        | "\*"    |
-| styles (16)                   | Object           | -        | (10)    |
+| show-footer (10)              | Boolean          | -        | true    |
+| text-messages (11)            | Object           | -        | null    |
+| text-formatting (12)          | Boolean          | -        | true    |
+| responsive-breakpoint (13)    | Number           | -        | 900     |
+| single-room (14)              | Boolean          | -        | false   |
+| theme (15)                    | Sring            | -        | light   |
+| accepted-files (16)           | String           | -        | "\*"    |
+| styles (17)                   | Object           | -        | (10)    |
 
 (1) `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -266,7 +267,9 @@ messageActions="[
 
 (9) `show-new-messages-divider` can be used to show/hide the blue line divider between seen and unseen messages.
 
-(10) `text-messages` can be used to replace default i18n texts. Ex:
+(10) `show-footer` can be used to hide the room footer. For example to prevent users to send any message or media.
+
+(11) `text-messages` can be used to replace default i18n texts. Ex:
 
 ```javascript
 text-messages="{
@@ -284,7 +287,7 @@ text-messages="{
 }"
 ```
 
-(11) `text-formatting` can be used to add text formatting. Currently, bold, italic, strikethrough, underline, inline code and multiline code formatting are available and can be used in conjonction. You can disable text formatting by passing the prop as `:textFormatting="false"`.
+(12) `text-formatting` can be used to add text formatting. Currently, bold, italic, strikethrough, underline, inline code and multiline code formatting are available and can be used in conjonction. You can disable text formatting by passing the prop as `:textFormatting="false"`.
 
 | Style             | Syntax          | Example                                | Output                                 |
 | ----------------- | --------------- | -------------------------------------- | -------------------------------------- |
@@ -311,17 +314,17 @@ This is
 multiline code
 ```
 
-(12) `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
+(13) `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
 
-(13) `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+(14) `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
 
-(14) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+(15) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
 
-(15) `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
+(16) `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
 
 Example: set `"accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files
 
-(16) `styles` can be used to customize your own theme. Ex:
+(17) `styles` can be used to customize your own theme. Ex:
 
 ```javascript
 styles="{

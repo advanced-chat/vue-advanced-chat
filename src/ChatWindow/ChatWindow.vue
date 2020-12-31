@@ -36,6 +36,7 @@
 				:show-emojis="showEmojis"
 				:show-reaction-emojis="showReactionEmojis"
 				:show-new-messages-divider="showNewMessagesDivider"
+				:show-footer="showFooter"
 				:text-messages="t"
 				:single-room="singleRoom"
 				:show-rooms-list="showRoomsList"
@@ -111,6 +112,7 @@ export default {
 		showEmojis: { type: Boolean, default: true },
 		showReactionEmojis: { type: Boolean, default: true },
 		showNewMessagesDivider: { type: Boolean, default: true },
+		showFooter: { type: Boolean, default: true },
 		textFormatting: { type: Boolean, default: true },
 		newMessage: { type: Object, default: null },
 		roomMessage: { type: String, default: '' },

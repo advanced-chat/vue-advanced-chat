@@ -189,7 +189,7 @@
 				</div>
 			</transition>
 
-			<div class="vac-box-footer">
+			<div class="vac-box-footer" v-if="showFooter">
 				<div class="vac-icon-textarea-left" v-if="showAudio && !imageFile">
 					<div class="vac-svg-button" @click="recordAudio">
 						<slot
@@ -373,6 +373,7 @@ export default {
 		showEmojis: { type: Boolean, required: true },
 		showReactionEmojis: { type: Boolean, required: true },
 		showNewMessagesDivider: { type: Boolean, required: true },
+		showFooter: { type: Boolean, required: true },
 		acceptedFiles: { type: String, required: true },
 		textFormatting: { type: Boolean, required: true },
 		loadingRooms: { type: Boolean, required: true },
