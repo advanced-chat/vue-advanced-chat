@@ -6,6 +6,7 @@
 				:current-user-id="currentUserId"
 				:rooms="orderedRooms"
 				:loading-rooms="loadingRooms"
+				:rooms-loaded="roomsLoaded"
 				:room="room"
 				:text-messages="t"
 				:show-add-room="showAddRoom"
@@ -13,6 +14,8 @@
 				:text-formatting="textFormatting"
 				:is-mobile="isMobile"
 				@fetch-room="fetchRoom"
+				@fetch-more-rooms="fetchMoreRooms"
+				@loading-more-rooms="loadingMoreRooms = $event"
 				@add-room="addRoom"
 			>
 				<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
@@ -92,6 +95,7 @@ export default {
 		currentUserId: { type: [String, Number], default: '' },
 		rooms: { type: Array, default: () => [] },
 		loadingRooms: { type: Boolean, default: false },
+		roomsLoaded: { type: Boolean, default: false },
 		roomId: { type: [String, Number], default: null },
 		loadFirstRoom: { type: Boolean, default: true },
 		messages: { type: Array, default: () => [] },
@@ -122,6 +126,7 @@ export default {
 	data() {
 		return {
 			room: {},
+			loadingMoreRooms: false,
 			showRoomsList: true,
 			isMobile: false
 		}
@@ -139,6 +144,7 @@ export default {
 				}
 
 				if (
+					!this.loadingMoreRooms &&
 					this.loadFirstRoom &&
 					newVal[0] &&
 					(!oldVal || newVal.length !== oldVal.length)
@@ -240,6 +246,9 @@ export default {
 			this.fetchMessages({ reset: true })
 			if (this.isMobile) this.showRoomsList = false
 		},
+		fetchMoreRooms() {
+			this.$emit('fetch-more-rooms')
+		},
 		roomInfo() {
 			this.$emit('room-info', this.room)
 		},
@@ -262,7 +271,10 @@ export default {
 			this.$emit('open-file', { message, action })
 		},
 		menuActionHandler(ev) {
-			this.$emit('menu-action-handler', { action: ev, roomId: this.room.roomId })
+			this.$emit('menu-action-handler', {
+				action: ev,
+				roomId: this.room.roomId
+			})
 		},
 		messageActionHandler(ev) {
 			this.$emit('message-action-handler', {
