@@ -96,7 +96,7 @@ export default {
 
 	data() {
 		return {
-			roomsPerPage: 10,
+			roomsPerPage: 15,
 			rooms: [],
 			startRooms: null,
 			endRooms: null,
