@@ -50,7 +50,7 @@
 			:theme="theme"
 			:styles="styles"
 			:current-user-id="currentUserId"
-			:rooms="loadingRooms ? [] : rooms"
+			:rooms="loadedRooms"
 			:loading-rooms="loadingRooms"
 			:messages="messages"
 			:messages-loaded="messagesLoaded"
@@ -104,6 +104,7 @@ export default {
 			loadingRooms: true,
 			allUsers: [],
 			loadingLastMessageByRoom: 0,
+			roomsLoadedCount: false,
 			selectedRoom: null,
 			messagesPerPage: 20,
 			messages: [],
@@ -141,10 +142,17 @@ export default {
 		this.resetRooms()
 	},
 
+	computed: {
+		loadedRooms() {
+			return this.rooms.slice(0, this.roomsLoadedCount)
+		}
+	},
+
 	methods: {
 		resetRooms() {
 			this.loadingRooms = true
 			this.loadingLastMessageByRoom = 0
+			this.roomsLoadedCount = 0
 			this.rooms = []
 			this.roomsLoaded = false
 			this.startRooms = null
@@ -248,7 +256,10 @@ export default {
 			this.rooms = this.rooms.concat(formattedRooms)
 			formattedRooms.map(room => this.listenLastMessage(room))
 
-			if (!this.rooms.length) this.loadingRooms = false
+			if (!this.rooms.length) {
+				this.loadingRooms = false
+				this.roomsLoadedCount = 0
+			}
 
 			this.listenUsersOnlineStatus(formattedRooms)
 			this.listenRoomsTypingUsers(query)
@@ -274,6 +285,7 @@ export default {
 
 						if (this.loadingLastMessageByRoom === this.rooms.length) {
 							this.loadingRooms = false
+							this.roomsLoadedCount = this.rooms.length
 						}
 					}
 				})
