@@ -173,6 +173,7 @@ export default {
 
 			let query = roomsRef
 				.where('users', 'array-contains', this.currentUserId)
+				.orderBy('lastUpdated', 'desc')
 				.limit(this.roomsPerPage)
 
 			if (this.startRooms) query = query.startAfter(this.startRooms)
@@ -430,6 +431,8 @@ export default {
 			const { id } = await messagesRef(roomId).add(message)
 
 			if (file) this.uploadFile({ file, messageId: id, roomId })
+
+			roomsRef.doc(roomId).update({ lastUpdated: new Date() })
 		},
 
 		openFile({ message, action }) {
@@ -623,7 +626,10 @@ export default {
 
 			const { id } = await usersRef.add({ username: this.addRoomUsername })
 			await usersRef.doc(id).update({ _id: id })
-			await roomsRef.add({ users: [id, this.currentUserId] })
+			await roomsRef.add({
+				users: [id, this.currentUserId],
+				lastUpdated: new Date()
+			})
 
 			this.addNewRoom = false
 			this.addRoomUsername = ''

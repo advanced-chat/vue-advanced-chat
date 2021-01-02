@@ -727,6 +727,11 @@ messages: {
 }
 ```
 
+#### Notes
+
+- You need to create a composite index to order rooms by last message received.
+  The easiest way to do it is to create a room, then click the error message url in the browser debugging console.
+
 ## Use as a Web Component
 
 ### Clone vue-advance-chat project
