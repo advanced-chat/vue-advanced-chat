@@ -400,7 +400,8 @@ export default {
 			newMessages: [],
 			recorderStream: {},
 			recorder: {},
-			recordedChunks: []
+			recordedChunks: [],
+      keepMobileKeyboardOpen: false,
 		}
 	},
 
@@ -417,6 +418,12 @@ export default {
 				}
 			}
 		})
+
+    if (detectMobile()) {
+      this.$refs['roomTextarea'].addEventListener('blur', e => {
+        this.preventMobileKeyboadFromClosing()
+      })
+    }
 
 		this.$refs.scrollContainer.addEventListener('scroll', e => {
 			this.hideOptions = true
@@ -650,6 +657,12 @@ export default {
 		isMessageEmpty() {
 			return !this.file && !this.message.trim()
 		},
+    preventMobileKeyboadFromClosing() {
+      if (this.keepMobileKeyboardOpen) {
+        this.keepMobileKeyboardOpen = false
+        this.$refs['roomTextarea'].focus()
+      }
+    },
 		sendMessage() {
 			if (!this.file && !this.message.trim()) return
 
@@ -716,6 +729,7 @@ export default {
 			element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
 		},
 		onChangeInput() {
+      this.keepMobileKeyboardOpen = true
 			this.resizeTextarea()
 			this.$emit('typing-message', this.message)
 		},
