@@ -421,7 +421,10 @@ export default {
 
     if (detectMobile()) {
       this.$refs['roomTextarea'].addEventListener('blur', e => {
-        this.preventMobileKeyboadFromClosing()
+        setTimeout(() => this.keepMobileKeyboardOpen = false, 0)
+      })
+      this.$refs['roomTextarea'].addEventListener('click', e => {
+        this.keepMobileKeyboardOpen = true
       })
     }
 
@@ -635,6 +638,7 @@ export default {
 			this.imageDimensions = null
 			this.imageFile = null
 			this.emojiOpened = false
+      this.preventMobileKeyboardFromClosing()
 			setTimeout(() => this.focusTextarea(disableMobileFocus), 0)
 		},
 		resetImageFile() {
@@ -657,9 +661,8 @@ export default {
 		isMessageEmpty() {
 			return !this.file && !this.message.trim()
 		},
-    preventMobileKeyboadFromClosing() {
+    preventMobileKeyboardFromClosing() {
       if (this.keepMobileKeyboardOpen) {
-        this.keepMobileKeyboardOpen = false
         this.$refs['roomTextarea'].focus()
       }
     },
