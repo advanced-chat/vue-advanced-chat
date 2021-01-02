@@ -246,16 +246,16 @@ export default {
 			})
 
 			this.rooms = this.rooms.concat(formattedRooms)
-			this.rooms.map((room, index) => this.listenLastMessage(room, index))
+			formattedRooms.map(room => this.listenLastMessage(room))
 
 			if (!this.rooms.length) this.loadingRooms = false
 
-			this.listenUsersOnlineStatus()
+			this.listenUsersOnlineStatus(formattedRooms)
 			this.listenRoomsTypingUsers(query)
 			// setTimeout(() => console.log('TOTAL', this.dbRequestCount), 2000)
 		},
 
-		listenLastMessage(room, index) {
+		listenLastMessage(room) {
 			const listener = messagesRef(room.roomId)
 				.orderBy('timestamp', 'desc')
 				.limit(1)
@@ -263,7 +263,10 @@ export default {
 					// this.incrementDbCounter('Listen Last Room Message', messages.size)
 					messages.forEach(message => {
 						const lastMessage = this.formatLastMessage(message.data())
-						this.rooms[index].lastMessage = lastMessage
+						const roomIndex = this.rooms.findIndex(
+							r => room.roomId === r.roomId
+						)
+						this.rooms[roomIndex].lastMessage = lastMessage
 						this.rooms = [...this.rooms]
 					})
 					if (this.loadingLastMessageByRoom < this.rooms.length) {
@@ -579,8 +582,8 @@ export default {
 				})
 		},
 
-		listenUsersOnlineStatus() {
-			this.rooms.map(room => {
+		listenUsersOnlineStatus(rooms) {
+			rooms.map(room => {
 				room.users.map(user => {
 					const listener = firebase
 						.database()
