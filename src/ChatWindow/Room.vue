@@ -401,7 +401,7 @@ export default {
 			recorderStream: {},
 			recorder: {},
 			recordedChunks: [],
-      keepMobileKeyboardOpen: false,
+			keepKeyboardOpen: false
 		}
 	},
 
@@ -419,14 +419,15 @@ export default {
 			}
 		})
 
-    if (detectMobile()) {
-      this.$refs['roomTextarea'].addEventListener('blur', e => {
-        setTimeout(() => this.keepMobileKeyboardOpen = false, 0)
-      })
-      this.$refs['roomTextarea'].addEventListener('click', e => {
-        this.keepMobileKeyboardOpen = true
-      })
-    }
+		if (detectMobile()) {
+			this.$refs['roomTextarea'].addEventListener('blur', () =>
+				setTimeout(() => (this.keepKeyboardOpen = false), 0)
+			)
+			this.$refs['roomTextarea'].addEventListener(
+				'click',
+				() => (this.keepKeyboardOpen = true)
+			)
+		}
 
 		this.$refs.scrollContainer.addEventListener('scroll', e => {
 			this.hideOptions = true
@@ -638,7 +639,7 @@ export default {
 			this.imageDimensions = null
 			this.imageFile = null
 			this.emojiOpened = false
-      this.preventMobileKeyboardFromClosing()
+			this.preventKeyboardFromClosing()
 			setTimeout(() => this.focusTextarea(disableMobileFocus), 0)
 		},
 		resetImageFile() {
@@ -661,11 +662,9 @@ export default {
 		isMessageEmpty() {
 			return !this.file && !this.message.trim()
 		},
-    preventMobileKeyboardFromClosing() {
-      if (this.keepMobileKeyboardOpen) {
-        this.$refs['roomTextarea'].focus()
-      }
-    },
+		preventKeyboardFromClosing() {
+			if (this.keepKeyboardOpen) this.$refs['roomTextarea'].focus()
+		},
 		sendMessage() {
 			if (!this.file && !this.message.trim()) return
 
@@ -732,7 +731,7 @@ export default {
 			element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
 		},
 		onChangeInput() {
-      this.keepMobileKeyboardOpen = true
+			this.keepKeyboardOpen = true
 			this.resizeTextarea()
 			this.$emit('typing-message', this.message)
 		},
@@ -762,7 +761,7 @@ export default {
 			const file = files[0]
 			const fileURL = URL.createObjectURL(file)
 			const blobFile = await fetch(fileURL).then(res => res.blob())
-			const typeIndex = file.name.lastIndexOf('.');
+			const typeIndex = file.name.lastIndexOf('.')
 
 			this.file = {
 				blob: blobFile,
