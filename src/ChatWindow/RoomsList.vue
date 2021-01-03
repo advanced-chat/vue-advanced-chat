@@ -128,7 +128,7 @@
 			</div>
 			<transition name="vac-fade-message">
 				<infinite-loading
-					v-if="rooms.length"
+					v-if="!loadingRooms && rooms.length"
 					spinner="spiral"
 					@infinite="loadMoreRooms"
 				>
@@ -179,21 +179,20 @@ export default {
 	},
 
 	watch: {
-		rooms(val) {
-			this.filteredRooms = val
+		rooms(newVal, oldVal) {
+			this.filteredRooms = newVal
 
-			if (this.infiniteState) {
+			if (
+				this.infiniteState &&
+				(newVal.length !== oldVal.length || this.roomsLoaded)
+			) {
 				this.infiniteState.loaded()
-				setTimeout(() => (this.loadingMoreRooms = false), 0)
+				this.loadingMoreRooms = false
 			}
 		},
 
 		loadingRooms(val) {
 			if (val) this.infiniteState = null
-		},
-
-		roomsLoaded() {
-			if (this.infiniteState) this.infiniteState.complete()
 		},
 
 		loadingMoreRooms(val) {
@@ -225,6 +224,7 @@ export default {
 			if (this.loadingMoreRooms) return
 
 			if (this.roomsLoaded) {
+				this.loadingMoreRooms = false
 				return infiniteState.complete()
 			}
 
