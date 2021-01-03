@@ -128,7 +128,7 @@
 			</div>
 			<transition name="vac-fade-message">
 				<infinite-loading
-					v-if="!loadingRooms && rooms.length"
+					v-if="rooms.length && !loadingRooms"
 					spinner="spiral"
 					@infinite="loadMoreRooms"
 				>
