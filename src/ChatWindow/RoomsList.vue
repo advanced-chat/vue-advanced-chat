@@ -43,6 +43,7 @@
 			<div
 				class="vac-room-item"
 				v-for="room in filteredRooms"
+				:id="room.roomId"
 				:key="room.roomId"
 				:class="{ 'vac-room-selected': selectedRoomId === room.roomId }"
 				@click="openRoom(room)"

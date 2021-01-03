@@ -14,6 +14,7 @@
 
 		<div
 			v-else
+			:id="message._id"
 			class="vac-message-box"
 			:class="{ 'vac-offset-current': message.sender_id === currentUserId }"
 		>
