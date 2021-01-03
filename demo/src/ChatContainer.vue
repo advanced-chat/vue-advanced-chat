@@ -50,12 +50,14 @@
 			:theme="theme"
 			:styles="styles"
 			:current-user-id="currentUserId"
-			:rooms="loadingRooms ? [] : rooms"
+			:rooms="loadedRooms"
 			:loading-rooms="loadingRooms"
 			:messages="messages"
 			:messages-loaded="messagesLoaded"
+			:rooms-loaded="roomsLoaded"
 			:menu-actions="menuActions"
 			:room-message="roomMessage"
+			@fetch-more-rooms="fetchMoreRooms"
 			@fetch-messages="fetchMessages"
 			@send-message="sendMessage"
 			@edit-message="editMessage"
@@ -94,17 +96,22 @@ export default {
 
 	data() {
 		return {
-			perPage: 20,
+			roomsPerPage: 15,
 			rooms: [],
-			allUsers: [],
+			startRooms: null,
+			endRooms: null,
+			roomsLoaded: false,
 			loadingRooms: true,
+			allUsers: [],
 			loadingLastMessageByRoom: 0,
+			roomsLoadedCount: false,
 			selectedRoom: null,
+			messagesPerPage: 20,
 			messages: [],
 			messagesLoaded: false,
 			roomMessage: '',
-			start: null,
-			end: null,
+			startMessages: null,
+			endMessages: null,
 			roomsListeners: [],
 			listeners: [],
 			typingMessageCache: '',
@@ -135,35 +142,57 @@ export default {
 		this.resetRooms()
 	},
 
+	computed: {
+		loadedRooms() {
+			return this.rooms.slice(0, this.roomsLoadedCount)
+		}
+	},
+
 	methods: {
 		resetRooms() {
 			this.loadingRooms = true
 			this.loadingLastMessageByRoom = 0
+			this.roomsLoadedCount = 0
 			this.rooms = []
+			this.roomsLoaded = false
+			this.startRooms = null
+			this.endRooms = null
 			this.roomsListeners.forEach(listener => listener())
+			this.roomsListeners = []
 			this.resetMessages()
 		},
 
 		resetMessages() {
 			this.messages = []
 			this.messagesLoaded = false
-			this.start = null
-			this.end = null
+			this.startMessages = null
+			this.endMessages = null
 			this.listeners.forEach(listener => listener())
 			this.listeners = []
 		},
 
-		async fetchRooms() {
+		fetchRooms() {
 			this.resetRooms()
+			this.fetchMoreRooms()
+		},
 
-			const query = roomsRef.where(
-				'users',
-				'array-contains',
-				this.currentUserId
-			)
+		async fetchMoreRooms() {
+			if (this.endRooms && !this.startRooms) return (this.roomsLoaded = true)
+
+			let query = roomsRef
+				.where('users', 'array-contains', this.currentUserId)
+				.orderBy('lastUpdated', 'desc')
+				.limit(this.roomsPerPage)
+
+			if (this.startRooms) query = query.startAfter(this.startRooms)
 
 			const rooms = await query.get()
 			// this.incrementDbCounter('Fetch Rooms', rooms.size)
+
+			if (rooms.empty) this.roomsLoaded = true
+
+			if (this.startRooms) this.endRooms = this.startRooms
+			this.startRooms = rooms.docs[rooms.docs.length - 1]
 
 			const roomUserIds = []
 			rooms.forEach(room => {
@@ -225,16 +254,19 @@ export default {
 			})
 
 			this.rooms = this.rooms.concat(formattedRooms)
-			this.rooms.map((room, index) => this.listenLastMessage(room, index))
+			formattedRooms.map(room => this.listenLastMessage(room))
 
-			if (!this.rooms.length) this.loadingRooms = false
+			if (!this.rooms.length) {
+				this.loadingRooms = false
+				this.roomsLoadedCount = 0
+			}
 
-			this.listenUsersOnlineStatus()
+			this.listenUsersOnlineStatus(formattedRooms)
 			this.listenRoomsTypingUsers(query)
 			// setTimeout(() => console.log('TOTAL', this.dbRequestCount), 2000)
 		},
 
-		listenLastMessage(room, index) {
+		listenLastMessage(room) {
 			const listener = messagesRef(room.roomId)
 				.orderBy('timestamp', 'desc')
 				.limit(1)
@@ -242,7 +274,10 @@ export default {
 					// this.incrementDbCounter('Listen Last Room Message', messages.size)
 					messages.forEach(message => {
 						const lastMessage = this.formatLastMessage(message.data())
-						this.rooms[index].lastMessage = lastMessage
+						const roomIndex = this.rooms.findIndex(
+							r => room.roomId === r.roomId
+						)
+						this.rooms[roomIndex].lastMessage = lastMessage
 						this.rooms = [...this.rooms]
 					})
 					if (this.loadingLastMessageByRoom < this.rooms.length) {
@@ -250,6 +285,7 @@ export default {
 
 						if (this.loadingLastMessageByRoom === this.rooms.length) {
 							this.loadingRooms = false
+							this.roomsLoadedCount = this.rooms.length
 						}
 					}
 				})
@@ -285,13 +321,14 @@ export default {
 		fetchMessages({ room, options = {} }) {
 			if (options.reset) this.resetMessages()
 
-			if (this.end && !this.start) return (this.messagesLoaded = true)
+			if (this.endMessages && !this.startMessages)
+				return (this.messagesLoaded = true)
 
 			let ref = messagesRef(room.roomId)
 
-			let query = ref.orderBy('timestamp', 'desc').limit(this.perPage)
+			let query = ref.orderBy('timestamp', 'desc').limit(this.messagesPerPage)
 
-			if (this.start) query = query.startAfter(this.start)
+			if (this.startMessages) query = query.startAfter(this.startMessages)
 
 			this.selectedRoom = room.roomId
 
@@ -301,13 +338,15 @@ export default {
 
 				if (messages.empty) this.messagesLoaded = true
 
-				if (this.start) this.end = this.start
-				this.start = messages.docs[messages.docs.length - 1]
+				if (this.startMessages) this.endMessages = this.startMessages
+				this.startMessages = messages.docs[messages.docs.length - 1]
 
 				let listenerQuery = ref.orderBy('timestamp')
 
-				if (this.start) listenerQuery = listenerQuery.startAfter(this.start)
-				if (this.end) listenerQuery = listenerQuery.endAt(this.end)
+				if (this.startMessages)
+					listenerQuery = listenerQuery.startAfter(this.startMessages)
+				if (this.endMessages)
+					listenerQuery = listenerQuery.endAt(this.endMessages)
 
 				if (options.reset) this.messages = []
 
@@ -407,6 +446,8 @@ export default {
 			const { id } = await messagesRef(roomId).add(message)
 
 			if (file) this.uploadFile({ file, messageId: id, roomId })
+
+			roomsRef.doc(roomId).update({ lastUpdated: new Date() })
 		},
 
 		openFile({ message, action }) {
@@ -553,8 +594,8 @@ export default {
 				})
 		},
 
-		listenUsersOnlineStatus() {
-			this.rooms.map(room => {
+		listenUsersOnlineStatus(rooms) {
+			rooms.map(room => {
 				room.users.map(user => {
 					const listener = firebase
 						.database()
@@ -600,7 +641,10 @@ export default {
 
 			const { id } = await usersRef.add({ username: this.addRoomUsername })
 			await usersRef.doc(id).update({ _id: id })
-			await roomsRef.add({ users: [id, this.currentUserId] })
+			await roomsRef.add({
+				users: [id, this.currentUserId],
+				lastUpdated: new Date()
+			})
 
 			this.addNewRoom = false
 			this.addRoomUsername = ''

@@ -106,10 +106,22 @@ export default {
 			const user3 = this.users[2]
 			await usersRef.doc(user3._id).set(user3)
 
-			await roomsRef.add({ users: [user1._id, user2._id] })
-			await roomsRef.add({ users: [user1._id, user3._id] })
-			await roomsRef.add({ users: [user2._id, user3._id] })
-			await roomsRef.add({ users: [user1._id, user2._id, user3._id] })
+			await roomsRef.add({
+				users: [user1._id, user2._id],
+				lastUpdated: new Date()
+			})
+			await roomsRef.add({
+				users: [user1._id, user3._id],
+				lastUpdated: new Date()
+			})
+			await roomsRef.add({
+				users: [user2._id, user3._id],
+				lastUpdated: new Date()
+			})
+			await roomsRef.add({
+				users: [user1._id, user2._id, user3._id],
+				lastUpdated: new Date()
+			})
 
 			this.updatingData = false
 		}

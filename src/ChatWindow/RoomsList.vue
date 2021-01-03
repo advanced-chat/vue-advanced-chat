@@ -126,11 +126,25 @@
 					</div>
 				</slot>
 			</div>
+			<transition name="vac-fade-message">
+				<infinite-loading
+					v-if="rooms.length && !loadingRooms"
+					spinner="spiral"
+					@infinite="loadMoreRooms"
+				>
+					<div slot="spinner">
+						<loader :show="true" :infinite="true"></loader>
+					</div>
+					<div slot="no-results"></div>
+					<div slot="no-more"></div>
+				</infinite-loading>
+			</transition>
 		</div>
 	</div>
 </template>
 
 <script>
+import InfiniteLoading from 'vue-infinite-loading'
 import Loader from './Loader'
 import SvgIcon from './SvgIcon'
 import FormatMessage from './FormatMessage'
@@ -140,7 +154,7 @@ import typingText from '../utils/typingText'
 
 export default {
 	name: 'rooms-list',
-	components: { Loader, SvgIcon, FormatMessage },
+	components: { InfiniteLoading, Loader, SvgIcon, FormatMessage },
 
 	props: {
 		currentUserId: { type: [String, Number], required: true },
@@ -151,19 +165,38 @@ export default {
 		isMobile: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },
 		loadingRooms: { type: Boolean, required: true },
+		roomsLoaded: { type: Boolean, required: true },
 		room: { type: Object, required: true }
 	},
 
 	data() {
 		return {
 			filteredRooms: this.rooms || [],
+			infiniteState: null,
+			loadingMoreRooms: false,
 			selectedRoomId: ''
 		}
 	},
 
 	watch: {
-		rooms(val) {
-			this.filteredRooms = val
+		rooms(newVal, oldVal) {
+			this.filteredRooms = newVal
+
+			if (
+				this.infiniteState &&
+				(newVal.length !== oldVal.length || this.roomsLoaded)
+			) {
+				this.infiniteState.loaded()
+				this.loadingMoreRooms = false
+			}
+		},
+
+		loadingRooms(val) {
+			if (val) this.infiniteState = null
+		},
+
+		loadingMoreRooms(val) {
+			this.$emit('loading-more-rooms', val)
 		},
 
 		room: {
@@ -186,6 +219,18 @@ export default {
 			if (room.roomId === this.room.roomId && !this.isMobile) return
 			if (!this.isMobile) this.selectedRoomId = room.roomId
 			this.$emit('fetch-room', { room })
+		},
+		loadMoreRooms(infiniteState) {
+			if (this.loadingMoreRooms) return
+
+			if (this.roomsLoaded) {
+				this.loadingMoreRooms = false
+				return infiniteState.complete()
+			}
+
+			this.infiniteState = infiniteState
+			this.$emit('fetch-more-rooms')
+			this.loadingMoreRooms = true
 		},
 		addRoom() {
 			this.$emit('add-room')
