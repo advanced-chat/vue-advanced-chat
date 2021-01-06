@@ -306,10 +306,11 @@
 						ref="file"
 						:accept="acceptedFiles"
 						@change="onFileChange($event.target.files)"
-						style="display:none"
+						style="display: none"
 					/>
-
-						<slot name="before-send-btn">  	</slot>
+					<div>
+						<slot name="before-send-btn" v-bind="{ room }"></slot>
+					</div>
 					<div
 						v-if="showSendIcon"
 						@click="sendMessage"
@@ -320,8 +321,9 @@
 							<svg-icon name="send" :param="inputDisabled ? 'disabled' : ''" />
 						</slot>
 					</div>
-          
-						<slot name="after-send-btn">  	</slot>
+					<div>
+						<slot name="after-send-btn"></slot>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -747,7 +749,7 @@ export default {
 			const file = files[0]
 			const fileURL = URL.createObjectURL(file)
 			const blobFile = await fetch(fileURL).then(res => res.blob())
-			const typeIndex = file.name.lastIndexOf('.');
+			const typeIndex = file.name.lastIndexOf('.')
 
 			this.file = {
 				blob: blobFile,
