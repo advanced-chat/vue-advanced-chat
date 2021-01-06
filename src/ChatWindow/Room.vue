@@ -322,7 +322,7 @@
 						</slot>
 					</div>
 					<div>
-						<slot name="after-send-btn"></slot>
+						<slot name="after-send-btn" v-bind="{ room }"></slot>
 					</div>
 				</div>
 			</div>
