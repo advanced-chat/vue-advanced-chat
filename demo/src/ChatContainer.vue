@@ -423,6 +423,7 @@ export default {
 					name: file.name,
 					size: file.size,
 					type: file.type,
+					extension: file.extension,
 					url: file.localUrl
 				}
 				if (file.audio) {
@@ -463,6 +464,7 @@ export default {
 					name: file.name,
 					size: file.size,
 					type: file.type,
+					extension: file.extension,
 					url: file.url || file.localUrl
 				}
 				if (file.audio) {
@@ -490,7 +492,7 @@ export default {
 			const uploadFileRef = filesRef
 				.child(this.currentUserId)
 				.child(messageId)
-				.child(`${file.name}.${file.type}`)
+				.child(`${file.name}.${file.extension || file.type}`)
 
 			await uploadFileRef.put(file.blob, { contentType: file.type })
 			const url = await uploadFileRef.getDownloadURL()

@@ -619,7 +619,7 @@ messageActionHandler({ roomId, action, message }) {
 
 (5) `textarea-action-handler` can be used to add an extra icon on the right of the textarea, and recieve an event when clicking it.
 
-(6) All file params contain: `{ blob, localURL, name, size, type }`
+(6) All file params contain: `{ blob, localURL, name, size, type, extension }`
 
 (7) `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked.
 
