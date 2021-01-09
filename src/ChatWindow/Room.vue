@@ -394,7 +394,6 @@ export default {
 			imageDimensions: null,
 			menuOpened: false,
 			emojiOpened: false,
-			emojisList: {},
 			hideOptions: true,
 			scrollIcon: false,
 			newMessages: [],
@@ -440,9 +439,6 @@ export default {
 				this.scrollIcon = bottomScroll > 1000
 			}, 200)
 		})
-
-		const emojisTable = Object.keys(emojis).map(key => emojis[key])
-		this.emojisList = Object.assign({}, ...emojisTable)
 	},
 
 	watch: {
@@ -503,6 +499,10 @@ export default {
 	},
 
 	computed: {
+		emojisList() {
+			const emojisTable = Object.keys(emojis).map(key => emojis[key])
+			return Object.assign({}, ...emojisTable)
+		},
 		room() {
 			return this.rooms.find(room => room.roomId === this.roomId) || {}
 		},
