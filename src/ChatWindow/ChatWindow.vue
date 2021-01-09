@@ -240,6 +240,7 @@ export default {
 		toggleRoomsList() {
 			this.showRoomsList = !this.showRoomsList
 			if (this.isMobile) this.room = {}
+			this.$emit('toggle-rooms-list', { opened: this.showRoomsList })
 		},
 		fetchRoom({ room }) {
 			this.room = room

@@ -579,6 +579,7 @@ messages="[
 | message-action-handler (4)  | `{ roomId, action, message }`                                   | A user clicks on the dropdown icon inside a message   |
 | send-message-reaction       | `{ roomId, messageId, reaction, remove }`                       | A user clicks on the emoji icon inside a message      |
 | room-info                   | `room`                                                          | A user clicks the room header bar                     |
+| toggle-rooms-list           | `{ opened }`                                                    | A user clicks on the toggle icon inside a room header |
 | textarea-action-handler (5) | `{ roomId, message }`                                           | A user clicks on custom icon inside the footer        |
 | typing-message              | `{ message, roomId }`                                           | A user is typing a message                            |
 
