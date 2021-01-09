@@ -767,7 +767,7 @@ export default {
 				blob: blobFile,
 				name: file.name.substring(0, typeIndex),
 				size: file.size,
-				type: file.name.substring(typeIndex) || file.type,
+				type: file.name.substring(typeIndex + 1) || file.type,
 				localUrl: fileURL
 			}
 			if (this.isImageCheck(this.file)) this.imageFile = fileURL
