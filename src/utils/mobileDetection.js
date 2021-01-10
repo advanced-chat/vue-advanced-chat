@@ -21,3 +21,10 @@ function getUserAgent() {
 
 	return userAgent
 }
+
+export function iOSDevice() {
+	return (
+		['iPad', 'iPhone', 'iPod'].includes(navigator.platform) ||
+		(navigator.userAgent.includes('Mac') && 'ontouchend' in document)
+	)
+}

@@ -338,7 +338,7 @@ import SvgIcon from './SvgIcon'
 import EmojiPicker from './EmojiPicker'
 
 const { messagesValid } = require('../utils/roomValidation')
-const { detectMobile } = require('../utils/mobileDetection')
+const { detectMobile, iOSDevice } = require('../utils/mobileDetection')
 import typingText from '../utils/typingText'
 
 export default {
@@ -690,15 +690,21 @@ export default {
 			this.resetMessage(true)
 		},
 		loadMoreMessages(infiniteState) {
-			if (this.loadingMoreMessages) return
+			setTimeout(
+				() => {
+					if (this.loadingMoreMessages) return
 
-			if (this.messagesLoaded || !this.room.roomId) {
-				return infiniteState.complete()
-			}
+					if (this.messagesLoaded || !this.room.roomId) {
+						return infiniteState.complete()
+					}
 
-			this.infiniteState = infiniteState
-			this.$emit('fetch-messages')
-			this.loadingMoreMessages = true
+					this.infiniteState = infiniteState
+					this.$emit('fetch-messages')
+					this.loadingMoreMessages = true
+				},
+				// prevent scroll bouncing issue on iOS devices
+				iOSDevice() ? 500 : 0
+			)
 		},
 		messageActionHandler({ action, message }) {
 			switch (action.name) {
