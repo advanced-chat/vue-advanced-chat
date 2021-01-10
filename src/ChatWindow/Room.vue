@@ -107,7 +107,7 @@
 							:class="{ 'vac-infinite-loading': !messagesLoaded }"
 							spinner="spiral"
 							direction="top"
-							:distance="0"
+							:distance="40"
 							@infinite="loadMoreMessages"
 						>
 							<div slot="spinner">
@@ -893,7 +893,7 @@ export default {
 .vac-container-scroll {
 	background: var(--chat-content-bg-color);
 	flex: 1;
-	overflow-y: scroll;
+	overflow-y: auto;
 	margin-right: 1px;
 	margin-top: 60px;
 	-webkit-overflow-scrolling: touch;
