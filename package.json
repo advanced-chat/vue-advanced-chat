@@ -62,8 +62,8 @@
 	},
 	"dependencies": {
 		"linkifyjs": "^2.1.9",
-		"v-click-outside": "^3.0.0",
+		"v-click-outside": "^3.1.2",
 		"vue-emoji-picker": "^1.0.1",
-		"vue-infinite-loading": "^2.4.4"
+		"vue-infinite-loading": "^2.4.5"
 	}
 }
