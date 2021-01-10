@@ -104,8 +104,10 @@
 					<transition name="vac-fade-message">
 						<infinite-loading
 							v-if="messages.length"
+							:class="{ 'vac-infinite-loading': !messagesLoaded }"
 							spinner="spiral"
 							direction="top"
+							:distance="0"
 							@infinite="loadMoreMessages"
 						>
 							<div slot="spinner">
@@ -910,6 +912,10 @@ export default {
 	margin-bottom: 20px;
 }
 
+.vac-infinite-loading {
+	height: 68px;
+}
+
 .vac-icon-scroll {
 	position: absolute;
 	bottom: 80px;
@@ -1175,6 +1181,10 @@ export default {
 
 	.vac-container-scroll {
 		margin-top: 50px;
+	}
+
+	.vac-infinite-loading {
+		height: 58px;
 	}
 
 	.vac-box-footer {
