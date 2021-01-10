@@ -163,7 +163,7 @@
 		<div
 			ref="roomFooter"
 			class="vac-room-footer"
-			v-if="Object.keys(room).length"
+			v-show="Object.keys(room).length && showFooter"
 		>
 			<transition name="vac-slide-up">
 				<div v-if="messageReply" class="vac-reply-container">
@@ -189,7 +189,7 @@
 				</div>
 			</transition>
 
-			<div class="vac-box-footer" v-if="showFooter">
+			<div class="vac-box-footer">
 				<div class="vac-icon-textarea-left" v-if="showAudio && !imageFile">
 					<div class="vac-svg-button" @click="recordAudio">
 						<slot
