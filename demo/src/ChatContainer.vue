@@ -302,7 +302,9 @@ export default {
 			if (timestampFormat === 'HH:mm') timestamp = `Today, ${timestamp}`
 
 			let content = message.content
-			if (message.file) content = `${message.file.name}.${message.file.type}`
+			if (message.file)
+				content = `${message.file.name}.${message.file.extension ||
+					message.file.type}`
 
 			return {
 				...message,
