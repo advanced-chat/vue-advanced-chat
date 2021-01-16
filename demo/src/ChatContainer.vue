@@ -408,7 +408,8 @@ export default {
 					seconds: timestamp.seconds,
 					timestamp: parseTimestamp(timestamp, 'HH:mm'),
 					date: parseTimestamp(timestamp, 'DD MMMM YYYY'),
-					username: senderUser ? senderUser.username : null
+					username: senderUser ? senderUser.username : null,
+					distributed: true
 				}
 			}
 		},
