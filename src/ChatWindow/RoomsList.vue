@@ -441,6 +441,7 @@ export default {
 
 .vac-icon-check {
 	display: flex;
+	vertical-align: middle;
 	height: 14px;
 	width: 14px;
 	margin-top: -2px;
