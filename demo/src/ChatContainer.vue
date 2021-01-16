@@ -154,7 +154,7 @@ export default {
 			this.loadingLastMessageByRoom = 0
 			this.roomsLoadedCount = 0
 			this.rooms = []
-			this.roomsLoaded = false
+			this.roomsLoaded = true
 			this.startRooms = null
 			this.endRooms = null
 			this.roomsListeners.forEach(listener => listener())
@@ -189,7 +189,7 @@ export default {
 			const rooms = await query.get()
 			// this.incrementDbCounter('Fetch Rooms', rooms.size)
 
-			if (rooms.empty) this.roomsLoaded = true
+			this.roomsLoaded = rooms.empty || rooms.size < this.roomsPerPage
 
 			if (this.startRooms) this.endRooms = this.startRooms
 			this.startRooms = rooms.docs[rooms.docs.length - 1]
