@@ -29,7 +29,7 @@
 	"main": "./dist/vue-advanced-chat.common.js",
 	"scripts": {
 		"serve": "vue-cli-service serve",
-		"build": "npm run clean:lib && npm run build:lib && npm run build:wc && npm run gen:types",
+		"build": "npm run clean:lib && npm run build:lib && npm run gen:types",
 		"clean:lib": "rimraf dist",
 		"build:lib": "vue-cli-service build --target lib --no-clean --name vue-advanced-chat ./src/ChatWindow/index.js",
 		"build:wc": "vue-cli-service build --target wc --no-clean --name vue-advanced-chat ./src/ChatWindow/ChatWindow.vue",
