@@ -320,6 +320,7 @@ export default {
 	border: var(--chat-container-border);
 	border-radius: var(--chat-container-border-radius);
 	box-shadow: var(--chat-container-box-shadow);
+	-webkit-tap-highlight-color: transparent;
 
 	* {
 		font-family: inherit;
