@@ -466,8 +466,7 @@ export default {
 		})
 
 		this.$refs['roomTextarea'].addEventListener('blur', () => {
-			this.filteredUsersTag = []
-			this.textareaCursorPosition = null
+			this.resetUsersTag()
 			if (isMobile) setTimeout(() => (this.keepKeyboardOpen = false), 0)
 		})
 
@@ -587,7 +586,7 @@ export default {
 
 	methods: {
 		updateShowUsersTag() {
-			if (this.$refs['roomTextarea']) {
+			if (this.$refs['roomTextarea'] && this.room.users.length > 2) {
 				if (
 					this.textareaCursorPosition ===
 					this.$refs['roomTextarea'].selectionStart
@@ -621,10 +620,9 @@ export default {
 						'username',
 						query,
 						true
-					)
+					).filter(user => user._id !== this.currentUserId)
 				} else {
-					this.filteredUsersTag = []
-					this.textareaCursorPosition = null
+					this.resetUsersTag()
 				}
 			}
 		},
@@ -634,6 +632,10 @@ export default {
 				this.message.substr(0, cursorPosition + 1) +
 				user.username +
 				this.message.substr(cursorPosition + 1)
+		},
+		resetUsersTag() {
+			this.filteredUsersTag = []
+			this.textareaCursorPosition = null
 		},
 		onImgLoad() {
 			let height = this.$refs.imageFile.height
@@ -727,6 +729,7 @@ export default {
 				return
 			}
 
+			this.resetUsersTag()
 			this.resetTextareaSize()
 			this.message = ''
 			this.editedMessage = {}
