@@ -586,44 +586,45 @@ export default {
 
 	methods: {
 		updateShowUsersTag() {
-			if (this.$refs['roomTextarea'] && this.room.users.length > 2) {
-				if (
-					this.textareaCursorPosition ===
-					this.$refs['roomTextarea'].selectionStart
-				) {
-					return
-				}
+			if (!this.$refs['roomTextarea']) return
+			if (!this.room.users || this.room.users.length <= 2) return
 
-				this.textareaCursorPosition = this.$refs['roomTextarea'].selectionStart
+			if (
+				this.textareaCursorPosition ===
+				this.$refs['roomTextarea'].selectionStart
+			) {
+				return
+			}
 
-				let n = this.textareaCursorPosition
+			this.textareaCursorPosition = this.$refs['roomTextarea'].selectionStart
 
-				while (
-					n > 0 &&
-					this.message.charAt(n - 1) !== '@' &&
-					this.message.charAt(n - 1) !== ' '
-				) {
-					n--
-				}
+			let n = this.textareaCursorPosition
 
-				const beforeTag = this.message.charAt(n - 2)
-				const notLetterNumber = !beforeTag.match(/^[0-9a-zA-Z]+$/)
+			while (
+				n > 0 &&
+				this.message.charAt(n - 1) !== '@' &&
+				this.message.charAt(n - 1) !== ' '
+			) {
+				n--
+			}
 
-				if (
-					this.message.charAt(n - 1) === '@' &&
-					(!beforeTag || beforeTag === ' ' || notLetterNumber)
-				) {
-					const query = this.message.substring(n, this.textareaCursorPosition)
+			const beforeTag = this.message.charAt(n - 2)
+			const notLetterNumber = !beforeTag.match(/^[0-9a-zA-Z]+$/)
 
-					this.filteredUsersTag = filteredUsers(
-						this.room.users,
-						'username',
-						query,
-						true
-					).filter(user => user._id !== this.currentUserId)
-				} else {
-					this.resetUsersTag()
-				}
+			if (
+				this.message.charAt(n - 1) === '@' &&
+				(!beforeTag || beforeTag === ' ' || notLetterNumber)
+			) {
+				const query = this.message.substring(n, this.textareaCursorPosition)
+
+				this.filteredUsersTag = filteredUsers(
+					this.room.users,
+					'username',
+					query,
+					true
+				).filter(user => user._id !== this.currentUserId)
+			} else {
+				this.resetUsersTag()
 			}
 		},
 		selectUserTag(user) {
