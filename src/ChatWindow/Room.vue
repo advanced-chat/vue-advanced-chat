@@ -438,6 +438,7 @@ export default {
 			recordedChunks: [],
 			keepKeyboardOpen: false,
 			filteredUsersTag: [],
+			selectedUsersTag: [],
 			textareaCursorPosition: null,
 			roomFooterHeight: 0
 		}
@@ -656,6 +657,8 @@ export default {
 				space +
 				this.message.substr(endPosition, this.message.length - 1)
 
+			this.selectedUsersTag = [...this.selectedUsersTag, { ...user }]
+
 			this.focusTextarea()
 		},
 		resetUsersTag() {
@@ -754,6 +757,7 @@ export default {
 				return
 			}
 
+			this.selectedUsersTag = []
 			this.resetUsersTag()
 			this.resetTextareaSize()
 			this.message = ''
@@ -790,22 +794,33 @@ export default {
 			if (this.keepKeyboardOpen) this.$refs['roomTextarea'].focus()
 		},
 		sendMessage() {
-			if (!this.file && !this.message.trim()) return
+			let message = this.message.trim()
+
+			if (!this.file && !message) return
+
+			this.selectedUsersTag.forEach(user => {
+				message = message.replace(
+					`@${user.username}`,
+					`<usertag>${user._id}</usertag>`
+				)
+			})
 
 			if (this.editedMessage._id) {
-				if (this.editedMessage.content !== this.message || this.file) {
+				if (this.editedMessage.content !== message || this.file) {
 					this.$emit('edit-message', {
 						messageId: this.editedMessage._id,
-						newContent: this.message.trim(),
+						newContent: message,
 						file: this.file,
-						replyMessage: this.messageReply
+						replyMessage: this.messageReply,
+						usersTag: this.selectedUsersTag
 					})
 				}
 			} else {
 				this.$emit('send-message', {
-					content: this.message.trim(),
+					content: message,
 					file: this.file,
-					replyMessage: this.messageReply
+					replyMessage: this.messageReply,
+					usersTag: this.selectedUsersTag
 				})
 			}
 

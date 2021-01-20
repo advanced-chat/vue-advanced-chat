@@ -414,7 +414,7 @@ export default {
 			}
 		},
 
-		async sendMessage({ content, roomId, file, replyMessage }) {
+		async sendMessage({ content, roomId, file, replyMessage, usersTag }) {
 			const message = {
 				sender_id: this.currentUserId,
 				content,

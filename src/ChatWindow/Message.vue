@@ -76,6 +76,7 @@
 						<div v-else-if="!message.file">
 							<format-message
 								:content="message.content"
+								:users="roomUsers"
 								:text-formatting="textFormatting"
 							>
 								<template v-slot:deleted-icon="data">
@@ -126,6 +127,7 @@
 							</div>
 							<format-message
 								:content="message.content"
+								:users="roomUsers"
 								:text-formatting="textFormatting"
 							></format-message>
 						</div>

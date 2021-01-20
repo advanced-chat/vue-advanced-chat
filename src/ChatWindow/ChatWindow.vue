@@ -328,6 +328,7 @@ export default {
 
 	a {
 		color: #0d579c;
+		font-weight: 500;
 	}
 
 	.vac-chat-container {

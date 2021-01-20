@@ -53,6 +53,11 @@ const pseudo_markdown = {
 		end: '`',
 		allowed_chars: '.',
 		type: 'inline-code'
+	},
+	'<usertag>': {
+		allowed_chars: '.',
+		end: '</usertag>',
+		type: 'tag'
 	}
 	// ':': {
 	// 	allowed_chars: '[a-z_]',

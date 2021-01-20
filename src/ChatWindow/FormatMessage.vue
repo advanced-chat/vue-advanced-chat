@@ -7,18 +7,19 @@
 					:key="i"
 					:class="{
 						'vac-text-ellipsis': singleLine,
-						'vac-text-deleted': deleted,
 						'vac-text-bold': checkType(message, 'bold'),
-						'vac-text-italic': checkType(message, 'italic'),
+						'vac-text-italic': checkType(message, 'italic') || deleted,
 						'vac-text-strike': checkType(message, 'strike'),
 						'vac-text-underline': checkType(message, 'underline'),
 						'vac-text-inline-code':
 							!singleLine && checkType(message, 'inline-code'),
 						'vac-text-multiline-code':
-							!singleLine && checkType(message, 'multiline-code')
+							!singleLine && checkType(message, 'multiline-code'),
+						'vac-text-tag': checkType(message, 'tag')
 					}"
 					:href="message.href"
-					target="_blank"
+					:target="message.href ? '_blank' : null"
+					@click="openTag(message)"
 				>
 					<slot name="deleted-icon" v-bind="{ deleted }">
 						<svg-icon v-if="deleted" name="deleted" class="vac-icon-deleted" />
@@ -27,7 +28,7 @@
 				</component>
 			</template>
 		</div>
-		<div v-else>{{ content }}</div>
+		<div v-else>{{ formattedContent }}</div>
 	</div>
 </template>
 
@@ -43,6 +44,7 @@ export default {
 	props: {
 		content: { type: [String, Number], required: true },
 		deleted: { type: Boolean, default: false },
+		users: { type: Array, default: () => [] },
 		linkify: { type: Boolean, default: true },
 		singleLine: { type: Boolean, default: false },
 		textFormatting: { type: Boolean, required: true }
@@ -50,23 +52,36 @@ export default {
 
 	computed: {
 		linkifiedMessage() {
-			return formatString(this.content, this.linkify)
+			return formatString(this.formatTags(this.content), this.linkify)
+		},
+		formattedContent() {
+			return this.formatTags(this.content)
 		}
 	},
 
 	methods: {
 		checkType(message, type) {
 			return message.types.indexOf(type) !== -1
+		},
+		formatTags(content) {
+			this.users.forEach(user => {
+				const index = content.indexOf(user._id)
+				const isTag = content.substring(index - 9, index) === '<usertag>'
+				if (isTag) content = content.replace(user._id, `@${user.username}`)
+			})
+
+			return content
+		},
+		openTag(message) {
+			if (!this.singleLine && this.checkType(message, 'tag')) {
+				// TODO: emit event
+			}
 		}
 	}
 }
 </script>
 
 <style>
-.vac-text-deleted {
-	font-style: italic;
-}
-
 .vac-icon-deleted {
 	height: 14px;
 	width: 14px;
