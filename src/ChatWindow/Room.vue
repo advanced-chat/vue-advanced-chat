@@ -598,24 +598,27 @@ export default {
 
 			this.textareaCursorPosition = this.$refs['roomTextarea'].selectionStart
 
-			let n = this.textareaCursorPosition
+			let position = this.textareaCursorPosition
 
 			while (
-				n > 0 &&
-				this.message.charAt(n - 1) !== '@' &&
-				this.message.charAt(n - 1) !== ' '
+				position > 0 &&
+				this.message.charAt(position - 1) !== '@' &&
+				this.message.charAt(position - 1) !== ' '
 			) {
-				n--
+				position--
 			}
 
-			const beforeTag = this.message.charAt(n - 2)
+			const beforeTag = this.message.charAt(position - 2)
 			const notLetterNumber = !beforeTag.match(/^[0-9a-zA-Z]+$/)
 
 			if (
-				this.message.charAt(n - 1) === '@' &&
+				this.message.charAt(position - 1) === '@' &&
 				(!beforeTag || beforeTag === ' ' || notLetterNumber)
 			) {
-				const query = this.message.substring(n, this.textareaCursorPosition)
+				const query = this.message.substring(
+					position,
+					this.textareaCursorPosition
+				)
 
 				this.filteredUsersTag = filteredUsers(
 					this.room.users,
@@ -628,11 +631,32 @@ export default {
 			}
 		},
 		selectUserTag(user) {
-			const cursorPosition = this.$refs['roomTextarea'].selectionStart - 1
+			const cursorPosition = this.$refs['roomTextarea'].selectionStart
+
+			let position = cursorPosition
+			while (position > 0 && this.message.charAt(position - 1) !== '@') {
+				position--
+			}
+
+			let endPosition = position
+			while (
+				this.message.charAt(endPosition) &&
+				this.message.charAt(endPosition).trim()
+			) {
+				endPosition++
+			}
+
+			const space = this.message.substr(endPosition, endPosition).length
+				? ''
+				: ' '
+
 			this.message =
-				this.message.substr(0, cursorPosition + 1) +
+				this.message.substr(0, position) +
 				user.username +
-				this.message.substr(cursorPosition + 1)
+				space +
+				this.message.substr(endPosition, this.message.length - 1)
+
+			this.focusTextarea()
 		},
 		resetUsersTag() {
 			this.filteredUsersTag = []

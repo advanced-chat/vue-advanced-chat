@@ -58,11 +58,6 @@ const pseudo_markdown = {
 	// 	allowed_chars: '[a-z_]',
 	// 	end: ':',
 	// 	object: child => <Emojione type={child[0]} />
-	// },
-	// '@': {
-	// 	allowed_chars: '[a-z_.-A-Z0-9]',
-	// 	end: ' ',
-	// 	object: child => <User data={child} />
 	// }
 }
 
