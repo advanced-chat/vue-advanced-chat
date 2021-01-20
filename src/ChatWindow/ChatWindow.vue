@@ -56,6 +56,7 @@
 				@edit-message="editMessage"
 				@delete-message="deleteMessage"
 				@open-file="openFile"
+				@open-user-tag="openUserTag"
 				@menu-action-handler="menuActionHandler"
 				@message-action-handler="messageActionHandler"
 				@send-message-reaction="sendMessageReaction"
@@ -270,6 +271,9 @@ export default {
 		},
 		openFile({ message, action }) {
 			this.$emit('open-file', { message, action })
+		},
+		openUserTag({ user }) {
+			this.$emit('open-user-tag', { user })
 		},
 		menuActionHandler(ev) {
 			this.$emit('menu-action-handler', {

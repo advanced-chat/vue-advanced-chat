@@ -137,6 +137,7 @@
 								:hide-options="hideOptions"
 								@message-action-handler="messageActionHandler"
 								@open-file="openFile"
+								@open-user-tag="openUserTag"
 								@add-new-message="addNewMessage"
 								@send-message-reaction="sendMessageReaction"
 								@hide-options="hideOptions = $event"
@@ -931,6 +932,9 @@ export default {
 		},
 		openFile({ message, action }) {
 			this.$emit('open-file', { message, action })
+		},
+		openUserTag(user) {
+			this.$emit('open-user-tag', { user })
 		},
 		menuActionHandler(action) {
 			this.closeMenu()

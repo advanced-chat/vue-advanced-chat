@@ -74,7 +74,10 @@ export default {
 		},
 		openTag(message) {
 			if (!this.singleLine && this.checkType(message, 'tag')) {
-				// TODO: emit event
+				const user = this.users.find(
+					u => message.value.indexOf(u.username) !== -1
+				)
+				this.$emit('open-user-tag', user)
 			}
 		}
 	}

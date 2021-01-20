@@ -78,6 +78,7 @@
 								:content="message.content"
 								:users="roomUsers"
 								:text-formatting="textFormatting"
+								@open-user-tag="openUserTag"
 							>
 								<template v-slot:deleted-icon="data">
 									<slot name="deleted-icon" v-bind="data"></slot>
@@ -129,6 +130,7 @@
 								:content="message.content"
 								:users="roomUsers"
 								:text-formatting="textFormatting"
+								@open-user-tag="openUserTag"
 							></format-message>
 						</div>
 
@@ -456,6 +458,9 @@ export default {
 		},
 		openFile(action) {
 			this.$emit('open-file', { message: this.message, action })
+		},
+		openUserTag(user) {
+			this.$emit('open-user-tag', { user })
 		},
 		messageActionHandler(action) {
 			this.closeOptions()
