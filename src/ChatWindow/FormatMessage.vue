@@ -8,14 +8,14 @@
 					:class="{
 						'vac-text-ellipsis': singleLine,
 						'vac-text-bold': checkType(message, 'bold'),
-						'vac-text-italic': checkType(message, 'italic') || deleted,
+						'vac-text-italic': deleted || checkType(message, 'italic'),
 						'vac-text-strike': checkType(message, 'strike'),
 						'vac-text-underline': checkType(message, 'underline'),
 						'vac-text-inline-code':
 							!singleLine && checkType(message, 'inline-code'),
 						'vac-text-multiline-code':
 							!singleLine && checkType(message, 'multiline-code'),
-						'vac-text-tag': checkType(message, 'tag')
+						'vac-text-tag': !reply && checkType(message, 'tag')
 					}"
 					:href="message.href"
 					:target="message.href ? '_blank' : null"
@@ -47,6 +47,7 @@ export default {
 		users: { type: Array, default: () => [] },
 		linkify: { type: Boolean, default: true },
 		singleLine: { type: Boolean, default: false },
+		reply: { type: Boolean, default: false },
 		textFormatting: { type: Boolean, required: true }
 	},
 

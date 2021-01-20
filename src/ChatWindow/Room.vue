@@ -182,7 +182,14 @@
 						/>
 						<div class="vac-reply-info">
 							<div class="vac-reply-username">{{ messageReply.username }}</div>
-							<div class="vac-reply-content">{{ messageReply.content }}</div>
+							<div class="vac-reply-content">
+								<format-message
+									:content="messageReply.content"
+									:users="room.users"
+									:text-formatting="true"
+									:reply="true"
+								></format-message>
+							</div>
 						</div>
 					</div>
 
@@ -370,6 +377,7 @@ import Loader from './Loader'
 import Message from './Message'
 import SvgIcon from './SvgIcon'
 import EmojiPicker from './EmojiPicker'
+import FormatMessage from './FormatMessage'
 
 const { messagesValid } = require('../utils/roomValidation')
 const { detectMobile, iOSDevice } = require('../utils/mobileDetection')
@@ -383,7 +391,8 @@ export default {
 		Loader,
 		Message,
 		SvgIcon,
-		EmojiPicker
+		EmojiPicker,
+		FormatMessage
 	},
 
 	directives: {
@@ -499,6 +508,9 @@ export default {
 					this.message = this.roomMessage
 					setTimeout(() => this.onChangeInput(), 0)
 				}
+				setTimeout(() => {
+					this.roomFooterHeight = this.$refs['roomFooter'].clientHeight
+				}, 0)
 			}
 		},
 		roomMessage: {
@@ -896,7 +908,7 @@ export default {
 
 			setTimeout(() => {
 				this.roomFooterHeight = this.$refs['roomFooter'].clientHeight
-			}, 10)
+			}, 20)
 		},
 		addEmoji(emoji) {
 			this.message += emoji.icon
@@ -1173,6 +1185,7 @@ export default {
 	.vac-reply-content {
 		font-size: 12px;
 		color: var(--chat-message-color-reply-content);
+		white-space: pre-line;
 	}
 
 	.vac-icon-reply {
