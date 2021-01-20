@@ -393,6 +393,7 @@ styles="{
     backgroundReply: 'rgba(0, 0, 0, 0.08)',
     colorReplyUsername: '#0a0a0a',
     colorReply: '#6e6e6e',
+    colorTag: '#0d579c',
     backgroundImage: '#ddd',
     colorNewMessages: '#1976d2',
     backgroundReaction: '#eee',
@@ -566,28 +567,40 @@ messages="[
 
 ## Events API
 
-| Event                       | Params                                                          | Fires when                                            |
-| --------------------------- | --------------------------------------------------------------- | ----------------------------------------------------- |
-| fetch-messages (1)          | `{ room, options }`                                             | A user has scrolled on top to load more messages      |
-| fetch-more-rooms (2)        | -                                                               | A user has scrolled to load more rooms                |
-| send-message                | `{ roomId, content, file (6), replyMessage (7) }`               | A user has sent a message                             |
-| edit-message                | `{ roomId, messageId, newContent, file (6), replyMessage (7) }` | A user has edited a message                           |
-| delete-message              | `{ roomId, messageId }`                                         | A user has deleted a message                          |
-| open-file                   | `{ message, action }`                                           | A user has clicked to view or download a file         |
-| add-room                    | -                                                               | A user clicks on the plus icon next to searchbar      |
-| menu-action-handler (3)     | `{ roomId, action }`                                            | A user clicks on the vertical dots icon inside a room |
-| message-action-handler (4)  | `{ roomId, action, message }`                                   | A user clicks on the dropdown icon inside a message   |
-| send-message-reaction       | `{ roomId, messageId, reaction, remove }`                       | A user clicks on the emoji icon inside a message      |
-| room-info                   | `room`                                                          | A user clicks the room header bar                     |
-| toggle-rooms-list           | `{ opened }`                                                    | A user clicks on the toggle icon inside a room header |
-| textarea-action-handler (5) | `{ roomId, message }`                                           | A user clicks on custom icon inside the footer        |
-| typing-message              | `{ message, roomId }`                                           | A user is typing a message                            |
+| Event                       | Params                                                                   | Fires when                                            |
+| --------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------- |
+| fetch-messages (1)          | `{ room, options }`                                                      | A user has scrolled on top to load more messages      |
+| fetch-more-rooms (2)        | -                                                                        | A user has scrolled to load more rooms                |
+| send-message                | `{ roomId, content, file (7), replyMessage (8), usersTag }`              | A user has sent a message                             |
+| edit-message                | `{ roomId, messageId, newContent, file (6), replyMessage (8),usersTag }` | A user has edited a message                           |
+| delete-message              | `{ roomId, messageId }`                                                  | A user has deleted a message                          |
+| open-file                   | `{ message, action }`                                                    | A user has clicked to view or download a file         |
+| open-user-tag (3)           | `{ user }`                                                               | A user has clicked on a user tag inside a message     |
+| add-room                    | -                                                                        | A user clicks on the plus icon next to searchbar      |
+| menu-action-handler (4)     | `{ roomId, action }`                                                     | A user clicks on the vertical dots icon inside a room |
+| message-action-handler (5)  | `{ roomId, action, message }`                                            | A user clicks on the dropdown icon inside a message   |
+| send-message-reaction       | `{ roomId, messageId, reaction, remove }`                                | A user clicks on the emoji icon inside a message      |
+| room-info                   | `room`                                                                   | A user clicks the room header bar                     |
+| toggle-rooms-list           | `{ opened }`                                                             | A user clicks on the toggle icon inside a room header |
+| textarea-action-handler (6) | `{ roomId, message }`                                                    | A user clicks on custom icon inside the footer        |
+| typing-message              | `{ message, roomId }`                                                    | A user is typing a message                            |
 
 (1) `fetch-messages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`.<br>
 (1) `fetch-messages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top.
 
-(3) `menu-action-handler` is the result of the `menuActions` prop.<br>
-When clicking a button from your `menuActions` array, `menuActionHandler` will give you the name of the button that was click.
+(2) `fetch-more-rooms` is triggered when scrolling down the rooms list, and should be a method implementing a pagination system.
+
+(3) `open-user-tag` is triggered when clicking a user tag inside a message. When creating a user tag by typing `@` in the footer textarea and sending the message, the tag will be identified with the below pattern:
+
+```javascript
+<usertag>TAGGED_USER_ID</usertag>
+```
+
+This will make the tag clickable inside a message. Ex: [message tag content](#messages-collection-inside-a-room-document)<br>
+`send-message` and `edit-message` events will handle that pattern for you and pass it in the `content` param.
+
+(4) `menu-action-handler` is the result of the [`menu-actions`](#props-api) prop.<br>
+When clicking a button from your `menu-actions` array, `menu-action-handler` will give you the name of the button that was click.
 Then you can do whatever you want with it. Ex:
 
 ```javascript
@@ -603,7 +616,7 @@ menuActionHandler({ roomId, action }) {
 }
 ```
 
-(4) `message-action-handler` is the result of the `message-actions` prop.<br>
+(5) `message-action-handler` is the result of the `message-actions` prop.<br>
 When clicking a message menu button from your `message-actions` array, `message-action-handler` will give you the name of the button that was click and the corresponding message data.
 Then you can do whatever you want with it. Ex:
 
@@ -618,11 +631,11 @@ messageActionHandler({ roomId, action, message }) {
 }
 ```
 
-(5) `textarea-action-handler` can be used to add an extra icon on the right of the textarea, and recieve an event when clicking it.
+(6) `textarea-action-handler` can be used to add an extra icon on the right of the textarea, and recieve an event when clicking it.
 
-(6) All file params contain: `{ blob, localURL, name, size, type, extension }`
+(7) All file params contain: `{ blob, localURL, name, size, type, extension }`
 
-(7) `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked.
+(8) `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked.
 
 ## Named Slots
 
@@ -724,7 +737,7 @@ chatRooms: {
 ```javascript
 messages: {
   MESSAGE_ID_1: {
-    content: 'My first message',
+    content: 'My first message to <usertag>John</usertag>',
     sender_id: 2,
     timestamp: 'December 11, 2019 at 4:00:00 PM',
     seen: true
