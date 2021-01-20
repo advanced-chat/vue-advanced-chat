@@ -29,14 +29,13 @@
 	"main": "./dist/vue-advanced-chat.common.js",
 	"scripts": {
 		"serve": "vue-cli-service serve",
-		"build": "npm run clean:lib && npm run build:lib && npm run build:wc && npm run gen:types",
+		"build": "npm run clean:lib && npm run build:lib && npm run build:wc",
 		"clean:lib": "rimraf dist",
 		"build:lib": "vue-cli-service build --target lib --no-clean --name vue-advanced-chat ./src/ChatWindow/index.js",
 		"build:wc": "vue-cli-service build --target wc --no-clean --name vue-advanced-chat ./src/ChatWindow/ChatWindow.vue",
 		"prepublish": "npm run lint && npm run build",
 		"publish-beta": "npm publish --tag beta",
-		"lint": "vue-cli-service lint",
-		"gen:types": "tsc --declaration"
+		"lint": "vue-cli-service lint"
 	},
 	"files": [
 		"dist/*",
@@ -51,8 +50,8 @@
 		"@vue/cli-service": "~4.5.0",
 		"@vue/eslint-config-standard": "^4.0.0",
 		"babel-eslint": "^10.0.3",
-		"eslint": "^5.16.0",
-		"eslint-plugin-vue": "^5.0.0",
+		"eslint": "^6.7.2",
+		"eslint-plugin-vue": "^6.2.2",
 		"node-sass": "^4.13.0",
 		"rimraf": "^2.7.1",
 		"sass-loader": "^8.0.2",
