@@ -50,6 +50,7 @@
 			:theme="theme"
 			:styles="styles"
 			:current-user-id="currentUserId"
+			:roomId="roomId"
 			:rooms="loadedRooms"
 			:loading-rooms="loadingRooms"
 			:messages="messages"
@@ -63,6 +64,7 @@
 			@edit-message="editMessage"
 			@delete-message="deleteMessage"
 			@open-file="openFile"
+			@open-user-tag="openUserTag"
 			@add-room="addRoom"
 			@menu-action-handler="menuActionHandler"
 			@message-action-handler="messageActionHandler"
@@ -98,6 +100,7 @@ export default {
 		return {
 			roomsPerPage: 15,
 			rooms: [],
+			roomId: '',
 			startRooms: null,
 			endRooms: null,
 			roomsLoaded: false,
@@ -312,6 +315,7 @@ export default {
 					content,
 					timestamp,
 					date: message.timestamp.seconds,
+					distributed: true,
 					seen: message.sender_id === this.currentUserId ? message.seen : null,
 					new:
 						message.sender_id !== this.currentUserId &&
@@ -456,6 +460,61 @@ export default {
 
 		openFile({ message, action }) {
 			window.open(message.file.url, '_blank')
+		},
+
+		async openUserTag({ user }) {
+			let roomId
+
+			this.rooms.forEach(room => {
+				if (room.users.length === 2) {
+					const userId1 = room.users[0]._id
+					const userId2 = room.users[1]._id
+					if (
+						(userId1 === user._id || userId1 === this.currentUserId) &&
+						(userId2 === user._id || userId2 === this.currentUserId)
+					) {
+						roomId = room.roomId
+					}
+				}
+			})
+
+			if (roomId) {
+				this.roomId = roomId
+				return setTimeout(() => (this.roomId = ''), 0)
+			}
+
+			const query1 = await roomsRef
+				.where('users', '==', [this.currentUserId, user._id])
+				.get()
+
+			if (!query1.empty) {
+				return this.loadRoom(query1)
+			}
+
+			let query2 = await roomsRef
+				.where('users', '==', [user._id, this.currentUserId])
+				.get()
+
+			if (!query2.empty) {
+				return this.loadRoom(query2)
+			}
+
+			const room = await roomsRef.add({
+				users: [user._id, this.currentUserId],
+				lastUpdated: new Date()
+			})
+
+			this.roomId = room.id
+			this.fetchRooms()
+		},
+
+		async loadRoom(query) {
+			query.forEach(async room => {
+				if (this.loadingRooms) return
+				await roomsRef.doc(room.id).update({ lastUpdated: new Date() })
+				this.roomId = room.id
+				this.fetchRooms()
+			})
 		},
 
 		async editMessage({ messageId, newContent, roomId, file }) {
