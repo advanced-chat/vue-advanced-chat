@@ -131,7 +131,7 @@ export const defaultThemeStyles = {
 			color: '#fff',
 			backgroundInput: '#202223',
 			colorPlaceholder: '#596269',
-			colorCaret: '#1976d2',
+			colorCaret: '#fff',
 			colorSpinner: '#fff',
 			borderStyle: 'none',
 			backgroundScrollIcon: '#fff'
@@ -177,7 +177,7 @@ export const defaultThemeStyles = {
 
 		message: {
 			background: '#22242a',
-			backgroundMe: '#4fb381',
+			backgroundMe: '#1f7e80',
 			color: '#fff',
 			colorStarted: '#9ca6af',
 			backgroundDeleted: '#1b1c21',

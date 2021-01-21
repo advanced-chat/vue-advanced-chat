@@ -15,7 +15,7 @@
 							!singleLine && checkType(message, 'inline-code'),
 						'vac-text-multiline-code':
 							!singleLine && checkType(message, 'multiline-code'),
-						'vac-text-tag': !reply && checkType(message, 'tag')
+						'vac-text-tag': !singleLine && !reply && checkType(message, 'tag')
 					}"
 					:href="message.href"
 					:target="message.href ? '_blank' : null"

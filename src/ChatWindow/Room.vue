@@ -946,7 +946,7 @@ export default {
 			this.$emit('open-file', { message, action })
 		},
 		openUserTag(user) {
-			this.$emit('open-user-tag', { user })
+			this.$emit('open-user-tag', user)
 		},
 		menuActionHandler(action) {
 			this.closeMenu()
