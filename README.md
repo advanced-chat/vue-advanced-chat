@@ -327,130 +327,23 @@ multiline code
 
 Example: set `"accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files
 
-(18) `styles` can be used to customize your own theme. Ex:
+(18) `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
 
 ```javascript
 styles="{
   general: {
     color: '#0a0a0a',
-    backgroundInput: '#fff',
-    colorPlaceholder: '#9ca6af',
-    colorCaret: '#1976d2',
     colorSpinner: '#333',
-    borderStyle: '1px solid #e1e4e8',
-    backgroundScrollIcon: '#fff'
-  },
-
-  container: {
-    border: 'none',
-    borderRadius: '4px',
-    boxShadow: '0px 3px 1px 1px #000'
-  },
-
-  header: {
-    background: '#fff',
-    colorRoomName: '#0a0a0a',
-    colorRoomInfo: '#9ca6af'
+    borderStyle: '1px solid #e1e4e8'
   },
 
   footer: {
     background: '#f8f9fa',
-    borderStyleInput: '1px solid #e1e4e8',
-    borderInputSelected: '#1976d2',
     backgroundReply: 'rgba(0, 0, 0, 0.08)'
   },
 
-  content: {
-    background: '#f8f9fa'
-  },
-
-  sidemenu: {
-    background: '#fff',
-    backgroundHover: '#f6f6f6',
-    backgroundActive: '#e5effa',
-    colorActive: '#1976d2',
-    borderColorSearch: '#e1e5e8'
-  },
-
-  dropdown: {
-    background: '#fff',
-    backgroundHover: '#f6f6f6'
-  },
-
-  message: {
-    background: '#fff',
-    backgroundMe: '#ccf2cf',
-    color: '#0a0a0a',
-    colorStarted: '#9ca6af',
-    backgroundDeleted: '#dadfe2',
-    colorDeleted: '#757e85',
-    colorUsername: '#9ca6af',
-    colorTimestamp: '#828c94',
-    backgroundDate: '#e5effa',
-    colorDate: '#505a62',
-    backgroundSystem: '#e5effa',
-    colorSystem: '#505a62',
-    backgroundReply: 'rgba(0, 0, 0, 0.08)',
-    colorReplyUsername: '#0a0a0a',
-    colorReply: '#6e6e6e',
-    colorTag: '#0d579c',
-    backgroundImage: '#ddd',
-    colorNewMessages: '#1976d2',
-    backgroundReaction: '#eee',
-    borderStyleReaction: '1px solid #eee',
-    backgroundReactionHover: '#fff',
-    borderStyleReactionHover: '1px solid #ddd',
-    colorReactionCounter: '#0a0a0a',
-    backgroundReactionMe: '#cfecf5',
-    borderStyleReactionMe: '1px solid #3b98b8',
-    backgroundReactionHoverMe: '#cfecf5',
-    borderStyleReactionHoverMe: '1px solid #3b98b8',
-    colorReactionCounterMe: '#0b59b3'
-  },
-
-  markdown: {
-    background: 'rgba(239, 239, 239, 0.7)',
-    border: 'rgba(212, 212, 212, 0.9)',
-    color: '#e01e5a',
-    colorMulti: '#0a0a0a'
-  },
-
-  room: {
-    colorUsername: '#0a0a0a',
-    colorMessage: '#67717a',
-    colorTimestamp: '#a2aeb8',
-    colorStateOnline: '#4caf50',
-    colorStateOffline: '#ccc',
-    backgroundCounterBadge: '#0696c7',
-    colorCounterBadge: '#fff'
-  },
-
-  emoji: {
-    background: '#fff'
-  },
-
   icons: {
-    search: '#9ca6af',
-    add: '#1976d2',
-    toggle: '#0a0a0a',
-    menu: '#0a0a0a',
-    close: '#9ca6af',
-    closeImage: '#fff',
-    file: '#1976d2',
-    paperclip: '#1976d2',
-    closeOutline: '#000',
-    send: '#1976d2',
-    sendDisabled: '#9ca6af',
-    emoji: '#1976d2',
-    emojiReaction: '#828c94',
-    document: '#1976d2',
-    pencil: '#9e9e9e',
-    checkmark: '#9e9e9e',
-    checkmarkSeen: '#0696c7',
-    eye: '#fff',
-    dropdownMessage: '#fff',
-    dropdownMessageBackground: 'rgba(0, 0, 0, 0.25)',
-    dropdownScroll: '#0a0a0a'
+    search: '#9ca6af'
   }
 }"
 ```
