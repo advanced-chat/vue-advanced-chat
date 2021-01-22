@@ -226,10 +226,10 @@ export default {
 		},
 		orderedRooms() {
 			return this.rooms.slice().sort((a, b) => {
-				const aVal = a.lastMessage || { date: 0 }
-				const bVal = b.lastMessage || { date: 0 }
+				const aVal = a.index || 0
+				const bVal = b.index || 0
 
-				return aVal.date > bVal.date ? -1 : bVal.date > aVal.date ? 1 : 0
+				return aVal > bVal ? -1 : bVal > aVal ? 1 : 0
 			})
 		}
 	},

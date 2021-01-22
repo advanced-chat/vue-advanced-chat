@@ -468,12 +468,12 @@ rooms="[
     roomName: 'Room 1',
     avatar: 'assets/imgs/people.png',
     unreadCount: 4,
+    index: 3,
     lastMessage: {
       content: 'Last message received',
       sender_id: 1234,
       username: 'John Doe',
       timestamp: '10:20',
-      date: 123242424,
       saved: true,
       distributed: false,
       seen: false,
@@ -504,8 +504,8 @@ rooms="[
 ]"
 ```
 
-- If you set a `date` to `lastMessage` property, your rooms will be ordered using this date value.
-  `date` can be any sortable value, like a `string`, `datetime`, `timestamp`, etc.
+- If you add the `index` property, your rooms will be ordered using this value.
+  `index` can be any sortable value, like a `string`, `datetime`, `timestamp`, etc.
 
 - For each room user, you can add the `status` property, which can hold the `state` and `last_changed` properties:
 
