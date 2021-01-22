@@ -106,6 +106,7 @@
 								v-else-if="room.lastMessage"
 								:content="getLastMessage(room)"
 								:deleted="!!room.lastMessage.deleted && !typingUsers(room)"
+								:users="room.users"
 								:linkify="false"
 								:text-formatting="textFormatting"
 								:single-line="true"

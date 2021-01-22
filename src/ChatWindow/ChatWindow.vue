@@ -56,6 +56,7 @@
 				@edit-message="editMessage"
 				@delete-message="deleteMessage"
 				@open-file="openFile"
+				@open-user-tag="openUserTag"
 				@menu-action-handler="menuActionHandler"
 				@message-action-handler="messageActionHandler"
 				@send-message-reaction="sendMessageReaction"
@@ -225,10 +226,10 @@ export default {
 		},
 		orderedRooms() {
 			return this.rooms.slice().sort((a, b) => {
-				const aVal = a.lastMessage || { date: 0 }
-				const bVal = b.lastMessage || { date: 0 }
+				const aVal = a.index || 0
+				const bVal = b.index || 0
 
-				return aVal.date > bVal.date ? -1 : bVal.date > aVal.date ? 1 : 0
+				return aVal > bVal ? -1 : bVal > aVal ? 1 : 0
 			})
 		}
 	},
@@ -270,6 +271,9 @@ export default {
 		},
 		openFile({ message, action }) {
 			this.$emit('open-file', { message, action })
+		},
+		openUserTag({ user }) {
+			this.$emit('open-user-tag', { user })
 		},
 		menuActionHandler(ev) {
 			this.$emit('menu-action-handler', {
@@ -320,6 +324,7 @@ export default {
 	border: var(--chat-container-border);
 	border-radius: var(--chat-container-border-radius);
 	box-shadow: var(--chat-container-box-shadow);
+	-webkit-tap-highlight-color: transparent;
 
 	* {
 		font-family: inherit;
@@ -327,6 +332,7 @@ export default {
 
 	a {
 		color: #0d579c;
+		font-weight: 500;
 	}
 
 	.vac-chat-container {

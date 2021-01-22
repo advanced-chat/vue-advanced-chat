@@ -27,7 +27,8 @@ export const defaultThemeStyles = {
 			background: '#f8f9fa',
 			borderStyleInput: '1px solid #e1e4e8',
 			borderInputSelected: '#1976d2',
-			backgroundReply: 'rgba(0, 0, 0, 0.08)'
+			backgroundReply: '#e5e5e6',
+			backgroundTagActive: '#e5e5e6'
 		},
 
 		content: {
@@ -63,6 +64,7 @@ export const defaultThemeStyles = {
 			backgroundReply: 'rgba(0, 0, 0, 0.08)',
 			colorReplyUsername: '#0a0a0a',
 			colorReply: '#6e6e6e',
+			colorTag: '#0d579c',
 			backgroundImage: '#ddd',
 			colorNewMessages: '#1976d2',
 			backgroundReaction: '#eee',
@@ -129,7 +131,7 @@ export const defaultThemeStyles = {
 			color: '#fff',
 			backgroundInput: '#202223',
 			colorPlaceholder: '#596269',
-			colorCaret: '#1976d2',
+			colorCaret: '#fff',
 			colorSpinner: '#fff',
 			borderStyle: 'none',
 			backgroundScrollIcon: '#fff'
@@ -152,7 +154,8 @@ export const defaultThemeStyles = {
 			background: '#131415',
 			borderStyleInput: 'none',
 			borderInputSelected: '#1976d2',
-			backgroundReply: '#1b1c1c'
+			backgroundReply: '#1b1c1c',
+			backgroundTagActive: '#1b1c1c'
 		},
 
 		content: {
@@ -174,7 +177,7 @@ export const defaultThemeStyles = {
 
 		message: {
 			background: '#22242a',
-			backgroundMe: '#4fb381',
+			backgroundMe: '#1f7e80',
 			color: '#fff',
 			colorStarted: '#9ca6af',
 			backgroundDeleted: '#1b1c21',
@@ -188,6 +191,7 @@ export const defaultThemeStyles = {
 			backgroundReply: 'rgba(0, 0, 0, 0.18)',
 			colorReplyUsername: '#fff',
 			colorReply: '#d6d6d6',
+			colorTag: '#f0c60a',
 			backgroundImage: '#ddd',
 			colorNewMessages: '#fff',
 			backgroundReaction: 'none',
@@ -290,6 +294,7 @@ export const cssThemeVars = ({
 		'--chat-border-style-input': footer.borderStyleInput,
 		'--chat-border-color-input-selected': footer.borderInputSelected,
 		'--chat-footer-bg-color-reply': footer.backgroundReply,
+		'--chat-footer-bg-color-tag-active': footer.backgroundTagActive,
 
 		// content
 		'--chat-content-bg-color': content.background,
@@ -321,6 +326,7 @@ export const cssThemeVars = ({
 		'--chat-message-bg-color-reply': message.backgroundReply,
 		'--chat-message-color-reply-username': message.colorReplyUsername,
 		'--chat-message-color-reply-content': message.colorReply,
+		'--chat-message-color-tag': message.colorTag,
 		'--chat-message-bg-color-image': message.backgroundImage,
 		'--chat-message-color-new-messages': message.colorNewMessages,
 		'--chat-message-bg-color-reaction': message.backgroundReaction,

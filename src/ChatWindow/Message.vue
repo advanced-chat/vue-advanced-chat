@@ -75,8 +75,10 @@
 
 						<div v-else-if="!message.file">
 							<format-message
-								:content="this.message.content"
+								:content="message.content"
+								:users="roomUsers"
 								:text-formatting="textFormatting"
+								@open-user-tag="openUserTag"
 							>
 								<template v-slot:deleted-icon="data">
 									<slot name="deleted-icon" v-bind="data"></slot>
@@ -125,8 +127,10 @@
 								</transition>
 							</div>
 							<format-message
-								:content="this.message.content"
+								:content="message.content"
+								:users="roomUsers"
 								:text-formatting="textFormatting"
+								@open-user-tag="openUserTag"
 							></format-message>
 						</div>
 
@@ -455,6 +459,9 @@ export default {
 		openFile(action) {
 			this.$emit('open-file', { message: this.message, action })
 		},
+		openUserTag(user) {
+			this.$emit('open-user-tag', { user })
+		},
 		messageActionHandler(action) {
 			this.closeOptions()
 			this.messageHover = false
@@ -627,7 +634,7 @@ export default {
 	border-radius: 8px;
 	font-size: 14px;
 	padding: 6px 9px 3px;
-	white-space: pre-wrap;
+	white-space: pre-line;
 	max-width: 100%;
 	-webkit-transition-property: box-shadow, opacity;
 	transition-property: box-shadow, opacity;

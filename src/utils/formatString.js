@@ -53,16 +53,16 @@ const pseudo_markdown = {
 		end: '`',
 		allowed_chars: '.',
 		type: 'inline-code'
+	},
+	'<usertag>': {
+		allowed_chars: '.',
+		end: '</usertag>',
+		type: 'tag'
 	}
 	// ':': {
 	// 	allowed_chars: '[a-z_]',
 	// 	end: ':',
 	// 	object: child => <Emojione type={child[0]} />
-	// },
-	// '@': {
-	// 	allowed_chars: '[a-z_.-A-Z0-9]',
-	// 	end: ' ',
-	// 	object: child => <User data={child} />
 	// }
 }
 
