@@ -67,7 +67,6 @@
 			@open-user-tag="openUserTag"
 			@add-room="addRoom"
 			@menu-action-handler="menuActionHandler"
-			@message-action-handler="messageActionHandler"
 			@send-message-reaction="sendMessageReaction"
 			@typing-message="typingMessage"
 		>
@@ -248,11 +247,10 @@ export default {
 						: require('@/assets/logo.png')
 
 				formattedRooms.push({
-					...{
-						roomId: key,
-						avatar: roomAvatar,
-						...room
-					}
+					...room,
+					roomId: key,
+					avatar: roomAvatar,
+					index: room.lastUpdated.seconds
 				})
 			})
 
@@ -265,7 +263,7 @@ export default {
 			}
 
 			this.listenUsersOnlineStatus(formattedRooms)
-			this.listenRoomsTypingUsers(query)
+			this.listenRooms(query)
 			// setTimeout(() => console.log('TOTAL', this.dbRequestCount), 2000)
 		},
 
@@ -298,6 +296,7 @@ export default {
 
 		formatLastMessage(message) {
 			if (!message.timestamp) return
+
 			const date = new Date(message.timestamp.seconds * 1000)
 			const timestampFormat = isSameDay(date, new Date()) ? 'HH:mm' : 'DD/MM/YY'
 
@@ -314,7 +313,6 @@ export default {
 				...{
 					content,
 					timestamp,
-					date: message.timestamp.seconds,
 					distributed: true,
 					seen: message.sender_id === this.currentUserId ? message.seen : null,
 					new:
@@ -418,7 +416,7 @@ export default {
 			}
 		},
 
-		async sendMessage({ content, roomId, file, replyMessage, usersTag }) {
+		async sendMessage({ content, roomId, file, replyMessage }) {
 			const message = {
 				sender_id: this.currentUserId,
 				content,
@@ -458,7 +456,7 @@ export default {
 			roomsRef.doc(roomId).update({ lastUpdated: new Date() })
 		},
 
-		openFile({ message, action }) {
+		openFile({ message }) {
 			window.open(message.file.url, '_blank')
 		},
 
@@ -577,14 +575,6 @@ export default {
 			}
 		},
 
-		messageActionHandler() {
-			// do something
-		},
-
-		textareaActionHandler({ message, roomId }) {
-			this.roomMessage = 'Implement your own action!'
-		},
-
 		async sendMessageReaction({ reaction, remove, messageId, roomId }) {
 			const dbAction = remove
 				? firebase.firestore.FieldValue.arrayRemove(this.currentUserId)
@@ -617,12 +607,15 @@ export default {
 			})
 		},
 
-		async listenRoomsTypingUsers(query) {
+		async listenRooms(query) {
 			const listener = query.onSnapshot(rooms => {
 				// this.incrementDbCounter('Listen Rooms Typing Users', rooms.size)
 				rooms.forEach(room => {
 					const foundRoom = this.rooms.find(r => r.roomId === room.id)
-					if (foundRoom) foundRoom.typingUsers = room.data().typingUsers
+					if (foundRoom) {
+						foundRoom.typingUsers = room.data().typingUsers
+						foundRoom.index = room.data().lastUpdated.seconds
+					}
 				})
 			})
 			this.roomsListeners.push(listener)
