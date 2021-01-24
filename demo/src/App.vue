@@ -1,18 +1,27 @@
 <template>
 	<div>
-		<div class="app-container">
+		<div
+			class="app-container"
+			:class="{ 'app-mobile': isDevice, 'app-mobile-dark': theme === 'dark' }"
+		>
 			<!-- <div>
 				<button @click="resetData">Clear Data</button>
 				<button @click="addData" :disabled="updatingData">Add Data</button>
 			</div> -->
-			<span class="user-logged" v-if="!isDevice">Logged as</span>
-			<select v-model="currentUserId" v-if="!isDevice">
+			<span
+				class="user-logged"
+				:class="{ 'user-logged-dark': theme === 'dark' }"
+				v-if="showOptions"
+			>
+				Logged as
+			</span>
+			<select v-model="currentUserId" v-if="showOptions">
 				<option v-for="user in users" :key="user._id" :value="user._id">
 					{{ user.username }}
 				</option>
 			</select>
 
-			<div class="button-theme" v-if="!isDevice">
+			<div class="button-theme" v-if="showOptions">
 				<button @click="theme = 'light'" class="button-light">Light</button>
 				<button @click="theme = 'dark'" class="button-dark">Dark</button>
 			</div>
@@ -21,6 +30,7 @@
 				:currentUserId="currentUserId"
 				:theme="theme"
 				:isDevice="isDevice"
+				@show-demo-options="showDemoOptions = $event"
 				v-if="showChat"
 			/>
 
@@ -63,8 +73,17 @@ export default {
 				}
 			],
 			currentUserId: '6R0MijpK6M4AIrwaaCY2',
+			isDevice: false,
+			showDemoOptions: true,
 			updatingData: false
 		}
+	},
+
+	mounted() {
+		this.isDevice = window.innerWidth < 500
+		window.addEventListener('resize', ev => {
+			if (ev.isTrusted) this.isDevice = window.innerWidth < 500
+		})
 	},
 
 	watch: {
@@ -75,8 +94,8 @@ export default {
 	},
 
 	computed: {
-		isDevice() {
-			return window.innerWidth < 500
+		showOptions() {
+			return !this.isDevice || this.showDemoOptions
 		}
 	},
 
@@ -142,12 +161,42 @@ body {
 	margin: 0;
 }
 
+input {
+	-webkit-appearance: none;
+}
+
 .app-container {
 	font-family: 'Quicksand', sans-serif;
 	padding: 20px 30px 30px;
+}
 
-	@media only screen and (max-width: 768px) {
-		padding: 0;
+.app-mobile {
+	padding: 0;
+
+	&.app-mobile-dark {
+		background: #131415;
+	}
+
+	.user-logged {
+		margin: 10px 5px 0 10px;
+	}
+
+	select {
+		margin: 10px 0;
+	}
+
+	.button-theme {
+		margin: 10px 10px 0 0;
+	}
+}
+
+.user-logged {
+	font-size: 12px;
+	margin-right: 5px;
+	margin-top: 10px;
+
+	&.user-logged-dark {
+		color: #fff;
 	}
 }
 
@@ -155,13 +204,9 @@ select {
 	height: 20px;
 	outline: none;
 	border: 1px solid #e0e2e4;
+	border-radius: 4px;
 	background: #fff;
 	margin-bottom: 20px;
-}
-
-.user-logged {
-	font-size: 12px;
-	margin-right: 5px;
 }
 
 .button-theme {

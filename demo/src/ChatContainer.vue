@@ -59,6 +59,7 @@
 			@menu-action-handler="menuActionHandler"
 			@send-message-reaction="sendMessageReaction"
 			@typing-message="typingMessage"
+			@toggle-rooms-list="$emit('show-demo-options', $event.opened)"
 		>
 		</chat-window>
 	</div>
@@ -316,6 +317,8 @@ export default {
 		},
 
 		fetchMessages({ room, options = {} }) {
+			this.$emit('show-demo-options', false)
+
 			if (options.reset) this.resetMessages()
 
 			if (this.endMessages && !this.startMessages)
@@ -786,7 +789,7 @@ export default {
 
 .window-mobile {
 	form {
-		padding: 10px;
+		padding: 0 10px 10px;
 	}
 }
 
