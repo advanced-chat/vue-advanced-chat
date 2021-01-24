@@ -1121,6 +1121,7 @@ export default {
 	.vac-tags-box {
 		display: flex;
 		width: 100%;
+		height: 54px;
 		overflow: hidden;
 		cursor: pointer;
 		background: var(--chat-footer-bg-color);
@@ -1138,7 +1139,7 @@ export default {
 	.vac-tags-info {
 		display: flex;
 		overflow: hidden;
-		padding: 10px 20px;
+		padding: 0 20px;
 		align-items: center;
 	}
 
@@ -1457,8 +1458,14 @@ export default {
 		width: calc(100% - 16px);
 	}
 
-	.vac-tags-container .vac-tags-info {
-		padding: 8px 12px;
+	.vac-tags-container {
+		.vac-tags-box {
+			height: 50px;
+		}
+
+		.vac-tags-info {
+			padding: 0 12px;
+		}
 	}
 
 	.vac-icon-scroll {
