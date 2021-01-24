@@ -856,7 +856,8 @@ button {
 select {
 	vertical-align: middle;
 	height: 33px;
-	width: 120px;
+	width: 152px;
 	font-size: 13px;
+	margin: 0 !important;
 }
 </style>
