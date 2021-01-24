@@ -1,52 +1,42 @@
 <template>
-	<div class="window-container">
-		<div class="chat-forms">
-			<form @submit.prevent="createRoom" v-if="addNewRoom">
-				<input
-					type="text"
-					placeholder="Add username to create a room"
-					v-model="addRoomUsername"
-				/>
-				<button type="submit" :disabled="disableForm || !addRoomUsername">
-					Create Room
-				</button>
-				<button class="button-cancel" @click="addNewRoom = false">
-					Cancel
-				</button>
-			</form>
+	<div class="window-container" :class="{ 'window-mobile': isDevice }">
+		<form @submit.prevent="createRoom" v-if="addNewRoom">
+			<input type="text" placeholder="Add username" v-model="addRoomUsername" />
+			<button type="submit" :disabled="disableForm || !addRoomUsername">
+				Create Room
+			</button>
+			<button class="button-cancel" @click="addNewRoom = false">
+				Cancel
+			</button>
+		</form>
 
-			<form @submit.prevent="addRoomUser" v-if="inviteRoomId">
-				<input
-					type="text"
-					placeholder="Add user to the room"
-					v-model="invitedUsername"
-				/>
-				<button type="submit" :disabled="disableForm || !invitedUsername">
-					Add User
-				</button>
-				<button class="button-cancel" @click="inviteRoomId = null">
-					Cancel
-				</button>
-			</form>
+		<form @submit.prevent="addRoomUser" v-if="inviteRoomId">
+			<input type="text" placeholder="Add username" v-model="invitedUsername" />
+			<button type="submit" :disabled="disableForm || !invitedUsername">
+				Add User
+			</button>
+			<button class="button-cancel" @click="inviteRoomId = null">
+				Cancel
+			</button>
+		</form>
 
-			<form @submit.prevent="deleteRoomUser" v-if="removeRoomId">
-				<select v-model="removeUserId">
-					<option default value="">Select User</option>
-					<option v-for="user in removeUsers" :key="user._id" :value="user._id">
-						{{ user.username }}
-					</option>
-				</select>
-				<button type="submit" :disabled="disableForm || !removeUserId">
-					Remove User
-				</button>
-				<button class="button-cancel" @click="removeRoomId = null">
-					Cancel
-				</button>
-			</form>
-		</div>
+		<form @submit.prevent="deleteRoomUser" v-if="removeRoomId">
+			<select v-model="removeUserId">
+				<option default value="">Select User</option>
+				<option v-for="user in removeUsers" :key="user._id" :value="user._id">
+					{{ user.username }}
+				</option>
+			</select>
+			<button type="submit" :disabled="disableForm || !removeUserId">
+				Remove User
+			</button>
+			<button class="button-cancel" @click="removeRoomId = null">
+				Cancel
+			</button>
+		</form>
 
 		<chat-window
-			height="calc(100vh - 80px)"
+			:height="screenHeight"
 			:theme="theme"
 			:styles="styles"
 			:current-user-id="currentUserId"
@@ -93,7 +83,7 @@ export default {
 		ChatWindow
 	},
 
-	props: ['currentUserId', 'theme'],
+	props: ['currentUserId', 'theme', 'isDevice'],
 
 	data() {
 		return {
@@ -147,6 +137,9 @@ export default {
 	computed: {
 		loadedRooms() {
 			return this.rooms.slice(0, this.roomsLoadedCount)
+		},
+		screenHeight() {
+			return this.isDevice ? window.innerHeight + 'px' : 'calc(100vh - 80px)'
 		}
 	},
 
@@ -791,67 +784,69 @@ export default {
 	width: 100%;
 }
 
-.chat-forms {
-	padding-bottom: 20px;
-
+.window-mobile {
 	form {
-		padding-top: 20px;
+		padding: 10px;
+	}
+}
+
+form {
+	padding-bottom: 20px;
+}
+
+input {
+	padding: 5px;
+	width: 140px;
+	height: 21px;
+	border-radius: 4px;
+	border: 1px solid #d2d6da;
+	outline: none;
+	font-size: 14px;
+	vertical-align: middle;
+
+	&::placeholder {
+		color: #9ca6af;
+	}
+}
+
+button {
+	background: #1976d2;
+	color: #fff;
+	outline: none;
+	cursor: pointer;
+	border-radius: 4px;
+	padding: 8px 12px;
+	margin-left: 10px;
+	border: none;
+	font-size: 14px;
+	transition: 0.3s;
+	vertical-align: middle;
+
+	&:hover {
+		opacity: 0.8;
 	}
 
-	input {
-		padding: 5px;
-		width: 180px;
-		height: 21px;
-		border-radius: 4px;
-		border: 1px solid #d2d6da;
-		outline: none;
-		font-size: 14px;
-		vertical-align: middle;
-
-		&::placeholder {
-			color: #9ca6af;
-		}
+	&:active {
+		opacity: 0.6;
 	}
 
-	button {
-		background: #1976d2;
-		color: #fff;
-		outline: none;
-		cursor: pointer;
-		border-radius: 4px;
-		padding: 8px 12px;
-		margin-left: 10px;
-		border: none;
-		font-size: 14px;
-		transition: 0.3s;
-		vertical-align: middle;
-
-		&:hover {
-			opacity: 0.8;
-		}
-
-		&:active {
-			opacity: 0.6;
-		}
-
-		&:disabled {
-			cursor: initial;
-			background: #c6c9cc;
-			opacity: 0.6;
-		}
+	&:disabled {
+		cursor: initial;
+		background: #c6c9cc;
+		opacity: 0.6;
 	}
+}
 
-	.button-cancel {
-		color: #a8aeb3;
-		background: none;
-		margin-left: 5px;
-	}
+.button-cancel {
+	color: #a8aeb3;
+	background: none;
+	margin-left: 5px;
+}
 
-	select {
-		vertical-align: middle;
-		height: 33px;
-		width: 120px;
-		font-size: 13px;
-	}
+select {
+	vertical-align: middle;
+	height: 33px;
+	width: 120px;
+	font-size: 13px;
 }
 </style>

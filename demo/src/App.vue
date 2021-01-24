@@ -5,14 +5,14 @@
 				<button @click="resetData">Clear Data</button>
 				<button @click="addData" :disabled="updatingData">Add Data</button>
 			</div> -->
-			<span class="user-logged">Logged as</span>
-			<select v-model="currentUserId">
+			<span class="user-logged" v-if="!isDevice">Logged as</span>
+			<select v-model="currentUserId" v-if="!isDevice">
 				<option v-for="user in users" :key="user._id" :value="user._id">
 					{{ user.username }}
 				</option>
 			</select>
 
-			<div class="button-theme">
+			<div class="button-theme" v-if="!isDevice">
 				<button @click="theme = 'light'" class="button-light">Light</button>
 				<button @click="theme = 'dark'" class="button-dark">Dark</button>
 			</div>
@@ -20,6 +20,7 @@
 			<chat-container
 				:currentUserId="currentUserId"
 				:theme="theme"
+				:isDevice="isDevice"
 				v-if="showChat"
 			/>
 
@@ -70,6 +71,12 @@ export default {
 		currentUserId() {
 			this.showChat = false
 			setTimeout(() => (this.showChat = true), 150)
+		}
+	},
+
+	computed: {
+		isDevice() {
+			return window.innerWidth < 500
 		}
 	},
 
@@ -132,11 +139,12 @@ export default {
 <style lang="scss">
 body {
 	background: #fafafa;
+	margin: 0;
 }
 
 .app-container {
 	font-family: 'Quicksand', sans-serif;
-	padding: 10px 20px 20px;
+	padding: 20px 30px 30px;
 
 	@media only screen and (max-width: 768px) {
 		padding: 0;
@@ -148,6 +156,7 @@ select {
 	outline: none;
 	border: 1px solid #e0e2e4;
 	background: #fff;
+	margin-bottom: 20px;
 }
 
 .user-logged {
