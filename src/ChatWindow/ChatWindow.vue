@@ -8,6 +8,7 @@
 				:loading-rooms="loadingRooms"
 				:rooms-loaded="roomsLoaded"
 				:room="room"
+				:room-actions="roomActions"
 				:text-messages="t"
 				:show-add-room="showAddRoom"
 				:show-rooms-list="showRoomsList"
@@ -17,6 +18,7 @@
 				@fetch-more-rooms="fetchMoreRooms"
 				@loading-more-rooms="loadingMoreRooms = $event"
 				@add-room="addRoom"
+				@room-action-handler="roomActionHandler"
 			>
 				<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
 					<slot :name="name" v-bind="data"></slot>
@@ -101,6 +103,7 @@ export default {
 		loadFirstRoom: { type: Boolean, default: true },
 		messages: { type: Array, default: () => [] },
 		messagesLoaded: { type: Boolean, default: false },
+		roomActions: { type: Array, default: () => [] },
 		menuActions: { type: Array, default: () => [] },
 		messageActions: {
 			type: Array,
@@ -279,6 +282,12 @@ export default {
 			this.$emit('menu-action-handler', {
 				action: ev,
 				roomId: this.room.roomId
+			})
+		},
+		roomActionHandler({ action, roomId }) {
+			this.$emit('room-action-handler', {
+				action,
+				roomId
 			})
 		},
 		messageActionHandler(ev) {

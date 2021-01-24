@@ -46,6 +46,7 @@
 			:messages="messages"
 			:messages-loaded="messagesLoaded"
 			:rooms-loaded="roomsLoaded"
+			:room-actions="roomActions"
 			:menu-actions="menuActions"
 			:room-message="roomMessage"
 			@fetch-more-rooms="fetchMoreRooms"
@@ -56,6 +57,7 @@
 			@open-file="openFile"
 			@open-user-tag="openUserTag"
 			@add-room="addRoom"
+			@room-action-handler="menuActionHandler"
 			@menu-action-handler="menuActionHandler"
 			@send-message-reaction="sendMessageReaction"
 			@typing-message="typingMessage"
@@ -116,6 +118,11 @@ export default {
 			removeRoomId: null,
 			removeUserId: '',
 			removeUsers: [],
+			roomActions: [
+				{ name: 'inviteUser', title: 'Invite User' },
+				{ name: 'removeUser', title: 'Remove User' },
+				{ name: 'deleteRoom', title: 'Delete Room' }
+			],
 			menuActions: [
 				{ name: 'inviteUser', title: 'Invite User' },
 				{ name: 'removeUser', title: 'Remove User' },

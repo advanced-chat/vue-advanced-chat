@@ -210,6 +210,10 @@ export default {
 	fill: var(--chat-icon-color-dropdown-message);
 }
 
+#vac-icon-dropdown-room {
+	fill: var(--chat-icon-color-dropdown-room);
+}
+
 #vac-icon-dropdown-scroll {
 	fill: var(--chat-icon-color-dropdown-scroll);
 }

@@ -121,6 +121,7 @@ export const defaultThemeStyles = {
 			eye: '#fff',
 			dropdownMessage: '#fff',
 			dropdownMessageBackground: 'rgba(0, 0, 0, 0.25)',
+			dropdownRoom: '#67717a',
 			dropdownScroll: '#0a0a0a',
 			microphone: '#1976d2',
 			microphoneOff: '#eb4034'
@@ -248,6 +249,7 @@ export const defaultThemeStyles = {
 			eye: '#fff',
 			dropdownMessage: '#fff',
 			dropdownMessageBackground: 'rgba(0, 0, 0, 0.25)',
+			dropdownRoom: '#fff',
 			dropdownScroll: '#0a0a0a',
 			microphone: '#fff',
 			microphoneOff: '#eb4034'
@@ -382,6 +384,7 @@ export const cssThemeVars = ({
 		'--chat-icon-color-eye': icons.eye,
 		'--chat-icon-color-dropdown-message': icons.dropdownMessage,
 		'--chat-icon-bg-dropdown-message': icons.dropdownMessageBackground,
+		'--chat-icon-color-dropdown-room': icons.dropdownRoom,
 		'--chat-icon-color-dropdown-scroll': icons.dropdownScroll,
 		'--chat-icon-color-microphone': icons.microphone,
 		'--chat-icon-color-microphone-off': icons.microphoneOff

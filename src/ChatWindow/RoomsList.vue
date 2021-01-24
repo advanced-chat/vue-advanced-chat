@@ -121,8 +121,41 @@
 							>
 								{{ typingUsers(room) }}
 							</div>
-							<div v-if="room.unreadCount" class="vac-room-badge">
-								{{ room.unreadCount }}
+							<div class="vac-room-options-container">
+								<div v-if="room.unreadCount" class="vac-room-badge-container">
+									<div class="vac-room-badge">
+										{{ room.unreadCount }}
+									</div>
+								</div>
+								<slot name="room-list-options" v-bind="{ room }">
+									<div
+										class="vac-svg-button vac-list-room-options"
+										v-if="roomActions.length"
+										@click.stop="roomMenuOpened = room.roomId"
+									>
+										<slot name="room-list-options-icon">
+											<svg-icon name="dropdown" param="room" />
+										</slot>
+									</div>
+									<transition name="vac-slide-left" v-if="roomActions.length">
+										<div
+											v-if="roomMenuOpened === room.roomId"
+											v-click-outside="closeRoomMenu"
+											class="vac-menu-options"
+										>
+											<div class="vac-menu-list">
+												<div v-for="action in roomActions" :key="action.name">
+													<div
+														class="vac-menu-item"
+														@click.stop="roomActionHandler(action, room)"
+													>
+														{{ action.title }}
+													</div>
+												</div>
+											</div>
+										</div>
+									</transition>
+								</slot>
 							</div>
 						</div>
 					</div>
@@ -147,6 +180,7 @@
 
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
+import vClickOutside from 'v-click-outside'
 import Loader from './Loader'
 import SvgIcon from './SvgIcon'
 import FormatMessage from './FormatMessage'
@@ -158,6 +192,10 @@ export default {
 	name: 'rooms-list',
 	components: { InfiniteLoading, Loader, SvgIcon, FormatMessage },
 
+	directives: {
+		clickOutside: vClickOutside.directive
+	},
+
 	props: {
 		currentUserId: { type: [String, Number], required: true },
 		textMessages: { type: Object, required: true },
@@ -168,7 +206,8 @@ export default {
 		rooms: { type: Array, required: true },
 		loadingRooms: { type: Boolean, required: true },
 		roomsLoaded: { type: Boolean, required: true },
-		room: { type: Object, required: true }
+		room: { type: Object, required: true },
+		roomActions: { type: Array, required: true }
 	},
 
 	data() {
@@ -176,7 +215,8 @@ export default {
 			filteredRooms: this.rooms || [],
 			infiniteState: null,
 			loadingMoreRooms: false,
-			selectedRoomId: ''
+			selectedRoomId: '',
+			roomMenuOpened: null
 		}
 	},
 
@@ -285,6 +325,13 @@ export default {
 					room.lastMessage.distributed ||
 					room.lastMessage.seen)
 			)
+		},
+		roomActionHandler(action, room) {
+			this.closeRoomMenu()
+			this.$emit('room-action-handler', { action, roomId: room.roomId })
+		},
+		closeRoomMenu() {
+			this.roomMenuOpened = null
 		}
 	}
 }
@@ -376,7 +423,7 @@ export default {
 	display: flex;
 	flex: 1 1 100%;
 	margin-bottom: 5px;
-	padding: 0 16px;
+	padding: 0 14px;
 	position: relative;
 	min-height: 71px;
 
@@ -470,6 +517,11 @@ export default {
 	fill: var(--chat-room-color-message);
 }
 
+.vac-room-options-container {
+	display: flex;
+	margin-left: auto;
+}
+
 .vac-room-badge {
 	background-color: var(--chat-room-bg-color-badge);
 	color: var(--chat-room-color-badge);
@@ -478,11 +530,19 @@ export default {
 	height: 13px;
 	width: auto;
 	min-width: 13px;
+	margin-left: 5px;
 	border-radius: 50%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	padding: 3px;
+}
+
+.vac-list-room-options {
+	height: 19px;
+	width: 19px;
+	align-items: center;
+	margin-left: 5px;
 }
 
 @media only screen and (max-width: 768px) {
