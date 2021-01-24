@@ -1,6 +1,6 @@
 {
 	"name": "vue-advanced-chat",
-	"version": "0.6.8",
+	"version": "0.6.9",
 	"license": "MIT",
 	"description": "A beautiful chat rooms component made with Vue.js",
 	"author": {
