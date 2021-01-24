@@ -217,7 +217,7 @@ fetchMessages({ room, options }) {
 You can then use the [room-action-handler](#events-api) event to call your own action after clicking a button. Ex:
 
 ```javascript
-menu-actions="[
+room-actions="[
   {
     name: 'archiveRoom',
     title: 'Archive Room'
