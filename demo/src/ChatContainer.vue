@@ -552,12 +552,15 @@ export default {
 		},
 
 		async uploadFile({ file, messageId, roomId }) {
+			let type = file.extension || file.type
+			if (type === 'svg') type = file.type
+
 			const uploadFileRef = filesRef
 				.child(this.currentUserId)
 				.child(messageId)
-				.child(`${file.name}.${file.extension || file.type}`)
+				.child(`${file.name}.${type}`)
 
-			await uploadFileRef.put(file.blob, { contentType: file.type })
+			await uploadFileRef.put(file.blob, { contentType: type })
 			const url = await uploadFileRef.getDownloadURL()
 
 			await messagesRef(roomId)
