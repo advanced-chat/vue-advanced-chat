@@ -121,7 +121,7 @@ export const defaultThemeStyles = {
 			eye: '#fff',
 			dropdownMessage: '#fff',
 			dropdownMessageBackground: 'rgba(0, 0, 0, 0.25)',
-			dropdownRoom: '#67717a',
+			dropdownRoom: '#9e9e9e',
 			dropdownScroll: '#0a0a0a',
 			microphone: '#1976d2',
 			microphoneOff: '#eb4034'
