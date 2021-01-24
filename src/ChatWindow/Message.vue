@@ -295,6 +295,8 @@ import Loader from './Loader'
 import EmojiPicker from './EmojiPicker'
 import FormatMessage from './FormatMessage'
 
+import { IMAGE_TYPES } from '../utils/constants'
+
 export default {
 	name: 'message',
 	components: { SvgIcon, Loader, EmojiPicker, FormatMessage },
@@ -479,7 +481,7 @@ export default {
 		},
 		checkImageType(file) {
 			if (!file) return
-			const imageTypes = ['png', 'jpg', 'jpeg', 'svg']
+			const imageTypes = IMAGE_TYPES
 			const { type } = file
 			return imageTypes.some(t => type.toLowerCase().includes(t))
 		},

@@ -383,6 +383,7 @@ const { messagesValid } = require('../utils/roomValidation')
 const { detectMobile, iOSDevice } = require('../utils/mobileDetection')
 import filteredUsers from '../utils/filterItems'
 import typingText from '../utils/typingText'
+import { IMAGE_TYPES } from '../utils/constants'
 
 export default {
 	name: 'room',
@@ -938,7 +939,7 @@ export default {
 		},
 		isImageCheck(file) {
 			if (!file) return
-			const imageTypes = ['png', 'jpg', 'jpeg', 'svg']
+			const imageTypes = IMAGE_TYPES
 			const { type } = file
 			return imageTypes.some(t => type.toLowerCase().includes(t))
 		},
