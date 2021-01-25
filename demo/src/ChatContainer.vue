@@ -441,7 +441,7 @@ export default {
 					name: file.name,
 					size: file.size,
 					type: file.type,
-					extension: file.extension,
+					extension: file.extension || file.type,
 					url: file.localUrl
 				}
 				if (file.audio) {
@@ -537,7 +537,7 @@ export default {
 					name: file.name,
 					size: file.size,
 					type: file.type,
-					extension: file.extension,
+					extension: file.extension || file.type,
 					url: file.url || file.localUrl
 				}
 				if (file.audio) {
