@@ -9,7 +9,8 @@
 		"s": "npm run serve",
 		"build": "vue-cli-service build",
 		"lint": "vue-cli-service lint",
-		"gpages": "sh deploy.sh"
+		"gpages": "sh deploy.sh",
+		"latest": "npm i https://github.com/antoine92190/vue-advanced-chat/tarball/master"
 	},
 	"dependencies": {
 		"firebase": "^8.2.2",
