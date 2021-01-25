@@ -3,19 +3,17 @@
 		<div :class="{ 'vac-text-ellipsis': singleLine }" v-if="textFormatting">
 			<template v-for="(message, i) in linkifiedMessage">
 				<component
-					:is="checkType(message, 'url') ? 'a' : 'span'"
+					:is="message.url ? 'a' : 'span'"
 					:key="i"
 					:class="{
 						'vac-text-ellipsis': singleLine,
-						'vac-text-bold': checkType(message, 'bold'),
-						'vac-text-italic': deleted || checkType(message, 'italic'),
-						'vac-text-strike': checkType(message, 'strike'),
-						'vac-text-underline': checkType(message, 'underline'),
-						'vac-text-inline-code':
-							!singleLine && checkType(message, 'inline-code'),
-						'vac-text-multiline-code':
-							!singleLine && checkType(message, 'multiline-code'),
-						'vac-text-tag': !singleLine && !reply && checkType(message, 'tag')
+						'vac-text-bold': message.bold,
+						'vac-text-italic': deleted || message.italic,
+						'vac-text-strike': message.strike,
+						'vac-text-underline': message.underline,
+						'vac-text-inline-code': !singleLine && message.inline,
+						'vac-text-multiline-code': !singleLine && message.multiline,
+						'vac-text-tag': !singleLine && !reply && message.tag
 					}"
 					:href="message.href"
 					:target="message.href ? '_blank' : null"
@@ -30,7 +28,7 @@
 							/>
 						</slot>
 						<div
-							v-if="checkType(message, 'url') && checkImageType(message)"
+							v-if="message.url && message.image"
 							class="vac-image-link-container"
 						>
 							<div
@@ -72,7 +70,21 @@ export default {
 
 	computed: {
 		linkifiedMessage() {
-			return formatString(this.formatTags(this.content), this.linkify)
+			const message = formatString(this.formatTags(this.content), this.linkify)
+
+			message.forEach(m => {
+				m.url = this.checkType(m, 'url')
+				m.bold = this.checkType(m, 'bold')
+				m.italic = this.checkType(m, 'italic')
+				m.strike = this.checkType(m, 'strike')
+				m.underline = this.checkType(m, 'underline')
+				m.inline = this.checkType(m, 'inline-code')
+				m.multiline = this.checkType(m, 'multiline-code')
+				m.tag = this.checkType(m, 'tag')
+				m.image = this.checkImageType(m)
+			})
+
+			return message
 		},
 		formattedContent() {
 			return this.formatTags(this.content)
@@ -91,7 +103,8 @@ export default {
 			const imageTypes = IMAGE_TYPES
 			const type = message.value.substring(index + 1, message.value.length)
 
-			const isMedia = index > 0 && imageTypes.some(t => type.toLowerCase().includes(t))
+			const isMedia =
+				index > 0 && imageTypes.some(t => type.toLowerCase().includes(t))
 
 			if (isMedia) this.setImageSize(message)
 
