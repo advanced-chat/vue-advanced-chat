@@ -25,6 +25,7 @@
 - Flexible options
 - Custom theming - light and dark modes
 - Firestore example
+- Typescript support
 - PWA support
 - Web Component support
 
