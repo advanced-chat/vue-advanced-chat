@@ -175,6 +175,8 @@ export default {
 				if (val && !this.loadingRooms && this.rooms.length) {
 					const room = this.rooms.find(r => r.roomId === val)
 					this.fetchRoom({ room })
+				} else if (!val) {
+					this.room = {}
 				}
 			}
 		},

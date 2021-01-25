@@ -40,7 +40,7 @@
 			:theme="theme"
 			:styles="styles"
 			:current-user-id="currentUserId"
-			:roomId="roomId"
+			:room-id="roomId"
 			:rooms="loadedRooms"
 			:loading-rooms="loadingRooms"
 			:messages="messages"
