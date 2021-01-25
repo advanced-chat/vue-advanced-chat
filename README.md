@@ -15,12 +15,13 @@
 - Realtime chat messaging
 - Customizeable
 - Backend agnostic
-- Images, files, voice messages & emojis
+- Images, videos, files, voice messages & emojis
 - Edit messages
 - Reply to other messages
+- Tag users
 - UI elements for seen, new, deleted, typing and system messages
 - Text formatting - bold, italic, strikethrough, code
-- Online / Offline status
+- Online / Offline users status
 - Flexible options
 - Custom theming - light and dark modes
 - Firestore example
@@ -608,7 +609,7 @@ Example:
 | `microphone-icon`                   | Replace the microphone icon                                 |                                     | -                                                                                                                  |
 | `microphone-off-icon`               | Replace the microphone-off icon                             |                                     | -                                                                                                                  |
 | `dropdown-icon`                     | Replace the dropdown icon                                   | -                                   | -                                                                                                                  |
-| `room-list-options-icon`                | Replace the room list options dropdown icon                 | -                                   | -                                                                                                                  |
+| `room-list-options-icon`            | Replace the room list options dropdown icon                 | -                                   | -                                                                                                                  |
 | `search-icon`                       | Replace the search icon                                     | -                                   | -                                                                                                                  |
 | `add-icon`                          | Replace the add room icon                                   | -                                   | -                                                                                                                  |
 
