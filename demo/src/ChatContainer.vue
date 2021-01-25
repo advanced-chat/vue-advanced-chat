@@ -251,7 +251,14 @@ export default {
 					...room,
 					roomId: key,
 					avatar: roomAvatar,
-					index: room.lastUpdated.seconds
+					index: room.lastUpdated.seconds,
+					lastMessage: {
+						content: 'Room created',
+						timestamp: this.formatTimestamp(
+							new Date(room.lastUpdated.seconds),
+							room.lastUpdated
+						)
+					}
 				})
 			})
 
@@ -298,12 +305,6 @@ export default {
 		formatLastMessage(message) {
 			if (!message.timestamp) return
 
-			const date = new Date(message.timestamp.seconds * 1000)
-			const timestampFormat = isSameDay(date, new Date()) ? 'HH:mm' : 'DD/MM/YY'
-
-			let timestamp = parseTimestamp(message.timestamp, timestampFormat)
-			if (timestampFormat === 'HH:mm') timestamp = `Today, ${timestamp}`
-
 			let content = message.content
 			if (message.file)
 				content = `${message.file.name}.${message.file.extension ||
@@ -313,7 +314,10 @@ export default {
 				...message,
 				...{
 					content,
-					timestamp,
+					timestamp: this.formatTimestamp(
+						new Date(message.timestamp.seconds * 1000),
+						message.timestamp
+					),
 					distributed: true,
 					seen: message.sender_id === this.currentUserId ? message.seen : null,
 					new:
@@ -321,6 +325,12 @@ export default {
 						(!message.seen || !message.seen[this.currentUserId])
 				}
 			}
+		},
+
+		formatTimestamp(date, timestamp) {
+			const timestampFormat = isSameDay(date, new Date()) ? 'HH:mm' : 'DD/MM/YY'
+			const result = parseTimestamp(timestamp, timestampFormat)
+			return timestampFormat === 'HH:mm' ? `Today, ${result}` : result
 		},
 
 		fetchMessages({ room, options = {} }) {
@@ -666,20 +676,10 @@ export default {
 						.on('value', snapshot => {
 							if (!snapshot || !snapshot.val()) return
 
-							const timestampFormat = isSameDay(
+							const last_changed = this.formatTimestamp(
 								new Date(snapshot.val().last_changed),
-								new Date()
+								new Date(snapshot.val().last_changed)
 							)
-								? 'HH:mm'
-								: 'DD MMMM, HH:mm'
-
-							const timestamp = parseTimestamp(
-								new Date(snapshot.val().last_changed),
-								timestampFormat
-							)
-
-							const last_changed =
-								timestampFormat === 'HH:mm' ? `today, ${timestamp}` : timestamp
 
 							user.status = { ...snapshot.val(), last_changed }
 
