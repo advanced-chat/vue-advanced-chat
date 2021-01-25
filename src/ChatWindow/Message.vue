@@ -86,7 +86,7 @@
 							</format-message>
 						</div>
 
-						<div class="vac-image-container" v-else-if="isImage">
+						<div v-else-if="isImage" class="vac-image-container">
 							<loader
 								:style="{ top: `${imageResponsive.loaderTop}px` }"
 								:show="isImageLoading"
@@ -134,8 +134,16 @@
 							></format-message>
 						</div>
 
+						<div v-else-if="isVideo" class="vac-video-container">
+							<video width="100%" height="100%" controls>
+								<source :src="message.file.url" type="video/mp4" />
+								<source :src="message.file.url" type="video/ogg" />
+								<source :src="message.file.url" type="video/webm" />
+							</video>
+						</div>
+
 						<div v-else-if="message.file.audio" class="vac-audio-message">
-							<div id="vac-player">
+							<div id="vac-audio-player">
 								<audio controls v-if="message.file.audio">
 									<source :src="message.file.url" />
 								</audio>
@@ -403,6 +411,9 @@ export default {
 				this.message.file.url.indexOf('blob:http') !== -1 || this.imageLoading
 			)
 		},
+		isVideo() {
+			return this.checkVideoType(this.message.file)
+		},
 		isCheckmarkVisible() {
 			return (
 				this.message.sender_id === this.currentUserId &&
@@ -491,6 +502,12 @@ export default {
 			const image = new Image()
 			image.src = this.message.file.url
 			image.addEventListener('load', () => (this.imageLoading = false))
+		},
+		checkVideoType(file) {
+			if (!file) return
+			const videoTypes = ['mp4', 'ogg', 'webm']
+			const { type } = file
+			return videoTypes.some(t => type.toLowerCase().includes(t))
 		},
 		openOptions() {
 			if (this.optionsClosing) return
@@ -675,6 +692,16 @@ export default {
 	max-width: 100%;
 }
 
+.vac-video-container {
+	width: 350px;
+	max-width: 100%;
+	margin: 4px auto 5px;
+
+	video {
+		border-radius: 4px;
+	}
+}
+
 .vac-image-reply-container {
 	width: 70px;
 }
@@ -739,7 +766,7 @@ export default {
 }
 
 .selector:not(*:root),
-#vac-player {
+#vac-audio-player {
 	width: 250px;
 	overflow: hidden;
 	border-top-right-radius: 1em;
