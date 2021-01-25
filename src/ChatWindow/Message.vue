@@ -505,7 +505,7 @@ export default {
 		},
 		checkVideoType(file) {
 			if (!file) return
-			const videoTypes = ['mp4', 'ogg', 'webm']
+			const videoTypes = ['video/mp4', 'video/ogg', 'video/webm']
 			const { type } = file
 			return videoTypes.some(t => type.toLowerCase().includes(t))
 		},
