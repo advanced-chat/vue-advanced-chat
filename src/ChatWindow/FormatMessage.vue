@@ -27,19 +27,23 @@
 								class="vac-icon-deleted"
 							/>
 						</slot>
-						<div
-							v-if="message.url && message.image"
-							class="vac-image-link-container"
-						>
-							<div
-								class="vac-image-link"
-								:style="{
-									'background-image': `url('${message.value}')`,
-									height: message.height
-								}"
-							></div>
-						</div>
-						{{ message.value }}
+						<template v-if="message.url && message.image">
+							<div class="vac-image-link-container">
+								<div
+									class="vac-image-link"
+									:style="{
+										'background-image': `url('${message.value}')`,
+										height: message.height
+									}"
+								></div>
+							</div>
+							<div class="vac-image-link-message">
+								{{ message.value }}
+							</div>
+						</template>
+						<template v-else>
+							{{ message.value }}
+						</template>
 					</template>
 				</component>
 			</template>
@@ -162,7 +166,7 @@ export default {
 .vac-image-link-container {
 	background-color: var(--chat-message-bg-color-media);
 	padding: 8px;
-	margin: 4px auto 5px;
+	margin: 2px auto;
 	border-radius: 4px;
 }
 
@@ -177,5 +181,10 @@ export default {
 	max-width: 100%;
 	border-radius: 4px;
 	margin: 0 auto;
+}
+
+.vac-image-link-message {
+	max-width: 166px;
+	font-size: 12px;
 }
 </style>
