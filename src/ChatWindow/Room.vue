@@ -233,7 +233,10 @@
 				class="vac-box-footer"
 				:class="{ 'vac-app-box-shadow': filteredUsersTag.length }"
 			>
-				<div class="vac-icon-textarea-left" v-if="showAudio && !imageFile">
+				<div
+					class="vac-icon-textarea-left"
+					v-if="showAudio && !imageFile && !videoFile"
+				>
 					<div class="vac-svg-button" @click="recordAudio">
 						<slot
 							v-if="recorder.state === 'recording'"
@@ -247,14 +250,29 @@
 					</div>
 				</div>
 
-				<div class="vac-image-container" v-if="imageFile">
-					<div class="vac-svg-button vac-icon-image" @click="resetImageFile">
+				<div v-if="imageFile" class="vac-media-container">
+					<div class="vac-svg-button vac-icon-media" @click="resetMediaFile">
 						<slot name="image-close-icon">
 							<svg-icon name="close" param="image" />
 						</slot>
 					</div>
-					<div class="vac-image-file">
-						<img ref="imageFile" :src="imageFile" @load="onImgLoad" />
+					<div class="vac-media-file">
+						<img ref="mediaFile" :src="imageFile" @load="onMediaLoad" />
+					</div>
+				</div>
+
+				<div v-else-if="videoFile" class="vac-media-container">
+					<div class="vac-svg-button vac-icon-media" @click="resetMediaFile">
+						<slot name="image-close-icon">
+							<svg-icon name="close" param="image" />
+						</slot>
+					</div>
+					<div ref="mediaFile" class="vac-media-file">
+						<video width="100%" height="100%" controls>
+							<source :src="videoFile" type="video/mp4" />
+							<source :src="videoFile" type="video/ogg" />
+							<source :src="videoFile" type="video/webm" />
+						</video>
 					</div>
 				</div>
 
@@ -281,7 +299,7 @@
 				</div>
 
 				<textarea
-					v-show="!file || imageFile"
+					v-show="!file || imageFile || videoFile"
 					ref="roomTextarea"
 					:placeholder="textMessages.TYPE_MESSAGE"
 					class="vac-textarea"
@@ -289,9 +307,9 @@
 						'vac-textarea-outline': editedMessage._id
 					}"
 					:style="{
-						'min-height': `${imageDimensions ? imageDimensions.height : 20}px`,
+						'min-height': `${mediaDimensions ? mediaDimensions.height : 20}px`,
 						'padding-left': `${
-							imageDimensions ? imageDimensions.width - 10 : 12
+							mediaDimensions ? mediaDimensions.width - 10 : 12
 						}px`
 					}"
 					v-model="message"
@@ -312,7 +330,7 @@
 					</div>
 
 					<emoji-picker
-						v-if="showEmojis && (!file || imageFile)"
+						v-if="showEmojis && (!file || imageFile || videoFile)"
 						:emoji-opened="emojiOpened"
 						:position-top="true"
 						@add-emoji="addEmoji"
@@ -438,7 +456,8 @@ export default {
 			loadingMoreMessages: false,
 			file: null,
 			imageFile: null,
-			imageDimensions: null,
+			videoFile: null,
+			mediaDimensions: null,
 			menuOpened: false,
 			emojiOpened: false,
 			hideOptions: true,
@@ -679,13 +698,13 @@ export default {
 			this.filteredUsersTag = []
 			this.textareaCursorPosition = null
 		},
-		onImgLoad() {
-			let height = this.$refs.imageFile.height
+		onMediaLoad() {
+			let height = this.$refs.mediaFile.clientHeight
 			if (height < 30) height = 30
 
-			this.imageDimensions = {
-				height: this.$refs.imageFile.height - 10,
-				width: this.$refs.imageFile.width + 26
+			this.mediaDimensions = {
+				height: this.$refs.mediaFile.clientHeight - 10,
+				width: this.$refs.mediaFile.clientWidth + 26
 			}
 		},
 		async recordAudio() {
@@ -778,15 +797,17 @@ export default {
 			this.editedMessage = {}
 			this.messageReply = null
 			this.file = null
-			this.imageDimensions = null
+			this.mediaDimensions = null
 			this.imageFile = null
+			this.videoFile = null
 			this.emojiOpened = false
 			this.preventKeyboardFromClosing()
 			setTimeout(() => this.focusTextarea(disableMobileFocus), 0)
 		},
-		resetImageFile() {
-			this.imageDimensions = null
+		resetMediaFile() {
+			this.mediaDimensions = null
 			this.imageFile = null
+			this.videoFile = null
 			this.editedMessage.file = null
 			this.file = null
 			this.focusTextarea()
@@ -880,7 +901,14 @@ export default {
 			this.resetMessage()
 			this.editedMessage = { ...message }
 			this.file = message.file
-			if (this.isImageCheck(this.file)) this.imageFile = message.file.url
+
+			if (this.isImageCheck(this.file)) {
+				this.imageFile = message.file.url
+			} else if (this.isVideoCheck(this.file)) {
+				this.videoFile = message.file.url
+				setTimeout(() => this.onMediaLoad(), 50)
+			}
+
 			this.message = message.content
 
 			setTimeout(() => this.resizeTextarea(), 0)
@@ -920,7 +948,7 @@ export default {
 			this.$refs.file.click()
 		},
 		async onFileChange(files) {
-			this.resetImageFile()
+			this.resetMediaFile()
 			const file = files[0]
 			const fileURL = URL.createObjectURL(file)
 			const blobFile = await fetch(fileURL).then(res => res.blob())
@@ -934,14 +962,27 @@ export default {
 				extension: file.name.substring(typeIndex + 1),
 				localUrl: fileURL
 			}
-			if (this.isImageCheck(this.file)) this.imageFile = fileURL
-			else this.message = file.name
+
+			if (this.isImageCheck(this.file)) {
+				this.imageFile = fileURL
+			} else if (this.isVideoCheck(this.file)) {
+				this.videoFile = fileURL
+				setTimeout(() => this.onMediaLoad(), 50)
+			} else {
+				this.message = file.name
+			}
 		},
 		isImageCheck(file) {
 			if (!file) return
 			const imageTypes = IMAGE_TYPES
 			const { type } = file
 			return imageTypes.some(t => type.toLowerCase().includes(t))
+		},
+		isVideoCheck(file) {
+			if (!file) return
+			const videoTypes = ['video/mp4', 'video/ogg', 'video/webm']
+			const { type } = file
+			return videoTypes.some(t => type.toLowerCase().includes(t))
 		},
 		openFile({ message, action }) {
 			this.$emit('open-file', { message, action })
@@ -1202,6 +1243,7 @@ export default {
 	.vac-image-reply {
 		max-height: 100px;
 		margin-right: 10px;
+		border-radius: 4px;
 	}
 }
 
@@ -1271,14 +1313,14 @@ export default {
 	}
 }
 
-.vac-image-container {
+.vac-media-container {
 	position: absolute;
 	max-width: 25%;
 	left: 16px;
 	top: 18px;
 }
 
-.vac-image-file {
+.vac-media-file {
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
@@ -1290,9 +1332,16 @@ export default {
 		max-width: 150px;
 		max-height: 100%;
 	}
+
+	video {
+		border-radius: 15px;
+		width: 100%;
+		max-width: 250px;
+		max-height: 100%;
+	}
 }
 
-.vac-icon-image {
+.vac-icon-media {
 	position: absolute;
 	top: 6px;
 	left: 6px;
@@ -1433,13 +1482,16 @@ export default {
 		}
 	}
 
-	.vac-image-container {
+	.vac-media-container {
 		top: 10px;
 		left: 10px;
 	}
 
-	.vac-image-file img {
-		transform: scale(0.97);
+	.vac-media-file {
+		img,
+		video {
+			transform: scale(0.97);
+		}
 	}
 
 	.vac-room-footer {
