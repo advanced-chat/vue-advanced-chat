@@ -479,7 +479,7 @@ export default {
 		const isMobile = detectMobile()
 
 		window.addEventListener('keyup', e => {
-			if (e.keyCode === 13 && !e.shiftKey) {
+			if (e.key === 'Enter' && !e.shiftKey) {
 				if (isMobile) {
 					this.message = this.message + '\n'
 					setTimeout(() => this.onChangeInput(), 0)
