@@ -458,6 +458,7 @@ export default {
 			imageFile: null,
 			videoFile: null,
 			mediaDimensions: null,
+			fileDialog: false,
 			menuOpened: false,
 			emojiOpened: false,
 			hideOptions: true,
@@ -480,7 +481,7 @@ export default {
 		const isMobile = detectMobile()
 
 		window.addEventListener('keyup', e => {
-			if (e.key === 'Enter' && !e.shiftKey) {
+			if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
 				if (isMobile) {
 					this.message = this.message + '\n'
 					setTimeout(() => this.onChangeInput(), 0)
@@ -928,7 +929,9 @@ export default {
 			this.$refs.file.click()
 		},
 		async onFileChange(files) {
+			this.fileDialog = true
 			this.resetMediaFile()
+
 			const file = files[0]
 			const fileURL = URL.createObjectURL(file)
 			const blobFile = await fetch(fileURL).then(res => res.blob())
@@ -951,6 +954,8 @@ export default {
 			} else {
 				this.message = file.name
 			}
+
+			setTimeout(() => (this.fileDialog = false), 500)
 		},
 		isImageCheck(file) {
 			if (!file) return
