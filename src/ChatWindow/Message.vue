@@ -136,9 +136,7 @@
 
 						<div v-else-if="isVideo" class="vac-video-container">
 							<video width="100%" height="100%" controls>
-								<source :src="message.file.url" type="video/mp4" />
-								<source :src="message.file.url" type="video/ogg" />
-								<source :src="message.file.url" type="video/webm" />
+								<source :src="message.file.url" />
 							</video>
 						</div>
 
