@@ -466,6 +466,7 @@ export default {
 			recorderStream: {},
 			recorder: {},
 			recordedChunks: [],
+			audioDuration: 0,
 			keepKeyboardOpen: false,
 			filteredUsersTag: [],
 			selectedUsersTag: [],
@@ -716,6 +717,8 @@ export default {
 			}
 		},
 		async startRecording() {
+			this.audioDuration = new Date().getTime()
+
 			const stream = await navigator.mediaDevices.getUserMedia({
 				audio: true,
 				video: false
@@ -738,41 +741,18 @@ export default {
 					type: 'audio/ogg; codecs="opus"'
 				})
 
-				const duration = await this.getBlobDuration(blob)
+				const duration = (new Date().getTime() - this.audioDuration) / 1000
 
 				this.file = {
 					blob: blob,
 					name: 'audio',
 					size: blob.size,
-					duration: duration,
+					duration: parseFloat(duration.toFixed(2)),
 					type: blob.type,
 					audio: true,
 					localUrl: URL.createObjectURL(blob)
 				}
 			})
-		},
-		getBlobDuration(blob) {
-			const tempVideoEl = document.createElement('video')
-
-			const durationP = new Promise(resolve =>
-				tempVideoEl.addEventListener('loadedmetadata', () => {
-					if (tempVideoEl.duration === Infinity) {
-						tempVideoEl.currentTime = Number.MAX_SAFE_INTEGER
-						tempVideoEl.ontimeupdate = () => {
-							tempVideoEl.ontimeupdate = null
-							resolve(tempVideoEl.duration)
-							tempVideoEl.currentTime = 0
-						}
-					} else resolve(tempVideoEl.duration)
-				})
-			)
-
-			tempVideoEl.src =
-				typeof blob === 'string' || blob instanceof String
-					? blob
-					: window.URL.createObjectURL(blob)
-
-			return durationP
 		},
 		addNewMessage(message) {
 			this.newMessages.push(message)
