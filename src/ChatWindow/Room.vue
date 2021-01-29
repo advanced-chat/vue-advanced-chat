@@ -401,7 +401,7 @@ const { messagesValid } = require('../utils/roomValidation')
 const { detectMobile, iOSDevice } = require('../utils/mobileDetection')
 import filteredUsers from '../utils/filterItems'
 import typingText from '../utils/typingText'
-import { IMAGE_TYPES } from '../utils/constants'
+import { IMAGE_TYPES, VIDEO_TYPES } from '../utils/constants'
 
 export default {
 	name: 'room',
@@ -974,15 +974,13 @@ export default {
 		},
 		isImageCheck(file) {
 			if (!file) return
-			const imageTypes = IMAGE_TYPES
 			const { type } = file
-			return imageTypes.some(t => type.toLowerCase().includes(t))
+			return IMAGE_TYPES.some(t => type.toLowerCase().includes(t))
 		},
 		isVideoCheck(file) {
 			if (!file) return
-			const videoTypes = ['video/mp4', 'video/ogg', 'video/webm']
 			const { type } = file
-			return videoTypes.some(t => type.toLowerCase().includes(t))
+			return VIDEO_TYPES.some(t => type.toLowerCase().includes(t))
 		},
 		openFile({ message, action }) {
 			this.$emit('open-file', { message, action })

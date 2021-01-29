@@ -492,9 +492,8 @@ export default {
 		},
 		checkImageType(file) {
 			if (!file) return
-			const imageTypes = IMAGE_TYPES
 			const { type } = file
-			return imageTypes.some(t => type.toLowerCase().includes(t))
+			return IMAGE_TYPES.some(t => type.toLowerCase().includes(t))
 		},
 		checkImgLoad() {
 			if (!this.checkImageFile()) return

@@ -104,11 +104,10 @@ export default {
 			const slashIndex = message.value.lastIndexOf('/')
 			if (slashIndex > index) index = -1
 
-			const imageTypes = IMAGE_TYPES
 			const type = message.value.substring(index + 1, message.value.length)
 
 			const isMedia =
-				index > 0 && imageTypes.some(t => type.toLowerCase().includes(t))
+				index > 0 && IMAGE_TYPES.some(t => type.toLowerCase().includes(t))
 
 			if (isMedia) this.setImageSize(message)
 
