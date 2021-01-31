@@ -1051,7 +1051,7 @@ export default {
 .vac-file-container {
 	display: flex;
 	align-items: center;
-	width: calc(100% - 75px);
+	width: calc(100% - 115px);
 	height: 20px;
 	padding: 12px 0;
 	box-sizing: content-box;
@@ -1061,7 +1061,7 @@ export default {
 }
 
 .vac-file-container-edit {
-	width: calc(100% - 109px);
+	width: calc(100% - 150px);
 }
 
 .vac-file-message {
@@ -1077,7 +1077,7 @@ export default {
 }
 
 .vac-icon-remove {
-	margin-left: 8px;
+	margin: 0 8px;
 
 	svg {
 		height: 18px;
