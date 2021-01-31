@@ -108,40 +108,12 @@
 			class="vac-room-footer"
 			v-show="Object.keys(room).length && showFooter"
 		>
-			<transition name="vac-slide-up">
-				<div
-					v-if="messageReply"
-					class="vac-reply-container"
-					:style="{ bottom: `${roomFooterHeight}px` }"
-				>
-					<div class="vac-reply-box">
-						<img
-							v-if="isImageCheck(messageReply.file)"
-							:src="messageReply.file.url"
-							class="vac-image-reply"
-						/>
-						<div class="vac-reply-info">
-							<div class="vac-reply-username">{{ messageReply.username }}</div>
-							<div class="vac-reply-content">
-								<format-message
-									:content="messageReply.content"
-									:users="room.users"
-									:text-formatting="true"
-									:reply="true"
-								></format-message>
-							</div>
-						</div>
-					</div>
-
-					<div class="vac-icon-reply">
-						<div class="vac-svg-button" @click="resetMessage">
-							<slot name="reply-close-icon">
-								<svg-icon name="close-outline" />
-							</slot>
-						</div>
-					</div>
-				</div>
-			</transition>
+			<room-message-reply
+				:room="room"
+				:room-footer-height="roomFooterHeight"
+				:message-reply="messageReply"
+				@reset-message="resetMessage"
+			></room-message-reply>
 
 			<room-users-tag
 				:room-footer-height="roomFooterHeight"
@@ -314,15 +286,15 @@ import emojis from 'vue-emoji-picker/src/emojis'
 import Loader from './Loader'
 import RoomHeader from './RoomHeader'
 import Message from './Message'
+import RoomMessageReply from './RoomMessageReply'
 import RoomUsersTag from './RoomUsersTag'
 import SvgIcon from './SvgIcon'
 import EmojiPicker from './EmojiPicker'
-import FormatMessage from './FormatMessage'
 
 const { messagesValid } = require('../utils/roomValidation')
 const { detectMobile, iOSDevice } = require('../utils/mobileDetection')
+const { isImageFile, isVideoFile } = require('../utils/mediaFile')
 import filteredUsers from '../utils/filterItems'
-import { IMAGE_TYPES, VIDEO_TYPES } from '../utils/constants'
 
 export default {
 	name: 'room',
@@ -331,10 +303,10 @@ export default {
 		Loader,
 		RoomHeader,
 		Message,
+		RoomMessageReply,
 		RoomUsersTag,
 		SvgIcon,
-		EmojiPicker,
-		FormatMessage
+		EmojiPicker
 	},
 
 	directives: {
@@ -782,9 +754,9 @@ export default {
 			this.editedMessage = { ...message }
 			this.file = message.file
 
-			if (this.isImageCheck(this.file)) {
+			if (isImageFile(this.file)) {
 				this.imageFile = message.file.url
-			} else if (this.isVideoCheck(this.file)) {
+			} else if (isVideoFile(this.file)) {
 				this.videoFile = message.file.url
 				setTimeout(() => this.onMediaLoad(), 50)
 			}
@@ -845,9 +817,9 @@ export default {
 				localUrl: fileURL
 			}
 
-			if (this.isImageCheck(this.file)) {
+			if (isImageFile(this.file)) {
 				this.imageFile = fileURL
-			} else if (this.isVideoCheck(this.file)) {
+			} else if (this.isVideoFile(this.file)) {
 				this.videoFile = fileURL
 				setTimeout(() => this.onMediaLoad(), 50)
 			} else {
@@ -855,16 +827,6 @@ export default {
 			}
 
 			setTimeout(() => (this.fileDialog = false), 500)
-		},
-		isImageCheck(file) {
-			if (!file) return
-			const { type } = file
-			return IMAGE_TYPES.some(t => type.toLowerCase().includes(t))
-		},
-		isVideoCheck(file) {
-			if (!file) return
-			const { type } = file
-			return VIDEO_TYPES.some(t => type.toLowerCase().includes(t))
 		},
 		openFile({ message, action }) {
 			this.$emit('open-file', { message, action })
@@ -967,56 +929,6 @@ export default {
 	position: relative;
 	background: var(--chat-footer-bg-color);
 	padding: 10px 8px 10px;
-}
-
-.vac-reply-container {
-	position: absolute;
-	display: flex;
-	padding: 10px 10px 0 10px;
-	background: var(--chat-footer-bg-color);
-	align-items: center;
-	width: calc(100% - 20px);
-
-	.vac-reply-box {
-		width: 100%;
-		overflow: hidden;
-		background: var(--chat-footer-bg-color-reply);
-		border-radius: 4px;
-		padding: 8px 10px;
-		display: flex;
-	}
-
-	.vac-reply-info {
-		overflow: hidden;
-	}
-
-	.vac-reply-username {
-		color: var(--chat-message-color-reply-username);
-		font-size: 12px;
-		line-height: 15px;
-		margin-bottom: 2px;
-	}
-
-	.vac-reply-content {
-		font-size: 12px;
-		color: var(--chat-message-color-reply-content);
-		white-space: pre-line;
-	}
-
-	.vac-icon-reply {
-		margin-left: 10px;
-
-		svg {
-			height: 20px;
-			width: 20px;
-		}
-	}
-
-	.vac-image-reply {
-		max-height: 100px;
-		margin-right: 10px;
-		border-radius: 4px;
-	}
 }
 
 .vac-textarea {
@@ -1251,11 +1163,6 @@ export default {
 		.icon-file {
 			margin-left: 10px;
 		}
-	}
-
-	.vac-reply-container {
-		padding: 5px 8px;
-		width: calc(100% - 16px);
 	}
 
 	.vac-icon-scroll {
