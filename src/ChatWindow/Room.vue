@@ -819,7 +819,7 @@ export default {
 
 			if (isImageFile(this.file)) {
 				this.imageFile = fileURL
-			} else if (this.isVideoFile(this.file)) {
+			} else if (isVideoFile(this.file)) {
 				this.videoFile = fileURL
 				setTimeout(() => this.onMediaLoad(), 50)
 			} else {
