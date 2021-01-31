@@ -143,31 +143,11 @@
 				</div>
 			</transition>
 
-			<transition name="vac-slide-up">
-				<div
-					v-if="filteredUsersTag.length"
-					class="vac-tags-container vac-app-box-shadow"
-					:style="{ bottom: `${roomFooterHeight}px` }"
-				>
-					<div
-						class="vac-tags-box"
-						v-for="user in filteredUsersTag"
-						:key="user._id"
-						@click="selectUserTag(user)"
-					>
-						<div class="vac-tags-info">
-							<div
-								v-if="user.avatar"
-								class="vac-room-avatar vac-tags-avatar"
-								:style="{ 'background-image': `url('${user.avatar}')` }"
-							></div>
-							<div class="vac-tags-username">
-								{{ user.username }}
-							</div>
-						</div>
-					</div>
-				</div>
-			</transition>
+			<room-users-tag
+				:room-footer-height="roomFooterHeight"
+				:filtered-users-tag="filteredUsersTag"
+				@select-user-tag="selectUserTag($event)"
+			></room-users-tag>
 
 			<div
 				class="vac-box-footer"
@@ -334,6 +314,7 @@ import emojis from 'vue-emoji-picker/src/emojis'
 import Loader from './Loader'
 import RoomHeader from './RoomHeader'
 import Message from './Message'
+import RoomUsersTag from './RoomUsersTag'
 import SvgIcon from './SvgIcon'
 import EmojiPicker from './EmojiPicker'
 import FormatMessage from './FormatMessage'
@@ -350,6 +331,7 @@ export default {
 		Loader,
 		RoomHeader,
 		Message,
+		RoomUsersTag,
 		SvgIcon,
 		EmojiPicker,
 		FormatMessage
@@ -987,50 +969,6 @@ export default {
 	padding: 10px 8px 10px;
 }
 
-.vac-tags-container {
-	position: absolute;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	width: 100%;
-
-	.vac-tags-box {
-		display: flex;
-		width: 100%;
-		height: 54px;
-		overflow: hidden;
-		cursor: pointer;
-		background: var(--chat-footer-bg-color);
-
-		&:hover {
-			background: var(--chat-footer-bg-color-tag-active);
-			transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-		}
-
-		&:not(:hover) {
-			transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-		}
-	}
-
-	.vac-tags-info {
-		display: flex;
-		overflow: hidden;
-		padding: 0 20px;
-		align-items: center;
-	}
-
-	.vac-tags-avatar {
-		height: 34px;
-		width: 34px;
-		min-height: 34px;
-		min-width: 34px;
-	}
-
-	.vac-tags-username {
-		font-size: 14px;
-	}
-}
-
 .vac-reply-container {
 	position: absolute;
 	display: flex;
@@ -1318,16 +1256,6 @@ export default {
 	.vac-reply-container {
 		padding: 5px 8px;
 		width: calc(100% - 16px);
-	}
-
-	.vac-tags-container {
-		.vac-tags-box {
-			height: 50px;
-		}
-
-		.vac-tags-info {
-			padding: 0 12px;
-		}
 	}
 
 	.vac-icon-scroll {
