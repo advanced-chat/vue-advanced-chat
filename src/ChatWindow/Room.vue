@@ -374,10 +374,10 @@
 						v-if="showSendIcon"
 						@click="sendMessage"
 						class="vac-svg-button"
-						:class="{ 'vac-send-disabled': inputDisabled }"
+						:class="{ 'vac-send-disabled': isMessageEmpty }"
 					>
 						<slot name="send-icon">
-							<svg-icon name="send" :param="inputDisabled ? 'disabled' : ''" />
+							<svg-icon name="send" :param="isMessageEmpty ? 'disabled' : ''" />
 						</slot>
 					</div>
 				</div>
@@ -595,8 +595,8 @@ export default {
 		showMessagesStarted() {
 			return this.messages.length && this.messagesLoaded
 		},
-		inputDisabled() {
-			return this.isMessageEmpty()
+		isMessageEmpty() {
+			return !this.file && !this.message.trim()
 		},
 		typingUsers() {
 			return typingText(this.room, this.currentUserId, this.textMessages)
@@ -802,9 +802,6 @@ export default {
 			if (detectMobile() && disableMobileFocus) return
 			if (!this.$refs['roomTextarea']) return
 			this.$refs['roomTextarea'].focus()
-		},
-		isMessageEmpty() {
-			return !this.file && !this.message.trim()
 		},
 		preventKeyboardFromClosing() {
 			if (this.keepKeyboardOpen) this.$refs['roomTextarea'].focus()
