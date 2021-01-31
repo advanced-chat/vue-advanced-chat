@@ -25,7 +25,11 @@
 			:menu-actions="menuActions"
 			:room="room"
 			@menu-action-handler="$emit('menu-action-handler', $event)"
-		></room-header>
+		>
+			<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+				<slot :name="name" v-bind="data"></slot>
+			</template>
+		</room-header>
 
 		<div ref="scrollContainer" class="vac-container-scroll">
 			<loader :show="loadingMessages"></loader>
@@ -113,7 +117,11 @@
 				:room-footer-height="roomFooterHeight"
 				:message-reply="messageReply"
 				@reset-message="resetMessage"
-			></room-message-reply>
+			>
+				<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+					<slot :name="name" v-bind="data"></slot>
+				</template>
+			</room-message-reply>
 
 			<room-users-tag
 				:room-footer-height="roomFooterHeight"
@@ -125,22 +133,14 @@
 				class="vac-box-footer"
 				:class="{ 'vac-app-box-shadow': filteredUsersTag.length }"
 			>
-				<div
-					class="vac-icon-textarea-left"
+				<room-audio
 					v-if="showAudio && !imageFile && !videoFile"
+					@update-file="file = $event"
 				>
-					<div class="vac-svg-button" @click="recordAudio">
-						<slot
-							v-if="recorder.state === 'recording'"
-							name="microphone-off-icon"
-						>
-							<svg-icon name="microphone-off" class="vac-icon-microphone-off" />
-						</slot>
-						<slot v-else name="microphone-icon">
-							<svg-icon name="microphone" class="vac-icon-microphone" />
-						</slot>
-					</div>
-				</div>
+					<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+						<slot :name="name" v-bind="data"></slot>
+					</template>
+				</room-audio>
 
 				<div v-if="imageFile" class="vac-media-container">
 					<div class="vac-svg-button vac-icon-media" @click="resetMediaFile">
@@ -288,6 +288,7 @@ import RoomHeader from './RoomHeader'
 import Message from './Message'
 import RoomMessageReply from './RoomMessageReply'
 import RoomUsersTag from './RoomUsersTag'
+import RoomAudio from './RoomAudio'
 import SvgIcon from './SvgIcon'
 import EmojiPicker from './EmojiPicker'
 
@@ -305,6 +306,7 @@ export default {
 		Message,
 		RoomMessageReply,
 		RoomUsersTag,
+		RoomAudio,
 		SvgIcon,
 		EmojiPicker
 	},
@@ -358,10 +360,6 @@ export default {
 			hideOptions: true,
 			scrollIcon: false,
 			newMessages: [],
-			recorderStream: {},
-			recorder: {},
-			recordedChunks: [],
-			audioDuration: 0,
 			keepKeyboardOpen: false,
 			filteredUsersTag: [],
 			selectedUsersTag: [],
@@ -582,52 +580,6 @@ export default {
 				height: this.$refs.mediaFile.clientHeight - 10,
 				width: this.$refs.mediaFile.clientWidth + 26
 			}
-		},
-		async recordAudio() {
-			if (this.recorder.state === 'recording') {
-				this.recorder.stop()
-			} else {
-				this.file = null
-				this.recordedChunk = await this.startRecording()
-			}
-		},
-		async startRecording() {
-			this.audioDuration = new Date().getTime()
-
-			const stream = await navigator.mediaDevices.getUserMedia({
-				audio: true,
-				video: false
-			})
-
-			this.recorder = new MediaRecorder(stream)
-
-			this.recorder.ondataavailable = e => this.recordedChunks.push(e.data)
-			this.recorder.start()
-
-			const stopped = new Promise((resolve, reject) => {
-				this.recorder.onstop = resolve
-				this.recorder.onerror = event => reject(event.name)
-			})
-
-			stopped.then(async () => {
-				stream.getTracks().forEach(track => track.stop())
-
-				const blob = new Blob(this.recordedChunks, {
-					type: 'audio/ogg; codecs="opus"'
-				})
-
-				const duration = (new Date().getTime() - this.audioDuration) / 1000
-
-				this.file = {
-					blob: blob,
-					name: 'audio',
-					size: blob.size,
-					duration: parseFloat(duration.toFixed(2)),
-					type: blob.type,
-					audio: true,
-					localUrl: URL.createObjectURL(blob)
-				}
-			})
 		},
 		addNewMessage(message) {
 			this.newMessages.push(message)
@@ -960,16 +912,6 @@ export default {
 	box-shadow: inset 0px 0px 0px 1px var(--chat-border-color-input-selected);
 }
 
-.vac-icon-textarea-left {
-	display: flex;
-	margin: 12px 5px 0 0;
-
-	svg,
-	.vac-wrapper {
-		margin: 0 7px;
-	}
-}
-
 .vac-icon-textarea {
 	display: flex;
 	margin: 12px 0 0 5px;
@@ -978,14 +920,6 @@ export default {
 	.vac-wrapper {
 		margin: 0 7px;
 	}
-}
-
-.vac-icon-microphone {
-	fill: var(--chat-icon-color-microphone);
-}
-
-.vac-icon-microphone-off {
-	animation: vac-scaling 0.8s ease-in-out infinite alternate;
 }
 
 @keyframes vac-scaling {
@@ -1120,15 +1054,6 @@ export default {
 
 		&::placeholder {
 			color: transparent;
-		}
-	}
-
-	.vac-icon-textarea-left {
-		margin: 6px 5px 0 0;
-
-		svg,
-		.wrapper {
-			margin: 0 5px;
 		}
 	}
 
