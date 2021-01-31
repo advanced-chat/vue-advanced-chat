@@ -62,7 +62,13 @@
 							</div>
 
 							<div class="vac-reply-content">
-								{{ message.replyMessage.content }}
+								<format-message
+									:content="message.replyMessage.content"
+									:users="roomUsers"
+									:text-formatting="true"
+									:reply="true"
+								>
+								</format-message>
 							</div>
 						</div>
 
@@ -301,7 +307,7 @@ import Loader from './Loader'
 import EmojiPicker from './EmojiPicker'
 import FormatMessage from './FormatMessage'
 
-import { IMAGE_TYPES } from '../utils/constants'
+const { isImageFile } = require('../utils/mediaFile')
 
 export default {
 	name: 'message',
@@ -483,15 +489,10 @@ export default {
 			}, 300)
 		},
 		checkImageFile() {
-			return this.checkImageType(this.message.file)
+			return isImageFile(this.message.file)
 		},
 		checkImageReplyFile() {
-			return this.checkImageType(this.message.replyMessage.file)
-		},
-		checkImageType(file) {
-			if (!file) return
-			const { type } = file
-			return IMAGE_TYPES.some(t => type.toLowerCase().includes(t))
+			return isImageFile(this.message.replyMessage.file)
 		},
 		checkImgLoad() {
 			if (!this.checkImageFile()) return
