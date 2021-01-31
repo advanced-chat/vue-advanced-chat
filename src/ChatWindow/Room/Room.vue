@@ -283,14 +283,15 @@ import InfiniteLoading from 'vue-infinite-loading'
 import vClickOutside from 'v-click-outside'
 import emojis from 'vue-emoji-picker/src/emojis'
 
-import Loader from '../Loader'
-import SvgIcon from '../SvgIcon'
-import EmojiPicker from '../EmojiPicker'
-import Message from '../Message/Message'
+import Loader from '../../components/Loader'
+import SvgIcon from '../../components/SvgIcon'
+import EmojiPicker from '../../components/EmojiPicker'
+
 import RoomHeader from './RoomHeader'
 import RoomMessageReply from './RoomMessageReply'
 import RoomUsersTag from './RoomUsersTag'
 import RoomAudio from './RoomAudio'
+import Message from '../Message/Message'
 
 const { messagesValid } = require('../../utils/roomValidation')
 const { detectMobile, iOSDevice } = require('../../utils/mobileDetection')
@@ -302,13 +303,13 @@ export default {
 	components: {
 		InfiniteLoading,
 		Loader,
+		SvgIcon,
+		EmojiPicker,
 		RoomHeader,
-		Message,
 		RoomMessageReply,
 		RoomUsersTag,
 		RoomAudio,
-		SvgIcon,
-		EmojiPicker
+		Message
 	},
 
 	directives: {

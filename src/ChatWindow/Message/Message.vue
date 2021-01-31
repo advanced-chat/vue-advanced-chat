@@ -302,10 +302,10 @@
 <script>
 import vClickOutside from 'v-click-outside'
 
-import SvgIcon from '../SvgIcon'
-import Loader from '../Loader'
-import EmojiPicker from '../EmojiPicker'
-import FormatMessage from '../FormatMessage'
+import SvgIcon from '../../components/SvgIcon'
+import Loader from '../../components/Loader'
+import EmojiPicker from '../../components/EmojiPicker'
+import FormatMessage from '../../components/FormatMessage'
 
 const { isImageFile } = require('../../utils/mediaFile')
 

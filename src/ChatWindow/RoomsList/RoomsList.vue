@@ -182,9 +182,9 @@
 import InfiniteLoading from 'vue-infinite-loading'
 import vClickOutside from 'v-click-outside'
 
-import Loader from '../Loader'
-import SvgIcon from '../SvgIcon'
-import FormatMessage from '../FormatMessage'
+import Loader from '../../components/Loader'
+import SvgIcon from '../../components/SvgIcon'
+import FormatMessage from '../../components/FormatMessage'
 
 import filteredUsers from '../../utils/filterItems'
 import typingText from '../../utils/typingText'

@@ -75,7 +75,7 @@
 <script>
 import vClickOutside from 'v-click-outside'
 
-import SvgIcon from '../SvgIcon'
+import SvgIcon from '../../components/SvgIcon'
 
 import typingText from '../../utils/typingText'
 
