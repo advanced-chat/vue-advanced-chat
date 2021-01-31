@@ -13,80 +13,20 @@
 				<div>{{ textMessages.ROOM_EMPTY }}</div>
 			</div>
 		</slot>
-		<div v-else class="vac-room-header vac-app-border-b">
-			<slot name="room-header" v-bind="{ room, typingUsers, userStatus }">
-				<div class="vac-room-wrapper">
-					<div
-						v-if="!singleRoom"
-						class="vac-svg-button vac-toggle-button"
-						:class="{ 'vac-rotate-icon': !showRoomsList && !isMobile }"
-						@click="$emit('toggle-rooms-list')"
-					>
-						<slot name="toggle-icon">
-							<svg-icon name="toggle" />
-						</slot>
-					</div>
-					<div
-						class="vac-info-wrapper"
-						:class="{ 'vac-item-clickable': roomInfo }"
-						@click="$emit('room-info', room)"
-					>
-						<slot name="room-header-avatar" v-bind="{ room }">
-							<div
-								v-if="room.avatar"
-								class="vac-room-avatar"
-								:style="{ 'background-image': `url('${room.avatar}')` }"
-							></div>
-						</slot>
-						<slot
-							name="room-header-info"
-							v-bind="{ room, typingUsers, userStatus }"
-						>
-							<div class="vac-text-ellipsis">
-								<div class="vac-room-name vac-text-ellipsis">
-									{{ room.roomName }}
-								</div>
-								<div v-if="typingUsers" class="vac-room-info vac-text-ellipsis">
-									{{ typingUsers }}
-								</div>
-								<div v-else class="vac-room-info vac-text-ellipsis">
-									{{ userStatus }}
-								</div>
-							</div>
-						</slot>
-					</div>
-					<slot v-if="room.roomId" name="room-options">
-						<div
-							class="vac-svg-button vac-room-options"
-							v-if="menuActions.length"
-							@click="menuOpened = !menuOpened"
-						>
-							<slot name="menu-icon">
-								<svg-icon name="menu" />
-							</slot>
-						</div>
-						<transition name="vac-slide-left" v-if="menuActions.length">
-							<div
-								v-if="menuOpened"
-								v-click-outside="closeMenu"
-								class="vac-menu-options"
-							>
-								<div class="vac-menu-list">
-									<div v-for="action in menuActions" :key="action.name">
-										<div
-											class="vac-menu-item"
-											@click="menuActionHandler(action)"
-										>
-											{{ action.title }}
-										</div>
-									</div>
-								</div>
-							</div>
-						</transition>
-					</slot>
-				</div>
-			</slot>
-		</div>
+
+		<room-header
+			v-else
+			:current-user-id="currentUserId"
+			:textMessages="textMessages"
+			:single-room="singleRoom"
+			:show-rooms-list="showRoomsList"
+			:is-mobile="isMobile"
+			:room-info="roomInfo"
+			:menu-actions="menuActions"
+			:room="room"
+			@menu-action-handler="$emit('menu-action-handler', $event)"
+		></room-header>
+
 		<div ref="scrollContainer" class="vac-container-scroll">
 			<loader :show="loadingMessages"></loader>
 			<div class="vac-messages-container">
@@ -392,6 +332,7 @@ import vClickOutside from 'v-click-outside'
 import emojis from 'vue-emoji-picker/src/emojis'
 
 import Loader from './Loader'
+import RoomHeader from './RoomHeader'
 import Message from './Message'
 import SvgIcon from './SvgIcon'
 import EmojiPicker from './EmojiPicker'
@@ -400,7 +341,6 @@ import FormatMessage from './FormatMessage'
 const { messagesValid } = require('../utils/roomValidation')
 const { detectMobile, iOSDevice } = require('../utils/mobileDetection')
 import filteredUsers from '../utils/filterItems'
-import typingText from '../utils/typingText'
 import { IMAGE_TYPES, VIDEO_TYPES } from '../utils/constants'
 
 export default {
@@ -408,6 +348,7 @@ export default {
 	components: {
 		InfiniteLoading,
 		Loader,
+		RoomHeader,
 		Message,
 		SvgIcon,
 		EmojiPicker,
@@ -459,7 +400,6 @@ export default {
 			videoFile: null,
 			mediaDimensions: null,
 			fileDialog: false,
-			menuOpened: false,
 			emojiOpened: false,
 			hideOptions: true,
 			scrollIcon: false,
@@ -597,26 +537,6 @@ export default {
 		},
 		isMessageEmpty() {
 			return !this.file && !this.message.trim()
-		},
-		typingUsers() {
-			return typingText(this.room, this.currentUserId, this.textMessages)
-		},
-		userStatus() {
-			if (!this.room.users || this.room.users.length !== 2) return
-
-			const user = this.room.users.find(u => u._id !== this.currentUserId)
-
-			if (!user.status) return
-
-			let text = ''
-
-			if (user.status.state === 'online') {
-				text = this.textMessages.IS_ONLINE
-			} else if (user.status.last_changed) {
-				text = this.textMessages.LAST_SEEN + user.status.last_changed
-			}
-
-			return text
 		}
 	},
 
@@ -970,13 +890,6 @@ export default {
 		openUserTag(user) {
 			this.$emit('open-user-tag', user)
 		},
-		menuActionHandler(action) {
-			this.closeMenu()
-			this.$emit('menu-action-handler', action)
-		},
-		closeMenu() {
-			this.menuOpened = false
-		},
 		textareaActionHandler() {
 			this.$emit('textarea-action-handler', this.message)
 		}
@@ -1014,65 +927,6 @@ export default {
 	overflow: hidden;
 	display: flex;
 	flex-flow: column;
-}
-
-.vac-room-header {
-	position: absolute;
-	display: flex;
-	align-items: center;
-	height: 64px;
-	width: 100%;
-	z-index: 10;
-	margin-right: 1px;
-	background: var(--chat-header-bg-color);
-	border-top-right-radius: var(--chat-container-border-radius);
-}
-
-.vac-room-wrapper {
-	display: flex;
-	align-items: center;
-	min-width: 0;
-	height: 100%;
-	width: 100%;
-	padding: 0 16px;
-}
-
-.vac-info-wrapper {
-	display: flex;
-	align-items: center;
-	min-width: 0;
-	width: 100%;
-	height: 100%;
-}
-
-.vac-toggle-button {
-	margin-right: 15px;
-
-	svg {
-		height: 26px;
-		width: 26px;
-	}
-}
-
-.vac-rotate-icon {
-	transform: rotate(180deg) !important;
-}
-
-.vac-room-name {
-	font-size: 17px;
-	font-weight: 500;
-	line-height: 22px;
-	color: var(--chat-header-color-name);
-}
-
-.vac-room-info {
-	font-size: 13px;
-	line-height: 18px;
-	color: var(--chat-header-color-info);
-}
-
-.vac-room-options {
-	margin-left: auto;
 }
 
 .vac-container-scroll {
@@ -1393,31 +1247,6 @@ export default {
 }
 
 @media only screen and (max-width: 768px) {
-	.vac-room-header {
-		height: 50px;
-
-		.vac-room-wrapper {
-			padding: 0 10px;
-		}
-
-		.vac-room-name {
-			font-size: 16px;
-			line-height: 22px;
-		}
-
-		.vac-room-info {
-			font-size: 12px;
-			line-height: 16px;
-		}
-
-		.vac-room-avatar {
-			height: 37px;
-			width: 37px;
-			min-height: 37px;
-			min-width: 37px;
-		}
-	}
-
 	.vac-container-scroll {
 		margin-top: 50px;
 	}
