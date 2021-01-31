@@ -489,10 +489,7 @@ export default {
 				}
 			})
 
-			if (roomId) {
-				this.roomId = roomId
-				return setTimeout(() => (this.roomId = ''), 0)
-			}
+			if (roomId) return (this.roomId = roomId)
 
 			const query1 = await roomsRef
 				.where('users', '==', [this.currentUserId, user._id])
