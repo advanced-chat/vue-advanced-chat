@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import SvgIcon from './SvgIcon'
+import SvgIcon from '../SvgIcon'
 
 export default {
 	name: 'room-audio',

@@ -283,19 +283,19 @@ import InfiniteLoading from 'vue-infinite-loading'
 import vClickOutside from 'v-click-outside'
 import emojis from 'vue-emoji-picker/src/emojis'
 
-import Loader from './Loader'
+import Loader from '../Loader'
+import SvgIcon from '../SvgIcon'
+import EmojiPicker from '../EmojiPicker'
+import Message from '../Message/Message'
 import RoomHeader from './RoomHeader'
-import Message from './Message'
 import RoomMessageReply from './RoomMessageReply'
 import RoomUsersTag from './RoomUsersTag'
 import RoomAudio from './RoomAudio'
-import SvgIcon from './SvgIcon'
-import EmojiPicker from './EmojiPicker'
 
-const { messagesValid } = require('../utils/roomValidation')
-const { detectMobile, iOSDevice } = require('../utils/mobileDetection')
-const { isImageFile, isVideoFile } = require('../utils/mediaFile')
-import filteredUsers from '../utils/filterItems'
+const { messagesValid } = require('../../utils/roomValidation')
+const { detectMobile, iOSDevice } = require('../../utils/mobileDetection')
+const { isImageFile, isVideoFile } = require('../../utils/mediaFile')
+import filteredUsers from '../../utils/filterItems'
 
 export default {
 	name: 'room',

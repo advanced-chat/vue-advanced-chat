@@ -74,8 +74,8 @@
 </template>
 
 <script>
-import RoomsList from './RoomsList'
-import Room from './Room'
+import RoomsList from './RoomsList/RoomsList'
+import Room from './Room/Room'
 
 import locales from '../locales'
 import { defaultThemeStyles, cssThemeVars } from '../themes'

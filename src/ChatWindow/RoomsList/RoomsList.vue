@@ -181,12 +181,13 @@
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
 import vClickOutside from 'v-click-outside'
-import Loader from './Loader'
-import SvgIcon from './SvgIcon'
-import FormatMessage from './FormatMessage'
 
-import filteredUsers from '../utils/filterItems'
-import typingText from '../utils/typingText'
+import Loader from '../Loader'
+import SvgIcon from '../SvgIcon'
+import FormatMessage from '../FormatMessage'
+
+import filteredUsers from '../../utils/filterItems'
+import typingText from '../../utils/typingText'
 
 export default {
 	name: 'rooms-list',

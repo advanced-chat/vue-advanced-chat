@@ -75,9 +75,9 @@
 <script>
 import vClickOutside from 'v-click-outside'
 
-import SvgIcon from './SvgIcon'
+import SvgIcon from '../SvgIcon'
 
-import typingText from '../utils/typingText'
+import typingText from '../../utils/typingText'
 
 export default {
 	name: 'room-header',

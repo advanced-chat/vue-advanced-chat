@@ -36,10 +36,10 @@
 </template>
 
 <script>
-import SvgIcon from './SvgIcon'
-import FormatMessage from './FormatMessage'
+import SvgIcon from '../SvgIcon'
+import FormatMessage from '../FormatMessage'
 
-const { isImageFile } = require('../utils/mediaFile')
+const { isImageFile } = require('../../utils/mediaFile')
 
 export default {
 	name: 'room-message-reply',
