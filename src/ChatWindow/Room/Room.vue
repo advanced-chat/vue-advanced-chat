@@ -61,7 +61,7 @@
 							<div slot="no-more"></div>
 						</infinite-loading>
 					</transition>
-					<transition-group name="vac-fade-message">
+					<transition-group name="vac-fade-message" :key="roomId">
 						<div v-for="(message, i) in messages" :key="message._id">
 							<message
 								:current-user-id="currentUserId"
@@ -455,13 +455,14 @@ export default {
 
 			if (this.infiniteState) {
 				this.infiniteState.loaded()
-				setTimeout(() => (this.loadingMoreMessages = false), 0)
 			} else if (newVal.length) {
 				setTimeout(() => {
 					element.scrollTo({ top: element.scrollHeight })
 					this.loadingMessages = false
 				}, 0)
 			}
+
+			setTimeout(() => (this.loadingMoreMessages = false), 0)
 		},
 		messagesLoaded(val) {
 			if (val) this.loadingMessages = false
