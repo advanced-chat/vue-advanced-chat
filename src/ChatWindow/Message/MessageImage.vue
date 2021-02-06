@@ -1,0 +1,162 @@
+<template>
+	<div class="vac-image-container">
+		<loader
+			:style="{ top: `${imageResponsive.loaderTop}px` }"
+			:show="isImageLoading"
+		></loader>
+		<div
+			class="vac-message-image"
+			:class="{
+				'vac-image-loading':
+					isImageLoading && message.sender_id === currentUserId
+			}"
+			:style="{
+				'background-image': `url('${message.file.url}')`,
+				'max-height': `${imageResponsive.maxHeight}px`
+			}"
+		>
+			<transition name="vac-fade-image">
+				<div class="vac-image-buttons" v-if="imageHover && !isImageLoading">
+					<div
+						class="vac-svg-button vac-button-view"
+						@click.stop="$emit('open-file', 'preview')"
+					>
+						<slot name="eye-icon">
+							<svg-icon name="eye" />
+						</slot>
+					</div>
+					<div
+						class="vac-svg-button vac-button-download"
+						@click.stop="$emit('open-file', 'download')"
+					>
+						<slot name="document-icon">
+							<svg-icon name="document" />
+						</slot>
+					</div>
+				</div>
+			</transition>
+		</div>
+		<format-message
+			:content="message.content"
+			:users="roomUsers"
+			:text-formatting="textFormatting"
+			@open-user-tag="$emit('open-user-tag')"
+		></format-message>
+	</div>
+</template>
+
+<script>
+import Loader from '../../components/Loader'
+import SvgIcon from '../../components/SvgIcon'
+import FormatMessage from '../../components/FormatMessage'
+
+const { isImageFile } = require('../../utils/mediaFile')
+
+export default {
+	name: 'message-image',
+	components: { SvgIcon, Loader, FormatMessage },
+
+	props: {
+		currentUserId: { type: [String, Number], required: true },
+		message: { type: Object, required: true },
+		roomUsers: { type: Array, required: true },
+		textFormatting: { type: Boolean, required: true },
+		imageHover: { type: Boolean, required: true }
+	},
+
+	data() {
+		return {
+			imageLoading: false,
+			imageResponsive: ''
+		}
+	},
+
+	mounted() {
+		const imageRef = this.$parent.$refs.imageRef
+
+		this.imageResponsive = {
+			maxHeight: imageRef.clientWidth - 18,
+			loaderTop: imageRef.clientWidth / 2
+		}
+	},
+
+	watch: {
+		message: {
+			immediate: true,
+			handler() {
+				this.checkImgLoad()
+			}
+		}
+	},
+
+	computed: {
+		isImageLoading() {
+			return (
+				this.message.file.url.indexOf('blob:http') !== -1 || this.imageLoading
+			)
+		}
+	},
+
+	methods: {
+		checkImgLoad() {
+			if (!isImageFile(this.message.file)) return
+			this.imageLoading = true
+			const image = new Image()
+			image.src = this.message.file.url
+			image.addEventListener('load', () => (this.imageLoading = false))
+		}
+	}
+}
+</script>
+
+<style lang="scss" scoped>
+.vac-image-container {
+	width: 250px;
+	max-width: 100%;
+}
+
+.vac-image-loading {
+	filter: blur(3px);
+}
+
+.vac-image-buttons {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	border-radius: 4px;
+	background: linear-gradient(
+		to bottom,
+		rgba(0, 0, 0, 0) 55%,
+		rgba(0, 0, 0, 0.02) 60%,
+		rgba(0, 0, 0, 0.05) 65%,
+		rgba(0, 0, 0, 0.1) 70%,
+		rgba(0, 0, 0, 0.2) 75%,
+		rgba(0, 0, 0, 0.3) 80%,
+		rgba(0, 0, 0, 0.5) 85%,
+		rgba(0, 0, 0, 0.6) 90%,
+		rgba(0, 0, 0, 0.7) 95%,
+		rgba(0, 0, 0, 0.8) 100%
+	);
+
+	svg {
+		height: 26px;
+		width: 26px;
+	}
+
+	.vac-button-view,
+	.vac-button-download {
+		position: absolute;
+		bottom: 6px;
+		left: 7px;
+	}
+
+	:first-child {
+		left: 40px;
+	}
+
+	.vac-button-view {
+		max-width: 18px;
+		bottom: 8px;
+	}
+}
+</style>

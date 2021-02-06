@@ -92,53 +92,22 @@
 							</format-message>
 						</div>
 
-						<div v-else-if="isImage" class="vac-image-container">
-							<loader
-								:style="{ top: `${imageResponsive.loaderTop}px` }"
-								:show="isImageLoading"
-							></loader>
-							<div
-								class="vac-message-image"
-								:class="{
-									'vac-image-loading':
-										isImageLoading && message.sender_id === currentUserId
-								}"
-								:style="{
-									'background-image': `url('${message.file.url}')`,
-									'max-height': `${imageResponsive.maxHeight}px`
-								}"
+						<message-image
+							v-else-if="isImage"
+							:current-user-id="currentUserId"
+							:message="message"
+							:room-users="roomUsers"
+							:text-formatting="textFormatting"
+							:image-hover="imageHover"
+							@open-file="openFile"
+						>
+							<template
+								v-for="(index, name) in $scopedSlots"
+								v-slot:[name]="data"
 							>
-								<transition name="vac-fade-image">
-									<div
-										class="vac-image-buttons"
-										v-if="imageHover && !isImageLoading"
-									>
-										<div
-											class="vac-svg-button vac-button-view"
-											@click.stop="openFile('preview')"
-										>
-											<slot name="eye-icon">
-												<svg-icon name="eye" />
-											</slot>
-										</div>
-										<div
-											class="vac-svg-button vac-button-download"
-											@click.stop="openFile('download')"
-										>
-											<slot name="document-icon">
-												<svg-icon name="document" />
-											</slot>
-										</div>
-									</div>
-								</transition>
-							</div>
-							<format-message
-								:content="message.content"
-								:users="roomUsers"
-								:text-formatting="textFormatting"
-								@open-user-tag="openUserTag"
-							></format-message>
-						</div>
+								<slot :name="name" v-bind="data"></slot>
+							</template>
+						</message-image>
 
 						<div v-else-if="isVideo" class="vac-video-container">
 							<video width="100%" height="100%" controls>
@@ -303,15 +272,16 @@
 import vClickOutside from 'v-click-outside'
 
 import SvgIcon from '../../components/SvgIcon'
-import Loader from '../../components/Loader'
 import EmojiPicker from '../../components/EmojiPicker'
 import FormatMessage from '../../components/FormatMessage'
+
+import MessageImage from './MessageImage'
 
 const { isImageFile } = require('../../utils/mediaFile')
 
 export default {
 	name: 'message',
-	components: { SvgIcon, Loader, EmojiPicker, FormatMessage },
+	components: { SvgIcon, EmojiPicker, FormatMessage, MessageImage },
 
 	directives: {
 		clickOutside: vClickOutside.directive
@@ -338,7 +308,6 @@ export default {
 	data() {
 		return {
 			hoverMessageId: null,
-			imageLoading: false,
 			imageHover: false,
 			messageHover: false,
 			optionsOpened: false,
@@ -346,18 +315,11 @@ export default {
 			menuOptionsTop: 0,
 			messageReaction: '',
 			newMessage: {},
-			emojiOpened: false,
-			imageResponsive: ''
+			emojiOpened: false
 		}
 	},
 
 	watch: {
-		message: {
-			immediate: true,
-			handler() {
-				this.checkImgLoad()
-			}
-		},
 		newMessages(val) {
 			if (!val.length || !this.showNewMessagesDivider) return
 			this.newMessage = val.reduce((res, obj) =>
@@ -382,13 +344,6 @@ export default {
 				index: this.index
 			})
 		}
-
-		if (!this.$refs.imageRef) return
-
-		this.imageResponsive = {
-			maxHeight: this.$refs.imageRef.clientWidth - 18,
-			loaderTop: this.$refs.imageRef.clientWidth / 2
-		}
 	},
 
 	computed: {
@@ -405,15 +360,10 @@ export default {
 			)
 		},
 		isImage() {
-			return this.checkImageFile()
+			return isImageFile(this.message.file)
 		},
 		isImageReply() {
 			return this.checkImageReplyFile()
-		},
-		isImageLoading() {
-			return (
-				this.message.file.url.indexOf('blob:http') !== -1 || this.imageLoading
-			)
 		},
 		isVideo() {
 			return this.checkVideoType(this.message.file)
@@ -488,18 +438,8 @@ export default {
 				this.$emit('message-action-handler', { action, message: this.message })
 			}, 300)
 		},
-		checkImageFile() {
-			return isImageFile(this.message.file)
-		},
 		checkImageReplyFile() {
 			return isImageFile(this.message.replyMessage.file)
-		},
-		checkImgLoad() {
-			if (!this.checkImageFile()) return
-			this.imageLoading = true
-			const image = new Image()
-			image.src = this.message.file.url
-			image.addEventListener('load', () => (this.imageLoading = false))
 		},
 		checkVideoType(file) {
 			if (!file) return
@@ -685,11 +625,6 @@ export default {
 	fill: var(--chat-message-color-deleted);
 }
 
-.vac-image-container {
-	width: 250px;
-	max-width: 100%;
-}
-
 .vac-video-container {
 	width: 350px;
 	max-width: 100%;
@@ -704,7 +639,7 @@ export default {
 	width: 70px;
 }
 
-.vac-message-image {
+::v-deep .vac-message-image {
 	position: relative;
 	background-color: var(--chat-message-bg-color-image) !important;
 	background-size: cover !important;
@@ -722,10 +657,6 @@ export default {
 	height: 70px;
 	width: 70px;
 	margin: 4px auto 3px;
-}
-
-.vac-image-loading {
-	filter: blur(3px);
 }
 
 .vac-reply-message {
@@ -858,47 +789,6 @@ export default {
 .vac-options-image .vac-blur-container {
 	background: rgba(255, 255, 255, 0.6);
 	border-bottom-left-radius: 15px;
-}
-
-.vac-image-buttons {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	border-radius: 4px;
-	background: linear-gradient(
-		to bottom,
-		rgba(0, 0, 0, 0) 55%,
-		rgba(0, 0, 0, 0.02) 60%,
-		rgba(0, 0, 0, 0.05) 65%,
-		rgba(0, 0, 0, 0.1) 70%,
-		rgba(0, 0, 0, 0.2) 75%,
-		rgba(0, 0, 0, 0.3) 80%,
-		rgba(0, 0, 0, 0.5) 85%,
-		rgba(0, 0, 0, 0.6) 90%,
-		rgba(0, 0, 0, 0.7) 95%,
-		rgba(0, 0, 0, 0.8) 100%
-	);
-
-	svg {
-		height: 26px;
-		width: 26px;
-	}
-
-	.vac-button-view,
-	.vac-button-download {
-		position: absolute;
-		bottom: 6px;
-		left: 7px;
-	}
-
-	:first-child {
-		left: 40px;
-	}
-
-	.vac-button-view {
-		max-width: 18px;
-		bottom: 8px;
-	}
 }
 
 .vac-message-options {
