@@ -693,8 +693,8 @@ export default {
 			this.$emit('send-message-reaction', messageReaction)
 		},
 		replyMessage(message) {
-			this.resetMessage()
 			this.messageReply = message
+			this.focusTextarea()
 		},
 		editMessage(message) {
 			this.resetMessage()
