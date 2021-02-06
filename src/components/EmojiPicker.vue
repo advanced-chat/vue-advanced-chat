@@ -64,6 +64,7 @@ export default {
 		EmojiPicker,
 		SvgIcon
 	},
+
 	props: [
 		'emojiOpened',
 		'emojiReaction',
@@ -71,6 +72,7 @@ export default {
 		'positionTop',
 		'positionRight'
 	],
+
 	data() {
 		return {
 			search: '',
@@ -79,6 +81,7 @@ export default {
 			emojiPickerRight: ''
 		}
 	},
+
 	methods: {
 		append({ emoji, emojiName }) {
 			this.$emit('add-emoji', { icon: emoji, name: emojiName })
