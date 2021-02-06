@@ -158,91 +158,31 @@
 							</span>
 						</div>
 
-						<div
-							class="vac-options-container"
-							:class="{ 'vac-options-image': isImage && !message.replyMessage }"
-							:style="{
-								width:
-									filteredMessageActions.length && showReactionEmojis
-										? '70px'
-										: '45px'
-							}"
-						>
-							<transition-group name="vac-slide-left">
-								<div
-									key="1"
-									class="vac-blur-container"
-									:class="{
-										'vac-options-me': message.sender_id === currentUserId
-									}"
-									v-if="isMessageActions || isMessageReactions"
-								></div>
-
-								<div
-									ref="actionIcon"
-									key="2"
-									class="vac-svg-button vac-message-options"
-									v-if="isMessageActions"
-									@click="openOptions"
-								>
-									<slot name="dropdown-icon">
-										<svg-icon name="dropdown" param="message" />
-									</slot>
-								</div>
-
-								<emoji-picker
-									key="3"
-									class="vac-message-reactions"
-									:style="{ right: isMessageActions ? '30px' : '5px' }"
-									v-if="isMessageReactions"
-									v-click-outside="closeEmoji"
-									:emoji-opened="emojiOpened"
-									:emoji-reaction="true"
-									:room-footer-ref="roomFooterRef"
-									:position-right="message.sender_id === currentUserId"
-									@add-emoji="sendMessageReaction"
-									@open-emoji="openEmoji"
-								>
-									<template v-slot:emoji-picker-icon>
-										<slot name="emoji-picker-reaction-icon"></slot>
-									</template>
-								</emoji-picker>
-							</transition-group>
-						</div>
-
-						<transition
-							:name="
-								message.sender_id === currentUserId
-									? 'vac-slide-left'
-									: 'vac-slide-right'
+						<message-actions
+							:current-user-id="currentUserId"
+							:message="message"
+							:message-actions="messageActions"
+							:room-footer-ref="roomFooterRef"
+							:show-reaction-emojis="showReactionEmojis"
+							:hide-options="hideOptions"
+							:message-hover="messageHover"
+							:hover-message-id="hoverMessageId"
+							@hide-options="$emit('hide-options', false)"
+							@update-message-hover="messageHover = $event"
+							@update-options-opened="optionsOpened = $event"
+							@update-emoji-opened="emojiOpened = $event"
+							@message-action-handler="messageActionHandler"
+							@send-message-reaction="
+								sendMessageReaction($event.emoji, $event.reaction)
 							"
-							v-if="filteredMessageActions.length"
 						>
-							<div
-								ref="menuOptions"
-								v-if="optionsOpened"
-								v-click-outside="closeOptions"
-								class="vac-menu-options"
-								:class="{
-									'vac-menu-left': message.sender_id !== currentUserId
-								}"
-								:style="{ top: `${menuOptionsTop}px` }"
+							<template
+								v-for="(index, name) in $scopedSlots"
+								v-slot:[name]="data"
 							>
-								<div class="vac-menu-list">
-									<div
-										v-for="action in filteredMessageActions"
-										:key="action.name"
-									>
-										<div
-											class="vac-menu-item"
-											@click="messageActionHandler(action)"
-										>
-											{{ action.title }}
-										</div>
-									</div>
-								</div>
-							</div>
-						</transition>
+								<slot :name="name" v-bind="data"></slot>
+							</template>
+						</message-actions>
 					</div>
 
 					<transition-group name="vac-slide-left" v-if="!message.deleted">
@@ -269,23 +209,17 @@
 </template>
 
 <script>
-import vClickOutside from 'v-click-outside'
-
 import SvgIcon from '../../components/SvgIcon'
-import EmojiPicker from '../../components/EmojiPicker'
 import FormatMessage from '../../components/FormatMessage'
 
 import MessageImage from './MessageImage'
+import MessageActions from './MessageActions'
 
 const { isImageFile } = require('../../utils/mediaFile')
 
 export default {
 	name: 'message',
-	components: { SvgIcon, EmojiPicker, FormatMessage, MessageImage },
-
-	directives: {
-		clickOutside: vClickOutside.directive
-	},
+	components: { SvgIcon, FormatMessage, MessageImage, MessageActions },
 
 	props: {
 		currentUserId: { type: [String, Number], required: true },
@@ -311,29 +245,9 @@ export default {
 			imageHover: false,
 			messageHover: false,
 			optionsOpened: false,
-			optionsClosing: false,
-			menuOptionsTop: 0,
+			emojiOpened: false,
 			messageReaction: '',
-			newMessage: {},
-			emojiOpened: false
-		}
-	},
-
-	watch: {
-		newMessages(val) {
-			if (!val.length || !this.showNewMessagesDivider) return
-			this.newMessage = val.reduce((res, obj) =>
-				obj.index < res.index ? obj : res
-			)
-		},
-		emojiOpened(val) {
-			if (val) this.optionsOpened = false
-		},
-		hideOptions(val) {
-			if (val) {
-				this.closeEmoji()
-				this.closeOptions()
-			}
+			newMessage: {}
 		}
 	},
 
@@ -343,6 +257,15 @@ export default {
 				_id: this.message._id,
 				index: this.index
 			})
+		}
+	},
+
+	watch: {
+		newMessages(val) {
+			if (!val.length || !this.showNewMessagesDivider) return
+			this.newMessage = val.reduce((res, obj) =>
+				obj.index < res.index ? obj : res
+			)
 		}
 	},
 
@@ -379,27 +302,6 @@ export default {
 			const { sender_id } = this.message.replyMessage
 			const replyUser = this.roomUsers.find(user => user._id === sender_id)
 			return replyUser ? replyUser.username : ''
-		},
-		isMessageActions() {
-			return (
-				this.filteredMessageActions.length &&
-				this.messageHover &&
-				!this.message.deleted &&
-				!this.message.disable_actions
-			)
-		},
-		isMessageReactions() {
-			return (
-				this.showReactionEmojis &&
-				this.messageHover &&
-				!this.message.deleted &&
-				!this.message.disable_reactions
-			)
-		},
-		filteredMessageActions() {
-			return this.message.sender_id === this.currentUserId
-				? this.messageActions
-				: this.messageActions.filter(message => !message.onlyMe)
 		}
 	},
 
@@ -430,7 +332,6 @@ export default {
 			this.$emit('open-user-tag', { user })
 		},
 		messageActionHandler(action) {
-			this.closeOptions()
 			this.messageHover = false
 			this.hoverMessageId = null
 
@@ -447,50 +348,6 @@ export default {
 			const { type } = file
 			return videoTypes.some(t => type.toLowerCase().includes(t))
 		},
-		openOptions() {
-			if (this.optionsClosing) return
-
-			this.optionsOpened = !this.optionsOpened
-			if (!this.optionsOpened) return
-
-			this.$emit('hide-options', false)
-
-			setTimeout(() => {
-				if (
-					!this.roomFooterRef ||
-					!this.$refs.menuOptions ||
-					!this.$refs.actionIcon
-				)
-					return
-
-				const menuOptionsTop = this.$refs.menuOptions.getBoundingClientRect()
-					.height
-
-				const actionIconTop = this.$refs.actionIcon.getBoundingClientRect().top
-				const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
-
-				const optionsTopPosition =
-					roomFooterTop - actionIconTop > menuOptionsTop + 50
-
-				if (optionsTopPosition) this.menuOptionsTop = 30
-				else this.menuOptionsTop = -menuOptionsTop
-			}, 0)
-		},
-		closeOptions() {
-			this.optionsOpened = false
-			this.optionsClosing = true
-			setTimeout(() => (this.optionsClosing = false), 100)
-
-			if (this.hoverMessageId !== this.message._id) this.messageHover = false
-		},
-		openEmoji() {
-			this.emojiOpened = !this.emojiOpened
-			this.$emit('hide-options', false)
-		},
-		closeEmoji() {
-			this.emojiOpened = false
-			if (this.hoverMessageId !== this.message._id) this.messageHover = false
-		},
 		getEmojiByName(emojiName) {
 			return this.emojisList[emojiName]
 		},
@@ -500,7 +357,6 @@ export default {
 				reaction: emoji,
 				remove: reaction && reaction.indexOf(this.currentUserId) !== -1
 			})
-			this.closeEmoji()
 			this.messageHover = false
 		}
 	}
@@ -760,66 +616,6 @@ export default {
 	}
 }
 
-.vac-options-container {
-	position: absolute;
-	top: 2px;
-	right: 10px;
-	height: 40px;
-	width: 70px;
-	overflow: hidden;
-	z-index: 1;
-	border-top-right-radius: 8px;
-}
-
-.vac-blur-container {
-	position: absolute;
-	height: 100%;
-	width: 100%;
-	left: 8px;
-	bottom: 10px;
-	background: var(--chat-message-bg-color);
-	filter: blur(3px);
-	border-bottom-left-radius: 8px;
-}
-
-.vac-options-me {
-	background: var(--chat-message-bg-color-me);
-}
-
-.vac-options-image .vac-blur-container {
-	background: rgba(255, 255, 255, 0.6);
-	border-bottom-left-radius: 15px;
-}
-
-.vac-message-options {
-	background: var(--chat-icon-bg-dropdown-message);
-	border-radius: 50%;
-	position: absolute;
-	top: 7px;
-	right: 7px;
-
-	svg {
-		height: 17px;
-		width: 17px;
-		padding: 5px;
-		margin: -5px;
-	}
-}
-
-.vac-message-reactions {
-	position: absolute;
-	top: 6px;
-	right: 30px;
-}
-
-.vac-menu-options {
-	right: 15px;
-}
-
-.vac-menu-left {
-	right: -118px;
-}
-
 .vac-icon-check {
 	height: 14px;
 	width: 14px;
@@ -884,14 +680,6 @@ export default {
 
 	.vac-offset-current {
 		margin-left: 20%;
-	}
-
-	.vac-options-container {
-		right: 3px;
-	}
-
-	.vac-menu-left {
-		right: -50px;
 	}
 }
 </style>
