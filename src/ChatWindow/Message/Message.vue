@@ -59,18 +59,17 @@
 							<span>{{ textMessages.MESSAGE_DELETED }}</span>
 						</div>
 
-						<div v-else-if="!message.file">
-							<format-message
-								:content="message.content"
-								:users="roomUsers"
-								:text-formatting="textFormatting"
-								@open-user-tag="openUserTag"
-							>
-								<template v-slot:deleted-icon="data">
-									<slot name="deleted-icon" v-bind="data"></slot>
-								</template>
-							</format-message>
-						</div>
+						<format-message
+							v-else-if="!message.file"
+							:content="message.content"
+							:users="roomUsers"
+							:text-formatting="textFormatting"
+							@open-user-tag="openUserTag"
+						>
+							<template v-slot:deleted-icon="data">
+								<slot name="deleted-icon" v-bind="data"></slot>
+							</template>
+						</format-message>
 
 						<message-image
 							v-else-if="isImage"
