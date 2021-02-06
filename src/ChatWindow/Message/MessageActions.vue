@@ -210,7 +210,6 @@ export default {
 		},
 		messageActionHandler(action) {
 			this.closeOptions()
-
 			this.$emit('message-action-handler', action)
 		},
 		sendMessageReaction(emoji, reaction) {
