@@ -114,7 +114,6 @@
 		>
 			<room-message-reply
 				:room="room"
-				:room-footer-height="roomFooterHeight"
 				:message-reply="messageReply"
 				@reset-message="resetMessage"
 			>
@@ -124,7 +123,6 @@
 			</room-message-reply>
 
 			<room-users-tag
-				:room-footer-height="roomFooterHeight"
 				:filtered-users-tag="filteredUsersTag"
 				@select-user-tag="selectUserTag($event)"
 			></room-users-tag>
@@ -364,8 +362,7 @@ export default {
 			keepKeyboardOpen: false,
 			filteredUsersTag: [],
 			selectedUsersTag: [],
-			textareaCursorPosition: null,
-			roomFooterHeight: 0
+			textareaCursorPosition: null
 		}
 	},
 
@@ -423,9 +420,6 @@ export default {
 					this.message = this.roomMessage
 					setTimeout(() => this.onChangeInput(), 0)
 				}
-				setTimeout(() => {
-					this.roomFooterHeight = this.$refs['roomFooter'].clientHeight
-				}, 0)
 			}
 		},
 		roomMessage: {
@@ -620,7 +614,6 @@ export default {
 			this.editedMessage.file = null
 			this.file = null
 			this.focusTextarea()
-			setTimeout(() => this.resizeTextarea(), 0)
 		},
 		resetTextareaSize() {
 			if (!this.$refs['roomTextarea']) return
@@ -717,8 +710,6 @@ export default {
 			}
 
 			this.message = message.content
-
-			setTimeout(() => this.resizeTextarea(), 0)
 		},
 		scrollToBottom() {
 			const element = this.$refs.scrollContainer
@@ -741,10 +732,6 @@ export default {
 
 			el.style.height = 0
 			el.style.height = el.scrollHeight - padding * 2 + 'px'
-
-			setTimeout(() => {
-				this.roomFooterHeight = this.$refs['roomFooter'].clientHeight
-			}, 20)
 		},
 		addEmoji(emoji) {
 			this.message += emoji.icon

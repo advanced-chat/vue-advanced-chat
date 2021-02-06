@@ -3,7 +3,7 @@
 		<div
 			v-if="filteredUsersTag.length"
 			class="vac-tags-container vac-app-box-shadow"
-			:style="{ bottom: `${roomFooterHeight}px` }"
+			:style="{ bottom: `${$parent.$refs.roomFooter.clientHeight}px` }"
 		>
 			<div
 				class="vac-tags-box"
@@ -31,7 +31,6 @@ export default {
 	name: 'room-users-tag',
 
 	props: {
-		roomFooterHeight: { type: Number, required: true },
 		filteredUsersTag: { type: Array, required: true }
 	},
 
