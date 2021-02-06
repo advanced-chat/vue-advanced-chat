@@ -710,6 +710,7 @@ export default {
 
 			if (isImageFile(this.file)) {
 				this.imageFile = message.file.url
+				setTimeout(() => this.onMediaLoad(), 0)
 			} else if (isVideoFile(this.file)) {
 				this.videoFile = message.file.url
 				setTimeout(() => this.onMediaLoad(), 50)
