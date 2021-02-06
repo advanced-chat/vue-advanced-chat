@@ -29,7 +29,7 @@
 						ref="imageRef"
 						class="vac-message-card"
 						:class="{
-							'vac-message-highlight': isMessageHover(message),
+							'vac-message-highlight': isMessageHover,
 							'vac-message-current': message.sender_id === currentUserId,
 							'vac-message-deleted': message.deleted
 						}"
@@ -282,6 +282,12 @@ export default {
 				this.message.sender_id !== this.messages[this.index - 1].sender_id
 			)
 		},
+		isMessageHover() {
+			return (
+				this.editedMessage._id === this.message._id ||
+				this.hoverMessageId === this.message._id
+			)
+		},
 		isImage() {
 			return isImageFile(this.message.file)
 		},
@@ -306,12 +312,6 @@ export default {
 	},
 
 	methods: {
-		isMessageHover() {
-			return (
-				this.editedMessage._id === this.message._id ||
-				this.hoverMessageId === this.message._id
-			)
-		},
 		onHoverMessage() {
 			this.imageHover = true
 			this.messageHover = true
