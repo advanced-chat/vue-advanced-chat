@@ -46,31 +46,11 @@
 							<span>{{ message.username }}</span>
 						</div>
 
-						<div
+						<message-reply
 							v-if="!message.deleted && message.replyMessage"
-							class="vac-reply-message"
-						>
-							<div class="vac-reply-username">{{ replyUsername }}</div>
-
-							<div class="vac-image-reply-container" v-if="isImageReply">
-								<div
-									class="vac-message-image vac-message-image-reply"
-									:style="{
-										'background-image': `url('${message.replyMessage.file.url}')`
-									}"
-								></div>
-							</div>
-
-							<div class="vac-reply-content">
-								<format-message
-									:content="message.replyMessage.content"
-									:users="roomUsers"
-									:text-formatting="true"
-									:reply="true"
-								>
-								</format-message>
-							</div>
-						</div>
+							:message="message"
+							:room-users="roomUsers"
+						></message-reply>
 
 						<div v-if="message.deleted">
 							<slot name="deleted-icon">
@@ -199,6 +179,7 @@
 import SvgIcon from '../../components/SvgIcon'
 import FormatMessage from '../../components/FormatMessage'
 
+import MessageReply from './MessageReply'
 import MessageImage from './MessageImage'
 import MessageActions from './MessageActions'
 import MessageReactions from './MessageReactions'
@@ -210,6 +191,7 @@ export default {
 	components: {
 		SvgIcon,
 		FormatMessage,
+		MessageReply,
 		MessageImage,
 		MessageActions,
 		MessageReactions
@@ -285,9 +267,6 @@ export default {
 		isImage() {
 			return isImageFile(this.message.file)
 		},
-		isImageReply() {
-			return this.checkImageReplyFile()
-		},
 		isVideo() {
 			return this.checkVideoType(this.message.file)
 		},
@@ -297,11 +276,6 @@ export default {
 				!this.message.deleted &&
 				(this.message.saved || this.message.distributed || this.message.seen)
 			)
-		},
-		replyUsername() {
-			const { sender_id } = this.message.replyMessage
-			const replyUser = this.roomUsers.find(user => user._id === sender_id)
-			return replyUser ? replyUser.username : ''
 		}
 	},
 
@@ -332,9 +306,6 @@ export default {
 			setTimeout(() => {
 				this.$emit('message-action-handler', { action, message: this.message })
 			}, 300)
-		},
-		checkImageReplyFile() {
-			return isImageFile(this.message.replyMessage.file)
 		},
 		checkVideoType(file) {
 			if (!file) return
@@ -482,10 +453,6 @@ export default {
 	}
 }
 
-.vac-image-reply-container {
-	width: 70px;
-}
-
 ::v-deep .vac-message-image {
 	position: relative;
 	background-color: var(--chat-message-bg-color-image) !important;
@@ -498,31 +465,6 @@ export default {
 	border-radius: 4px;
 	margin: 4px auto 5px;
 	transition: 0.4s filter linear;
-}
-
-.vac-message-image-reply {
-	height: 70px;
-	width: 70px;
-	margin: 4px auto 3px;
-}
-
-.vac-reply-message {
-	background: var(--chat-message-bg-color-reply);
-	border-radius: 4px;
-	margin: -1px -5px 8px;
-	padding: 8px 10px;
-
-	.vac-reply-username {
-		color: var(--chat-message-color-reply-username);
-		font-size: 12px;
-		line-height: 15px;
-		margin-bottom: 2px;
-	}
-
-	.vac-reply-content {
-		font-size: 12px;
-		color: var(--chat-message-color-reply-content);
-	}
 }
 
 .vac-text-username {
