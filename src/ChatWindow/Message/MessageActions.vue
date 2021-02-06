@@ -228,7 +228,6 @@ export default {
 	height: 40px;
 	width: 70px;
 	overflow: hidden;
-	z-index: 1;
 	border-top-right-radius: 8px;
 }
 
