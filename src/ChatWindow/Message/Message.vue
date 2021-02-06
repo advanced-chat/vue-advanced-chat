@@ -172,9 +172,7 @@
 							@update-options-opened="optionsOpened = $event"
 							@update-emoji-opened="emojiOpened = $event"
 							@message-action-handler="messageActionHandler"
-							@send-message-reaction="
-								sendMessageReaction($event.emoji, $event.reaction)
-							"
+							@send-message-reaction="sendMessageReaction($event)"
 						>
 							<template
 								v-for="(index, name) in $scopedSlots"
@@ -185,23 +183,12 @@
 						</message-actions>
 					</div>
 
-					<transition-group name="vac-slide-left" v-if="!message.deleted">
-						<button
-							v-for="(reaction, key) in message.reactions"
-							v-show="reaction.length"
-							:key="key + 0"
-							class="vac-button-reaction"
-							:class="{
-								'vac-reaction-me': reaction.indexOf(currentUserId) !== -1
-							}"
-							:style="{
-								float: message.sender_id === currentUserId ? 'right' : 'left'
-							}"
-							@click="sendMessageReaction({ name: key }, reaction)"
-						>
-							{{ getEmojiByName(key) }}<span>{{ reaction.length }}</span>
-						</button>
-					</transition-group>
+					<message-reactions
+						:current-user-id="currentUserId"
+						:message="message"
+						:emojis-list="emojisList"
+						@send-message-reaction="sendMessageReaction($event)"
+					></message-reactions>
 				</div>
 			</slot>
 		</div>
@@ -214,12 +201,19 @@ import FormatMessage from '../../components/FormatMessage'
 
 import MessageImage from './MessageImage'
 import MessageActions from './MessageActions'
+import MessageReactions from './MessageReactions'
 
 const { isImageFile } = require('../../utils/mediaFile')
 
 export default {
 	name: 'message',
-	components: { SvgIcon, FormatMessage, MessageImage, MessageActions },
+	components: {
+		SvgIcon,
+		FormatMessage,
+		MessageImage,
+		MessageActions,
+		MessageReactions
+	},
 
 	props: {
 		currentUserId: { type: [String, Number], required: true },
@@ -348,10 +342,7 @@ export default {
 			const { type } = file
 			return videoTypes.some(t => type.toLowerCase().includes(t))
 		},
-		getEmojiByName(emojiName) {
-			return this.emojisList[emojiName]
-		},
-		sendMessageReaction(emoji, reaction) {
+		sendMessageReaction({ emoji, reaction }) {
 			this.$emit('send-message-reaction', {
 				messageId: this.message._id,
 				reaction: emoji,
@@ -621,47 +612,6 @@ export default {
 	width: 14px;
 	vertical-align: middle;
 	margin: -3px -3px 0 3px;
-}
-
-.vac-button-reaction {
-	display: inline-flex;
-	align-items: center;
-	border: var(--chat-message-border-style-reaction);
-	outline: none;
-	background: var(--chat-message-bg-color-reaction);
-	border-radius: 4px;
-	margin: 4px 2px 0;
-	transition: 0.3s;
-	padding: 0 5px;
-	font-size: 18px;
-	line-height: 23px;
-
-	span {
-		font-size: 11px;
-		font-weight: 500;
-		min-width: 7px;
-		color: var(--chat-message-color-reaction-counter);
-	}
-
-	&:hover {
-		border: var(--chat-message-border-style-reaction-hover);
-		background: var(--chat-message-bg-color-reaction-hover);
-		cursor: pointer;
-	}
-}
-
-.vac-reaction-me {
-	border: var(--chat-message-border-style-reaction-me);
-	background: var(--chat-message-bg-color-reaction-me);
-
-	span {
-		color: var(--chat-message-color-reaction-counter-me);
-	}
-
-	&:hover {
-		border: var(--chat-message-border-style-reaction-hover-me);
-		background: var(--chat-message-bg-color-reaction-hover-me);
-	}
 }
 
 @media only screen and (max-width: 768px) {
