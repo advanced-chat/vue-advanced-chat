@@ -6,30 +6,18 @@
 	>
 		<slot name="rooms-header"></slot>
 
-		<div class="vac-box-search">
-			<div class="vac-icon-search" v-if="!loadingRooms && rooms.length">
-				<slot name="search-icon">
-					<svg-icon name="search" />
-				</slot>
-			</div>
-			<input
-				v-if="!loadingRooms && rooms.length"
-				type="search"
-				:placeholder="textMessages.SEARCH"
-				autocomplete="off"
-				class="vac-input"
-				@input="searchRoom"
-			/>
-			<div
-				v-if="showAddRoom"
-				class="vac-svg-button vac-add-icon"
-				@click="addRoom"
-			>
-				<slot name="add-icon">
-					<svg-icon name="add" />
-				</slot>
-			</div>
-		</div>
+		<rooms-search
+			:rooms="rooms"
+			:loading-rooms="loadingRooms"
+			:textMessages="textMessages"
+			:show-add-room="showAddRoom"
+			@search-room="searchRoom"
+			@add-room="$emit('add-room')"
+		>
+			<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+				<slot :name="name" v-bind="data"></slot>
+			</template>
+		</rooms-search>
 
 		<loader :show="loadingRooms"></loader>
 
@@ -186,12 +174,14 @@ import Loader from '../../components/Loader'
 import SvgIcon from '../../components/SvgIcon'
 import FormatMessage from '../../components/FormatMessage'
 
+import RoomsSearch from './RoomsSearch'
+
 import filteredUsers from '../../utils/filterItems'
 import typingText from '../../utils/typingText'
 
 export default {
 	name: 'rooms-list',
-	components: { InfiniteLoading, Loader, SvgIcon, FormatMessage },
+	components: { InfiniteLoading, Loader, SvgIcon, FormatMessage, RoomsSearch },
 
 	directives: {
 		clickOutside: vClickOutside.directive
@@ -275,9 +265,6 @@ export default {
 			this.$emit('fetch-more-rooms')
 			this.loadingMoreRooms = true
 		},
-		addRoom() {
-			this.$emit('add-room')
-		},
 		userStatus(room) {
 			if (!room.users || room.users.length !== 2) return
 
@@ -355,48 +342,6 @@ export default {
 .vac-rooms-container-full {
 	flex: 0 0 100%;
 	max-width: 100%;
-}
-
-.vac-box-search {
-	position: sticky;
-	display: flex;
-	align-items: center;
-	height: 64px;
-	padding: 0 15px;
-}
-
-.vac-icon-search {
-	display: flex;
-	position: absolute;
-	left: 30px;
-
-	svg {
-		width: 18px;
-		height: 18px;
-	}
-}
-
-.vac-add-icon {
-	margin-left: auto;
-	padding-left: 10px;
-}
-
-.vac-input {
-	height: 38px;
-	width: 100%;
-	background: var(--chat-bg-color-input);
-	color: var(--chat-color);
-	border-radius: 4px;
-	font-size: 15px;
-	outline: 0;
-	caret-color: var(--chat-color-caret);
-	padding: 10px 10px 10px 40px;
-	border: 1px solid var(--chat-sidemenu-border-color-search);
-	border-radius: 20px;
-
-	&::placeholder {
-		color: var(--chat-color-placeholder);
-	}
 }
 
 .vac-rooms-empty {
@@ -547,10 +492,6 @@ export default {
 }
 
 @media only screen and (max-width: 768px) {
-	.vac-box-search {
-		height: 58px;
-	}
-
 	.vac-room-list {
 		padding: 0 7px 5px;
 	}
