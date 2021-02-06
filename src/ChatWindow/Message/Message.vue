@@ -26,7 +26,6 @@
 					}"
 				>
 					<div
-						ref="imageRef"
 						class="vac-message-card"
 						:class="{
 							'vac-message-highlight': isMessageHover,

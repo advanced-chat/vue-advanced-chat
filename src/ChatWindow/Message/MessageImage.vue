@@ -1,5 +1,5 @@
 <template>
-	<div class="vac-image-container">
+	<div ref="imageRef" class="vac-image-container">
 		<loader
 			:style="{ top: `${imageResponsive.loaderTop}px` }"
 			:show="isImageLoading"
@@ -72,11 +72,9 @@ export default {
 	},
 
 	mounted() {
-		const imageRef = this.$parent.$refs.imageRef
-
 		this.imageResponsive = {
-			maxHeight: imageRef.clientWidth - 18,
-			loaderTop: imageRef.clientWidth / 2
+			maxHeight: this.$refs.imageRef.clientWidth - 18,
+			loaderTop: this.$refs.imageRef.clientWidth / 2
 		}
 	},
 
