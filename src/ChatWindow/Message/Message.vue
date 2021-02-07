@@ -79,10 +79,7 @@
 							:image-hover="imageHover"
 							@open-file="openFile"
 						>
-							<template
-								v-for="(index, name) in $scopedSlots"
-								v-slot:[name]="data"
-							>
+							<template v-for="(i, name) in $scopedSlots" v-slot:[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</message-image>
@@ -152,10 +149,7 @@
 							@message-action-handler="messageActionHandler"
 							@send-message-reaction="sendMessageReaction($event)"
 						>
-							<template
-								v-for="(index, name) in $scopedSlots"
-								v-slot:[name]="data"
-							>
+							<template v-for="(i, name) in $scopedSlots" v-slot:[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</message-actions>
