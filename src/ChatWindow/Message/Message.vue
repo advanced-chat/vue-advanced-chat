@@ -32,7 +32,7 @@
 							'vac-message-current': message.sender_id === currentUserId,
 							'vac-message-deleted': message.deleted
 						}"
-						@mouseover="onHoverMessage(message)"
+						@mouseover="onHoverMessage"
 						@mouseleave="onLeaveMessage"
 					>
 						<div
