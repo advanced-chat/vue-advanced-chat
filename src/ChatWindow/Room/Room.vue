@@ -24,6 +24,7 @@
 			:room-info="roomInfo"
 			:menu-actions="menuActions"
 			:room="room"
+			@toggle-rooms-list="$emit('toggle-rooms-list')"
 			@menu-action-handler="$emit('menu-action-handler', $event)"
 		>
 			<template v-for="(index, name) in $scopedSlots" #[name]="data">
@@ -86,10 +87,7 @@
 								@send-message-reaction="sendMessageReaction"
 								@hide-options="hideOptions = $event"
 							>
-								<template
-									v-for="(index, name) in $scopedSlots"
-									#[name]="data"
-								>
+								<template v-for="(index, name) in $scopedSlots" #[name]="data">
 									<slot :name="name" v-bind="data" />
 								</template>
 							</message>
