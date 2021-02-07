@@ -27,7 +27,7 @@
 							room.lastMessage && room.lastMessage.new && !typingUsers
 					}"
 				>
-					<span v-if="isMessageCheckmarkVisible(room)">
+					<span v-if="isMessageCheckmarkVisible">
 						<slot name="checkmark-icon" v-bind="room.lastMessage">
 							<svg-icon
 								:name="
@@ -52,11 +52,11 @@
 						<slot name="microphone-icon">
 							<svg-icon name="microphone" class="vac-icon-microphone" />
 						</slot>
-						{{ formattedDuration(room.lastMessage.file.duration) }}
+						{{ formattedDuration }}
 					</div>
 					<format-message
 						v-else-if="room.lastMessage"
-						:content="getLastMessage(room)"
+						:content="getLastMessage"
 						:deleted="!!room.lastMessage.deleted && !typingUsers"
 						:users="room.users"
 						:linkify="false"
@@ -97,7 +97,7 @@
 										<div v-for="action in roomActions" :key="action.name">
 											<div
 												class="vac-menu-item"
-												@click.stop="roomActionHandler(action, room)"
+												@click.stop="roomActionHandler(action)"
 											>
 												{{ action.title }}
 											</div>
@@ -147,6 +147,30 @@ export default {
 	},
 
 	computed: {
+		getLastMessage() {
+			const isTyping = this.typingUsers
+			if (isTyping) return isTyping
+
+			const content = this.room.lastMessage.deleted
+				? this.textMessages.MESSAGE_DELETED
+				: this.room.lastMessage.content
+
+			if (this.room.users.length <= 2) {
+				return content
+			}
+
+			const user = this.room.users.find(
+				user => user._id === this.room.lastMessage.sender_id
+			)
+
+			if (this.room.lastMessage.username) {
+				return `${this.room.lastMessage.username} - ${content}`
+			} else if (!user || user._id === this.currentUserId) {
+				return content
+			}
+
+			return `${user.username} - ${content}`
+		},
 		userStatus() {
 			if (!this.room.users || this.room.users.length !== 2) return
 
@@ -157,54 +181,28 @@ export default {
 		},
 		typingUsers() {
 			return typingText(this.room, this.currentUserId, this.textMessages)
+		},
+		isMessageCheckmarkVisible() {
+			return (
+				!this.typingUsers &&
+				this.room.lastMessage &&
+				!this.room.lastMessage.deleted &&
+				this.room.lastMessage.sender_id === this.currentUserId &&
+				(this.room.lastMessage.saved ||
+					this.room.lastMessage.distributed ||
+					this.room.lastMessage.seen)
+			)
+		},
+		formattedDuration() {
+			let s = Math.round(this.room.lastMessage.file.duration)
+			return (s - (s %= 60)) / 60 + (s > 9 ? ':' : ':0') + s
 		}
 	},
 
-	watch: {},
-
 	methods: {
-		getLastMessage(room) {
-			const isTyping = this.typingUsers
-			if (isTyping) return isTyping
-
-			const content = room.lastMessage.deleted
-				? this.textMessages.MESSAGE_DELETED
-				: room.lastMessage.content
-
-			if (room.users.length <= 2) {
-				return content
-			}
-
-			const user = room.users.find(
-				user => user._id === room.lastMessage.sender_id
-			)
-
-			if (room.lastMessage.username) {
-				return `${room.lastMessage.username} - ${content}`
-			} else if (!user || user._id === this.currentUserId) {
-				return content
-			}
-
-			return `${user.username} - ${content}`
-		},
-		formattedDuration(s) {
-			s = Math.round(s)
-			return (s - (s %= 60)) / 60 + (s > 9 ? ':' : ':0') + s
-		},
-		isMessageCheckmarkVisible(room) {
-			return (
-				!this.typingUsers &&
-				room.lastMessage &&
-				!room.lastMessage.deleted &&
-				room.lastMessage.sender_id === this.currentUserId &&
-				(room.lastMessage.saved ||
-					room.lastMessage.distributed ||
-					room.lastMessage.seen)
-			)
-		},
-		roomActionHandler(action, room) {
+		roomActionHandler(action) {
 			this.closeRoomMenu()
-			this.$emit('room-action-handler', { action, roomId: room.roomId })
+			this.$emit('room-action-handler', { action, roomId: this.room.roomId })
 		},
 		closeRoomMenu() {
 			this.roomMenuOpened = null
