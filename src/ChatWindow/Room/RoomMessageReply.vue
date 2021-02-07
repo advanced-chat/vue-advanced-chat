@@ -12,7 +12,9 @@
 					class="vac-image-reply"
 				/>
 				<div class="vac-reply-info">
-					<div class="vac-reply-username">{{ messageReply.username }}</div>
+					<div class="vac-reply-username">
+						{{ messageReply.username }}
+					</div>
 					<div class="vac-reply-content">
 						<format-message
 							:content="messageReply.content"
