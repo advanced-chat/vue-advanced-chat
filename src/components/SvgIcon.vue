@@ -14,6 +14,7 @@
 <script>
 export default {
 	name: 'SvgIcon',
+
 	props: {
 		name: { type: String, default: null },
 		param: { type: String, default: null }

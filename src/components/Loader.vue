@@ -15,6 +15,7 @@
 <script>
 export default {
 	name: 'Loader',
+
 	props: {
 		show: { type: Boolean, default: false },
 		infinite: { type: Boolean, default: false }

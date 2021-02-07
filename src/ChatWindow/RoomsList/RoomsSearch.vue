@@ -37,15 +37,7 @@ export default {
 		showAddRoom: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },
 		loadingRooms: { type: Boolean, required: true }
-	},
-
-	data() {
-		return {}
-	},
-
-	watch: {},
-
-	methods: {}
+	}
 }
 </script>
 

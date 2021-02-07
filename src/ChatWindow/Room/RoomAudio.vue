@@ -20,8 +20,6 @@ export default {
 		SvgIcon
 	},
 
-	props: {},
-
 	data() {
 		return {
 			recorder: {},

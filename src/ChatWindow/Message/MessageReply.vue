@@ -47,9 +47,7 @@ export default {
 		isImage() {
 			return isImageFile(this.message.replyMessage.file)
 		}
-	},
-
-	methods: {}
+	}
 }
 </script>
 
