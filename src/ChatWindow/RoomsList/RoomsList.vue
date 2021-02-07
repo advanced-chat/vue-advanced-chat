@@ -29,125 +29,25 @@
 
 		<div v-if="!loadingRooms" class="vac-room-list">
 			<div
-				v-for="room in filteredRooms"
-				:id="room.roomId"
-				:key="room.roomId"
+				v-for="fRoom in filteredRooms"
+				:id="fRoom.roomId"
+				:key="fRoom.roomId"
 				class="vac-room-item"
-				:class="{ 'vac-room-selected': selectedRoomId === room.roomId }"
-				@click="openRoom(room)"
+				:class="{ 'vac-room-selected': selectedRoomId === fRoom.roomId }"
+				@click="openRoom(fRoom)"
 			>
-				<slot name="room-list-item" v-bind="{ room }">
-					<div
-						v-if="room.avatar"
-						class="vac-room-avatar"
-						:style="{ 'background-image': `url('${room.avatar}')` }"
-					/>
-					<div class="vac-name-container vac-text-ellipsis">
-						<div class="vac-title-container">
-							<div
-								v-if="userStatus(room)"
-								class="vac-state-circle"
-								:class="{ 'vac-state-online': userStatus(room) === 'online' }"
-							/>
-							<div class="vac-room-name vac-text-ellipsis">
-								{{ room.roomName }}
-							</div>
-							<div v-if="room.lastMessage" class="vac-text-date">
-								{{ room.lastMessage.timestamp }}
-							</div>
-						</div>
-						<div
-							class="vac-text-last"
-							:class="{
-								'vac-message-new':
-									room.lastMessage && room.lastMessage.new && !typingUsers(room)
-							}"
-						>
-							<span v-if="isMessageCheckmarkVisible(room)">
-								<slot name="checkmark-icon" v-bind="room.lastMessage">
-									<svg-icon
-										:name="
-											room.lastMessage.distributed
-												? 'double-checkmark'
-												: 'checkmark'
-										"
-										:param="room.lastMessage.seen ? 'seen' : ''"
-										class="vac-icon-check"
-									/>
-								</slot>
-							</span>
-							<div
-								v-if="
-									room.lastMessage &&
-										!room.lastMessage.deleted &&
-										room.lastMessage.file &&
-										room.lastMessage.file.audio
-								"
-								class="vac-text-ellipsis"
-							>
-								<slot name="microphone-icon">
-									<svg-icon name="microphone" class="vac-icon-microphone" />
-								</slot>
-								{{ formattedDuration(room.lastMessage.file.duration) }}
-							</div>
-							<format-message
-								v-else-if="room.lastMessage"
-								:content="getLastMessage(room)"
-								:deleted="!!room.lastMessage.deleted && !typingUsers(room)"
-								:users="room.users"
-								:linkify="false"
-								:text-formatting="textFormatting"
-								:single-line="true"
-							>
-								<template #deleted-icon="data">
-									<slot name="deleted-icon" v-bind="data" />
-								</template>
-							</format-message>
-							<div
-								v-if="!room.lastMessage && typingUsers(room)"
-								class="vac-text-ellipsis"
-							>
-								{{ typingUsers(room) }}
-							</div>
-							<div class="vac-room-options-container">
-								<div v-if="room.unreadCount" class="vac-room-badge-container">
-									<div class="vac-room-badge">
-										{{ room.unreadCount }}
-									</div>
-								</div>
-								<slot name="room-list-options" v-bind="{ room }">
-									<div
-										v-if="roomActions.length"
-										class="vac-svg-button vac-list-room-options"
-										@click.stop="roomMenuOpened = room.roomId"
-									>
-										<slot name="room-list-options-icon">
-											<svg-icon name="dropdown" param="room" />
-										</slot>
-									</div>
-									<transition v-if="roomActions.length" name="vac-slide-left">
-										<div
-											v-if="roomMenuOpened === room.roomId"
-											v-click-outside="closeRoomMenu"
-											class="vac-menu-options"
-										>
-											<div class="vac-menu-list">
-												<div v-for="action in roomActions" :key="action.name">
-													<div
-														class="vac-menu-item"
-														@click.stop="roomActionHandler(action, room)"
-													>
-														{{ action.title }}
-													</div>
-												</div>
-											</div>
-										</div>
-									</transition>
-								</slot>
-							</div>
-						</div>
-					</div>
-				</slot>
+				<room-content
+					:current-user-id="currentUserId"
+					:room="fRoom"
+					:text-formatting="textFormatting"
+					:text-messages="textMessages"
+					:room-actions="roomActions"
+					@room-action-handler="$emit('room-action-handler', $event)"
+				>
+					<template v-for="(index, name) in $scopedSlots" #[name]="data">
+						<slot :name="name" v-bind="data" />
+					</template>
+				</room-content>
 			</div>
 			<transition name="vac-fade-message">
 				<infinite-loading
@@ -168,23 +68,21 @@
 
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
-import vClickOutside from 'v-click-outside'
 
 import Loader from '../../components/Loader'
-import SvgIcon from '../../components/SvgIcon'
-import FormatMessage from '../../components/FormatMessage'
 
 import RoomsSearch from './RoomsSearch'
+import RoomContent from './RoomContent'
 
 import filteredUsers from '../../utils/filterItems'
-import typingText from '../../utils/typingText'
 
 export default {
 	name: 'RoomsList',
-	components: { InfiniteLoading, Loader, SvgIcon, FormatMessage, RoomsSearch },
-
-	directives: {
-		clickOutside: vClickOutside.directive
+	components: {
+		InfiniteLoading,
+		Loader,
+		RoomsSearch,
+		RoomContent
 	},
 
 	props: {
@@ -206,8 +104,7 @@ export default {
 			filteredRooms: this.rooms || [],
 			infiniteState: null,
 			loadingMoreRooms: false,
-			selectedRoomId: '',
-			roomMenuOpened: null
+			selectedRoomId: ''
 		}
 	},
 
@@ -264,62 +161,6 @@ export default {
 			this.infiniteState = infiniteState
 			this.$emit('fetch-more-rooms')
 			this.loadingMoreRooms = true
-		},
-		userStatus(room) {
-			if (!room.users || room.users.length !== 2) return
-
-			const user = room.users.find(u => u._id !== this.currentUserId)
-
-			if (user.status) return user.status.state
-		},
-		typingUsers(room) {
-			return typingText(room, this.currentUserId, this.textMessages)
-		},
-		getLastMessage(room) {
-			const isTyping = this.typingUsers(room)
-			if (isTyping) return isTyping
-
-			const content = room.lastMessage.deleted
-				? this.textMessages.MESSAGE_DELETED
-				: room.lastMessage.content
-
-			if (room.users.length <= 2) {
-				return content
-			}
-
-			const user = room.users.find(
-				user => user._id === room.lastMessage.sender_id
-			)
-
-			if (room.lastMessage.username) {
-				return `${room.lastMessage.username} - ${content}`
-			} else if (!user || user._id === this.currentUserId) {
-				return content
-			}
-
-			return `${user.username} - ${content}`
-		},
-		formattedDuration(s) {
-			s = Math.round(s)
-			return (s - (s %= 60)) / 60 + (s > 9 ? ':' : ':0') + s
-		},
-		isMessageCheckmarkVisible(room) {
-			return (
-				!this.typingUsers(room) &&
-				room.lastMessage &&
-				!room.lastMessage.deleted &&
-				room.lastMessage.sender_id === this.currentUserId &&
-				(room.lastMessage.saved ||
-					room.lastMessage.distributed ||
-					room.lastMessage.seen)
-			)
-		},
-		roomActionHandler(action, room) {
-			this.closeRoomMenu()
-			this.$emit('room-action-handler', { action, roomId: room.roomId })
-		},
-		closeRoomMenu() {
-			this.roomMenuOpened = null
 		}
 	}
 }
@@ -390,105 +231,6 @@ export default {
 	&:hover {
 		background: var(--chat-sidemenu-bg-color-active) !important;
 	}
-}
-
-.vac-name-container {
-	flex: 1;
-}
-
-.vac-title-container {
-	display: flex;
-	align-items: center;
-	line-height: 25px;
-}
-
-.vac-text-ellipsis {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.vac-room-name {
-	flex: 1;
-	color: var(--chat-room-color-username);
-	font-weight: 500;
-}
-
-.vac-text-last {
-	display: flex;
-	align-items: center;
-	font-size: 12px;
-	line-height: 19px;
-	color: var(--chat-room-color-message);
-}
-
-.vac-message-new {
-	color: var(--chat-room-color-username);
-	font-weight: 500;
-}
-
-.vac-text-date {
-	margin-left: 5px;
-	font-size: 11px;
-	color: var(--chat-room-color-timestamp);
-}
-
-.vac-icon-check {
-	display: flex;
-	vertical-align: middle;
-	height: 14px;
-	width: 14px;
-	margin-top: -2px;
-	margin-right: 2px;
-}
-
-.vac-state-circle {
-	width: 9px;
-	height: 9px;
-	border-radius: 50%;
-	background-color: var(--chat-room-color-offline);
-	margin-right: 6px;
-	transition: 0.3s;
-}
-
-.vac-state-online {
-	background-color: var(--chat-room-color-online);
-}
-
-.vac-icon-microphone {
-	height: 15px;
-	width: 15px;
-	vertical-align: middle;
-	margin: -3px 1px 0 -2px;
-	fill: var(--chat-room-color-message);
-}
-
-.vac-room-options-container {
-	display: flex;
-	margin-left: auto;
-}
-
-.vac-room-badge {
-	background-color: var(--chat-room-bg-color-badge);
-	color: var(--chat-room-color-badge);
-	font-size: 11px;
-	font-weight: 500;
-	height: 13px;
-	width: auto;
-	min-width: 13px;
-	margin-left: 5px;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 3px;
-}
-
-.vac-list-room-options {
-	height: 19px;
-	width: 19px;
-	align-items: center;
-	margin-left: 5px;
 }
 
 @media only screen and (max-width: 768px) {
