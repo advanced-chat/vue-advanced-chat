@@ -1,7 +1,7 @@
 <template>
 	<div
-		class="vac-col-messages"
 		v-show="(isMobile && !showRoomsList) || !isMobile || singleRoom"
+		class="vac-col-messages"
 	>
 		<slot
 			v-if="
@@ -17,7 +17,7 @@
 		<room-header
 			v-else
 			:current-user-id="currentUserId"
-			:textMessages="textMessages"
+			:text-messages="textMessages"
 			:single-room="singleRoom"
 			:show-rooms-list="showRoomsList"
 			:is-mobile="isMobile"
@@ -27,21 +27,21 @@
 			@menu-action-handler="$emit('menu-action-handler', $event)"
 		>
 			<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
-				<slot :name="name" v-bind="data"></slot>
+				<slot :name="name" v-bind="data" />
 			</template>
 		</room-header>
 
 		<div ref="scrollContainer" class="vac-container-scroll">
-			<loader :show="loadingMessages"></loader>
+			<loader :show="loadingMessages" />
 			<div class="vac-messages-container">
 				<div :class="{ 'vac-messages-hidden': loadingMessages }">
 					<transition name="vac-fade-message">
-						<div class="vac-text-started" v-if="showNoMessages">
+						<div v-if="showNoMessages" class="vac-text-started">
 							<slot name="messages-empty">
 								{{ textMessages.MESSAGES_EMPTY }}
 							</slot>
 						</div>
-						<div class="vac-text-started" v-if="showMessagesStarted">
+						<div v-if="showMessagesStarted" class="vac-text-started">
 							{{ textMessages.CONVERSATION_STARTED }} {{ messages[0].date }}
 						</div>
 					</transition>
@@ -55,13 +55,13 @@
 							@infinite="loadMoreMessages"
 						>
 							<div slot="spinner">
-								<loader :show="true" :infinite="true"></loader>
+								<loader :show="true" :infinite="true" />
 							</div>
-							<div slot="no-results"></div>
-							<div slot="no-more"></div>
+							<div slot="no-results" />
+							<div slot="no-more" />
 						</infinite-loading>
 					</transition>
-					<transition-group name="vac-fade-message" :key="roomId">
+					<transition-group :key="roomId" name="vac-fade-message">
 						<div v-for="(message, i) in messages" :key="message._id">
 							<message
 								:current-user-id="currentUserId"
@@ -90,7 +90,7 @@
 									v-for="(index, name) in $scopedSlots"
 									v-slot:[name]="data"
 								>
-									<slot :name="name" v-bind="data"></slot>
+									<slot :name="name" v-bind="data" />
 								</template>
 							</message>
 						</div>
@@ -100,7 +100,7 @@
 		</div>
 		<div v-if="!loadingMessages">
 			<transition name="vac-bounce">
-				<div class="vac-icon-scroll" v-if="scrollIcon" @click="scrollToBottom">
+				<div v-if="scrollIcon" class="vac-icon-scroll" @click="scrollToBottom">
 					<slot name="scroll-icon">
 						<svg-icon name="dropdown" param="scroll" />
 					</slot>
@@ -108,9 +108,9 @@
 			</transition>
 		</div>
 		<div
+			v-show="Object.keys(room).length && showFooter"
 			ref="roomFooter"
 			class="vac-room-footer"
-			v-show="Object.keys(room).length && showFooter"
 		>
 			<room-message-reply
 				:room="room"
@@ -118,14 +118,14 @@
 				@reset-message="resetMessage"
 			>
 				<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
-					<slot :name="name" v-bind="data"></slot>
+					<slot :name="name" v-bind="data" />
 				</template>
 			</room-message-reply>
 
 			<room-users-tag
 				:filtered-users-tag="filteredUsersTag"
 				@select-user-tag="selectUserTag($event)"
-			></room-users-tag>
+			/>
 
 			<div
 				class="vac-box-footer"
@@ -136,7 +136,7 @@
 					@update-file="file = $event"
 				>
 					<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
-						<slot :name="name" v-bind="data"></slot>
+						<slot :name="name" v-bind="data" />
 					</template>
 				</room-audio>
 
@@ -176,8 +176,12 @@
 							<svg-icon name="file" />
 						</slot>
 					</div>
-					<div class="vac-file-message" v-if="file && file.audio">audio</div>
-					<div class="vac-file-message" v-else>{{ message }}</div>
+					<div v-if="file && file.audio" class="vac-file-message">
+						audio
+					</div>
+					<div v-else class="vac-file-message">
+						{{ message }}
+					</div>
 					<div
 						class="vac-svg-button vac-icon-remove"
 						@click="resetMessage(null, true)"
@@ -191,6 +195,7 @@
 				<textarea
 					v-show="!file || imageFile || videoFile"
 					ref="roomTextarea"
+					v-model="message"
 					:placeholder="textMessages.TYPE_MESSAGE"
 					class="vac-textarea"
 					:class="{
@@ -202,16 +207,15 @@
 							mediaDimensions ? mediaDimensions.width - 10 : 12
 						}px`
 					}"
-					v-model="message"
 					@input="onChangeInput"
 					@keydown.esc="escapeTextarea"
 					@keydown.enter.exact.prevent=""
-				></textarea>
+				/>
 
 				<div class="vac-icon-textarea">
 					<div
-						class="vac-svg-button"
 						v-if="editedMessage._id"
+						class="vac-svg-button"
 						@click="resetMessage"
 					>
 						<slot name="edit-close-icon">
@@ -227,7 +231,7 @@
 						@open-emoji="emojiOpened = $event"
 					>
 						<template v-slot:emoji-picker-icon>
-							<slot name="emoji-picker-icon"></slot>
+							<slot name="emoji-picker-icon" />
 						</template>
 					</emoji-picker>
 
@@ -243,8 +247,8 @@
 
 					<div
 						v-if="textareaAction"
-						@click="textareaActionHandler"
 						class="vac-svg-button"
+						@click="textareaActionHandler"
 					>
 						<slot name="custom-action-icon">
 							<svg-icon name="deleted" />
@@ -253,18 +257,18 @@
 
 					<input
 						v-if="showFiles"
-						type="file"
 						ref="file"
+						type="file"
 						:accept="acceptedFiles"
-						@change="onFileChange($event.target.files)"
 						style="display:none"
+						@change="onFileChange($event.target.files)"
 					/>
 
 					<div
 						v-if="showSendIcon"
-						@click="sendMessage"
 						class="vac-svg-button"
 						:class="{ 'vac-send-disabled': isMessageEmpty }"
+						@click="sendMessage"
 					>
 						<slot name="send-icon">
 							<svg-icon name="send" :param="isMessageEmpty ? 'disabled' : ''" />
@@ -291,13 +295,13 @@ import RoomUsersTag from './RoomUsersTag'
 import RoomAudio from './RoomAudio'
 import Message from '../Message/Message'
 
+import filteredUsers from '../../utils/filterItems'
 const { messagesValid } = require('../../utils/roomValidation')
 const { detectMobile, iOSDevice } = require('../../utils/mobileDetection')
 const { isImageFile, isVideoFile } = require('../../utils/mediaFile')
-import filteredUsers from '../../utils/filterItems'
 
 export default {
-	name: 'room',
+	name: 'Room',
 	components: {
 		InfiniteLoading,
 		Loader,
@@ -324,7 +328,7 @@ export default {
 		roomId: { type: [String, Number], required: true },
 		loadFirstRoom: { type: Boolean, required: true },
 		messages: { type: Array, required: true },
-		roomMessage: { type: String },
+		roomMessage: { type: String, default: null },
 		messagesLoaded: { type: Boolean, required: true },
 		menuActions: { type: Array, required: true },
 		messageActions: { type: Array, required: true },
@@ -338,8 +342,8 @@ export default {
 		acceptedFiles: { type: String, required: true },
 		textFormatting: { type: Boolean, required: true },
 		loadingRooms: { type: Boolean, required: true },
-		roomInfo: { type: Function },
-		textareaAction: { type: Function }
+		roomInfo: { type: Function, default: null },
+		textareaAction: { type: Function, default: null }
 	},
 
 	data() {
@@ -363,6 +367,90 @@ export default {
 			filteredUsersTag: [],
 			selectedUsersTag: [],
 			textareaCursorPosition: null
+		}
+	},
+
+	computed: {
+		emojisList() {
+			const emojisTable = Object.keys(emojis).map(key => emojis[key])
+			return Object.assign({}, ...emojisTable)
+		},
+		room() {
+			return this.rooms.find(room => room.roomId === this.roomId) || {}
+		},
+		showNoMessages() {
+			return (
+				this.room.roomId &&
+				!this.messages.length &&
+				!this.loadingMessages &&
+				!this.loadingRooms
+			)
+		},
+		showMessagesStarted() {
+			return this.messages.length && this.messagesLoaded
+		},
+		isMessageEmpty() {
+			return !this.file && !this.message.trim()
+		}
+	},
+
+	watch: {
+		loadingMessages(val) {
+			if (val) this.infiniteState = null
+			else this.focusTextarea(true)
+		},
+		room(newVal, oldVal) {
+			if (newVal.roomId && newVal.roomId !== oldVal.roomId) {
+				this.loadingMessages = true
+				this.scrollIcon = false
+				this.resetMessage(true)
+				if (this.roomMessage) {
+					this.message = this.roomMessage
+					setTimeout(() => this.onChangeInput(), 0)
+				}
+			}
+		},
+		roomMessage: {
+			immediate: true,
+			handler(val) {
+				if (val) this.message = this.roomMessage
+			}
+		},
+		messages(newVal, oldVal) {
+			newVal.forEach(message => {
+				if (!messagesValid(message)) {
+					throw new Error(
+						'Messages object is not valid! Must contain _id[String, Number], content[String, Number] and sender_id[String, Number]'
+					)
+				}
+			})
+
+			const element = this.$refs.scrollContainer
+			if (!element) return
+
+			if (oldVal && newVal && oldVal.length === newVal.length - 1) {
+				this.loadingMessages = false
+
+				return setTimeout(() => {
+					const options = { top: element.scrollHeight, behavior: 'smooth' }
+					element.scrollTo(options)
+				}, 50)
+			}
+
+			if (this.infiniteState) {
+				this.infiniteState.loaded()
+			} else if (newVal.length) {
+				setTimeout(() => {
+					element.scrollTo({ top: element.scrollHeight })
+					this.loadingMessages = false
+				}, 0)
+			}
+
+			setTimeout(() => (this.loadingMoreMessages = false), 0)
+		},
+		messagesLoaded(val) {
+			if (val) this.loadingMessages = false
+			if (this.infiniteState) this.infiniteState.complete()
 		}
 	},
 
@@ -404,88 +492,6 @@ export default {
 				this.scrollIcon = bottomScroll > 1000
 			}, 200)
 		})
-	},
-
-	watch: {
-		loadingMessages(val) {
-			if (val) this.infiniteState = null
-			else this.focusTextarea(true)
-		},
-		room(newVal, oldVal) {
-			if (newVal.roomId && newVal.roomId !== oldVal.roomId) {
-				this.loadingMessages = true
-				this.scrollIcon = false
-				this.resetMessage(true)
-				if (this.roomMessage) {
-					this.message = this.roomMessage
-					setTimeout(() => this.onChangeInput(), 0)
-				}
-			}
-		},
-		roomMessage: {
-			immediate: true,
-			handler(val) {
-				if (val) this.message = this.roomMessage
-			}
-		},
-		messages(newVal, oldVal) {
-			newVal.forEach(message => {
-				if (!messagesValid(message)) {
-					throw 'Messages object is not valid! Must contain _id[String, Number], content[String, Number] and sender_id[String, Number]'
-				}
-			})
-
-			const element = this.$refs.scrollContainer
-			if (!element) return
-
-			if (oldVal && newVal && oldVal.length === newVal.length - 1) {
-				this.loadingMessages = false
-
-				return setTimeout(() => {
-					const options = { top: element.scrollHeight, behavior: 'smooth' }
-					element.scrollTo(options)
-				}, 50)
-			}
-
-			if (this.infiniteState) {
-				this.infiniteState.loaded()
-			} else if (newVal.length) {
-				setTimeout(() => {
-					element.scrollTo({ top: element.scrollHeight })
-					this.loadingMessages = false
-				}, 0)
-			}
-
-			setTimeout(() => (this.loadingMoreMessages = false), 0)
-		},
-		messagesLoaded(val) {
-			if (val) this.loadingMessages = false
-			if (this.infiniteState) this.infiniteState.complete()
-		}
-	},
-
-	computed: {
-		emojisList() {
-			const emojisTable = Object.keys(emojis).map(key => emojis[key])
-			return Object.assign({}, ...emojisTable)
-		},
-		room() {
-			return this.rooms.find(room => room.roomId === this.roomId) || {}
-		},
-		showNoMessages() {
-			return (
-				this.room.roomId &&
-				!this.messages.length &&
-				!this.loadingMessages &&
-				!this.loadingRooms
-			)
-		},
-		showMessagesStarted() {
-			return this.messages.length && this.messagesLoaded
-		},
-		isMessageEmpty() {
-			return !this.file && !this.message.trim()
-		}
 	},
 
 	methods: {

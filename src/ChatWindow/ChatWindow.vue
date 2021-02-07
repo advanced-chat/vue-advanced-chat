@@ -21,7 +21,7 @@
 				@room-action-handler="roomActionHandler"
 			>
 				<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
-					<slot :name="name" v-bind="data"></slot>
+					<slot :name="name" v-bind="data" />
 				</template>
 			</rooms-list>
 
@@ -66,7 +66,7 @@
 				@textarea-action-handler="textareaActionHandler"
 			>
 				<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
-					<slot :name="name" v-bind="data"></slot>
+					<slot :name="name" v-bind="data" />
 				</template>
 			</room>
 		</div>
@@ -82,7 +82,7 @@ import { defaultThemeStyles, cssThemeVars } from '../themes'
 const { roomsValid, partcipantsValid } = require('../utils/roomValidation')
 
 export default {
-	name: 'chat-container',
+	name: 'ChatContainer',
 	components: {
 		RoomsList,
 		Room
@@ -133,6 +133,36 @@ export default {
 			loadingMoreRooms: false,
 			showRoomsList: true,
 			isMobile: false
+		}
+	},
+
+	computed: {
+		t() {
+			return {
+				...locales,
+				...this.textMessages
+			}
+		},
+		cssVars() {
+			const defaultStyles = defaultThemeStyles[this.theme]
+			const customStyles = {}
+
+			Object.keys(defaultStyles).map(key => {
+				customStyles[key] = {
+					...defaultStyles[key],
+					...(this.styles[key] || {})
+				}
+			})
+
+			return cssThemeVars(customStyles)
+		},
+		orderedRooms() {
+			return this.rooms.slice().sort((a, b) => {
+				const aVal = a.index || 0
+				const bVal = b.index || 0
+
+				return aVal > bVal ? -1 : bVal > aVal ? 1 : 0
+			})
 		}
 	},
 
@@ -187,12 +217,16 @@ export default {
 			if (Object.entries(val).length === 0) return
 
 			if (!roomsValid(val)) {
-				throw 'Rooms object is not valid! Must contain roomId[String, Number], roomName[String] and users[Array]'
+				throw new Error(
+					'Rooms object is not valid! Must contain roomId[String, Number], roomName[String] and users[Array]'
+				)
 			}
 
 			val.users.forEach(user => {
 				if (!partcipantsValid(user)) {
-					throw 'Participants object is not valid! Must contain _id[String, Number] and username[String]'
+					throw new Error(
+						'Participants object is not valid! Must contain _id[String, Number] and username[String]'
+					)
 				}
 			})
 		},
@@ -207,36 +241,6 @@ export default {
 		window.addEventListener('resize', ev => {
 			if (ev.isTrusted) this.updateResponsive()
 		})
-	},
-
-	computed: {
-		t() {
-			return {
-				...locales,
-				...this.textMessages
-			}
-		},
-		cssVars() {
-			const defaultStyles = defaultThemeStyles[this.theme]
-			const customStyles = {}
-
-			Object.keys(defaultStyles).map(key => {
-				customStyles[key] = {
-					...defaultStyles[key],
-					...(this.styles[key] || {})
-				}
-			})
-
-			return cssThemeVars(customStyles)
-		},
-		orderedRooms() {
-			return this.rooms.slice().sort((a, b) => {
-				const aVal = a.index || 0
-				const bVal = b.index || 0
-
-				return aVal > bVal ? -1 : bVal > aVal ? 1 : 0
-			})
-		}
 	},
 
 	methods: {

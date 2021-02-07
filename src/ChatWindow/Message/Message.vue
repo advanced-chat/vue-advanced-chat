@@ -49,7 +49,7 @@
 							v-if="!message.deleted && message.replyMessage"
 							:message="message"
 							:room-users="roomUsers"
-						></message-reply>
+						/>
 
 						<div v-if="message.deleted">
 							<slot name="deleted-icon">
@@ -66,7 +66,7 @@
 							@open-user-tag="openUserTag"
 						>
 							<template v-slot:deleted-icon="data">
-								<slot name="deleted-icon" v-bind="data"></slot>
+								<slot name="deleted-icon" v-bind="data" />
 							</template>
 						</format-message>
 
@@ -83,7 +83,7 @@
 								v-for="(index, name) in $scopedSlots"
 								v-slot:[name]="data"
 							>
-								<slot :name="name" v-bind="data"></slot>
+								<slot :name="name" v-bind="data" />
 							</template>
 						</message-image>
 
@@ -95,7 +95,7 @@
 
 						<div v-else-if="message.file.audio" class="vac-audio-message">
 							<div id="vac-audio-player">
-								<audio controls v-if="message.file.audio">
+								<audio v-if="message.file.audio" controls>
 									<source :src="message.file.url" />
 								</audio>
 							</div>
@@ -115,8 +115,8 @@
 
 						<div class="vac-text-timestamp">
 							<div
-								class="vac-icon-edited"
 								v-if="message.edited && !message.deleted"
+								class="vac-icon-edited"
 							>
 								<slot name="pencil-icon">
 									<svg-icon name="pencil" />
@@ -131,7 +131,7 @@
 										"
 										:param="message.seen ? 'seen' : ''"
 										class="vac-icon-check"
-									></svg-icon>
+									/>
 								</slot>
 							</span>
 						</div>
@@ -156,7 +156,7 @@
 								v-for="(index, name) in $scopedSlots"
 								v-slot:[name]="data"
 							>
-								<slot :name="name" v-bind="data"></slot>
+								<slot :name="name" v-bind="data" />
 							</template>
 						</message-actions>
 					</div>
@@ -166,7 +166,7 @@
 						:message="message"
 						:emojis-list="emojisList"
 						@send-message-reaction="sendMessageReaction($event)"
-					></message-reactions>
+					/>
 				</div>
 			</slot>
 		</div>
@@ -185,7 +185,7 @@ import MessageReactions from './MessageReactions'
 const { isImageFile } = require('../../utils/mediaFile')
 
 export default {
-	name: 'message',
+	name: 'Message',
 	components: {
 		SvgIcon,
 		FormatMessage,
@@ -204,8 +204,8 @@ export default {
 		editedMessage: { type: Object, required: true },
 		roomUsers: { type: Array, default: () => [] },
 		messageActions: { type: Array, required: true },
-		roomFooterRef: { type: HTMLDivElement },
-		newMessages: { type: Array },
+		roomFooterRef: { type: HTMLDivElement, default: null },
+		newMessages: { type: Array, default: () => [] },
 		showReactionEmojis: { type: Boolean, required: true },
 		showNewMessagesDivider: { type: Boolean, required: true },
 		textFormatting: { type: Boolean, required: true },
@@ -222,24 +222,6 @@ export default {
 			emojiOpened: false,
 			messageReaction: '',
 			newMessage: {}
-		}
-	},
-
-	mounted() {
-		if (!this.message.seen && this.message.sender_id !== this.currentUserId) {
-			this.$emit('add-new-message', {
-				_id: this.message._id,
-				index: this.index
-			})
-		}
-	},
-
-	watch: {
-		newMessages(val) {
-			if (!val.length || !this.showNewMessagesDivider) return
-			this.newMessage = val.reduce((res, obj) =>
-				obj.index < res.index ? obj : res
-			)
 		}
 	},
 
@@ -274,6 +256,24 @@ export default {
 				!this.message.deleted &&
 				(this.message.saved || this.message.distributed || this.message.seen)
 			)
+		}
+	},
+
+	watch: {
+		newMessages(val) {
+			if (!val.length || !this.showNewMessagesDivider) return
+			this.newMessage = val.reduce((res, obj) =>
+				obj.index < res.index ? obj : res
+			)
+		}
+	},
+
+	mounted() {
+		if (!this.message.seen && this.message.sender_id !== this.currentUserId) {
+			this.$emit('add-new-message', {
+				_id: this.message._id,
+				index: this.index
+			})
 		}
 	},
 

@@ -1,6 +1,6 @@
 <template>
 	<div class="vac-box-search">
-		<div class="vac-icon-search" v-if="!loadingRooms && rooms.length">
+		<div v-if="!loadingRooms && rooms.length" class="vac-icon-search">
 			<slot name="search-icon">
 				<svg-icon name="search" />
 			</slot>
@@ -29,7 +29,7 @@
 import SvgIcon from '../../components/SvgIcon'
 
 export default {
-	name: 'rooms-search',
+	name: 'RoomsSearch',
 	components: { SvgIcon },
 
 	props: {

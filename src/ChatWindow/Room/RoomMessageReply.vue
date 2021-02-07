@@ -19,7 +19,7 @@
 							:users="room.users"
 							:text-formatting="true"
 							:reply="true"
-						></format-message>
+						/>
 					</div>
 				</div>
 			</div>
@@ -42,7 +42,7 @@ import FormatMessage from '../../components/FormatMessage'
 const { isImageFile } = require('../../utils/mediaFile')
 
 export default {
-	name: 'room-message-reply',
+	name: 'RoomMessageReply',
 	components: {
 		SvgIcon,
 		FormatMessage
@@ -50,7 +50,7 @@ export default {
 
 	props: {
 		room: { type: Object, required: true },
-		messageReply: { type: Object }
+		messageReply: { type: Object, default: null }
 	},
 
 	computed: {

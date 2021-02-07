@@ -15,7 +15,7 @@
 import SvgIcon from '../../components/SvgIcon'
 
 export default {
-	name: 'room-audio',
+	name: 'RoomAudio',
 	components: {
 		SvgIcon
 	},

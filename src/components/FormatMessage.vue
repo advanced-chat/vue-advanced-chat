@@ -1,6 +1,6 @@
 <template>
 	<div :class="{ 'vac-text-ellipsis': singleLine }">
-		<div :class="{ 'vac-text-ellipsis': singleLine }" v-if="textFormatting">
+		<div v-if="textFormatting" :class="{ 'vac-text-ellipsis': singleLine }">
 			<template v-for="(message, i) in linkifiedMessage">
 				<component
 					:is="message.url ? 'a' : 'span'"
@@ -35,7 +35,7 @@
 										'background-image': `url('${message.value}')`,
 										height: message.height
 									}"
-								></div>
+								/>
 							</div>
 							<div class="vac-image-link-message">
 								<span>{{ message.value }}</span>
@@ -48,7 +48,9 @@
 				</component>
 			</template>
 		</div>
-		<div v-else>{{ formattedContent }}</div>
+		<div v-else>
+			{{ formattedContent }}
+		</div>
 	</div>
 </template>
 
@@ -59,7 +61,7 @@ import formatString from '../utils/formatString'
 import { IMAGE_TYPES } from '../utils/constants'
 
 export default {
-	name: 'format-message',
+	name: 'FormatMessage',
 	components: { SvgIcon },
 
 	props: {

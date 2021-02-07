@@ -22,7 +22,7 @@
 							v-if="room.avatar"
 							class="vac-room-avatar"
 							:style="{ 'background-image': `url('${room.avatar}')` }"
-						></div>
+						/>
 					</slot>
 					<slot
 						name="room-header-info"
@@ -43,15 +43,15 @@
 				</div>
 				<slot v-if="room.roomId" name="room-options">
 					<div
-						class="vac-svg-button vac-room-options"
 						v-if="menuActions.length"
+						class="vac-svg-button vac-room-options"
 						@click="menuOpened = !menuOpened"
 					>
 						<slot name="menu-icon">
 							<svg-icon name="menu" />
 						</slot>
 					</div>
-					<transition name="vac-slide-left" v-if="menuActions.length">
+					<transition v-if="menuActions.length" name="vac-slide-left">
 						<div
 							v-if="menuOpened"
 							v-click-outside="closeMenu"
@@ -80,7 +80,7 @@ import SvgIcon from '../../components/SvgIcon'
 import typingText from '../../utils/typingText'
 
 export default {
-	name: 'room-header',
+	name: 'RoomHeader',
 	components: {
 		SvgIcon
 	},
@@ -95,7 +95,7 @@ export default {
 		singleRoom: { type: Boolean, required: true },
 		showRoomsList: { type: Boolean, required: true },
 		isMobile: { type: Boolean, required: true },
-		roomInfo: { type: Function },
+		roomInfo: { type: Function, default: null },
 		menuActions: { type: Array, required: true },
 		room: { type: Object, required: true }
 	},

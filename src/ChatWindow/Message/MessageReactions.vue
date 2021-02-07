@@ -1,5 +1,5 @@
 <template>
-	<transition-group name="vac-slide-left" v-if="!message.deleted">
+	<transition-group v-if="!message.deleted" name="vac-slide-left">
 		<button
 			v-for="(reaction, key) in message.reactions"
 			v-show="reaction.length"
@@ -20,7 +20,7 @@
 
 <script>
 export default {
-	name: 'message-reactions',
+	name: 'MessageReactions',
 
 	props: {
 		currentUserId: { type: [String, Number], required: true },

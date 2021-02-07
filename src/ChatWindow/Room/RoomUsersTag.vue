@@ -6,9 +6,9 @@
 			:style="{ bottom: `${$parent.$refs.roomFooter.clientHeight}px` }"
 		>
 			<div
-				class="vac-tags-box"
 				v-for="user in filteredUsersTag"
 				:key="user._id"
+				class="vac-tags-box"
 				@click="selectUserTag(user)"
 			>
 				<div class="vac-tags-info">
@@ -16,7 +16,7 @@
 						v-if="user.avatar"
 						class="vac-room-avatar vac-tags-avatar"
 						:style="{ 'background-image': `url('${user.avatar}')` }"
-					></div>
+					/>
 					<div class="vac-tags-username">
 						{{ user.username }}
 					</div>
@@ -28,7 +28,7 @@
 
 <script>
 export default {
-	name: 'room-users-tag',
+	name: 'RoomUsersTag',
 
 	props: {
 		filteredUsersTag: { type: Array, required: true }

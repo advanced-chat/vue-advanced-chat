@@ -3,7 +3,7 @@
 		<loader
 			:style="{ top: `${imageResponsive.loaderTop}px` }"
 			:show="isImageLoading"
-		></loader>
+		/>
 		<div
 			class="vac-message-image"
 			:class="{
@@ -16,7 +16,7 @@
 			}"
 		>
 			<transition name="vac-fade-image">
-				<div class="vac-image-buttons" v-if="imageHover && !isImageLoading">
+				<div v-if="imageHover && !isImageLoading" class="vac-image-buttons">
 					<div
 						class="vac-svg-button vac-button-view"
 						@click.stop="$emit('open-file', 'preview')"
@@ -41,7 +41,7 @@
 			:users="roomUsers"
 			:text-formatting="textFormatting"
 			@open-user-tag="$emit('open-user-tag')"
-		></format-message>
+		/>
 	</div>
 </template>
 
@@ -53,7 +53,7 @@ import FormatMessage from '../../components/FormatMessage'
 const { isImageFile } = require('../../utils/mediaFile')
 
 export default {
-	name: 'message-image',
+	name: 'MessageImage',
 	components: { SvgIcon, Loader, FormatMessage },
 
 	props: {
@@ -71,10 +71,11 @@ export default {
 		}
 	},
 
-	mounted() {
-		this.imageResponsive = {
-			maxHeight: this.$refs.imageRef.clientWidth - 18,
-			loaderTop: this.$refs.imageRef.clientWidth / 2
+	computed: {
+		isImageLoading() {
+			return (
+				this.message.file.url.indexOf('blob:http') !== -1 || this.imageLoading
+			)
 		}
 	},
 
@@ -87,11 +88,10 @@ export default {
 		}
 	},
 
-	computed: {
-		isImageLoading() {
-			return (
-				this.message.file.url.indexOf('blob:http') !== -1 || this.imageLoading
-			)
+	mounted() {
+		this.imageResponsive = {
+			maxHeight: this.$refs.imageRef.clientWidth - 18,
+			loaderTop: this.$refs.imageRef.clientWidth / 2
 		}
 	},
 

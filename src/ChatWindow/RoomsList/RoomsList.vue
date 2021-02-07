@@ -1,25 +1,25 @@
 <template>
 	<div
+		v-show="showRoomsList"
 		class="vac-rooms-container vac-app-border-r"
 		:class="{ 'vac-rooms-container-full': isMobile }"
-		v-show="showRoomsList"
 	>
-		<slot name="rooms-header"></slot>
+		<slot name="rooms-header" />
 
 		<rooms-search
 			:rooms="rooms"
 			:loading-rooms="loadingRooms"
-			:textMessages="textMessages"
+			:text-messages="textMessages"
 			:show-add-room="showAddRoom"
 			@search-room="searchRoom"
 			@add-room="$emit('add-room')"
 		>
 			<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
-				<slot :name="name" v-bind="data"></slot>
+				<slot :name="name" v-bind="data" />
 			</template>
 		</rooms-search>
 
-		<loader :show="loadingRooms"></loader>
+		<loader :show="loadingRooms" />
 
 		<div v-if="!loadingRooms && !rooms.length" class="vac-rooms-empty">
 			<slot name="rooms-empty">
@@ -29,10 +29,10 @@
 
 		<div v-if="!loadingRooms" class="vac-room-list">
 			<div
-				class="vac-room-item"
 				v-for="room in filteredRooms"
 				:id="room.roomId"
 				:key="room.roomId"
+				class="vac-room-item"
 				:class="{ 'vac-room-selected': selectedRoomId === room.roomId }"
 				@click="openRoom(room)"
 			>
@@ -41,14 +41,14 @@
 						v-if="room.avatar"
 						class="vac-room-avatar"
 						:style="{ 'background-image': `url('${room.avatar}')` }"
-					></div>
+					/>
 					<div class="vac-name-container vac-text-ellipsis">
 						<div class="vac-title-container">
 							<div
 								v-if="userStatus(room)"
 								class="vac-state-circle"
 								:class="{ 'vac-state-online': userStatus(room) === 'online' }"
-							></div>
+							/>
 							<div class="vac-room-name vac-text-ellipsis">
 								{{ room.roomName }}
 							</div>
@@ -73,7 +73,7 @@
 										"
 										:param="room.lastMessage.seen ? 'seen' : ''"
 										class="vac-icon-check"
-									></svg-icon>
+									/>
 								</slot>
 							</span>
 							<div
@@ -100,7 +100,7 @@
 								:single-line="true"
 							>
 								<template v-slot:deleted-icon="data">
-									<slot name="deleted-icon" v-bind="data"></slot>
+									<slot name="deleted-icon" v-bind="data" />
 								</template>
 							</format-message>
 							<div
@@ -117,15 +117,15 @@
 								</div>
 								<slot name="room-list-options" v-bind="{ room }">
 									<div
-										class="vac-svg-button vac-list-room-options"
 										v-if="roomActions.length"
+										class="vac-svg-button vac-list-room-options"
 										@click.stop="roomMenuOpened = room.roomId"
 									>
 										<slot name="room-list-options-icon">
 											<svg-icon name="dropdown" param="room" />
 										</slot>
 									</div>
-									<transition name="vac-slide-left" v-if="roomActions.length">
+									<transition v-if="roomActions.length" name="vac-slide-left">
 										<div
 											v-if="roomMenuOpened === room.roomId"
 											v-click-outside="closeRoomMenu"
@@ -156,10 +156,10 @@
 					@infinite="loadMoreRooms"
 				>
 					<div slot="spinner">
-						<loader :show="true" :infinite="true"></loader>
+						<loader :show="true" :infinite="true" />
 					</div>
-					<div slot="no-results"></div>
-					<div slot="no-more"></div>
+					<div slot="no-results" />
+					<div slot="no-more" />
 				</infinite-loading>
 			</transition>
 		</div>
@@ -180,7 +180,7 @@ import filteredUsers from '../../utils/filterItems'
 import typingText from '../../utils/typingText'
 
 export default {
-	name: 'rooms-list',
+	name: 'RoomsList',
 	components: { InfiniteLoading, Loader, SvgIcon, FormatMessage, RoomsSearch },
 
 	directives: {
@@ -301,7 +301,7 @@ export default {
 		},
 		formattedDuration(s) {
 			s = Math.round(s)
-			return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s
+			return (s - (s %= 60)) / 60 + (s > 9 ? ':' : ':0') + s
 		},
 		isMessageCheckmarkVisible(room) {
 			return (

@@ -1,14 +1,16 @@
 <template>
 	<div class="vac-reply-message">
-		<div class="vac-reply-username">{{ replyUsername }}</div>
+		<div class="vac-reply-username">
+			{{ replyUsername }}
+		</div>
 
-		<div class="vac-image-reply-container" v-if="isImage">
+		<div v-if="isImage" class="vac-image-reply-container">
 			<div
 				class="vac-message-image vac-message-image-reply"
 				:style="{
 					'background-image': `url('${message.replyMessage.file.url}')`
 				}"
-			></div>
+			/>
 		</div>
 
 		<div class="vac-reply-content">
@@ -17,8 +19,7 @@
 				:users="roomUsers"
 				:text-formatting="true"
 				:reply="true"
-			>
-			</format-message>
+			/>
 		</div>
 	</div>
 </template>
@@ -29,7 +30,7 @@ import FormatMessage from '../../components/FormatMessage'
 const { isImageFile } = require('../../utils/mediaFile')
 
 export default {
-	name: 'message-reply',
+	name: 'MessageReply',
 	components: { FormatMessage },
 
 	props: {
@@ -39,8 +40,8 @@ export default {
 
 	computed: {
 		replyUsername() {
-			const { sender_id } = this.message.replyMessage
-			const replyUser = this.roomUsers.find(user => user._id === sender_id)
+			const { senderId } = this.message.replyMessage
+			const replyUser = this.roomUsers.find(user => user._id === senderId)
 			return replyUser ? replyUser.username : ''
 		},
 		isImage() {

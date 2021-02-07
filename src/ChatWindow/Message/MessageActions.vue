@@ -10,19 +10,19 @@
 		>
 			<transition-group name="vac-slide-left">
 				<div
+					v-if="isMessageActions || isMessageReactions"
 					key="1"
 					class="vac-blur-container"
 					:class="{
 						'vac-options-me': message.sender_id === currentUserId
 					}"
-					v-if="isMessageActions || isMessageReactions"
-				></div>
+				/>
 
 				<div
+					v-if="isMessageActions"
 					ref="actionIcon"
 					key="2"
 					class="vac-svg-button vac-message-options"
-					v-if="isMessageActions"
 					@click="openOptions"
 				>
 					<slot name="dropdown-icon">
@@ -31,11 +31,11 @@
 				</div>
 
 				<emoji-picker
+					v-if="isMessageReactions"
 					key="3"
+					v-click-outside="closeEmoji"
 					class="vac-message-reactions"
 					:style="{ right: isMessageActions ? '30px' : '5px' }"
-					v-if="isMessageReactions"
-					v-click-outside="closeEmoji"
 					:emoji-opened="emojiOpened"
 					:emoji-reaction="true"
 					:room-footer-ref="roomFooterRef"
@@ -44,23 +44,23 @@
 					@open-emoji="openEmoji"
 				>
 					<template v-slot:emoji-picker-icon>
-						<slot name="emoji-picker-reaction-icon"></slot>
+						<slot name="emoji-picker-reaction-icon" />
 					</template>
 				</emoji-picker>
 			</transition-group>
 		</div>
 
 		<transition
+			v-if="filteredMessageActions.length"
 			:name="
 				message.sender_id === currentUserId
 					? 'vac-slide-left'
 					: 'vac-slide-right'
 			"
-			v-if="filteredMessageActions.length"
 		>
 			<div
-				ref="menuOptions"
 				v-if="optionsOpened"
+				ref="menuOptions"
 				v-click-outside="closeOptions"
 				class="vac-menu-options"
 				:class="{
@@ -89,7 +89,7 @@ import EmojiPicker from '../../components/EmojiPicker'
 const { isImageFile } = require('../../utils/mediaFile')
 
 export default {
-	name: 'message-actions',
+	name: 'MessageActions',
 	components: { SvgIcon, EmojiPicker },
 
 	directives: {
@@ -100,11 +100,11 @@ export default {
 		currentUserId: { type: [String, Number], required: true },
 		message: { type: Object, required: true },
 		messageActions: { type: Array, required: true },
-		roomFooterRef: { type: HTMLDivElement },
+		roomFooterRef: { type: HTMLDivElement, default: null },
 		showReactionEmojis: { type: Boolean, required: true },
 		hideOptions: { type: Boolean, required: true },
 		messageHover: { type: Boolean, required: true },
-		hoverMessageId: { type: [String, Number] }
+		hoverMessageId: { type: [String, Number], default: null }
 	},
 
 	data() {
@@ -113,22 +113,6 @@ export default {
 			optionsOpened: false,
 			optionsClosing: false,
 			emojiOpened: false
-		}
-	},
-
-	watch: {
-		emojiOpened(val) {
-			this.$emit('update-emoji-opened', val)
-			if (val) this.optionsOpened = false
-		},
-		hideOptions(val) {
-			if (val) {
-				this.closeEmoji()
-				this.closeOptions()
-			}
-		},
-		optionsOpened(val) {
-			this.$emit('update-options-opened', val)
 		}
 	},
 
@@ -159,6 +143,22 @@ export default {
 		}
 	},
 
+	watch: {
+		emojiOpened(val) {
+			this.$emit('update-emoji-opened', val)
+			if (val) this.optionsOpened = false
+		},
+		hideOptions(val) {
+			if (val) {
+				this.closeEmoji()
+				this.closeOptions()
+			}
+		},
+		optionsOpened(val) {
+			this.$emit('update-options-opened', val)
+		}
+	},
+
 	methods: {
 		openOptions() {
 			if (this.optionsClosing) return
@@ -173,8 +173,9 @@ export default {
 					!this.roomFooterRef ||
 					!this.$refs.menuOptions ||
 					!this.$refs.actionIcon
-				)
+				) {
 					return
+				}
 
 				const menuOptionsTop = this.$refs.menuOptions.getBoundingClientRect()
 					.height

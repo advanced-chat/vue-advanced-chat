@@ -56,5 +56,9 @@ export function messagesValid(obj) {
 }
 
 function checkObjectValid(obj, key) {
-	return Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== null && obj[key] !== undefined
+	return (
+		Object.prototype.hasOwnProperty.call(obj, key) &&
+		obj[key] !== null &&
+		obj[key] !== undefined
+	)
 }
