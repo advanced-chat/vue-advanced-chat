@@ -14,7 +14,7 @@
 			@search-room="searchRoom"
 			@add-room="$emit('add-room')"
 		>
-			<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+			<template v-for="(index, name) in $scopedSlots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</rooms-search>
@@ -99,7 +99,7 @@
 								:text-formatting="textFormatting"
 								:single-line="true"
 							>
-								<template v-slot:deleted-icon="data">
+								<template #deleted-icon="data">
 									<slot name="deleted-icon" v-bind="data" />
 								</template>
 							</format-message>

@@ -26,7 +26,7 @@
 			:room="room"
 			@menu-action-handler="$emit('menu-action-handler', $event)"
 		>
-			<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+			<template v-for="(index, name) in $scopedSlots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</room-header>
@@ -88,7 +88,7 @@
 							>
 								<template
 									v-for="(index, name) in $scopedSlots"
-									v-slot:[name]="data"
+									#[name]="data"
 								>
 									<slot :name="name" v-bind="data" />
 								</template>
@@ -117,7 +117,7 @@
 				:message-reply="messageReply"
 				@reset-message="resetMessage"
 			>
-				<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+				<template v-for="(index, name) in $scopedSlots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</room-message-reply>
@@ -135,7 +135,7 @@
 					v-if="showAudio && !imageFile && !videoFile"
 					@update-file="file = $event"
 				>
-					<template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+					<template v-for="(index, name) in $scopedSlots" #[name]="data">
 						<slot :name="name" v-bind="data" />
 					</template>
 				</room-audio>
@@ -230,7 +230,7 @@
 						@add-emoji="addEmoji"
 						@open-emoji="emojiOpened = $event"
 					>
-						<template v-slot:emoji-picker-icon>
+						<template #emoji-picker-icon>
 							<slot name="emoji-picker-icon" />
 						</template>
 					</emoji-picker>

@@ -43,7 +43,7 @@
 					@add-emoji="sendMessageReaction"
 					@open-emoji="openEmoji"
 				>
-					<template v-slot:emoji-picker-icon>
+					<template #emoji-picker-icon>
 						<slot name="emoji-picker-reaction-icon" />
 					</template>
 				</emoji-picker>

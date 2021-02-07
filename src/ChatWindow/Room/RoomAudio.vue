@@ -24,7 +24,6 @@ export default {
 
 	data() {
 		return {
-			recorderStream: {},
 			recorder: {},
 			recordedChunks: [],
 			audioDuration: 0

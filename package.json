@@ -51,7 +51,7 @@
 		"@vue/eslint-config-standard": "^4.0.0",
 		"babel-eslint": "^10.0.3",
 		"eslint": "^6.7.2",
-		"eslint-plugin-vue": "^6.2.2",
+		"eslint-plugin-vue": "^7.5.0",
 		"node-sass": "^4.13.0",
 		"rimraf": "^2.7.1",
 		"sass-loader": "^8.0.2",

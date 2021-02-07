@@ -65,7 +65,7 @@
 							:text-formatting="textFormatting"
 							@open-user-tag="openUserTag"
 						>
-							<template v-slot:deleted-icon="data">
+							<template #deleted-icon="data">
 								<slot name="deleted-icon" v-bind="data" />
 							</template>
 						</format-message>
@@ -79,7 +79,7 @@
 							:image-hover="imageHover"
 							@open-file="openFile"
 						>
-							<template v-for="(i, name) in $scopedSlots" v-slot:[name]="data">
+							<template v-for="(i, name) in $scopedSlots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</message-image>
@@ -149,7 +149,7 @@
 							@message-action-handler="messageActionHandler"
 							@send-message-reaction="sendMessageReaction($event)"
 						>
-							<template v-for="(i, name) in $scopedSlots" v-slot:[name]="data">
+							<template v-for="(i, name) in $scopedSlots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</message-actions>
@@ -214,7 +214,6 @@ export default {
 			messageHover: false,
 			optionsOpened: false,
 			emojiOpened: false,
-			messageReaction: '',
 			newMessage: {}
 		}
 	},
