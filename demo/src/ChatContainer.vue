@@ -552,11 +552,24 @@ export default {
 			if (file) this.uploadFile({ file, messageId, roomId })
 		},
 
-		async deleteMessage({ messageId, roomId }) {
-			await messagesRef(roomId)
-				.doc(messageId)
-				.update({ deleted: new Date() })
-		},
+    async deleteMessage({ messageId, roomId }) {
+      await messagesRef(roomId)
+        .doc(messageId)
+        .update({deleted: new Date()})
+
+      const deletedMessage = await messagesRef(roomId)
+        .doc(messageId)
+        .get()
+
+      if (deletedMessage.data().file) {
+        const deleteFileRef = filesRef
+          .child('' + this.currentUserId)
+          .child(messageId)
+          .child(`${deletedMessage.data().file.name}.${deletedMessage.data().file.extension}`)
+
+        await deleteFileRef.delete()
+      }
+    },
 
 		async uploadFile({ file, messageId, roomId }) {
 			let type = file.extension || file.type
