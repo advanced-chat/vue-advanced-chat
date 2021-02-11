@@ -3,7 +3,7 @@ module.exports = {
 	env: {
 		node: true
 	},
-	extends: ['standard', 'plugin:vue/recommended'],
+	extends: ['standard', 'plugin:vue/recommended', '@vue/typescript'],
 	rules: {
 		'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 		'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -34,6 +34,6 @@ module.exports = {
 		]
 	},
 	parserOptions: {
-		parser: 'babel-eslint'
+		parser: '@typescript-eslint/parser'
 	}
 }
