@@ -216,6 +216,7 @@ export default {
 	display: flex;
 	flex: 1;
 	align-items: center;
+	width: 100%;
 }
 
 .vac-name-container {
