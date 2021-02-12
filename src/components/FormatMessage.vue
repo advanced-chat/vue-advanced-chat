@@ -19,31 +19,25 @@
 					:target="message.href ? '_blank' : null"
 					@click="openTag(message)"
 				>
-					<template>
-						<slot name="deleted-icon" v-bind="{ deleted }">
-							<svg-icon
-								v-if="deleted"
-								name="deleted"
-								class="vac-icon-deleted"
+					<slot name="deleted-icon" v-bind="{ deleted }">
+						<svg-icon v-if="deleted" name="deleted" class="vac-icon-deleted" />
+					</slot>
+					<template v-if="message.url && message.image">
+						<div class="vac-image-link-container">
+							<div
+								class="vac-image-link"
+								:style="{
+									'background-image': `url('${message.value}')`,
+									height: message.height
+								}"
 							/>
-						</slot>
-						<template v-if="message.url && message.image">
-							<div class="vac-image-link-container">
-								<div
-									class="vac-image-link"
-									:style="{
-										'background-image': `url('${message.value}')`,
-										height: message.height
-									}"
-								/>
-							</div>
-							<div class="vac-image-link-message">
-								<span>{{ message.value }}</span>
-							</div>
-						</template>
-						<template v-else>
+						</div>
+						<div class="vac-image-link-message">
 							<span>{{ message.value }}</span>
-						</template>
+						</div>
+					</template>
+					<template v-else>
+						<span>{{ message.value }}</span>
 					</template>
 				</component>
 			</template>
