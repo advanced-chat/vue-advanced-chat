@@ -2,7 +2,9 @@ import Vue, { VNode, Component } from 'vue'
 
 export type StringNumber = string | number
 
-export interface Rooms {
+export type Rooms = Room[]
+
+export interface Room {
 	roomId: StringNumber
 	roomName: string
 	users: Users[]
@@ -35,7 +37,9 @@ export interface UserStatus {
 	last_changed: string
 }
 
-export interface Messages {
+export type Messages = Message[]
+
+export interface Message {
 	_id: StringNumber
 	content: string
 	sender_id: StringNumber
@@ -66,10 +70,40 @@ export interface MessageReactions {
 }
 
 export interface Slots {
-	spinner: VNode[]
-	'no-result': VNode[]
-	'no-more': VNode[]
-	error: VNode[]
+	'rooms-header': VNode[]
+	'room-list-item': VNode[]
+	'room-list-options': VNode[]
+	'room-header': VNode[]
+	'room-header-avatar': VNode[]
+	'room-header-info': VNode[]
+	'room-options': VNode[]
+	message: VNode[]
+	'messages-empty': VNode[]
+	'rooms-empty': VNode[]
+	'no-room-selected': VNode[]
+	'menu-icon': VNode[]
+	'toggle-icon': VNode[]
+	'scroll-icon': VNode[]
+	'reply-close-icon': VNode[]
+	'image-close-icon': VNode[]
+	'file-icon': VNode[]
+	'file-close-icon': VNode[]
+	'edit-close-icon': VNode[]
+	'emoji-picker-icon': VNode[]
+	'emoji-picker-reaction-icon': VNode[]
+	'paperclip-icon': VNode[]
+	'send-icon': VNode[]
+	'eye-icon': VNode[]
+	'document-icon': VNode[]
+	'pencil-icon': VNode[]
+	'checkmark-icon': VNode[]
+	'deleted-icon': VNode[]
+	'microphone-icon': VNode[]
+	'microphone-off-icon': VNode[]
+	'dropdown-icon': VNode[]
+	'room-list-options-icon': VNode[]
+	'search-icon': VNode[]
+	'add-icon': VNode[]
 	[key: string]: VNode[]
 }
 
