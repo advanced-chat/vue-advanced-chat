@@ -16,7 +16,7 @@ export interface Room {
 
 export interface LastMessage {
 	content: string
-	sender_id: StringNumber
+	senderId: StringNumber
 	username?: string
 	timestamp?: string
 	saved?: boolean
@@ -34,7 +34,7 @@ export interface Users {
 
 export interface UserStatus {
 	state: 'online' | 'offline'
-	last_changed: string
+	lastChanged: string
 }
 
 export type Messages = Message[]
@@ -42,7 +42,7 @@ export type Messages = Message[]
 export interface Message {
 	_id: StringNumber
 	content: string
-	sender_id: StringNumber
+	senderId: StringNumber
 	date: string
 	timestamp: string
 	username?: string
@@ -50,8 +50,8 @@ export interface Message {
 	saved?: boolean
 	distributed?: boolean
 	seen?: boolean
-	disable_actions?: boolean
-	disable_reactions?: boolean
+	disableActions?: boolean
+	disableReactions?: boolean
 	file?: MessageFile
 	reactions: MessageReactions
 }
