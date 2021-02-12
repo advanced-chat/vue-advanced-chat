@@ -455,7 +455,7 @@ messages="[
     distributed: true,
     seen: true,
     disableActions: false,
-    disable_reactions: false,
+    disableReactions: false,
     file: {
       name: 'My File',
       size: 67351,

@@ -133,7 +133,7 @@ export default {
 				this.showReactionEmojis &&
 				this.messageHover &&
 				!this.message.deleted &&
-				!this.message.disable_reactions
+				!this.message.disableReactions
 			)
 		},
 		filteredMessageActions() {
