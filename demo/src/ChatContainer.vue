@@ -641,12 +641,12 @@ export default {
 
 			const isOfflineData = {
 				state: 'offline',
-				last_changed: firebase.database.ServerValue.TIMESTAMP
+				lastChanged: firebase.database.ServerValue.TIMESTAMP
 			}
 
 			const isOnlineData = {
 				state: 'online',
-				last_changed: firebase.database.ServerValue.TIMESTAMP
+				lastChanged: firebase.database.ServerValue.TIMESTAMP
 			}
 
 			firebase
@@ -673,12 +673,12 @@ export default {
 						.on('value', snapshot => {
 							if (!snapshot || !snapshot.val()) return
 
-							const last_changed = this.formatTimestamp(
-								new Date(snapshot.val().last_changed),
-								new Date(snapshot.val().last_changed)
+							const lastChanged = this.formatTimestamp(
+								new Date(snapshot.val().lastChanged),
+								new Date(snapshot.val().lastChanged)
 							)
 
-							user.status = { ...snapshot.val(), last_changed }
+							user.status = { ...snapshot.val(), lastChanged }
 
 							const roomIndex = this.rooms.findIndex(
 								r => room.roomId === r.roomId

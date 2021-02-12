@@ -398,7 +398,7 @@ rooms="[
         avatar: 'assets/imgs/doe.png',
         status: {
           state: 'online',
-          last_changed: 'today, 14:30'
+          lastChanged: 'today, 14:30'
         }
       },
       {
@@ -407,7 +407,7 @@ rooms="[
         avatar: 'assets/imgs/snow.png',
         status: {
           state: 'offline',
-          last_changed: '14 July, 20:00'
+          lastChanged: '14 July, 20:00'
         }
       }
     ],
@@ -419,10 +419,10 @@ rooms="[
 - If you add the `index` property, your rooms will be ordered using this value.
   `index` can be any sortable value, like a `string`, `datetime`, `timestamp`, etc.
 
-- For each room user, you can add the `status` property, which can hold the `state` and `last_changed` properties:
+- For each room user, you can add the `status` property, which can hold the `state` and `lastChanged` properties:
 
   - `state` can be `'online'` or `'offline'`
-  - `last_changed` is the date when `state` was last modified.
+  - `lastChanged` is the date when `state` was last modified.
 
 - `typingUsers` is an array of all the users who are currently writing a message
 

@@ -121,8 +121,8 @@ export default {
 
 			if (user.status.state === 'online') {
 				text = this.textMessages.IS_ONLINE
-			} else if (user.status.last_changed) {
-				text = this.textMessages.LAST_SEEN + user.status.last_changed
+			} else if (user.status.lastChanged) {
+				text = this.textMessages.LAST_SEEN + user.status.lastChanged
 			}
 
 			return text
