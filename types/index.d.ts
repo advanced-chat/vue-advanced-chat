@@ -1,4 +1,4 @@
-import Vue, { VNode, Component } from 'vue'
+import Vue, { VNode, Component, PluginFunction } from 'vue'
 
 export type StringNumber = string | number
 
@@ -107,8 +107,44 @@ export interface Slots {
 	[key: string]: VNode[]
 }
 
+export interface AdvancedChatOptions {
+	props?: {
+		height: string
+		'current-user-id': StringNumber
+		rooms: Rooms
+		'loading-rooms': boolean
+		'rooms-loaded': boolean
+		'room-id': StringNumber
+		'load-first-room': boolean
+		messages: Messages
+		'room-message': string
+		'messages-loaded': boolean
+		'room-actions': any[]
+		'menu-actions': any[]
+		'message-actions': any[]
+		'show-add-room': boolean
+		'show-send-icon': boolean
+		'show-files': boolean
+		'show-audio': boolean
+		'show-emojis': boolean
+		'show-reaction-emojis': boolean
+		'show-new-messages-divider': boolean
+		'show-footer': boolean
+		'text-messages': {}
+		'text-formatting': number
+		'responsive-breakpoint': boolean
+		'single-room': boolean
+		theme: string
+		'accepted-files': string
+		styles: {}
+	}
+
+	slots?: Slots
+}
+
 export default class VueAdvancedChat extends Vue {
 	rooms: Rooms
 	messages: Messages
 	$slots: Slots
+	static install: PluginFunction<AdvancedChatOptions>
 }
