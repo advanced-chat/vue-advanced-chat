@@ -125,7 +125,7 @@ export default {
 				this.filteredMessageActions.length &&
 				this.messageHover &&
 				!this.message.deleted &&
-				!this.message.disable_actions
+				!this.message.disableActions
 			)
 		},
 		isMessageReactions() {

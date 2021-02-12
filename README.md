@@ -454,7 +454,7 @@ messages="[
     saved: true,
     distributed: true,
     seen: true,
-    disable_actions: false,
+    disableActions: false,
     disable_reactions: false,
     file: {
       name: 'My File',
