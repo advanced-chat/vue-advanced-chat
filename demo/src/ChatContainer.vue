@@ -418,7 +418,7 @@ export default {
 			return {
 				...message.data(),
 				...{
-					sender_id,
+					senderId: sender_id,
 					_id: message.id,
 					seconds: timestamp.seconds,
 					timestamp: parseTimestamp(timestamp, 'HH:mm'),
@@ -454,7 +454,7 @@ export default {
 				message.replyMessage = {
 					_id: replyMessage._id,
 					content: replyMessage.content,
-					sender_id: replyMessage.sender_id
+					sender_id: replyMessage.senderId
 				}
 
 				if (replyMessage.file) {

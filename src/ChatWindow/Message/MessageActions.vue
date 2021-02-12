@@ -14,7 +14,7 @@
 					key="1"
 					class="vac-blur-container"
 					:class="{
-						'vac-options-me': message.sender_id === currentUserId
+						'vac-options-me': message.senderId === currentUserId
 					}"
 				/>
 
@@ -39,7 +39,7 @@
 					:emoji-opened="emojiOpened"
 					:emoji-reaction="true"
 					:room-footer-ref="roomFooterRef"
-					:position-right="message.sender_id === currentUserId"
+					:position-right="message.senderId === currentUserId"
 					@add-emoji="sendMessageReaction"
 					@open-emoji="openEmoji"
 				>
@@ -53,7 +53,7 @@
 		<transition
 			v-if="filteredMessageActions.length"
 			:name="
-				message.sender_id === currentUserId
+				message.senderId === currentUserId
 					? 'vac-slide-left'
 					: 'vac-slide-right'
 			"
@@ -64,7 +64,7 @@
 				v-click-outside="closeOptions"
 				class="vac-menu-options"
 				:class="{
-					'vac-menu-left': message.sender_id !== currentUserId
+					'vac-menu-left': message.senderId !== currentUserId
 				}"
 				:style="{ top: `${menuOptionsTop}px` }"
 			>
@@ -137,7 +137,7 @@ export default {
 			)
 		},
 		filteredMessageActions() {
-			return this.message.sender_id === this.currentUserId
+			return this.message.senderId === this.currentUserId
 				? this.messageActions
 				: this.messageActions.filter(message => !message.onlyMe)
 		}

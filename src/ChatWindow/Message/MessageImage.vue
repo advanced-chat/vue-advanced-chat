@@ -8,7 +8,7 @@
 			class="vac-message-image"
 			:class="{
 				'vac-image-loading':
-					isImageLoading && message.sender_id === currentUserId
+					isImageLoading && message.senderId === currentUserId
 			}"
 			:style="{
 				'background-image': `url('${message.file.url}')`,

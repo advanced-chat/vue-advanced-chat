@@ -42,7 +42,7 @@ export function messagesValid(obj) {
 	const participantsValidate = [
 		{ key: '_id', type: ['string', 'number'] },
 		{ key: 'content', type: ['string', 'number'] },
-		{ key: 'sender_id', type: ['string', 'number'] }
+		{ key: 'senderId', type: ['string', 'number'] }
 	]
 
 	const validate = (obj, props) => {

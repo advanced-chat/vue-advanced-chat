@@ -16,7 +16,7 @@
 			v-else
 			:id="message._id"
 			class="vac-message-box"
-			:class="{ 'vac-offset-current': message.sender_id === currentUserId }"
+			:class="{ 'vac-offset-current': message.senderId === currentUserId }"
 		>
 			<slot name="message" v-bind="{ message }">
 				<div
@@ -29,14 +29,14 @@
 						class="vac-message-card"
 						:class="{
 							'vac-message-highlight': isMessageHover,
-							'vac-message-current': message.sender_id === currentUserId,
+							'vac-message-current': message.senderId === currentUserId,
 							'vac-message-deleted': message.deleted
 						}"
 						@mouseover="onHoverMessage"
 						@mouseleave="onLeaveMessage"
 					>
 						<div
-							v-if="roomUsers.length > 2 && message.sender_id !== currentUserId"
+							v-if="roomUsers.length > 2 && message.senderId !== currentUserId"
 							class="vac-text-username"
 							:class="{
 								'vac-username-reply': !message.deleted && message.replyMessage
@@ -228,7 +228,7 @@ export default {
 		messageOffset() {
 			return (
 				this.index > 0 &&
-				this.message.sender_id !== this.messages[this.index - 1].sender_id
+				this.message.senderId !== this.messages[this.index - 1].senderId
 			)
 		},
 		isMessageHover() {
@@ -245,7 +245,7 @@ export default {
 		},
 		isCheckmarkVisible() {
 			return (
-				this.message.sender_id === this.currentUserId &&
+				this.message.senderId === this.currentUserId &&
 				!this.message.deleted &&
 				(this.message.saved || this.message.distributed || this.message.seen)
 			)
@@ -262,7 +262,7 @@ export default {
 	},
 
 	mounted() {
-		if (!this.message.seen && this.message.sender_id !== this.currentUserId) {
+		if (!this.message.seen && this.message.senderId !== this.currentUserId) {
 			this.$emit('add-new-message', {
 				_id: this.message._id,
 				index: this.index

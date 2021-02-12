@@ -160,7 +160,7 @@ export default {
 			}
 
 			const user = this.room.users.find(
-				user => user._id === this.room.lastMessage.sender_id
+				user => user._id === this.room.lastMessage.senderId
 			)
 
 			if (this.room.lastMessage.username) {
@@ -187,7 +187,7 @@ export default {
 				!this.typingUsers &&
 				this.room.lastMessage &&
 				!this.room.lastMessage.deleted &&
-				this.room.lastMessage.sender_id === this.currentUserId &&
+				this.room.lastMessage.senderId === this.currentUserId &&
 				(this.room.lastMessage.saved ||
 					this.room.lastMessage.distributed ||
 					this.room.lastMessage.seen)

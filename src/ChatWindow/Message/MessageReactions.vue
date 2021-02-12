@@ -9,7 +9,7 @@
 				'vac-reaction-me': reaction.indexOf(currentUserId) !== -1
 			}"
 			:style="{
-				float: message.sender_id === currentUserId ? 'right' : 'left'
+				float: message.senderId === currentUserId ? 'right' : 'left'
 			}"
 			@click="sendMessageReaction({ name: key }, reaction)"
 		>

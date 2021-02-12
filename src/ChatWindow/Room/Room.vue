@@ -418,7 +418,7 @@ export default {
 			newVal.forEach(message => {
 				if (!messagesValid(message)) {
 					throw new Error(
-						'Messages object is not valid! Must contain _id[String, Number], content[String, Number] and sender_id[String, Number]'
+						'Messages object is not valid! Must contain _id[String, Number], content[String, Number] and senderId[String, Number]'
 					)
 				}
 			})

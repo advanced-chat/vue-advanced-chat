@@ -383,7 +383,7 @@ rooms="[
     index: 3,
     lastMessage: {
       content: 'Last message received',
-      sender_id: 1234,
+      senderId: 1234,
       username: 'John Doe',
       timestamp: '10:20',
       saved: true,
@@ -429,7 +429,7 @@ rooms="[
 ### Messages prop
 
 Message objects are rendered differently depending on their type. Currently, only text, emoji and file types are supported.<br><br>
-Each message object has a `sender_id` field which holds the id of the corresponding agent. If `sender_id` matches the `currentUserId` prop, specific UI and actions will be implemented.<br><br>
+Each message object has a `senderId` field which holds the id of the corresponding agent. If `senderId` matches the `currentUserId` prop, specific UI and actions will be implemented.<br><br>
 Notes:
 
 - `username` will be displayed on each message of corresponding agents if at least 3 users are in the room
@@ -446,7 +446,7 @@ messages="[
   {
     _id: 7890,
     content: 'message 1',
-    sender_id: 1234,
+    senderId: 1234,
     username: 'John Doe',
     date: '13 November',
     timestamp: '10:20',
@@ -672,7 +672,7 @@ chatRooms: {
 messages: {
   MESSAGE_ID_1: {
     content: 'My first message to <usertag>John</usertag>',
-    sender_id: 2,
+    senderId: 2,
     timestamp: 'December 11, 2019 at 4:00:00 PM',
     seen: true
   }
