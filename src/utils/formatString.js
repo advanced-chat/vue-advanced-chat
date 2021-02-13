@@ -5,11 +5,7 @@ export default (text, doLinkify) => {
 
 	const html = compileToHTML(json)
 
-	const flatten = flattenResult(html)
-
-	const result = [].concat.apply([], flatten)
-
-	markdownResult(result)
+	const result = [].concat.apply([], html)
 
 	if (doLinkify) linkifyResult(result)
 
@@ -186,58 +182,6 @@ function parseContent(item) {
 	})
 
 	return result
-}
-
-function flattenResult(array, types = []) {
-	const result = []
-
-	array.forEach(arr => {
-		if (typeof arr.value === 'string') {
-			arr.types = arr.types.concat(types)
-			result.push(arr)
-		} else {
-			arr.forEach(a => {
-				if (typeof a.value === 'string') {
-					a.types = a.types.concat(types)
-					result.push(a)
-				} else {
-					result.push(flattenResult(a.value, a.types))
-				}
-			})
-		}
-	})
-
-	return result
-}
-
-function markdownResult(array) {
-	for (let i = 0; i < array.length; i) {
-		if (array[i - 1]) {
-			const isInline =
-				array[i].types.indexOf('inline-code') !== -1 &&
-				array[i - 1].types.indexOf('inline-code') !== -1
-
-			const isMultiline =
-				array[i].types.indexOf('multiline-code') !== -1 &&
-				array[i - 1].types.indexOf('multiline-code') !== -1
-
-			if (isInline || isMultiline) {
-				let value = array[i].value
-				array[i].types.forEach(type => {
-					const markdown = typeMarkdown[type] || ''
-					value = markdown + value + markdown
-				})
-
-				array[i - 1].value = array[i - 1].value + value
-
-				array.splice(i, 1)
-			} else {
-				i++
-			}
-		} else {
-			i++
-		}
-	}
 }
 
 function linkifyResult(array) {
