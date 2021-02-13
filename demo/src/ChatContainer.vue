@@ -571,7 +571,9 @@ export default {
 
 		async uploadFile({ file, messageId, roomId }) {
 			let type = file.extension || file.type
-			if (type === 'svg') type = file.type
+			if (type === 'svg' || type === 'pdf') {
+				type = file.type
+			}
 
 			const uploadFileRef = filesRef
 				.child(this.currentUserId)
