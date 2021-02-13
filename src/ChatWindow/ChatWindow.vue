@@ -201,11 +201,11 @@ export default {
 
 		roomId: {
 			immediate: true,
-			handler(val) {
-				if (val && !this.loadingRooms && this.rooms.length) {
-					const room = this.rooms.find(r => r.roomId === val)
+			handler(newVal, oldVal) {
+				if (newVal && !this.loadingRooms && this.rooms.length) {
+					const room = this.rooms.find(r => r.roomId === newVal)
 					this.fetchRoom({ room })
-				} else if (!val) {
+				} else if (oldVal && !newVal) {
 					this.room = {}
 				}
 			}
