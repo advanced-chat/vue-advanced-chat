@@ -55,11 +55,6 @@ const pseudoMarkdown = {
 		end: '</usertag>',
 		type: 'tag'
 	}
-	// ':': {
-	// 	allowed_chars: '[a-z_]',
-	// 	end: ':',
-	// 	object: child => <Emojione type={child[0]} />
-	// }
 }
 
 function compileToJSON(str) {
