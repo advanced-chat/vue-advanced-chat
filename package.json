@@ -38,6 +38,7 @@
 		"publish-beta": "npm publish --tag beta",
 		"lint": "vue-cli-service lint"
 	},
+	"typings": "types/index.d.ts",
 	"files": [
 		"dist/*",
 		"types/*"
