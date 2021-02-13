@@ -275,8 +275,8 @@ export default {
 		editMessage(message) {
 			this.$emit('edit-message', { ...message, roomId: this.room.roomId })
 		},
-		deleteMessage(messageId) {
-			this.$emit('delete-message', { messageId, roomId: this.room.roomId })
+		deleteMessage(message) {
+			this.$emit('delete-message', { message, roomId: this.room.roomId })
 		},
 		openFile({ message, action }) {
 			this.$emit('open-file', { message, action })

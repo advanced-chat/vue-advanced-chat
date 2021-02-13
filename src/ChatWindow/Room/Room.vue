@@ -688,7 +688,7 @@ export default {
 				case 'editMessage':
 					return this.editMessage(message)
 				case 'deleteMessage':
-					return this.$emit('delete-message', message._id)
+					return this.$emit('delete-message', message)
 				default:
 					return this.$emit('message-action-handler', { action, message })
 			}

@@ -487,7 +487,7 @@ messages="[
 | `fetch-more-rooms`(2)                | -                                                                       | Scrolled to load more rooms                     |
 | `send-message`                       | `{ roomId, content, file(8), replyMessage(9), usersTag }`               | Sent a message                                  |
 | `edit-message`                       | `{ roomId, messageId, newContent, file(7), replyMessage(9) ,usersTag }` | Edited a message                                |
-| `delete-message`                     | `{ roomId, messageId }`                                                 | Deleted a message                               |
+| `delete-message`                     | `{ roomId, message }`                                                   | Deleted a message                               |
 | `open-file`                          | `{ message, action }`                                                   | Clicked to view or download a file              |
 | `open-user-tag`(3)                   | `{ user }`                                                              | Clicked on a user tag inside a message          |
 | `add-room`                           | -                                                                       | Clicked on the plus icon next to searchbar      |
