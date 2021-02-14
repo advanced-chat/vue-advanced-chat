@@ -99,6 +99,14 @@
 		<div v-if="!loadingMessages">
 			<transition name="vac-bounce">
 				<div v-if="scrollIcon" class="vac-icon-scroll" @click="scrollToBottom">
+					<transition name="vac-bounce">
+						<div
+							v-if="scrollMessagesCount"
+							class="vac-badge-counter vac-messages-count"
+						>
+							{{ scrollMessagesCount }}
+						</div>
+					</transition>
 					<slot name="scroll-icon">
 						<svg-icon name="dropdown" param="scroll" />
 					</slot>
@@ -360,6 +368,7 @@ export default {
 			emojiOpened: false,
 			hideOptions: true,
 			scrollIcon: false,
+			scrollMessagesCount: 0,
 			newMessages: [],
 			keepKeyboardOpen: false,
 			filteredUsersTag: [],
@@ -401,6 +410,7 @@ export default {
 			if (newVal.roomId && newVal.roomId !== oldVal.roomId) {
 				this.loadingMessages = true
 				this.scrollIcon = false
+				this.scrollMessagesCount = 0
 				this.resetMessage(true)
 				if (this.roomMessage) {
 					this.message = this.roomMessage
@@ -429,10 +439,18 @@ export default {
 			if (oldVal && newVal && oldVal.length === newVal.length - 1) {
 				this.loadingMessages = false
 
-				return setTimeout(() => {
-					const options = { top: element.scrollHeight, behavior: 'smooth' }
-					element.scrollTo(options)
-				}, 50)
+				if (
+					newVal[newVal.length - 1].senderId === this.currentUserId ||
+					this.getBottomScroll(element) < 60
+				) {
+					return setTimeout(() => {
+						const options = { top: element.scrollHeight, behavior: 'smooth' }
+						element.scrollTo(options)
+					}, 50)
+				} else {
+					this.scrollIcon = true
+					return this.scrollMessagesCount++
+				}
 			}
 
 			if (this.infiniteState) {
@@ -484,10 +502,9 @@ export default {
 			setTimeout(() => {
 				if (!e.target) return
 
-				const { scrollHeight, clientHeight, scrollTop } = e.target
-				const bottomScroll = scrollHeight - clientHeight - scrollTop
-
-				this.scrollIcon = bottomScroll > 1000
+				const bottomScroll = this.getBottomScroll(e.target)
+				if (bottomScroll < 60) this.scrollMessagesCount = 0
+				this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount
 			}, 200)
 		})
 	},
@@ -715,6 +732,10 @@ export default {
 
 			this.message = message.content
 		},
+		getBottomScroll(element) {
+			const { scrollHeight, clientHeight, scrollTop } = element
+			return scrollHeight - clientHeight - scrollTop
+		},
 		scrollToBottom() {
 			const element = this.$refs.scrollContainer
 			element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
@@ -862,6 +883,14 @@ export default {
 		height: 25px;
 		width: 25px;
 	}
+}
+
+.vac-messages-count {
+	position: absolute;
+	top: -8px;
+	left: 11px;
+	background-color: var(--chat-message-bg-color-scroll-counter);
+	color: var(--chat-message-color-scroll-counter);
 }
 
 .vac-room-footer {
