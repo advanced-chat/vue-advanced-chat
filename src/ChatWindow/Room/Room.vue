@@ -455,7 +455,7 @@ export default {
 
 			if (this.infiniteState) {
 				this.infiniteState.loaded()
-			} else if (newVal.length) {
+			} else if (newVal.length && !this.scrollIcon) {
 				setTimeout(() => {
 					element.scrollTo({ top: element.scrollHeight })
 					this.loadingMessages = false
