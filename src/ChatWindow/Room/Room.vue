@@ -183,7 +183,7 @@
 						</slot>
 					</div>
 					<div v-if="file && file.audio" class="vac-file-message">
-						audio
+						{{ file.name }}
 					</div>
 					<div v-else class="vac-file-message">
 						{{ message }}
@@ -942,15 +942,6 @@ export default {
 	svg,
 	.vac-wrapper {
 		margin: 0 7px;
-	}
-}
-
-@keyframes vac-scaling {
-	0% {
-		transform: scale(1);
-	}
-	100% {
-		transform: scale(1.2);
 	}
 }
 
