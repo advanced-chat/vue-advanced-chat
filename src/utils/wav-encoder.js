@@ -1,3 +1,5 @@
+	// Credits to https://github.com/grishkovelli/vue-audio-recorder
+
 export default class {
 	constructor(options) {
 		this.bufferSize = options.bufferSize || 4096

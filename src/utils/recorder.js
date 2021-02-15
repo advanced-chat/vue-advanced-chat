@@ -1,3 +1,5 @@
+// Credits to https://github.com/grishkovelli/vue-audio-recorder
+
 import WavEncoder from './wav-encoder'
 
 export default class {
