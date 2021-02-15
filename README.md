@@ -157,10 +157,10 @@ this.rooms.push(room)
 ```javascript
 fetchMessages({ room, options }) {
   this.messagesLoaded = false
-  this.messages = []
 
   // use timeout to imitate async server fetched data
   setTimeout(() => {
+    this.messages = []
     this.messagesLoaded = true
   }, 0)
 }
