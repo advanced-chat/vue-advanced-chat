@@ -22,19 +22,16 @@ export default {
 		SvgIcon
 	},
 
-	props: {
-		bitRate: { type: Number, default: 128 },
-		sampleRate: { type: Number, default: 44100 },
-		format: { type: String, default: 'wav' },
-		micFailed: { type: Function, default: null },
-		beforeRecording: { type: Function, default: null },
-		pauseRecording: { type: Function, default: null },
-		afterRecording: { type: Function, default: null }
-	},
-
 	data() {
 		return {
-			recorder: this._initRecorder()
+			recorder: this._initRecorder(),
+			bitRate: 128,
+			sampleRate: 44100,
+			format: 'wav',
+			micFailed: null,
+			beforeRecording: null,
+			pauseRecording: null,
+			afterRecording: null
 		}
 	},
 
