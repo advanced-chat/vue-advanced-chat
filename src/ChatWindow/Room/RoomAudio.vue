@@ -24,7 +24,7 @@ export default {
 
 	data() {
 		return {
-			recorder: this._initRecorder(),
+			recorder: this.initRecorder(),
 			bitRate: 128,
 			sampleRate: 44100,
 			format: 'wav',
@@ -40,7 +40,7 @@ export default {
 	},
 
 	methods: {
-		_initRecorder() {
+		initRecorder() {
 			return new Recorder({
 				beforeRecording: this.beforeRecording,
 				afterRecording: this.afterRecording,
@@ -69,13 +69,13 @@ export default {
 					localUrl: URL.createObjectURL(record.blob)
 				})
 
-				this.recorder = this._initRecorder()
+				this.recorder = this.initRecorder()
 			}
 		},
 		stopRecorder() {
 			if (this.recorder.isRecording) {
 				this.recorder.stop()
-				this.recorder = this._initRecorder()
+				this.recorder = this.initRecorder()
 			}
 		}
 	}
