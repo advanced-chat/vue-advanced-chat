@@ -127,7 +127,9 @@ export const defaultThemeStyles = {
 			dropdownRoom: '#9e9e9e',
 			dropdownScroll: '#0a0a0a',
 			microphone: '#1976d2',
-			microphoneOff: '#eb4034'
+			microphoneOff: '#eb4034',
+			audioPlay: '#0a0a0a',
+			audioPause: '#0a0a0a'
 		}
 	},
 	dark: {
@@ -258,7 +260,9 @@ export const defaultThemeStyles = {
 			dropdownRoom: '#fff',
 			dropdownScroll: '#0a0a0a',
 			microphone: '#fff',
-			microphoneOff: '#eb4034'
+			microphoneOff: '#eb4034',
+			audioPlay: '#fff',
+			audioPause: '#fff'
 		}
 	}
 }
@@ -396,6 +400,8 @@ export const cssThemeVars = ({
 		'--chat-icon-color-dropdown-room': icons.dropdownRoom,
 		'--chat-icon-color-dropdown-scroll': icons.dropdownScroll,
 		'--chat-icon-color-microphone': icons.microphone,
-		'--chat-icon-color-microphone-off': icons.microphoneOff
+		'--chat-icon-color-microphone-off': icons.microphoneOff,
+		'--chat-icon-color-audio-play': icons.audioPlay,
+		'--chat-icon-color-audio-pause': icons.audioPause
 	}
 }
