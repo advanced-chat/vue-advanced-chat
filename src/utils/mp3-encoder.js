@@ -1,6 +1,13 @@
 // Credits to https://github.com/grishkovelli/vue-audio-recorder
 
-import { Mp3Encoder } from 'lamejs'
+let lamejs
+try {
+	lamejs = require('lamejs')
+} catch (_) {
+	lamejs = {}
+}
+
+const { Mp3Encoder } = lamejs
 
 export default class {
 	constructor(config) {
