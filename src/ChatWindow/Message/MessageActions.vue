@@ -4,6 +4,7 @@
 			class="vac-options-container"
 			:class="{ 'vac-options-image': isImage && !message.replyMessage }"
 			:style="{
+				display: hoverAudioProgress ? 'none' : 'initial',
 				width:
 					filteredMessageActions.length && showReactionEmojis ? '70px' : '45px'
 			}"
@@ -104,7 +105,8 @@ export default {
 		showReactionEmojis: { type: Boolean, required: true },
 		hideOptions: { type: Boolean, required: true },
 		messageHover: { type: Boolean, required: true },
-		hoverMessageId: { type: [String, Number], default: null }
+		hoverMessageId: { type: [String, Number], default: null },
+		hoverAudioProgress: { type: Boolean, required: true }
 	},
 
 	data() {
@@ -125,7 +127,8 @@ export default {
 				this.filteredMessageActions.length &&
 				this.messageHover &&
 				!this.message.deleted &&
-				!this.message.disableActions
+				!this.message.disableActions &&
+				!this.hoverAudioProgress
 			)
 		},
 		isMessageReactions() {
@@ -133,7 +136,8 @@ export default {
 				this.showReactionEmojis &&
 				this.messageHover &&
 				!this.message.deleted &&
-				!this.message.disableReactions
+				!this.message.disableReactions &&
+				!this.hoverAudioProgress
 			)
 		},
 		filteredMessageActions() {

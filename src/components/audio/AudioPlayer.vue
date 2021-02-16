@@ -9,6 +9,7 @@
 				ref-id="progress"
 				:percentage="progress"
 				@change-linehead="onUpdateProgress"
+				@hover-audio-progress="$emit('hover-audio-progress', $event)"
 			/>
 
 			<audio :id="playerUniqId" :src="audioSource" />

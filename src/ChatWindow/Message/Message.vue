@@ -93,6 +93,7 @@
 						<audio-player
 							v-else-if="message.file.audio"
 							:src="message.file.url"
+							@hover-audio-progress="hoverAudioProgress = $event"
 						/>
 
 						<div v-else class="vac-file-message">
@@ -139,6 +140,7 @@
 							:hide-options="hideOptions"
 							:message-hover="messageHover"
 							:hover-message-id="hoverMessageId"
+							:hover-audio-progress="hoverAudioProgress"
 							@hide-options="$emit('hide-options', false)"
 							@update-message-hover="messageHover = $event"
 							@update-options-opened="optionsOpened = $event"
@@ -213,7 +215,8 @@ export default {
 			messageHover: false,
 			optionsOpened: false,
 			emojiOpened: false,
-			newMessage: {}
+			newMessage: {},
+			hoverAudioProgress: false
 		}
 	},
 

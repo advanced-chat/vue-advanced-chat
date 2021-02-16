@@ -1,5 +1,11 @@
 <template>
-	<div :ref="refId" class="vac-player-bar" @mousedown="onMouseDown">
+	<div
+		:ref="refId"
+		class="vac-player-bar"
+		@mousedown="onMouseDown"
+		@mouseover="$emit('hover-audio-progress', true)"
+		@mouseout="$emit('hover-audio-progress', false)"
+	>
 		<div class="vac-player-progress">
 			<div class="vac-line-container">
 				<div class="vac-line-progress" :style="calculateSize" />
