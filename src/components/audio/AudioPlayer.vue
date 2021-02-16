@@ -5,14 +5,11 @@
 				<svg-icon :name="isPlaying ? 'audio-pause' : 'audio-play'" />
 			</div>
 
-			<div class="vac-player-bar">
-				<line-control
-					class="vac-player-progress"
-					ref-id="progress"
-					:percentage="progress"
-					@change-linehead="onUpdateProgress"
-				/>
-			</div>
+			<line-control
+				ref-id="progress"
+				:percentage="progress"
+				@change-linehead="onUpdateProgress"
+			/>
 
 			<audio :id="playerUniqId" :src="audioSource" />
 		</div>
@@ -113,23 +110,13 @@ export default {
 
 	.vac-svg-button {
 		max-width: 20px;
-	}
-
-	.vac-player-bar {
-		display: flex;
-		align-items: center;
-		max-width: calc(100% - 18px);
-
-		.vac-player-progress {
-			width: 200px;
-			margin: 0 4px 0 14px;
-		}
+		margin-left: 7px;
 	}
 }
 
 .vac-player-time {
-	margin-left: 35px;
+	margin-left: 41px;
 	color: var(--chat-color);
-	font-size: 13px;
+	font-size: 12px;
 }
 </style>

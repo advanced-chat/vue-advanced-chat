@@ -1,6 +1,10 @@
 <template>
-	<div :ref="refId" class="vac-line-container" @mousedown="onMouseDown">
-		<div class="vac-line-progress" :style="calculateSize" />
+	<div :ref="refId" class="vac-player-bar" @mousedown="onMouseDown">
+		<div class="vac-player-progress">
+			<div class="vac-line-container">
+				<div class="vac-line-progress" :style="calculateSize" />
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -52,6 +56,17 @@ export default {
 </script>
 
 <style lang="scss">
+.vac-player-bar {
+	display: flex;
+	align-items: center;
+	max-width: calc(100% - 18px);
+
+	.vac-player-progress {
+		width: 200px;
+		margin: 0 4px 0 14px;
+	}
+}
+
 .vac-line-container {
 	position: relative;
 	height: 8px;
