@@ -94,7 +94,9 @@ export default class {
 			const sample = ev.inputBuffer.getChannelData(0)
 			let sum = 0.0
 
-			this.lameEncoder.encode(sample)
+			if (this.lameEncoder) {
+				this.lameEncoder.encode(sample)
+			}
 
 			for (let i = 0; i < sample.length; ++i) {
 				sum += sample[i] * sample[i]
