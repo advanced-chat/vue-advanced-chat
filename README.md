@@ -336,17 +336,17 @@ This is
 multiline code
 ```
 
-(14) `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
+**(15)** `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
 
-(15) `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+**(16)** `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
 
-(16) `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+**(17)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
 
-(17) `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
+**(18)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
 
 Example: set `"accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files
 
-(18) `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
+**(19)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
 
 ```javascript
 styles="{
