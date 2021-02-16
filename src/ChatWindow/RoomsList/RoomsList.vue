@@ -74,7 +74,7 @@ import Loader from '../../components/Loader'
 import RoomsSearch from './RoomsSearch'
 import RoomContent from './RoomContent'
 
-import filteredUsers from '../../utils/filterItems'
+import filteredUsers from '../../utils/filter-items'
 
 export default {
 	name: 'RoomsList',

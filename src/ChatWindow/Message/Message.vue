@@ -174,7 +174,7 @@ import MessageImage from './MessageImage'
 import MessageActions from './MessageActions'
 import MessageReactions from './MessageReactions'
 
-const { isImageFile } = require('../../utils/mediaFile')
+const { isImageFile } = require('../../utils/media-file')
 
 export default {
 	name: 'Message',

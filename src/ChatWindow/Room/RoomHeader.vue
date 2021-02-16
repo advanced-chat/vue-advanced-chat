@@ -77,7 +77,7 @@ import vClickOutside from 'v-click-outside'
 
 import SvgIcon from '../../components/SvgIcon'
 
-import typingText from '../../utils/typingText'
+import typingText from '../../utils/typing-text'
 
 export default {
 	name: 'RoomHeader',

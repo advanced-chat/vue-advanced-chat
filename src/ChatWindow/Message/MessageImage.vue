@@ -50,7 +50,7 @@ import Loader from '../../components/Loader'
 import SvgIcon from '../../components/SvgIcon'
 import FormatMessage from '../../components/FormatMessage'
 
-const { isImageFile } = require('../../utils/mediaFile')
+const { isImageFile } = require('../../utils/media-file')
 
 export default {
 	name: 'MessageImage',

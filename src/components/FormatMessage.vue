@@ -51,7 +51,7 @@
 <script>
 import SvgIcon from './SvgIcon'
 
-import formatString from '../utils/formatString'
+import formatString from '../utils/format-string'
 import { IMAGE_TYPES } from '../utils/constants'
 
 export default {

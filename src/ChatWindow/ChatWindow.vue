@@ -79,7 +79,7 @@ import Room from './Room/Room'
 
 import locales from '../locales'
 import { defaultThemeStyles, cssThemeVars } from '../themes'
-const { roomsValid, partcipantsValid } = require('../utils/roomValidation')
+const { roomsValid, partcipantsValid } = require('../utils/room-validation')
 
 export default {
 	name: 'ChatContainer',

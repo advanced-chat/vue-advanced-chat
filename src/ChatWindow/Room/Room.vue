@@ -301,10 +301,10 @@ import RoomUsersTag from './RoomUsersTag'
 import RoomAudio from './RoomAudio'
 import Message from '../Message/Message'
 
-import filteredUsers from '../../utils/filterItems'
-const { messagesValid } = require('../../utils/roomValidation')
-const { detectMobile, iOSDevice } = require('../../utils/mobileDetection')
-const { isImageFile, isVideoFile } = require('../../utils/mediaFile')
+import filteredUsers from '../../utils/filter-items'
+const { messagesValid } = require('../../utils/room-validation')
+const { detectMobile, iOSDevice } = require('../../utils/mobile-detection')
+const { isImageFile, isVideoFile } = require('../../utils/media-file')
 
 export default {
 	name: 'Room',

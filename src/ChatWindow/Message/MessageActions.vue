@@ -86,7 +86,7 @@ import vClickOutside from 'v-click-outside'
 import SvgIcon from '../../components/SvgIcon'
 import EmojiPicker from '../../components/EmojiPicker'
 
-const { isImageFile } = require('../../utils/mediaFile')
+const { isImageFile } = require('../../utils/media-file')
 
 export default {
 	name: 'MessageActions',
