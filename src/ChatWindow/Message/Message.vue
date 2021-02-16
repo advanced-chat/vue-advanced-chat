@@ -90,13 +90,10 @@
 							</video>
 						</div>
 
-						<div v-else-if="message.file.audio" class="vac-audio-message">
-							<div id="vac-audio-player">
-								<audio v-if="message.file.audio" controls>
-									<source :src="message.file.url" />
-								</audio>
-							</div>
-						</div>
+						<audio-player
+							v-else-if="message.file.audio"
+							:src="message.file.url"
+						/>
 
 						<div v-else class="vac-file-message">
 							<div
@@ -170,6 +167,7 @@
 <script>
 import SvgIcon from '../../components/SvgIcon'
 import FormatMessage from '../../components/FormatMessage'
+import AudioPlayer from '../../components/audio/AudioPlayer'
 
 import MessageReply from './MessageReply'
 import MessageImage from './MessageImage'
@@ -183,6 +181,7 @@ export default {
 	components: {
 		SvgIcon,
 		FormatMessage,
+		AudioPlayer,
 		MessageReply,
 		MessageImage,
 		MessageActions,
@@ -472,39 +471,6 @@ export default {
 	font-size: 10px;
 	color: var(--chat-message-color-timestamp);
 	text-align: right;
-}
-
-.selector:not(*:root),
-#vac-audio-player {
-	width: 250px;
-	overflow: hidden;
-	border-top-right-radius: 1em;
-	border-bottom-right-radius: 2.5em 1em;
-
-	audio {
-		height: 40px;
-
-		&::-webkit-media-controls-panel {
-			height: 40px;
-		}
-
-		&::-webkit-media-controls-mute-button {
-			display: none;
-		}
-
-		&::-webkit-media-controls-timeline {
-			min-width: 103px;
-			max-width: 142px;
-		}
-
-		&:focus {
-			outline: none;
-		}
-	}
-}
-
-.vac-audio-message {
-	margin-top: 3px;
 }
 
 .vac-file-message {

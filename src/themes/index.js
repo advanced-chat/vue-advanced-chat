@@ -79,7 +79,9 @@ export const defaultThemeStyles = {
 			borderStyleReactionMe: '1px solid #3b98b8',
 			backgroundReactionHoverMe: '#cfecf5',
 			borderStyleReactionHoverMe: '1px solid #3b98b8',
-			colorReactionCounterMe: '#0b59b3'
+			colorReactionCounterMe: '#0b59b3',
+			backgroundAudioLine: 'rgba(0, 0, 0, 0.15)',
+			backgroundAudioProgress: 'rgba(0, 0, 0, 0.6)'
 		},
 
 		markdown: {
@@ -128,8 +130,8 @@ export const defaultThemeStyles = {
 			dropdownScroll: '#0a0a0a',
 			microphone: '#1976d2',
 			microphoneOff: '#eb4034',
-			audioPlay: '#0a0a0a',
-			audioPause: '#0a0a0a'
+			audioPlay: 'rgba(0, 0, 0, 0.7)',
+			audioPause: 'rgba(0, 0, 0, 0.7)'
 		}
 	},
 	dark: {
@@ -212,7 +214,9 @@ export const defaultThemeStyles = {
 			borderStyleReactionMe: 'none',
 			backgroundReactionHoverMe: '#4e9ad1',
 			borderStyleReactionHoverMe: 'none',
-			colorReactionCounterMe: '#fff'
+			colorReactionCounterMe: '#fff',
+			backgroundAudioLine: 'rgba(0, 0, 0, 0.15)',
+			backgroundAudioProgress: 'rgba(0, 0, 0, 0.6)'
 		},
 
 		markdown: {
@@ -357,6 +361,8 @@ export const cssThemeVars = ({
 		'--chat-message-border-style-reaction-hover-me':
 			message.borderStyleReactionHoverMe,
 		'--chat-message-color-reaction-counter-me': message.colorReactionCounterMe,
+		'--chat-message-bg-color-audio-line': message.backgroundAudioLine,
+		'--chat-message-bg-color-audio-progress': message.backgroundAudioProgress,
 
 		// markdown
 		'--chat-markdown-bg': markdown.background,
