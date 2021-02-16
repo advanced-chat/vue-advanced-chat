@@ -1,6 +1,6 @@
 // Credits to https://github.com/grishkovelli/vue-audio-recorder
 
-import WavEncoder from './wav-encoder'
+import Mp3Encoder from './mp3-encoder'
 
 export default class {
 	constructor(options = {}) {
@@ -8,7 +8,6 @@ export default class {
 		this.pauseRecording = options.pauseRecording
 		this.afterRecording = options.afterRecording
 		this.micFailed = options.micFailed
-		this.format = options.format
 
 		this.encoderOptions = {
 			bitRate: options.bitRate,
@@ -23,8 +22,6 @@ export default class {
 
 		this.duration = 0
 		this.volume = 0
-
-		this.wavSamples = []
 
 		this._duration = 0
 	}
@@ -47,6 +44,10 @@ export default class {
 
 		this.isPause = false
 		this.isRecording = true
+
+		if (!this.lameEncoder) {
+			this.lameEncoder = new Mp3Encoder(this.encoderOptions)
+		}
 	}
 
 	stop() {
@@ -57,13 +58,7 @@ export default class {
 
 		let record = null
 
-		let wavEncoder = new WavEncoder({
-			bufferSize: this.bufferSize,
-			sampleRate: this.encoderOptions.sampleRate,
-			samples: this.wavSamples
-		})
-		record = wavEncoder.finish()
-		this.wavSamples = []
+		record = this.lameEncoder.finish()
 
 		record.duration = this.duration
 		this.records.push(record)
@@ -88,14 +83,6 @@ export default class {
 		this.pauseRecording && this.pauseRecording('pause recording')
 	}
 
-	recordList() {
-		return this.records
-	}
-
-	lastRecord() {
-		return this.records.slice(-1).pop()
-	}
-
 	_micCaptured(stream) {
 		this.context = new (window.AudioContext || window.webkitAudioContext)()
 		this.duration = this._duration
@@ -107,7 +94,7 @@ export default class {
 			const sample = ev.inputBuffer.getChannelData(0)
 			let sum = 0.0
 
-			this.wavSamples.push(new Float32Array(sample))
+			this.lameEncoder.encode(sample)
 
 			for (let i = 0; i < sample.length; ++i) {
 				sum += sample[i] * sample[i]

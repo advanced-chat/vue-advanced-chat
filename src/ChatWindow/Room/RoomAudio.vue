@@ -27,7 +27,7 @@ export default {
 			recorder: this.initRecorder(),
 			bitRate: 128,
 			sampleRate: 44100,
-			format: 'wav',
+			format: 'mp3',
 			micFailed: null,
 			beforeRecording: null,
 			pauseRecording: null,
