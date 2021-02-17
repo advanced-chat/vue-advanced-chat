@@ -1071,17 +1071,25 @@ export default {
 		font-size: 16px;
 		color: var(--chat-color);
 		margin-left: 8px;
+		width: 45px;
 	}
 
 	.vac-icon-audio-stop {
 		border-color: var(--chat-icon-color-audio-cancel);
 		margin: 0 20px 0 10px;
+
+		::v-deep #vac-icon-close-outline {
+			fill: var(--chat-icon-color-audio-cancel);
+		}
 	}
 
 	.vac-icon-audio-confirm {
-		fill: var(--chat-icon-color-audio-confirm);
 		border-color: var(--chat-icon-color-audio-confirm);
-		margin: 0 13px 0 20px;
+		margin: 0 13px 0 12px;
+
+		::v-deep #vac-icon-checkmark {
+			fill: var(--chat-icon-color-audio-confirm);
+		}
 	}
 }
 
