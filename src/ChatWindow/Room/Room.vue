@@ -143,14 +143,11 @@
 				>
 					<template v-if="recorder.isRecording">
 						<div
-							class="vac-svg-button vac-svg-border vac-icon-audio-stop"
+							class="vac-svg-button vac-icon-audio-stop"
 							@click="stopRecorder"
 						>
 							<slot name="audio-stop-icon">
-								<svg-icon
-									name="close-outline"
-									class="vac-icon-audio-stop-svg"
-								/>
+								<svg-icon name="close-outline" />
 							</slot>
 						</div>
 
@@ -161,7 +158,7 @@
 						</div>
 
 						<div
-							class="vac-svg-button vac-svg-border vac-icon-audio-confirm"
+							class="vac-svg-button vac-icon-audio-confirm"
 							@click="toggleRecorder"
 						>
 							<slot name="audio-stop-icon">
@@ -1075,8 +1072,20 @@ export default {
 		width: 45px;
 	}
 
+	$audio-icon-size: 28px;
+
+	.vac-icon-audio-stop,
+	.vac-icon-audio-confirm {
+		min-height: $audio-icon-size;
+		min-width: $audio-icon-size;
+
+		svg {
+			min-height: $audio-icon-size;
+			min-width: $audio-icon-size;
+		}
+	}
+
 	.vac-icon-audio-stop {
-		border-color: var(--chat-icon-color-audio-cancel);
 		margin: 0 20px 0 10px;
 
 		::v-deep #vac-icon-close-outline {
@@ -1085,7 +1094,6 @@ export default {
 	}
 
 	.vac-icon-audio-confirm {
-		border-color: var(--chat-icon-color-audio-confirm);
 		margin: 0 13px 0 12px;
 
 		::v-deep #vac-icon-checkmark {
