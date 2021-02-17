@@ -113,11 +113,22 @@ export default {
 <style lang="scss">
 .vac-audio-player {
 	display: flex;
-	margin: 15px 0 5px;
+	margin: 8px 0 5px;
 
 	.vac-svg-button {
 		max-width: 20px;
 		margin-left: 7px;
+	}
+}
+
+@media only screen and (max-width: 768px) {
+	.vac-audio-player {
+		margin: 4px 0 0px;
+
+		.vac-svg-button {
+			max-width: 16px;
+			margin-left: 5px;
+		}
 	}
 }
 </style>

@@ -119,7 +119,7 @@
 
 						<div
 							v-if="message.file && message.file.audio && !message.deleted"
-							class="vac-player-time"
+							class="vac-progress-time"
 						>
 							{{ progressTime }}
 						</div>
@@ -493,7 +493,7 @@ export default {
 	text-align: right;
 }
 
-.vac-player-time {
+.vac-progress-time {
 	float: left;
 	margin: -2px 0 0 41px;
 	color: var(--chat-color);
@@ -556,6 +556,10 @@ export default {
 
 	.vac-offset-current {
 		margin-left: 20%;
+	}
+
+	.vac-progress-time {
+		margin-left: 37px;
 	}
 }
 </style>

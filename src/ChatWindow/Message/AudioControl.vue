@@ -105,4 +105,21 @@ export default {
 		}
 	}
 }
+
+@media only screen and (max-width: 768px) {
+	.vac-player-bar {
+		margin-right: 5px;
+
+		.vac-player-progress .vac-line-container {
+			height: 3px;
+
+			.vac-line-dot {
+				height: 12px;
+				width: 12px;
+				top: -5px;
+				margin-left: -5px;
+			}
+		}
+	}
+}
 </style>
