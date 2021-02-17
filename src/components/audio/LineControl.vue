@@ -59,7 +59,7 @@ export default {
 		},
 		calculateLineHeadPosition(ev, element) {
 			const progressWidth = element.getBoundingClientRect().width
-			const leftPosition = ev.target.getBoundingClientRect().left
+			const leftPosition = element.getBoundingClientRect().left
 			let pos = (ev.clientX - leftPosition) / progressWidth
 
 			pos = pos < 0 ? 0 : pos
