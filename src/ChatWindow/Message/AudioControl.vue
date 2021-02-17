@@ -7,7 +7,7 @@
 		@mouseout="$emit('hover-audio-progress', false)"
 	>
 		<div class="vac-player-progress">
-			<div ref="line" class="vac-line-container">
+			<div class="vac-line-container">
 				<div class="vac-line-progress" :style="{ width: `${percentage}%` }" />
 				<div
 					class="vac-line-dot"
@@ -69,38 +69,39 @@ export default {
 	display: flex;
 	align-items: center;
 	max-width: calc(100% - 18px);
+	margin-right: 7px;
+	margin-left: 20px;
 
 	.vac-player-progress {
-		width: 200px;
-		margin: 0 4px 0 14px;
-	}
-}
+		width: 190px;
 
-.vac-line-container {
-	position: relative;
-	height: 4px;
-	border-radius: 5px;
-	background-color: var(--chat-message-bg-color-audio-line);
+		.vac-line-container {
+			position: relative;
+			height: 4px;
+			border-radius: 5px;
+			background-color: var(--chat-message-bg-color-audio-line);
 
-	.vac-line-progress {
-		position: absolute;
-		height: inherit;
-		background-color: var(--chat-message-bg-color-audio-progress);
-		border-radius: inherit;
-	}
+			.vac-line-progress {
+				position: absolute;
+				height: inherit;
+				background-color: var(--chat-message-bg-color-audio-progress);
+				border-radius: inherit;
+			}
 
-	.vac-line-dot {
-		position: absolute;
-		top: -6px;
-		margin-left: -15px;
-		height: 15px;
-		width: 15px;
-		border-radius: 50%;
-		background-color: var(--chat-message-bg-color-audio-progress-selector);
-		transition: transform 0.25s;
+			.vac-line-dot {
+				position: absolute;
+				top: -6px;
+				margin-left: -8px;
+				height: 15px;
+				width: 15px;
+				border-radius: 50%;
+				background-color: var(--chat-message-bg-color-audio-progress-selector);
+				transition: transform 0.25s;
 
-		&__active {
-			transform: scale(1.2);
+				&__active {
+					transform: scale(1.2);
+				}
+			}
 		}
 	}
 }
