@@ -653,6 +653,8 @@ export default {
 			if (editFile) {
 				this.file = null
 				this.message = ''
+				this.preventKeyboardFromClosing()
+				setTimeout(() => this.focusTextarea(disableMobileFocus), 0)
 				return
 			}
 
