@@ -405,11 +405,7 @@ export default {
 			isRecording: false,
 			bitRate: 128,
 			sampleRate: 44100,
-			format: 'mp3',
-			micFailed: null,
-			beforeRecording: null,
-			pauseRecording: null,
-			afterRecording: null
+			format: 'mp3'
 		}
 	},
 
@@ -844,14 +840,18 @@ export default {
 			this.isRecording = false
 
 			return new Recorder({
-				beforeRecording: this.beforeRecording,
-				afterRecording: this.afterRecording,
-				pauseRecording: this.pauseRecording,
+				beforeRecording: null,
+				afterRecording: null,
+				pauseRecording: null,
 				micFailed: this.micFailed,
 				bitRate: this.bitRate,
 				sampleRate: this.sampleRate,
 				format: this.format
 			})
+		},
+		micFailed() {
+			this.isRecording = false
+			this.recorder = this.initRecorder()
 		},
 		toggleRecorder(recording) {
 			this.isRecording = recording
