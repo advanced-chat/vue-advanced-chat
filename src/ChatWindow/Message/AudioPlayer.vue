@@ -10,7 +10,6 @@
 				</slot>
 			</div>
 			<audio-control
-				ref-id="progress"
 				:percentage="progress"
 				@change-linehead="onUpdateProgress"
 				@hover-audio-progress="$emit('hover-audio-progress', $event)"

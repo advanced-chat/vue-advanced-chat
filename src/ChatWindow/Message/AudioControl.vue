@@ -1,18 +1,18 @@
 <template>
 	<div
-		:ref="refId"
+		ref="progress"
 		class="vac-player-bar"
 		@mousedown="onMouseDown"
 		@mouseover="$emit('hover-audio-progress', true)"
 		@mouseout="$emit('hover-audio-progress', false)"
 	>
 		<div class="vac-player-progress">
-			<div class="vac-line-container">
-				<div class="vac-line-progress" :style="{ width: calculateSize }" />
+			<div ref="line" class="vac-line-container">
+				<div class="vac-line-progress" :style="{ width: `${percentage}%` }" />
 				<div
 					class="vac-line-dot"
 					:class="{ 'vac-line-dot__active': isMouseDown }"
-					:style="{ left: calculateSize }"
+					:style="{ left: `${percentage}%` }"
 				/>
 			</div>
 		</div>
@@ -22,7 +22,6 @@
 <script>
 export default {
 	props: {
-		refId: { type: String, default: null },
 		percentage: { type: Number, default: 0 }
 	},
 
@@ -32,16 +31,10 @@ export default {
 		}
 	},
 
-	computed: {
-		calculateSize() {
-			return this.percentage < 1 ? this.percentage * 100 : this.percentage + '%'
-		}
-	},
-
 	methods: {
 		onMouseDown(ev) {
 			this.isMouseDown = true
-			const seekPos = this.calculateLineHeadPosition(ev, this.$refs[this.refId])
+			const seekPos = this.calculateLineHeadPosition(ev, this.$refs['progress'])
 			this.$emit('change-linehead', seekPos)
 			document.addEventListener('mousemove', this.onMouseMove)
 			document.addEventListener('mouseup', this.onMouseUp)
@@ -50,11 +43,11 @@ export default {
 			this.isMouseDown = false
 			document.removeEventListener('mouseup', this.onMouseUp)
 			document.removeEventListener('mousemove', this.onMouseMove)
-			const seekPos = this.calculateLineHeadPosition(ev, this.$refs[this.refId])
+			const seekPos = this.calculateLineHeadPosition(ev, this.$refs['progress'])
 			this.$emit('change-linehead', seekPos)
 		},
 		onMouseMove(ev) {
-			const seekPos = this.calculateLineHeadPosition(ev, this.$refs[this.refId])
+			const seekPos = this.calculateLineHeadPosition(ev, this.$refs['progress'])
 			this.$emit('change-linehead', seekPos)
 		},
 		calculateLineHeadPosition(ev, element) {
@@ -99,7 +92,7 @@ export default {
 	.vac-line-dot {
 		position: absolute;
 		top: -6px;
-		margin-left: -8px;
+		margin-left: -15px;
 		height: 15px;
 		width: 15px;
 		border-radius: 50%;
