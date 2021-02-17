@@ -87,7 +87,7 @@
 								@send-message-reaction="sendMessageReaction"
 								@hide-options="hideOptions = $event"
 							>
-								<template v-for="(i, name) in $scopedSlots" #[name]="data">
+								<template v-for="(idx, name) in $scopedSlots" #[name]="data">
 									<slot :name="name" v-bind="data" />
 								</template>
 							</message>
@@ -870,6 +870,7 @@ export default {
 				}
 
 				this.recorder = this.initRecorder()
+				this.sendMessage()
 			}
 		},
 		stopRecorder() {
