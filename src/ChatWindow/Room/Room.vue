@@ -1053,6 +1053,18 @@ export default {
 		width: 15px;
 		border-radius: 50%;
 		background-color: var(--chat-message-bg-color-audio-record);
+		animation: vac-scaling 0.8s ease-in-out infinite alternate;
+
+		@keyframes vac-scaling {
+			0% {
+				transform: scale(1);
+				opacity: 0.4;
+			}
+			100% {
+				transform: scale(1.1);
+				opacity: 1;
+			}
+		}
 	}
 
 	.vac-dot-audio-record-time {
