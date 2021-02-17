@@ -99,7 +99,7 @@ export default {
 	.vac-line-dot {
 		position: absolute;
 		top: -6px;
-		margin-left: -7px;
+		margin-left: -8px;
 		height: 15px;
 		width: 15px;
 		border-radius: 50%;
