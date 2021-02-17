@@ -8,7 +8,12 @@
 	>
 		<div class="vac-player-progress">
 			<div class="vac-line-container">
-				<div class="vac-line-progress" :style="calculateSize" />
+				<div class="vac-line-progress" :style="{ width: calculateSize }" />
+				<div
+					class="vac-line-dot"
+					:class="{ 'vac-line-dot__active': isMouseDown }"
+					:style="{ left: calculateSize }"
+				/>
 			</div>
 		</div>
 	</div>
@@ -21,23 +26,28 @@ export default {
 		percentage: { type: Number, default: 0 }
 	},
 
+	data() {
+		return {
+			isMouseDown: false
+		}
+	},
+
 	computed: {
 		calculateSize() {
-			const value =
-				this.percentage < 1 ? this.percentage * 100 : this.percentage
-
-			return `width: ${value}%`
+			return this.percentage < 1 ? this.percentage * 100 : this.percentage + '%'
 		}
 	},
 
 	methods: {
 		onMouseDown(ev) {
+			this.isMouseDown = true
 			const seekPos = this.calculateLineHeadPosition(ev, this.$refs[this.refId])
 			this.$emit('change-linehead', seekPos)
 			document.addEventListener('mousemove', this.onMouseMove)
 			document.addEventListener('mouseup', this.onMouseUp)
 		},
 		onMouseUp(ev) {
+			this.isMouseDown = false
 			document.removeEventListener('mouseup', this.onMouseUp)
 			document.removeEventListener('mousemove', this.onMouseMove)
 			const seekPos = this.calculateLineHeadPosition(ev, this.$refs[this.refId])
@@ -75,7 +85,7 @@ export default {
 
 .vac-line-container {
 	position: relative;
-	height: 8px;
+	height: 4px;
 	border-radius: 5px;
 	background-color: var(--chat-message-bg-color-audio-line);
 
@@ -84,6 +94,21 @@ export default {
 		height: inherit;
 		background-color: var(--chat-message-bg-color-audio-progress);
 		border-radius: inherit;
+	}
+
+	.vac-line-dot {
+		position: absolute;
+		top: -6px;
+		margin-left: -7px;
+		height: 15px;
+		width: 15px;
+		border-radius: 50%;
+		background-color: var(--chat-message-bg-color-audio-progress-selector);
+		transition: transform 0.25s;
+
+		&__active {
+			transform: scale(1.2);
+		}
 	}
 }
 </style>

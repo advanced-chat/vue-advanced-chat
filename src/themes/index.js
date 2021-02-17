@@ -81,7 +81,8 @@ export const defaultThemeStyles = {
 			borderStyleReactionHoverMe: '1px solid #3b98b8',
 			colorReactionCounterMe: '#0b59b3',
 			backgroundAudioLine: 'rgba(0, 0, 0, 0.15)',
-			backgroundAudioProgress: 'rgba(0, 0, 0, 0.6)'
+			backgroundAudioProgress: '#455247',
+			backgroundAudioProgressSelector: '#455247'
 		},
 
 		markdown: {
@@ -130,8 +131,8 @@ export const defaultThemeStyles = {
 			dropdownScroll: '#0a0a0a',
 			microphone: '#1976d2',
 			microphoneOff: '#eb4034',
-			audioPlay: 'rgba(0, 0, 0, 0.7)',
-			audioPause: 'rgba(0, 0, 0, 0.7)'
+			audioPlay: '#455247',
+			audioPause: '#455247'
 		}
 	},
 	dark: {
@@ -215,8 +216,9 @@ export const defaultThemeStyles = {
 			backgroundReactionHoverMe: '#4e9ad1',
 			borderStyleReactionHoverMe: 'none',
 			colorReactionCounterMe: '#fff',
-			backgroundAudioLine: 'rgba(0, 0, 0, 0.15)',
-			backgroundAudioProgress: 'rgba(0, 0, 0, 0.6)'
+			backgroundAudioLine: 'rgba(255, 255, 255, 0.15)',
+			backgroundAudioProgress: '#b7d4d3',
+			backgroundAudioProgressSelector: '#b7d4d3'
 		},
 
 		markdown: {
@@ -265,8 +267,8 @@ export const defaultThemeStyles = {
 			dropdownScroll: '#0a0a0a',
 			microphone: '#fff',
 			microphoneOff: '#eb4034',
-			audioPlay: '#fff',
-			audioPause: '#fff'
+			audioPlay: '#b7d4d3',
+			audioPause: '#b7d4d3'
 		}
 	}
 }
@@ -363,6 +365,8 @@ export const cssThemeVars = ({
 		'--chat-message-color-reaction-counter-me': message.colorReactionCounterMe,
 		'--chat-message-bg-color-audio-line': message.backgroundAudioLine,
 		'--chat-message-bg-color-audio-progress': message.backgroundAudioProgress,
+		'--chat-message-bg-color-audio-progress-selector':
+			message.backgroundAudioProgressSelector,
 
 		// markdown
 		'--chat-markdown-bg': markdown.background,
