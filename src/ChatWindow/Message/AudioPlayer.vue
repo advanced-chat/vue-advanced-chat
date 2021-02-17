@@ -2,9 +2,13 @@
 	<div>
 		<div class="vac-audio-player">
 			<div class="vac-svg-button" @click="playback">
-				<svg-icon :name="isPlaying ? 'audio-pause' : 'audio-play'" />
+				<slot v-if="isPlaying" name="audio-pause-icon">
+					<svg-icon name="audio-pause" />
+				</slot>
+				<slot v-else name="audio-play-icon">
+					<svg-icon name="audio-play" />
+				</slot>
 			</div>
-
 			<audio-control
 				ref-id="progress"
 				:percentage="progress"
@@ -54,7 +58,7 @@ export default {
 			return null
 		},
 		time() {
-			return this.isPlaying ? this.playedTime : this.duration
+			return this.progress > 1 ? this.playedTime : this.duration
 		}
 	},
 
