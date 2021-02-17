@@ -97,6 +97,7 @@
 						<audio-player
 							v-else-if="message.file.audio"
 							:src="message.file.url"
+							@update-progress-time="progressTime = $event"
 							@hover-audio-progress="hoverAudioProgress = $event"
 						>
 							<template v-for="(i, name) in $scopedSlots" #[name]="data">
@@ -114,6 +115,10 @@
 								</slot>
 							</div>
 							<span>{{ message.content }}</span>
+						</div>
+
+						<div class="vac-player-time">
+							{{ progressTime }}
 						</div>
 
 						<div class="vac-text-timestamp">
@@ -224,6 +229,7 @@ export default {
 			optionsOpened: false,
 			emojiOpened: false,
 			newMessage: {},
+			progressTime: '00:00',
 			hoverAudioProgress: false
 		}
 	},
@@ -482,6 +488,13 @@ export default {
 	font-size: 10px;
 	color: var(--chat-message-color-timestamp);
 	text-align: right;
+}
+
+.vac-player-time {
+	float: left;
+	margin: -2px 0 0 41px;
+	color: var(--chat-color);
+	font-size: 12px;
 }
 
 .vac-file-message {

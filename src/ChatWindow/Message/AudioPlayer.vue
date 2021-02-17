@@ -17,9 +17,6 @@
 
 			<audio :id="playerUniqId" :src="audioSource" />
 		</div>
-		<div class="vac-player-time">
-			{{ time }}
-		</div>
 	</div>
 </template>
 
@@ -55,9 +52,6 @@ export default {
 			if (this.src) return this.src
 			this.resetProgress()
 			return null
-		},
-		time() {
-			return this.progress > 1 ? this.playedTime : this.duration
 		}
 	},
 
@@ -68,9 +62,10 @@ export default {
 			this.isPlaying = false
 		})
 
-		this.player.addEventListener('loadeddata', ev => {
+		this.player.addEventListener('loadeddata', () => {
 			this.resetProgress()
 			this.duration = this.convertTimeMMSS(this.player.duration)
+			this.updateProgressTime()
 		})
 
 		this.player.addEventListener('timeupdate', this.onTimeUpdate)
@@ -95,13 +90,21 @@ export default {
 			this.playedTime = this.convertTimeMMSS(0)
 			this.progress = 0
 			this.isPlaying = false
+			this.updateProgressTime()
 		},
 		onTimeUpdate() {
 			this.playedTime = this.convertTimeMMSS(this.player.currentTime)
 			this.progress = (this.player.currentTime / this.player.duration) * 100
+			this.updateProgressTime()
 		},
 		onUpdateProgress(pos) {
 			if (pos) this.player.currentTime = pos * this.player.duration
+		},
+		updateProgressTime() {
+			this.$emit(
+				'update-progress-time',
+				this.progress > 1 ? this.playedTime : this.duration
+			)
 		}
 	}
 }
@@ -110,17 +113,11 @@ export default {
 <style lang="scss">
 .vac-audio-player {
 	display: flex;
-	margin-top: 15px;
+	margin: 15px 0 5px;
 
 	.vac-svg-button {
 		max-width: 20px;
 		margin-left: 7px;
 	}
-}
-
-.vac-player-time {
-	margin-left: 41px;
-	color: var(--chat-color);
-	font-size: 12px;
 }
 </style>
