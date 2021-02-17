@@ -137,14 +137,45 @@
 				class="vac-box-footer"
 				:class="{ 'vac-app-box-shadow': filteredUsersTag.length }"
 			>
-				<room-audio
+				<div
 					v-if="showAudio && !imageFile && !videoFile"
-					@update-file="file = $event"
+					class="vac-icon-textarea-left"
 				>
-					<template v-for="(index, name) in $scopedSlots" #[name]="data">
-						<slot :name="name" v-bind="data" />
+					<template v-if="recorder.isRecording">
+						<div
+							class="vac-svg-button vac-svg-border vac-icon-audio-stop"
+							@click="stopRecorder"
+						>
+							<slot name="audio-stop-icon">
+								<svg-icon
+									name="close-outline"
+									class="vac-icon-audio-stop-svg"
+								/>
+							</slot>
+						</div>
+
+						<div class="vac-dot-audio-record" />
+
+						<div class="vac-dot-audio-record-time">
+							{{ recordedTime }}
+						</div>
+
+						<div
+							class="vac-svg-button vac-svg-border vac-icon-audio-confirm"
+							@click="toggleRecorder"
+						>
+							<slot name="audio-stop-icon">
+								<svg-icon name="checkmark" />
+							</slot>
+						</div>
 					</template>
-				</room-audio>
+
+					<div v-else class="vac-svg-button" @click="toggleRecorder">
+						<slot name="microphone-icon">
+							<svg-icon name="microphone" class="vac-icon-microphone" />
+						</slot>
+					</div>
+				</div>
 
 				<div v-if="imageFile" class="vac-media-container">
 					<div class="vac-svg-button vac-icon-media" @click="resetMediaFile">
@@ -298,10 +329,10 @@ import EmojiPicker from '../../components/EmojiPicker'
 import RoomHeader from './RoomHeader'
 import RoomMessageReply from './RoomMessageReply'
 import RoomUsersTag from './RoomUsersTag'
-import RoomAudio from './RoomAudio'
 import Message from '../Message/Message'
 
 import filteredUsers from '../../utils/filter-items'
+import Recorder from '../../utils/recorder'
 const { messagesValid } = require('../../utils/room-validation')
 const { detectMobile, iOSDevice } = require('../../utils/mobile-detection')
 const { isImageFile, isVideoFile } = require('../../utils/media-file')
@@ -316,7 +347,6 @@ export default {
 		RoomHeader,
 		RoomMessageReply,
 		RoomUsersTag,
-		RoomAudio,
 		Message
 	},
 
@@ -373,7 +403,15 @@ export default {
 			keepKeyboardOpen: false,
 			filteredUsersTag: [],
 			selectedUsersTag: [],
-			textareaCursorPosition: null
+			textareaCursorPosition: null,
+			recorder: this.initRecorder(),
+			bitRate: 128,
+			sampleRate: 44100,
+			format: 'mp3',
+			micFailed: null,
+			beforeRecording: null,
+			pauseRecording: null,
+			afterRecording: null
 		}
 	},
 
@@ -398,6 +436,9 @@ export default {
 		},
 		isMessageEmpty() {
 			return !this.file && !this.message.trim()
+		},
+		recordedTime() {
+			return new Date(this.recorder.duration * 1000).toISOString().substr(14, 5)
 		}
 	},
 
@@ -507,6 +548,10 @@ export default {
 				this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount
 			}, 200)
 		})
+	},
+
+	beforeDestroy() {
+		this.stopRecorder()
 	},
 
 	methods: {
@@ -795,6 +840,44 @@ export default {
 
 			setTimeout(() => (this.fileDialog = false), 500)
 		},
+		initRecorder() {
+			return new Recorder({
+				beforeRecording: this.beforeRecording,
+				afterRecording: this.afterRecording,
+				pauseRecording: this.pauseRecording,
+				micFailed: this.micFailed,
+				bitRate: this.bitRate,
+				sampleRate: this.sampleRate,
+				format: this.format
+			})
+		},
+		toggleRecorder() {
+			if (!this.recorder.isRecording) {
+				this.recorder.start()
+			} else {
+				this.recorder.stop()
+
+				const record = this.recorder.records[0]
+
+				this.file = {
+					blob: record.blob,
+					name: `audio.${this.format}`,
+					size: record.blob.size,
+					duration: record.duration,
+					type: record.blob.type,
+					audio: true,
+					localUrl: URL.createObjectURL(record.blob)
+				}
+
+				this.recorder = this.initRecorder()
+			}
+		},
+		stopRecorder() {
+			if (this.recorder.isRecording) {
+				this.recorder.stop()
+				this.recorder = this.initRecorder()
+			}
+		},
 		openFile({ message, action }) {
 			this.$emit('open-file', { message, action })
 		},
@@ -935,13 +1018,58 @@ export default {
 	box-shadow: inset 0px 0px 0px 1px var(--chat-border-color-input-selected);
 }
 
-.vac-icon-textarea {
+.vac-icon-textarea,
+.vac-icon-textarea-left {
 	display: flex;
-	margin: 12px 0 0 5px;
+	align-items: center;
 
 	svg,
 	.vac-wrapper {
 		margin: 0 7px;
+	}
+}
+
+.vac-icon-textarea {
+	margin-left: 5px;
+}
+
+.vac-icon-textarea-left {
+	display: flex;
+	align-items: center;
+	margin-right: 5px;
+
+	svg,
+	.vac-wrapper {
+		margin: 0 7px;
+	}
+
+	.vac-icon-microphone {
+		fill: var(--chat-icon-color-microphone);
+		margin: 0 7px;
+	}
+
+	.vac-dot-audio-record {
+		height: 15px;
+		width: 15px;
+		border-radius: 50%;
+		background-color: var(--chat-message-bg-color-audio-record);
+	}
+
+	.vac-dot-audio-record-time {
+		font-size: 16px;
+		color: var(--chat-color);
+		margin-left: 8px;
+	}
+
+	.vac-icon-audio-stop {
+		border-color: var(--chat-icon-color-audio-cancel);
+		margin: 0 20px 0 10px;
+	}
+
+	.vac-icon-audio-confirm {
+		fill: var(--chat-icon-color-audio-confirm);
+		border-color: var(--chat-icon-color-audio-confirm);
+		margin: 0 13px 0 20px;
 	}
 }
 
@@ -1071,12 +1199,11 @@ export default {
 		}
 	}
 
-	.vac-icon-textarea {
-		margin: 6px 0 0 5px;
-
+	.vac-icon-textarea,
+	.vac-icon-textarea-left {
 		svg,
-		.wrapper {
-			margin: 0 5px;
+		.vac-wrapper {
+			margin: 0 5px !important;
 		}
 	}
 

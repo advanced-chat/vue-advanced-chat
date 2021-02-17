@@ -80,6 +80,7 @@ export const defaultThemeStyles = {
 			backgroundReactionHoverMe: '#cfecf5',
 			borderStyleReactionHoverMe: '1px solid #3b98b8',
 			colorReactionCounterMe: '#0b59b3',
+			backgroundAudioRecord: '#eb4034',
 			backgroundAudioLine: 'rgba(0, 0, 0, 0.15)',
 			backgroundAudioProgress: '#455247',
 			backgroundAudioProgressSelector: '#455247'
@@ -130,9 +131,10 @@ export const defaultThemeStyles = {
 			dropdownRoom: '#9e9e9e',
 			dropdownScroll: '#0a0a0a',
 			microphone: '#1976d2',
-			microphoneOff: '#eb4034',
 			audioPlay: '#455247',
-			audioPause: '#455247'
+			audioPause: '#455247',
+			audioCancel: '#eb4034',
+			audioConfirm: '#1ba65b'
 		}
 	},
 	dark: {
@@ -216,6 +218,7 @@ export const defaultThemeStyles = {
 			backgroundReactionHoverMe: '#4e9ad1',
 			borderStyleReactionHoverMe: 'none',
 			colorReactionCounterMe: '#fff',
+			backgroundAudioRecord: '#eb4034',
 			backgroundAudioLine: 'rgba(255, 255, 255, 0.15)',
 			backgroundAudioProgress: '#b7d4d3',
 			backgroundAudioProgressSelector: '#b7d4d3'
@@ -266,9 +269,10 @@ export const defaultThemeStyles = {
 			dropdownRoom: '#fff',
 			dropdownScroll: '#0a0a0a',
 			microphone: '#fff',
-			microphoneOff: '#eb4034',
 			audioPlay: '#b7d4d3',
-			audioPause: '#b7d4d3'
+			audioPause: '#b7d4d3',
+			audioCancel: '#eb4034',
+			audioConfirm: '#1ba65b'
 		}
 	}
 }
@@ -363,6 +367,7 @@ export const cssThemeVars = ({
 		'--chat-message-border-style-reaction-hover-me':
 			message.borderStyleReactionHoverMe,
 		'--chat-message-color-reaction-counter-me': message.colorReactionCounterMe,
+		'--chat-message-bg-color-audio-record': message.backgroundAudioRecord,
 		'--chat-message-bg-color-audio-line': message.backgroundAudioLine,
 		'--chat-message-bg-color-audio-progress': message.backgroundAudioProgress,
 		'--chat-message-bg-color-audio-progress-selector':
@@ -410,8 +415,9 @@ export const cssThemeVars = ({
 		'--chat-icon-color-dropdown-room': icons.dropdownRoom,
 		'--chat-icon-color-dropdown-scroll': icons.dropdownScroll,
 		'--chat-icon-color-microphone': icons.microphone,
-		'--chat-icon-color-microphone-off': icons.microphoneOff,
 		'--chat-icon-color-audio-play': icons.audioPlay,
-		'--chat-icon-color-audio-pause': icons.audioPause
+		'--chat-icon-color-audio-pause': icons.audioPause,
+		'--chat-icon-color-audio-cancel': icons.audioCancel,
+		'--chat-icon-color-audio-confirm': icons.audioConfirm
 	}
 }

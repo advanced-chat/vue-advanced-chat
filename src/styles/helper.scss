@@ -46,6 +46,24 @@
 	opacity: 0.7;
 }
 
+.vac-svg-border {
+	display: flex;
+	align-items: center;
+	height: 35px;
+	width: 35px;
+	border-radius: 50px;
+	border: 1px solid #000;
+
+	&.vac-svg-button {
+		min-height: 35px;
+		min-width: 35px;
+
+		svg {
+			margin-left: 5px;
+		}
+	}
+}
+
 .vac-room-avatar {
 	background-size: cover;
 	background-position: center center;
