@@ -141,7 +141,7 @@
 					v-if="showAudio && !imageFile && !videoFile"
 					class="vac-icon-textarea-left"
 				>
-					<template v-if="recorder.isRecording">
+					<template v-if="isRecording">
 						<div
 							class="vac-svg-button vac-icon-audio-stop"
 							@click="stopRecorder"
@@ -402,6 +402,7 @@ export default {
 			selectedUsersTag: [],
 			textareaCursorPosition: null,
 			recorder: this.initRecorder(),
+			isRecording: false,
 			bitRate: 128,
 			sampleRate: 44100,
 			format: 'mp3',
@@ -840,6 +841,8 @@ export default {
 			setTimeout(() => (this.fileDialog = false), 500)
 		},
 		initRecorder() {
+			this.isRecording = false
+
 			return new Recorder({
 				beforeRecording: this.beforeRecording,
 				afterRecording: this.afterRecording,
@@ -851,8 +854,10 @@ export default {
 			})
 		},
 		toggleRecorder() {
+			this.isRecording = !this.isRecording
+
 			if (!this.recorder.isRecording) {
-				this.recorder.start()
+				setTimeout(() => this.recorder.start(), 200)
 			} else {
 				this.recorder.stop()
 
@@ -1088,7 +1093,7 @@ export default {
 	}
 
 	.vac-icon-audio-stop {
-		margin: 0 20px 0 10px;
+		margin-right: 20px;
 
 		::v-deep #vac-icon-close-outline {
 			fill: var(--chat-icon-color-audio-cancel);
@@ -1096,7 +1101,8 @@ export default {
 	}
 
 	.vac-icon-audio-confirm {
-		margin: 0 13px 0 12px;
+		margin-right: 3px;
+		margin-left: 12px;
 
 		::v-deep #vac-icon-checkmark {
 			fill: var(--chat-icon-color-audio-confirm);
