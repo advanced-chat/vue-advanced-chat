@@ -159,7 +159,7 @@
 
 						<div
 							class="vac-svg-button vac-icon-audio-confirm"
-							@click="toggleRecorder"
+							@click="toggleRecorder(false)"
 						>
 							<slot name="audio-stop-icon">
 								<svg-icon name="checkmark" />
@@ -167,7 +167,7 @@
 						</div>
 					</template>
 
-					<div v-else class="vac-svg-button" @click="toggleRecorder">
+					<div v-else class="vac-svg-button" @click="toggleRecorder(true)">
 						<slot name="microphone-icon">
 							<svg-icon name="microphone" class="vac-icon-microphone" />
 						</slot>
@@ -853,34 +853,42 @@ export default {
 				format: this.format
 			})
 		},
-		toggleRecorder() {
-			this.isRecording = !this.isRecording
+		toggleRecorder(recording) {
+			this.isRecording = recording
 
 			if (!this.recorder.isRecording) {
 				setTimeout(() => this.recorder.start(), 200)
 			} else {
-				this.recorder.stop()
+				try {
+					this.recorder.stop()
 
-				const record = this.recorder.records[0]
+					const record = this.recorder.records[0]
 
-				this.file = {
-					blob: record.blob,
-					name: `audio.${this.format}`,
-					size: record.blob.size,
-					duration: record.duration,
-					type: record.blob.type,
-					audio: true,
-					localUrl: URL.createObjectURL(record.blob)
+					this.file = {
+						blob: record.blob,
+						name: `audio.${this.format}`,
+						size: record.blob.size,
+						duration: record.duration,
+						type: record.blob.type,
+						audio: true,
+						localUrl: URL.createObjectURL(record.blob)
+					}
+
+					this.recorder = this.initRecorder()
+					this.sendMessage()
+				} catch {
+					setTimeout(() => this.stopRecorder(), 100)
 				}
-
-				this.recorder = this.initRecorder()
-				this.sendMessage()
 			}
 		},
 		stopRecorder() {
 			if (this.recorder.isRecording) {
-				this.recorder.stop()
-				this.recorder = this.initRecorder()
+				try {
+					this.recorder.stop()
+					this.recorder = this.initRecorder()
+				} catch {
+					setTimeout(() => this.stopRecorder(), 100)
+				}
 			}
 		},
 		openFile({ message, action }) {
