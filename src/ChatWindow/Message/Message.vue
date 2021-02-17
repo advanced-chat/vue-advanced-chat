@@ -117,7 +117,10 @@
 							<span>{{ message.content }}</span>
 						</div>
 
-						<div class="vac-player-time">
+						<div
+							v-if="message.file && message.file.audio && !message.deleted"
+							class="vac-player-time"
+						>
 							{{ progressTime }}
 						</div>
 
