@@ -21,7 +21,11 @@
 							:users="room.users"
 							:text-formatting="true"
 							:reply="true"
-						/>
+						>
+							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+								<slot :name="name" v-bind="data" />
+							</template>
+						</format-message>
 					</div>
 				</div>
 			</div>

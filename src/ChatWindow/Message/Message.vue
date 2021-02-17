@@ -49,7 +49,11 @@
 							v-if="!message.deleted && message.replyMessage"
 							:message="message"
 							:room-users="roomUsers"
-						/>
+						>
+							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+								<slot :name="name" v-bind="data" />
+							</template>
+						</message-reply>
 
 						<div v-if="message.deleted">
 							<slot name="deleted-icon">
@@ -65,8 +69,8 @@
 							:text-formatting="textFormatting"
 							@open-user-tag="openUserTag"
 						>
-							<template #deleted-icon="data">
-								<slot name="deleted-icon" v-bind="data" />
+							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+								<slot :name="name" v-bind="data" />
 							</template>
 						</format-message>
 
@@ -94,7 +98,11 @@
 							v-else-if="message.file.audio"
 							:src="message.file.url"
 							@hover-audio-progress="hoverAudioProgress = $event"
-						/>
+						>
+							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+								<slot :name="name" v-bind="data" />
+							</template>
+						</audio-player>
 
 						<div v-else class="vac-file-message">
 							<div

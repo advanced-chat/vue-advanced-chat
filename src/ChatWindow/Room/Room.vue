@@ -27,7 +27,7 @@
 			@toggle-rooms-list="$emit('toggle-rooms-list')"
 			@menu-action-handler="$emit('menu-action-handler', $event)"
 		>
-			<template v-for="(index, name) in $scopedSlots" #[name]="data">
+			<template v-for="(i, name) in $scopedSlots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</room-header>
@@ -87,7 +87,7 @@
 								@send-message-reaction="sendMessageReaction"
 								@hide-options="hideOptions = $event"
 							>
-								<template v-for="(index, name) in $scopedSlots" #[name]="data">
+								<template v-for="(i, name) in $scopedSlots" #[name]="data">
 									<slot :name="name" v-bind="data" />
 								</template>
 							</message>
@@ -123,7 +123,7 @@
 				:message-reply="messageReply"
 				@reset-message="resetMessage"
 			>
-				<template v-for="(index, name) in $scopedSlots" #[name]="data">
+				<template v-for="(i, name) in $scopedSlots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</room-message-reply>
@@ -267,8 +267,8 @@
 						@add-emoji="addEmoji"
 						@open-emoji="emojiOpened = $event"
 					>
-						<template #emoji-picker-icon>
-							<slot name="emoji-picker-icon" />
+						<template v-for="(i, name) in $scopedSlots" #[name]="data">
+							<slot :name="name" v-bind="data" />
 						</template>
 					</emoji-picker>
 

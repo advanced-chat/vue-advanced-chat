@@ -14,7 +14,7 @@
 			@search-room="searchRoom"
 			@add-room="$emit('add-room')"
 		>
-			<template v-for="(index, name) in $scopedSlots" #[name]="data">
+			<template v-for="(i, name) in $scopedSlots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</rooms-search>
@@ -44,7 +44,7 @@
 					:room-actions="roomActions"
 					@room-action-handler="$emit('room-action-handler', $event)"
 				>
-					<template v-for="(index, name) in $scopedSlots" #[name]="data">
+					<template v-for="(i, name) in $scopedSlots" #[name]="data">
 						<slot :name="name" v-bind="data" />
 					</template>
 				</room-content>

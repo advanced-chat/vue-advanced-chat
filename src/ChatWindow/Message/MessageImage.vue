@@ -41,7 +41,11 @@
 			:users="roomUsers"
 			:text-formatting="textFormatting"
 			@open-user-tag="$emit('open-user-tag')"
-		/>
+		>
+			<template v-for="(i, name) in $scopedSlots" #[name]="data">
+				<slot :name="name" v-bind="data" />
+			</template>
+		</format-message>
 	</div>
 </template>
 
