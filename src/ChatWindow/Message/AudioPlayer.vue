@@ -5,7 +5,7 @@
 				<svg-icon :name="isPlaying ? 'audio-pause' : 'audio-play'" />
 			</div>
 
-			<line-control
+			<audio-control
 				ref-id="progress"
 				:percentage="progress"
 				@change-linehead="onUpdateProgress"
@@ -21,14 +21,14 @@
 </template>
 
 <script>
-import SvgIcon from '../SvgIcon'
-import LineControl from './LineControl'
+import SvgIcon from '../../components/SvgIcon'
+import AudioControl from './AudioControl'
 
 export default {
 	name: 'AudioPlayer',
 	components: {
 		SvgIcon,
-		LineControl
+		AudioControl
 	},
 
 	props: {

@@ -169,12 +169,12 @@
 <script>
 import SvgIcon from '../../components/SvgIcon'
 import FormatMessage from '../../components/FormatMessage'
-import AudioPlayer from '../../components/audio/AudioPlayer'
 
 import MessageReply from './MessageReply'
 import MessageImage from './MessageImage'
 import MessageActions from './MessageActions'
 import MessageReactions from './MessageReactions'
+import AudioPlayer from './AudioPlayer'
 
 const { isImageFile } = require('../../utils/media-file')
 
