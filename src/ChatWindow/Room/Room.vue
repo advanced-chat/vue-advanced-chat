@@ -690,7 +690,8 @@ export default {
 			this.newMessages.push(message)
 		},
 		escapeTextarea() {
-			if (this.filteredUsersTag.length) this.filteredUsersTag = []
+			if (this.filteredEmojis.length) this.filteredEmojis = []
+			else if (this.filteredUsersTag.length) this.filteredUsersTag = []
 			else this.resetMessage()
 		},
 		resetMessage(disableMobileFocus = null, editFile = null) {
