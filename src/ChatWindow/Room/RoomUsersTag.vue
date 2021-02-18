@@ -9,7 +9,7 @@
 				v-for="user in filteredUsersTag"
 				:key="user._id"
 				class="vac-tags-box"
-				@click="selectUserTag(user)"
+				@click="$emit('select-user-tag', user)"
 			>
 				<div class="vac-tags-info">
 					<div
@@ -32,12 +32,6 @@ export default {
 
 	props: {
 		filteredUsersTag: { type: Array, required: true }
-	},
-
-	methods: {
-		selectUserTag(user) {
-			this.$emit('select-user-tag', user)
-		}
 	}
 }
 </script>

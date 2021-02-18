@@ -132,6 +132,11 @@
 				</template>
 			</room-message-reply>
 
+			<room-emojis
+				:filtered-emojis="filteredEmojis"
+				@select-emoji="selectEmoji($event)"
+			/>
+
 			<room-users-tag
 				:filtered-users-tag="filteredUsersTag"
 				@select-user-tag="selectUserTag($event)"
@@ -139,7 +144,9 @@
 
 			<div
 				class="vac-box-footer"
-				:class="{ 'vac-app-box-shadow': filteredUsersTag.length }"
+				:class="{
+					'vac-app-box-shadow': filteredEmojis.length || filteredUsersTag.length
+				}"
 			>
 				<div
 					v-if="showAudio && !imageFile && !videoFile"
@@ -330,6 +337,7 @@ import EmojiPicker from '../../components/EmojiPicker'
 import RoomHeader from './RoomHeader'
 import RoomMessageReply from './RoomMessageReply'
 import RoomUsersTag from './RoomUsersTag'
+import RoomEmojis from './RoomEmojis'
 import Message from '../Message/Message'
 
 import filteredUsers from '../../utils/filter-items'
@@ -348,6 +356,7 @@ export default {
 		RoomHeader,
 		RoomMessageReply,
 		RoomUsersTag,
+		RoomEmojis,
 		Message
 	},
 
@@ -402,6 +411,7 @@ export default {
 			scrollMessagesCount: 0,
 			newMessages: [],
 			keepKeyboardOpen: false,
+			filteredEmojis: [],
 			filteredUsersTag: [],
 			selectedUsersTag: [],
 			textareaCursorPosition: null,
@@ -521,16 +531,18 @@ export default {
 				}
 			}
 
-			this.updateShowUsersTag()
+			this.updateFooterList('@')
+			this.updateFooterList(':')
 		})
 
 		this.$refs['roomTextarea'].addEventListener('click', () => {
 			if (isMobile) this.keepKeyboardOpen = true
-			this.updateShowUsersTag()
+			this.updateFooterList('@')
+			this.updateFooterList(':')
 		})
 
 		this.$refs['roomTextarea'].addEventListener('blur', () => {
-			this.resetUsersTag()
+			this.resetFooterList()
 			if (isMobile) setTimeout(() => (this.keepKeyboardOpen = false), 0)
 		})
 	},
@@ -550,9 +562,15 @@ export default {
 				this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount
 			}, 200)
 		},
-		updateShowUsersTag() {
+		updateFooterList(tagChar) {
 			if (!this.$refs['roomTextarea']) return
-			if (!this.room.users || this.room.users.length <= 2) return
+
+			if (
+				tagChar === '@' &&
+				(!this.room.users || this.room.users.length <= 2)
+			) {
+				return
+			}
 
 			if (
 				this.textareaCursorPosition ===
@@ -567,7 +585,7 @@ export default {
 
 			while (
 				position > 0 &&
-				this.message.charAt(position - 1) !== '@' &&
+				this.message.charAt(position - 1) !== tagChar &&
 				this.message.charAt(position - 1) !== ' '
 			) {
 				position--
@@ -577,25 +595,23 @@ export default {
 			const notLetterNumber = !beforeTag.match(/^[0-9a-zA-Z]+$/)
 
 			if (
-				this.message.charAt(position - 1) === '@' &&
+				this.message.charAt(position - 1) === tagChar &&
 				(!beforeTag || beforeTag === ' ' || notLetterNumber)
 			) {
 				const query = this.message.substring(
 					position,
 					this.textareaCursorPosition
 				)
-
-				this.filteredUsersTag = filteredUsers(
-					this.room.users,
-					'username',
-					query,
-					true
-				).filter(user => user._id !== this.currentUserId)
+				if (tagChar === ':') {
+					this.updateEmojis(query)
+				} else if (tagChar === '@') {
+					this.updateShowUsersTag(query)
+				}
 			} else {
-				this.resetUsersTag()
+				this.resetFooterList()
 			}
 		},
-		selectUserTag(user) {
+		getCharPosition() {
 			const cursorPosition = this.$refs['roomTextarea'].selectionStart
 
 			let position = cursorPosition
@@ -611,6 +627,37 @@ export default {
 				endPosition++
 			}
 
+			return { position, endPosition }
+		},
+		updateEmojis(query) {
+			if (!query) return
+
+			const emojisListKeys = Object.keys(this.emojisList)
+			const matchingKeys = emojisListKeys.filter(key => key.startsWith(query))
+
+			this.filteredEmojis = matchingKeys.map(key => this.emojisList[key])
+		},
+		selectEmoji(emoji) {
+			const { position, endPosition } = this.getCharPosition()
+
+			this.message =
+				this.message.substr(0, position - 1) +
+				emoji +
+				this.message.substr(endPosition, this.message.length - 1)
+
+			this.focusTextarea()
+		},
+		updateShowUsersTag(query) {
+			this.filteredUsersTag = filteredUsers(
+				this.room.users,
+				'username',
+				query,
+				true
+			).filter(user => user._id !== this.currentUserId)
+		},
+		selectUserTag(user) {
+			const { position, endPosition } = this.getCharPosition()
+
 			const space = this.message.substr(endPosition, endPosition).length
 				? ''
 				: ' '
@@ -625,7 +672,8 @@ export default {
 
 			this.focusTextarea()
 		},
-		resetUsersTag() {
+		resetFooterList() {
+			this.filteredEmojis = []
 			this.filteredUsersTag = []
 			this.textareaCursorPosition = null
 		},
@@ -657,7 +705,7 @@ export default {
 			}
 
 			this.selectedUsersTag = []
-			this.resetUsersTag()
+			this.resetFooterList()
 			this.resetTextareaSize()
 			this.message = ''
 			this.editedMessage = {}
