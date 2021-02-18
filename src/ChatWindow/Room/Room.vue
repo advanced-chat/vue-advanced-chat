@@ -32,7 +32,11 @@
 			</template>
 		</room-header>
 
-		<div ref="scrollContainer" class="vac-container-scroll" @scroll="containerScroll">
+		<div
+			ref="scrollContainer"
+			class="vac-container-scroll"
+			@scroll="onContainerScroll"
+		>
 			<loader :show="loadingMessages" />
 			<div class="vac-messages-container">
 				<div :class="{ 'vac-messages-hidden': loadingMessages }">
@@ -536,6 +540,16 @@ export default {
 	},
 
 	methods: {
+		onContainerScroll(e) {
+			this.hideOptions = true
+			setTimeout(() => {
+				if (!e.target) return
+
+				const bottomScroll = this.getBottomScroll(e.target)
+				if (bottomScroll < 60) this.scrollMessagesCount = 0
+				this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount
+			}, 200)
+		},
 		updateShowUsersTag() {
 			if (!this.$refs['roomTextarea']) return
 			if (!this.room.users || this.room.users.length <= 2) return
@@ -883,16 +897,6 @@ export default {
 		},
 		textareaActionHandler() {
 			this.$emit('textarea-action-handler', this.message)
-		},
-		containerScroll(e) {
-			this.hideOptions = true
-			setTimeout(() => {
-				if (!e.target) return
-
-				const bottomScroll = this.getBottomScroll(e.target)
-				if (bottomScroll < 60) this.scrollMessagesCount = 0
-				this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount
-			}, 200)
 		}
 	}
 }
