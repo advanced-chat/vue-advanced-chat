@@ -415,6 +415,7 @@ export default {
 			filteredUsersTag: [],
 			selectedUsersTag: [],
 			textareaCursorPosition: null,
+			cursorRangePosition: null,
 			recorder: this.initRecorder(),
 			isRecording: false,
 			format: 'mp3'
@@ -645,6 +646,7 @@ export default {
 				emoji +
 				this.message.substr(endPosition, this.message.length - 1)
 
+			this.cursorRangePosition = position
 			this.focusTextarea()
 		},
 		updateShowUsersTag(query) {
@@ -670,6 +672,8 @@ export default {
 
 			this.selectedUsersTag = [...this.selectedUsersTag, { ...user }]
 
+			this.cursorRangePosition =
+				position + user.username.length + space.length + 1
 			this.focusTextarea()
 		},
 		resetFooterList() {
@@ -735,6 +739,16 @@ export default {
 			if (detectMobile() && disableMobileFocus) return
 			if (!this.$refs['roomTextarea']) return
 			this.$refs['roomTextarea'].focus()
+
+			if (this.cursorRangePosition) {
+				setTimeout(() => {
+					this.$refs['roomTextarea'].setSelectionRange(
+						this.cursorRangePosition,
+						this.cursorRangePosition
+					)
+					this.cursorRangePosition = null
+				}, 0)
+			}
 		},
 		preventKeyboardFromClosing() {
 			if (this.keepKeyboardOpen) this.$refs['roomTextarea'].focus()
