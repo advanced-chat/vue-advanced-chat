@@ -30,7 +30,7 @@ export default {
 <style lang="scss" scoped>
 .vac-emojis-container {
 	position: absolute;
-	width: 100%;
+	width: calc(100% - 16px);
 	padding: 10px 8px;
 	background: var(--chat-footer-bg-color);
 	display: flex;
@@ -56,6 +56,7 @@ export default {
 
 @media only screen and (max-width: 768px) {
 	.vac-emojis-container {
+		width: calc(100% - 10px);
 		padding: 7px 5px;
 
 		.vac-emoji-element {
