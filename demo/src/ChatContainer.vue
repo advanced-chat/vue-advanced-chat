@@ -78,7 +78,10 @@ import {
 } from '@/firestore'
 import { parseTimestamp, isSameDay } from '@/utils/dates'
 import ChatWindow from './../../src/ChatWindow'
+
 // import ChatWindow from './../../dist/vue-advanced-chat.umd.min.js'
+// import './../../dist/vue-advanced-chat.css'
+
 // import ChatWindow from 'vue-advanced-chat'
 // import 'vue-advanced-chat/dist/vue-advanced-chat.css'
 
