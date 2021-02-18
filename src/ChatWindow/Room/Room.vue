@@ -611,11 +611,11 @@ export default {
 				this.resetFooterList()
 			}
 		},
-		getCharPosition() {
+		getCharPosition(tagChar) {
 			const cursorPosition = this.$refs['roomTextarea'].selectionStart
 
 			let position = cursorPosition
-			while (position > 0 && this.message.charAt(position - 1) !== '@') {
+			while (position > 0 && this.message.charAt(position - 1) !== tagChar) {
 				position--
 			}
 
@@ -638,7 +638,7 @@ export default {
 			this.filteredEmojis = matchingKeys.map(key => this.emojisList[key])
 		},
 		selectEmoji(emoji) {
-			const { position, endPosition } = this.getCharPosition()
+			const { position, endPosition } = this.getCharPosition(':')
 
 			this.message =
 				this.message.substr(0, position - 1) +
@@ -656,7 +656,7 @@ export default {
 			).filter(user => user._id !== this.currentUserId)
 		},
 		selectUserTag(user) {
-			const { position, endPosition } = this.getCharPosition()
+			const { position, endPosition } = this.getCharPosition('@')
 
 			const space = this.message.substr(endPosition, endPosition).length
 				? ''
