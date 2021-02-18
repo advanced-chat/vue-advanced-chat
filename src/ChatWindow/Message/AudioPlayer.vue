@@ -116,7 +116,7 @@ export default {
 	margin: 8px 0 5px;
 
 	.vac-svg-button {
-		max-width: 20px;
+		max-width: 18px;
 		margin-left: 7px;
 	}
 }

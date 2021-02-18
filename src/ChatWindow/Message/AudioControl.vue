@@ -90,10 +90,10 @@ export default {
 
 			.vac-line-dot {
 				position: absolute;
-				top: -6px;
-				margin-left: -8px;
-				height: 15px;
-				width: 15px;
+				top: -5px;
+				margin-left: -7px;
+				height: 14px;
+				width: 14px;
 				border-radius: 50%;
 				background-color: var(--chat-message-bg-color-audio-progress-selector);
 				transition: transform 0.25s;

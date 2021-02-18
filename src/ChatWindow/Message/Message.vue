@@ -495,7 +495,7 @@ export default {
 
 .vac-progress-time {
 	float: left;
-	margin: -2px 0 0 41px;
+	margin: -2px 0 0 40px;
 	color: var(--chat-color);
 	font-size: 12px;
 }
