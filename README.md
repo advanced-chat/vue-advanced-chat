@@ -79,6 +79,12 @@ npm install --save vue-advanced-chat
 yarn add --save vue-advanced-chat
 ```
 
+If you want to send mp3 audio messages, you must install `lamejs` inside your project:
+
+```bash
+npm install lamejs --save
+```
+
 ## Usage
 
 You can import it as a custom component:
@@ -608,11 +614,12 @@ Example:
 | `checkmark-icon`                    | Replace the checkmark icon                                  | `message`                           | -                                                                                                                  |
 | `deleted-icon`                      | Replace the deleted icon                                    | `deleted`                           | -                                                                                                                  |
 | `microphone-icon`                   | Replace the microphone icon                                 |                                     | -                                                                                                                  |
-| `microphone-off-icon`               | Replace the microphone-off icon                             |                                     | -                                                                                                                  |
 | `dropdown-icon`                     | Replace the dropdown icon                                   | -                                   | -                                                                                                                  |
 | `room-list-options-icon`            | Replace the room list options dropdown icon                 | -                                   | -                                                                                                                  |
 | `search-icon`                       | Replace the search icon                                     | -                                   | -                                                                                                                  |
 | `add-icon`                          | Replace the add room icon                                   | -                                   | -                                                                                                                  |
+| `audio-pause-icon`                  | Replace the message audio pause icon                        | -                                   | -                                                                                                                  |
+| `audio-play-icon`                   | Replace the message audio play icon                         | -                                   | -                                                                                                                  |
 
 <br>
 
