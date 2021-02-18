@@ -10,8 +10,8 @@ export default class {
 		this.micFailed = options.micFailed
 
 		this.encoderOptions = {
-			bitRate: options.bitRate,
-			sampleRate: options.sampleRate
+			bitRate: 128,
+			sampleRate: 44100
 		}
 
 		this.bufferSize = 4096

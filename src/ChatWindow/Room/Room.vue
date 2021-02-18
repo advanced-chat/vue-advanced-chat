@@ -403,8 +403,6 @@ export default {
 			textareaCursorPosition: null,
 			recorder: this.initRecorder(),
 			isRecording: false,
-			bitRate: 128,
-			sampleRate: 44100,
 			format: 'mp3'
 		}
 	},
@@ -843,10 +841,7 @@ export default {
 				beforeRecording: null,
 				afterRecording: null,
 				pauseRecording: null,
-				micFailed: this.micFailed,
-				bitRate: this.bitRate,
-				sampleRate: this.sampleRate,
-				format: this.format
+				micFailed: this.micFailed
 			})
 		},
 		micFailed() {
