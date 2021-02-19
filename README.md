@@ -79,7 +79,7 @@ npm install --save vue-advanced-chat
 yarn add --save vue-advanced-chat
 ```
 
-If you want to send mp3 audio messages, you must install `lamejs` inside your project:
+If you want to send mp3 audio messages, you may need to install `lamejs` inside your project:
 
 ```bash
 npm install lamejs --save
