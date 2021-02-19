@@ -27,6 +27,7 @@
 	},
 	"homepage": "https://github.com/antoine92190/vue-advanced-chat#readme",
 	"main": "./dist/vue-advanced-chat.common.js",
+	"unpkg": "./dist/vue-advanced-chat.min.js",
 	"scripts": {
 		"serve": "vue-cli-service serve",
 		"build": "npm run clean:lib && npm run build:lib && npm run build:wc",
