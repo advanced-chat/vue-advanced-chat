@@ -64,5 +64,8 @@
 		"v-click-outside": "^3.1.2",
 		"vue-emoji-picker": "^1.0.1",
 		"vue-infinite-loading": "^2.4.5"
+	},
+	"optionalDependencies": {
+		"lamejs": "^1.2.0"
 	}
 }
