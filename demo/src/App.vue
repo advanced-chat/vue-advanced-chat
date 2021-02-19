@@ -24,6 +24,11 @@
 			<div class="button-theme" v-if="showOptions">
 				<button @click="theme = 'light'" class="button-light">Light</button>
 				<button @click="theme = 'dark'" class="button-dark">Dark</button>
+				<button class="button-github">
+					<a href="https://github.com/antoine92190/vue-advanced-chat">
+						<img src="@/assets/github.svg" />
+					</a>
+				</button>
 			</div>
 
 			<chat-container
@@ -187,6 +192,14 @@ input {
 
 	.button-theme {
 		margin: 10px 10px 0 0;
+
+		.button-github {
+			height: 23px;
+
+			img {
+				height: 23px;
+			}
+		}
 	}
 }
 
@@ -211,6 +224,8 @@ select {
 
 .button-theme {
 	float: right;
+	display: flex;
+	align-items: center;
 
 	.button-light {
 		background: #fff;
@@ -234,6 +249,17 @@ select {
 		font-size: 14px;
 		transition: 0.3s;
 		vertical-align: middle;
+
+		&.button-github {
+			height: 30px;
+			background: none;
+			padding: 0;
+			margin-left: 20px;
+
+			img {
+				height: 30px;
+			}
+		}
 
 		&:hover {
 			opacity: 0.8;
