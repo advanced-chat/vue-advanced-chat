@@ -111,7 +111,7 @@ function compileToJSON(str) {
 				'm'
 			)
 		)
-		if (!match) {
+		if (!match || !match[1]) {
 			strLeft = strLeft + char
 			result.push(strLeft)
 		} else {
