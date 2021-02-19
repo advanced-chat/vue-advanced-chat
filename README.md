@@ -19,10 +19,11 @@
 - Edit messages
 - Reply to other messages
 - Tag users
+- Emojis shortcut suggestions
 - UI elements for seen, new, deleted, typing and system messages
-- Text formatting - bold, italic, strikethrough, code
+- Text formatting - bold, italic, strikethrough, underline, code, multiline
 - Online / Offline users status
-- Flexible options
+- Flexible options and slots
 - Custom theming - light and dark modes
 - Firestore example
 - Typescript support
