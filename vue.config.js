@@ -3,5 +3,8 @@ module.exports = {
 		config.externals({
 			lamejs: 'lamejs'
 		})
+	},
+	css: {
+		extract: false
 	}
 }
