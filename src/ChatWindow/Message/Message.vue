@@ -192,7 +192,7 @@ import MessageActions from './MessageActions'
 import MessageReactions from './MessageReactions'
 import AudioPlayer from './AudioPlayer'
 
-const { isImageFile } = require('../../utils/media-file')
+const { isImageFile, isVideoFile } = require('../../utils/media-file')
 
 export default {
 	name: 'Message',
@@ -260,7 +260,7 @@ export default {
 			return isImageFile(this.message.file)
 		},
 		isVideo() {
-			return this.checkVideoType(this.message.file)
+			return isVideoFile(this.message.file)
 		},
 		isCheckmarkVisible() {
 			return (
@@ -316,12 +316,6 @@ export default {
 			setTimeout(() => {
 				this.$emit('message-action-handler', { action, message: this.message })
 			}, 300)
-		},
-		checkVideoType(file) {
-			if (!file) return
-			const videoTypes = ['video/mp4', 'video/ogg', 'video/webm']
-			const { type } = file
-			return videoTypes.some(t => type.toLowerCase().includes(t))
 		},
 		sendMessageReaction({ emoji, reaction }) {
 			this.$emit('send-message-reaction', {
