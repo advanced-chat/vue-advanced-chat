@@ -95,7 +95,7 @@
 						</div>
 
 						<audio-player
-							v-else-if="message.file.audio"
+							v-else-if="isAudio"
 							:src="message.file.url"
 							@update-progress-time="progressTime = $event"
 							@hover-audio-progress="hoverAudioProgress = $event"
@@ -192,7 +192,11 @@ import MessageActions from './MessageActions'
 import MessageReactions from './MessageReactions'
 import AudioPlayer from './AudioPlayer'
 
-const { isImageFile, isVideoFile } = require('../../utils/media-file')
+const {
+	isImageFile,
+	isVideoFile,
+	isAudioFile
+} = require('../../utils/media-file')
 
 export default {
 	name: 'Message',
@@ -261,6 +265,9 @@ export default {
 		},
 		isVideo() {
 			return isVideoFile(this.message.file)
+		},
+		isAudio() {
+			return isAudioFile(this.message.file)
 		},
 		isCheckmarkVisible() {
 			return (

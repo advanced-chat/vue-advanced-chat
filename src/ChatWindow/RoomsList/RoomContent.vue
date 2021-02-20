@@ -41,12 +41,7 @@
 						</slot>
 					</span>
 					<div
-						v-if="
-							room.lastMessage &&
-								!room.lastMessage.deleted &&
-								room.lastMessage.file &&
-								room.lastMessage.file.audio
-						"
+						v-if="room.lastMessage && !room.lastMessage.deleted && isAudio"
 						class="vac-text-ellipsis"
 					>
 						<slot name="microphone-icon">
@@ -123,6 +118,7 @@ import SvgIcon from '../../components/SvgIcon'
 import FormatMessage from '../../components/FormatMessage'
 
 import typingText from '../../utils/typing-text'
+const { isAudioFile } = require('../../utils/media-file')
 
 export default {
 	name: 'RoomsContent',
@@ -197,8 +193,17 @@ export default {
 			)
 		},
 		formattedDuration() {
-			let s = Math.round(this.room.lastMessage.file.duration)
+			const file = this.room.lastMessage.file
+
+			if (!file.duration) {
+				return `${file.name}.${file.extension}`
+			}
+
+			let s = Math.round(file.duration)
 			return (s - (s %= 60)) / 60 + (s > 9 ? ':' : ':0') + s
+		},
+		isAudio() {
+			return isAudioFile(this.room.lastMessage.file)
 		}
 	},
 

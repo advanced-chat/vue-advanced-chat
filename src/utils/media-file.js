@@ -1,13 +1,19 @@
-import { IMAGE_TYPES, VIDEO_TYPES } from './constants'
+import { IMAGE_TYPES, VIDEO_TYPES, AUDIO_TYPES } from './constants'
 
-export function isImageFile(file) {
+function checkMediaType(types, file) {
 	if (!file) return
 	const { type } = file
-	return IMAGE_TYPES.some(t => type.toLowerCase().includes(t))
+	return types.some(t => type.toLowerCase().includes(t))
+}
+
+export function isImageFile(file) {
+	return checkMediaType(IMAGE_TYPES, file)
 }
 
 export function isVideoFile(file) {
-	if (!file) return
-	const { type } = file
-	return VIDEO_TYPES.some(t => type.toLowerCase().includes(t))
+	return checkMediaType(VIDEO_TYPES, file)
+}
+
+export function isAudioFile(file) {
+	return checkMediaType(AUDIO_TYPES, file)
 }
