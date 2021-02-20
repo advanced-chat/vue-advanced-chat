@@ -117,10 +117,7 @@
 							<span>{{ message.content }}</span>
 						</div>
 
-						<div
-							v-if="message.file && message.file.audio && !message.deleted"
-							class="vac-progress-time"
-						>
+						<div v-if="isAudio && !message.deleted" class="vac-progress-time">
 							{{ progressTime }}
 						</div>
 
@@ -236,7 +233,7 @@ export default {
 			optionsOpened: false,
 			emojiOpened: false,
 			newMessage: {},
-			progressTime: '00:00',
+			progressTime: '- : -',
 			hoverAudioProgress: false
 		}
 	},

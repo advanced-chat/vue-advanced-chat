@@ -219,11 +219,8 @@
 							<svg-icon name="file" />
 						</slot>
 					</div>
-					<div v-if="file && file.audio" class="vac-file-message">
-						{{ file.name }}
-					</div>
-					<div v-else class="vac-file-message">
-						{{ message }}
+					<div class="vac-file-message">
+						{{ file.audio ? file.name : message }}
 					</div>
 					<div
 						class="vac-svg-button vac-icon-remove"

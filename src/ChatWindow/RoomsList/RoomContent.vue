@@ -199,7 +199,7 @@ export default {
 				return `${file.name}.${file.extension}`
 			}
 
-			let s = Math.round(file.duration)
+			let s = Math.floor(file.duration)
 			return (s - (s %= 60)) / 60 + (s > 9 ? ':' : ':0') + s
 		},
 		isAudio() {
