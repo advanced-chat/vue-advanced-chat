@@ -7,7 +7,7 @@ export type Rooms = Room[]
 export interface Room {
 	roomId: StringNumber
 	roomName: string
-	users: Users[]
+	users: RoomUsers
 	unreadCount?: StringNumber
 	index?: StringNumber | Date
 	lastMessage?: LastMessage
@@ -25,7 +25,9 @@ export interface LastMessage {
 	new?: boolean
 }
 
-export interface Users {
+export type RoomUsers = RoomUser[]
+
+export interface RoomUser {
 	_id: StringNumber
 	username: string
 	avatar: string
@@ -59,7 +61,7 @@ export interface Message {
 export interface MessageFile {
 	name: string
 	type: string
-	url: 'https://firebasestorage.googleapis.com/...'
+	url: string
 	size?: number
 	audio?: boolean
 	duration?: number
@@ -107,6 +109,13 @@ export interface Slots {
 	[key: string]: VNode[]
 }
 
+export interface CustomAction {
+	name: string
+	title: string
+}
+
+export type CustomActions = CustomAction[]
+
 export interface AdvancedChatOptions {
 	props?: {
 		height: string
@@ -119,9 +128,9 @@ export interface AdvancedChatOptions {
 		messages: Messages
 		'room-message': string
 		'messages-loaded': boolean
-		'room-actions': any[]
-		'menu-actions': any[]
-		'message-actions': any[]
+		'room-actions': CustomActions
+		'menu-actions': CustomActions
+		'message-actions': CustomActions
 		'show-add-room': boolean
 		'show-send-icon': boolean
 		'show-files': boolean
@@ -136,7 +145,7 @@ export interface AdvancedChatOptions {
 		'single-room': boolean
 		theme: string
 		'accepted-files': string
-		styles: {}
+		styles: { [key: string]: string }
 	}
 
 	slots?: Slots
