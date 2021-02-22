@@ -71,6 +71,13 @@ export interface MessageReactions {
 	[key: string]: StringNumber[]
 }
 
+export interface CustomAction {
+	name: string
+	title: string
+}
+
+export type CustomActions = CustomAction[]
+
 export interface Slots {
 	'rooms-header': VNode[]
 	'room-list-item': VNode[]
@@ -109,51 +116,48 @@ export interface Slots {
 	[key: string]: VNode[]
 }
 
-export interface CustomAction {
-	name: string
-	title: string
+export interface Props {
+	'current-user-id': StringNumber
+	rooms: Rooms
+	messages: Messages
+	height?: string
+	theme?: 'light' | 'dark'
+	styles?: Record<string, Record<string, string>>
+	'loading-rooms'?: boolean
+	'rooms-loaded'?: boolean
+	'room-id'?: StringNumber
+	'load-first-room'?: boolean
+	'room-message'?: string
+	'messages-loaded'?: boolean
+	'room-actions'?: CustomActions
+	'menu-actions'?: CustomActions
+	'message-actions'?: CustomActions
+	'show-add-room'?: boolean
+	'show-send-icon'?: boolean
+	'show-files'?: boolean
+	'show-audio'?: boolean
+	'show-emojis'?: boolean
+	'show-reaction-emojis'?: boolean
+	'show-new-messages-divider'?: boolean
+	'show-footer'?: boolean
+	'text-messages'?: Record<string, StringNumber>
+	'text-formatting'?: number
+	'responsive-breakpoint'?: boolean
+	'single-room'?: boolean
+	'accepted-files'?: string
 }
 
-export type CustomActions = CustomAction[]
-
 export interface AdvancedChatOptions {
-	props?: {
-		height: string
-		'current-user-id': StringNumber
-		rooms: Rooms
-		'loading-rooms': boolean
-		'rooms-loaded': boolean
-		'room-id': StringNumber
-		'load-first-room': boolean
-		messages: Messages
-		'room-message': string
-		'messages-loaded': boolean
-		'room-actions': CustomActions
-		'menu-actions': CustomActions
-		'message-actions': CustomActions
-		'show-add-room': boolean
-		'show-send-icon': boolean
-		'show-files': boolean
-		'show-audio': boolean
-		'show-emojis': boolean
-		'show-reaction-emojis': boolean
-		'show-new-messages-divider': boolean
-		'show-footer': boolean
-		'text-messages': {}
-		'text-formatting': number
-		'responsive-breakpoint': boolean
-		'single-room': boolean
-		theme: string
-		'accepted-files': string
-		styles: { [key: string]: string }
-	}
-
+	props: Props
 	slots?: Slots
 }
 
-export default class VueAdvancedChat extends Vue {
+export default class AdvancedChat extends Vue {
 	rooms: Rooms
 	messages: Messages
+
 	$slots: Slots
+	$props: Props
+
 	static install: PluginFunction<AdvancedChatOptions>
 }
