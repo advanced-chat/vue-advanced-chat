@@ -87,7 +87,6 @@
 								@message-action-handler="messageActionHandler"
 								@open-file="openFile"
 								@open-user-tag="openUserTag"
-								@add-new-message="addNewMessage"
 								@send-message-reaction="sendMessageReaction"
 								@hide-options="hideOptions = $event"
 							>
@@ -468,11 +467,22 @@ export default {
 			}
 		},
 		messages(newVal, oldVal) {
-			newVal.forEach(message => {
+			newVal.forEach((message, i) => {
 				if (!messagesValid(message)) {
 					throw new Error(
 						'Messages object is not valid! Must contain _id[String, Number], content[String, Number] and senderId[String, Number]'
 					)
+				}
+
+				if (
+					this.showNewMessagesDivider &&
+					!message.seen &&
+					message.senderId !== this.currentUserId
+				) {
+					this.newMessages.push({
+						_id: message._id,
+						index: i
+					})
 				}
 			})
 
@@ -487,6 +497,7 @@ export default {
 			}
 
 			if (oldVal && newVal && oldVal.length === newVal.length - 1) {
+				this.newMessages = []
 				this.loadingMessages = false
 
 				if (this.getBottomScroll(element) < 60) {
@@ -689,9 +700,6 @@ export default {
 				height: this.$refs.mediaFile.clientHeight - 10,
 				width: this.$refs.mediaFile.clientWidth + 26
 			}
-		},
-		addNewMessage(message) {
-			this.newMessages.push(message)
 		},
 		escapeTextarea() {
 			if (this.filteredEmojis.length) this.filteredEmojis = []

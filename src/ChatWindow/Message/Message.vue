@@ -277,19 +277,13 @@ export default {
 
 	watch: {
 		newMessages(val) {
-			if (!val.length || !this.showNewMessagesDivider) return
+			if (!val.length || !this.showNewMessagesDivider) {
+				return (this.newMessage = {})
+			}
+
 			this.newMessage = val.reduce((res, obj) =>
 				obj.index < res.index ? obj : res
 			)
-		}
-	},
-
-	mounted() {
-		if (!this.message.seen && this.message.senderId !== this.currentUserId) {
-			this.$emit('add-new-message', {
-				_id: this.message._id,
-				index: this.index
-			})
 		}
 	},
 
