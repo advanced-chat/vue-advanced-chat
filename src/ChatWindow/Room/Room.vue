@@ -845,7 +845,9 @@ export default {
 		scrollToBottom() {
 			setTimeout(() => {
 				const element = this.$refs.scrollContainer
+				element.classList.add('vac-scroll-smooth')
 				element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
+				setTimeout(() => element.classList.remove('vac-scroll-smooth'), 0)
 			}, 50)
 		},
 		onChangeInput() {
@@ -1007,6 +1009,10 @@ export default {
 	margin-right: 1px;
 	margin-top: 60px;
 	-webkit-overflow-scrolling: touch;
+
+	&.vac-scroll-smooth {
+		scroll-behavior: smooth;
+	}
 }
 
 .vac-messages-container {
