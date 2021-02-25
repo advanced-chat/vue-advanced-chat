@@ -479,20 +479,25 @@ export default {
 			const element = this.$refs.scrollContainer
 			if (!element) return
 
+			function scrollToBottom() {
+				setTimeout(() => {
+					const options = { top: element.scrollHeight, behavior: 'smooth' }
+					element.scrollTo(options)
+				}, 50)
+			}
+
 			if (oldVal && newVal && oldVal.length === newVal.length - 1) {
 				this.loadingMessages = false
 
-				if (
-					newVal[newVal.length - 1].senderId === this.currentUserId ||
-					this.getBottomScroll(element) < 60
-				) {
-					return setTimeout(() => {
-						const options = { top: element.scrollHeight, behavior: 'smooth' }
-						element.scrollTo(options)
-					}, 50)
+				if (this.getBottomScroll(element) < 60) {
+					return scrollToBottom()
 				} else {
-					this.scrollIcon = true
-					return this.scrollMessagesCount++
+					if (newVal[newVal.length - 1].senderId === this.currentUserId) {
+						return scrollToBottom()
+					} else {
+						this.scrollIcon = true
+						return this.scrollMessagesCount++
+					}
 				}
 			}
 
