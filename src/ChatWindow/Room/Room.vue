@@ -489,22 +489,15 @@ export default {
 			const element = this.$refs.scrollContainer
 			if (!element) return
 
-			function scrollToBottom() {
-				setTimeout(() => {
-					const options = { top: element.scrollHeight, behavior: 'smooth' }
-					element.scrollTo(options)
-				}, 50)
-			}
-
 			if (oldVal && newVal && oldVal.length === newVal.length - 1) {
 				this.newMessages = []
 				this.loadingMessages = false
 
 				if (this.getBottomScroll(element) < 60) {
-					return scrollToBottom()
+					return this.scrollToBottom()
 				} else {
 					if (newVal[newVal.length - 1].senderId === this.currentUserId) {
-						return scrollToBottom()
+						return this.scrollToBottom()
 					} else {
 						this.scrollIcon = true
 						return this.scrollMessagesCount++
@@ -850,8 +843,10 @@ export default {
 			return scrollHeight - clientHeight - scrollTop
 		},
 		scrollToBottom() {
-			const element = this.$refs.scrollContainer
-			element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
+			setTimeout(() => {
+				const element = this.$refs.scrollContainer
+				element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
+			}, 50)
 		},
 		onChangeInput() {
 			this.keepKeyboardOpen = true
