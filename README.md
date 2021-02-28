@@ -731,6 +731,10 @@ import './vue-advanced-chat.min.js'
 
 <br>
 
+## [Contributing](https://github.com/antoine92190/vue-advanced-chat/blob/master/.github/CONTRIBUTING.md)
+
+Your help is always appreciated :rocket:
+
 ## License
 
 This project is licensed under [MIT License](http://en.wikipedia.org/wiki/MIT_License)
