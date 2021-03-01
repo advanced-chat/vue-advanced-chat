@@ -125,6 +125,7 @@
 			<room-message-reply
 				:room="room"
 				:message-reply="messageReply"
+				:text-formatting="textFormatting"
 				@reset-message="resetMessage"
 			>
 				<template v-for="(i, name) in $scopedSlots" #[name]="data">

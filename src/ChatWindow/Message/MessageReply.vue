@@ -17,7 +17,7 @@
 			<format-message
 				:content="message.replyMessage.content"
 				:users="roomUsers"
-				:text-formatting="true"
+				:text-formatting="textFormatting"
 				:reply="true"
 			>
 				<template v-for="(i, name) in $scopedSlots" #[name]="data">
@@ -39,6 +39,7 @@ export default {
 
 	props: {
 		message: { type: Object, required: true },
+		textFormatting: { type: Boolean, required: true },
 		roomUsers: { type: Array, required: true }
 	},
 

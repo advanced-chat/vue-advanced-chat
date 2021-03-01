@@ -49,6 +49,7 @@
 							v-if="!message.deleted && message.replyMessage"
 							:message="message"
 							:room-users="roomUsers"
+							:text-formatting="textFormatting"
 						>
 							<template v-for="(i, name) in $scopedSlots" #[name]="data">
 								<slot :name="name" v-bind="data" />
