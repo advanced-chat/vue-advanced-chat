@@ -177,36 +177,37 @@ fetchMessages({ room, options }) {
 
 ## Props API
 
-| <div style="width:230px">Prop</div> | Type             | Required | Default |
-| ----------------------------------- | ---------------- | -------- | ------- |
-| `height`                            | String           | -        | `600px` |
-| `current-user-id`(1)                | [String, Number] | `true`   | -       |
-| `rooms`                             | Array            | -        | `[]`    |
-| `loading-rooms`(2)                  | Boolean          | -        | `false` |
-| `rooms-loaded`(3)                   | Boolean          | -        | `false` |
-| `room-id`(4)                        | [String, Number] | -        | `null`  |
-| `load-first-room`(5)                | Boolean          | -        | `true`  |
-| `messages`                          | Array            | -        | `[]`    |
-| `room-message`(6)                   | String           | -        | `null`  |
-| `messages-loaded`(7)                | Boolean          | -        | `false` |
-| `room-actions`(8)                   | Array            | -        | `[]`    |
-| `menu-actions`(9)                   | Array            | -        | `[]`    |
-| `message-actions`(10)               | Array            | -        | (10)    |
-| `show-add-room`                     | Boolean          | -        | `true`  |
-| `show-send-icon`                    | Boolean          | -        | `true`  |
-| `show-files`                        | Boolean          | -        | `true`  |
-| `show-audio`                        | Boolean          | -        | `true`  |
-| `show-emojis`                       | Boolean          | -        | `true`  |
-| `show-reaction-emojis`              | Boolean          | -        | `true`  |
-| `show-new-messages-divider`(11)     | Boolean          | -        | `true`  |
-| `show-footer`(12)                   | Boolean          | -        | `true`  |
-| `text-messages`(13)                 | Object           | -        | `null`  |
-| `text-formatting`(14)               | Boolean          | -        | `true`  |
-| `responsive-breakpoint`(15)         | Number           | -        | `900`   |
-| `single-room`(16)                   | Boolean          | -        | `false` |
-| `theme`(17)                         | Sring            | -        | `light` |
-| `accepted-files`(18)                | String           | -        | `*`     |
-| `styles`(19)                        | Object           | -        | (19)    |
+| <div style="width:230px">Prop</div> | Type             | Required | Default                                 |
+| ----------------------------------- | ---------------- | -------- | --------------------------------------- |
+| `height`                            | String           | -        | `600px`                                 |
+| `current-user-id`(1)                | [String, Number] | `true`   | -                                       |
+| `rooms`                             | Array            | -        | `[]`                                    |
+| `loading-rooms`(2)                  | Boolean          | -        | `false`                                 |
+| `rooms-loaded`(3)                   | Boolean          | -        | `false`                                 |
+| `room-id`(4)                        | [String, Number] | -        | `null`                                  |
+| `load-first-room`(5)                | Boolean          | -        | `true`                                  |
+| `messages`                          | Array            | -        | `[]`                                    |
+| `room-message`(6)                   | String           | -        | `null`                                  |
+| `messages-loaded`(7)                | Boolean          | -        | `false`                                 |
+| `room-actions`(8)                   | Array            | -        | `[]`                                    |
+| `menu-actions`(9)                   | Array            | -        | `[]`                                    |
+| `message-actions`(10)               | Array            | -        | (10)                                    |
+| `show-add-room`                     | Boolean          | -        | `true`                                  |
+| `show-send-icon`                    | Boolean          | -        | `true`                                  |
+| `show-files`                        | Boolean          | -        | `true`                                  |
+| `show-audio`                        | Boolean          | -        | `true`                                  |
+| `show-emojis`                       | Boolean          | -        | `true`                                  |
+| `show-reaction-emojis`              | Boolean          | -        | `true`                                  |
+| `show-new-messages-divider`(11)     | Boolean          | -        | `true`                                  |
+| `show-footer`(12)                   | Boolean          | -        | `true`                                  |
+| `text-messages`(13)                 | Object           | -        | `null`                                  |
+| `text-formatting`(14)               | Boolean          | -        | `true`                                  |
+| `link-options`(15)                  | Object           | -        | `{ disabled: false, target: '_blank' }` |
+| `responsive-breakpoint`(16)         | Number           | -        | `900`                                   |
+| `single-room`(17)                   | Boolean          | -        | `false`                                 |
+| `theme`(18)                         | Sring            | -        | `light`                                 |
+| `accepted-files`(19)                | String           | -        | `*`                                     |
+| `styles`(20)                        | Object           | -        | (19)                                    |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -316,7 +317,7 @@ text-messages="{
 }"
 ```
 
-**(14)** `text-formatting` can be used to add text formatting. Currently, bold, italic, strikethrough, underline, inline code and multiline code formatting are available and can be used in conjonction. You can disable text formatting by passing the prop as `:textFormatting="false"`.
+**(14)** `text-formatting` can be used to add text formatting. Currently, bold, italic, strikethrough, underline, inline code and multiline code formatting are available and can be used in conjonction. You can disable text formatting by passing the prop as `:text-formatting="false"`.
 
 | Style             | Syntax          | Example                                | Output                                 |
 | ----------------- | --------------- | -------------------------------------- | -------------------------------------- |
@@ -343,17 +344,23 @@ This is
 multiline code
 ```
 
-**(15)** `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
+**(15)** `link-options` can be used to disable url links in messages, or change urls target. Ex:
 
-**(16)** `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+```javascript
+:link-options="{ disabled: true, target: '_self' }"
+```
 
-**(17)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+**(16)** `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
 
-**(18)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
+**(17)** `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+
+**(18)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+
+**(19)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
 
 Example: set `"accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files
 
-**(19)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
+**(20)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
 
 ```javascript
 styles="{

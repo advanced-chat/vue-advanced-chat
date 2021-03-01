@@ -13,6 +13,7 @@
 				:show-add-room="showAddRoom"
 				:show-rooms-list="showRoomsList"
 				:text-formatting="textFormatting"
+				:link-options="linkOptions"
 				:is-mobile="isMobile"
 				@fetch-room="fetchRoom"
 				@fetch-more-rooms="fetchMoreRooms"
@@ -46,6 +47,7 @@
 				:single-room="singleRoom"
 				:show-rooms-list="showRoomsList"
 				:text-formatting="textFormatting"
+				:link-options="linkOptions"
 				:is-mobile="isMobile"
 				:loading-rooms="loadingRooms"
 				:room-info="$listeners.roomInfo"
@@ -125,6 +127,10 @@ export default {
 		showNewMessagesDivider: { type: Boolean, default: true },
 		showFooter: { type: Boolean, default: true },
 		textFormatting: { type: Boolean, default: true },
+		linkOptions: {
+			type: Object,
+			default: () => ({ disabled: false, target: '_blank' })
+		},
 		newMessage: { type: Object, default: null },
 		roomMessage: { type: String, default: '' },
 		acceptedFiles: { type: String, default: '*' }

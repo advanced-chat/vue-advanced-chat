@@ -40,6 +40,7 @@
 			:content="message.content"
 			:users="roomUsers"
 			:text-formatting="textFormatting"
+			:link-options="linkOptions"
 			@open-user-tag="$emit('open-user-tag')"
 		>
 			<template v-for="(i, name) in $scopedSlots" #[name]="data">
@@ -65,6 +66,7 @@ export default {
 		message: { type: Object, required: true },
 		roomUsers: { type: Array, required: true },
 		textFormatting: { type: Boolean, required: true },
+		linkOptions: { type: Object, required: true },
 		imageHover: { type: Boolean, required: true }
 	},
 

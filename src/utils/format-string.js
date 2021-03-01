@@ -1,4 +1,5 @@
 const linkify = require('linkifyjs')
+// require('linkifyjs/plugins/hashtag')(linkify)
 
 export default (text, doLinkify) => {
 	const json = compileToJSON(text)

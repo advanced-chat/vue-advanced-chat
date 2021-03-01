@@ -20,6 +20,7 @@
 							:content="messageReply.content"
 							:users="room.users"
 							:text-formatting="textFormatting"
+							:link-options="linkOptions"
 							:reply="true"
 						>
 							<template v-for="(i, name) in $scopedSlots" #[name]="data">
@@ -57,7 +58,8 @@ export default {
 	props: {
 		room: { type: Object, required: true },
 		messageReply: { type: Object, default: null },
-		textFormatting: { type: Boolean, required: true }
+		textFormatting: { type: Boolean, required: true },
+		linkOptions: { type: Object, required: true }
 	},
 
 	computed: {

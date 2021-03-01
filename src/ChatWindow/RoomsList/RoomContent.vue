@@ -56,6 +56,7 @@
 						:users="room.users"
 						:linkify="false"
 						:text-formatting="textFormatting"
+						:link-options="linkOptions"
 						:single-line="true"
 					>
 						<template #deleted-icon="data">
@@ -135,6 +136,7 @@ export default {
 		currentUserId: { type: [String, Number], required: true },
 		room: { type: Object, required: true },
 		textFormatting: { type: Boolean, required: true },
+		linkOptions: { type: Object, required: true },
 		textMessages: { type: Object, required: true },
 		roomActions: { type: Array, required: true }
 	},

@@ -50,6 +50,7 @@
 							:message="message"
 							:room-users="roomUsers"
 							:text-formatting="textFormatting"
+							:link-options="linkOptions"
 						>
 							<template v-for="(i, name) in $scopedSlots" #[name]="data">
 								<slot :name="name" v-bind="data" />
@@ -68,6 +69,7 @@
 							:content="message.content"
 							:users="roomUsers"
 							:text-formatting="textFormatting"
+							:link-options="linkOptions"
 							@open-user-tag="openUserTag"
 						>
 							<template v-for="(i, name) in $scopedSlots" #[name]="data">
@@ -81,6 +83,7 @@
 							:message="message"
 							:room-users="roomUsers"
 							:text-formatting="textFormatting"
+							:link-options="linkOptions"
 							:image-hover="imageHover"
 							@open-file="openFile"
 						>
@@ -223,6 +226,7 @@ export default {
 		showReactionEmojis: { type: Boolean, required: true },
 		showNewMessagesDivider: { type: Boolean, required: true },
 		textFormatting: { type: Boolean, required: true },
+		linkOptions: { type: Object, required: true },
 		emojisList: { type: Object, required: true },
 		hideOptions: { type: Boolean, required: true }
 	},

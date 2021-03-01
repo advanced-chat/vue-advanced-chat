@@ -16,7 +16,7 @@
 						'vac-text-tag': !singleLine && !reply && message.tag
 					}"
 					:href="message.href"
-					:target="message.href ? '_blank' : null"
+					:target="message.href ? linkOptions.target : null"
 					@click="openTag(message)"
 				>
 					<slot name="deleted-icon" v-bind="{ deleted }">
@@ -65,12 +65,17 @@ export default {
 		linkify: { type: Boolean, default: true },
 		singleLine: { type: Boolean, default: false },
 		reply: { type: Boolean, default: false },
-		textFormatting: { type: Boolean, required: true }
+		textFormatting: { type: Boolean, required: true },
+		linkOptions: { type: Object, required: true }
 	},
 
 	computed: {
 		linkifiedMessage() {
-			const message = formatString(this.formatTags(this.content), this.linkify)
+			const message = formatString(
+				this.formatTags(this.content),
+				this.linkify && !this.linkOptions.disabled,
+				this.linkOptions
+			)
 
 			message.forEach(m => {
 				m.url = this.checkType(m, 'url')

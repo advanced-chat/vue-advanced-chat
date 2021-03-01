@@ -82,6 +82,7 @@
 								:show-reaction-emojis="showReactionEmojis"
 								:show-new-messages-divider="showNewMessagesDivider"
 								:text-formatting="textFormatting"
+								:link-options="linkOptions"
 								:emojis-list="emojisList"
 								:hide-options="hideOptions"
 								@message-added="onMessageAdded"
@@ -126,6 +127,7 @@
 				:room="room"
 				:message-reply="messageReply"
 				:text-formatting="textFormatting"
+				:link-options="linkOptions"
 				@reset-message="resetMessage"
 			>
 				<template v-for="(i, name) in $scopedSlots" #[name]="data">
@@ -382,6 +384,7 @@ export default {
 		showFooter: { type: Boolean, required: true },
 		acceptedFiles: { type: String, required: true },
 		textFormatting: { type: Boolean, required: true },
+		linkOptions: { type: Object, required: true },
 		loadingRooms: { type: Boolean, required: true },
 		roomInfo: { type: Function, default: null },
 		textareaAction: { type: Function, default: null }

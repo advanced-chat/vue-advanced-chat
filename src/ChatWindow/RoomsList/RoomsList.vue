@@ -40,6 +40,7 @@
 					:current-user-id="currentUserId"
 					:room="fRoom"
 					:text-formatting="textFormatting"
+					:link-options="linkOptions"
 					:text-messages="textMessages"
 					:room-actions="roomActions"
 					@room-action-handler="$emit('room-action-handler', $event)"
@@ -91,6 +92,7 @@ export default {
 		showRoomsList: { type: Boolean, required: true },
 		showAddRoom: { type: Boolean, required: true },
 		textFormatting: { type: Boolean, required: true },
+		linkOptions: { type: Object, required: true },
 		isMobile: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },
 		loadingRooms: { type: Boolean, required: true },
