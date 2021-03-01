@@ -189,7 +189,7 @@ import MessageActions from './MessageActions'
 import MessageReactions from './MessageReactions'
 import AudioPlayer from './AudioPlayer'
 
-const { messagesValid } = require('../../utils/room-validation')
+const { messagesValidation } = require('../../utils/data-validation')
 const {
 	isImageFile,
 	isVideoFile,
@@ -289,12 +289,7 @@ export default {
 	},
 
 	mounted() {
-		if (!messagesValid(this.message)) {
-			throw new Error(
-				'Messages object is not valid! Must contain _id[String, Number], content[String, Number] and senderId[String, Number]'
-			)
-		}
-
+		messagesValidation(this.message)
 		this.$emit('message-added', { message: this.message, index: this.index })
 	},
 

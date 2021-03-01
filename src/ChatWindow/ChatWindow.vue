@@ -79,7 +79,10 @@ import Room from './Room/Room'
 
 import locales from '../locales'
 import { defaultThemeStyles, cssThemeVars } from '../themes'
-const { roomsValid, partcipantsValid } = require('../utils/room-validation')
+const {
+	roomsValidation,
+	partcipantsValidation
+} = require('../utils/data-validation')
 
 export default {
 	name: 'ChatContainer',
@@ -212,22 +215,12 @@ export default {
 		},
 
 		room(val) {
-			if (!val) return
+			if (!val || Object.entries(val).length === 0) return
 
-			if (Object.entries(val).length === 0) return
-
-			if (!roomsValid(val)) {
-				throw new Error(
-					'Rooms object is not valid! Must contain roomId[String, Number], roomName[String] and users[Array]'
-				)
-			}
+			roomsValidation(val)
 
 			val.users.forEach(user => {
-				if (!partcipantsValid(user)) {
-					throw new Error(
-						'Participants object is not valid! Must contain _id[String, Number] and username[String]'
-					)
-				}
+				partcipantsValidation(user)
 			})
 		},
 
