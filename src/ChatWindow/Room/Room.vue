@@ -84,6 +84,7 @@
 								:text-formatting="textFormatting"
 								:emojis-list="emojisList"
 								:hide-options="hideOptions"
+								@message-added="onMessageAdded"
 								@message-action-handler="messageActionHandler"
 								@open-file="openFile"
 								@open-user-tag="openUserTag"
@@ -336,7 +337,6 @@ import Message from '../Message/Message'
 
 import filteredUsers from '../../utils/filter-items'
 import Recorder from '../../utils/recorder'
-const { messagesValid } = require('../../utils/room-validation')
 const { detectMobile, iOSDevice } = require('../../utils/mobile-detection')
 const { isImageFile, isVideoFile } = require('../../utils/media-file')
 
@@ -450,14 +450,7 @@ export default {
 		},
 		room(newVal, oldVal) {
 			if (newVal.roomId && newVal.roomId !== oldVal.roomId) {
-				this.loadingMessages = true
-				this.scrollIcon = false
-				this.scrollMessagesCount = 0
-				this.resetMessage(true)
-				if (this.roomMessage) {
-					this.message = this.roomMessage
-					setTimeout(() => this.onChangeInput(), 0)
-				}
+				this.onRoomChanged()
 			}
 		},
 		roomMessage: {
@@ -466,14 +459,8 @@ export default {
 				if (val) this.message = this.roomMessage
 			}
 		},
-		messages(newVal, oldVal) {
-			newVal.forEach((message, i) => {
-				if (!messagesValid(message)) {
-					throw new Error(
-						'Messages object is not valid! Must contain _id[String, Number], content[String, Number] and senderId[String, Number]'
-					)
-				}
-
+		messages(val) {
+			val.forEach((message, i) => {
 				if (
 					this.showNewMessagesDivider &&
 					!message.seen &&
@@ -486,32 +473,8 @@ export default {
 				}
 			})
 
-			const element = this.$refs.scrollContainer
-			if (!element) return
-
-			if (oldVal && newVal && oldVal.length === newVal.length - 1) {
-				this.newMessages = []
-				this.loadingMessages = false
-
-				if (this.getBottomScroll(element) < 60) {
-					return this.scrollToBottom()
-				} else {
-					if (newVal[newVal.length - 1].senderId === this.currentUserId) {
-						return this.scrollToBottom()
-					} else {
-						this.scrollIcon = true
-						return this.scrollMessagesCount++
-					}
-				}
-			}
-
 			if (this.infiniteState) {
 				this.infiniteState.loaded()
-			} else if (newVal.length && !this.scrollIcon) {
-				setTimeout(() => {
-					element.scrollTo({ top: element.scrollHeight })
-					this.loadingMessages = false
-				}, 0)
 			}
 
 			setTimeout(() => (this.loadingMoreMessages = false), 0)
@@ -557,15 +520,60 @@ export default {
 	},
 
 	methods: {
+		onRoomChanged() {
+			this.loadingMessages = true
+			this.scrollIcon = false
+			this.scrollMessagesCount = 0
+			this.resetMessage(true)
+
+			if (this.roomMessage) {
+				this.message = this.roomMessage
+				setTimeout(() => this.onChangeInput(), 0)
+			}
+
+			const unwatch = this.$watch(
+				() => this.messages,
+				val => {
+					if (!val || !val.length) return
+
+					const element = this.$refs.scrollContainer
+					if (!element) return
+
+					setTimeout(() => {
+						element.scrollTo({ top: element.scrollHeight })
+						unwatch()
+					}, 0)
+				}
+			)
+		},
+		onMessageAdded({ message, index }) {
+			this.newMessages = []
+
+			this.loadingMessages = false
+
+			if (index !== this.messages.length - 1) return
+
+			setTimeout(() => {
+				if (this.getBottomScroll(this.$refs.scrollContainer) < 60) {
+					this.scrollToBottom()
+				} else {
+					if (message.senderId === this.currentUserId) {
+						this.scrollToBottom()
+					} else {
+						this.scrollIcon = true
+						this.scrollMessagesCount++
+					}
+				}
+			}, 0)
+		},
 		onContainerScroll(e) {
 			this.hideOptions = true
-			setTimeout(() => {
-				if (!e.target) return
 
-				const bottomScroll = this.getBottomScroll(e.target)
-				if (bottomScroll < 60) this.scrollMessagesCount = 0
-				this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount
-			}, 200)
+			if (!e.target) return
+
+			const bottomScroll = this.getBottomScroll(e.target)
+			if (bottomScroll < 60) this.scrollMessagesCount = 0
+			this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount
 		},
 		updateFooterList(tagChar) {
 			if (!this.$refs['roomTextarea']) return
