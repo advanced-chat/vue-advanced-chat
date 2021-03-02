@@ -485,7 +485,7 @@ export default {
 				this.infiniteState.loaded()
 			}
 
-			setTimeout(() => (this.loadingMoreMessages = false), 0)
+			setTimeout(() => (this.loadingMoreMessages = false))
 		},
 		messagesLoaded(val) {
 			if (val) this.loadingMessages = false
@@ -501,7 +501,7 @@ export default {
 			if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
 				if (isMobile) {
 					this.message = this.message + '\n'
-					setTimeout(() => this.onChangeInput(), 0)
+					setTimeout(() => this.onChangeInput())
 				} else {
 					this.sendMessage()
 				}
@@ -519,7 +519,7 @@ export default {
 
 		this.$refs['roomTextarea'].addEventListener('blur', () => {
 			this.resetFooterList()
-			if (isMobile) setTimeout(() => (this.keepKeyboardOpen = false), 0)
+			if (isMobile) setTimeout(() => (this.keepKeyboardOpen = false))
 		})
 	},
 
@@ -536,7 +536,7 @@ export default {
 
 			if (this.roomMessage) {
 				this.message = this.roomMessage
-				setTimeout(() => this.onChangeInput(), 0)
+				setTimeout(() => this.onChangeInput())
 			}
 
 			const unwatch = this.$watch(
@@ -572,7 +572,7 @@ export default {
 						this.scrollMessagesCount++
 					}
 				}
-			}, 0)
+			})
 		},
 		onContainerScroll(e) {
 			this.hideOptions = true
@@ -722,7 +722,7 @@ export default {
 				this.file = null
 				this.message = ''
 				this.preventKeyboardFromClosing()
-				setTimeout(() => this.focusTextarea(disableMobileFocus), 0)
+				setTimeout(() => this.focusTextarea(disableMobileFocus))
 				return
 			}
 
@@ -738,7 +738,7 @@ export default {
 			this.videoFile = null
 			this.emojiOpened = false
 			this.preventKeyboardFromClosing()
-			setTimeout(() => this.focusTextarea(disableMobileFocus), 0)
+			setTimeout(() => this.focusTextarea(disableMobileFocus))
 		},
 		resetMediaFile() {
 			this.mediaDimensions = null
@@ -764,7 +764,7 @@ export default {
 						this.cursorRangePosition
 					)
 					this.cursorRangePosition = null
-				}, 0)
+				})
 			}
 		},
 		preventKeyboardFromClosing() {
@@ -851,7 +851,7 @@ export default {
 
 			if (isImageFile(this.file)) {
 				this.imageFile = message.file.url
-				setTimeout(() => this.onMediaLoad(), 0)
+				setTimeout(() => this.onMediaLoad())
 			} else if (isVideoFile(this.file)) {
 				this.videoFile = message.file.url
 				setTimeout(() => this.onMediaLoad(), 50)
@@ -868,7 +868,7 @@ export default {
 				const element = this.$refs.scrollContainer
 				element.classList.add('vac-scroll-smooth')
 				element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
-				setTimeout(() => element.classList.remove('vac-scroll-smooth'), 0)
+				setTimeout(() => element.classList.remove('vac-scroll-smooth'))
 			}, 50)
 		},
 		onChangeInput() {

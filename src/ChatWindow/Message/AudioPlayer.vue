@@ -79,7 +79,7 @@ export default {
 			if (!this.audioSource) return
 
 			if (this.isPlaying) this.player.pause()
-			else setTimeout(() => this.player.play(), 0)
+			else setTimeout(() => this.player.play())
 
 			this.isPlaying = !this.isPlaying
 		},

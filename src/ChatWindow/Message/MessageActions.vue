@@ -192,7 +192,7 @@ export default {
 
 				if (optionsTopPosition) this.menuOptionsTop = 30
 				else this.menuOptionsTop = -menuOptionsTop
-			}, 0)
+			})
 		},
 		closeOptions() {
 			this.optionsOpened = false

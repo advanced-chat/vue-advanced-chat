@@ -169,7 +169,7 @@ fetchMessages({ room, options }) {
   setTimeout(() => {
     this.messages = []
     this.messagesLoaded = true
-  }, 0)
+  })
 }
 ```
 
