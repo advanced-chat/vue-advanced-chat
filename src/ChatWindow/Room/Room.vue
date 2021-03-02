@@ -449,8 +449,12 @@ export default {
 
 	watch: {
 		loadingMessages(val) {
-			if (val) this.infiniteState = null
-			else this.focusTextarea(true)
+			if (val) {
+				this.infiniteState = null
+			} else {
+				if (this.infiniteState) this.infiniteState.loaded()
+				this.focusTextarea(true)
+			}
 		},
 		room(newVal, oldVal) {
 			if (newVal.roomId && newVal.roomId !== oldVal.roomId) {
@@ -543,17 +547,17 @@ export default {
 					const element = this.$refs.scrollContainer
 					if (!element) return
 
+					unwatch()
+
 					setTimeout(() => {
 						element.scrollTo({ top: element.scrollHeight })
-						unwatch()
-					}, 0)
+						this.loadingMessages = false
+					})
 				}
 			)
 		},
 		onMessageAdded({ message, index }) {
 			this.newMessages = []
-
-			this.loadingMessages = false
 
 			if (index !== this.messages.length - 1) return
 
@@ -800,6 +804,11 @@ export default {
 			this.resetMessage(true)
 		},
 		loadMoreMessages(infiniteState) {
+			if (this.loadingMessages) {
+				this.infiniteState = infiniteState
+				return
+			}
+
 			setTimeout(
 				() => {
 					if (this.loadingMoreMessages) return
