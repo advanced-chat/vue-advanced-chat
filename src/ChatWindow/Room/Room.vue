@@ -25,6 +25,7 @@
 			:menu-actions="menuActions"
 			:room="room"
 			@toggle-rooms-list="$emit('toggle-rooms-list')"
+			@room-info="$emit('room-info')"
 			@menu-action-handler="$emit('menu-action-handler', $event)"
 		>
 			<template v-for="(i, name) in $scopedSlots" #[name]="data">

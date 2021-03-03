@@ -15,7 +15,7 @@
 				<div
 					class="vac-info-wrapper"
 					:class="{ 'vac-item-clickable': roomInfo }"
-					@click="$emit('room-info', room)"
+					@click="$emit('room-info')"
 				>
 					<slot name="room-header-avatar" v-bind="{ room }">
 						<div
