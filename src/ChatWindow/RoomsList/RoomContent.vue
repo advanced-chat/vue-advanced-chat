@@ -176,7 +176,7 @@ export default {
 			if (!this.room.users || this.room.users.length !== 2) return
 
 			const user = this.room.users.find(u => u._id !== this.currentUserId)
-			if (user.status) return user.status.state
+			if (user && user.status) return user.status.state
 
 			return null
 		},
