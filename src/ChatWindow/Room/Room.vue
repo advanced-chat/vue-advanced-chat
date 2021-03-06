@@ -562,8 +562,13 @@ export default {
 
 			if (index !== this.messages.length - 1) return
 
+			const messageHeight = document.getElementById(message._id).offsetHeight
+			const autoScrollOffset = messageHeight + 60
+
 			setTimeout(() => {
-				if (this.getBottomScroll(this.$refs.scrollContainer) < 60) {
+				if (
+					this.getBottomScroll(this.$refs.scrollContainer) < autoScrollOffset
+				) {
 					this.scrollToBottom()
 				} else {
 					if (message.senderId === this.currentUserId) {
