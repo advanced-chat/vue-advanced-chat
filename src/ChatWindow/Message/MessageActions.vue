@@ -35,7 +35,7 @@
 					v-if="isMessageReactions"
 					key="3"
 					v-click-outside="closeEmoji"
-					class="vac-message-reactions"
+					class="vac-message-emojis"
 					:style="{ right: isMessageActions ? '30px' : '5px' }"
 					:emoji-opened="emojiOpened"
 					:emoji-reaction="true"
@@ -271,7 +271,7 @@ export default {
 	}
 }
 
-.vac-message-reactions {
+.vac-message-emojis {
 	position: absolute;
 	top: 6px;
 	right: 30px;
