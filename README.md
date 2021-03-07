@@ -12,23 +12,18 @@
 
 ## Features
 
-- Realtime chat messaging
-- Customizeable
+- Customizeable realtime chat messaging
 - Backend agnostic
 - Images, videos, files, voice messages & emojis
-- Edit messages
-- Reply to other messages
-- Tag users
-- Emojis shortcut suggestions
+- Edit messages & reply to other messages
+- Tag users & emojis shortcut suggestions
 - UI elements for seen, new, deleted, typing and system messages
 - Text formatting - bold, italic, strikethrough, underline, code, multiline
 - Online / Offline users status
 - Flexible options and slots
-- Custom theming - light and dark modes
+- Light and dark theme modes
 - Firestore example
-- Typescript support
-- PWA support
-- Web Component support
+- Typescript, PWA, Web Component support
 
 ## [Demo](https://antoine92190.github.io/vue-advanced-chat)
 
