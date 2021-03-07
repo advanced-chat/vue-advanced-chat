@@ -426,7 +426,7 @@ export default {
 					timestamp: parseTimestamp(timestamp, 'HH:mm'),
 					date: parseTimestamp(timestamp, 'DD MMMM YYYY'),
 					username: senderUser ? senderUser.username : null,
-					avatar: senderUser ? senderUser.avatar : null,
+					// avatar: senderUser ? senderUser.avatar : null,
 					distributed: true
 				}
 			}
