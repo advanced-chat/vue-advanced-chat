@@ -20,7 +20,7 @@
 					<slot name="room-header-avatar" v-bind="{ room }">
 						<div
 							v-if="room.avatar"
-							class="vac-room-avatar"
+							class="vac-avatar"
 							:style="{ 'background-image': `url('${room.avatar}')` }"
 						/>
 					</slot>
@@ -219,7 +219,7 @@ export default {
 			line-height: 16px;
 		}
 
-		.vac-room-avatar {
+		.vac-avatar {
 			height: 37px;
 			width: 37px;
 			min-height: 37px;

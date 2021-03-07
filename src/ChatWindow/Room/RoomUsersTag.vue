@@ -14,7 +14,7 @@
 				<div class="vac-tags-info">
 					<div
 						v-if="user.avatar"
-						class="vac-room-avatar vac-tags-avatar"
+						class="vac-avatar vac-tags-avatar"
 						:style="{ 'background-image': `url('${user.avatar}')` }"
 					/>
 					<div class="vac-tags-username">

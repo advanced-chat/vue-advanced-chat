@@ -462,6 +462,7 @@ messages="[
     content: 'message 1',
     senderId: 1234,
     username: 'John Doe',
+    avatar: 'assets/imgs/doe.png',
     date: '13 November',
     timestamp: '10:20',
     system: false,

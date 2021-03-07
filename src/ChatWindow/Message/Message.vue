@@ -20,6 +20,11 @@
 		>
 			<slot name="message" v-bind="{ message }">
 				<div
+					v-if="message.avatar && message.senderId !== currentUserId"
+					class="vac-avatar"
+					:style="{ 'background-image': `url('${message.avatar}')` }"
+				/>
+				<div
 					class="vac-message-container"
 					:class="{
 						'vac-message-container-offset': messageOffset
@@ -399,6 +404,15 @@ export default {
 	line-height: 1.4;
 }
 
+.vac-avatar {
+	height: 28px;
+	width: 28px;
+	min-height: 28px;
+	min-width: 28px;
+	margin: 0 0 2px 0;
+	align-self: flex-end;
+}
+
 .vac-message-container {
 	position: relative;
 	padding: 2px 10px;
@@ -555,6 +569,14 @@ export default {
 	.vac-message-box {
 		flex: 0 0 80%;
 		max-width: 80%;
+	}
+
+	.vac-avatar {
+		height: 25px;
+		width: 25px;
+		min-height: 25px;
+		min-width: 25px;
+		margin: 0 6px 1px 0;
 	}
 
 	.vac-offset-current {

@@ -3,7 +3,7 @@
 		<slot name="room-list-item" v-bind="{ room }">
 			<div
 				v-if="room.avatar"
-				class="vac-room-avatar"
+				class="vac-avatar"
 				:style="{ 'background-image': `url('${room.avatar}')` }"
 			/>
 			<div class="vac-name-container vac-text-ellipsis">
