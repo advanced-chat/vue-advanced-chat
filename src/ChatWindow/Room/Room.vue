@@ -457,9 +457,12 @@ export default {
 				this.focusTextarea(true)
 			}
 		},
-		room(newVal, oldVal) {
-			if (newVal.roomId && newVal.roomId !== oldVal.roomId) {
-				this.onRoomChanged()
+		room: {
+			immediate: true,
+			handler(newVal, oldVal) {
+				if (!oldVal || (newVal && newVal.roomId !== oldVal.roomId)) {
+					this.onRoomChanged()
+				}
 			}
 		},
 		roomMessage: {
