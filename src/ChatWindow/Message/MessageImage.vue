@@ -11,7 +11,7 @@
 					isImageLoading && message.senderId === currentUserId
 			}"
 			:style="{
-				'background-image': `url('${message.file.url}')`,
+				'background-image': `url('${isImageLoading ? message.file.preview || message.file.url : message.file.url}')`,
 				'max-height': `${imageResponsive.maxHeight}px`
 			}"
 		>
