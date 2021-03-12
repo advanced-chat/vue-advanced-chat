@@ -539,7 +539,7 @@ export default {
 			this.loadingMessages = true
 			this.scrollIcon = false
 			this.scrollMessagesCount = 0
-			this.resetMessage(true)
+			this.resetMessage(true, null, true)
 
 			if (this.roomMessage) {
 				this.message = this.roomMessage
@@ -727,8 +727,14 @@ export default {
 			else if (this.filteredUsersTag.length) this.filteredUsersTag = []
 			else this.resetMessage()
 		},
-		resetMessage(disableMobileFocus = null, editFile = null) {
-			this.$emit('typing-message', null)
+		resetMessage(
+			disableMobileFocus = false,
+			editFile = false,
+			initRoom = false
+		) {
+			if (!initRoom) {
+				this.$emit('typing-message', null)
+			}
 
 			if (editFile) {
 				this.file = null
