@@ -11,7 +11,7 @@
 					isImageLoading && message.senderId === currentUserId
 			}"
 			:style="{
-				'background-image': `url('${isImageLoading ? message.file.preview || message.file.url : message.file.url}')`,
+				'background-image': `url('${imageBackground}')`,
 				'max-height': `${imageResponsive.maxHeight}px`
 			}"
 		>
@@ -82,6 +82,11 @@ export default {
 			return (
 				this.message.file.url.indexOf('blob:http') !== -1 || this.imageLoading
 			)
+		},
+		imageBackground() {
+			return this.isImageLoading
+				? this.message.file.preview || this.message.file.url
+				: this.message.file.url
 		}
 	},
 
