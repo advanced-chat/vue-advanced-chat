@@ -617,6 +617,8 @@ export default {
 		},
 
 		typingMessage({ message, roomId }) {
+			if (!roomId) return
+
 			if (message?.length > 1) {
 				return (this.typingMessageCache = message)
 			}
