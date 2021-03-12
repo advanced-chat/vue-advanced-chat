@@ -3,12 +3,7 @@
 		v-show="(isMobile && !showRoomsList) || !isMobile || singleRoom"
 		class="vac-col-messages"
 	>
-		<slot
-			v-if="
-				(!rooms.length && !loadingRooms) || (!room.roomId && !loadFirstRoom)
-			"
-			name="no-room-selected"
-		>
+		<slot v-if="showNoRoom" name="no-room-selected">
 			<div class="vac-container-center vac-room-empty">
 				<div>{{ textMessages.ROOM_EMPTY }}</div>
 			</div>
@@ -436,6 +431,14 @@ export default {
 				!this.loadingMessages &&
 				!this.loadingRooms
 			)
+		},
+		showNoRoom() {
+			const noRoomSelected =
+				(!this.rooms.length && !this.loadingRooms) ||
+				(!this.room.roomId && !this.loadFirstRoom)
+
+			if (noRoomSelected) this.loadingMessages = false
+			return noRoomSelected
 		},
 		showMessagesStarted() {
 			return this.messages.length && this.messagesLoaded
