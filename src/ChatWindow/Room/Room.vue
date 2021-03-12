@@ -437,7 +437,9 @@ export default {
 				(!this.rooms.length && !this.loadingRooms) ||
 				(!this.room.roomId && !this.loadFirstRoom)
 
-			if (noRoomSelected) this.loadingMessages = false
+			if (noRoomSelected) {
+				this.loadingMessages = false /* eslint-disable-line vue/no-side-effects-in-computed-properties */
+			}
 			return noRoomSelected
 		},
 		showMessagesStarted() {
