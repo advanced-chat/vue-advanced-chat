@@ -122,15 +122,18 @@ export default {
 				this.loadingMoreRooms = false
 			}
 		},
-
 		loadingRooms(val) {
 			if (val) this.infiniteState = null
 		},
-
 		loadingMoreRooms(val) {
 			this.$emit('loading-more-rooms', val)
 		},
-
+		roomsLoaded(val) {
+			if (val && this.infiniteState) {
+				this.loadingMoreRooms = false
+				this.infiniteState.complete()
+			}
+		},
 		room: {
 			immediate: true,
 			handler(val) {
