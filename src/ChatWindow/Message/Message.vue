@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div :id="message._id" :ref="message._id">
 		<div v-if="showDate" class="vac-card-info vac-card-date">
 			{{ message.date }}
 		</div>
@@ -14,7 +14,6 @@
 
 		<div
 			v-else
-			:id="message._id"
 			class="vac-message-box"
 			:class="{ 'vac-offset-current': message.senderId === currentUserId }"
 		>
@@ -300,7 +299,12 @@ export default {
 
 	mounted() {
 		messagesValidation(this.message)
-		this.$emit('message-added', { message: this.message, index: this.index })
+
+		this.$emit('message-added', {
+			message: this.message,
+			index: this.index,
+			ref: this.$refs[this.message._id]
+		})
 	},
 
 	methods: {

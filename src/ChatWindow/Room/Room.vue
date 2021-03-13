@@ -565,13 +565,12 @@ export default {
 				}
 			)
 		},
-		onMessageAdded({ message, index }) {
+		onMessageAdded({ message, index, ref }) {
 			this.newMessages = []
 
 			if (index !== this.messages.length - 1) return
 
-			const messageHeight = document.getElementById(message._id)?.offsetHeight
-			const autoScrollOffset = messageHeight + 60
+			const autoScrollOffset = ref.offsetHeight + 60
 
 			setTimeout(() => {
 				if (
