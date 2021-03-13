@@ -72,6 +72,12 @@
 	font-weight: 500;
 }
 
+.vac-text-ellipsis {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .vac-text-bold {
 	font-weight: bold;
 }

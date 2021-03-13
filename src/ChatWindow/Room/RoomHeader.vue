@@ -184,12 +184,6 @@ export default {
 	height: 100%;
 }
 
-.vac-text-ellipsis {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
 .vac-room-name {
 	font-size: 17px;
 	font-weight: 500;

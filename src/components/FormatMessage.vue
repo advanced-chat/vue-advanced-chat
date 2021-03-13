@@ -156,13 +156,6 @@ export default {
 	fill: var(--chat-room-color-message);
 }
 
-.vac-text-ellipsis {
-	width: 100%;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
 .vac-image-link-container {
 	background-color: var(--chat-message-bg-color-media);
 	padding: 8px;

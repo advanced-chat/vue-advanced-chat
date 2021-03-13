@@ -233,12 +233,6 @@ export default {
 	flex: 1;
 }
 
-.vac-text-ellipsis {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
 .vac-title-container {
 	display: flex;
 	align-items: center;
