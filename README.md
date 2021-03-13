@@ -720,8 +720,6 @@ yarn add --save vue
 // angular.json
 
 "build": {
-  ...
-
   "scripts": [
     "./node_modules/vue/dist/vue.min.js",
     "./node_modules/vue-advanced-chat/dist/vue-advanced-chat.min.js"
