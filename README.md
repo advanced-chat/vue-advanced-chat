@@ -12,6 +12,7 @@
 
 ## Features
 
+- Vue, Angular & React compatibility
 - Customizeable realtime chat messaging
 - Backend agnostic
 - Images, videos, files, voice messages & emojis
