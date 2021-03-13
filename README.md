@@ -700,37 +700,65 @@ messages: {
 
 ## Use as a Web Component
 
-### Clone vue-advance-chat project
+### Install vue-advance-chat component
+
+- Follow [Installation](#installation) steps
+
+### Install Vue.js
 
 ```bash
-git clone https://github.com/antoine92190/vue-advanced-chat.git
+# Using npm
+npm install --save vue
+
+# Using yarn
+yarn add --save vue
 ```
 
-### Build it as a Web Component
+### Angular Setup
 
-```bash
-npm i && npm run build:wc
+```json
+// angular.json
+
+"build": {
+  ...
+
+  "scripts": [
+    "./node_modules/vue/dist/vue.min.js",
+    "./node_modules/vue-advanced-chat/dist/vue-advanced-chat.min.js"
+  ]
+}
 ```
-
-### Add Vue.js to your application
-
-```html
-<!-- index.html -->
-<script src="https://unpkg.com/vue"></script>
-```
-
-### Import the built minified component in your application
-
-#### Add vue-advanced-chat.min.js in your application files
-
-```
-vue-advanced-chat/dist/vue-advanced-chat.min.js
-```
-
-#### Import the vue-advanced-chat.min.js file you just added
 
 ```javascript
-import './vue-advanced-chat.min.js'
+// page.module.ts
+
+@NgModule({
+  ...
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+})
+```
+
+```html
+<!-- page.html -->
+
+<vue-advanced-chat
+	height="100vh"
+	[currentUserId]="currentUserId"
+	[roomId]="roomId"
+	[rooms]="rooms"
+	[roomsLoaded]="true"
+	[messages]="messages"
+	[messagesLoaded]="messagesLoaded"
+	[showFiles]="true"
+	[showEmojis]="true"
+	[textFormatting]="true"
+	[showReactionEmojis]="true"
+	[showFooter]="true"
+	(fetch-messages)="fetchMessages($event.detail[0])"
+	(send-message)="sendMessage($event.detail[0])"
+	...
+>
+</vue-advanced-chat>
 ```
 
 <br>
