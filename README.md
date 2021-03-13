@@ -62,7 +62,7 @@ You will get a fully working chat application for web and mobile:
 - [Events API](#events-api)
 - [Named Slots](#named-slots)
 - [Using with Firestore](#using-with-firestore)
-- [Use as a Web Component](#use-as-a-web-component)
+- [Use as a Web Component with React and Angular](#use-as-a-web-component-with-react-and-angular)
 
 <br>
 
@@ -81,6 +81,8 @@ If you want to send mp3 audio messages, you may need to install `lamejs` inside 
 ```bash
 npm install lamejs --save
 ```
+
+[Installation with React & Angular](#use-as-a-web-component)
 
 ## Usage
 
@@ -699,7 +701,7 @@ messages: {
 
 <br>
 
-## Use as a Web Component
+## Use as a Web Component with React and Angular
 
 ### Install vue-advance-chat component
 
@@ -715,7 +717,7 @@ npm install --save vue
 yarn add --save vue
 ```
 
-### Angular Setup
+#### Angular Setup
 
 ```json
 // angular.json
