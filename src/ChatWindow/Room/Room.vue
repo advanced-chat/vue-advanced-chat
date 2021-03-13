@@ -570,7 +570,7 @@ export default {
 
 			if (index !== this.messages.length - 1) return
 
-			const messageHeight = document.getElementById(message._id).offsetHeight
+			const messageHeight = document.getElementById(message._id)?.offsetHeight
 			const autoScrollOffset = messageHeight + 60
 
 			setTimeout(() => {
