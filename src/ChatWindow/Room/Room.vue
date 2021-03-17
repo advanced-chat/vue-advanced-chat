@@ -476,8 +476,8 @@ export default {
 				if (val) this.message = this.roomMessage
 			}
 		},
-		messages(val) {
-			val.forEach((message, i) => {
+		messages(newVal, oldVal) {
+			newVal.forEach((message, i) => {
 				if (
 					this.showNewMessagesDivider &&
 					!message.seen &&
@@ -489,6 +489,10 @@ export default {
 					})
 				}
 			})
+
+			if (oldVal?.length === newVal?.length - 1) {
+				this.newMessages = []
+			}
 
 			if (this.infiniteState) {
 				this.infiniteState.loaded()
@@ -566,8 +570,6 @@ export default {
 			)
 		},
 		onMessageAdded({ message, index, ref }) {
-			this.newMessages = []
-
 			if (index !== this.messages.length - 1) return
 
 			const autoScrollOffset = ref.offsetHeight + 60
