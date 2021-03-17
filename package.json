@@ -1,6 +1,6 @@
 {
 	"name": "vue-advanced-chat",
-	"version": "0.8.2",
+	"version": "0.8.3",
 	"license": "MIT",
 	"description": "A beautiful chat rooms component made with Vue.js - compatible with Vue, React & Angular",
 	"author": {
@@ -69,6 +69,7 @@
 		"vue-template-compiler": "^2.6.11"
 	},
 	"dependencies": {
+		"lamejs": "^1.2.0",
 		"linkifyjs": "^2.1.9",
 		"v-click-outside": "^3.1.2",
 		"vue-emoji-picker": "^1.0.1",
