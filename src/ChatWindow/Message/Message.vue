@@ -286,14 +286,17 @@ export default {
 	},
 
 	watch: {
-		newMessages(val) {
-			if (!val.length || !this.showNewMessagesDivider) {
-				return (this.newMessage = {})
-			}
+		newMessages: {
+			immediate: true,
+			handler(val) {
+				if (!val.length || !this.showNewMessagesDivider) {
+					return (this.newMessage = {})
+				}
 
-			this.newMessage = val.reduce((res, obj) =>
-				obj.index < res.index ? obj : res
-			)
+				this.newMessage = val.reduce((res, obj) =>
+					obj.index < res.index ? obj : res
+				)
+			}
 		}
 	},
 
