@@ -311,7 +311,4 @@ export default {
 	align-items: center;
 	margin-left: 5px;
 }
-
-@media only screen and (max-width: 768px) {
-}
 </style>
