@@ -3,5 +3,13 @@
 	"semi": false,
 	"useTabs": true,
 	"trailingComma": "none",
-	"arrowParens": "avoid"
+	"arrowParens": "avoid",
+	"overrides": [
+		{
+			"files": "*.md",
+			"options": {
+				"useTabs": false
+			}
+		}
+	]
 }
