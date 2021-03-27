@@ -27,7 +27,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vac-emojis-container {
 	position: absolute;
 	width: calc(100% - 16px);

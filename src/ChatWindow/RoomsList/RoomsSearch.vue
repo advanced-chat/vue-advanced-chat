@@ -41,51 +41,49 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vac-box-search {
 	position: sticky;
 	display: flex;
 	align-items: center;
 	height: 64px;
 	padding: 0 15px;
-}
 
-.vac-icon-search {
-	display: flex;
-	position: absolute;
-	left: 30px;
+	.vac-icon-search {
+		display: flex;
+		position: absolute;
+		left: 30px;
 
-	svg {
-		width: 18px;
-		height: 18px;
+		svg {
+			width: 18px;
+			height: 18px;
+		}
 	}
-}
 
-.vac-input {
-	height: 38px;
-	width: 100%;
-	background: var(--chat-bg-color-input);
-	color: var(--chat-color);
-	border-radius: 4px;
-	font-size: 15px;
-	outline: 0;
-	caret-color: var(--chat-color-caret);
-	padding: 10px 10px 10px 40px;
-	border: 1px solid var(--chat-sidemenu-border-color-search);
-	border-radius: 20px;
+	.vac-input {
+		height: 38px;
+		width: 100%;
+		background: var(--chat-bg-color-input);
+		color: var(--chat-color);
+		border-radius: 4px;
+		font-size: 15px;
+		outline: 0;
+		caret-color: var(--chat-color-caret);
+		padding: 10px 10px 10px 40px;
+		border: 1px solid var(--chat-sidemenu-border-color-search);
+		border-radius: 20px;
 
-	&::placeholder {
-		color: var(--chat-color-placeholder);
+		&::placeholder {
+			color: var(--chat-color-placeholder);
+		}
 	}
-}
 
-.vac-add-icon {
-	margin-left: auto;
-	padding-left: 10px;
-}
+	.vac-add-icon {
+		margin-left: auto;
+		padding-left: 10px;
+	}
 
-@media only screen and (max-width: 768px) {
-	.vac-box-search {
+	@media only screen and (max-width: 768px) {
 		height: 58px;
 	}
 }

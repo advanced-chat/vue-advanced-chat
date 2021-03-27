@@ -36,7 +36,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vac-tags-container {
 	position: absolute;
 	display: flex;
@@ -81,14 +81,12 @@ export default {
 	}
 
 	@media only screen and (max-width: 768px) {
-		.vac-tags-container {
-			.vac-tags-box {
-				height: 50px;
-			}
+		.vac-tags-box {
+			height: 50px;
+		}
 
-			.vac-tags-info {
-				padding: 0 12px;
-			}
+		.vac-tags-info {
+			padding: 0 12px;
 		}
 	}
 }

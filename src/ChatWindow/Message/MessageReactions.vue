@@ -39,7 +39,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vac-button-reaction {
 	display: inline-flex;
 	align-items: center;
@@ -65,19 +65,19 @@ export default {
 		background: var(--chat-message-bg-color-reaction-hover);
 		cursor: pointer;
 	}
-}
 
-.vac-reaction-me {
-	border: var(--chat-message-border-style-reaction-me);
-	background: var(--chat-message-bg-color-reaction-me);
+	&.vac-reaction-me {
+		border: var(--chat-message-border-style-reaction-me);
+		background: var(--chat-message-bg-color-reaction-me);
 
-	span {
-		color: var(--chat-message-color-reaction-counter-me);
-	}
+		span {
+			color: var(--chat-message-color-reaction-counter-me);
+		}
 
-	&:hover {
-		border: var(--chat-message-border-style-reaction-hover-me);
-		background: var(--chat-message-bg-color-reaction-hover-me);
+		&:hover {
+			border: var(--chat-message-border-style-reaction-hover-me);
+			background: var(--chat-message-bg-color-reaction-hover-me);
+		}
 	}
 }
 </style>

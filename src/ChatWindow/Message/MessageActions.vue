@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="vac-message-actions-wrapper">
 		<div
 			class="vac-options-container"
 			:class="{ 'vac-options-image': isImage && !message.replyMessage }"
@@ -225,73 +225,75 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.vac-options-container {
-	position: absolute;
-	top: 2px;
-	right: 10px;
-	height: 40px;
-	width: 70px;
-	overflow: hidden;
-	border-top-right-radius: 8px;
-}
-
-.vac-options-image .vac-blur-container {
-	background: rgba(255, 255, 255, 0.6);
-	border-bottom-left-radius: 15px;
-}
-
-.vac-blur-container {
-	position: absolute;
-	height: 100%;
-	width: 100%;
-	left: 8px;
-	bottom: 10px;
-	background: var(--chat-message-bg-color);
-	filter: blur(3px);
-	border-bottom-left-radius: 8px;
-}
-
-.vac-options-me {
-	background: var(--chat-message-bg-color-me);
-}
-
-.vac-message-options {
-	background: var(--chat-icon-bg-dropdown-message);
-	border-radius: 50%;
-	position: absolute;
-	top: 7px;
-	right: 7px;
-
-	svg {
-		height: 17px;
-		width: 17px;
-		padding: 5px;
-		margin: -5px;
-	}
-}
-
-.vac-message-emojis {
-	position: absolute;
-	top: 6px;
-	right: 30px;
-}
-
-.vac-menu-options {
-	right: 15px;
-}
-
-.vac-menu-left {
-	right: -118px;
-}
-
-@media only screen and (max-width: 768px) {
+<style lang="scss">
+.vac-message-actions-wrapper {
 	.vac-options-container {
-		right: 3px;
+		position: absolute;
+		top: 2px;
+		right: 10px;
+		height: 40px;
+		width: 70px;
+		overflow: hidden;
+		border-top-right-radius: 8px;
+	}
+
+	.vac-options-image .vac-blur-container {
+		background: rgba(255, 255, 255, 0.6);
+		border-bottom-left-radius: 15px;
+	}
+
+	.vac-blur-container {
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		left: 8px;
+		bottom: 10px;
+		background: var(--chat-message-bg-color);
+		filter: blur(3px);
+		border-bottom-left-radius: 8px;
+	}
+
+	.vac-options-me {
+		background: var(--chat-message-bg-color-me);
+	}
+
+	.vac-message-options {
+		background: var(--chat-icon-bg-dropdown-message);
+		border-radius: 50%;
+		position: absolute;
+		top: 7px;
+		right: 7px;
+
+		svg {
+			height: 17px;
+			width: 17px;
+			padding: 5px;
+			margin: -5px;
+		}
+	}
+
+	.vac-message-emojis {
+		position: absolute;
+		top: 6px;
+		right: 30px;
+	}
+
+	.vac-menu-options {
+		right: 15px;
 	}
 
 	.vac-menu-left {
-		right: -50px;
+		right: -118px;
+	}
+
+	@media only screen and (max-width: 768px) {
+		.vac-options-container {
+			right: 3px;
+		}
+
+		.vac-menu-left {
+			right: -50px;
+		}
 	}
 }
 </style>

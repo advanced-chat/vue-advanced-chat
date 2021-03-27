@@ -126,7 +126,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #vac-icon-search {
 	fill: var(--chat-icon-color-search);
 }

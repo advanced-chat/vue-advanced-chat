@@ -64,7 +64,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vac-player-bar {
 	display: flex;
 	align-items: center;

@@ -141,7 +141,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vac-room-header {
 	position: absolute;
 	display: flex;
@@ -152,57 +152,55 @@ export default {
 	margin-right: 1px;
 	background: var(--chat-header-bg-color);
 	border-top-right-radius: var(--chat-container-border-radius);
-}
 
-.vac-room-wrapper {
-	display: flex;
-	align-items: center;
-	min-width: 0;
-	height: 100%;
-	width: 100%;
-	padding: 0 16px;
-}
-
-.vac-toggle-button {
-	margin-right: 15px;
-
-	svg {
-		height: 26px;
-		width: 26px;
+	.vac-room-wrapper {
+		display: flex;
+		align-items: center;
+		min-width: 0;
+		height: 100%;
+		width: 100%;
+		padding: 0 16px;
 	}
-}
 
-.vac-rotate-icon {
-	transform: rotate(180deg) !important;
-}
+	.vac-toggle-button {
+		margin-right: 15px;
 
-.vac-info-wrapper {
-	display: flex;
-	align-items: center;
-	min-width: 0;
-	width: 100%;
-	height: 100%;
-}
+		svg {
+			height: 26px;
+			width: 26px;
+		}
+	}
 
-.vac-room-name {
-	font-size: 17px;
-	font-weight: 500;
-	line-height: 22px;
-	color: var(--chat-header-color-name);
-}
+	.vac-rotate-icon {
+		transform: rotate(180deg) !important;
+	}
 
-.vac-room-info {
-	font-size: 13px;
-	line-height: 18px;
-	color: var(--chat-header-color-info);
-}
+	.vac-info-wrapper {
+		display: flex;
+		align-items: center;
+		min-width: 0;
+		width: 100%;
+		height: 100%;
+	}
 
-.vac-room-options {
-	margin-left: auto;
-}
+	.vac-room-name {
+		font-size: 17px;
+		font-weight: 500;
+		line-height: 22px;
+		color: var(--chat-header-color-name);
+	}
 
-@media only screen and (max-width: 768px) {
-	.vac-room-header {
+	.vac-room-info {
+		font-size: 13px;
+		line-height: 18px;
+		color: var(--chat-header-color-info);
+	}
+
+	.vac-room-options {
+		margin-left: auto;
+	}
+
+	@media only screen and (max-width: 768px) {
 		height: 50px;
 
 		.vac-room-wrapper {

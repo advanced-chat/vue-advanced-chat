@@ -110,7 +110,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vac-audio-player {
 	display: flex;
 	margin: 8px 0 5px;
