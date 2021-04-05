@@ -73,7 +73,7 @@
 		"linkifyjs": "^2.1.9",
 		"v-click-outside": "^3.1.2",
 		"vue-emoji-picker": "^1.0.1",
-		"vue-infinite-loading": "^2.4.5"
+		"vue-infinite-loading": "https://github.com/antoine92190/vue-infinite-loading/tarball/master"
 	},
 	"optionalDependencies": {
 		"lamejs": "^1.2.0"

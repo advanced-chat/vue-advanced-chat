@@ -54,6 +54,7 @@
 				<infinite-loading
 					v-if="rooms.length && !loadingRooms"
 					force-use-infinite-wrapper=".vac-rooms-container"
+					web-component-name="vue-advanced-chat"
 					spinner="spiral"
 					@infinite="loadMoreRooms"
 				>
