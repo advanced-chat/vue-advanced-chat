@@ -465,7 +465,7 @@ export default {
 		room: {
 			immediate: true,
 			handler(newVal, oldVal) {
-				if (!oldVal || (newVal && newVal.roomId !== oldVal.roomId)) {
+				if (newVal.roomId && (!oldVal || newVal.roomId !== oldVal.roomId)) {
 					this.onRoomChanged()
 				}
 			}
@@ -550,6 +550,10 @@ export default {
 			if (this.roomMessage) {
 				this.message = this.roomMessage
 				setTimeout(() => this.onChangeInput())
+			}
+
+			if (!this.messages.length && this.messagesLoaded) {
+				this.loadingMessages = false
 			}
 
 			const unwatch = this.$watch(
