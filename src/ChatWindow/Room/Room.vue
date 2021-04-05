@@ -50,6 +50,7 @@
 						<infinite-loading
 							v-if="messages.length"
 							:class="{ 'vac-infinite-loading': !messagesLoaded }"
+							force-use-infinite-wrapper=".vac-container-scroll"
 							spinner="spiral"
 							direction="top"
 							:distance="40"

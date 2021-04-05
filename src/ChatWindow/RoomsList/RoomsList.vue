@@ -53,6 +53,7 @@
 			<transition name="vac-fade-message">
 				<infinite-loading
 					v-if="rooms.length && !loadingRooms"
+					force-use-infinite-wrapper=".vac-rooms-container"
 					spinner="spiral"
 					@infinite="loadMoreRooms"
 				>
