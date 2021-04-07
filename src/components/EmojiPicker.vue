@@ -70,7 +70,7 @@ export default {
 	props: {
 		emojiOpened: { type: Boolean, default: false },
 		emojiReaction: { type: Boolean, default: false },
-		roomFooterRef: { type: HTMLDivElement, default: null },
+		roomFooterRef: { default: null },
 		positionTop: { type: Boolean, default: false },
 		positionRight: { type: Boolean, default: false }
 	},

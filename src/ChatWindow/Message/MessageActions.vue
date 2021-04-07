@@ -101,7 +101,7 @@ export default {
 		currentUserId: { type: [String, Number], required: true },
 		message: { type: Object, required: true },
 		messageActions: { type: Array, required: true },
-		roomFooterRef: { type: HTMLDivElement, default: null },
+		roomFooterRef: { default: null },
 		showReactionEmojis: { type: Boolean, required: true },
 		hideOptions: { type: Boolean, required: true },
 		messageHover: { type: Boolean, required: true },

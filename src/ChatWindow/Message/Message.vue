@@ -225,7 +225,7 @@ export default {
 		editedMessage: { type: Object, required: true },
 		roomUsers: { type: Array, default: () => [] },
 		messageActions: { type: Array, required: true },
-		roomFooterRef: { type: HTMLDivElement, default: null },
+		roomFooterRef: { default: null },
 		newMessages: { type: Array, default: () => [] },
 		showReactionEmojis: { type: Boolean, required: true },
 		showNewMessagesDivider: { type: Boolean, required: true },
