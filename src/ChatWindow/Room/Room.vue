@@ -1296,30 +1296,30 @@ export default {
 		background: var(--chat-bg-color-input);
 		border: var(--chat-border-style-input);
 		border-radius: 20px;
-	}
 
-	.vac-file-container-edit {
-		width: calc(100% - 150px);
-	}
+		&.vac-file-container-edit {
+			width: calc(100% - 150px);
+		}
 
-	.vac-file-message {
-		max-width: calc(100% - 75px);
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
+		.vac-icon-file {
+			display: flex;
+			margin: 0 8px 0 15px;
+		}
 
-	.vac-icon-file {
-		display: flex;
-		margin: 0 8px 0 15px;
-	}
+		.vac-file-message {
+			max-width: calc(100% - 75px);
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
 
-	.vac-icon-remove {
-		margin: 0 8px;
+		.vac-icon-remove {
+			margin: 0 8px;
 
-		svg {
-			height: 18px;
-			width: 18px;
+			svg {
+				height: 18px;
+				width: 18px;
+			}
 		}
 	}
 
