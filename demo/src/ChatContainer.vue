@@ -338,7 +338,10 @@ export default {
 		fetchMessages({ room, options = {} }) {
 			this.$emit('show-demo-options', false)
 
-			if (options.reset) this.resetMessages()
+			if (options.reset) {
+				this.resetMessages()
+				this.roomId = room.roomId
+			}
 
 			if (this.endMessages && !this.startMessages)
 				return (this.messagesLoaded = true)
