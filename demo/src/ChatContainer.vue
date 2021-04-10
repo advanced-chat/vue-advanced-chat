@@ -552,7 +552,7 @@ export default {
 				.doc(messageId)
 				.update(newMessage)
 
-			if (file) this.uploadFile({ file, messageId, roomId })
+			if (file?.blob) this.uploadFile({ file, messageId, roomId })
 		},
 
 		async deleteMessage({ message, roomId }) {
