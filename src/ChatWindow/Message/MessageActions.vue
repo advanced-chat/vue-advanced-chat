@@ -238,7 +238,6 @@ export default {
 	}
 
 	.vac-options-image .vac-blur-container {
-		background: rgba(255, 255, 255, 0.6);
 		border-bottom-left-radius: 15px;
 	}
 
