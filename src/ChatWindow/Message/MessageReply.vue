@@ -13,6 +13,12 @@
 			/>
 		</div>
 
+		<div v-else-if="isVideo" class="vac-video-reply-container">
+			<video width="100%" height="100%" controls>
+				<source :src="message.replyMessage.file.url" />
+			</video>
+		</div>
+
 		<div class="vac-reply-content">
 			<format-message
 				:content="message.replyMessage.content"
@@ -32,7 +38,7 @@
 <script>
 import FormatMessage from '../../components/FormatMessage'
 
-const { isImageFile } = require('../../utils/media-file')
+const { isImageFile, isVideoFile } = require('../../utils/media-file')
 
 export default {
 	name: 'MessageReply',
@@ -53,6 +59,9 @@ export default {
 		},
 		isImage() {
 			return isImageFile(this.message.replyMessage.file)
+		},
+		isVideo() {
+			return isVideoFile(this.message.replyMessage.file)
 		}
 	}
 }
@@ -79,6 +88,15 @@ export default {
 			height: 70px;
 			width: 70px;
 			margin: 4px auto 3px;
+		}
+	}
+
+	.vac-video-reply-container {
+		width: 200px;
+		max-width: 100%;
+
+		video {
+			border-radius: 4px;
 		}
 	}
 
