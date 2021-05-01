@@ -53,7 +53,7 @@
 			<transition name="vac-fade-message">
 				<infinite-loading
 					v-if="rooms.length && !loadingRooms"
-					force-use-infinite-wrapper=".vac-rooms-container"
+					force-use-infinite-wrapper=".vac-room-list"
 					web-component-name="vue-advanced-chat"
 					spinner="spiral"
 					@infinite="loadMoreRooms"
