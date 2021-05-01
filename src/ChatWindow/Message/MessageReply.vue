@@ -19,6 +19,17 @@
 			</video>
 		</div>
 
+		<audio-player
+			v-else-if="isAudio"
+			:src="message.replyMessage.file.url"
+			@update-progress-time="progressTime = $event"
+			@hover-audio-progress="hoverAudioProgress = $event"
+		>
+			<template v-for="(i, name) in $scopedSlots" #[name]="data">
+				<slot :name="name" v-bind="data" />
+			</template>
+		</audio-player>
+
 		<div class="vac-reply-content">
 			<format-message
 				:content="message.replyMessage.content"
@@ -37,12 +48,17 @@
 
 <script>
 import FormatMessage from '../../components/FormatMessage'
+import AudioPlayer from './AudioPlayer'
 
-const { isImageFile, isVideoFile } = require('../../utils/media-file')
+const {
+	isAudioFile,
+	isImageFile,
+	isVideoFile
+} = require('../../utils/media-file')
 
 export default {
 	name: 'MessageReply',
-	components: { FormatMessage },
+	components: { AudioPlayer, FormatMessage },
 
 	props: {
 		message: { type: Object, required: true },
@@ -56,6 +72,9 @@ export default {
 			const { senderId } = this.message.replyMessage
 			const replyUser = this.roomUsers.find(user => user._id === senderId)
 			return replyUser ? replyUser.username : ''
+		},
+		isAudio() {
+			return isAudioFile(this.message.replyMessage.file)
 		},
 		isImage() {
 			return isImageFile(this.message.replyMessage.file)
