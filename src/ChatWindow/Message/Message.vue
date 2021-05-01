@@ -100,6 +100,17 @@
 							<video width="100%" height="100%" controls>
 								<source :src="message.file.url" />
 							</video>
+							<format-message
+								:content="message.content"
+								:users="roomUsers"
+								:text-formatting="textFormatting"
+								:link-options="linkOptions"
+								@open-user-tag="openUserTag"
+							>
+								<template v-for="(i, name) in $scopedSlots" #[name]="data">
+									<slot :name="name" v-bind="data" />
+								</template>
+							</format-message>
 						</div>
 
 						<audio-player
