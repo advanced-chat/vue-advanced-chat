@@ -250,7 +250,6 @@
 					}"
 					@input="onChangeInput"
 					@keydown.esc="escapeTextarea"
-					@keydown.enter.exact.prevent=""
 				/>
 
 				<div class="vac-icon-textarea">
