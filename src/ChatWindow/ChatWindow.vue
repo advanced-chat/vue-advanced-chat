@@ -193,7 +193,7 @@ export default {
 					(!oldVal || newVal.length !== oldVal.length)
 				) {
 					if (this.roomId) {
-						const room = newVal.find(r => r.roomId === this.roomId)
+						const room = newVal.find(r => r.roomId === this.roomId) || {}
 						this.fetchRoom({ room })
 					} else if (!this.isMobile || this.singleRoom) {
 						this.fetchRoom({ room: this.orderedRooms[0] })
