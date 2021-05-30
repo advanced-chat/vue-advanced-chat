@@ -6,18 +6,20 @@
 	>
 		<slot name="rooms-header" />
 
-		<rooms-search
-			:rooms="rooms"
-			:loading-rooms="loadingRooms"
-			:text-messages="textMessages"
-			:show-add-room="showAddRoom"
-			@search-room="searchRoom"
-			@add-room="$emit('add-room')"
-		>
-			<template v-for="(i, name) in $scopedSlots" #[name]="data">
-				<slot :name="name" v-bind="data" />
-			</template>
-		</rooms-search>
+		<slot name="rooms-list-search">
+			<rooms-search
+				:rooms="rooms"
+				:loading-rooms="loadingRooms"
+				:text-messages="textMessages"
+				:show-add-room="showAddRoom"
+				@search-room="searchRoom"
+				@add-room="$emit('add-room')"
+			>
+				<template v-for="(i, name) in $scopedSlots" #[name]="data">
+					<slot :name="name" v-bind="data" />
+				</template>
+			</rooms-search>
+		</slot>
 
 		<loader :show="loadingRooms" />
 
