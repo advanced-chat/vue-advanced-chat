@@ -63,6 +63,9 @@
 			@typing-message="typingMessage"
 			@toggle-rooms-list="$emit('show-demo-options', $event.opened)"
 		>
+			<!-- <template v-slot:room-header="{ room }">
+				{{ room.roomName }}
+			</template> -->
 		</chat-window>
 	</div>
 </template>
