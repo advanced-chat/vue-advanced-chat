@@ -9,7 +9,17 @@
 		</div>
 
 		<div v-if="message.system" class="vac-card-info vac-card-system">
-			{{ message.content }}
+			<format-message
+				:content="message.content"
+				:users="roomUsers"
+				:text-formatting="textFormatting"
+				:link-options="linkOptions"
+				@open-user-tag="openUserTag"
+			>
+				<template v-for="(i, name) in $scopedSlots" #[name]="data">
+					<slot :name="name" v-bind="data" />
+				</template>
+			</format-message>
 		</div>
 
 		<div
