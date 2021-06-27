@@ -1,0 +1,49 @@
+.vac-image-container {
+	width: 250px;
+	max-width: 100%;
+
+	.vac-image-loading {
+		filter: blur(3px);
+	}
+
+	.vac-image-buttons {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		border-radius: 4px;
+		background: linear-gradient(
+			to bottom,
+			rgba(0, 0, 0, 0) 55%,
+			rgba(0, 0, 0, 0.02) 60%,
+			rgba(0, 0, 0, 0.05) 65%,
+			rgba(0, 0, 0, 0.1) 70%,
+			rgba(0, 0, 0, 0.2) 75%,
+			rgba(0, 0, 0, 0.3) 80%,
+			rgba(0, 0, 0, 0.5) 85%,
+			rgba(0, 0, 0, 0.6) 90%,
+			rgba(0, 0, 0, 0.7) 95%,
+			rgba(0, 0, 0, 0.8) 100%
+		);
+
+		svg {
+			height: 26px;
+			width: 26px;
+		}
+
+		.vac-button-view,
+		.vac-button-download {
+			position: absolute;
+			bottom: 6px;
+			left: 7px;
+		}
+
+		:first-child {
+			left: 40px;
+		}
+
+		.vac-button-view {
+			max-width: 18px;
+			bottom: 8px;
+		}
+	}
+}

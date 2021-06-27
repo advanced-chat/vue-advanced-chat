@@ -80,7 +80,7 @@ import {
 	deleteDbField
 } from '@/firestore'
 import { parseTimestamp, isSameDay } from '@/utils/dates'
-import ChatWindow from './../../src/ChatWindow'
+import ChatWindow from './../../src/lib/ChatWindow'
 // import ChatWindow, { Rooms } from 'vue-advanced-chat'
 // import ChatWindow from 'vue-advanced-chat'
 // import 'vue-advanced-chat/dist/vue-advanced-chat.css'

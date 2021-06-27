@@ -1,0 +1,379 @@
+.vac-col-messages {
+	position: relative;
+	height: 100%;
+	flex: 1;
+	overflow: hidden;
+	display: flex;
+	flex-flow: column;
+
+	.vac-container-center {
+		height: 100%;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+	}
+
+	.vac-room-empty {
+		font-size: 14px;
+		color: #9ca6af;
+		font-style: italic;
+		line-height: 20px;
+		white-space: pre-line;
+
+		div {
+			padding: 0 10%;
+		}
+	}
+
+	.vac-container-scroll {
+		background: var(--chat-content-bg-color);
+		flex: 1;
+		overflow-y: auto;
+		margin-right: 1px;
+		margin-top: 60px;
+		-webkit-overflow-scrolling: touch;
+
+		&.vac-scroll-smooth {
+			scroll-behavior: smooth;
+		}
+	}
+
+	.vac-messages-container {
+		padding: 0 5px 5px;
+	}
+
+	.vac-text-started {
+		font-size: 14px;
+		color: var(--chat-message-color-started);
+		font-style: italic;
+		text-align: center;
+		margin-top: 30px;
+		margin-bottom: 20px;
+	}
+
+	.vac-infinite-loading {
+		height: 68px;
+	}
+
+	.vac-icon-scroll {
+		position: absolute;
+		bottom: 80px;
+		right: 20px;
+		padding: 8px;
+		background: var(--chat-bg-scroll-icon);
+		border-radius: 50%;
+		box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.2),
+			0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 0 rgba(0, 0, 0, 0.12);
+		display: flex;
+		cursor: pointer;
+		z-index: 10;
+
+		svg {
+			height: 25px;
+			width: 25px;
+		}
+	}
+
+	.vac-messages-count {
+		position: absolute;
+		top: -8px;
+		left: 11px;
+		background-color: var(--chat-message-bg-color-scroll-counter);
+		color: var(--chat-message-color-scroll-counter);
+	}
+
+	.vac-room-footer {
+		width: 100%;
+		border-bottom-right-radius: 4px;
+		z-index: 10;
+	}
+
+	.vac-box-footer {
+		display: flex;
+		position: relative;
+		background: var(--chat-footer-bg-color);
+		padding: 10px 8px 10px;
+	}
+
+	.vac-textarea {
+		height: 20px;
+		width: 100%;
+		line-height: 20px;
+		overflow: hidden;
+		outline: 0;
+		resize: none;
+		border-radius: 20px;
+		padding: 12px 16px;
+		box-sizing: content-box;
+		font-size: 16px;
+		background: var(--chat-bg-color-input);
+		color: var(--chat-color);
+		caret-color: var(--chat-color-caret);
+		border: var(--chat-border-style-input);
+
+		&::placeholder {
+			color: var(--chat-color-placeholder);
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+	}
+
+	.vac-textarea-outline {
+		border: 1px solid var(--chat-border-color-input-selected);
+		box-shadow: inset 0px 0px 0px 1px var(--chat-border-color-input-selected);
+	}
+
+	.vac-icon-textarea,
+	.vac-icon-textarea-left {
+		display: flex;
+		align-items: center;
+
+		svg,
+		.vac-wrapper {
+			margin: 0 7px;
+		}
+	}
+
+	.vac-icon-textarea {
+		margin-left: 5px;
+	}
+
+	.vac-icon-textarea-left {
+		display: flex;
+		align-items: center;
+		margin-right: 5px;
+
+		svg,
+		.vac-wrapper {
+			margin: 0 7px;
+		}
+
+		.vac-icon-microphone {
+			fill: var(--chat-icon-color-microphone);
+			margin: 0 7px;
+		}
+
+		.vac-dot-audio-record {
+			height: 15px;
+			width: 15px;
+			border-radius: 50%;
+			background-color: var(--chat-message-bg-color-audio-record);
+			animation: vac-scaling 0.8s ease-in-out infinite alternate;
+
+			@keyframes vac-scaling {
+				0% {
+					transform: scale(1);
+					opacity: 0.4;
+				}
+				100% {
+					transform: scale(1.1);
+					opacity: 1;
+				}
+			}
+		}
+
+		.vac-dot-audio-record-time {
+			font-size: 16px;
+			color: var(--chat-color);
+			margin-left: 8px;
+			width: 45px;
+		}
+
+		$audio-icon-size: 28px;
+
+		.vac-icon-audio-stop,
+		.vac-icon-audio-confirm {
+			min-height: $audio-icon-size;
+			min-width: $audio-icon-size;
+
+			svg {
+				min-height: $audio-icon-size;
+				min-width: $audio-icon-size;
+			}
+		}
+
+		.vac-icon-audio-stop {
+			margin-right: 20px;
+
+			#vac-icon-close-outline {
+				fill: var(--chat-icon-color-audio-cancel);
+			}
+		}
+
+		.vac-icon-audio-confirm {
+			margin-right: 3px;
+			margin-left: 12px;
+
+			#vac-icon-checkmark {
+				fill: var(--chat-icon-color-audio-confirm);
+			}
+		}
+	}
+
+	.vac-media-container {
+		position: absolute;
+		max-width: 25%;
+		left: 16px;
+		top: 18px;
+	}
+
+	.vac-media-file {
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		min-height: 30px;
+
+		img {
+			border-radius: 15px;
+			width: 100%;
+			max-width: 150px;
+			max-height: 100%;
+		}
+
+		video {
+			border-radius: 15px;
+			width: 100%;
+			max-width: 250px;
+			max-height: 100%;
+		}
+	}
+
+	.vac-icon-media {
+		position: absolute;
+		top: 6px;
+		left: 6px;
+		z-index: 10;
+
+		svg {
+			height: 20px;
+			width: 20px;
+			border-radius: 50%;
+		}
+
+		&:before {
+			content: ' ';
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			border-radius: 50%;
+			z-index: -1;
+		}
+	}
+
+	.vac-file-container {
+		display: flex;
+		align-items: center;
+		width: calc(100% - 115px);
+		height: 20px;
+		padding: 12px 0;
+		box-sizing: content-box;
+		background: var(--chat-bg-color-input);
+		border: var(--chat-border-style-input);
+		border-radius: 20px;
+
+		&.vac-file-container-edit {
+			width: calc(100% - 150px);
+		}
+
+		.vac-icon-file {
+			display: flex;
+			margin: 0 8px 0 15px;
+		}
+
+		.vac-file-message {
+			max-width: calc(100% - 75px);
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.vac-icon-remove {
+			margin: 0 8px;
+
+			svg {
+				height: 18px;
+				width: 18px;
+			}
+		}
+	}
+
+	.vac-send-disabled,
+	.vac-send-disabled svg {
+		cursor: none !important;
+		pointer-events: none !important;
+		transform: none !important;
+	}
+
+	.vac-messages-hidden {
+		opacity: 0;
+	}
+
+	@media only screen and (max-width: 768px) {
+		.vac-container-scroll {
+			margin-top: 50px;
+		}
+
+		.vac-infinite-loading {
+			height: 58px;
+		}
+
+		.vac-box-footer {
+			border-top: var(--chat-border-style-input);
+			padding: 7px 2px 7px 7px;
+		}
+
+		.vac-text-started {
+			margin-top: 20px;
+		}
+
+		.vac-textarea {
+			padding: 7px;
+			line-height: 18px;
+
+			&::placeholder {
+				color: transparent;
+			}
+		}
+
+		.vac-icon-textarea,
+		.vac-icon-textarea-left {
+			svg,
+			.vac-wrapper {
+				margin: 0 5px !important;
+			}
+		}
+
+		.vac-media-container {
+			top: 10px;
+			left: 10px;
+		}
+
+		.vac-media-file {
+			img,
+			video {
+				transform: scale(0.97);
+			}
+		}
+
+		.vac-room-footer {
+			width: 100%;
+		}
+
+		.vac-file-container {
+			padding: 7px 0;
+
+			.icon-file {
+				margin-left: 10px;
+			}
+		}
+
+		.vac-icon-scroll {
+			bottom: 70px;
+		}
+	}
+}

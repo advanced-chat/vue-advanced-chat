@@ -1,3 +1,28 @@
 @import 'animation';
 @import 'menu';
 @import 'helper';
+
+@import '../lib/ChatWindow.scss';
+
+@import '../lib/Room/Room.scss';
+@import '../lib/Room/RoomEmojis/RoomEmojis.scss';
+@import '../lib/Room/RoomHeader/RoomHeader.scss';
+@import '../lib/Room/RoomMessageReply/RoomMessageReply.scss';
+@import '../lib/Room/RoomUsersTag/RoomUsersTag.scss';
+
+@import '../lib/RoomsList/RoomsList.scss';
+@import '../lib/RoomsList/RoomContent/RoomContent.scss';
+@import '../lib/RoomsList/RoomsSearch/RoomsSearch.scss';
+
+@import '../lib/Message/Message.scss';
+@import '../lib/Message/AudioControl/AudioControl.scss';
+@import '../lib/Message/AudioPlayer/AudioPlayer.scss';
+@import '../lib/Message/MessageActions/MessageActions.scss';
+@import '../lib/Message/MessageImage/MessageImage.scss';
+@import '../lib/Message/MessageReactions/MessageReactions.scss';
+@import '../lib/Message/MessageReply/MessageReply.scss';
+
+@import '../components/EmojiPicker/EmojiPicker.scss';
+@import '../components/FormatMessage/FormatMessage.scss';
+@import '../components/Loader/Loader.scss';
+@import '../components/SvgIcon/SvgIcon.scss';

@@ -1,0 +1,245 @@
+.vac-message-wrapper {
+	.vac-card-info {
+		border-radius: 4px;
+		text-align: center;
+		margin: 10px auto;
+		font-size: 12px;
+		padding: 4px;
+		display: block;
+		overflow-wrap: break-word;
+		position: relative;
+		white-space: normal;
+		box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.1),
+			0 1px 1px -1px rgba(0, 0, 0, 0.11), 0 1px 2px -1px rgba(0, 0, 0, 0.11);
+	}
+
+	.vac-card-date {
+		max-width: 150px;
+		font-weight: 500;
+		text-transform: uppercase;
+		color: var(--chat-message-color-date);
+		background: var(--chat-message-bg-color-date);
+	}
+
+	.vac-card-system {
+		max-width: 250px;
+		padding: 8px 4px;
+		color: var(--chat-message-color-system);
+		background: var(--chat-message-bg-color-system);
+	}
+
+	.vac-line-new {
+		color: var(--chat-message-color-new-messages);
+		position: relative;
+		text-align: center;
+		font-size: 13px;
+		padding: 10px 0;
+	}
+
+	.vac-line-new:after,
+	.vac-line-new:before {
+		border-top: 1px solid var(--chat-message-color-new-messages);
+		content: '';
+		left: 0;
+		position: absolute;
+		top: 50%;
+		width: calc(50% - 60px);
+	}
+
+	.vac-line-new:before {
+		left: auto;
+		right: 0;
+	}
+
+	.vac-message-box {
+		display: flex;
+		flex: 0 0 50%;
+		max-width: 50%;
+		justify-content: flex-start;
+		line-height: 1.4;
+	}
+
+	.vac-avatar {
+		height: 28px;
+		width: 28px;
+		min-height: 28px;
+		min-width: 28px;
+		margin: 0 0 2px 0;
+		align-self: flex-end;
+	}
+
+	.vac-message-container {
+		position: relative;
+		padding: 2px 10px;
+		align-items: end;
+		min-width: 100px;
+		box-sizing: content-box;
+	}
+
+	.vac-message-container-offset {
+		margin-top: 10px;
+	}
+
+	.vac-offset-current {
+		margin-left: 50%;
+		justify-content: flex-end;
+	}
+
+	.vac-message-card {
+		background: var(--chat-message-bg-color);
+		color: var(--chat-message-color);
+		border-radius: 8px;
+		font-size: 14px;
+		padding: 6px 9px 3px;
+		white-space: pre-line;
+		max-width: 100%;
+		-webkit-transition-property: box-shadow, opacity;
+		transition-property: box-shadow, opacity;
+		transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+		will-change: box-shadow;
+		box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.1),
+			0 1px 1px -1px rgba(0, 0, 0, 0.11), 0 1px 2px -1px rgba(0, 0, 0, 0.11);
+	}
+
+	.vac-message-highlight {
+		box-shadow: 0 1px 2px -1px rgba(0, 0, 0, 0.1),
+			0 1px 2px -1px rgba(0, 0, 0, 0.11), 0 1px 5px -1px rgba(0, 0, 0, 0.11);
+	}
+
+	.vac-message-current {
+		background: var(--chat-message-bg-color-me) !important;
+	}
+
+	.vac-message-deleted {
+		color: var(--chat-message-color-deleted) !important;
+		font-size: 13px !important;
+		font-style: italic !important;
+		background: var(--chat-message-bg-color-deleted) !important;
+	}
+
+	.vac-icon-deleted {
+		height: 14px;
+		width: 14px;
+		vertical-align: middle;
+		margin: -2px 2px 0 0;
+		fill: var(--chat-message-color-deleted);
+	}
+
+	.vac-video-container {
+		width: 350px;
+		max-width: 100%;
+		margin: 4px auto 5px;
+
+		video {
+			border-radius: 4px;
+		}
+	}
+
+	.vac-message-image {
+		position: relative;
+		background-color: var(--chat-message-bg-color-image) !important;
+		background-size: cover !important;
+		background-position: center center !important;
+		background-repeat: no-repeat !important;
+		height: 250px;
+		width: 250px;
+		max-width: 100%;
+		border-radius: 4px;
+		margin: 4px auto 5px;
+		transition: 0.4s filter linear;
+	}
+
+	.vac-text-username {
+		font-size: 13px;
+		color: var(--chat-message-color-username);
+		margin-bottom: 2px;
+	}
+
+	.vac-username-reply {
+		margin-bottom: 5px;
+	}
+
+	.vac-text-timestamp {
+		font-size: 10px;
+		color: var(--chat-message-color-timestamp);
+		text-align: right;
+	}
+
+	.vac-progress-time {
+		float: left;
+		margin: -2px 0 0 40px;
+		color: var(--chat-color);
+		font-size: 12px;
+	}
+
+	.vac-file-message {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		margin-top: 3px;
+
+		span {
+			max-width: 100%;
+		}
+
+		.vac-icon-file svg {
+			margin-right: 5px;
+		}
+	}
+
+	.vac-icon-edited {
+		-webkit-box-align: center;
+		align-items: center;
+		display: -webkit-inline-box;
+		display: inline-flex;
+		justify-content: center;
+		letter-spacing: normal;
+		line-height: 1;
+		text-indent: 0;
+		vertical-align: middle;
+		margin: 0 4px 2px;
+
+		svg {
+			height: 12px;
+			width: 12px;
+		}
+	}
+
+	.vac-icon-check {
+		height: 14px;
+		width: 14px;
+		vertical-align: middle;
+		margin: -3px -3px 0 3px;
+	}
+
+	@media only screen and (max-width: 768px) {
+		.vac-message-container {
+			padding: 2px 3px 1px;
+		}
+
+		.vac-message-container-offset {
+			margin-top: 10px;
+		}
+
+		.vac-message-box {
+			flex: 0 0 80%;
+			max-width: 80%;
+		}
+
+		.vac-avatar {
+			height: 25px;
+			width: 25px;
+			min-height: 25px;
+			min-width: 25px;
+			margin: 0 6px 1px 0;
+		}
+
+		.vac-offset-current {
+			margin-left: 20%;
+		}
+
+		.vac-progress-time {
+			margin-left: 37px;
+		}
+	}
+}

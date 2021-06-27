@@ -1,0 +1,74 @@
+.vac-wrapper {
+	position: relative;
+	display: flex;
+
+	.vac-emoji-picker {
+		position: absolute;
+		z-index: 9999;
+		bottom: 32px;
+		right: 10px;
+		width: 240px;
+		overflow: scroll;
+		padding: 16px;
+		box-sizing: border-box;
+		border-radius: 0.5rem;
+		background: var(--chat-emoji-bg-color);
+		box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.1),
+			0 1px 2px -1px rgba(0, 0, 0, 0.1), 0 1px 2px 1px rgba(0, 0, 0, 0.1);
+	}
+
+	.vac-picker-reaction {
+		position: fixed;
+		top: initial;
+		right: initial;
+	}
+
+	.vac-emoji-picker__search {
+		display: flex;
+	}
+
+	.vac-emoji-picker__search > input {
+		flex: 1;
+		border-radius: 10rem;
+		border: var(--chat-border-style);
+		padding: 5px 10px;
+		outline: none;
+		background: var(--chat-bg-color-input);
+		color: var(--chat-color);
+	}
+
+	.vac-emoji-picker h5 {
+		margin: 15px 0 8px;
+		color: #b1b1b1;
+		text-transform: uppercase;
+		font-size: 0.8rem;
+		cursor: default;
+	}
+
+	.vac-emoji-picker .vac-emojis {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+
+	.vac-emoji-picker .vac-emojis:after {
+		content: '';
+		flex: auto;
+	}
+
+	.vac-emoji-picker .vac-emojis span {
+		padding: 0.2rem;
+		cursor: pointer;
+		border-radius: 5px;
+	}
+
+	.vac-emoji-picker .vac-emojis span:hover {
+		background: var(--chat-sidemenu-bg-color-hover);
+		cursor: pointer;
+	}
+
+	.vac-emoji-reaction svg {
+		height: 19px;
+		width: 19px;
+	}
+}

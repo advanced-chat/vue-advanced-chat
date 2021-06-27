@@ -1,0 +1,89 @@
+.vac-room-container {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	width: 100%;
+
+	.vac-name-container {
+		flex: 1;
+	}
+
+	.vac-title-container {
+		display: flex;
+		align-items: center;
+		line-height: 25px;
+	}
+
+	.vac-state-circle {
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background-color: var(--chat-room-color-offline);
+		margin-right: 6px;
+		transition: 0.3s;
+	}
+
+	.vac-state-online {
+		background-color: var(--chat-room-color-online);
+	}
+
+	.vac-room-name {
+		flex: 1;
+		color: var(--chat-room-color-username);
+		font-weight: 500;
+	}
+
+	.vac-text-date {
+		margin-left: 5px;
+		font-size: 11px;
+		color: var(--chat-room-color-timestamp);
+	}
+
+	.vac-text-last {
+		display: flex;
+		align-items: center;
+		font-size: 12px;
+		line-height: 19px;
+		color: var(--chat-room-color-message);
+	}
+
+	.vac-message-new {
+		color: var(--chat-room-color-username);
+		font-weight: 500;
+	}
+
+	.vac-icon-check {
+		display: flex;
+		vertical-align: middle;
+		height: 14px;
+		width: 14px;
+		margin-top: -2px;
+		margin-right: 2px;
+	}
+
+	.vac-icon-microphone {
+		height: 15px;
+		width: 15px;
+		vertical-align: middle;
+		margin: -3px 1px 0 -2px;
+		fill: var(--chat-room-color-message);
+	}
+
+	.vac-room-options-container {
+		display: flex;
+		margin-left: auto;
+	}
+
+	.vac-room-badge {
+		background-color: var(--chat-room-bg-color-badge);
+		color: var(--chat-room-color-badge);
+		margin-left: 5px;
+	}
+
+	.vac-list-room-options {
+		height: 19px;
+		width: 19px;
+		align-items: center;
+		margin-left: 5px;
+	}
+}
