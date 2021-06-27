@@ -194,6 +194,7 @@ fetchMessages({ room, options }) {
 | `room-actions`(8)                   | Array            | -        | `[]`                                    |
 | `menu-actions`(9)                   | Array            | -        | `[]`                                    |
 | `message-actions`(10)               | Array            | -        | (10)                                    |
+| `show-search`                       | Boolean          | -        | `true`                                  |
 | `show-add-room`                     | Boolean          | -        | `true`                                  |
 | `show-send-icon`                    | Boolean          | -        | `true`                                  |
 | `show-files`                        | Boolean          | -        | `true`                                  |

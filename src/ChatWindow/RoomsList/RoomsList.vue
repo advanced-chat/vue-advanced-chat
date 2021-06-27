@@ -11,6 +11,7 @@
 				:rooms="rooms"
 				:loading-rooms="loadingRooms"
 				:text-messages="textMessages"
+				:show-search="showSearch"
 				:show-add-room="showAddRoom"
 				@search-room="searchRoom"
 				@add-room="$emit('add-room')"
@@ -94,6 +95,7 @@ export default {
 		currentUserId: { type: [String, Number], required: true },
 		textMessages: { type: Object, required: true },
 		showRoomsList: { type: Boolean, required: true },
+		showSearch: { type: Boolean, required: true },
 		showAddRoom: { type: Boolean, required: true },
 		textFormatting: { type: Boolean, required: true },
 		linkOptions: { type: Object, required: true },

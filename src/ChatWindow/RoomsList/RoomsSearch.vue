@@ -1,18 +1,25 @@
 <template>
-	<div class="vac-box-search">
-		<div v-if="!loadingRooms && rooms.length" class="vac-icon-search">
-			<slot name="search-icon">
-				<svg-icon name="search" />
-			</slot>
-		</div>
-		<input
-			v-if="!loadingRooms && rooms.length"
-			type="search"
-			:placeholder="textMessages.SEARCH"
-			autocomplete="off"
-			class="vac-input"
-			@input="$emit('search-room', $event)"
-		/>
+	<div
+		:class="{
+			'vac-box-search': showSearchBar,
+			'vac-box-empty': !showSearchBar
+		}"
+	>
+		<template v-if="showSearch">
+			<div v-if="!loadingRooms && rooms.length" class="vac-icon-search">
+				<slot name="search-icon">
+					<svg-icon name="search" />
+				</slot>
+			</div>
+			<input
+				v-if="!loadingRooms && rooms.length"
+				type="search"
+				:placeholder="textMessages.SEARCH"
+				autocomplete="off"
+				class="vac-input"
+				@input="$emit('search-room', $event)"
+			/>
+		</template>
 		<div
 			v-if="showAddRoom"
 			class="vac-svg-button vac-add-icon"
@@ -34,14 +41,29 @@ export default {
 
 	props: {
 		textMessages: { type: Object, required: true },
+		showSearch: { type: Boolean, required: true },
 		showAddRoom: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },
 		loadingRooms: { type: Boolean, required: true }
+	},
+
+	computed: {
+		showSearchBar() {
+			return this.showSearch || this.showAddRoom
+		}
 	}
 }
 </script>
 
 <style lang="scss">
+.vac-box-empty {
+	margin-top: 10px;
+
+	@media only screen and (max-width: 768px) {
+		margin-top: 7px;
+	}
+}
+
 .vac-box-search {
 	position: sticky;
 	display: flex;
