@@ -457,6 +457,7 @@ Message states:
 - `saved: true` one checkmark
 - `distributed: true` two checkmarks
 - `seen: true` two blue checkmarks
+- `deleted: true` grey background with deleted message text
 
 ```javascript
 messages="[
