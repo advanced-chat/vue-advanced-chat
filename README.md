@@ -473,6 +473,7 @@ messages="[
     saved: true,
     distributed: true,
     seen: true,
+    deleted: false,
     disableActions: false,
     disableReactions: false,
     file: {
