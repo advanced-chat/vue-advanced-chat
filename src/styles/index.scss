@@ -2,27 +2,27 @@
 @import 'menu';
 @import 'helper';
 
-@import '../lib/ChatWindow.scss';
+@import '../lib/ChatWindow';
 
-@import '../lib/Room/Room.scss';
-@import '../lib/Room/RoomEmojis/RoomEmojis.scss';
-@import '../lib/Room/RoomHeader/RoomHeader.scss';
-@import '../lib/Room/RoomMessageReply/RoomMessageReply.scss';
-@import '../lib/Room/RoomUsersTag/RoomUsersTag.scss';
+@import '../lib/Room/Room';
+@import '../lib/Room/RoomEmojis/RoomEmojis';
+@import '../lib/Room/RoomHeader/RoomHeader';
+@import '../lib/Room/RoomMessageReply/RoomMessageReply';
+@import '../lib/Room/RoomUsersTag/RoomUsersTag';
 
-@import '../lib/RoomsList/RoomsList.scss';
-@import '../lib/RoomsList/RoomContent/RoomContent.scss';
-@import '../lib/RoomsList/RoomsSearch/RoomsSearch.scss';
+@import '../lib/RoomsList/RoomsList';
+@import '../lib/RoomsList/RoomContent/RoomContent';
+@import '../lib/RoomsList/RoomsSearch/RoomsSearch';
 
-@import '../lib/Message/Message.scss';
-@import '../lib/Message/AudioControl/AudioControl.scss';
-@import '../lib/Message/AudioPlayer/AudioPlayer.scss';
-@import '../lib/Message/MessageActions/MessageActions.scss';
-@import '../lib/Message/MessageImage/MessageImage.scss';
-@import '../lib/Message/MessageReactions/MessageReactions.scss';
-@import '../lib/Message/MessageReply/MessageReply.scss';
+@import '../lib/Message/Message';
+@import '../lib/Message/AudioControl/AudioControl';
+@import '../lib/Message/AudioPlayer/AudioPlayer';
+@import '../lib/Message/MessageActions/MessageActions';
+@import '../lib/Message/MessageImage/MessageImage';
+@import '../lib/Message/MessageReactions/MessageReactions';
+@import '../lib/Message/MessageReply/MessageReply';
 
-@import '../components/EmojiPicker/EmojiPicker.scss';
-@import '../components/FormatMessage/FormatMessage.scss';
-@import '../components/Loader/Loader.scss';
-@import '../components/SvgIcon/SvgIcon.scss';
+@import '../components/EmojiPicker/EmojiPicker';
+@import '../components/FormatMessage/FormatMessage';
+@import '../components/Loader/Loader';
+@import '../components/SvgIcon/SvgIcon';
