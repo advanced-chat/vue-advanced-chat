@@ -205,7 +205,7 @@ export default {
 			const roomUserIds = []
 			rooms.forEach(room => {
 				room.data().users.forEach(userId => {
-					const foundUser = this.allUsers.find(user => user._id === userId)
+					const foundUser = this.allUsers.find(user => user?._id === userId)
 					if (!foundUser && roomUserIds.indexOf(userId) === -1) {
 						roomUserIds.push(userId)
 					}
@@ -230,7 +230,7 @@ export default {
 				roomList[room.id] = { ...room.data(), users: [] }
 
 				room.data().users.forEach(userId => {
-					const foundUser = this.allUsers.find(user => user._id === userId)
+					const foundUser = this.allUsers.find(user => user?._id === userId)
 					if (foundUser) roomList[room.id].users.push(foundUser)
 				})
 			})
