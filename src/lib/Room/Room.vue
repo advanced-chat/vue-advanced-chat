@@ -236,7 +236,6 @@
 				<textarea
 					v-show="!file || imageFile || videoFile"
 					ref="roomTextarea"
-					v-model="message"
 					:placeholder="textMessages.TYPE_MESSAGE"
 					class="vac-textarea"
 					:class="{
@@ -338,8 +337,21 @@ import Message from '../Message/Message'
 
 import filteredUsers from '../../utils/filter-items'
 import Recorder from '../../utils/recorder'
+
 const { detectMobile, iOSDevice } = require('../../utils/mobile-detection')
 const { isImageFile, isVideoFile } = require('../../utils/media-file')
+
+const debounce = (func, delay) => {
+  let inDebounce
+  return function() {
+    const context = this
+    const args = arguments
+    clearTimeout(inDebounce)
+    inDebounce = setTimeout(() =>
+      func.apply(context, args)
+    , delay)
+  }
+}
 
 export default {
 	name: 'Room',
@@ -456,6 +468,9 @@ export default {
 	},
 
 	watch: {
+		message(val) {
+			this.$refs.roomTextarea.value = val
+		},
 		loadingMessages(val) {
 			if (val) {
 				this.infiniteState = null
@@ -512,7 +527,7 @@ export default {
 		this.newMessages = []
 		const isMobile = detectMobile()
 
-		window.addEventListener('keyup', e => {
+		this.$refs.roomTextarea.addEventListener('keyup', debounce((e) => {
 			if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
 				if (isMobile) {
 					this.message = this.message + '\n'
@@ -524,10 +539,11 @@ export default {
 
 			this.updateFooterList('@')
 			this.updateFooterList(':')
-		})
+		}), 50)
 
 		this.$refs['roomTextarea'].addEventListener('click', () => {
 			if (isMobile) this.keepKeyboardOpen = true
+
 			this.updateFooterList('@')
 			this.updateFooterList(':')
 		})
@@ -898,11 +914,12 @@ export default {
 				setTimeout(() => element.classList.remove('vac-scroll-smooth'))
 			}, 50)
 		},
-		onChangeInput() {
-			this.keepKeyboardOpen = true
-			this.resizeTextarea()
-			this.$emit('typing-message', this.message)
-		},
+		onChangeInput: debounce(function(e) {
+				this.message = e.target.value
+				this.keepKeyboardOpen = true
+				this.resizeTextarea()
+				this.$emit('typing-message', this.message)
+		}, 100),
 		resizeTextarea() {
 			const el = this.$refs['roomTextarea']
 
