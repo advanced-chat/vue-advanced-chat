@@ -342,15 +342,13 @@ const { detectMobile, iOSDevice } = require('../../utils/mobile-detection')
 const { isImageFile, isVideoFile } = require('../../utils/media-file')
 
 const debounce = (func, delay) => {
-  let inDebounce
-  return function() {
-    const context = this
-    const args = arguments
-    clearTimeout(inDebounce)
-    inDebounce = setTimeout(() =>
-      func.apply(context, args)
-    , delay)
-  }
+	let inDebounce
+	return function() {
+		const context = this
+		const args = arguments
+		clearTimeout(inDebounce)
+		inDebounce = setTimeout(() => func.apply(context, args), delay)
+	}
 }
 
 export default {
@@ -527,19 +525,23 @@ export default {
 		this.newMessages = []
 		const isMobile = detectMobile()
 
-		this.$refs.roomTextarea.addEventListener('keyup', debounce((e) => {
-			if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
-				if (isMobile) {
-					this.message = this.message + '\n'
-					setTimeout(() => this.onChangeInput())
-				} else {
-					this.sendMessage()
+		this.$refs.roomTextarea.addEventListener(
+			'keyup',
+			debounce(e => {
+				if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
+					if (isMobile) {
+						this.message = this.message + '\n'
+						setTimeout(() => this.onChangeInput())
+					} else {
+						this.sendMessage()
+					}
 				}
-			}
 
-			this.updateFooterList('@')
-			this.updateFooterList(':')
-		}), 50)
+				this.updateFooterList('@')
+				this.updateFooterList(':')
+			}),
+			50
+		)
 
 		this.$refs['roomTextarea'].addEventListener('click', () => {
 			if (isMobile) this.keepKeyboardOpen = true
@@ -915,10 +917,10 @@ export default {
 			}, 50)
 		},
 		onChangeInput: debounce(function(e) {
-				this.message = e.target.value
-				this.keepKeyboardOpen = true
-				this.resizeTextarea()
-				this.$emit('typing-message', this.message)
+			this.message = e.target.value
+			this.keepKeyboardOpen = true
+			this.resizeTextarea()
+			this.$emit('typing-message', this.message)
 		}, 100),
 		resizeTextarea() {
 			const el = this.$refs['roomTextarea']
