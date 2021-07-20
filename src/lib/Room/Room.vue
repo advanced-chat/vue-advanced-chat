@@ -250,7 +250,7 @@
 					@input="onChangeInput"
 					@keydown.esc="escapeTextarea"
 					@keydown.enter.exact.prevent=""
-					@paste="pasteImage"
+					@paste="onPasteImage"
 				/>
 
 				<div class="vac-icon-textarea">
@@ -944,7 +944,7 @@ export default {
 			this.$refs.file.value = ''
 			this.$refs.file.click()
 		},
-		pasteImage(pasteEvent, callback) {
+		onPasteImage(pasteEvent, callback) {
 			if (pasteEvent.clipboardData === false) {
 				if (typeof (callback) === 'function') {
 					callback(undefined)
