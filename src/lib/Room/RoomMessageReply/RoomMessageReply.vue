@@ -6,24 +6,6 @@
 			:style="{ bottom: `${$parent.$refs.roomFooter.clientHeight}px` }"
 		>
 			<div class="vac-reply-box">
-				<img
-					v-if="isImageFile"
-					:src="messageReply.file.url"
-					class="vac-image-reply"
-				/>
-				<video v-else-if="isVideoFile" controls class="vac-image-reply">
-					<source :src="messageReply.file.url" />
-				</video>
-				<audio-player
-					v-else-if="isAudioFile"
-					:src="messageReply.file.url"
-					class="vac-audio-reply"
-				>
-					<template v-for="(i, name) in $scopedSlots" #[name]="data">
-						<slot :name="name" v-bind="data" />
-					</template>
-				</audio-player>
-
 				<div class="vac-reply-info">
 					<div class="vac-reply-username">
 						{{ messageReply.username }}
@@ -42,6 +24,24 @@
 						</format-message>
 					</div>
 				</div>
+
+				<img
+					v-if="isImageFile"
+					:src="messageReply.file.url"
+					class="vac-image-reply"
+				/>
+				<video v-else-if="isVideoFile" controls class="vac-image-reply">
+					<source :src="messageReply.file.url" />
+				</video>
+				<audio-player
+					v-else-if="isAudioFile"
+					:src="messageReply.file.url"
+					class="vac-audio-reply"
+				>
+					<template v-for="(i, name) in $scopedSlots" #[name]="data">
+						<slot :name="name" v-bind="data" />
+					</template>
+				</audio-player>
 			</div>
 
 			<div class="vac-icon-reply">

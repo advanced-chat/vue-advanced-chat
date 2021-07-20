@@ -12,7 +12,6 @@
 		background: var(--chat-footer-bg-color-reply);
 		border-radius: 4px;
 		padding: 8px 10px;
-		display: flex;
 	}
 
 	.vac-reply-info {
@@ -44,7 +43,7 @@
 	.vac-image-reply {
 		max-height: 100px;
 		max-width: 200px;
-		margin-right: 10px;
+		margin: 4px 10px 0 0;
 		border-radius: 4px;
 	}
 
