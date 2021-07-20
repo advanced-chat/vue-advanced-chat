@@ -14,6 +14,15 @@
 				<video v-else-if="isVideoFile" controls class="vac-image-reply">
 					<source :src="messageReply.file.url" />
 				</video>
+				<audio-player
+					v-else-if="isAudioFile"
+					:src="messageReply.file.url"
+					class="vac-audio-reply"
+				>
+					<template v-for="(i, name) in $scopedSlots" #[name]="data">
+						<slot :name="name" v-bind="data" />
+					</template>
+				</audio-player>
 
 				<div class="vac-reply-info">
 					<div class="vac-reply-username">
@@ -50,13 +59,20 @@
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 
-const { isImageFile, isVideoFile } = require('../../../utils/media-file')
+import AudioPlayer from '../../Message/AudioPlayer/AudioPlayer'
+
+const {
+	isAudioFile,
+	isImageFile,
+	isVideoFile
+} = require('../../../utils/media-file')
 
 export default {
 	name: 'RoomMessageReply',
 	components: {
 		SvgIcon,
-		FormatMessage
+		FormatMessage,
+		AudioPlayer
 	},
 
 	props: {
@@ -72,6 +88,9 @@ export default {
 		},
 		isVideoFile() {
 			return isVideoFile(this.messageReply.file)
+		},
+		isAudioFile() {
+			return isAudioFile(this.messageReply.file)
 		}
 	}
 }
