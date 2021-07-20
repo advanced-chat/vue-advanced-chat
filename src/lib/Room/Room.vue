@@ -250,6 +250,7 @@
 					@input="onChangeInput"
 					@keydown.esc="escapeTextarea"
 					@keydown.enter.exact.prevent=""
+					@paste="pasteImage"
 				/>
 
 				<div class="vac-icon-textarea">
@@ -942,6 +943,25 @@ export default {
 		launchFilePicker() {
 			this.$refs.file.value = ''
 			this.$refs.file.click()
+		},
+		pasteImage(pasteEvent, callback) {
+			if (pasteEvent.clipboardData === false) {
+				if (typeof (callback) === 'function') {
+					callback(undefined)
+				}
+			}
+			this.clipboardData = pasteEvent.clipboardData.items
+			var items = pasteEvent.clipboardData.items
+			if (items === undefined) {
+				if (typeof (callback) === 'function') {
+					callback(undefined)
+				}
+			}
+			for (var i = 0; i < items.length; i++) {
+				if (items[i].type.indexOf('image') === -1) continue
+				var blob = items[i].getAsFile()
+				this.onFileChange([blob])
+			}
 		},
 		async onFileChange(files) {
 			this.fileDialog = true
