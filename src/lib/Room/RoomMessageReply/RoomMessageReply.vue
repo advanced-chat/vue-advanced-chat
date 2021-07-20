@@ -11,6 +11,10 @@
 					:src="messageReply.file.url"
 					class="vac-image-reply"
 				/>
+				<video v-else-if="isVideoFile" controls class="vac-image-reply">
+					<source :src="messageReply.file.url" />
+				</video>
+
 				<div class="vac-reply-info">
 					<div class="vac-reply-username">
 						{{ messageReply.username }}
@@ -46,7 +50,7 @@
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 
-const { isImageFile } = require('../../../utils/media-file')
+const { isImageFile, isVideoFile } = require('../../../utils/media-file')
 
 export default {
 	name: 'RoomMessageReply',
@@ -65,6 +69,9 @@ export default {
 	computed: {
 		isImageFile() {
 			return isImageFile(this.messageReply.file)
+		},
+		isVideoFile() {
+			return isVideoFile(this.messageReply.file)
 		}
 	}
 }
