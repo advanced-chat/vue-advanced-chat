@@ -944,23 +944,16 @@ export default {
 			this.$refs.file.value = ''
 			this.$refs.file.click()
 		},
-		onPasteImage(pasteEvent, callback) {
-			if (pasteEvent.clipboardData === false) {
-				if (typeof (callback) === 'function') {
-					callback(undefined)
-				}
-			}
-			this.clipboardData = pasteEvent.clipboardData.items
-			var items = pasteEvent.clipboardData.items
-			if (items === undefined) {
-				if (typeof (callback) === 'function') {
-					callback(undefined)
-				}
-			}
-			for (var i = 0; i < items.length; i++) {
-				if (items[i].type.indexOf('image') === -1) continue
-				var blob = items[i].getAsFile()
-				this.onFileChange([blob])
+		onPasteImage(pasteEvent) {
+			const items = pasteEvent.clipboardData?.items
+
+			if (items) {
+				items.forEach(item => {
+					if (item.type.indexOf('image') !== -1) {
+						const blob = item.getAsFile()
+						this.onFileChange([blob])
+					}
+				})
 			}
 		},
 		async onFileChange(files) {
