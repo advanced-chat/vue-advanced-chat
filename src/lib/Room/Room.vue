@@ -66,7 +66,7 @@
 						</infinite-loading>
 					</transition>
 					<transition-group :key="roomId" name="vac-fade-message">
-						<div v-for="(m, i) in messages" :key="m._id">
+						<div v-for="(m, i) in messages" :key="`m-${i}`">
 							<message
 								:current-user-id="currentUserId"
 								:message="m"
