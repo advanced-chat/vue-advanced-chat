@@ -2,6 +2,7 @@
 	<div
 		v-show="(isMobile && !showRoomsList) || !isMobile || singleRoom"
 		class="vac-col-messages"
+		@touchstart="touchStart"
 	>
 		<slot v-if="showNoRoom" name="no-room-selected">
 			<div class="vac-container-center vac-room-empty">
@@ -562,6 +563,26 @@ export default {
 	},
 
 	methods: {
+		touchStart(touchEvent) {
+			if (touchEvent.changedTouches.length === 1) {
+				const posXStart = touchEvent.changedTouches[0].clientX
+
+				addEventListener(
+					'touchend',
+					touchEvent => this.touchEnd(touchEvent, posXStart),
+					{ once: true }
+				)
+			}
+		},
+		touchEnd(touchEvent, posXStart) {
+			if (touchEvent.changedTouches.length === 1) {
+				const posXEnd = touchEvent.changedTouches[0].clientX
+
+				if (posXEnd - posXStart > 30) {
+					this.$emit('toggle-rooms-list')
+				}
+			}
+		},
 		onRoomChanged() {
 			this.loadingMessages = true
 			this.scrollIcon = false
