@@ -792,6 +792,7 @@ export default {
 			this.videoFile = null
 			this.editedMessage.file = null
 			this.file = null
+			this.resetTextareaSize()
 			this.focusTextarea()
 		},
 		resetTextareaSize() {
@@ -949,7 +950,7 @@ export default {
 
 			if (items) {
 				items.forEach(item => {
-					if (item.type.indexOf('image') !== -1) {
+					if (item.type.includes('image')) {
 						const blob = item.getAsFile()
 						this.onFileChange([blob])
 					}
