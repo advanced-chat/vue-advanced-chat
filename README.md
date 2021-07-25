@@ -123,18 +123,15 @@ npm install lamejs --save
 
 ```javascript
 <template>
-  <vue-advanced-chat
-    :current-user-id="currentUserId"
-    :rooms="rooms"
-    :messages="messages"
-  />
+  <vue-advanced-chat/>
 </template>
 
 <script>
 export default {
   mounted() {
-    document.querySelector('vue-advanced-chat').rooms = []
-    document.querySelector('vue-advanced-chat').messages = []
+    document.querySelector('vue-advanced-chat').currentUserId = this.currentUserId
+    document.querySelector('vue-advanced-chat').rooms = this.rooms
+    document.querySelector('vue-advanced-chat').messages = this.messages
   }
 }
 </script>
