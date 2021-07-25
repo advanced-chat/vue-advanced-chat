@@ -74,6 +74,9 @@ npm install --save vue-advanced-chat
 
 # Using yarn
 yarn add --save vue-advanced-chat
+
+# Using CDN
+<script src="https://cdn.jsdelivr.net/npm/vue-advanced-chat@0.8.8/dist/vue-advanced-chat.min.js"></script>
 ```
 
 If you want to send mp3 audio messages, you may need to install `lamejs` inside your project:
@@ -86,7 +89,7 @@ npm install lamejs --save
 
 ## Usage
 
-You can import it as a custom component:
+#### You can import it as a custom component:
 
 ```javascript
 <template>
@@ -113,6 +116,27 @@ You can import it as a custom component:
       }
     }
   }
+</script>
+```
+
+#### Or if you used CDN import:
+
+```javascript
+<template>
+  <vue-advanced-chat
+    :current-user-id="currentUserId"
+    :rooms="rooms"
+    :messages="messages"
+  />
+</template>
+
+<script>
+export default {
+  mounted() {
+    document.querySelector('vue-advanced-chat').rooms = []
+    document.querySelector('vue-advanced-chat').messages = []
+  }
+}
 </script>
 ```
 
@@ -780,3 +804,7 @@ Your help is always appreciated :rocket:
 ## License
 
 This project is licensed under [MIT License](http://en.wikipedia.org/wiki/MIT_License)
+
+```
+
+```
