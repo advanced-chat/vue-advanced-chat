@@ -1,23 +1,19 @@
 <template>
-	<div class="vac-wrapper">
+	<div class="vac-emoji-wrapper">
 		<emoji-picker :search="search" @emoji="append">
-			<div
-				slot="emoji-invoker"
-				slot-scope="{ events: { click: clickEvent } }"
-				class="vac-svg-button"
-				:class="{ 'vac-emoji-reaction': emojiReaction }"
-				@click.stop="clickEvent"
-				@click="openEmoji"
-			>
-				<slot name="emoji-picker-icon">
-					<svg-icon name="emoji" :param="emojiReaction ? 'reaction' : ''" />
-				</slot>
-			</div>
-			<div
-				v-if="emojiOpened"
-				slot="emoji-picker"
-				slot-scope="{ emojis, insert }"
-			>
+			<template #emoji-invoker="{ events: { click: clickEvent } }">
+				<div
+					class="vac-svg-button"
+					:class="{ 'vac-emoji-reaction': emojiReaction }"
+					@click.stop="clickEvent"
+					@click="openEmoji"
+				>
+					<slot name="emoji-picker-icon">
+						<svg-icon name="emoji" :param="emojiReaction ? 'reaction' : ''" />
+					</slot>
+				</div>
+			</template>
+			<template v-if="emojiOpened" #emoji-picker="{ emojis, insert }">
 				<transition name="vac-slide-up" appear>
 					<div
 						class="vac-emoji-picker"
@@ -51,7 +47,7 @@
 						</div>
 					</div>
 				</transition>
-			</div>
+			</template>
 		</emoji-picker>
 	</div>
 </template>
