@@ -25,6 +25,8 @@ export default {
 		percentage: { type: Number, default: 0 }
 	},
 
+	emits: ['hover-audio-progress', 'change-linehead'],
+
 	data() {
 		return {
 			isMouseDown: false

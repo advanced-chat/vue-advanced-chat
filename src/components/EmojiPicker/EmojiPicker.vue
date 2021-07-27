@@ -75,6 +75,8 @@ export default {
 		positionRight: { type: Boolean, default: false }
 	},
 
+	emits: ['add-emoji', 'open-emoji'],
+
 	data() {
 		return {
 			search: '',

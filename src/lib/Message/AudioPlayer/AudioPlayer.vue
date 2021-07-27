@@ -36,6 +36,8 @@ export default {
 		src: { type: String, default: null }
 	},
 
+	emits: ['hover-audio-progress', 'update-progress-time'],
+
 	data() {
 		return {
 			isPlaying: false,

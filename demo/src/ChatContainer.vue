@@ -99,6 +99,8 @@ export default {
 		isDevice: { type: Boolean, required: true }
 	},
 
+	emits: ['show-demo-options'],
+
 	data() {
 		return {
 			roomsPerPage: 15,

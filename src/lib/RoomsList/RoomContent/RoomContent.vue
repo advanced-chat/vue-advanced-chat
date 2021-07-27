@@ -141,6 +141,8 @@ export default {
 		roomActions: { type: Array, required: true }
 	},
 
+	emits: ['room-action-handler'],
+
 	data() {
 		return {
 			roomMenuOpened: null

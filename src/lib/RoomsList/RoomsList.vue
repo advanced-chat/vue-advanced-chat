@@ -107,6 +107,14 @@ export default {
 		roomActions: { type: Array, required: true }
 	},
 
+	emits: [
+		'add-room',
+		'room-action-handler',
+		'loading-more-rooms',
+		'fetch-room',
+		'fetch-more-rooms'
+	],
+
 	data() {
 		return {
 			filteredRooms: this.rooms || [],

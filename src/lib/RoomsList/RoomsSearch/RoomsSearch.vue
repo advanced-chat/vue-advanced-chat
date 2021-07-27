@@ -47,6 +47,8 @@ export default {
 		loadingRooms: { type: Boolean, required: true }
 	},
 
+	emits: ['search-room', 'add-room'],
+
 	computed: {
 		showSearchBar() {
 			return this.showSearch || this.showAddRoom

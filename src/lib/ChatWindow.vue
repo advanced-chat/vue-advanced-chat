@@ -138,6 +138,25 @@ export default {
 		acceptedFiles: { type: String, default: '*' }
 	},
 
+	emits: [
+		'toggle-rooms-list',
+		'room-info',
+		'fetch-messages',
+		'send-message',
+		'edit-message',
+		'delete-message',
+		'open-file',
+		'open-user-tag',
+		'menu-action-handler',
+		'message-action-handler',
+		'send-message-reaction',
+		'typing-message',
+		'textarea-action-handler',
+		'fetch-more-rooms',
+		'add-room',
+		'room-action-handler'
+	],
+
 	data() {
 		return {
 			room: {},

@@ -72,6 +72,8 @@ export default {
 		linkOptions: { type: Object, required: true }
 	},
 
+	emits: ['open-user-tag'],
+
 	computed: {
 		linkifiedMessage() {
 			const message = formatString(

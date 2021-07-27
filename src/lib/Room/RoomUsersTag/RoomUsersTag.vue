@@ -32,6 +32,8 @@ export default {
 
 	props: {
 		filteredUsersTag: { type: Array, required: true }
-	}
+	},
+
+	emits: ['select-user-tag']
 }
 </script>

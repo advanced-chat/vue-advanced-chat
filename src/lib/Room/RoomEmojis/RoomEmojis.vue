@@ -23,6 +23,8 @@ export default {
 
 	props: {
 		filteredEmojis: { type: Array, required: true }
-	}
+	},
+
+	emits: ['select-emoji']
 }
 </script>

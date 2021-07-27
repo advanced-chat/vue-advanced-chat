@@ -28,6 +28,8 @@ export default {
 		emojisList: { type: Object, required: true }
 	},
 
+	emits: ['send-message-reaction'],
+
 	methods: {
 		getEmojiByName(emojiName) {
 			return this.emojisList[emojiName]

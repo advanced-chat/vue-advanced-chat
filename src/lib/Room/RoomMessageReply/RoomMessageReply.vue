@@ -82,6 +82,8 @@ export default {
 		linkOptions: { type: Object, required: true }
 	},
 
+	emits: ['reset-message'],
+
 	computed: {
 		isImageFile() {
 			return isImageFile(this.messageReply.file)

@@ -400,6 +400,22 @@ export default {
 		textareaAction: { type: Function, default: null }
 	},
 
+	emits: [
+		'toggle-rooms-list',
+		'room-info',
+		'menu-action-handler',
+		'edit-message',
+		'send-message',
+		'delete-message',
+		'message-action-handler',
+		'fetch-messages',
+		'send-message-reaction',
+		'typing-message',
+		'open-file',
+		'open-user-tag',
+		'textarea-action-handler'
+	],
+
 	data() {
 		return {
 			message: '',

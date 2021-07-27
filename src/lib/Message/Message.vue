@@ -256,6 +256,15 @@ export default {
 		hideOptions: { type: Boolean, required: true }
 	},
 
+	emits: [
+		'hide-options',
+		'message-added',
+		'open-file',
+		'open-user-tag',
+		'message-action-handler',
+		'send-message-reaction'
+	],
+
 	data() {
 		return {
 			hoverMessageId: null,

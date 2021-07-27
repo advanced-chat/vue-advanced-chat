@@ -70,6 +70,8 @@ export default {
 		imageHover: { type: Boolean, required: true }
 	},
 
+	emits: ['open-file', 'open-user-tag'],
+
 	data() {
 		return {
 			imageLoading: false,

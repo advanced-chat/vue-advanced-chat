@@ -109,6 +109,15 @@ export default {
 		hoverAudioProgress: { type: Boolean, required: true }
 	},
 
+	emits: [
+		'update-emoji-opened',
+		'update-options-opened',
+		'update-message-hover',
+		'hide-options',
+		'message-action-handler',
+		'send-message-reaction'
+	],
+
 	data() {
 		return {
 			menuOptionsTop: 0,

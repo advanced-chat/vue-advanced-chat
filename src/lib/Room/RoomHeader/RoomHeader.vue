@@ -100,6 +100,8 @@ export default {
 		room: { type: Object, required: true }
 	},
 
+	emits: ['toggle-rooms-list', 'room-info', 'menu-action-handler'],
+
 	data() {
 		return {
 			menuOpened: false
