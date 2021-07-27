@@ -11,7 +11,7 @@
 		</form>
 
 		<form v-if="inviteRoomId" @submit.prevent="addRoomUser">
-			<inpu v-model="invitedUsername" type="text" placeholder="Add username" />
+			<input v-model="invitedUsername" type="text" placeholder="Add username" />
 			<button type="submit" :disabled="disableForm || !invitedUsername">
 				Add User
 			</button>
