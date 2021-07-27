@@ -9,7 +9,7 @@
 					filteredMessageActions.length && showReactionEmojis ? '70px' : '45px'
 			}"
 		>
-			<transition-group name="vac-slide-left">
+			<transition-group name="vac-slide-left" tag="span">
 				<div
 					v-if="isMessageActions || isMessageReactions"
 					key="1"

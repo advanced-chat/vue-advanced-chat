@@ -1,5 +1,5 @@
 <template>
-	<transition-group v-if="!message.deleted" name="vac-slide-left">
+	<transition-group v-if="!message.deleted" name="vac-slide-left" tag="span">
 		<button
 			v-for="(reaction, key) in message.reactions"
 			v-show="reaction.length"

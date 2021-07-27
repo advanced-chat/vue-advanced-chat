@@ -65,7 +65,7 @@
 							<div slot="no-more" />
 						</infinite-loading>
 					</transition>
-					<transition-group :key="roomId" name="vac-fade-message">
+					<transition-group :key="roomId" name="vac-fade-message" tag="span">
 						<div v-for="(m, i) in messages" :key="`m-${i}`">
 							<message
 								:current-user-id="currentUserId"
