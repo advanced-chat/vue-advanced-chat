@@ -125,15 +125,17 @@ export default {
 	},
 
 	watch: {
-		rooms(newVal, oldVal) {
-			this.filteredRooms = newVal
-
-			if (
-				this.infiniteState &&
-				(newVal.length !== oldVal.length || this.roomsLoaded)
-			) {
-				this.infiniteState.loaded()
-				this.loadingMoreRooms = false
+		rooms: {
+			deep: true,
+			handler(newVal, oldVal) {
+				this.filteredRooms = newVal
+				if (
+					this.infiniteState &&
+					(newVal.length !== oldVal.length || this.roomsLoaded)
+				) {
+					this.infiniteState.loaded()
+					this.loadingMoreRooms = false
+				}
 			}
 		},
 		loadingRooms(val) {

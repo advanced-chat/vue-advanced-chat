@@ -509,29 +509,29 @@ export default {
 				if (val) this.message = this.roomMessage
 			}
 		},
-		messages(newVal, oldVal) {
-			newVal.forEach((message, i) => {
-				if (
-					this.showNewMessagesDivider &&
-					!message.seen &&
-					message.senderId !== this.currentUserId
-				) {
-					this.newMessages.push({
-						_id: message._id,
-						index: i
-					})
+		messages: {
+			deep: true,
+			handler(newVal, oldVal) {
+				newVal.forEach((message, i) => {
+					if (
+						this.showNewMessagesDivider &&
+						!message.seen &&
+						message.senderId !== this.currentUserId
+					) {
+						this.newMessages.push({
+							_id: message._id,
+							index: i
+						})
+					}
+				})
+				if (oldVal?.length === newVal?.length - 1) {
+					this.newMessages = []
 				}
-			})
-
-			if (oldVal?.length === newVal?.length - 1) {
-				this.newMessages = []
+				if (this.infiniteState) {
+					this.infiniteState.loaded()
+				}
+				setTimeout(() => (this.loadingMoreMessages = false))
 			}
-
-			if (this.infiniteState) {
-				this.infiniteState.loaded()
-			}
-
-			setTimeout(() => (this.loadingMoreMessages = false))
 		},
 		messagesLoaded(val) {
 			if (val) this.loadingMessages = false
