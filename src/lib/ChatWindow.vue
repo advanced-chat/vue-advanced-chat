@@ -133,7 +133,6 @@ export default {
 			type: Object,
 			default: () => ({ disabled: false, target: '_blank' })
 		},
-		newMessage: { type: Object, default: null },
 		roomMessage: { type: String, default: '' },
 		acceptedFiles: { type: String, default: '*' }
 	},
@@ -249,10 +248,6 @@ export default {
 			val.users.forEach(user => {
 				partcipantsValidation(user)
 			})
-		},
-
-		newMessage(val) {
-			this.$set(this.messages, val.index, val.message)
 		}
 	},
 
