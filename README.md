@@ -621,7 +621,7 @@ messageActionHandler({ roomId, action, message }) {
 Example:
 
 ```javascript
-<template v-slot:room-header="{ room, userStatus }">
+<template #room-header="{ room, userStatus }">
   {{ room.roomName }} - {{ userStatus }}
 </template>
 ```
