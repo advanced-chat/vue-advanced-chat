@@ -128,6 +128,13 @@ npm install lamejs --save
 
 <script>
 export default {
+  data() {
+    return {
+      rooms: [],
+      messages: [],
+      currentUserId: 1234
+    }
+  },
   mounted() {
     document.querySelector('vue-advanced-chat').currentUserId = this.currentUserId
     document.querySelector('vue-advanced-chat').rooms = this.rooms
