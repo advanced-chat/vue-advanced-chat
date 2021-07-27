@@ -1,7 +1,7 @@
 <template>
 	<div class="window-container" :class="{ 'window-mobile': isDevice }">
-		<form @submit.prevent="createRoom" v-if="addNewRoom">
-			<input type="text" placeholder="Add username" v-model="addRoomUsername" />
+		<form v-if="addNewRoom" @submit.prevent="createRoom">
+			<input v-model="addRoomUsername" type="text" placeholder="Add username" />
 			<button type="submit" :disabled="disableForm || !addRoomUsername">
 				Create Room
 			</button>
@@ -10,8 +10,8 @@
 			</button>
 		</form>
 
-		<form @submit.prevent="addRoomUser" v-if="inviteRoomId">
-			<input type="text" placeholder="Add username" v-model="invitedUsername" />
+		<form v-if="inviteRoomId" @submit.prevent="addRoomUser">
+			<inpu v-model="invitedUsername" type="text" placeholder="Add username" />
 			<button type="submit" :disabled="disableForm || !invitedUsername">
 				Add User
 			</button>
@@ -20,9 +20,11 @@
 			</button>
 		</form>
 
-		<form @submit.prevent="deleteRoomUser" v-if="removeRoomId">
+		<form v-if="removeRoomId" @submit.prevent="deleteRoomUser">
 			<select v-model="removeUserId">
-				<option default value="">Select User</option>
+				<option default value="">
+					Select User
+				</option>
 				<option v-for="user in removeUsers" :key="user._id" :value="user._id">
 					{{ user.username }}
 				</option>
@@ -91,7 +93,11 @@ export default {
 		ChatWindow
 	},
 
-	props: ['currentUserId', 'theme', 'isDevice'],
+	props: {
+		currentUserId: { type: String, required: true },
+		theme: { type: String, required: true },
+		isDevice: { type: Boolean, required: true }
+	},
 
 	data() {
 		return {
@@ -138,15 +144,6 @@ export default {
 		}
 	},
 
-	mounted() {
-		this.fetchRooms()
-		this.updateUserOnlineStatus()
-	},
-
-	destroyed() {
-		this.resetRooms()
-	},
-
 	computed: {
 		loadedRooms() {
 			return this.rooms.slice(0, this.roomsLoadedCount)
@@ -154,6 +151,15 @@ export default {
 		screenHeight() {
 			return this.isDevice ? window.innerHeight + 'px' : 'calc(100vh - 80px)'
 		}
+	},
+
+	mounted() {
+		this.fetchRooms()
+		this.updateUserOnlineStatus()
+	},
+
+	destroyed() {
+		this.resetRooms()
 	},
 
 	methods: {
@@ -311,9 +317,10 @@ export default {
 			if (!message.timestamp) return
 
 			let content = message.content
-			if (message.file)
+			if (message.file) {
 				content = `${message.file.name}.${message.file.extension ||
 					message.file.type}`
+			}
 
 			return {
 				...message,
@@ -346,8 +353,9 @@ export default {
 				this.roomId = room.roomId
 			}
 
-			if (this.endMessages && !this.startMessages)
+			if (this.endMessages && !this.startMessages) {
 				return (this.messagesLoaded = true)
+			}
 
 			let ref = messagesRef(room.roomId)
 
@@ -368,10 +376,12 @@ export default {
 
 				let listenerQuery = ref.orderBy('timestamp')
 
-				if (this.startMessages)
+				if (this.startMessages) {
 					listenerQuery = listenerQuery.startAfter(this.startMessages)
-				if (this.endMessages)
+				}
+				if (this.endMessages) {
 					listenerQuery = listenerQuery.endAt(this.endMessages)
+				}
 
 				if (options.reset) this.messages = []
 
@@ -421,12 +431,12 @@ export default {
 				user => message.data().sender_id === user._id
 			)
 
-			const { sender_id, timestamp } = message.data()
+			const { timestamp } = message.data()
 
 			return {
 				...message.data(),
 				...{
-					senderId: sender_id,
+					senderId: message.data().sender_id,
 					_id: message.id,
 					seconds: timestamp.seconds,
 					timestamp: parseTimestamp(timestamp, 'HH:mm'),
@@ -595,7 +605,7 @@ export default {
 			await messagesRef(roomId)
 				.doc(messageId)
 				.update({
-					['file.url']: url
+					'file.url': url
 				})
 		},
 
@@ -677,7 +687,7 @@ export default {
 				.database()
 				.ref('.info/connected')
 				.on('value', snapshot => {
-					if (snapshot.val() == false) return
+					if (snapshot.val() === false) return
 
 					userStatusRef
 						.onDisconnect()
