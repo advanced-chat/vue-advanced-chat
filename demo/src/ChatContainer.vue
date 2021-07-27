@@ -408,7 +408,8 @@ export default {
 				if (messageIndex === -1) {
 					this.messages = this.messages.concat([formattedMessage])
 				} else {
-					this.$set(this.messages, messageIndex, formattedMessage)
+					this.messages[messageIndex] = formattedMessage
+					this.messages = [...this.messages]
 				}
 
 				this.markMessagesSeen(room, message)
@@ -720,7 +721,8 @@ export default {
 								r => room.roomId === r.roomId
 							)
 
-							this.$set(this.rooms, roomIndex, room)
+							this.rooms[roomIndex] = room
+							this.rooms = [...this.rooms]
 						})
 					this.roomsListeners.push(listener)
 				})
