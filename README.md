@@ -538,24 +538,24 @@ messages="[
 
 ## Events API
 
-| <div style="width:230px">Event</div> | Params                                                                  | Fires when a user                               |
-| ------------------------------------ | ----------------------------------------------------------------------- | ----------------------------------------------- |
-| `fetch-messages`(1)                  | `{ room, options }`                                                     | Scrolled on top to load more messages           |
-| `fetch-more-rooms`(2)                | -                                                                       | Scrolled to load more rooms                     |
-| `send-message`                       | `{ roomId, content, file(8), replyMessage(9), usersTag }`               | Sent a message                                  |
-| `edit-message`                       | `{ roomId, messageId, newContent, file(7), replyMessage(9) ,usersTag }` | Edited a message                                |
-| `delete-message`                     | `{ roomId, message }`                                                   | Deleted a message                               |
-| `open-file`                          | `{ message, action }`                                                   | Clicked to view or download a file              |
-| `open-user-tag`(3)                   | `{ user }`                                                              | Clicked on a user tag inside a message          |
-| `add-room`                           | -                                                                       | Clicked on the plus icon next to searchbar      |
-| `room-action-handler`(4)             | `{ roomId, action }`                                                    | Clicked on the vertical dots icon inside a room |
-| `menu-action-handler`(5)             | `{ roomId, action }`                                                    | Clicked on the vertical dots icon inside a room |
-| `message-action-handler`(6)          | `{ roomId, action, message }`                                           | Clicked on the dropdown icon inside a message   |
-| `send-message-reaction`              | `{ roomId, messageId, reaction, remove }`                               | Clicked on the emoji icon inside a message      |
-| `room-info` (7)                      | `room`                                                                  | Clicked the room header bar                     |
-| `toggle-rooms-list`                  | `{ opened }`                                                            | Clicked on the toggle icon inside a room header |
-| `textarea-action-handler`(7)         | `{ roomId, message }`                                                   | Clicked on custom icon inside the footer        |
-| `typing-message`                     | `{ message, roomId }`                                                   | Started typing a message                        |
+| <div style="width:230px">Event</div> | Params                                                                   | Fires when a user                               |
+| ------------------------------------ | ------------------------------------------------------------------------ | ----------------------------------------------- |
+| `fetch-messages`(1)                  | `{ room, options }`                                                      | Scrolled on top to load more messages           |
+| `fetch-more-rooms`(2)                | -                                                                        | Scrolled to load more rooms                     |
+| `send-message`                       | `{ roomId, content, file(9), replyMessage(10), usersTag }`               | Sent a message                                  |
+| `edit-message`                       | `{ roomId, messageId, newContent, file(9), replyMessage(10) ,usersTag }` | Edited a message                                |
+| `delete-message`                     | `{ roomId, message }`                                                    | Deleted a message                               |
+| `open-file`                          | `{ message, action }`                                                    | Clicked to view or download a file              |
+| `open-user-tag`(3)                   | `{ user }`                                                               | Clicked on a user tag inside a message          |
+| `add-room`                           | -                                                                        | Clicked on the plus icon next to searchbar      |
+| `room-action-handler`(4)             | `{ roomId, action }`                                                     | Clicked on the vertical dots icon inside a room |
+| `menu-action-handler`(5)             | `{ roomId, action }`                                                     | Clicked on the vertical dots icon inside a room |
+| `message-action-handler`(6)          | `{ roomId, action, message }`                                            | Clicked on the dropdown icon inside a message   |
+| `send-message-reaction`              | `{ roomId, messageId, reaction, remove }`                                | Clicked on the emoji icon inside a message      |
+| `room-info` (7)                      | `room`                                                                   | Clicked the room header bar                     |
+| `toggle-rooms-list`                  | `{ opened }`                                                             | Clicked on the toggle icon inside a room header |
+| `textarea-action-handler`(8)         | `{ roomId, message }`                                                    | Clicked on custom icon inside the footer        |
+| `typing-message`                     | `{ message, roomId }`                                                    | Started typing a message                        |
 
 **(1)** `fetch-messages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`.<br>
 **(1)** `fetch-messages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top.
