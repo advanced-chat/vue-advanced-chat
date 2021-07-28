@@ -17,7 +17,7 @@
 			:single-room="singleRoom"
 			:show-rooms-list="showRoomsList"
 			:is-mobile="isMobile"
-			:room-info="roomInfo"
+			:room-info-enabled="roomInfoEnabled"
 			:menu-actions="menuActions"
 			:room="room"
 			@toggle-rooms-list="$emit('toggle-rooms-list')"
@@ -288,7 +288,7 @@
 					</div>
 
 					<div
-						v-if="textareaAction"
+						v-if="textareaActionEnabled"
 						class="vac-svg-button"
 						@click="textareaActionHandler"
 					>
@@ -396,8 +396,8 @@ export default {
 		textFormatting: { type: Boolean, required: true },
 		linkOptions: { type: Object, required: true },
 		loadingRooms: { type: Boolean, required: true },
-		roomInfo: { type: Function, default: null },
-		textareaAction: { type: Function, default: null }
+		roomInfoEnabled: { type: Boolean, required: true },
+		textareaActionEnabled: { type: Boolean, required: true }
 	},
 
 	emits: [

@@ -51,8 +51,8 @@
 				:link-options="linkOptions"
 				:is-mobile="isMobile"
 				:loading-rooms="loadingRooms"
-				:room-info="$listeners['room-info']"
-				:textarea-action="$listeners['textarea-action-handler']"
+				:room-info-enabled="roomInfoEnabled"
+				:textarea-action-enabled="textareaActionEnabled"
 				:accepted-files="acceptedFiles"
 				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
@@ -133,6 +133,8 @@ export default {
 			type: Object,
 			default: () => ({ disabled: false, target: '_blank' })
 		},
+		roomInfoEnabled: { type: Boolean, default: false },
+		textareaActionEnabled: { type: Boolean, default: false },
 		roomMessage: { type: String, default: '' },
 		acceptedFiles: { type: String, default: '*' }
 	},

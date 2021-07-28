@@ -234,11 +234,13 @@ fetchMessages({ room, options }) {
 | `text-messages`(13)                 | Object           | -        | `null`                                  |
 | `text-formatting`(14)               | Boolean          | -        | `true`                                  |
 | `link-options`(15)                  | Object           | -        | `{ disabled: false, target: '_blank' }` |
-| `responsive-breakpoint`(16)         | Number           | -        | `900`                                   |
-| `single-room`(17)                   | Boolean          | -        | `false`                                 |
-| `theme`(18)                         | Sring            | -        | `light`                                 |
-| `accepted-files`(19)                | String           | -        | `*`                                     |
-| `styles`(20)                        | Object           | -        | (19)                                    |
+| `room-info-enabled` (16)            | Boolean          | -        | `false`                                 |
+| `textarea-action-enabled`(17)       | Boolean          | -        | `false`                                 |
+| `responsive-breakpoint`(18)         | Number           | -        | `900`                                   |
+| `single-room`(19)                   | Boolean          | -        | `false`                                 |
+| `theme`(20)                         | Sring            | -        | `light`                                 |
+| `accepted-files`(21)                | String           | -        | `*`                                     |
+| `styles`(22)                        | Object           | -        | (19)                                    |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -381,17 +383,23 @@ multiline code
 :link-options="{ disabled: true, target: '_self' }"
 ```
 
-**(16)** `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
+**(16)** `room-info-enabled` can be used to trigger an event after clicking the room header component.<br>
+You can then use the [room-info](#events-api) event to call your own action after clicking the header.
 
-**(17)** `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+**(17)** `textarea-action-enabled` can be used to add an extra icon on the right of the textarea<br>
+You can then use the [textarea-action-handler](#events-api) event to call your own action after clicking the icon.
 
-**(18)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+**(18)** `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
 
-**(19)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
+**(19)** `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+
+**(20)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+
+**(21)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
 
 Example: set `"accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files
 
-**(20)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
+**(22)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
 
 ```javascript
 styles="{
@@ -544,7 +552,7 @@ messages="[
 | `menu-action-handler`(5)             | `{ roomId, action }`                                                    | Clicked on the vertical dots icon inside a room |
 | `message-action-handler`(6)          | `{ roomId, action, message }`                                           | Clicked on the dropdown icon inside a message   |
 | `send-message-reaction`              | `{ roomId, messageId, reaction, remove }`                               | Clicked on the emoji icon inside a message      |
-| `room-info`                          | `room`                                                                  | Clicked the room header bar                     |
+| `room-info` (7)                      | `room`                                                                  | Clicked the room header bar                     |
 | `toggle-rooms-list`                  | `{ opened }`                                                            | Clicked on the toggle icon inside a room header |
 | `textarea-action-handler`(7)         | `{ roomId, message }`                                                   | Clicked on custom icon inside the footer        |
 | `typing-message`                     | `{ message, roomId }`                                                   | Started typing a message                        |
@@ -608,11 +616,13 @@ messageActionHandler({ roomId, action, message }) {
 }
 ```
 
-**(7)** `textarea-action-handler` can be used to add an extra icon on the right of the textarea, and recieve an event when clicking it.
+**(7)** `room-info` is the result of the [`room-info-enabled`](#props-api) prop.<br>
 
-**(8)** All file params contain: `{ blob, localURL, name, size, type, extension }`
+**(8)** `textarea-action-handler` is the result of the [`textarea-action-enabled`](#props-api) prop.<br>
 
-**(9)** `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked.
+**(9)** All file params contain: `{ blob, localURL, name, size, type, extension }`
+
+**(10)** `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked.
 
 <br>
 

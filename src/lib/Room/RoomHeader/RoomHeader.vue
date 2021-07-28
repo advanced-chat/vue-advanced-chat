@@ -14,7 +14,7 @@
 				</div>
 				<div
 					class="vac-info-wrapper"
-					:class="{ 'vac-item-clickable': roomInfo }"
+					:class="{ 'vac-item-clickable': roomInfoEnabled }"
 					@click="$emit('room-info')"
 				>
 					<slot name="room-header-avatar" v-bind="{ room }">
@@ -95,7 +95,7 @@ export default {
 		singleRoom: { type: Boolean, required: true },
 		showRoomsList: { type: Boolean, required: true },
 		isMobile: { type: Boolean, required: true },
-		roomInfo: { type: Function, default: null },
+		roomInfoEnabled: { type: Boolean, required: true },
 		menuActions: { type: Array, required: true },
 		room: { type: Object, required: true }
 	},
