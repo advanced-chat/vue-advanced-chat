@@ -436,7 +436,7 @@ export default {
 
 			const { timestamp } = message.data()
 
-			return {
+			const formattedMessage = {
 				...message.data(),
 				...{
 					senderId: message.data().sender_id,
@@ -449,6 +449,17 @@ export default {
 					distributed: true
 				}
 			}
+
+			if (message.data().replyMessage) {
+				formattedMessage.replyMessage = {
+					...message.data().replyMessage,
+					...{
+						senderId: message.data().replyMessage.sender_id
+					}
+				}
+			}
+
+			return formattedMessage
 		},
 
 		async sendMessage({ content, roomId, file, replyMessage }) {
