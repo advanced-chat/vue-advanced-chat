@@ -488,6 +488,7 @@ Notes:
 
 - `username` will be displayed on each message of corresponding agents if at least 3 users are in the room
 - `system` is used to show messages with a specific centered display
+- `indexId` can be used if you need to change a message ID that is already displayed in a room, this preventing an animation glitch. For example, when you don't know in advance the message ID your backend will create.
 
 Message states:
 
@@ -500,6 +501,7 @@ Message states:
 messages="[
   {
     _id: 7890,
+    indexId: 12092,
     content: 'Message 1',
     senderId: 1234,
     username: 'John Doe',
