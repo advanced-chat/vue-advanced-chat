@@ -100,6 +100,7 @@ export default {
 		styles: { type: Object, default: () => ({}) },
 		responsiveBreakpoint: { type: Number, default: 900 },
 		singleRoom: { type: Boolean, default: false },
+		roomsListOpened: { type: Boolean, default: true },
 		textMessages: { type: Object, default: null },
 		currentUserId: { type: [String, Number], default: '' },
 		rooms: { type: Array, default: () => [] },
@@ -250,6 +251,10 @@ export default {
 			val.users.forEach(user => {
 				partcipantsValidation(user)
 			})
+		},
+
+		roomsListOpened(val) {
+			this.showRoomsList = val
 		}
 	},
 

@@ -216,6 +216,7 @@ fetchMessages({ room, options }) {
 | `rooms-loaded`(3)                   | Boolean          | -        | `false`                                 |
 | `room-id`(4)                        | [String, Number] | -        | `null`                                  |
 | `load-first-room`(5)                | Boolean          | -        | `true`                                  |
+| `rooms-list-opened`                 | Boolean          | -        | `true`                                  |
 | `messages`                          | Array            | -        | `[]`                                    |
 | `room-message`(6)                   | String           | -        | `null`                                  |
 | `messages-loaded`(7)                | Boolean          | -        | `false`                                 |
