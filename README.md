@@ -500,7 +500,7 @@ Message states:
 messages="[
   {
     _id: 7890,
-    content: 'message 1',
+    content: 'Message 1',
     senderId: 1234,
     username: 'John Doe',
     avatar: 'assets/imgs/doe.png',
@@ -530,7 +530,20 @@ messages="[
       laughing: [
         1234
       ]
-    }
+    },
+    replyMessage: {
+      content: 'Reply Message',
+      senderId: 4321,
+      file: {
+        name: 'My Replied File',
+        size: 67351,
+        type: 'png',
+        audio: true,
+        duration: 14.4,
+        url: 'https://firebasestorage.googleapis.com/...',
+        preview: 'data:image/png;base64,iVBORw0KGgoAA...'
+      }
+    },
   }
 ]"
 ```
