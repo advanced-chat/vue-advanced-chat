@@ -160,10 +160,6 @@ export default {
 		this.updateUserOnlineStatus()
 	},
 
-	destroyed() {
-		this.resetRooms()
-	},
-
 	methods: {
 		resetRooms() {
 			this.loadingRooms = true
