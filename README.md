@@ -831,7 +831,7 @@ yarn add --save vue
 
 ## Use in a Vue 3 project
 
-### Install vue-advance-chat component
+### Install vue-advance-chat component (next branch)
 
 ```bash
 # Using npm
@@ -851,7 +851,6 @@ npm install --save-dev @vue/compat
 // vue.config.js
 
 module.exports = {
-  ...
   chainWebpack: config => {
     config.resolve.alias.set('vue', '@vue/compat')
 
