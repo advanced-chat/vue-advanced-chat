@@ -38,7 +38,7 @@
 		"publish-beta": "npm publish --tag beta",
 		"lint": "vue-cli-service lint",
 		"test": "jest",
-		"reset": "rm -rf node_modules && rm -rf package-lock.json && npm i --force"
+		"reset": "rm -rf node_modules && rm -rf package-lock.json && npm i --legacy-peer-deps"
 	},
 	"typings": "types/index.d.ts",
 	"files": [
