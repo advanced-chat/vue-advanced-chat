@@ -37,7 +37,8 @@
 		"prepublish": "npm run lint && npm run build",
 		"publish-beta": "npm publish --tag beta",
 		"lint": "vue-cli-service lint",
-		"test": "jest"
+		"test": "jest",
+		"reset": "rm -rf node_modules && rm -rf package-lock.json && npm i --force"
 	},
 	"typings": "types/index.d.ts",
 	"files": [
