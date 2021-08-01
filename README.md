@@ -85,7 +85,7 @@ If you want to send mp3 audio messages, you may need to install `lamejs` inside 
 npm install lamejs --save
 ```
 
-[Installation with React & Angular](#use-as-a-web-component)
+[Installation with React & Angular](#use-as-a-web-component-with-react-and-angular)
 
 ## Usage
 
