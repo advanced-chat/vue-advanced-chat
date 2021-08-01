@@ -201,6 +201,7 @@ export default {
 	watch: {
 		rooms: {
 			immediate: true,
+			deep: true,
 			handler(newVal, oldVal) {
 				if (
 					!newVal[0] ||

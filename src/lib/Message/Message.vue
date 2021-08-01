@@ -318,6 +318,7 @@ export default {
 	watch: {
 		newMessages: {
 			immediate: true,
+			deep: true,
 			handler(val) {
 				if (!val.length || !this.showNewMessagesDivider) {
 					return (this.newMessage = {})
