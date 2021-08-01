@@ -10,6 +10,8 @@
 
 ![Demo Image](demo/src/assets/web_mobile.png)
 
+## [Vue 3 compatibility 🚀](#use-in-a-vue-3-project)
+
 ## Features
 
 - Vue, Angular & React compatibility
@@ -823,6 +825,51 @@ yarn add --save vue
   ...
 >
 </vue-advanced-chat>
+```
+
+<br>
+
+## Use in a Vue 3 project
+
+### Install vue-advance-chat component
+
+```bash
+# Using npm
+npm install --save https://github.com/antoine92190/vue-advanced-chat/tarball/next
+```
+
+### Install vue migration build
+
+```bash
+# Using npm
+npm install --save-dev @vue/compat
+```
+
+### Add migration build config
+
+```javascript
+// vue.config.js
+
+module.exports = {
+  ...
+  chainWebpack: config => {
+    config.resolve.alias.set('vue', '@vue/compat')
+
+    config.module
+      .rule('vue')
+      .use('vue-loader')
+      .tap(options => {
+        return {
+          ...options,
+          compilerOptions: {
+            compatConfig: {
+              MODE: 3
+            }
+          }
+        }
+      })
+  }
+}
 ```
 
 <br>
