@@ -65,9 +65,12 @@
 		"rimraf": "^2.7.1",
 		"sass-loader": "^10.1.1",
 		"typescript": "^4.0.5",
-		"vue": "^2.6.10",
+		"vue": "^2.6.14",
 		"vue-jest": "^3.0.7",
 		"vue-template-compiler": "^2.6.11"
+	},
+	"peerDependencies": {
+		"vue": "^2.6.14"
 	},
 	"dependencies": {
 		"linkifyjs": "^2.1.9",
