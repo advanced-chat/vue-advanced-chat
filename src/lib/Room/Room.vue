@@ -38,13 +38,15 @@
 			<div class="vac-messages-container">
 				<div :class="{ 'vac-messages-hidden': loadingMessages }">
 					<transition name="vac-fade-message">
-						<div v-if="showNoMessages" class="vac-text-started">
-							<slot name="messages-empty">
-								{{ textMessages.MESSAGES_EMPTY }}
-							</slot>
-						</div>
-						<div v-if="showMessagesStarted" class="vac-text-started">
-							{{ textMessages.CONVERSATION_STARTED }} {{ messages[0].date }}
+						<div>
+							<div v-if="showNoMessages" class="vac-text-started">
+								<slot name="messages-empty">
+									{{ textMessages.MESSAGES_EMPTY }}
+								</slot>
+							</div>
+							<div v-if="showMessagesStarted" class="vac-text-started">
+								{{ textMessages.CONVERSATION_STARTED }} {{ messages[0].date }}
+							</div>
 						</div>
 					</transition>
 					<transition name="vac-fade-message">
