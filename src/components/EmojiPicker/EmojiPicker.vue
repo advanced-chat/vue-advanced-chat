@@ -30,13 +30,10 @@
 </template>
 
 <script>
-import { EmojiPicker } from 'emoji-picker-element'
-
 import SvgIcon from '../SvgIcon/SvgIcon'
 
 export default {
 	components: {
-		EmojiPicker,
 		SvgIcon
 	},
 
