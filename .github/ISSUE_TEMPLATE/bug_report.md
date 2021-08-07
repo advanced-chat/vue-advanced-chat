@@ -14,7 +14,8 @@ A clear and concise description of what the bug is.
 
 ## Steps to reproduce
 
-Describe us how we could reproduce the bug you're trying to report.
+Describe us how we could reproduce the bug you're trying to report
+You can also use https://github.com/antoine92190/vue-advanced-chat-sandbox and share the source code to reproduce the bug.
 
 Example:
 
