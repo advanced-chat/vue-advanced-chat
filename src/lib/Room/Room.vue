@@ -273,6 +273,7 @@
 
 					<emoji-picker
 						v-if="showEmojis && (!file || imageFile || videoFile)"
+						v-click-outside="() => emojiOpened = false"
 						:emoji-opened="emojiOpened"
 						:position-top="true"
 						@add-emoji="addEmoji"

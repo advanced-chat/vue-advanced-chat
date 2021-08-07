@@ -1,59 +1,36 @@
 <template>
 	<div class="vac-emoji-wrapper">
-		<emoji-picker :search="search" @emoji="append">
-			<template #emoji-invoker="{ events: { click: clickEvent } }">
+		<div
+			class="vac-svg-button"
+			:class="{ 'vac-emoji-reaction': emojiReaction }"
+			@click="openEmoji"
+		>
+			<slot name="emoji-picker-icon">
+				<svg-icon name="emoji" :param="emojiReaction ? 'reaction' : ''" />
+			</slot>
+		</div>
+
+		<template v-if="emojiOpened">
+			<transition name="vac-slide-up" appear>
 				<div
-					class="vac-svg-button"
-					:class="{ 'vac-emoji-reaction': emojiReaction }"
-					@click.stop="clickEvent"
-					@click="openEmoji"
+					class="vac-emoji-picker"
+					:class="{ 'vac-picker-reaction': emojiReaction }"
+					:style="{
+						height: `${emojiPickerHeight}px`,
+						top: positionTop ? emojiPickerHeight : `${emojiPickerTop}px`,
+						right: emojiPickerRight,
+						display: emojiPickerTop || !emojiReaction ? 'initial' : 'none'
+					}"
 				>
-					<slot name="emoji-picker-icon">
-						<svg-icon name="emoji" :param="emojiReaction ? 'reaction' : ''" />
-					</slot>
+					<emoji-picker v-if="emojiOpened" ref="emojiPicker" />
 				</div>
-			</template>
-			<template v-if="emojiOpened" #emoji-picker="{ emojis, insert }">
-				<transition name="vac-slide-up" appear>
-					<div
-						class="vac-emoji-picker"
-						:class="{ 'vac-picker-reaction': emojiReaction }"
-						:style="{
-							height: `${emojiPickerHeight}px`,
-							top: positionTop ? emojiPickerHeight : `${emojiPickerTop}px`,
-							right: emojiPickerRight,
-							display: emojiPickerTop || !emojiReaction ? 'initial' : 'none'
-						}"
-					>
-						<div class="vac-emoji-picker__search">
-							<input v-model="search" type="text" />
-						</div>
-						<div>
-							<div v-for="(emojiGroup, category) in emojis" :key="category">
-								<h5 v-if="category !== 'Frequently used'">
-									{{ category }}
-								</h5>
-								<div v-if="category !== 'Frequently used'" class="vac-emojis">
-									<span
-										v-for="(emoji, emojiName) in emojiGroup"
-										:key="emojiName"
-										:title="emojiName"
-										@click="insert({ emoji, emojiName })"
-									>
-										{{ emoji }}
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</transition>
-			</template>
-		</emoji-picker>
+			</transition>
+		</template>
 	</div>
 </template>
 
 <script>
-import EmojiPicker from 'vue-emoji-picker'
+import { EmojiPicker } from 'emoji-picker-element'
 
 import SvgIcon from '../SvgIcon/SvgIcon'
 
@@ -75,19 +52,63 @@ export default {
 
 	data() {
 		return {
-			search: '',
 			emojiPickerHeight: 320,
 			emojiPickerTop: 0,
 			emojiPickerRight: ''
 		}
 	},
 
+	watch: {
+		emojiOpened(val) {
+			if (val) {
+				setTimeout(() => {
+					this.addCustomStyling()
+
+					document
+						.querySelector('emoji-picker')
+						.addEventListener('emoji-click', ({ detail }) => {
+							this.$emit('add-emoji', {
+								icon: detail.unicode,
+								name: detail.annotation
+							})
+						})
+				}, 0)
+			}
+		}
+	},
+
 	methods: {
-		append({ emoji, emojiName }) {
-			this.$emit('add-emoji', { icon: emoji, name: emojiName })
+		addCustomStyling() {
+			const picker = `.picker {
+				border: none;
+			}`
+
+			const nav = `.nav {
+				overflow-x: auto;
+			}`
+
+			const searchBox = `.search-wrapper {
+				padding-right: 2px;
+				padding-left: 2px;
+			}`
+
+			const search = `input.search {
+				height: 32px;
+				font-size: 14px;
+				border-radius: 10rem;
+				border: var(--chat-border-style);
+				padding: 5px 10px;
+				outline: none;
+				background: var(--chat-bg-color-input);
+				color: var(--chat-color);
+			}`
+
+			const style = document.createElement('style')
+			style.textContent = picker + nav + searchBox + search
+			this.$refs.emojiPicker.shadowRoot.appendChild(style)
 		},
 		openEmoji(ev) {
-			this.$emit('open-emoji', true)
+			this.$emit('open-emoji', !this.emojiOpened)
 			this.setEmojiPickerPosition(
 				ev.clientY,
 				ev.view.innerWidth,
@@ -99,12 +120,12 @@ export default {
 				const mobileSize = innerWidth < 500 || innerHeight < 700
 
 				if (!this.roomFooterRef) {
-					if (mobileSize) this.emojiPickerRight = '0px'
+					if (mobileSize) this.emojiPickerRight = '-50px'
 					return
 				}
 
 				if (mobileSize) {
-					this.emojiPickerRight = innerWidth / 2 - 120 + 'px'
+					this.emojiPickerRight = innerWidth / 2 - 150 + 'px'
 					this.emojiPickerTop = 100
 					this.emojiPickerHeight = innerHeight - 200
 				} else {
