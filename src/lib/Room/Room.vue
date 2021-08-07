@@ -273,7 +273,7 @@
 
 					<emoji-picker
 						v-if="showEmojis && (!file || imageFile || videoFile)"
-						v-click-outside="() => emojiOpened = false"
+						v-click-outside="() => (emojiOpened = false)"
 						:emoji-opened="emojiOpened"
 						:position-top="true"
 						@add-emoji="addEmoji"
@@ -332,7 +332,6 @@
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
 import vClickOutside from 'v-click-outside'
-import emojis from 'vue-emoji-picker/src/emojis'
 
 import Loader from '../../components/Loader/Loader'
 import SvgIcon from '../../components/SvgIcon/SvgIcon'
@@ -455,6 +454,7 @@ export default {
 
 	computed: {
 		emojisList() {
+			const emojis = {}
 			const emojisTable = Object.keys(emojis).map(key => emojis[key])
 			return Object.assign({}, ...emojisTable)
 		},
