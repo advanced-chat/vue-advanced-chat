@@ -524,11 +524,11 @@ messages="[
       preview: 'data:image/png;base64,iVBORw0KGgoAA...'
     },
     reactions: {
-      wink: [
+      😁: [
         1234, // USER_ID
         4321
       ],
-      laughing: [
+      🥰: [
         1234
       ]
     },
