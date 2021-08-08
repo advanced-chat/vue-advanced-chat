@@ -65,8 +65,7 @@ export default {
 						.querySelector('emoji-picker')
 						.addEventListener('emoji-click', ({ detail }) => {
 							this.$emit('add-emoji', {
-								icon: detail.unicode,
-								name: detail.annotation
+								unicode: detail.unicode
 							})
 						})
 				}, 0)

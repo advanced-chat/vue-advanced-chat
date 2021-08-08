@@ -188,7 +188,7 @@
 							@update-options-opened="optionsOpened = $event"
 							@update-emoji-opened="emojiOpened = $event"
 							@message-action-handler="messageActionHandler"
-							@send-message-reaction="sendMessageReaction($event)"
+							@send-message-reaction="sendMessageReaction"
 						>
 							<template v-for="(i, name) in $scopedSlots" #[name]="data">
 								<slot :name="name" v-bind="data" />
@@ -199,8 +199,7 @@
 					<message-reactions
 						:current-user-id="currentUserId"
 						:message="message"
-						:emojis-list="emojisList"
-						@send-message-reaction="sendMessageReaction($event)"
+						@send-message-reaction="sendMessageReaction"
 					/>
 				</div>
 			</slot>
@@ -252,7 +251,6 @@ export default {
 		showNewMessagesDivider: { type: Boolean, required: true },
 		textFormatting: { type: Boolean, required: true },
 		linkOptions: { type: Object, required: true },
-		emojisList: { type: Object, required: true },
 		hideOptions: { type: Boolean, required: true }
 	},
 

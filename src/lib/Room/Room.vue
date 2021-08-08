@@ -88,7 +88,6 @@
 								:show-new-messages-divider="showNewMessagesDivider"
 								:text-formatting="textFormatting"
 								:link-options="linkOptions"
-								:emojis-list="emojisList"
 								:hide-options="hideOptions"
 								@message-added="onMessageAdded"
 								@message-action-handler="messageActionHandler"
@@ -332,6 +331,7 @@
 <script>
 import InfiniteLoading from 'vue-infinite-loading'
 import vClickOutside from 'v-click-outside'
+import { Database } from 'emoji-picker-element'
 
 import Loader from '../../components/Loader/Loader'
 import SvgIcon from '../../components/SvgIcon/SvgIcon'
@@ -446,6 +446,7 @@ export default {
 			selectedUsersTag: [],
 			textareaCursorPosition: null,
 			cursorRangePosition: null,
+			emojisDB: new Database(),
 			recorder: this.initRecorder(),
 			isRecording: false,
 			format: 'mp3'
@@ -453,11 +454,6 @@ export default {
 	},
 
 	computed: {
-		emojisList() {
-			const emojis = {}
-			const emojisTable = Object.keys(emojis).map(key => emojis[key])
-			return Object.assign({}, ...emojisTable)
-		},
 		room() {
 			return this.rooms.find(room => room.roomId === this.roomId) || {}
 		},
@@ -734,13 +730,11 @@ export default {
 
 			return { position, endPosition }
 		},
-		updateEmojis(query) {
+		async updateEmojis(query) {
 			if (!query) return
 
-			const emojisListKeys = Object.keys(this.emojisList)
-			const matchingKeys = emojisListKeys.filter(key => key.startsWith(query))
-
-			this.filteredEmojis = matchingKeys.map(key => this.emojisList[key])
+			const emojis = await this.emojisDB.getEmojiBySearchQuery(query)
+			this.filteredEmojis = emojis.map(emoji => emoji.unicode)
 		},
 		selectEmoji(emoji) {
 			const { position, endPosition } = this.getCharPosition(':')
@@ -982,7 +976,7 @@ export default {
 			el.style.height = el.scrollHeight - padding * 2 + 'px'
 		},
 		addEmoji(emoji) {
-			this.message += emoji.icon
+			this.message += emoji.unicode
 			this.focusTextarea(true)
 		},
 		launchFilePicker() {

@@ -638,7 +638,7 @@ export default {
 			await messagesRef(roomId)
 				.doc(messageId)
 				.update({
-					[`reactions.${reaction.name}`]: dbAction
+					[`reactions.${reaction.unicode}`]: dbAction
 				})
 		},
 

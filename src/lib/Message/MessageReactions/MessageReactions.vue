@@ -11,9 +11,9 @@
 			:style="{
 				float: message.senderId === currentUserId ? 'right' : 'left'
 			}"
-			@click="sendMessageReaction({ name: key }, reaction)"
+			@click="sendMessageReaction({ unicode: key }, reaction)"
 		>
-			{{ getEmojiByName(key) }}<span>{{ reaction.length }}</span>
+			{{ key }}<span>{{ reaction.length }}</span>
 		</button>
 	</transition-group>
 </template>
@@ -24,16 +24,12 @@ export default {
 
 	props: {
 		currentUserId: { type: [String, Number], required: true },
-		message: { type: Object, required: true },
-		emojisList: { type: Object, required: true }
+		message: { type: Object, required: true }
 	},
 
 	emits: ['send-message-reaction'],
 
 	methods: {
-		getEmojiByName(emojiName) {
-			return this.emojisList[emojiName]
-		},
 		sendMessageReaction(emoji, reaction) {
 			this.$emit('send-message-reaction', { emoji, reaction })
 		}
