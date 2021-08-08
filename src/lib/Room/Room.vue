@@ -558,8 +558,10 @@ export default {
 					}
 				}
 
-				this.updateFooterList('@')
-				this.updateFooterList(':')
+				setTimeout(() => {
+					this.updateFooterList('@')
+					this.updateFooterList(':')
+				}, 60)
 			}),
 			50
 		)
@@ -709,7 +711,7 @@ export default {
 					this.updateShowUsersTag(query)
 				}
 			} else {
-				this.resetFooterList()
+				this.resetFooterList(tagChar)
 			}
 		},
 		getCharPosition(tagChar) {
@@ -774,9 +776,16 @@ export default {
 				position + user.username.length + space.length + 1
 			this.focusTextarea()
 		},
-		resetFooterList() {
-			this.filteredEmojis = []
-			this.filteredUsersTag = []
+		resetFooterList(tagChar = null) {
+			if (tagChar === ':') {
+				this.filteredEmojis = []
+			} else if (tagChar === '@') {
+				this.filteredUsersTag = []
+			} else {
+				this.filteredEmojis = []
+				this.filteredUsersTag = []
+			}
+
 			this.textareaCursorPosition = null
 		},
 		onMediaLoad() {
