@@ -31,7 +31,7 @@
 					</slot>
 				</div>
 
-				<emoji-picker
+				<emoji-picker-container
 					v-if="isMessageReactions"
 					key="3"
 					v-click-outside="closeEmoji"
@@ -47,7 +47,7 @@
 					<template #emoji-picker-icon>
 						<slot name="emoji-picker-reaction-icon" />
 					</template>
-				</emoji-picker>
+				</emoji-picker-container>
 			</transition-group>
 		</div>
 
@@ -85,13 +85,13 @@
 import vClickOutside from 'v-click-outside'
 
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
-import EmojiPicker from '../../../components/EmojiPicker/EmojiPicker'
+import EmojiPickerContainer from '../../../components/EmojiPickerContainer/EmojiPickerContainer'
 
 const { isImageFile } = require('../../../utils/media-file')
 
 export default {
 	name: 'MessageActions',
-	components: { SvgIcon, EmojiPicker },
+	components: { SvgIcon, EmojiPickerContainer },
 
 	directives: {
 		clickOutside: vClickOutside.directive

@@ -270,7 +270,7 @@
 						</slot>
 					</div>
 
-					<emoji-picker
+					<emoji-picker-container
 						v-if="showEmojis && (!file || imageFile || videoFile)"
 						v-click-outside="() => (emojiOpened = false)"
 						:emoji-opened="emojiOpened"
@@ -281,7 +281,7 @@
 						<template v-for="(i, name) in $scopedSlots" #[name]="data">
 							<slot :name="name" v-bind="data" />
 						</template>
-					</emoji-picker>
+					</emoji-picker-container>
 
 					<div
 						v-if="showFiles"
@@ -335,7 +335,7 @@ import { Database } from 'emoji-picker-element'
 
 import Loader from '../../components/Loader/Loader'
 import SvgIcon from '../../components/SvgIcon/SvgIcon'
-import EmojiPicker from '../../components/EmojiPicker/EmojiPicker'
+import EmojiPickerContainer from '../../components/EmojiPickerContainer/EmojiPickerContainer'
 
 import RoomHeader from './RoomHeader/RoomHeader'
 import RoomMessageReply from './RoomMessageReply/RoomMessageReply'
@@ -365,7 +365,7 @@ export default {
 		InfiniteLoading,
 		Loader,
 		SvgIcon,
-		EmojiPicker,
+		EmojiPickerContainer,
 		RoomHeader,
 		RoomMessageReply,
 		RoomUsersTag,

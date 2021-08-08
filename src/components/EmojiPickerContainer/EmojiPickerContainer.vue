@@ -31,9 +31,12 @@
 
 <script>
 import SvgIcon from '../SvgIcon/SvgIcon'
+import { EmojiPicker } from 'emoji-picker-element'
 
 export default {
+	name: 'EmojiPickerContainer',
 	components: {
+		EmojiPicker,
 		SvgIcon
 	},
 
