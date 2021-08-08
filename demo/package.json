@@ -10,6 +10,7 @@
 		"build": "vue-cli-service build",
 		"lint": "vue-cli-service lint",
 		"reset": "rm -rf node_modules && rm -rf package-lock.json && npm i --legacy-peer-deps",
+		"reset-all": "npm run reset && cd .. && npm run reset",
 		"gpages": "sh deploy.sh",
 		"latest": "npm i https://github.com/antoine92190/vue-advanced-chat/tarball/master"
 	},
