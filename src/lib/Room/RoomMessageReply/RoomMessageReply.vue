@@ -2,7 +2,7 @@
 	<transition name="vac-slide-up">
 		<div
 			v-if="messageReply"
-			class="vac-reply-container"
+			class="vac-reply-container vac-app-box-shadow"
 			:style="{ bottom: `${$parent.$refs.roomFooter.clientHeight}px` }"
 		>
 			<div class="vac-reply-box">
