@@ -1,6 +1,11 @@
 <template>
 	<div class="vac-message-file-container">
-		<div v-if="isImage" :ref="'imageRef' + index">
+		<div
+			v-if="isImage"
+			:ref="'imageRef' + index"
+			@mouseover="imageHover = true"
+			@mouseleave="imageHover = false"
+		>
 			<loader
 				:style="{ top: `${imageResponsive.loaderTop}px` }"
 				:show="isImageLoading"
@@ -63,7 +68,6 @@ export default {
 		currentUserId: { type: [String, Number], required: true },
 		message: { type: Object, required: true },
 		file: { type: Object, required: true },
-		imageHover: { type: Boolean, required: true },
 		index: { type: Number, required: true }
 	},
 
@@ -72,7 +76,8 @@ export default {
 	data() {
 		return {
 			imageResponsive: '',
-			imageLoading: false
+			imageLoading: false,
+			imageHover: false
 		}
 	},
 

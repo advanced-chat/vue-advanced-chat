@@ -5,7 +5,6 @@
 				:file="file"
 				:current-user-id="currentUserId"
 				:message="message"
-				:image-hover="imageHover"
 				:index="idx"
 				@open-file="$emit('open-file', $event)"
 			>
@@ -66,15 +65,10 @@ export default {
 		message: { type: Object, required: true },
 		roomUsers: { type: Array, required: true },
 		textFormatting: { type: Boolean, required: true },
-		linkOptions: { type: Object, required: true },
-		imageHover: { type: Boolean, required: true }
+		linkOptions: { type: Object, required: true }
 	},
 
 	emits: ['open-file', 'open-user-tag'],
-
-	data() {
-		return {}
-	},
 
 	computed: {
 		imageVideoFiles() {

@@ -98,7 +98,6 @@
 							:room-users="roomUsers"
 							:text-formatting="textFormatting"
 							:link-options="linkOptions"
-							:image-hover="imageHover"
 							@open-file="openFile"
 						>
 							<template v-for="(i, name) in $scopedSlots" #[name]="data">
@@ -234,7 +233,6 @@ export default {
 	data() {
 		return {
 			hoverMessageId: null,
-			imageHover: false,
 			messageHover: false,
 			optionsOpened: false,
 			emojiOpened: false,
@@ -303,7 +301,6 @@ export default {
 
 	methods: {
 		onHoverMessage() {
-			this.imageHover = true
 			this.messageHover = true
 			if (this.canEditMessage()) this.hoverMessageId = this.message._id
 		},
@@ -311,7 +308,6 @@ export default {
 			return !this.message.deleted
 		},
 		onLeaveMessage() {
-			this.imageHover = false
 			if (!this.optionsOpened && !this.emojiOpened) this.messageHover = false
 			this.hoverMessageId = null
 		},

@@ -13,10 +13,10 @@
 		margin: 3px 0 5px;
 		padding: 10px;
 		cursor: pointer;
-		transition: all 0.2s;
+		transition: all 0.6s;
 
 		&:hover {
-			transform: scale(1.03);
+			opacity: 0.85;
 		}
 
 		svg {
