@@ -572,7 +572,7 @@ export default {
 					size: file.size,
 					type: file.type,
 					extension: file.extension || file.type,
-					url: file.localUrl
+					url: file.url || file.localUrl
 				}
 
 				if (file.audio) {
