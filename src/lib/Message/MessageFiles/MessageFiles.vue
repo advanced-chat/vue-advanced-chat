@@ -25,6 +25,9 @@
 				<div class="vac-text-ellipsis">
 					{{ file.name }}
 				</div>
+				<div class="vac-text-ellipsis vac-text-extension">
+					{{ file.extension }}
+				</div>
 			</div>
 		</div>
 

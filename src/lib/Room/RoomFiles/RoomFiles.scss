@@ -34,14 +34,27 @@
 		}
 
 		.vac-file-container {
-			height: 100px;
-			width: 100px;
+			height: 80px;
+			width: 80px;
 			display: flex;
-			align-items: center;
+			align-content: center;
 			justify-content: center;
+			flex-wrap: wrap;
+			text-align: center;
 			background: var(--chat-bg-color-input);
 			border: var(--chat-border-style-input);
 			border-radius: 4px;
+			padding: 10px;
+
+			svg {
+				height: 28px;
+				width: 28px;
+			}
+
+			.vac-text-extension {
+				font-size: 14px;
+				color: var(--chat-message-color-file-extension);
+			}
 		}
 
 		.vac-icon-remove {
