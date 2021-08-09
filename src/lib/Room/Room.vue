@@ -877,9 +877,13 @@ export default {
 		},
 		editMessage(message) {
 			this.resetMessage()
+
 			this.editedMessage = { ...message }
-			this.files = [...message.files]
 			this.message = message.content
+
+			if (message.files) {
+				this.files = [...message.files]
+			}
 		},
 		getBottomScroll(element) {
 			const { scrollHeight, clientHeight, scrollTop } = element
