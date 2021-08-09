@@ -315,9 +315,9 @@ export default {
 			if (!message.timestamp) return
 
 			let content = message.content
-			if (message.file) {
-				content = `${message.file.name}.${message.file.extension ||
-					message.file.type}`
+			if (message.files?.length) {
+				const file = message.files[0]
+				content = `${file.name}.${file.extension || file.type}`
 			}
 
 			return {
@@ -458,25 +458,15 @@ export default {
 			return formattedMessage
 		},
 
-		async sendMessage({ content, roomId, file, replyMessage }) {
+		async sendMessage({ content, roomId, files, replyMessage }) {
 			const message = {
 				sender_id: this.currentUserId,
 				content,
 				timestamp: new Date()
 			}
 
-			if (file) {
-				message.file = {
-					name: file.name,
-					size: file.size,
-					type: file.type,
-					extension: file.extension || file.type,
-					url: file.localUrl
-				}
-				if (file.audio) {
-					message.file.audio = true
-					message.file.duration = file.duration
-				}
+			if (files) {
+				message.files = this.formattedFiles(files)
 			}
 
 			if (replyMessage) {
@@ -486,20 +476,118 @@ export default {
 					sender_id: replyMessage.senderId
 				}
 
-				if (replyMessage.file) {
-					message.replyMessage.file = replyMessage.file
+				if (replyMessage.files) {
+					message.replyMessage.files = replyMessage.files
 				}
 			}
 
 			const { id } = await messagesRef(roomId).add(message)
 
-			if (file) this.uploadFile({ file, messageId: id, roomId })
+			if (files) {
+				files.forEach(file => {
+					this.uploadFile({ file, messageId: id, roomId })
+				})
+			}
 
 			roomsRef.doc(roomId).update({ lastUpdated: new Date() })
 		},
 
-		openFile({ message }) {
-			window.open(message.file.url, '_blank')
+		async editMessage({ messageId, newContent, roomId, files }) {
+			const newMessage = { edited: new Date() }
+			newMessage.content = newContent
+
+			if (files) {
+				newMessage.files = this.formattedFiles(files)
+			} else {
+				newMessage.files = deleteDbField
+			}
+
+			await messagesRef(roomId)
+				.doc(messageId)
+				.update(newMessage)
+
+			if (files) {
+				files.forEach(file => {
+					if (file?.blob) this.uploadFile({ file, messageId, roomId })
+				})
+			}
+		},
+
+		async deleteMessage({ message, roomId }) {
+			await messagesRef(roomId)
+				.doc(message._id)
+				.update({ deleted: new Date() })
+
+			const { files } = message
+
+			if (files) {
+				files.forEach(file => {
+					const deleteFileRef = filesRef
+						.child(this.currentUserId)
+						.child(message._id)
+						.child(`${file.name}.${file.extension || file.type}`)
+
+					deleteFileRef.delete()
+				})
+			}
+		},
+
+		async uploadFile({ file, messageId, roomId }) {
+			let type = file.extension || file.type
+			if (type === 'svg' || type === 'pdf') {
+				type = file.type
+			}
+
+			const uploadFileRef = filesRef
+				.child(this.currentUserId)
+				.child(messageId)
+				.child(`${file.name}.${type}`)
+
+			await uploadFileRef.put(file.blob, { contentType: type })
+			const url = await uploadFileRef.getDownloadURL()
+
+			const messageDoc = await messagesRef(roomId)
+				.doc(messageId)
+				.get()
+
+			const files = messageDoc.data().files
+
+			files.forEach(f => {
+				if (f.url === file.localUrl) {
+					f.url = url
+				}
+			})
+
+			await messagesRef(roomId)
+				.doc(messageId)
+				.update({ files })
+		},
+
+		formattedFiles(files) {
+			const formattedFiles = []
+
+			files.forEach(file => {
+				const messageFile = {
+					name: file.name,
+					size: file.size,
+					type: file.type,
+					extension: file.extension || file.type,
+					url: file.localUrl
+				}
+
+				if (file.audio) {
+					messageFile.audio = true
+					messageFile.duration = file.duration
+				}
+
+				formattedFiles.push(messageFile)
+			})
+
+			return formattedFiles
+		},
+
+		openFile({ file }) {
+			window.open(file.file.url, '_blank')
 		},
 
 		async openUserTag({ user }) {
@@ -552,71 +640,6 @@ export default {
 				this.roomId = room.id
 				this.fetchRooms()
 			})
-		},
-
-		async editMessage({ messageId, newContent, roomId, file }) {
-			const newMessage = { edited: new Date() }
-			newMessage.content = newContent
-
-			if (file) {
-				newMessage.file = {
-					name: file.name,
-					size: file.size,
-					type: file.type,
-					extension: file.extension || file.type,
-					url: file.url || file.localUrl
-				}
-				if (file.audio) {
-					newMessage.file.audio = true
-					newMessage.file.duration = file.duration
-				}
-			} else {
-				newMessage.file = deleteDbField
-			}
-
-			await messagesRef(roomId)
-				.doc(messageId)
-				.update(newMessage)
-
-			if (file?.blob) this.uploadFile({ file, messageId, roomId })
-		},
-
-		async deleteMessage({ message, roomId }) {
-			await messagesRef(roomId)
-				.doc(message._id)
-				.update({ deleted: new Date() })
-
-			const { file } = message
-
-			if (file) {
-				const deleteFileRef = filesRef
-					.child(this.currentUserId)
-					.child(message._id)
-					.child(`${file.name}.${file.extension || file.type}`)
-
-				await deleteFileRef.delete()
-			}
-		},
-
-		async uploadFile({ file, messageId, roomId }) {
-			let type = file.extension || file.type
-			if (type === 'svg' || type === 'pdf') {
-				type = file.type
-			}
-
-			const uploadFileRef = filesRef
-				.child(this.currentUserId)
-				.child(messageId)
-				.child(`${file.name}.${type}`)
-
-			await uploadFileRef.put(file.blob, { contentType: type })
-			const url = await uploadFileRef.getDownloadURL()
-
-			await messagesRef(roomId)
-				.doc(messageId)
-				.update({
-					'file.url': url
-				})
 		},
 
 		menuActionHandler({ action, roomId }) {

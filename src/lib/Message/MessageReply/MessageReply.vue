@@ -8,20 +8,20 @@
 			<div
 				class="vac-message-image vac-message-image-reply"
 				:style="{
-					'background-image': `url('${message.replyMessage.file.url}')`
+					'background-image': `url('${firstFile.url}')`
 				}"
 			/>
 		</div>
 
 		<div v-else-if="isVideo" class="vac-video-reply-container">
 			<video width="100%" height="100%" controls>
-				<source :src="message.replyMessage.file.url" />
+				<source :src="firstFile.url" />
 			</video>
 		</div>
 
 		<audio-player
 			v-else-if="isAudio"
-			:src="message.replyMessage.file.url"
+			:src="firstFile.url"
 			@update-progress-time="progressTime = $event"
 			@hover-audio-progress="hoverAudioProgress = $event"
 		>
@@ -74,14 +74,19 @@ export default {
 			const replyUser = this.roomUsers.find(user => user._id === senderId)
 			return replyUser ? replyUser.username : ''
 		},
+		firstFile() {
+			return this.message.replyMessage.files
+				? this.message.replyMessage.files[0]
+				: {}
+		},
 		isAudio() {
-			return isAudioFile(this.message.replyMessage.file)
+			return isAudioFile(this.firstFile)
 		},
 		isImage() {
-			return isImageFile(this.message.replyMessage.file)
+			return isImageFile(this.firstFile)
 		},
 		isVideo() {
-			return isVideoFile(this.message.replyMessage.file)
+			return isVideoFile(this.firstFile)
 		}
 	}
 }

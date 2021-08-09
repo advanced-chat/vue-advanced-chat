@@ -25,17 +25,13 @@
 					</div>
 				</div>
 
-				<img
-					v-if="isImageFile"
-					:src="messageReply.file.url"
-					class="vac-image-reply"
-				/>
+				<img v-if="isImageFile" :src="firstFile.url" class="vac-image-reply" />
 				<video v-else-if="isVideoFile" controls class="vac-image-reply">
-					<source :src="messageReply.file.url" />
+					<source :src="firstFile.url" />
 				</video>
 				<audio-player
 					v-else-if="isAudioFile"
-					:src="messageReply.file.url"
+					:src="firstFile.url"
 					class="vac-audio-reply"
 				>
 					<template v-for="(i, name) in $scopedSlots" #[name]="data">
@@ -85,14 +81,17 @@ export default {
 	emits: ['reset-message'],
 
 	computed: {
+		firstFile() {
+			return this.messageReply.files ? this.messageReply.files[0] : {}
+		},
 		isImageFile() {
-			return isImageFile(this.messageReply.file)
+			return isImageFile(this.firstFile)
 		},
 		isVideoFile() {
-			return isVideoFile(this.messageReply.file)
+			return isVideoFile(this.firstFile)
 		},
 		isAudioFile() {
-			return isAudioFile(this.messageReply.file)
+			return isAudioFile(this.firstFile)
 		}
 	}
 }

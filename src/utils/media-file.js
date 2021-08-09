@@ -13,6 +13,10 @@ export function isVideoFile(file) {
 	return checkMediaType(VIDEO_TYPES, file)
 }
 
+export function isImageVideoFile(file) {
+	return checkMediaType(IMAGE_TYPES, file) || checkMediaType(VIDEO_TYPES, file)
+}
+
 export function isAudioFile(file) {
 	return checkMediaType(AUDIO_TYPES, file)
 }

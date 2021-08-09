@@ -23,6 +23,7 @@ export interface LastMessage {
 	distributed?: boolean
 	seen?: boolean
 	new?: boolean
+	files?: MessageFile[]
 }
 
 export type RoomUsers = RoomUser[]
@@ -54,7 +55,7 @@ export interface Message {
 	seen?: boolean
 	disableActions?: boolean
 	disableReactions?: boolean
-	file?: MessageFile
+	files?: MessageFile[]
 	reactions: MessageReactions
 }
 

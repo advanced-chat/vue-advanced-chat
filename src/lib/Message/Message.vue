@@ -79,7 +79,7 @@
 						</div>
 
 						<format-message
-							v-else-if="!message.file"
+							v-else-if="!message.files || !message.files.length"
 							:content="message.content"
 							:users="roomUsers"
 							:text-formatting="textFormatting"
@@ -91,8 +91,8 @@
 							</template>
 						</format-message>
 
-						<message-image
-							v-else-if="isImage"
+						<message-files
+							v-else-if="!isAudio"
 							:current-user-id="currentUserId"
 							:message="message"
 							:room-users="roomUsers"
@@ -104,28 +104,11 @@
 							<template v-for="(i, name) in $scopedSlots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
-						</message-image>
-
-						<div v-else-if="isVideo" class="vac-video-container">
-							<video width="100%" height="100%" controls>
-								<source :src="message.file.url" />
-							</video>
-							<format-message
-								:content="message.content"
-								:users="roomUsers"
-								:text-formatting="textFormatting"
-								:link-options="linkOptions"
-								@open-user-tag="openUserTag"
-							>
-								<template v-for="(i, name) in $scopedSlots" #[name]="data">
-									<slot :name="name" v-bind="data" />
-								</template>
-							</format-message>
-						</div>
+						</message-files>
 
 						<audio-player
 							v-else-if="isAudio"
-							:src="message.file.url"
+							:src="message.files[0].url"
 							@update-progress-time="progressTime = $event"
 							@hover-audio-progress="hoverAudioProgress = $event"
 						>
@@ -133,18 +116,6 @@
 								<slot :name="name" v-bind="data" />
 							</template>
 						</audio-player>
-
-						<div v-else class="vac-file-message">
-							<div
-								class="vac-svg-button vac-icon-file"
-								@click.stop="openFile('download')"
-							>
-								<slot name="document-icon">
-									<svg-icon name="document" />
-								</slot>
-							</div>
-							<span>{{ message.content }}</span>
-						</div>
 
 						<div v-if="isAudio && !message.deleted" class="vac-progress-time">
 							{{ progressTime }}
@@ -212,17 +183,13 @@ import SvgIcon from '../../components/SvgIcon/SvgIcon'
 import FormatMessage from '../../components/FormatMessage/FormatMessage'
 
 import MessageReply from './MessageReply/MessageReply'
-import MessageImage from './MessageImage/MessageImage'
+import MessageFiles from './MessageFiles/MessageFiles'
 import MessageActions from './MessageActions/MessageActions'
 import MessageReactions from './MessageReactions/MessageReactions'
 import AudioPlayer from './AudioPlayer/AudioPlayer'
 
 const { messagesValidation } = require('../../utils/data-validation')
-const {
-	isImageFile,
-	isVideoFile,
-	isAudioFile
-} = require('../../utils/media-file')
+const { isAudioFile } = require('../../utils/media-file')
 
 export default {
 	name: 'Message',
@@ -231,7 +198,7 @@ export default {
 		FormatMessage,
 		AudioPlayer,
 		MessageReply,
-		MessageImage,
+		MessageFiles,
 		MessageActions,
 		MessageReactions
 	},
@@ -295,14 +262,8 @@ export default {
 				this.hoverMessageId === this.message._id
 			)
 		},
-		isImage() {
-			return isImageFile(this.message.file)
-		},
-		isVideo() {
-			return isVideoFile(this.message.file)
-		},
 		isAudio() {
-			return isAudioFile(this.message.file)
+			return this.message.files?.some(file => isAudioFile(file))
 		},
 		isCheckmarkVisible() {
 			return (
@@ -353,8 +314,8 @@ export default {
 			if (!this.optionsOpened && !this.emojiOpened) this.messageHover = false
 			this.hoverMessageId = null
 		},
-		openFile(action) {
-			this.$emit('open-file', { message: this.message, action })
+		openFile(file) {
+			this.$emit('open-file', { message: this.message, file: file })
 		},
 		openUserTag(user) {
 			this.$emit('open-user-tag', { user })

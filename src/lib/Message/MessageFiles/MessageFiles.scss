@@ -1,7 +1,4 @@
 .vac-image-container {
-	width: 250px;
-	max-width: 100%;
-
 	.vac-image-loading {
 		filter: blur(3px);
 	}
@@ -44,6 +41,37 @@
 		.vac-button-view {
 			max-width: 18px;
 			bottom: 8px;
+		}
+	}
+
+	.vac-video-container {
+		width: 350px;
+		max-width: 100%;
+		margin: 4px auto 5px;
+
+		video {
+			border-radius: 4px;
+		}
+	}
+
+	.vac-file-message {
+		height: 60px;
+		width: 60px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		flex-wrap: wrap;
+		background: var(--chat-bg-color-input);
+		border: var(--chat-border-style-input);
+		border-radius: 4px;
+		margin: 3px 0 5px;
+		padding: 10px;
+		cursor: pointer;
+
+		svg {
+			height: 30px;
+			width: 30px;
 		}
 	}
 }

@@ -197,7 +197,7 @@ export default {
 			)
 		},
 		formattedDuration() {
-			const file = this.room.lastMessage.file
+			const file = this.room.lastMessage.files[0]
 
 			if (!file.duration) {
 				return `${file.name}.${file.extension}`
@@ -207,7 +207,9 @@ export default {
 			return (s - (s %= 60)) / 60 + (s > 9 ? ':' : ':0') + s
 		},
 		isAudio() {
-			return isAudioFile(this.room.lastMessage.file)
+			return this.room.lastMessage.files
+				? isAudioFile(this.room.lastMessage.files[0])
+				: false
 		}
 	},
 

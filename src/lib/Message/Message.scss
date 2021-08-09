@@ -125,16 +125,6 @@
 		fill: var(--chat-message-color-deleted);
 	}
 
-	.vac-video-container {
-		width: 350px;
-		max-width: 100%;
-		margin: 4px auto 5px;
-
-		video {
-			border-radius: 4px;
-		}
-	}
-
 	.vac-message-image {
 		position: relative;
 		background-color: var(--chat-message-bg-color-image) !important;
@@ -170,21 +160,6 @@
 		margin: -2px 0 0 40px;
 		color: var(--chat-color);
 		font-size: 12px;
-	}
-
-	.vac-file-message {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		margin-top: 3px;
-
-		span {
-			max-width: 100%;
-		}
-
-		.vac-icon-file svg {
-			margin-right: 5px;
-		}
 	}
 
 	.vac-icon-edited {

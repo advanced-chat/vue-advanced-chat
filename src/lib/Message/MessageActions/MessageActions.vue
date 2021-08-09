@@ -2,7 +2,6 @@
 	<div class="vac-message-actions-wrapper">
 		<div
 			class="vac-options-container"
-			:class="{ 'vac-options-image': isImage && !message.replyMessage }"
 			:style="{
 				display: hoverAudioProgress ? 'none' : 'initial',
 				width:
@@ -87,8 +86,6 @@ import vClickOutside from 'v-click-outside'
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import EmojiPickerContainer from '../../../components/EmojiPickerContainer/EmojiPickerContainer'
 
-const { isImageFile } = require('../../../utils/media-file')
-
 export default {
 	name: 'MessageActions',
 	components: { SvgIcon, EmojiPickerContainer },
@@ -128,9 +125,6 @@ export default {
 	},
 
 	computed: {
-		isImage() {
-			return isImageFile(this.message.file)
-		},
 		isMessageActions() {
 			return (
 				this.filteredMessageActions.length &&
