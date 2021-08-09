@@ -26,9 +26,11 @@
 				</div>
 
 				<img v-if="isImageFile" :src="firstFile.url" class="vac-image-reply" />
+
 				<video v-else-if="isVideoFile" controls class="vac-image-reply">
 					<source :src="firstFile.url" />
 				</video>
+
 				<audio-player
 					v-else-if="isAudioFile"
 					:src="firstFile.url"
@@ -38,6 +40,23 @@
 						<slot :name="name" v-bind="data" />
 					</template>
 				</audio-player>
+
+				<div v-else-if="isOtherFile" class="vac-image-reply vac-file-container">
+					<div class="vac-icon-file">
+						<slot name="file-icon">
+							<svg-icon name="file" />
+						</slot>
+					</div>
+					<div class="vac-text-ellipsis">
+						{{ firstFile.name }}
+					</div>
+					<div
+						v-if="firstFile.extension"
+						class="vac-text-ellipsis vac-text-extension"
+					>
+						{{ firstFile.extension }}
+					</div>
+				</div>
 			</div>
 
 			<div class="vac-icon-reply">
@@ -92,6 +111,14 @@ export default {
 		},
 		isAudioFile() {
 			return isAudioFile(this.firstFile)
+		},
+		isOtherFile() {
+			return (
+				this.messageReply.files &&
+				!this.isAudioFile &&
+				!this.isVideoFile &&
+				!this.isAudioFile
+			)
 		}
 	}
 }

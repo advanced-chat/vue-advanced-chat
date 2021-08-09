@@ -121,3 +121,26 @@
 	color: var(--chat-message-color-tag);
 	cursor: pointer;
 }
+
+.vac-file-container {
+	display: flex;
+	align-content: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	text-align: center;
+	background: var(--chat-bg-color-input);
+	border: var(--chat-border-style-input);
+	border-radius: 4px;
+	padding: 10px;
+
+	svg {
+		height: 28px;
+		width: 28px;
+	}
+
+	.vac-text-extension {
+		font-size: 14px;
+		color: var(--chat-message-color-file-extension);
+		margin-top: -2px;
+	}
+}

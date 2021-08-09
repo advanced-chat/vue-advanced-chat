@@ -15,7 +15,7 @@
 		</div>
 
 		<div v-for="(file, idx) in otherFiles" :key="idx + 'a'">
-			<div class="vac-file-message" @click.stop="openFile(file, 'download')">
+			<div class="vac-file-container" @click.stop="openFile(file, 'download')">
 				<div class="vac-svg-button">
 					<slot name="document-icon">
 						<svg-icon name="document" />

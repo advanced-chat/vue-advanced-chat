@@ -1,17 +1,8 @@
 .vac-image-container {
-	.vac-file-message {
+	.vac-file-container {
 		height: 60px;
 		width: 60px;
-		display: flex;
-		align-content: center;
-		justify-content: center;
-		flex-wrap: wrap;
-		text-align: center;
-		background: var(--chat-bg-color-input);
-		border: var(--chat-border-style-input);
-		border-radius: 4px;
 		margin: 3px 0 5px;
-		padding: 10px;
 		cursor: pointer;
 		transition: all 0.6s;
 
@@ -22,12 +13,6 @@
 		svg {
 			height: 30px;
 			width: 30px;
-		}
-
-		.vac-text-extension {
-			font-size: 12px;
-			color: var(--chat-message-color-file-extension);
-			margin-top: -2px;
 		}
 	}
 }

@@ -29,7 +29,7 @@
 							<source :src="file.localUrl || file.url" />
 						</video>
 
-						<div v-else-if="file" class="vac-file-container">
+						<div v-else class="vac-file-container">
 							<div class="vac-icon-file">
 								<slot name="file-icon">
 									<svg-icon name="file" />
