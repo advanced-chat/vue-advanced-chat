@@ -105,9 +105,11 @@ export default {
 	mounted() {
 		const ref = this.$refs['imageRef' + this.index]
 
-		this.imageResponsive = {
-			maxHeight: ref.clientWidth - 18,
-			loaderTop: ref.clientHeight / 2 - 9
+		if (ref) {
+			this.imageResponsive = {
+				maxHeight: ref.clientWidth - 18,
+				loaderTop: ref.clientHeight / 2 - 9
+			}
 		}
 	},
 

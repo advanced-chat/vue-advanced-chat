@@ -14,7 +14,7 @@
 			</message-file>
 		</div>
 
-		<div v-for="(file, idx) in audioFiles" :key="idx + 'a'">
+		<div v-for="(file, idx) in otherFiles" :key="idx + 'a'">
 			<div class="vac-file-message" @click.stop="openFile(file, 'download')">
 				<div class="vac-svg-button">
 					<slot name="document-icon">
@@ -24,7 +24,7 @@
 				<div class="vac-text-ellipsis">
 					{{ file.name }}
 				</div>
-				<div class="vac-text-ellipsis vac-text-extension">
+				<div v-if="file.extension" class="vac-text-ellipsis vac-text-extension">
 					{{ file.extension }}
 				</div>
 			</div>
@@ -50,11 +50,7 @@ import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 
 import MessageFile from '../MessageFile/MessageFile'
 
-const {
-	isImageFile,
-	isVideoFile,
-	isAudioFile
-} = require('../../../utils/media-file')
+const { isImageVideoFile } = require('../../../utils/media-file')
 
 export default {
 	name: 'MessageFiles',
@@ -72,12 +68,10 @@ export default {
 
 	computed: {
 		imageVideoFiles() {
-			return this.message.files.filter(
-				file => isImageFile(file) || isVideoFile(file)
-			)
+			return this.message.files.filter(file => isImageVideoFile(file))
 		},
-		audioFiles() {
-			return this.message.files.filter(file => isAudioFile(file))
+		otherFiles() {
+			return this.message.files.filter(file => !isImageVideoFile(file))
 		}
 	},
 
