@@ -1,7 +1,7 @@
 .vac-files-container {
 	display: flex;
 	align-items: center;
-	padding: 10px 10px 0 10px;
+	padding: 10px 6px 0 6px;
 	background: var(--chat-footer-bg-color);
 
 	.vac-files-box {
@@ -13,7 +13,7 @@
 	.vac-media-container {
 		display: flex;
 		position: relative;
-		margin: 4px;
+		margin: 0 4px;
 
 		.vac-message-image {
 			position: relative;
@@ -54,6 +54,7 @@
 			.vac-text-extension {
 				font-size: 14px;
 				color: var(--chat-message-color-file-extension);
+				margin-top: -2px;
 			}
 		}
 
@@ -93,7 +94,6 @@
 
 @media only screen and (max-width: 768px) {
 	.vac-files-container {
-		padding: 5px 8px;
-		width: calc(100% - 16px);
+		padding: 6px 4px 4px 2px;
 	}
 }
