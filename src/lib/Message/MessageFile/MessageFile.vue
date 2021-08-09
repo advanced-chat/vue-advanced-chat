@@ -102,7 +102,7 @@ export default {
 
 		this.imageResponsive = {
 			maxHeight: ref.clientWidth - 18,
-			loaderTop: ref.clientWidth / 2
+			loaderTop: ref.clientHeight / 2 - 9
 		}
 	},
 
