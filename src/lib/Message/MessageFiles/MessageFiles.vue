@@ -1,58 +1,22 @@
 <template>
-	<div ref="imageRef" class="vac-image-container">
-		<div v-for="(file, i) in message.files" :key="i">
-			<div v-if="isImage(file)">
-				<loader
-					:style="{ top: `${imageResponsive.loaderTop}px` }"
-					:show="isImageLoading"
-				/>
-				<div
-					class="vac-message-image"
-					:class="{
-						'vac-image-loading':
-							isImageLoading && message.senderId === currentUserId
-					}"
-					:style="{
-						'background-image': `url('${
-							isImageLoading ? file.preview || file.url : file.url
-						}')`,
-						'max-height': `${imageResponsive.maxHeight}px`
-					}"
-				>
-					<transition name="vac-fade-image">
-						<div v-if="imageHover && !isImageLoading" class="vac-image-buttons">
-							<div
-								class="vac-svg-button vac-button-view"
-								@click.stop="openFile(file, 'preview')"
-							>
-								<slot name="eye-icon">
-									<svg-icon name="eye" />
-								</slot>
-							</div>
-							<div
-								class="vac-svg-button vac-button-download"
-								@click.stop="openFile(file, 'download')"
-							>
-								<slot name="document-icon">
-									<svg-icon name="document" />
-								</slot>
-							</div>
-						</div>
-					</transition>
-				</div>
-			</div>
-
-			<div v-else-if="isVideo(file)" class="vac-video-container">
-				<video width="100%" height="100%" controls>
-					<source :src="file.url" />
-				</video>
-			</div>
-
-			<div
-				v-else
-				class="vac-file-message"
-				@click.stop="openFile(file, 'download')"
+	<div class="vac-image-container">
+		<div v-for="(file, idx) in imageVideoFiles" :key="idx + 'iv'">
+			<message-file
+				:file="file"
+				:current-user-id="currentUserId"
+				:message="message"
+				:image-hover="imageHover"
+				:index="idx"
+				@open-file="$emit('open-file', $event)"
 			>
+				<template v-for="(i, name) in $scopedSlots" #[name]="data">
+					<slot :name="name" v-bind="data" />
+				</template>
+			</message-file>
+		</div>
+
+		<div v-for="(file, idx) in audioFiles" :key="idx + 'a'">
+			<div class="vac-file-message" @click.stop="openFile(file, 'download')">
 				<div class="vac-svg-button">
 					<slot name="document-icon">
 						<svg-icon name="document" />
@@ -79,15 +43,20 @@
 </template>
 
 <script>
-import Loader from '../../../components/Loader/Loader'
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 
-const { isImageFile, isVideoFile } = require('../../../utils/media-file')
+import MessageFile from '../MessageFile/MessageFile'
+
+const {
+	isImageFile,
+	isVideoFile,
+	isAudioFile
+} = require('../../../utils/media-file')
 
 export default {
 	name: 'MessageFiles',
-	components: { SvgIcon, Loader, FormatMessage },
+	components: { SvgIcon, FormatMessage, MessageFile },
 
 	props: {
 		currentUserId: { type: [String, Number], required: true },
@@ -101,52 +70,21 @@ export default {
 	emits: ['open-file', 'open-user-tag'],
 
 	data() {
-		return {
-			imageLoading: false,
-			imageResponsive: ''
-		}
+		return {}
 	},
 
 	computed: {
-		isImageLoading() {
-			return (
-				this.message.files.some(file => {
-					return file.url.indexOf('blob:http') !== -1
-				}) || this.imageLoading
+		imageVideoFiles() {
+			return this.message.files.filter(
+				file => isImageFile(file) || isVideoFile(file)
 			)
-		}
-	},
-
-	watch: {
-		message: {
-			immediate: true,
-			handler() {
-				this.checkImgLoad()
-			}
-		}
-	},
-
-	mounted() {
-		this.imageResponsive = {
-			maxHeight: this.$refs.imageRef.clientWidth - 18,
-			loaderTop: this.$refs.imageRef.clientWidth / 2
+		},
+		audioFiles() {
+			return this.message.files.filter(file => isAudioFile(file))
 		}
 	},
 
 	methods: {
-		checkImgLoad() {
-			if (!isImageFile(this.message.file)) return
-			this.imageLoading = true
-			const image = new Image()
-			image.src = this.message.file.url
-			image.addEventListener('load', () => (this.imageLoading = false))
-		},
-		isImage(file) {
-			return isImageFile(file)
-		},
-		isVideo(file) {
-			return isVideoFile(file)
-		},
 		openFile(file, action) {
 			this.$emit('open-file', { file, action })
 		}

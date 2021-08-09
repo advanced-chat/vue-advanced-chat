@@ -92,7 +92,7 @@
 						</format-message>
 
 						<message-files
-							v-else-if="!isAudio"
+							v-else-if="!isAudio || message.files.length > 1"
 							:current-user-id="currentUserId"
 							:message="message"
 							:room-users="roomUsers"
@@ -106,20 +106,21 @@
 							</template>
 						</message-files>
 
-						<audio-player
-							v-else-if="isAudio"
-							:src="message.files[0].url"
-							@update-progress-time="progressTime = $event"
-							@hover-audio-progress="hoverAudioProgress = $event"
-						>
-							<template v-for="(i, name) in $scopedSlots" #[name]="data">
-								<slot :name="name" v-bind="data" />
-							</template>
-						</audio-player>
+						<template v-else>
+							<audio-player
+								:src="message.files[0].url"
+								@update-progress-time="progressTime = $event"
+								@hover-audio-progress="hoverAudioProgress = $event"
+							>
+								<template v-for="(i, name) in $scopedSlots" #[name]="data">
+									<slot :name="name" v-bind="data" />
+								</template>
+							</audio-player>
 
-						<div v-if="isAudio && !message.deleted" class="vac-progress-time">
-							{{ progressTime }}
-						</div>
+							<div v-if="!message.deleted" class="vac-progress-time">
+								{{ progressTime }}
+							</div>
+						</template>
 
 						<div class="vac-text-timestamp">
 							<div
