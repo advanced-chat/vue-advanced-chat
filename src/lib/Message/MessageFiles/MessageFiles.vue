@@ -1,5 +1,5 @@
 <template>
-	<div class="vac-image-container">
+	<div class="vac-message-files-container">
 		<div v-for="(file, idx) in imageVideoFiles" :key="idx + 'iv'">
 			<message-file
 				:file="file"
