@@ -484,9 +484,9 @@ export default {
 			const { id } = await messagesRef(roomId).add(message)
 
 			if (files) {
-				files.forEach(file => {
-					this.uploadFile({ file, messageId: id, roomId })
-				})
+				for (let index = 0; index < files.length; index++) {
+					await this.uploadFile({ file: files[index], messageId: id, roomId })
+				}
 			}
 
 			roomsRef.doc(roomId).update({ lastUpdated: new Date() })
@@ -507,9 +507,11 @@ export default {
 				.update(newMessage)
 
 			if (files) {
-				files.forEach(file => {
-					if (file?.blob) this.uploadFile({ file, messageId, roomId })
-				})
+				for (let index = 0; index < files.length; index++) {
+					if (files[index]?.blob) {
+						await this.uploadFile({ file: files[index], messageId, roomId })
+					}
+				}
 			}
 		},
 
