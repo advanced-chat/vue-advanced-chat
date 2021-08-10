@@ -25,14 +25,14 @@
 					</div>
 				</div>
 
-				<img v-if="isImageFile" :src="firstFile.url" class="vac-image-reply" />
+				<img v-if="isImage" :src="firstFile.url" class="vac-image-reply" />
 
-				<video v-else-if="isVideoFile" controls class="vac-image-reply">
+				<video v-else-if="isVideo" controls class="vac-image-reply">
 					<source :src="firstFile.url" />
 				</video>
 
 				<audio-player
-					v-else-if="isAudioFile"
+					v-else-if="isAudio"
 					:src="firstFile.url"
 					class="vac-audio-reply"
 				>
@@ -42,7 +42,7 @@
 				</audio-player>
 
 				<div v-else-if="isOtherFile" class="vac-image-reply vac-file-container">
-					<div class="vac-icon-file">
+					<div>
 						<slot name="file-icon">
 							<svg-icon name="file" />
 						</slot>
@@ -103,21 +103,21 @@ export default {
 		firstFile() {
 			return this.messageReply.files ? this.messageReply.files[0] : {}
 		},
-		isImageFile() {
+		isImage() {
 			return isImageFile(this.firstFile)
 		},
-		isVideoFile() {
+		isVideo() {
 			return isVideoFile(this.firstFile)
 		},
-		isAudioFile() {
+		isAudio() {
 			return isAudioFile(this.firstFile)
 		},
 		isOtherFile() {
 			return (
 				this.messageReply.files &&
-				!this.isAudioFile &&
-				!this.isVideoFile &&
-				!this.isAudioFile
+				!this.isAudio &&
+				!this.isVideo &&
+				!this.isImage
 			)
 		}
 	}
