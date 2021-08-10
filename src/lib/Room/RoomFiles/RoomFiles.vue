@@ -2,7 +2,7 @@
 	<transition name="vac-slide-up">
 		<div
 			v-if="files.length"
-			class="vac-files-container vac-app-box-shadow"
+			class="vac-files-container"
 			:style="{ bottom: `${$parent.$refs.roomFooter.clientHeight}px` }"
 		>
 			<div class="vac-files-box">

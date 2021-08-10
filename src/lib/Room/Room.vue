@@ -126,6 +126,9 @@
 			v-show="Object.keys(room).length && showFooter"
 			ref="roomFooter"
 			class="vac-room-footer"
+			:class="{
+				'vac-app-box-shadow': shadowFooter
+			}"
 		>
 			<room-emojis
 				:filtered-emojis="filteredEmojis"
@@ -159,12 +162,7 @@
 				</template>
 			</room-files>
 
-			<div
-				class="vac-box-footer"
-				:class="{
-					'vac-app-box-shadow': filteredEmojis.length || filteredUsersTag.length
-				}"
-			>
+			<div class="vac-box-footer">
 				<div v-if="showAudio && !files.length" class="vac-icon-textarea-left">
 					<template v-if="isRecording">
 						<div
@@ -439,6 +437,14 @@ export default {
 		},
 		recordedTime() {
 			return new Date(this.recorder.duration * 1000).toISOString().substr(14, 5)
+		},
+		shadowFooter() {
+			return (
+				!!this.filteredEmojis.length ||
+				!!this.filteredUsersTag.length ||
+				!!this.files.length ||
+				!!this.messageReply
+			)
 		}
 	},
 

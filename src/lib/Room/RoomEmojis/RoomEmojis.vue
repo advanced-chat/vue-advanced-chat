@@ -2,7 +2,7 @@
 	<transition name="vac-slide-up">
 		<div
 			v-if="filteredEmojis.length"
-			class="vac-emojis-container vac-app-box-shadow"
+			class="vac-emojis-container"
 			:style="{ bottom: `${$parent.$refs.roomFooter.clientHeight}px` }"
 		>
 			<div
