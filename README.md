@@ -397,7 +397,7 @@ You can then use the [textarea-action-handler](#events-api) event to call your o
 
 **(21)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
 
-Example: set `"accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files
+Example: set `"accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files only
 
 **(22)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
 
@@ -481,7 +481,7 @@ rooms="[
 
 ### Messages prop
 
-Message objects are rendered differently depending on their type. Currently, only text, emoji and file types are supported.<br><br>
+Message objects are rendered differently depending on their type. Text, emoji, image, video and file types are supported.<br><br>
 Each message object has a `senderId` field which holds the id of the corresponding agent. If `senderId` matches the `currentUserId` prop, specific UI and actions will be implemented.<br><br>
 Notes:
 
@@ -514,15 +514,17 @@ messages="[
     deleted: false,
     disableActions: false,
     disableReactions: false,
-    file: {
-      name: 'My File',
-      size: 67351,
-      type: 'png',
-      audio: true,
-      duration: 14.4,
-      url: 'https://firebasestorage.googleapis.com/...',
-      preview: 'data:image/png;base64,iVBORw0KGgoAA...'
-    },
+    files: [
+      {
+        name: 'My File',
+        size: 67351,
+        type: 'png',
+        audio: true,
+        duration: 14.4,
+        url: 'https://firebasestorage.googleapis.com/...',
+        preview: 'data:image/png;base64,iVBORw0KGgoAA...'
+      }
+    ],
     reactions: {
       😁: [
         1234, // USER_ID
@@ -535,15 +537,17 @@ messages="[
     replyMessage: {
       content: 'Reply Message',
       senderId: 4321,
-      file: {
-        name: 'My Replied File',
-        size: 67351,
-        type: 'png',
-        audio: true,
-        duration: 14.4,
-        url: 'https://firebasestorage.googleapis.com/...',
-        preview: 'data:image/png;base64,iVBORw0KGgoAA...'
-      }
+      files: [
+        {
+          name: 'My Replied File',
+          size: 67351,
+          type: 'png',
+          audio: true,
+          duration: 14.4,
+          url: 'https://firebasestorage.googleapis.com/...',
+          preview: 'data:image/png;base64,iVBORw0KGgoAA...'
+        }
+      ]
     },
   }
 ]"
@@ -553,24 +557,24 @@ messages="[
 
 ## Events API
 
-| <div style="width:230px">Event</div> | Params                                                                   | Fires when a user                               |
-| ------------------------------------ | ------------------------------------------------------------------------ | ----------------------------------------------- |
-| `fetch-messages`(1)                  | `{ room, options }`                                                      | Scrolled on top to load more messages           |
-| `fetch-more-rooms`(2)                | -                                                                        | Scrolled to load more rooms                     |
-| `send-message`                       | `{ roomId, content, file(9), replyMessage(10), usersTag }`               | Sent a message                                  |
-| `edit-message`                       | `{ roomId, messageId, newContent, file(9), replyMessage(10) ,usersTag }` | Edited a message                                |
-| `delete-message`                     | `{ roomId, message }`                                                    | Deleted a message                               |
-| `open-file`                          | `{ message, action }`                                                    | Clicked to view or download a file              |
-| `open-user-tag`(3)                   | `{ user }`                                                               | Clicked on a user tag inside a message          |
-| `add-room`                           | -                                                                        | Clicked on the plus icon next to searchbar      |
-| `room-action-handler`(4)             | `{ roomId, action }`                                                     | Clicked on the vertical dots icon inside a room |
-| `menu-action-handler`(5)             | `{ roomId, action }`                                                     | Clicked on the vertical dots icon inside a room |
-| `message-action-handler`(6)          | `{ roomId, action, message }`                                            | Clicked on the dropdown icon inside a message   |
-| `send-message-reaction`              | `{ roomId, messageId, reaction, remove }`                                | Clicked on the emoji icon inside a message      |
-| `room-info` (7)                      | `room`                                                                   | Clicked the room header bar                     |
-| `toggle-rooms-list`                  | `{ opened }`                                                             | Clicked on the toggle icon inside a room header |
-| `textarea-action-handler`(8)         | `{ roomId, message }`                                                    | Clicked on custom icon inside the footer        |
-| `typing-message`                     | `{ message, roomId }`                                                    | Started typing a message                        |
+| <div style="width:230px">Event</div> | Params                                                                    | Fires when a user                               |
+| ------------------------------------ | ------------------------------------------------------------------------- | ----------------------------------------------- |
+| `fetch-messages`(1)                  | `{ room, options }`                                                       | Scrolled on top to load more messages           |
+| `fetch-more-rooms`(2)                | -                                                                         | Scrolled to load more rooms                     |
+| `send-message`                       | `{ roomId, content, files(9), replyMessage(10), usersTag }`               | Sent a message                                  |
+| `edit-message`                       | `{ roomId, messageId, newContent, files(9), replyMessage(10) ,usersTag }` | Edited a message                                |
+| `delete-message`                     | `{ roomId, message }`                                                     | Deleted a message                               |
+| `open-file`                          | `{ message, file }`                                                       | Clicked to view or download a file              |
+| `open-user-tag`(3)                   | `{ user }`                                                                | Clicked on a user tag inside a message          |
+| `add-room`                           | -                                                                         | Clicked on the plus icon next to searchbar      |
+| `room-action-handler`(4)             | `{ roomId, action }`                                                      | Clicked on the vertical dots icon inside a room |
+| `menu-action-handler`(5)             | `{ roomId, action }`                                                      | Clicked on the vertical dots icon inside a room |
+| `message-action-handler`(6)          | `{ roomId, action, message }`                                             | Clicked on the dropdown icon inside a message   |
+| `send-message-reaction`              | `{ roomId, messageId, reaction, remove }`                                 | Clicked on the emoji icon inside a message      |
+| `room-info` (7)                      | `room`                                                                    | Clicked the room header bar                     |
+| `toggle-rooms-list`                  | `{ opened }`                                                              | Clicked on the toggle icon inside a room header |
+| `textarea-action-handler`(8)         | `{ roomId, message }`                                                     | Clicked on custom icon inside the footer        |
+| `typing-message`                     | `{ message, roomId }`                                                     | Started typing a message                        |
 
 **(1)** `fetch-messages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`.<br>
 **(1)** `fetch-messages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top.
@@ -635,7 +639,7 @@ messageActionHandler({ roomId, action, message }) {
 
 **(8)** `textarea-action-handler` is the result of the [`textarea-action-enabled`](#props-api) prop.<br>
 
-**(9)** All file params contain: `{ blob, localURL, name, size, type, extension }`
+**(9)** Array of files where each file contain: `{ blob, localURL, name, size, type, extension }`
 
 **(10)** `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked.
 
