@@ -564,7 +564,7 @@ export default {
 			this.loadingMessages = true
 			this.scrollIcon = false
 			this.scrollMessagesCount = 0
-			this.resetMessage(true, null, true)
+			this.resetMessage(true, true)
 
 			if (this.roomMessage) {
 				this.message = this.roomMessage
@@ -749,21 +749,9 @@ export default {
 			else if (this.filteredUsersTag.length) this.filteredUsersTag = []
 			else this.resetMessage()
 		},
-		resetMessage(
-			disableMobileFocus = false,
-			editFile = false,
-			initRoom = false
-		) {
+		resetMessage(disableMobileFocus = false, initRoom = false) {
 			if (!initRoom) {
 				this.$emit('typing-message', null)
-			}
-
-			if (editFile) {
-				this.files = []
-				this.message = ''
-				this.preventKeyboardFromClosing()
-				setTimeout(() => this.focusTextarea(disableMobileFocus))
-				return
 			}
 
 			this.selectedUsersTag = []
@@ -872,6 +860,7 @@ export default {
 			this.$emit('send-message-reaction', messageReaction)
 		},
 		replyMessage(message) {
+			this.editedMessage = {}
 			this.messageReply = message
 			this.focusTextarea()
 		},
