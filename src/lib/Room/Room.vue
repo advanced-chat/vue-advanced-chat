@@ -127,6 +127,16 @@
 			ref="roomFooter"
 			class="vac-room-footer"
 		>
+			<room-emojis
+				:filtered-emojis="filteredEmojis"
+				@select-emoji="selectEmoji($event)"
+			/>
+
+			<room-users-tag
+				:filtered-users-tag="filteredUsersTag"
+				@select-user-tag="selectUserTag($event)"
+			/>
+
 			<room-message-reply
 				:room="room"
 				:message-reply="messageReply"
@@ -148,16 +158,6 @@
 					<slot :name="name" v-bind="data" />
 				</template>
 			</room-files>
-
-			<room-emojis
-				:filtered-emojis="filteredEmojis"
-				@select-emoji="selectEmoji($event)"
-			/>
-
-			<room-users-tag
-				:filtered-users-tag="filteredUsersTag"
-				@select-user-tag="selectUserTag($event)"
-			/>
 
 			<div
 				class="vac-box-footer"
