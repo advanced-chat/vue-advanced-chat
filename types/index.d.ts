@@ -120,6 +120,7 @@ export interface Slots {
 export interface Props {
 	'current-user-id': StringNumber
 	rooms: Rooms
+	'rooms-order': 'desc' | 'asc'
 	messages: Messages
 	height?: string
 	theme?: 'light' | 'dark'

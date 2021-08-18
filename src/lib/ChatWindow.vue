@@ -104,6 +104,7 @@ export default {
 		textMessages: { type: Object, default: null },
 		currentUserId: { type: [String, Number], default: '' },
 		rooms: { type: Array, default: () => [] },
+		roomsOrder: { type: String, default: 'desc' },
 		loadingRooms: { type: Boolean, default: false },
 		roomsLoaded: { type: Boolean, default: false },
 		roomId: { type: [String, Number], default: null },
@@ -192,6 +193,10 @@ export default {
 			return this.rooms.slice().sort((a, b) => {
 				const aVal = a.index || 0
 				const bVal = b.index || 0
+
+				if (this.roomsOrder === 'asc') {
+					return aVal < bVal ? -1 : bVal < aVal ? 1 : 0
+				}
 
 				return aVal > bVal ? -1 : bVal > aVal ? 1 : 0
 			})

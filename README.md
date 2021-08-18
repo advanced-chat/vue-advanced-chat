@@ -211,6 +211,7 @@ fetchMessages({ room, options }) {
 | `height`                            | String           | -        | `600px`                                 |
 | `current-user-id`(1)                | [String, Number] | `true`   | -                                       |
 | `rooms`                             | Array            | -        | `[]`                                    |
+| `rooms-order`                       | String           | -        | `desc`                                  |
 | `loading-rooms`(2)                  | Boolean          | -        | `false`                                 |
 | `rooms-loaded`(3)                   | Boolean          | -        | `false`                                 |
 | `room-id`(4)                        | [String, Number] | -        | `null`                                  |
