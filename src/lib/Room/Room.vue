@@ -893,7 +893,9 @@ export default {
 			}, 50)
 		},
 		onChangeInput: debounce(function(e) {
-			this.message = e.target.value
+			if (e?.target?.value) {
+				this.message = e.target.value
+			}
 			this.keepKeyboardOpen = true
 			this.resizeTextarea()
 			this.$emit('typing-message', this.message)
