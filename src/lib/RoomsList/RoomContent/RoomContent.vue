@@ -28,7 +28,7 @@
 					}"
 				>
 					<span v-if="isMessageCheckmarkVisible">
-						<slot name="checkmark-icon" v-bind="room.lastMessage">
+						<slot name="checkmark-icon" v-bind="{message: room.lastMessage}">
 							<svg-icon
 								:name="
 									room.lastMessage.distributed
