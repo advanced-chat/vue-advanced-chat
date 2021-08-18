@@ -549,19 +549,24 @@ export default {
 		touchStart(touchEvent) {
 			if (touchEvent.changedTouches.length === 1) {
 				const posXStart = touchEvent.changedTouches[0].clientX
+				const posYStart = touchEvent.changedTouches[0].clientY
 
 				addEventListener(
 					'touchend',
-					touchEvent => this.touchEnd(touchEvent, posXStart),
+					touchEvent => this.touchEnd(touchEvent, posXStart, posYStart),
 					{ once: true }
 				)
 			}
 		},
-		touchEnd(touchEvent, posXStart) {
+		touchEnd(touchEvent, posXStart, posYStart) {
 			if (touchEvent.changedTouches.length === 1) {
 				const posXEnd = touchEvent.changedTouches[0].clientX
+				const posYEnd = touchEvent.changedTouches[0].clientY
 
-				if (posXEnd - posXStart > 30) {
+				const swippedRight = posXEnd - posXStart > 30
+				const swippedVertically = Math.abs(posYEnd - posYStart) > 50
+
+				if (swippedRight && !swippedVertically) {
 					this.$emit('toggle-rooms-list')
 				}
 			}
