@@ -140,6 +140,14 @@
 				@select-user-tag="selectUserTag($event)"
 			/>
 
+			<room-Templates-Text
+				:filtered-templates-text="filteredTemplatesText"
+				:active-template="activeTemplate"
+				:active-up-or-down="activeUpOrDown"
+				@select-template-text="selectTemplateText($event)"
+				@active-item="activeUpOrDown = 0"
+			/>
+
 			<room-message-reply
 				:room="room"
 				:message-reply="messageReply"
@@ -210,8 +218,14 @@
 					}"
 					@input="onChangeInput"
 					@keydown.esc="escapeTextarea"
-					@keydown.enter.exact.prevent=""
+					@keydown.enter.exact.prevent="beforeEnter"
 					@paste="onPasteImage"
+					@keydown.tab.exact.prevent=""
+					@keydown.tab="activeTemplate = true"
+					@keydown.up.exact.prevent=""
+					@keydown.up="upActiveTemplate"
+					@keydown.down.exact.prevent=""
+					@keydown.down="downActiveTemplate"
 				/>
 
 				<div class="vac-icon-textarea">
@@ -264,7 +278,7 @@
 						type="file"
 						multiple
 						:accept="acceptedFiles"
-						style="display:none"
+						style="display: none"
 						@change="onFileChange($event.target.files)"
 					/>
 
@@ -298,16 +312,17 @@ import RoomFiles from './RoomFiles/RoomFiles'
 import RoomMessageReply from './RoomMessageReply/RoomMessageReply'
 import RoomUsersTag from './RoomUsersTag/RoomUsersTag'
 import RoomEmojis from './RoomEmojis/RoomEmojis'
+import RoomTemplatesText from './RoomTemplatesText/RoomTemplatesText'
 import Message from '../Message/Message'
 
-import filteredUsers from '../../utils/filter-items'
+import filteredItems from '../../utils/filter-items'
 import Recorder from '../../utils/recorder'
 
 const { detectMobile, iOSDevice } = require('../../utils/mobile-detection')
 
 const debounce = (func, delay) => {
 	let inDebounce
-	return function() {
+	return function () {
 		const context = this
 		const args = arguments
 		clearTimeout(inDebounce)
@@ -327,6 +342,7 @@ export default {
 		RoomMessageReply,
 		RoomUsersTag,
 		RoomEmojis,
+		RoomTemplatesText,
 		Message
 	},
 
@@ -360,7 +376,8 @@ export default {
 		linkOptions: { type: Object, required: true },
 		loadingRooms: { type: Boolean, required: true },
 		roomInfoEnabled: { type: Boolean, required: true },
-		textareaActionEnabled: { type: Boolean, required: true }
+		textareaActionEnabled: { type: Boolean, required: true },
+		templatesText: { type: Array, default: null }
 	},
 
 	emits: [
@@ -398,6 +415,9 @@ export default {
 			filteredEmojis: [],
 			filteredUsersTag: [],
 			selectedUsersTag: [],
+			filteredTemplatesText: [],
+			activeTemplate: null,
+			activeUpOrDown: null,
 			textareaCursorPosition: null,
 			cursorRangePosition: null,
 			emojisDB: new Database(),
@@ -442,6 +462,7 @@ export default {
 			return (
 				!!this.filteredEmojis.length ||
 				!!this.filteredUsersTag.length ||
+				!!this.filteredTemplatesText.length ||
 				!!this.files.length ||
 				!!this.messageReply
 			)
@@ -515,7 +536,7 @@ export default {
 					if (isMobile) {
 						this.message = this.message + '\n'
 						setTimeout(() => this.onChangeInput())
-					} else {
+					} else if (this.filteredTemplatesText.length === 0) {
 						this.sendMessage()
 					}
 				}
@@ -523,6 +544,7 @@ export default {
 				setTimeout(() => {
 					this.updateFooterList('@')
 					this.updateFooterList(':')
+					this.updateFooterList('/')
 				}, 60)
 			}),
 			50
@@ -533,6 +555,7 @@ export default {
 
 			this.updateFooterList('@')
 			this.updateFooterList(':')
+			this.updateFooterList('/')
 		})
 
 		this.$refs['roomTextarea'].addEventListener('blur', () => {
@@ -642,6 +665,10 @@ export default {
 				return
 			}
 
+			if (tagChar === '/' && !this.templatesText) {
+				return
+			}
+
 			if (
 				this.textareaCursorPosition ===
 				this.$refs['roomTextarea'].selectionStart
@@ -676,6 +703,8 @@ export default {
 					this.updateEmojis(query)
 				} else if (tagChar === '@') {
 					this.updateShowUsersTag(query)
+				} else if (tagChar === '/') {
+					this.updateShowTemplatesText(query)
 				}
 			} else {
 				this.resetFooterList(tagChar)
@@ -717,7 +746,7 @@ export default {
 			this.focusTextarea()
 		},
 		updateShowUsersTag(query) {
-			this.filteredUsersTag = filteredUsers(
+			this.filteredUsersTag = filteredItems(
 				this.room.users,
 				'username',
 				query,
@@ -743,14 +772,55 @@ export default {
 				position + user.username.length + space.length + 1
 			this.focusTextarea()
 		},
+		updateShowTemplatesText(query) {
+			this.filteredTemplatesText = filteredItems(
+				this.templatesText,
+				'tag',
+				query,
+				true
+			)
+		},
+		selectTemplateText(template) {
+			this.activeTemplate = false
+			if (!template) return
+			const { position, endPosition } = this.getCharPosition('/')
+
+			const space = this.message.substr(endPosition, endPosition).length
+				? ''
+				: ' '
+
+			this.message =
+				this.message.substr(0, position - 1) +
+				template.text +
+				space +
+				this.message.substr(endPosition, this.message.length - 1)
+
+			this.cursorRangePosition =
+				position + template.text.length + space.length + 1
+			this.focusTextarea()
+		},
+		beforeEnter() {
+			if (this.filteredTemplatesText.length > 0) {
+				this.activeTemplate = true
+			}
+		},
+		upActiveTemplate() {
+			this.activeUpOrDown = -1
+		},
+		downActiveTemplate() {
+			this.activeUpOrDown = 1
+		},
 		resetFooterList(tagChar = null) {
 			if (tagChar === ':') {
 				this.filteredEmojis = []
 			} else if (tagChar === '@') {
 				this.filteredUsersTag = []
+			} else if (tagChar === '/') {
+				this.filteredTemplatesText = []
 			} else {
 				this.filteredEmojis = []
 				this.filteredUsersTag = []
+				this.filteredTemplatesText = []
 			}
 
 			this.textareaCursorPosition = null
@@ -758,7 +828,9 @@ export default {
 		escapeTextarea() {
 			if (this.filteredEmojis.length) this.filteredEmojis = []
 			else if (this.filteredUsersTag.length) this.filteredUsersTag = []
-			else this.resetMessage()
+			else if (this.filteredTemplatesText.length) {
+				this.filteredTemplatesText = []
+			} else this.resetMessage()
 		},
 		resetMessage(disableMobileFocus = false, initRoom = false) {
 			if (!initRoom) {
@@ -897,7 +969,7 @@ export default {
 				setTimeout(() => element.classList.remove('vac-scroll-smooth'))
 			}, 50)
 		},
-		onChangeInput: debounce(function(e) {
+		onChangeInput: debounce(function (e) {
 			if (e?.target?.value) {
 				this.message = e.target.value
 			}

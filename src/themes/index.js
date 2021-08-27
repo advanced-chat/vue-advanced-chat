@@ -28,7 +28,8 @@ export const defaultThemeStyles = {
 			borderStyleInput: '1px solid #e1e4e8',
 			borderInputSelected: '#1976d2',
 			backgroundReply: '#e5e5e6',
-			backgroundTagActive: '#e5e5e6'
+			backgroundTagActive: '#e5e5e6',
+			backgroundTag: '#fff'
 		},
 
 		content: {
@@ -167,7 +168,8 @@ export const defaultThemeStyles = {
 			borderStyleInput: 'none',
 			borderInputSelected: '#1976d2',
 			backgroundReply: '#1b1c1c',
-			backgroundTagActive: '#1b1c1c'
+			backgroundTagActive: '#1b1c1c',
+			backgroundTag: '#131415'
 		},
 
 		content: {
@@ -319,6 +321,7 @@ export const cssThemeVars = ({
 		'--chat-border-color-input-selected': footer.borderInputSelected,
 		'--chat-footer-bg-color-reply': footer.backgroundReply,
 		'--chat-footer-bg-color-tag-active': footer.backgroundTagActive,
+		'--chat-footer-bg-color-tag': footer.backgroundTag,
 
 		// content
 		'--chat-content-bg-color': content.background,

@@ -5,9 +5,7 @@
 			<button type="submit" :disabled="disableForm || !addRoomUsername">
 				Create Room
 			</button>
-			<button class="button-cancel" @click="addNewRoom = false">
-				Cancel
-			</button>
+			<button class="button-cancel" @click="addNewRoom = false">Cancel</button>
 		</form>
 
 		<form v-if="inviteRoomId" @submit.prevent="addRoomUser">
@@ -15,16 +13,12 @@
 			<button type="submit" :disabled="disableForm || !invitedUsername">
 				Add User
 			</button>
-			<button class="button-cancel" @click="inviteRoomId = null">
-				Cancel
-			</button>
+			<button class="button-cancel" @click="inviteRoomId = null">Cancel</button>
 		</form>
 
 		<form v-if="removeRoomId" @submit.prevent="deleteRoomUser">
 			<select v-model="removeUserId">
-				<option default value="">
-					Select User
-				</option>
+				<option default value="">Select User</option>
 				<option v-for="user in removeUsers" :key="user._id" :value="user._id">
 					{{ user.username }}
 				</option>
@@ -32,9 +26,7 @@
 			<button type="submit" :disabled="disableForm || !removeUserId">
 				Remove User
 			</button>
-			<button class="button-cancel" @click="removeRoomId = null">
-				Cancel
-			</button>
+			<button class="button-cancel" @click="removeRoomId = null">Cancel</button>
 		</form>
 
 		<chat-window
@@ -51,6 +43,7 @@
 			:room-actions="roomActions"
 			:menu-actions="menuActions"
 			:room-message="roomMessage"
+			:templates-text="templatesText"
 			@fetch-more-rooms="fetchMoreRooms"
 			@fetch-messages="fetchMessages"
 			@send-message="sendMessage"
@@ -141,7 +134,21 @@ export default {
 				{ name: 'removeUser', title: 'Remove User' },
 				{ name: 'deleteRoom', title: 'Delete Room' }
 			],
-			styles: { container: { borderRadius: '4px' } }
+			styles: { container: { borderRadius: '4px' } },
+			templatesText: [
+				{
+					tag: 'help',
+					text: 'This is the help'
+				},
+				{
+					tag: 'action',
+					text: 'this is the action'
+				},
+				{
+					tag: 'action 2',
+					text: 'this is the second action'
+				}
+			]
 			// ,dbRequestCount: 0
 		}
 	},
@@ -502,9 +509,7 @@ export default {
 				newMessage.files = deleteDbField
 			}
 
-			await messagesRef(roomId)
-				.doc(messageId)
-				.update(newMessage)
+			await messagesRef(roomId).doc(messageId).update(newMessage)
 
 			if (files) {
 				for (let index = 0; index < files.length; index++) {
@@ -516,9 +521,7 @@ export default {
 		},
 
 		async deleteMessage({ message, roomId }) {
-			await messagesRef(roomId)
-				.doc(message._id)
-				.update({ deleted: new Date() })
+			await messagesRef(roomId).doc(message._id).update({ deleted: new Date() })
 
 			const { files } = message
 
@@ -548,9 +551,7 @@ export default {
 			await uploadFileRef.put(file.blob, { contentType: type })
 			const url = await uploadFileRef.getDownloadURL()
 
-			const messageDoc = await messagesRef(roomId)
-				.doc(messageId)
-				.get()
+			const messageDoc = await messagesRef(roomId).doc(messageId).get()
 
 			const files = messageDoc.data().files
 
@@ -560,9 +561,7 @@ export default {
 				}
 			})
 
-			await messagesRef(roomId)
-				.doc(messageId)
-				.update({ files })
+			await messagesRef(roomId).doc(messageId).update({ files })
 		},
 
 		formattedFiles(files) {
