@@ -1,0 +1,63 @@
+.vac-reply-container {
+	display: flex;
+	padding: 10px 10px 0 10px;
+	background: var(--chat-footer-bg-color);
+	align-items: center;
+	width: calc(100% - 20px);
+
+	.vac-reply-box {
+		width: 100%;
+		overflow: hidden;
+		background: var(--chat-footer-bg-color-reply);
+		border-radius: 4px;
+		padding: 8px 10px;
+	}
+
+	.vac-reply-info {
+		overflow: hidden;
+	}
+
+	.vac-reply-username {
+		color: var(--chat-message-color-reply-username);
+		font-size: 12px;
+		line-height: 15px;
+		margin-bottom: 2px;
+	}
+
+	.vac-reply-content {
+		font-size: 12px;
+		color: var(--chat-message-color-reply-content);
+		white-space: pre-line;
+	}
+
+	.vac-icon-reply {
+		margin-left: 10px;
+
+		svg {
+			height: 20px;
+			width: 20px;
+		}
+	}
+
+	.vac-image-reply {
+		max-height: 100px;
+		max-width: 200px;
+		margin: 4px 10px 0 0;
+		border-radius: 4px;
+	}
+
+	.vac-audio-reply {
+		margin-right: 10px;
+	}
+
+	.vac-file-container {
+		max-width: 80px;
+	}
+}
+
+@media only screen and (max-width: 768px) {
+	.vac-reply-container {
+		padding: 5px 8px;
+		width: calc(100% - 16px);
+	}
+}

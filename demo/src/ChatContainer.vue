@@ -1,7 +1,7 @@
 <template>
 	<div class="window-container" :class="{ 'window-mobile': isDevice }">
-		<form @submit.prevent="createRoom" v-if="addNewRoom">
-			<input type="text" placeholder="Add username" v-model="addRoomUsername" />
+		<form v-if="addNewRoom" @submit.prevent="createRoom">
+			<input v-model="addRoomUsername" type="text" placeholder="Add username" />
 			<button type="submit" :disabled="disableForm || !addRoomUsername">
 				Create Room
 			</button>
@@ -10,8 +10,8 @@
 			</button>
 		</form>
 
-		<form @submit.prevent="addRoomUser" v-if="inviteRoomId">
-			<input type="text" placeholder="Add username" v-model="invitedUsername" />
+		<form v-if="inviteRoomId" @submit.prevent="addRoomUser">
+			<input v-model="invitedUsername" type="text" placeholder="Add username" />
 			<button type="submit" :disabled="disableForm || !invitedUsername">
 				Add User
 			</button>
@@ -20,9 +20,11 @@
 			</button>
 		</form>
 
-		<form @submit.prevent="deleteRoomUser" v-if="removeRoomId">
+		<form v-if="removeRoomId" @submit.prevent="deleteRoomUser">
 			<select v-model="removeUserId">
-				<option default value="">Select User</option>
+				<option default value="">
+					Select User
+				</option>
 				<option v-for="user in removeUsers" :key="user._id" :value="user._id">
 					{{ user.username }}
 				</option>
@@ -63,6 +65,9 @@
 			@typing-message="typingMessage"
 			@toggle-rooms-list="$emit('show-demo-options', $event.opened)"
 		>
+			<!-- <template #room-header="{ room }">
+				{{ room.roomName }}
+			</template> -->
 		</chat-window>
 	</div>
 </template>
@@ -77,7 +82,7 @@ import {
 	deleteDbField
 } from '@/firestore'
 import { parseTimestamp, isSameDay } from '@/utils/dates'
-import ChatWindow from './../../src/ChatWindow'
+import ChatWindow from './../../src/lib/ChatWindow'
 // import ChatWindow, { Rooms } from 'vue-advanced-chat'
 // import ChatWindow from 'vue-advanced-chat'
 // import 'vue-advanced-chat/dist/vue-advanced-chat.css'
@@ -88,7 +93,13 @@ export default {
 		ChatWindow
 	},
 
-	props: ['currentUserId', 'theme', 'isDevice'],
+	props: {
+		currentUserId: { type: String, required: true },
+		theme: { type: String, required: true },
+		isDevice: { type: Boolean, required: true }
+	},
+
+	emits: ['show-demo-options'],
 
 	data() {
 		return {
@@ -135,15 +146,6 @@ export default {
 		}
 	},
 
-	mounted() {
-		this.fetchRooms()
-		this.updateUserOnlineStatus()
-	},
-
-	destroyed() {
-		this.resetRooms()
-	},
-
 	computed: {
 		loadedRooms() {
 			return this.rooms.slice(0, this.roomsLoadedCount)
@@ -151,6 +153,11 @@ export default {
 		screenHeight() {
 			return this.isDevice ? window.innerHeight + 'px' : 'calc(100vh - 80px)'
 		}
+	},
+
+	mounted() {
+		this.fetchRooms()
+		this.updateUserOnlineStatus()
 	},
 
 	methods: {
@@ -202,7 +209,7 @@ export default {
 			const roomUserIds = []
 			rooms.forEach(room => {
 				room.data().users.forEach(userId => {
-					const foundUser = this.allUsers.find(user => user._id === userId)
+					const foundUser = this.allUsers.find(user => user?._id === userId)
 					if (!foundUser && roomUserIds.indexOf(userId) === -1) {
 						roomUserIds.push(userId)
 					}
@@ -227,7 +234,7 @@ export default {
 				roomList[room.id] = { ...room.data(), users: [] }
 
 				room.data().users.forEach(userId => {
-					const foundUser = this.allUsers.find(user => user._id === userId)
+					const foundUser = this.allUsers.find(user => user?._id === userId)
 					if (foundUser) roomList[room.id].users.push(foundUser)
 				})
 			})
@@ -308,9 +315,10 @@ export default {
 			if (!message.timestamp) return
 
 			let content = message.content
-			if (message.file)
-				content = `${message.file.name}.${message.file.extension ||
-					message.file.type}`
+			if (message.files?.length) {
+				const file = message.files[0]
+				content = `${file.name}.${file.extension || file.type}`
+			}
 
 			return {
 				...message,
@@ -343,8 +351,9 @@ export default {
 				this.roomId = room.roomId
 			}
 
-			if (this.endMessages && !this.startMessages)
+			if (this.endMessages && !this.startMessages) {
 				return (this.messagesLoaded = true)
+			}
 
 			let ref = messagesRef(room.roomId)
 
@@ -365,10 +374,12 @@ export default {
 
 				let listenerQuery = ref.orderBy('timestamp')
 
-				if (this.startMessages)
+				if (this.startMessages) {
 					listenerQuery = listenerQuery.startAfter(this.startMessages)
-				if (this.endMessages)
+				}
+				if (this.endMessages) {
 					listenerQuery = listenerQuery.endAt(this.endMessages)
+				}
 
 				if (options.reset) this.messages = []
 
@@ -393,7 +404,8 @@ export default {
 				if (messageIndex === -1) {
 					this.messages = this.messages.concat([formattedMessage])
 				} else {
-					this.$set(this.messages, messageIndex, formattedMessage)
+					this.messages[messageIndex] = formattedMessage
+					this.messages = [...this.messages]
 				}
 
 				this.markMessagesSeen(room, message)
@@ -418,12 +430,12 @@ export default {
 				user => message.data().sender_id === user._id
 			)
 
-			const { sender_id, timestamp } = message.data()
+			const { timestamp } = message.data()
 
-			return {
+			const formattedMessage = {
 				...message.data(),
 				...{
-					senderId: sender_id,
+					senderId: message.data().sender_id,
 					_id: message.id,
 					seconds: timestamp.seconds,
 					timestamp: parseTimestamp(timestamp, 'HH:mm'),
@@ -433,27 +445,28 @@ export default {
 					distributed: true
 				}
 			}
+
+			if (message.data().replyMessage) {
+				formattedMessage.replyMessage = {
+					...message.data().replyMessage,
+					...{
+						senderId: message.data().replyMessage.sender_id
+					}
+				}
+			}
+
+			return formattedMessage
 		},
 
-		async sendMessage({ content, roomId, file, replyMessage }) {
+		async sendMessage({ content, roomId, files, replyMessage }) {
 			const message = {
 				sender_id: this.currentUserId,
 				content,
 				timestamp: new Date()
 			}
 
-			if (file) {
-				message.file = {
-					name: file.name,
-					size: file.size,
-					type: file.type,
-					extension: file.extension || file.type,
-					url: file.localUrl
-				}
-				if (file.audio) {
-					message.file.audio = true
-					message.file.duration = file.duration
-				}
+			if (files) {
+				message.files = this.formattedFiles(files)
 			}
 
 			if (replyMessage) {
@@ -463,20 +476,120 @@ export default {
 					sender_id: replyMessage.senderId
 				}
 
-				if (replyMessage.file) {
-					message.replyMessage.file = replyMessage.file
+				if (replyMessage.files) {
+					message.replyMessage.files = replyMessage.files
 				}
 			}
 
 			const { id } = await messagesRef(roomId).add(message)
 
-			if (file) this.uploadFile({ file, messageId: id, roomId })
+			if (files) {
+				for (let index = 0; index < files.length; index++) {
+					await this.uploadFile({ file: files[index], messageId: id, roomId })
+				}
+			}
 
 			roomsRef.doc(roomId).update({ lastUpdated: new Date() })
 		},
 
-		openFile({ message }) {
-			window.open(message.file.url, '_blank')
+		async editMessage({ messageId, newContent, roomId, files }) {
+			const newMessage = { edited: new Date() }
+			newMessage.content = newContent
+
+			if (files) {
+				newMessage.files = this.formattedFiles(files)
+			} else {
+				newMessage.files = deleteDbField
+			}
+
+			await messagesRef(roomId)
+				.doc(messageId)
+				.update(newMessage)
+
+			if (files) {
+				for (let index = 0; index < files.length; index++) {
+					if (files[index]?.blob) {
+						await this.uploadFile({ file: files[index], messageId, roomId })
+					}
+				}
+			}
+		},
+
+		async deleteMessage({ message, roomId }) {
+			await messagesRef(roomId)
+				.doc(message._id)
+				.update({ deleted: new Date() })
+
+			const { files } = message
+
+			if (files) {
+				files.forEach(file => {
+					const deleteFileRef = filesRef
+						.child(this.currentUserId)
+						.child(message._id)
+						.child(`${file.name}.${file.extension || file.type}`)
+
+					deleteFileRef.delete()
+				})
+			}
+		},
+
+		async uploadFile({ file, messageId, roomId }) {
+			let type = file.extension || file.type
+			if (type === 'svg' || type === 'pdf') {
+				type = file.type
+			}
+
+			const uploadFileRef = filesRef
+				.child(this.currentUserId)
+				.child(messageId)
+				.child(`${file.name}.${type}`)
+
+			await uploadFileRef.put(file.blob, { contentType: type })
+			const url = await uploadFileRef.getDownloadURL()
+
+			const messageDoc = await messagesRef(roomId)
+				.doc(messageId)
+				.get()
+
+			const files = messageDoc.data().files
+
+			files.forEach(f => {
+				if (f.url === file.localUrl) {
+					f.url = url
+				}
+			})
+
+			await messagesRef(roomId)
+				.doc(messageId)
+				.update({ files })
+		},
+
+		formattedFiles(files) {
+			const formattedFiles = []
+
+			files.forEach(file => {
+				const messageFile = {
+					name: file.name,
+					size: file.size,
+					type: file.type,
+					extension: file.extension || file.type,
+					url: file.url || file.localUrl
+				}
+
+				if (file.audio) {
+					messageFile.audio = true
+					messageFile.duration = file.duration
+				}
+
+				formattedFiles.push(messageFile)
+			})
+
+			return formattedFiles
+		},
+
+		openFile({ file }) {
+			window.open(file.file.url, '_blank')
 		},
 
 		async openUserTag({ user }) {
@@ -531,71 +644,6 @@ export default {
 			})
 		},
 
-		async editMessage({ messageId, newContent, roomId, file }) {
-			const newMessage = { edited: new Date() }
-			newMessage.content = newContent
-
-			if (file) {
-				newMessage.file = {
-					name: file.name,
-					size: file.size,
-					type: file.type,
-					extension: file.extension || file.type,
-					url: file.url || file.localUrl
-				}
-				if (file.audio) {
-					newMessage.file.audio = true
-					newMessage.file.duration = file.duration
-				}
-			} else {
-				newMessage.file = deleteDbField
-			}
-
-			await messagesRef(roomId)
-				.doc(messageId)
-				.update(newMessage)
-
-			if (file?.blob) this.uploadFile({ file, messageId, roomId })
-		},
-
-		async deleteMessage({ message, roomId }) {
-			await messagesRef(roomId)
-				.doc(message._id)
-				.update({ deleted: new Date() })
-
-			const { file } = message
-
-			if (file) {
-				const deleteFileRef = filesRef
-					.child(this.currentUserId)
-					.child(message._id)
-					.child(`${file.name}.${file.extension || file.type}`)
-
-				await deleteFileRef.delete()
-			}
-		},
-
-		async uploadFile({ file, messageId, roomId }) {
-			let type = file.extension || file.type
-			if (type === 'svg' || type === 'pdf') {
-				type = file.type
-			}
-
-			const uploadFileRef = filesRef
-				.child(this.currentUserId)
-				.child(messageId)
-				.child(`${file.name}.${type}`)
-
-			await uploadFileRef.put(file.blob, { contentType: type })
-			const url = await uploadFileRef.getDownloadURL()
-
-			await messagesRef(roomId)
-				.doc(messageId)
-				.update({
-					['file.url']: url
-				})
-		},
-
 		menuActionHandler({ action, roomId }) {
 			switch (action.name) {
 				case 'inviteUser':
@@ -615,7 +663,7 @@ export default {
 			await messagesRef(roomId)
 				.doc(messageId)
 				.update({
-					[`reactions.${reaction.name}`]: dbAction
+					[`reactions.${reaction.unicode}`]: dbAction
 				})
 		},
 
@@ -674,7 +722,7 @@ export default {
 				.database()
 				.ref('.info/connected')
 				.on('value', snapshot => {
-					if (snapshot.val() == false) return
+					if (snapshot.val() === false) return
 
 					userStatusRef
 						.onDisconnect()
@@ -705,7 +753,8 @@ export default {
 								r => room.roomId === r.roomId
 							)
 
-							this.$set(this.rooms, roomIndex, room)
+							this.rooms[roomIndex] = room
+							this.rooms = [...this.rooms]
 						})
 					this.roomsListeners.push(listener)
 				})

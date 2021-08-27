@@ -9,24 +9,25 @@
 		"s": "npm run serve",
 		"build": "vue-cli-service build",
 		"lint": "vue-cli-service lint",
+		"reset": "rm -rf node_modules && rm -rf package-lock.json && npm i --legacy-peer-deps",
+		"reset-all": "npm run reset && cd .. && npm run reset",
 		"gpages": "sh deploy.sh",
 		"latest": "npm i https://github.com/antoine92190/vue-advanced-chat/tarball/master"
 	},
 	"dependencies": {
 		"firebase": "^8.2.2",
-		"lamejs": "^1.2.0",
-		"vue": "^2.6.10",
-		"vue-advanced-chat": "0.8.5"
+		"vue": "^2.6.14",
+		"vue-advanced-chat": "latest"
 	},
 	"devDependencies": {
-		"@vue/cli-plugin-babel": "~4.5.0",
-		"@vue/cli-plugin-eslint": "~4.5.0",
-		"@vue/cli-service": "~4.5.0",
+		"@vue/cli-plugin-babel": "^4.5.13",
+		"@vue/cli-plugin-eslint": "^4.5.13",
+		"@vue/cli-service": "^4.5.13",
 		"@vue/eslint-config-standard": "^4.0.0",
 		"babel-eslint": "^10.0.3",
-		"eslint": "^6.7.2",
-		"eslint-plugin-vue": "^6.2.2",
-		"node-sass": "^4.12.0",
+		"eslint": "^6.8.0",
+		"eslint-plugin-vue": "^7.14.0",
+		"node-sass": "^6.0.1",
 		"sass-loader": "^10.1.1",
 		"vue-template-compiler": "^2.6.11"
 	}
