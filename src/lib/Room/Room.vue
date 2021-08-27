@@ -210,7 +210,6 @@
 					}"
 					@input="onChangeInput"
 					@keydown.esc="escapeTextarea"
-					@keydown.enter.exact.prevent=""
 					@paste="onPasteImage"
 				/>
 
@@ -511,13 +510,11 @@ export default {
 		this.$refs.roomTextarea.addEventListener(
 			'keyup',
 			debounce(e => {
-				if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
-					if (isMobile) {
-						this.message = this.message + '\n'
-						setTimeout(() => this.onChangeInput())
-					} else {
-						this.sendMessage()
-					}
+				if (e.key === 'Enter' && !e.ctrlKey && !this.fileDialog) {
+					this.message = this.message + '\n'
+					setTimeout(() => this.onChangeInput())
+				} else if (e.key === 'Enter' && e.ctrlKey && !this.fileDialog) {
+					this.sendMessage()
 				}
 
 				setTimeout(() => {
