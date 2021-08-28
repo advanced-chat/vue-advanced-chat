@@ -14,7 +14,9 @@
 				@click="$emit('select-template-text', template)"
 			>
 				<div class="vac-template-info">
-					<div class="vac-template-tag">/{{ template.tag }}</div>
+					<div class="vac-template-tag">
+/{{ template.tag }}
+</div>
 					<div class="vac-template-text">
 						{{ template.text }}
 					</div>
@@ -63,7 +65,6 @@ export default {
 			}
 			this.$emit('active-item')
 		}
-	},
-	methods: {}
+	}
 }
 </script>
