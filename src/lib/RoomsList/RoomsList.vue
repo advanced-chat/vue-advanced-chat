@@ -54,7 +54,7 @@
 				</room-content>
 			</div>
 			<transition name="vac-fade-message">
-				<div v-if="rooms.length && !loadingRooms" id="infinite-loader">
+				<div v-if="rooms.length && !loadingRooms" id="infinite-loader-rooms">
 					<loader :show="showLoader" :infinite="true" />
 				</div>
 			</transition>
@@ -145,7 +145,7 @@ export default {
 
 	methods: {
 		initIntersectionObserver() {
-			const loader = document.getElementById('infinite-loader')
+			const loader = document.getElementById('infinite-loader-rooms')
 
 			if (loader && !this.infiniteLoader) {
 				this.infiniteLoader = loader
