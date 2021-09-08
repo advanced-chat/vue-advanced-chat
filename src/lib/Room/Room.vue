@@ -528,14 +528,14 @@ export default {
 			50
 		)
 
-		this.$refs['roomTextarea'].addEventListener('click', () => {
+		this.$refs.roomTextarea.addEventListener('click', () => {
 			if (isMobile) this.keepKeyboardOpen = true
 
 			this.updateFooterList('@')
 			this.updateFooterList(':')
 		})
 
-		this.$refs['roomTextarea'].addEventListener('blur', () => {
+		this.$refs.roomTextarea.addEventListener('blur', () => {
 			this.resetFooterList()
 			if (isMobile) setTimeout(() => (this.keepKeyboardOpen = false))
 		})
@@ -633,7 +633,7 @@ export default {
 			this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount
 		},
 		updateFooterList(tagChar) {
-			if (!this.$refs['roomTextarea']) return
+			if (!this.$refs.roomTextarea) return
 
 			if (
 				tagChar === '@' &&
@@ -643,13 +643,12 @@ export default {
 			}
 
 			if (
-				this.textareaCursorPosition ===
-				this.$refs['roomTextarea'].selectionStart
+				this.textareaCursorPosition === this.$refs.roomTextarea.selectionStart
 			) {
 				return
 			}
 
-			this.textareaCursorPosition = this.$refs['roomTextarea'].selectionStart
+			this.textareaCursorPosition = this.$refs.roomTextarea.selectionStart
 
 			let position = this.textareaCursorPosition
 
@@ -682,7 +681,7 @@ export default {
 			}
 		},
 		getCharPosition(tagChar) {
-			const cursorPosition = this.$refs['roomTextarea'].selectionStart
+			const cursorPosition = this.$refs.roomTextarea.selectionStart
 
 			let position = cursorPosition
 			while (position > 0 && this.message.charAt(position - 1) !== tagChar) {
@@ -780,17 +779,17 @@ export default {
 			setTimeout(() => this.focusTextarea(disableMobileFocus))
 		},
 		resetTextareaSize() {
-			if (!this.$refs['roomTextarea']) return
-			this.$refs['roomTextarea'].style.height = '20px'
+			if (!this.$refs.roomTextarea) return
+			this.$refs.roomTextarea.style.height = '20px'
 		},
 		focusTextarea(disableMobileFocus) {
 			if (detectMobile() && disableMobileFocus) return
-			if (!this.$refs['roomTextarea']) return
-			this.$refs['roomTextarea'].focus()
+			if (!this.$refs.roomTextarea) return
+			this.$refs.roomTextarea.focus()
 
 			if (this.cursorRangePosition) {
 				setTimeout(() => {
-					this.$refs['roomTextarea'].setSelectionRange(
+					this.$refs.roomTextarea.setSelectionRange(
 						this.cursorRangePosition,
 						this.cursorRangePosition
 					)
@@ -799,7 +798,7 @@ export default {
 			}
 		},
 		preventKeyboardFromClosing() {
-			if (this.keepKeyboardOpen) this.$refs['roomTextarea'].focus()
+			if (this.keepKeyboardOpen) this.$refs.roomTextarea.focus()
 		},
 		sendMessage() {
 			let message = this.message.trim()
@@ -941,7 +940,7 @@ export default {
 			this.$emit('typing-message', this.message)
 		}, 100),
 		resizeTextarea() {
-			const el = this.$refs['roomTextarea']
+			const el = this.$refs.roomTextarea
 
 			if (!el) return
 

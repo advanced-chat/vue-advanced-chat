@@ -36,7 +36,7 @@ export default {
 	methods: {
 		onMouseDown(ev) {
 			this.isMouseDown = true
-			const seekPos = this.calculateLineHeadPosition(ev, this.$refs['progress'])
+			const seekPos = this.calculateLineHeadPosition(ev, this.$refs.progress)
 			this.$emit('change-linehead', seekPos)
 			document.addEventListener('mousemove', this.onMouseMove)
 			document.addEventListener('mouseup', this.onMouseUp)
@@ -45,11 +45,11 @@ export default {
 			this.isMouseDown = false
 			document.removeEventListener('mouseup', this.onMouseUp)
 			document.removeEventListener('mousemove', this.onMouseMove)
-			const seekPos = this.calculateLineHeadPosition(ev, this.$refs['progress'])
+			const seekPos = this.calculateLineHeadPosition(ev, this.$refs.progress)
 			this.$emit('change-linehead', seekPos)
 		},
 		onMouseMove(ev) {
-			const seekPos = this.calculateLineHeadPosition(ev, this.$refs['progress'])
+			const seekPos = this.calculateLineHeadPosition(ev, this.$refs.progress)
 			this.$emit('change-linehead', seekPos)
 		},
 		calculateLineHeadPosition(ev, element) {
