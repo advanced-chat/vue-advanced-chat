@@ -563,7 +563,7 @@ export default {
 				const posXEnd = touchEvent.changedTouches[0].clientX
 				const posYEnd = touchEvent.changedTouches[0].clientY
 
-				const swippedRight = posXEnd - posXStart > 30
+				const swippedRight = posXEnd - posXStart > 100
 				const swippedVertically = Math.abs(posYEnd - posYStart) > 50
 
 				if (swippedRight && !swippedVertically) {
