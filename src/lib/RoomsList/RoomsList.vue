@@ -152,7 +152,7 @@ export default {
 
 				const options = {
 					root: document.getElementById('rooms-list'),
-					rootMargin: '100px',
+					rootMargin: '60px',
 					threshold: 0
 				}
 
