@@ -367,7 +367,9 @@ export default {
 				// this.incrementDbCounter('Fetch Room Messages', messages.size)
 				if (this.selectedRoom !== room.roomId) return
 
-				if (messages.empty) this.messagesLoaded = true
+				if (messages.empty || messages.docs.length < this.messagesPerPage) {
+					this.messagesLoaded = true
+				}
 
 				if (this.startMessages) this.endMessages = this.startMessages
 				this.startMessages = messages.docs[messages.docs.length - 1]
