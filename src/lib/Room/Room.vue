@@ -816,7 +816,11 @@ export default {
 			const files = this.files.length ? this.files : null
 
 			if (this.editedMessage._id) {
-				if (this.editedMessage.content !== message || files) {
+				if (
+					this.editedMessage.content !== message ||
+					this.editedMessage.files?.length ||
+					this.files.length
+				) {
 					this.$emit('edit-message', {
 						messageId: this.editedMessage._id,
 						newContent: message,
@@ -992,6 +996,7 @@ export default {
 		},
 		removeFile(index) {
 			this.files.splice(index, 1)
+			this.focusTextarea()
 		},
 		initRecorder() {
 			this.isRecording = false
