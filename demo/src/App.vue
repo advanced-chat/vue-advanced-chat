@@ -9,21 +9,25 @@
 				<button @click="addData" :disabled="updatingData">Add Data</button>
 			</div> -->
 			<span
+				v-if="showOptions"
 				class="user-logged"
 				:class="{ 'user-logged-dark': theme === 'dark' }"
-				v-if="showOptions"
 			>
 				Logged as
 			</span>
-			<select v-model="currentUserId" v-if="showOptions">
+			<select v-if="showOptions" v-model="currentUserId">
 				<option v-for="user in users" :key="user._id" :value="user._id">
 					{{ user.username }}
 				</option>
 			</select>
 
-			<div class="button-theme" v-if="showOptions">
-				<button @click="theme = 'light'" class="button-light">Light</button>
-				<button @click="theme = 'dark'" class="button-dark">Dark</button>
+			<div v-if="showOptions" class="button-theme">
+				<button class="button-light" @click="theme = 'light'">
+					Light
+				</button>
+				<button class="button-dark" @click="theme = 'dark'">
+					Dark
+				</button>
 				<button class="button-github">
 					<a href="https://github.com/antoine92190/vue-advanced-chat">
 						<img src="@/assets/github.svg" />
@@ -32,11 +36,11 @@
 			</div>
 
 			<chat-container
-				:currentUserId="currentUserId"
-				:theme="theme"
-				:isDevice="isDevice"
-				@show-demo-options="showDemoOptions = $event"
 				v-if="showChat"
+				:current-user-id="currentUserId"
+				:theme="theme"
+				:is-device="isDevice"
+				@show-demo-options="showDemoOptions = $event"
 			/>
 
 			<!-- <div class="version-container">
@@ -84,11 +88,10 @@ export default {
 		}
 	},
 
-	mounted() {
-		this.isDevice = window.innerWidth < 500
-		window.addEventListener('resize', ev => {
-			if (ev.isTrusted) this.isDevice = window.innerWidth < 500
-		})
+	computed: {
+		showOptions() {
+			return !this.isDevice || this.showDemoOptions
+		}
 	},
 
 	watch: {
@@ -98,10 +101,11 @@ export default {
 		}
 	},
 
-	computed: {
-		showOptions() {
-			return !this.isDevice || this.showDemoOptions
-		}
+	mounted() {
+		this.isDevice = window.innerWidth < 500
+		window.addEventListener('resize', ev => {
+			if (ev.isTrusted) this.isDevice = window.innerWidth < 500
+		})
 	},
 
 	methods: {

@@ -1,0 +1,33 @@
+.vac-room-files-container {
+	display: flex;
+	align-items: center;
+	padding: 10px 6px 0 6px;
+	background: var(--chat-footer-bg-color);
+
+	.vac-files-box {
+		display: flex;
+		overflow: auto;
+		width: calc(100% - 30px);
+	}
+
+	video {
+		height: 100px;
+		border: var(--chat-border-style-input);
+		border-radius: 4px;
+	}
+
+	.vac-icon-close {
+		margin-left: auto;
+
+		svg {
+			height: 20px;
+			width: 20px;
+		}
+	}
+}
+
+@media only screen and (max-width: 768px) {
+	.vac-files-container {
+		padding: 6px 4px 4px 2px;
+	}
+}

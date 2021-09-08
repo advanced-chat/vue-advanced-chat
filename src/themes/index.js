@@ -83,7 +83,8 @@ export const defaultThemeStyles = {
 			backgroundAudioRecord: '#eb4034',
 			backgroundAudioLine: 'rgba(0, 0, 0, 0.15)',
 			backgroundAudioProgress: '#455247',
-			backgroundAudioProgressSelector: '#455247'
+			backgroundAudioProgressSelector: '#455247',
+			colorFileExtension: '#757e85'
 		},
 
 		markdown: {
@@ -221,7 +222,8 @@ export const defaultThemeStyles = {
 			backgroundAudioRecord: '#eb4034',
 			backgroundAudioLine: 'rgba(255, 255, 255, 0.15)',
 			backgroundAudioProgress: '#b7d4d3',
-			backgroundAudioProgressSelector: '#b7d4d3'
+			backgroundAudioProgressSelector: '#b7d4d3',
+			colorFileExtension: '#a2a5a8'
 		},
 
 		markdown: {
@@ -372,6 +374,7 @@ export const cssThemeVars = ({
 		'--chat-message-bg-color-audio-progress': message.backgroundAudioProgress,
 		'--chat-message-bg-color-audio-progress-selector':
 			message.backgroundAudioProgressSelector,
+		'--chat-message-color-file-extension': message.colorFileExtension,
 
 		// markdown
 		'--chat-markdown-bg': markdown.background,

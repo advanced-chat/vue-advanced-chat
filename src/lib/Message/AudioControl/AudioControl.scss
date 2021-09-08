@@ -1,0 +1,57 @@
+.vac-player-bar {
+	display: flex;
+	align-items: center;
+	max-width: calc(100% - 18px);
+	margin-right: 7px;
+	margin-left: 20px;
+
+	.vac-player-progress {
+		width: 190px;
+
+		.vac-line-container {
+			position: relative;
+			height: 4px;
+			border-radius: 5px;
+			background-color: var(--chat-message-bg-color-audio-line);
+
+			.vac-line-progress {
+				position: absolute;
+				height: inherit;
+				background-color: var(--chat-message-bg-color-audio-progress);
+				border-radius: inherit;
+			}
+
+			.vac-line-dot {
+				position: absolute;
+				top: -5px;
+				margin-left: -7px;
+				height: 14px;
+				width: 14px;
+				border-radius: 50%;
+				background-color: var(--chat-message-bg-color-audio-progress-selector);
+				transition: transform 0.25s;
+
+				&__active {
+					transform: scale(1.2);
+				}
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 768px) {
+	.vac-player-bar {
+		margin-right: 5px;
+
+		.vac-player-progress .vac-line-container {
+			height: 3px;
+
+			.vac-line-dot {
+				height: 12px;
+				width: 12px;
+				top: -5px;
+				margin-left: -5px;
+			}
+		}
+	}
+}

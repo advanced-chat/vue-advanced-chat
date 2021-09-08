@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import RoomsList from '../../src/ChatWindow/RoomsList/RoomsList'
+import RoomsList from '../../src/lib/RoomsList/RoomsList'
 
 import mockData from './mock-data'
 

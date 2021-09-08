@@ -1,0 +1,38 @@
+.vac-format-message-wrapper {
+	.vac-format-container {
+		display: inline;
+	}
+
+	.vac-icon-deleted {
+		height: 14px;
+		width: 14px;
+		vertical-align: middle;
+		margin: -3px 1px 0 0;
+		fill: var(--chat-room-color-message);
+	}
+
+	.vac-image-link-container {
+		background-color: var(--chat-message-bg-color-media);
+		padding: 8px;
+		margin: 2px auto;
+		border-radius: 4px;
+	}
+
+	.vac-image-link {
+		position: relative;
+		background-color: var(--chat-message-bg-color-image) !important;
+		background-size: contain;
+		background-position: center center !important;
+		background-repeat: no-repeat !important;
+		height: 150px;
+		width: 150px;
+		max-width: 100%;
+		border-radius: 4px;
+		margin: 0 auto;
+	}
+
+	.vac-image-link-message {
+		max-width: 166px;
+		font-size: 12px;
+	}
+}
