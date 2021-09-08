@@ -105,7 +105,7 @@ export default {
 	data() {
 		return {
 			filteredRooms: this.rooms || [],
-			infiniteLoader: null,
+			observer: null,
 			showLoader: true,
 			loadingMoreRooms: false,
 			selectedRoomId: ''
@@ -133,6 +133,10 @@ export default {
 		roomsLoaded(val) {
 			if (val) {
 				this.loadingMoreRooms = false
+
+				if (!this.loadingRooms) {
+					this.showLoader = false
+				}
 			}
 		},
 		room: {
@@ -145,24 +149,27 @@ export default {
 
 	methods: {
 		initIntersectionObserver() {
+			if (this.observer) {
+				this.showLoader = true
+				this.observer.disconnect()
+			}
+
 			const loader = document.getElementById('infinite-loader-rooms')
 
-			if (loader && !this.infiniteLoader) {
-				this.infiniteLoader = loader
-
+			if (loader) {
 				const options = {
 					root: document.getElementById('rooms-list'),
 					rootMargin: '60px',
 					threshold: 0
 				}
 
-				const observer = new IntersectionObserver(entries => {
+				this.observer = new IntersectionObserver(entries => {
 					if (entries[0].isIntersecting) {
 						this.loadMoreRooms()
 					}
 				}, options)
 
-				observer.observe(loader)
+				this.observer.observe(loader)
 			}
 		},
 		searchRoom(ev) {
