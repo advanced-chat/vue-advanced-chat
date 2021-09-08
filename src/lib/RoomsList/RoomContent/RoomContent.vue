@@ -1,11 +1,13 @@
 <template>
 	<div class="vac-room-container">
 		<slot name="room-list-item" v-bind="{ room }">
-			<div
-				v-if="room.avatar"
-				class="vac-avatar"
-				:style="{ 'background-image': `url('${room.avatar}')` }"
-			/>
+			<slot name="room-list-avatar" v-bind="{ room }">
+				<div
+					v-if="room.avatar"
+					class="vac-avatar"
+					:style="{ 'background-image': `url('${room.avatar}')` }"
+				/>
+			</slot>
 			<div class="vac-name-container vac-text-ellipsis">
 				<div class="vac-title-container">
 					<div
@@ -28,7 +30,7 @@
 					}"
 				>
 					<span v-if="isMessageCheckmarkVisible">
-						<slot name="checkmark-icon" v-bind="{message: room.lastMessage}">
+						<slot name="checkmark-icon" v-bind="{ message: room.lastMessage }">
 							<svg-icon
 								:name="
 									room.lastMessage.distributed
