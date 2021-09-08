@@ -724,7 +724,7 @@ export default {
 				true
 			).filter(user => user._id !== this.currentUserId)
 		},
-		selectUserTag(user) {
+		selectUserTag(user, editMode = false) {
 			const { position, endPosition } = this.getCharPosition('@')
 
 			const space = this.message.substr(endPosition, endPosition).length
@@ -739,8 +739,11 @@ export default {
 
 			this.selectedUsersTag = [...this.selectedUsersTag, { ...user }]
 
-			this.cursorRangePosition =
-				position + user.username.length + space.length + 1
+			if (!editMode) {
+				this.cursorRangePosition =
+					position + user.username.length + space.length + 1
+			}
+
 			this.focusTextarea()
 		},
 		resetFooterList(tagChar = null) {
@@ -879,7 +882,35 @@ export default {
 			this.resetMessage()
 
 			this.editedMessage = { ...message }
-			this.message = message.content
+
+			let messageContent = message.content
+
+			const res = [
+				...messageContent.matchAll(new RegExp('<usertag>', 'gi'))
+			].map(a => a.index)
+
+			if (res.length) {
+				const firstTag = '<usertag>'
+				const secondTag = '</usertag>'
+
+				res.forEach(r => {
+					const userId = messageContent.substring(
+						messageContent.indexOf(firstTag) + firstTag.length,
+						messageContent.indexOf(secondTag)
+					)
+
+					const user = this.room.users.find(user => user._id === userId)
+
+					messageContent = messageContent.replace(
+						`${firstTag}${userId}${secondTag}`,
+						`@${user.username || 'unknown'}`
+					)
+
+					this.selectUserTag(user, true)
+				})
+			}
+
+			this.message = messageContent
 
 			if (message.files) {
 				this.files = [...message.files]
