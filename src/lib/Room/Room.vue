@@ -547,6 +547,8 @@ export default {
 
 	methods: {
 		touchStart(touchEvent) {
+			if (this.singleRoom) return
+
 			if (touchEvent.changedTouches.length === 1) {
 				const posXStart = touchEvent.changedTouches[0].clientX
 				const posYStart = touchEvent.changedTouches[0].clientY
