@@ -12,13 +12,15 @@ beforeEach(() => {
 			textMessages: mockData.textMessages,
 			showRoomsList: true,
 			showAddRoom: mockData.showAddRoom,
+			showSearch: mockData.showSearch,
 			textFormatting: mockData.textFormatting,
 			isMobile: false,
 			rooms: mockData.rooms,
 			loadingRooms: mockData.loadingRooms,
 			roomsLoaded: mockData.roomsLoaded,
 			room: mockData.rooms[0],
-			roomActions: mockData.roomActions
+			roomActions: mockData.roomActions,
+			linkOptions: mockData.linkOptions
 		}
 	})
 })

@@ -11,6 +11,7 @@ const messagesLoaded = true
 const roomActions = [{ title: 'A room action' }]
 const menuActions = [{ title: 'A menu action' }]
 const messageActions = [{ title: 'A message action' }]
+const showSearch = true
 const showAddRoom = true
 const showSendIcon = true
 const showFiles = true
@@ -25,6 +26,7 @@ const responsiveBreakpoint = 10
 const singleRoom = false
 const theme = 'dark'
 const acceptedFiles = '*'
+const linkOptions = { disabled: false, target: '_blank' }
 const styles = { general: { color: '#0a0a0a' } }
 
 export default {
@@ -41,6 +43,7 @@ export default {
 	roomActions,
 	menuActions,
 	messageActions,
+	showSearch,
 	showAddRoom,
 	showSendIcon,
 	showFiles,
@@ -55,5 +58,6 @@ export default {
 	singleRoom,
 	theme,
 	acceptedFiles,
+	linkOptions,
 	styles
 }
