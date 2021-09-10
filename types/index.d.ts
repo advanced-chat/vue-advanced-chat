@@ -2,16 +2,27 @@ import Vue, { VNode, Component, PluginFunction } from 'vue'
 
 export type StringNumber = string | number
 
-export type Rooms = Room[]
+export interface UserStatus {
+	state: 'online' | 'offline'
+	lastChanged: string
+}
 
-export interface Room {
-	roomId: StringNumber
-	roomName: string
-	users: RoomUsers
-	unreadCount?: StringNumber
-	index?: StringNumber | Date
-	lastMessage?: LastMessage
-	typingUsers?: StringNumber[]
+export interface RoomUser {
+	_id: StringNumber
+	username: string
+	avatar: string
+	status: UserStatus
+}
+
+export type RoomUsers = RoomUser[]
+
+export interface MessageFile {
+	name: string
+	type: string
+	url: string
+	size?: number
+	audio?: boolean
+	duration?: number
 }
 
 export interface LastMessage {
@@ -26,21 +37,22 @@ export interface LastMessage {
 	files?: MessageFile[]
 }
 
-export type RoomUsers = RoomUser[]
-
-export interface RoomUser {
-	_id: StringNumber
-	username: string
-	avatar: string
-	status: UserStatus
+export interface Room {
+	roomId: StringNumber
+	roomName: string
+	avatar: String
+	users: RoomUsers
+	unreadCount?: StringNumber
+	index?: StringNumber | Date
+	lastMessage?: LastMessage
+	typingUsers?: StringNumber[]
 }
 
-export interface UserStatus {
-	state: 'online' | 'offline'
-	lastChanged: string
-}
+export type Rooms = Room[]
 
-export type Messages = Message[]
+export interface MessageReactions {
+	[key: string]: StringNumber[]
+}
 
 export interface Message {
 	_id: StringNumber
@@ -59,18 +71,7 @@ export interface Message {
 	reactions: MessageReactions
 }
 
-export interface MessageFile {
-	name: string
-	type: string
-	url: string
-	size?: number
-	audio?: boolean
-	duration?: number
-}
-
-export interface MessageReactions {
-	[key: string]: StringNumber[]
-}
+export type Messages = Message[]
 
 export interface CustomAction {
 	name: string
