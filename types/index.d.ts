@@ -68,7 +68,7 @@ export interface Message {
 	disableActions?: boolean
 	disableReactions?: boolean
 	files?: MessageFile[]
-	reactions: MessageReactions
+	reactions?: MessageReactions
 }
 
 export type Messages = Message[]
