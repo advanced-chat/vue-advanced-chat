@@ -51,6 +51,7 @@
 			:room-actions="roomActions"
 			:menu-actions="menuActions"
 			:room-message="roomMessage"
+			:templates-text="templatesText"
 			@fetch-more-rooms="fetchMoreRooms"
 			@fetch-messages="fetchMessages"
 			@send-message="sendMessage"
@@ -141,7 +142,21 @@ export default {
 				{ name: 'removeUser', title: 'Remove User' },
 				{ name: 'deleteRoom', title: 'Delete Room' }
 			],
-			styles: { container: { borderRadius: '4px' } }
+			styles: { container: { borderRadius: '4px' } },
+			templatesText: [
+				{
+					tag: 'help',
+					text: 'This is the help'
+				},
+				{
+					tag: 'action',
+					text: 'this is the action'
+				},
+				{
+					tag: 'action 2',
+					text: 'this is the second action'
+				}
+			]
 			// ,dbRequestCount: 0
 		}
 	},

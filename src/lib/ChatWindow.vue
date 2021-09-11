@@ -54,6 +54,7 @@
 				:room-info-enabled="roomInfoEnabled"
 				:textarea-action-enabled="textareaActionEnabled"
 				:accepted-files="acceptedFiles"
+				:templates-text="templatesText"
 				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
@@ -138,7 +139,8 @@ export default {
 		roomInfoEnabled: { type: Boolean, default: false },
 		textareaActionEnabled: { type: Boolean, default: false },
 		roomMessage: { type: String, default: '' },
-		acceptedFiles: { type: String, default: '*' }
+		acceptedFiles: { type: String, default: '*' },
+		templatesText: { type: Array, default: null }
 	},
 
 	emits: [
