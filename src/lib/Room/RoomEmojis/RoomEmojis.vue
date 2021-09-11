@@ -6,9 +6,11 @@
 			:style="{ bottom: `${$parent.$refs.roomFooter.clientHeight}px` }"
 		>
 			<div
-				v-for="emoji in filteredEmojis"
+				v-for="(emoji, index) in filteredEmojis"
 				:key="emoji"
 				class="vac-emoji-element"
+				:class="{ 'vac-emoji-element-active': index === activeItem }"
+				@mouseover="activeItem = index"
 				@click="$emit('select-emoji', emoji)"
 			>
 				{{ emoji }}
@@ -22,9 +24,39 @@ export default {
 	name: 'RoomEmojis',
 
 	props: {
-		filteredEmojis: { type: Array, required: true }
+		filteredEmojis: { type: Array, required: true },
+		selectItem: { type: Boolean, default: null },
+		activeUpOrDown: { type: Number, default: null }
 	},
 
-	emits: ['select-emoji']
+	emits: ['select-emoji', 'active-item'],
+
+	data() {
+		return {
+			activeItem: null
+		}
+	},
+
+	watch: {
+		filteredEmojis() {
+			this.activeItem = 0
+		},
+		selectItem(val) {
+			if (val) {
+				this.$emit('select-emoji', this.filteredEmojis[this.activeItem])
+			}
+		},
+		activeUpOrDown() {
+			if (
+				this.activeUpOrDown > 0 &&
+				this.activeItem < this.filteredEmojis.length - 1
+			) {
+				this.activeItem++
+			} else if (this.activeUpOrDown < 0 && this.activeItem > 0) {
+				this.activeItem--
+			}
+			this.$emit('activate-item')
+		}
+	}
 }
 </script>

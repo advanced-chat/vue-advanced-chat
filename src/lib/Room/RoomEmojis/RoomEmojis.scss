@@ -13,10 +13,10 @@
 		cursor: pointer;
 		background: var(--chat-footer-bg-color-tag);
 		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+	}
 
-		&:hover {
-			background: var(--chat-footer-bg-color-tag-active);
-		}
+	.vac-emoji-element-active {
+		background: var(--chat-footer-bg-color-tag-active);
 	}
 }
 

@@ -132,20 +132,26 @@
 		>
 			<room-emojis
 				:filtered-emojis="filteredEmojis"
+				:select-item="selectEmojiItem"
+				:active-up-or-down="activeUpOrDownEmojis"
 				@select-emoji="selectEmoji($event)"
+				@activate-item="activeUpOrDownEmojis = 0"
 			/>
 
 			<room-users-tag
 				:filtered-users-tag="filteredUsersTag"
+				:select-item="selectUsersTagItem"
+				:active-up-or-down="activeUpOrDownUsersTag"
 				@select-user-tag="selectUserTag($event)"
+				@activate-item="activeUpOrDownUsersTag = 0"
 			/>
 
 			<room-templates-text
 				:filtered-templates-text="filteredTemplatesText"
-				:active-template="activeTemplate"
-				:active-up-or-down="activeUpOrDown"
+				:select-item="selectTemplatesTextItem"
+				:active-up-or-down="activeUpOrDownTemplatesText"
 				@select-template-text="selectTemplateText($event)"
-				@active-item="activeUpOrDown = 0"
+				@activate-item="activeUpOrDownTemplatesText = 0"
 			/>
 
 			<room-message-reply
@@ -218,14 +224,14 @@
 					}"
 					@input="onChangeInput"
 					@keydown.esc="escapeTextarea"
-					@keydown.enter.exact.prevent="beforeEnter"
+					@keydown.enter.exact.prevent="selectItem"
 					@paste="onPasteImage"
 					@keydown.tab.exact.prevent=""
-					@keydown.tab="activeTemplate = true"
+					@keydown.tab="selectItem"
 					@keydown.up.exact.prevent=""
-					@keydown.up="upActiveTemplate"
+					@keydown.up="updateActiveUpOrDown(-1)"
 					@keydown.down.exact.prevent=""
-					@keydown.down="downActiveTemplate"
+					@keydown.down="updateActiveUpOrDown(1)"
 				/>
 
 				<div class="vac-icon-textarea">
@@ -416,8 +422,12 @@ export default {
 			filteredUsersTag: [],
 			selectedUsersTag: [],
 			filteredTemplatesText: [],
-			activeTemplate: null,
-			activeUpOrDown: null,
+			selectEmojiItem: null,
+			selectUsersTagItem: null,
+			selectTemplatesTextItem: null,
+			activeUpOrDownEmojis: null,
+			activeUpOrDownUsersTag: null,
+			activeUpOrDownTemplatesText: null,
 			textareaCursorPosition: null,
 			cursorRangePosition: null,
 			emojisDB: new Database(),
@@ -536,7 +546,11 @@ export default {
 					if (isMobile) {
 						this.message = this.message + '\n'
 						setTimeout(() => this.onChangeInput())
-					} else if (!this.filteredTemplatesText.length) {
+					} else if (
+						!this.filteredEmojis.length &&
+						!this.filteredUsersTag.length &&
+						!this.filteredTemplatesText.length
+					) {
 						this.sendMessage()
 					}
 				}
@@ -736,6 +750,10 @@ export default {
 			this.filteredEmojis = emojis.map(emoji => emoji.unicode)
 		},
 		selectEmoji(emoji) {
+			this.selectEmojiItem = false
+
+			if (!emoji) return
+
 			const { position, endPosition } = this.getCharPosition(':')
 
 			this.message =
@@ -755,6 +773,10 @@ export default {
 			).filter(user => user._id !== this.currentUserId)
 		},
 		selectUserTag(user, editMode = false) {
+			this.selectUsersTagItem = false
+
+			if (!user) return
+
 			const { position, endPosition } = this.getCharPosition('@')
 
 			const space = this.message.substr(endPosition, endPosition).length
@@ -785,7 +807,7 @@ export default {
 			)
 		},
 		selectTemplateText(template) {
-			this.activeTemplate = false
+			this.selectTemplatesTextItem = false
 
 			if (!template) return
 
@@ -806,16 +828,23 @@ export default {
 
 			this.focusTextarea()
 		},
-		beforeEnter() {
-			if (this.filteredTemplatesText.length > 0) {
-				this.activeTemplate = true
+		updateActiveUpOrDown(direction) {
+			if (this.filteredEmojis.length) {
+				this.activeUpOrDownEmojis = direction
+			} else if (this.filteredUsersTag.length) {
+				this.activeUpOrDownUsersTag = direction
+			} else if (this.filteredTemplatesText.length) {
+				this.activeUpOrDownTemplatesText = direction
 			}
 		},
-		upActiveTemplate() {
-			this.activeUpOrDown = -1
-		},
-		downActiveTemplate() {
-			this.activeUpOrDown = 1
+		selectItem() {
+			if (this.filteredEmojis.length) {
+				this.selectEmojiItem = true
+			} else if (this.filteredUsersTag.length) {
+				this.selectUsersTagItem = true
+			} else if (this.filteredTemplatesText.length) {
+				this.selectTemplatesTextItem = true
+			}
 		},
 		resetFooterList(tagChar = null) {
 			if (tagChar === ':') {

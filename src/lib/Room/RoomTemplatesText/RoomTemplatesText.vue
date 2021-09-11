@@ -29,9 +29,10 @@
 <script>
 export default {
 	name: 'RoomTemplatesText',
+
 	props: {
 		filteredTemplatesText: { type: Array, required: true },
-		activeTemplate: { type: Boolean, default: null },
+		selectItem: { type: Boolean, default: null },
 		activeUpOrDown: { type: Number, default: null }
 	},
 
@@ -42,12 +43,13 @@ export default {
 			activeItem: null
 		}
 	},
+
 	watch: {
 		filteredTemplatesText() {
 			this.activeItem = 0
 		},
-		activeTemplate() {
-			if (this.activeTemplate) {
+		selectItem(val) {
+			if (val) {
 				this.$emit(
 					'select-template-text',
 					this.filteredTemplatesText[this.activeItem]
@@ -63,7 +65,7 @@ export default {
 			} else if (this.activeUpOrDown < 0 && this.activeItem > 0) {
 				this.activeItem--
 			}
-			this.$emit('active-item')
+			this.$emit('activate-item')
 		}
 	}
 }
