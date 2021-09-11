@@ -150,11 +150,11 @@ export default {
 				},
 				{
 					tag: 'action',
-					text: 'this is the action'
+					text: 'This is the action'
 				},
 				{
 					tag: 'action 2',
-					text: 'this is the second action'
+					text: 'This is the second action'
 				}
 			]
 			// ,dbRequestCount: 0

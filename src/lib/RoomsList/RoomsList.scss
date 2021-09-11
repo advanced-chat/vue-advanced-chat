@@ -43,14 +43,10 @@
 		padding: 0 14px;
 		position: relative;
 		min-height: 71px;
+		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 
 		&:hover {
 			background: var(--chat-sidemenu-bg-color-hover);
-			transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-		}
-
-		&:not(:hover) {
-			transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 		}
 	}
 

@@ -1,5 +1,4 @@
 .vac-template-container {
-	position: absolute;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -14,21 +13,24 @@
 		background: var(--chat-footer-bg-color-tag);
 		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 	}
+
 	.vac-template-active {
 		background: var(--chat-footer-bg-color-tag-active);
-		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 	}
+
 	.vac-template-info {
 		display: flex;
 		overflow: hidden;
 		padding: 0 20px;
 		align-items: center;
 	}
+
 	.vac-template-tag {
 		font-size: 14px;
 		font-weight: bold;
 		margin-right: 10px;
 	}
+
 	.vac-template-text {
 		font-size: 14px;
 	}

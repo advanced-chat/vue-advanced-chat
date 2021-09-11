@@ -29,7 +29,7 @@ export const defaultThemeStyles = {
 			borderInputSelected: '#1976d2',
 			backgroundReply: '#e5e5e6',
 			backgroundTagActive: '#e5e5e6',
-			backgroundTag: '#fff'
+			backgroundTag: '#f8f9fa'
 		},
 
 		content: {

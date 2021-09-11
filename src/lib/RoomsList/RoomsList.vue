@@ -68,7 +68,7 @@ import Loader from '../../components/Loader/Loader'
 import RoomsSearch from './RoomsSearch/RoomsSearch'
 import RoomContent from './RoomContent/RoomContent'
 
-import filteredUsers from '../../utils/filter-items'
+import filteredItems from '../../utils/filter-items'
 
 export default {
 	name: 'RoomsList',
@@ -175,7 +175,7 @@ export default {
 			}
 		},
 		searchRoom(ev) {
-			this.filteredRooms = filteredUsers(
+			this.filteredRooms = filteredItems(
 				this.rooms,
 				'roomName',
 				ev.target.value

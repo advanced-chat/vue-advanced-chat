@@ -140,7 +140,7 @@
 				@select-user-tag="selectUserTag($event)"
 			/>
 
-			<room-Templates-Text
+			<room-templates-text
 				:filtered-templates-text="filteredTemplatesText"
 				:active-template="activeTemplate"
 				:active-up-or-down="activeUpOrDown"
@@ -536,7 +536,7 @@ export default {
 					if (isMobile) {
 						this.message = this.message + '\n'
 						setTimeout(() => this.onChangeInput())
-					} else if (this.filteredTemplatesText.length === 0) {
+					} else if (!this.filteredTemplatesText.length) {
 						this.sendMessage()
 					}
 				}
@@ -786,7 +786,9 @@ export default {
 		},
 		selectTemplateText(template) {
 			this.activeTemplate = false
+
 			if (!template) return
+
 			const { position, endPosition } = this.getCharPosition('/')
 
 			const space = this.message.substr(endPosition, endPosition).length
@@ -801,6 +803,7 @@ export default {
 
 			this.cursorRangePosition =
 				position + template.text.length + space.length + 1
+
 			this.focusTextarea()
 		},
 		beforeEnter() {

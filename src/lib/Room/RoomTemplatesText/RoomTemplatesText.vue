@@ -15,8 +15,8 @@
 			>
 				<div class="vac-template-info">
 					<div class="vac-template-tag">
-/{{ template.tag }}
-</div>
+						/{{ template.tag }}
+					</div>
 					<div class="vac-template-text">
 						{{ template.text }}
 					</div>
