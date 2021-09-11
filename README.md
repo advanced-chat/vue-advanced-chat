@@ -330,7 +330,7 @@ messageActions="[
 ]"
 ```
 
-**(11)** `templates-text` can be used to add autocomplete template text when typing `/` in the room textarea. Ex:
+**(11)** `templates-text` can be used to add autocomplete templates text when typing `/` in the room textarea. Ex:
 
 ```javascript
 templatesText="[
