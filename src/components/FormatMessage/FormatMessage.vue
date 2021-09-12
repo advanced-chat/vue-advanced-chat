@@ -23,6 +23,7 @@
 					}"
 					:href="message.href"
 					:target="message.href ? linkOptions.target : null"
+          :rel="message.href ? linkOptions.rel : null"
 					@click="openTag(message)"
 				>
 					<slot name="deleted-icon" v-bind="{ deleted }">

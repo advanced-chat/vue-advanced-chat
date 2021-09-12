@@ -235,7 +235,7 @@ fetchMessages({ room, options }) {
 | `show-footer`(13)                   | Boolean          | -        | `true`                                  |
 | `text-messages`(14)                 | Object           | -        | `null`                                  |
 | `text-formatting`(15)               | Boolean          | -        | `true`                                  |
-| `link-options`(16)                  | Object           | -        | `{ disabled: false, target: '_blank' }` |
+| `link-options`(16)                  | Object           | -        | `{ disabled: false, target: '_blank', rel: null }` |
 | `room-info-enabled` (17)            | Boolean          | -        | `false`                                 |
 | `textarea-action-enabled`(18)       | Boolean          | -        | `false`                                 |
 | `responsive-breakpoint`(19)         | Number           | -        | `900`                                   |
@@ -397,7 +397,7 @@ multiline code
 **(16)** `link-options` can be used to disable url links in messages, or change urls target. Ex:
 
 ```javascript
-:link-options="{ disabled: true, target: '_self' }"
+:link-options="{ disabled: true, target: '_self', rel: null }"
 ```
 
 **(17)** `room-info-enabled` can be used to trigger an event after clicking the room header component.<br>
