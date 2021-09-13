@@ -210,29 +210,37 @@
 						</slot>
 					</div>
 				</div>
-
-				<textarea
-					ref="roomTextarea"
-					:placeholder="textMessages.TYPE_MESSAGE"
-					class="vac-textarea"
-					:class="{
-						'vac-textarea-outline': editedMessage._id
-					}"
-					:style="{
-						'min-height': `20px`,
-						'padding-left': `12px`
-					}"
-					@input="onChangeInput"
-					@keydown.esc="escapeTextarea"
-					@keydown.enter.exact.prevent="selectItem"
-					@paste="onPasteImage"
-					@keydown.tab.exact.prevent=""
-					@keydown.tab="selectItem"
-					@keydown.up.exact.prevent=""
-					@keydown.up="updateActiveUpOrDown(-1)"
-					@keydown.down.exact.prevent=""
-					@keydown.down="updateActiveUpOrDown(1)"
-				/>
+				<slot name="room-texarea"
+					v-bind:editedMessage="editedMessage"
+					v-bind:onChangeInput="onChangeInput"
+					v-bind:escapeTextarea="escapeTextarea"
+					v-bind:selectItem="selectItem"
+					v-bind:onPasteImage="onPasteImage"
+					v-bind:updateActiveUpOrDown="updateActiveUpOrDown"
+					>
+					<textarea
+						ref="roomTextarea"
+						:placeholder="textMessages.TYPE_MESSAGE"
+						class="vac-textarea"
+						:class="{
+							'vac-textarea-outline': editedMessage._id
+						}"
+						:style="{
+							'min-height': `20px`,
+							'padding-left': `12px`
+						}"
+						@input="onChangeInput"
+						@keydown.esc="escapeTextarea"
+						@keydown.enter.exact.prevent="selectItem"
+						@paste="onPasteImage"
+						@keydown.tab.exact.prevent=""
+						@keydown.tab="selectItem"
+						@keydown.up.exact.prevent=""
+						@keydown.up="updateActiveUpOrDown(-1)"
+						@keydown.down.exact.prevent=""
+						@keydown.down="updateActiveUpOrDown(1)"
+					/>
+				</slot>
 
 				<div class="vac-icon-textarea">
 					<div
