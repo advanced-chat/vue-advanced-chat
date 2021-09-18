@@ -1,6 +1,10 @@
 .vac-message-file-container {
 	position: relative;
 
+	.vac-message-image-container {
+		cursor: pointer;
+	}
+
 	.vac-image-loading {
 		filter: blur(3px);
 	}

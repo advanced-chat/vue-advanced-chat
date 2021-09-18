@@ -3,8 +3,10 @@
 		<div
 			v-if="isImage"
 			:ref="'imageRef' + index"
+			class="vac-message-image-container"
 			@mouseover="imageHover = true"
 			@mouseleave="imageHover = false"
+			@click.stop="openFile('preview')"
 		>
 			<loader
 				:style="{ top: `${imageResponsive.loaderTop}px` }"
