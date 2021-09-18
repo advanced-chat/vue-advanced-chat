@@ -135,10 +135,24 @@ export default {
 			}
 		},
 		formatTags(content) {
-			this.users.forEach(user => {
-				const index = content.indexOf(user._id)
-				const isTag = content.substring(index - 9, index) === '<usertag>'
-				if (isTag) content = content.replace(user._id, `@${user.username}`)
+			const firstTag = '<usertag>'
+			const secondTag = '</usertag>'
+
+			const usertags = [...content.matchAll(new RegExp(firstTag, 'gi'))].map(
+				a => a.index
+			)
+
+			const initialContent = content
+
+			usertags.forEach(index => {
+				const userId = initialContent.substring(
+					index + firstTag.length,
+					initialContent.indexOf(secondTag, index)
+				)
+
+				const user = this.users.find(user => user._id === userId)
+
+				content = content.replaceAll(userId, `@${user?.username || 'unknown'}`)
 			})
 
 			return content

@@ -993,31 +993,30 @@ export default {
 			this.editedMessage = { ...message }
 
 			let messageContent = message.content
+			const initialContent = messageContent
 
-			const res = [
-				...messageContent.matchAll(new RegExp('<usertag>', 'gi'))
+			const firstTag = '<usertag>'
+			const secondTag = '</usertag>'
+
+			const usertags = [
+				...messageContent.matchAll(new RegExp(firstTag, 'gi'))
 			].map(a => a.index)
 
-			if (res.length) {
-				const firstTag = '<usertag>'
-				const secondTag = '</usertag>'
+			usertags.forEach(index => {
+				const userId = initialContent.substring(
+					index + firstTag.length,
+					initialContent.indexOf(secondTag, index)
+				)
 
-				res.forEach(r => {
-					const userId = messageContent.substring(
-						messageContent.indexOf(firstTag) + firstTag.length,
-						messageContent.indexOf(secondTag)
-					)
+				const user = this.room.users.find(user => user._id === userId)
 
-					const user = this.room.users.find(user => user._id === userId)
+				messageContent = messageContent.replace(
+					`${firstTag}${userId}${secondTag}`,
+					`@${user?.username || 'unknown'}`
+				)
 
-					messageContent = messageContent.replace(
-						`${firstTag}${userId}${secondTag}`,
-						`@${user.username || 'unknown'}`
-					)
-
-					this.selectUserTag(user, true)
-				})
-			}
+				this.selectUserTag(user, true)
+			})
 
 			this.message = messageContent
 
