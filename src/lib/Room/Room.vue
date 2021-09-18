@@ -1023,6 +1023,8 @@ export default {
 			if (message.files) {
 				this.files = [...message.files]
 			}
+
+			setTimeout(() => this.resizeTextarea())
 		},
 		getBottomScroll(element) {
 			const { scrollHeight, clientHeight, scrollTop } = element
