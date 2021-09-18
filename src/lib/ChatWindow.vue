@@ -134,7 +134,7 @@ export default {
 		textFormatting: { type: Boolean, default: true },
 		linkOptions: {
 			type: Object,
-			default: () => ({ disabled: false, target: '_blank' })
+			default: () => ({ disabled: false, target: '_blank', rel: null })
 		},
 		roomInfoEnabled: { type: Boolean, default: false },
 		textareaActionEnabled: { type: Boolean, default: false },
