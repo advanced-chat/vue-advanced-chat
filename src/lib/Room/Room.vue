@@ -584,7 +584,7 @@ export default {
 
 	methods: {
 		getTextareaRef() {
-			return this.$refs.roomTextarea.$refs.roomTextarea
+			return this.$refs.roomTextarea
 		},
 		touchStart(touchEvent) {
 			if (this.singleRoom) return
