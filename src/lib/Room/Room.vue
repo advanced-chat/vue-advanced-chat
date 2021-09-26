@@ -373,6 +373,8 @@ export default {
 		showSendIcon: { type: Boolean, required: true },
 		showFiles: { type: Boolean, required: true },
 		showAudio: { type: Boolean, required: true },
+		audioBitRate: { type: Number, required: true },
+		audioSampleRate: { type: Number, required: true },
 		showEmojis: { type: Boolean, required: true },
 		showReactionEmojis: { type: Boolean, required: true },
 		showNewMessagesDivider: { type: Boolean, required: true },
@@ -1110,6 +1112,8 @@ export default {
 			this.isRecording = false
 
 			return new Recorder({
+				bitRate: this.audioBitRate,
+				sampleRate: this.audioSampleRate,
 				beforeRecording: null,
 				afterRecording: null,
 				pauseRecording: null,

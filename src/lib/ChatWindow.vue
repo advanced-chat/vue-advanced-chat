@@ -40,6 +40,8 @@
 				:show-send-icon="showSendIcon"
 				:show-files="showFiles"
 				:show-audio="showAudio"
+				:audio-bit-rate="audioBitRate"
+				:audio-sample-rate="audioSampleRate"
 				:show-emojis="showEmojis"
 				:show-reaction-emojis="showReactionEmojis"
 				:show-new-messages-divider="showNewMessagesDivider"
@@ -127,6 +129,8 @@ export default {
 		showSendIcon: { type: Boolean, default: true },
 		showFiles: { type: Boolean, default: true },
 		showAudio: { type: Boolean, default: true },
+		audioBitRate: { type: Number, default: 128 },
+		audioSampleRate: { type: Number, default: 44100 },
 		showEmojis: { type: Boolean, default: true },
 		showReactionEmojis: { type: Boolean, default: true },
 		showNewMessagesDivider: { type: Boolean, default: true },
