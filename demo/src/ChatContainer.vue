@@ -392,7 +392,7 @@ export default {
 				let listenerQuery = ref.orderBy('timestamp')
 
 				if (this.startMessages) {
-					listenerQuery = listenerQuery.startAfter(this.startMessages)
+					listenerQuery = listenerQuery.startAt(this.startMessages)
 				}
 				if (this.endMessages) {
 					listenerQuery = listenerQuery.endAt(this.endMessages)
