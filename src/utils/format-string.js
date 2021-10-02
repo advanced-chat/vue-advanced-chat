@@ -157,31 +157,29 @@ function compileToHTML(json) {
 
 function parseContent(item) {
 	const result = []
+	iterateContent(item, result, [])
+	return result
+}
 
+function iterateContent(item, result, types) {
 	item.content.forEach(it => {
 		if (typeof it === 'string') {
 			result.push({
-				types: [item.type],
+				types: removeDuplicates(types.concat([item.type])),
 				value: it
 			})
 		} else {
-			it.content.forEach(i => {
-				if (typeof i === 'string') {
-					result.push({
-						types: [it.type].concat([item.type]),
-						value: i
-					})
-				} else {
-					result.push({
-						types: [i.type].concat([it.type]).concat([item.type]),
-						value: parseContent(i)
-					})
-				}
-			})
+			iterateContent(
+				it,
+				result,
+				removeDuplicates([it.type].concat([item.type]).concat(types))
+			)
 		}
 	})
+}
 
-	return result
+function removeDuplicates(items) {
+	return [...new Set(items)]
 }
 
 function linkifyResult(array) {
