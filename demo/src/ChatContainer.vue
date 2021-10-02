@@ -383,7 +383,7 @@ export default {
 				if (this.selectedRoom !== room.roomId) return
 
 				if (messages.empty || messages.docs.length < this.messagesPerPage) {
-					this.messagesLoaded = true
+					setTimeout(() => (this.messagesLoaded = true), 0)
 				}
 
 				if (this.startMessages) this.endMessages = this.startMessages
