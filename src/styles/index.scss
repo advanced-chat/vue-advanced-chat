@@ -9,7 +9,7 @@
 @import '../lib/Room/RoomHeader/RoomHeader';
 @import '../lib/Room/RoomMessageReply/RoomMessageReply';
 @import '../lib/Room/RoomFiles/RoomFiles';
-@import '../lib/Room/RoomFile/RoomFile';
+@import '../lib/Room/RoomFiles/RoomFile/RoomFile';
 @import '../lib/Room/RoomUsersTag/RoomUsersTag';
 @import '../lib/Room/RoomTemplatesText/RoomTemplatesText';
 
@@ -18,11 +18,11 @@
 @import '../lib/RoomsList/RoomsSearch/RoomsSearch';
 
 @import '../lib/Message/Message';
-@import '../lib/Message/AudioControl/AudioControl';
 @import '../lib/Message/AudioPlayer/AudioPlayer';
+@import '../lib/Message/AudioPlayer/AudioControl/AudioControl';
 @import '../lib/Message/MessageActions/MessageActions';
 @import '../lib/Message/MessageFiles/MessageFiles';
-@import '../lib/Message/MessageFile/MessageFile';
+@import '../lib/Message/MessageFiles/MessageFile/MessageFile';
 @import '../lib/Message/MessageReactions/MessageReactions';
 @import '../lib/Message/MessageReply/MessageReply';
 

@@ -29,7 +29,7 @@
 <script>
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 
-import RoomFile from '../RoomFile/RoomFile'
+import RoomFile from './RoomFile/RoomFile'
 
 export default {
 	name: 'RoomFiles',

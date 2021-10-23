@@ -48,7 +48,7 @@
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 
-import MessageFile from '../MessageFile/MessageFile'
+import MessageFile from './MessageFile/MessageFile'
 
 const { isImageVideoFile } = require('../../../utils/media-file')
 

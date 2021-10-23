@@ -23,7 +23,7 @@
 <script>
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 
-import AudioControl from '../AudioControl/AudioControl'
+import AudioControl from './AudioControl/AudioControl'
 
 export default {
 	name: 'AudioPlayer',
