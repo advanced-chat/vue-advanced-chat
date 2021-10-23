@@ -22,7 +22,11 @@
 			</rooms-search>
 		</slot>
 
-		<loader :show="loadingRooms" />
+		<loader :show="loadingRooms">
+			<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+				<slot :name="name" v-bind="data" />
+			</template>
+		</loader>
 
 		<div v-if="!loadingRooms && !rooms.length" class="vac-rooms-empty">
 			<slot name="rooms-empty">
@@ -55,7 +59,11 @@
 			</div>
 			<transition name="vac-fade-message">
 				<div v-if="rooms.length && !loadingRooms" id="infinite-loader-rooms">
-					<loader :show="showLoader" :infinite="true" />
+					<loader :show="showLoader" :infinite="true">
+						<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+							<slot :name="name" v-bind="data" />
+						</template>
+					</loader>
 				</div>
 			</transition>
 		</div>

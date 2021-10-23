@@ -8,7 +8,9 @@
 				'vac-container-top': infinite
 			}"
 		>
-			<div id="vac-circle" />
+			<slot name="spinner-icon" v-bind="{ show, infinite }">
+				<div id="vac-circle" />
+			</slot>
 		</div>
 	</transition>
 </template>

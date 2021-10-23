@@ -34,7 +34,11 @@
 			class="vac-container-scroll"
 			@scroll="onContainerScroll"
 		>
-			<loader :show="loadingMessages" />
+			<loader :show="loadingMessages">
+				<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+					<slot :name="name" v-bind="data" />
+				</template>
+			</loader>
 			<div class="vac-messages-container">
 				<div :class="{ 'vac-messages-hidden': loadingMessages }">
 					<transition name="vac-fade-message">
@@ -61,7 +65,11 @@
 							@infinite="loadMoreMessages"
 						>
 							<template #spinner>
-								<loader :show="true" :infinite="true" />
+								<loader :show="true" :infinite="true">
+									<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+										<slot :name="name" v-bind="data" />
+									</template>
+								</loader>
 							</template>
 							<template #no-results>
 								<div />

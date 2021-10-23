@@ -11,7 +11,11 @@
 			<loader
 				:style="{ top: `${imageResponsive.loaderTop}px` }"
 				:show="isImageLoading"
-			/>
+			>
+				<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+					<slot :name="name" v-bind="data" />
+				</template>
+			</loader>
 			<div
 				class="vac-message-image"
 				:class="{
