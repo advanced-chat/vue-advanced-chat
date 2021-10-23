@@ -207,6 +207,10 @@
 			min-height: 25px;
 			min-width: 25px;
 			margin: 0 6px 1px 0;
+
+			&.vac-avatar-current {
+				margin: 0 0 1px 6px;
+			}
 		}
 
 		.vac-offset-current {

@@ -173,6 +173,11 @@
 						@send-message-reaction="sendMessageReaction"
 					/>
 				</div>
+				<div
+					v-if="message.avatar && message.senderId === currentUserId"
+					class="vac-avatar vac-avatar-current"
+					:style="{ 'background-image': `url('${message.avatar}')` }"
+				/>
 			</slot>
 		</div>
 	</div>
