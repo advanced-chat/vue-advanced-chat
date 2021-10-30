@@ -1,5 +1,5 @@
 <template>
-	<div :id="message._id" :ref="message._id" class="vac-message-wrapper">
+	<div :id="message._id" ref="message" class="vac-message-wrapper">
 		<div v-if="showDate" class="vac-card-info vac-card-date">
 			{{ message.date }}
 		</div>
@@ -300,7 +300,7 @@ export default {
 		this.$emit('message-added', {
 			message: this.message,
 			index: this.index,
-			ref: this.$refs[this.message._id]
+			ref: this.$refs.message
 		})
 	},
 
