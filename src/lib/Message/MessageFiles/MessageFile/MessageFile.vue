@@ -8,7 +8,14 @@
 			@mouseleave="imageHover = false"
 			@click.stop="openFile('preview')"
 		>
+			<progress-bar
+				v-if="file.progress >= 0"
+				:style="{ top: `${imageResponsive.loaderTop}px` }"
+				:show="isImageLoading"
+				:progress="file.progress"
+			/>
 			<loader
+				v-else
 				:style="{ top: `${imageResponsive.loaderTop}px` }"
 				:show="isImageLoading"
 			>
@@ -62,13 +69,14 @@
 
 <script>
 import Loader from '../../../../components/Loader/Loader'
+import ProgressBar from '../../../../components/ProgressBar/ProgressBar.vue'
 import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
 
 const { isImageFile, isVideoFile } = require('../../../../utils/media-file')
 
 export default {
 	name: 'MessageFile',
-	components: { SvgIcon, Loader },
+	components: { SvgIcon, Loader, ProgressBar },
 
 	props: {
 		currentUserId: { type: [String, Number], required: true },

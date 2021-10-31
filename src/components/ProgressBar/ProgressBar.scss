@@ -1,0 +1,38 @@
+.vac-progress-wrapper {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 9;
+
+	circle {
+		transition: stroke-dashoffset 0.35s;
+		transform: rotate(-90deg);
+		transform-origin: 50% 50%;
+	}
+
+	.vac-progress-content {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		z-index: -1;
+		margin-top: -2px;
+		background-color: rgba(0, 0, 0, 0.7);
+		border-radius: 50%;
+
+		.vac-progress-text {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			font-weight: bold;
+			color: white;
+
+			.vac-progress-pourcent {
+				font-size: 9px;
+				font-weight: normal;
+			}
+		}
+	}
+}
