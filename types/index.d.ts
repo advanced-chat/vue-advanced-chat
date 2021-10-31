@@ -23,6 +23,7 @@ export interface MessageFile {
 	size?: number
 	audio?: boolean
 	duration?: number
+	progress?: number
 }
 
 export interface LastMessage {
