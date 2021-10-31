@@ -9,7 +9,7 @@
 			@click.stop="openFile('preview')"
 		>
 			<progress-bar
-				v-if="file.progress >= 0 && file.progress < 100"
+				v-if="file.progress >= 0"
 				:style="{ top: `${imageResponsive.loaderTop}px` }"
 				:progress="file.progress"
 			/>
