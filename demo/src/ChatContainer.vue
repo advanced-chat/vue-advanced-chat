@@ -562,24 +562,45 @@ export default {
 				.child(messageId)
 				.child(`${file.name}.${type}`)
 
-			await uploadFileRef.put(file.blob, { contentType: type })
-			const url = await uploadFileRef.getDownloadURL()
-
-			const messageDoc = await messagesRef(roomId)
-				.doc(messageId)
-				.get()
-
-			const files = messageDoc.data().files
-
-			files.forEach(f => {
-				if (f.url === file.localUrl) {
-					f.url = url
-				}
+			const uploadTask = uploadFileRef.put(file.blob, {
+				contentType: type
 			})
 
-			await messagesRef(roomId)
-				.doc(messageId)
-				.update({ files })
+			uploadTask.on(
+				'state_changed',
+				snap => {
+					const progress = Math.round(
+						(snap.bytesTransferred / snap.totalBytes) * 100
+					)
+					this.updateFileProgress(messageId, progress)
+				},
+				_error => {},
+				async () => {
+					const url = await uploadTask.snapshot.ref.getDownloadURL()
+
+					const messageDoc = await messagesRef(roomId)
+						.doc(messageId)
+						.get()
+
+					const files = messageDoc.data().files
+
+					files.forEach(f => {
+						if (f.url === file.localUrl) {
+							f.url = url
+						}
+					})
+
+					await messagesRef(roomId)
+						.doc(messageId)
+						.update({ files })
+				}
+			)
+		},
+
+		updateFileProgress(messageId, progress) {
+			const message = this.messages.find(message => message._id === messageId)
+			message.files[0].progress = progress
+			this.messages = [...this.messages]
 		},
 
 		formattedFiles(files) {
