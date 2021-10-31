@@ -20,6 +20,7 @@ export interface MessageFile {
 	name: string
 	type: string
 	url: string
+	preview: string
 	size?: number
 	audio?: boolean
 	duration?: number
