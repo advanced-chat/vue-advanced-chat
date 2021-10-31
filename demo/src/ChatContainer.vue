@@ -602,17 +602,8 @@ export default {
 
 			if (!message || !message.files) return
 
-			const file = message.files.find(file => file.url === fileUrl)
-
-			file.progress = progress
+			message.files.find(file => file.url === fileUrl).progress = progress
 			this.messages = [...this.messages]
-
-			if (progress === 100) {
-				setTimeout(() => {
-					delete file.progress
-					this.messages = [...this.messages]
-				}, 600)
-			}
 		},
 
 		formattedFiles(files) {
