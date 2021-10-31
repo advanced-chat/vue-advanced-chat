@@ -184,7 +184,10 @@
 				</template>
 			</room-files>
 
-			<div class="vac-box-footer">
+			<div
+				class="vac-box-footer"
+				:class="{ 'vac-box-footer-border': !files.length }"
+			>
 				<div v-if="showAudio && !files.length" class="vac-icon-textarea-left">
 					<template v-if="isRecording">
 						<div

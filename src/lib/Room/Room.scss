@@ -235,8 +235,11 @@
 		}
 
 		.vac-box-footer {
-			border-top: var(--chat-border-style-input);
 			padding: 7px 2px 7px 7px;
+
+			&.vac-box-footer-border {
+				border-top: var(--chat-border-style-input);
+			}
 		}
 
 		.vac-text-started {
