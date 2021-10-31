@@ -1,6 +1,6 @@
 <template>
 	<transition name="vac-fade-spinner" appear>
-		<div v-if="!show" ref="progress" class="vac-progress-wrapper">
+		<div ref="progress" class="vac-progress-wrapper">
 			<svg :height="radius * 2" :width="radius * 2">
 				<circle
 					stroke="rgba(255, 255, 255, 0.7)"
@@ -36,7 +36,6 @@ export default {
 	name: 'ProgressBar',
 
 	props: {
-		show: { type: Boolean, default: false },
 		progress: { type: Number, default: 0 }
 	},
 
