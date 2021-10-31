@@ -572,7 +572,7 @@ export default {
 					const progress = Math.round(
 						(snap.bytesTransferred / snap.totalBytes) * 100
 					)
-					this.updateFileProgress(messageId, progress)
+					this.updateFileProgress(messageId, file.localUrl, progress)
 				},
 				_error => {},
 				async () => {
@@ -597,14 +597,19 @@ export default {
 			)
 		},
 
-		updateFileProgress(messageId, progress) {
+		updateFileProgress(messageId, fileUrl, progress) {
 			const message = this.messages.find(message => message._id === messageId)
-			message.files[0].progress = progress
+
+			if (!message || !message.files) return
+
+			const file = message.files.find(file => file.url === fileUrl)
+
+			file.progress = progress
 			this.messages = [...this.messages]
 
 			if (progress === 100) {
 				setTimeout(() => {
-					delete message.files[0].progress
+					delete file.progress
 					this.messages = [...this.messages]
 				}, 600)
 			}
