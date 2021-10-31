@@ -601,6 +601,13 @@ export default {
 			const message = this.messages.find(message => message._id === messageId)
 			message.files[0].progress = progress
 			this.messages = [...this.messages]
+
+			if (progress === 100) {
+				setTimeout(() => {
+					delete message.files[0].progress
+					this.messages = [...this.messages]
+				}, 600)
+			}
 		},
 
 		formattedFiles(files) {
