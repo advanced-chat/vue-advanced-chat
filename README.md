@@ -70,6 +70,8 @@ You will get a fully working chat application for web and mobile:
 
 ## Installation
 
+This component is only compatible with Vue `2.6.14` and above.
+
 ```bash
 # Using npm
 npm install --save vue-advanced-chat
