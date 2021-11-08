@@ -1088,7 +1088,7 @@ export default {
 			const items = pasteEvent.clipboardData?.items
 
 			if (items) {
-				items.forEach(item => {
+				Array.from(items).forEach(item => {
 					if (item.type.includes('image')) {
 						const blob = item.getAsFile()
 						this.onFileChange([blob])
@@ -1100,7 +1100,7 @@ export default {
 			this.fileDialog = true
 			this.focusTextarea()
 
-			files.forEach(async file => {
+			Array.from(files).forEach(async file => {
 				const fileURL = URL.createObjectURL(file)
 				const blobFile = await fetch(fileURL).then(res => res.blob())
 				const typeIndex = file.name.lastIndexOf('.')
