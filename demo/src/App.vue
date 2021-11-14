@@ -5,8 +5,12 @@
 			:class="{ 'app-mobile': isDevice, 'app-mobile-dark': theme === 'dark' }"
 		>
 			<!-- <div>
-				<button @click="resetData">Clear Data</button>
-				<button @click="addData" :disabled="updatingData">Add Data</button>
+				<button @click="resetData">
+					Clear Data
+				</button>
+				<button :disabled="updatingData" @click="addData">
+					Add Data
+				</button>
 			</div> -->
 			<span
 				v-if="showOptions"
@@ -51,7 +55,9 @@
 </template>
 
 <script>
-import { roomsRef, usersRef } from '@/firestore'
+import * as firestoreService from '@/database/firestore'
+import * as storageService from '@/database/storage'
+
 import ChatContainer from './ChatContainer'
 
 export default {
@@ -110,22 +116,30 @@ export default {
 
 	methods: {
 		resetData() {
-			roomsRef.get().then(val => {
-				val.forEach(async val => {
-					const ref = roomsRef.doc(val.id).collection('messages')
-
-					await ref.get().then(res => {
-						if (res.empty) return
-						res.docs.map(doc => ref.doc(doc.id).delete())
+			firestoreService.getAllRooms().then(rooms => {
+				rooms.forEach(async room => {
+					await firestoreService.getMessages(room.id).then(messages => {
+						messages.forEach(message => {
+							firestoreService.deleteMessage(room.id, message.id)
+							if (message.data().files) {
+								message.data().files.forEach(file => {
+									storageService.deleteFile(
+										this.currentUserId,
+										message.id,
+										file
+									)
+								})
+							}
+						})
 					})
 
-					roomsRef.doc(val.id).delete()
+					firestoreService.deleteRoom(room.id)
 				})
 			})
 
-			usersRef.get().then(val => {
-				val.forEach(val => {
-					usersRef.doc(val.id).delete()
+			firestoreService.getAllUsers().then(users => {
+				users.forEach(user => {
+					firestoreService.deleteUser(user.id)
 				})
 			})
 		},
@@ -133,27 +147,27 @@ export default {
 			this.updatingData = true
 
 			const user1 = this.users[0]
-			await usersRef.doc(user1._id).set(user1)
+			await firestoreService.addIdentifiedUser(user1._id, user1)
 
 			const user2 = this.users[1]
-			await usersRef.doc(user2._id).set(user2)
+			await firestoreService.addIdentifiedUser(user2._id, user2)
 
 			const user3 = this.users[2]
-			await usersRef.doc(user3._id).set(user3)
+			await firestoreService.addIdentifiedUser(user3._id, user3)
 
-			await roomsRef.add({
+			await firestoreService.addRoom({
 				users: [user1._id, user2._id],
 				lastUpdated: new Date()
 			})
-			await roomsRef.add({
+			await firestoreService.addRoom({
 				users: [user1._id, user3._id],
 				lastUpdated: new Date()
 			})
-			await roomsRef.add({
+			await firestoreService.addRoom({
 				users: [user2._id, user3._id],
 				lastUpdated: new Date()
 			})
-			await roomsRef.add({
+			await firestoreService.addRoom({
 				users: [user1._id, user2._id, user3._id],
 				lastUpdated: new Date()
 			})
