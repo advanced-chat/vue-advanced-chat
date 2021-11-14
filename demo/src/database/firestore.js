@@ -176,7 +176,12 @@ const messageRef = (roomId, messageId) => {
 export const getMessages = (roomId, messagesPerPage, lastLoadedMessage) => {
 	if (lastLoadedMessage) {
 		return getDocuments(
-			query(messagesRef(roomId), startAfter(lastLoadedMessage))
+			query(
+				messagesRef(roomId),
+				orderBy(TIMESTAMP_FIELD, 'desc'),
+				limit(messagesPerPage),
+				startAfter(lastLoadedMessage)
+			)
 		)
 	} else if (messagesPerPage) {
 		return getDocuments(
