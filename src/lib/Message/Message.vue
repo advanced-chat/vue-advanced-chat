@@ -284,7 +284,8 @@ export default {
 			deep: true,
 			handler(val) {
 				if (!val.length || !this.showNewMessagesDivider) {
-					return (this.newMessage = {})
+					this.newMessage = {}
+					return
 				}
 
 				this.newMessage = val.reduce((res, obj) =>

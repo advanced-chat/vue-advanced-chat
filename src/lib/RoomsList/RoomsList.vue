@@ -199,7 +199,8 @@ export default {
 
 			if (this.roomsLoaded) {
 				this.loadingMoreRooms = false
-				return (this.showLoader = false)
+				this.showLoader = false
+				return
 			}
 
 			this.$emit('fetch-more-rooms')
