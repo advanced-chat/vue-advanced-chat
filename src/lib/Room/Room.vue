@@ -30,6 +30,7 @@
 		</room-header>
 
 		<div
+			id="messages-list"
 			ref="scrollContainer"
 			class="vac-container-scroll"
 			@scroll="onContainerScroll"
@@ -53,32 +54,16 @@
 							</div>
 						</div>
 					</transition>
-					<transition name="vac-fade-message">
-						<infinite-loading
-							v-if="messages.length"
-							:class="{ 'vac-infinite-loading': !messagesLoaded }"
-							force-use-infinite-wrapper=".vac-container-scroll"
-							web-component-name="vue-advanced-chat"
-							spinner="spiral"
-							direction="top"
-							:distance="40"
-							@infinite="loadMoreMessages"
-						>
-							<template #spinner>
-								<loader :show="true" :infinite="true">
-									<template v-for="(idx, name) in $scopedSlots" #[name]="data">
-										<slot :name="name" v-bind="data" />
-									</template>
-								</loader>
+					<div
+						v-if="messages.length && !messagesLoaded"
+						id="infinite-loader-messages"
+					>
+						<loader :show="true" :infinite="true">
+							<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+								<slot :name="name" v-bind="data" />
 							</template>
-							<template #no-results>
-								<div />
-							</template>
-							<template #no-more>
-								<div />
-							</template>
-						</infinite-loading>
-					</transition>
+						</loader>
+					</div>
 					<transition-group :key="roomId" name="vac-fade-message" tag="span">
 						<div v-for="(m, i) in messages" :key="m.indexId || m._id">
 							<message
@@ -316,7 +301,6 @@
 </template>
 
 <script>
-import InfiniteLoading from 'vue-infinite-loading'
 import vClickOutside from 'v-click-outside'
 import { Database } from 'emoji-picker-element'
 
@@ -335,7 +319,7 @@ import Message from '../Message/Message'
 import filteredItems from '../../utils/filter-items'
 import Recorder from '../../utils/recorder'
 
-const { detectMobile, iOSDevice } = require('../../utils/mobile-detection')
+const { detectMobile } = require('../../utils/mobile-detection')
 
 const debounce = (func, delay) => {
 	let inDebounce
@@ -350,7 +334,6 @@ const debounce = (func, delay) => {
 export default {
 	name: 'Room',
 	components: {
-		InfiniteLoading,
 		Loader,
 		SvgIcon,
 		EmojiPickerContainer,
@@ -422,6 +405,8 @@ export default {
 			messageReply: null,
 			infiniteState: null,
 			loadingMessages: false,
+			observer: null,
+			showLoader: true,
 			loadingMoreMessages: false,
 			files: [],
 			fileDialog: false,
@@ -502,6 +487,7 @@ export default {
 			} else {
 				if (this.infiniteState) this.infiniteState.loaded()
 				this.focusTextarea(true)
+				setTimeout(() => this.initIntersectionObserver())
 			}
 		},
 		room: {
@@ -596,6 +582,47 @@ export default {
 	},
 
 	methods: {
+		initIntersectionObserver() {
+			if (this.observer) {
+				this.showLoader = true
+				this.observer.disconnect()
+			}
+
+			const loader = document.getElementById('infinite-loader-messages')
+
+			if (loader) {
+				const options = {
+					root: document.getElementById('messages-list'),
+					rootMargin: '60px',
+					threshold: 0
+				}
+
+				this.observer = new IntersectionObserver(entries => {
+					if (entries[0].isIntersecting) {
+						this.loadMoreMessages()
+					}
+				}, options)
+
+				this.observer.observe(loader)
+			}
+		},
+		preventTopScroll() {
+			const container = this.$refs.scrollContainer
+			const prevScrollHeight = container.scrollHeight
+
+			const observer = new ResizeObserver(_ => {
+				if (container.scrollHeight !== prevScrollHeight) {
+					this.$refs.scrollContainer.scrollTo({
+						top: container.scrollHeight - prevScrollHeight
+					})
+					observer.disconnect()
+				}
+			})
+
+			for (var i = 0; i < container.children.length; i++) {
+				observer.observe(container.children[i])
+			}
+		},
 		getTextareaRef() {
 			return this.$refs.roomTextarea
 		},
@@ -962,26 +989,25 @@ export default {
 
 			this.resetMessage(true)
 		},
-		loadMoreMessages(infiniteState) {
-			if (this.loadingMessages) {
-				this.infiniteState = infiniteState
-				return
-			}
+		loadMoreMessages() {
+			if (this.loadingMessages) return
 
 			setTimeout(
 				() => {
 					if (this.loadingMoreMessages) return
 
 					if (this.messagesLoaded || !this.room.roomId) {
-						return infiniteState.complete()
+						this.loadingMoreMessages = false
+						this.showLoader = false
+						return
 					}
 
-					this.infiniteState = infiniteState
+					this.preventTopScroll()
 					this.$emit('fetch-messages')
 					this.loadingMoreMessages = true
 				},
-				// prevent scroll bouncing issue on iOS devices
-				iOSDevice() ? 500 : 0
+				// prevent scroll bouncing speed
+				500
 			)
 		},
 		messageActionHandler({ action, message }) {
