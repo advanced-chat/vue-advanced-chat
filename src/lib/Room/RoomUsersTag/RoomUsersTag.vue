@@ -38,7 +38,7 @@ export default {
 		activeUpOrDown: { type: Number, default: null }
 	},
 
-	emits: ['select-user-tag', 'active-item'],
+	emits: ['select-user-tag', 'activate-item'],
 
 	data() {
 		return {

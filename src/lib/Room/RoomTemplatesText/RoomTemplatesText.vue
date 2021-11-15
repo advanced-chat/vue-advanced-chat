@@ -36,7 +36,7 @@ export default {
 		activeUpOrDown: { type: Number, default: null }
 	},
 
-	emits: ['select-template-text', 'active-item'],
+	emits: ['select-template-text', 'activate-item'],
 
 	data() {
 		return {
