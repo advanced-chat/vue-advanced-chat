@@ -33,6 +33,7 @@ export default {
 	},
 
 	props: {
+		messageId: { type: [String, Number], default: null },
 		src: { type: String, default: null }
 	},
 
@@ -49,7 +50,7 @@ export default {
 
 	computed: {
 		playerUniqId() {
-			return `audio-player${this._uid}`
+			return `audio-player${this.messageId}`
 		},
 		audioSource() {
 			if (this.src) return this.src

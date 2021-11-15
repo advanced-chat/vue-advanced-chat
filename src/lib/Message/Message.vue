@@ -107,6 +107,7 @@
 
 						<template v-else>
 							<audio-player
+								:message-id="message._id"
 								:src="message.files[0].url"
 								@update-progress-time="progressTime = $event"
 								@hover-audio-progress="hoverAudioProgress = $event"
