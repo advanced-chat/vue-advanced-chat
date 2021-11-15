@@ -17,7 +17,7 @@
 	"dependencies": {
 		"firebase": "^9.4.0",
 		"vue": "^3.2.22",
-		"vue-advanced-chat": "https://github.com/antoine92190/vue-advanced-chat/tarball/next2"
+		"vue-advanced-chat": "https://github.com/antoine92190/vue-advanced-chat/tarball/next"
 	},
 	"devDependencies": {
 		"@vue/cli-plugin-babel": "^4.5.13",
