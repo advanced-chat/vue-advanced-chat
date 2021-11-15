@@ -863,39 +863,6 @@ yarn add --save vue
 npm install --save https://github.com/antoine92190/vue-advanced-chat/tarball/next
 ```
 
-### Install vue migration build
-
-```bash
-# Using npm
-npm install --save-dev @vue/compat
-```
-
-### Add migration build config
-
-```javascript
-// vue.config.js
-
-module.exports = {
-  chainWebpack: config => {
-    config.resolve.alias.set('vue', '@vue/compat')
-
-    config.module
-      .rule('vue')
-      .use('vue-loader')
-      .tap(options => {
-        return {
-          ...options,
-          compilerOptions: {
-            compatConfig: {
-              MODE: 3
-            }
-          }
-        }
-      })
-  }
-}
-```
-
 <br>
 
 ## [Contributing](https://github.com/antoine92190/vue-advanced-chat/blob/master/.github/CONTRIBUTING.md)
