@@ -29,7 +29,7 @@ export default {
 		activeUpOrDown: { type: Number, default: null }
 	},
 
-	emits: ['select-emoji', 'active-item'],
+	emits: ['select-emoji', 'activate-item'],
 
 	data() {
 		return {
