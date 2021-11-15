@@ -16,7 +16,7 @@
 				:link-options="linkOptions"
 				@open-user-tag="openUserTag"
 			>
-				<template v-for="(i, name) in $scopedSlots" #[name]="data">
+				<template v-for="(i, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</format-message>
@@ -66,7 +66,7 @@
 							:text-formatting="textFormatting"
 							:link-options="linkOptions"
 						>
-							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+							<template v-for="(i, name) in $slots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</message-reply>
@@ -86,7 +86,7 @@
 							:link-options="linkOptions"
 							@open-user-tag="openUserTag"
 						>
-							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+							<template v-for="(i, name) in $slots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</format-message>
@@ -100,7 +100,7 @@
 							:link-options="linkOptions"
 							@open-file="openFile"
 						>
-							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+							<template v-for="(i, name) in $slots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</message-files>
@@ -111,7 +111,7 @@
 								@update-progress-time="progressTime = $event"
 								@hover-audio-progress="hoverAudioProgress = $event"
 							>
-								<template v-for="(i, name) in $scopedSlots" #[name]="data">
+								<template v-for="(i, name) in $slots" #[name]="data">
 									<slot :name="name" v-bind="data" />
 								</template>
 							</audio-player>
@@ -161,7 +161,7 @@
 							@message-action-handler="messageActionHandler"
 							@send-message-reaction="sendMessageReaction"
 						>
-							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+							<template v-for="(i, name) in $slots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</message-actions>

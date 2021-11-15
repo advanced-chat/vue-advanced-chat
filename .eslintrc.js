@@ -3,7 +3,7 @@ module.exports = {
 	env: {
 		node: true
 	},
-	extends: ['standard', 'plugin:vue/recommended', '@vue/typescript'],
+	extends: ['standard', 'plugin:vue/vue3-recommended', '@vue/typescript'],
 	rules: {
 		'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 		'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',

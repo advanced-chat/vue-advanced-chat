@@ -18,7 +18,7 @@
 							:link-options="linkOptions"
 							:reply="true"
 						>
-							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+							<template v-for="(i, name) in $slots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</format-message>
@@ -36,7 +36,7 @@
 					:src="firstFile.url"
 					class="vac-audio-reply"
 				>
-					<template v-for="(i, name) in $scopedSlots" #[name]="data">
+					<template v-for="(i, name) in $slots" #[name]="data">
 						<slot :name="name" v-bind="data" />
 					</template>
 				</audio-player>

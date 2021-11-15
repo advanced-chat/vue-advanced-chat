@@ -22,7 +22,7 @@
 				@add-room="addRoom"
 				@room-action-handler="roomActionHandler"
 			>
-				<template v-for="(i, name) in $scopedSlots" #[name]="data">
+				<template v-for="(i, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</rooms-list>
@@ -71,7 +71,7 @@
 				@typing-message="typingMessage"
 				@textarea-action-handler="textareaActionHandler"
 			>
-				<template v-for="(i, name) in $scopedSlots" #[name]="data">
+				<template v-for="(i, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</room>
