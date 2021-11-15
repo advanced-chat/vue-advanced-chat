@@ -1,5 +1,5 @@
 // Spinner animation
-.vac-fade-spinner-enter {
+.vac-fade-spinner-enter-from {
 	opacity: 0;
 }
 
@@ -13,7 +13,7 @@
 }
 
 // Image hover animation
-.vac-fade-image-enter {
+.vac-fade-image-enter-from {
 	opacity: 0;
 }
 
@@ -27,7 +27,7 @@
 }
 
 // Messages box and text animation
-.vac-fade-message-enter {
+.vac-fade-message-enter-from {
 	opacity: 0;
 }
 
@@ -53,13 +53,13 @@
 	transition-property: transform, opacity;
 }
 
-.vac-slide-left-enter,
+.vac-slide-left-enter-from,
 .vac-slide-left-leave-to {
 	transform: translateX(10px);
 	opacity: 0;
 }
 
-.vac-slide-right-enter,
+.vac-slide-right-enter-from,
 .vac-slide-right-leave-to {
 	transform: translateX(-10px);
 	opacity: 0;
@@ -72,7 +72,7 @@
 .vac-slide-up-leave-active {
 	transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
 }
-.vac-slide-up-enter,
+.vac-slide-up-enter-from,
 .vac-slide-up-leave-to {
 	transform: translateY(10px);
 	opacity: 0;
