@@ -115,11 +115,10 @@
 </template>
 
 <script>
-import vClickOutside from 'v-click-outside'
-
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 
+import vClickOutside from '../../../utils/on-click-outside'
 import typingText from '../../../utils/typing-text'
 const { isAudioFile } = require('../../../utils/media-file')
 
@@ -131,7 +130,7 @@ export default {
 	},
 
 	directives: {
-		clickOutside: vClickOutside.directive
+		clickOutside: vClickOutside
 	},
 
 	props: {

@@ -301,7 +301,6 @@
 </template>
 
 <script>
-import vClickOutside from 'v-click-outside'
 import { Database } from 'emoji-picker-element'
 
 import Loader from '../../components/Loader/Loader'
@@ -316,6 +315,7 @@ import RoomEmojis from './RoomEmojis/RoomEmojis'
 import RoomTemplatesText from './RoomTemplatesText/RoomTemplatesText'
 import Message from '../Message/Message'
 
+import vClickOutside from '../../utils/on-click-outside'
 import filteredItems from '../../utils/filter-items'
 import Recorder from '../../utils/recorder'
 
@@ -347,7 +347,7 @@ export default {
 	},
 
 	directives: {
-		clickOutside: vClickOutside.directive
+		clickOutside: vClickOutside
 	},
 
 	props: {

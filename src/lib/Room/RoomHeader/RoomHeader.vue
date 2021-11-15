@@ -73,10 +73,9 @@
 </template>
 
 <script>
-import vClickOutside from 'v-click-outside'
-
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 
+import vClickOutside from '../../../utils/on-click-outside'
 import typingText from '../../../utils/typing-text'
 
 export default {
@@ -86,7 +85,7 @@ export default {
 	},
 
 	directives: {
-		clickOutside: vClickOutside.directive
+		clickOutside: vClickOutside
 	},
 
 	props: {
