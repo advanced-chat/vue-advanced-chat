@@ -35822,17 +35822,19 @@ var database = __webpack_require__("da58");
 
 
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--7!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader-v16/dist??ref--1-1!./src/components/EmojiPickerContainer/EmojiPickerContainer.vue?vue&type=template&id=570a61f5
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--7!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader-v16/dist??ref--1-1!./src/components/EmojiPickerContainer/EmojiPickerContainer.vue?vue&type=template&id=2b192aad
 
-var EmojiPickerContainervue_type_template_id_570a61f5_hoisted_1 = {
+var EmojiPickerContainervue_type_template_id_2b192aad_hoisted_1 = {
   "class": "vac-emoji-wrapper"
 };
-function EmojiPickerContainervue_type_template_id_570a61f5_render(_ctx, _cache, $props, $setup, $data, $options) {
+var EmojiPickerContainervue_type_template_id_2b192aad_hoisted_2 = {
+  ref: "emojiPicker",
+  "v-if": "emojiOpened"
+};
+function EmojiPickerContainervue_type_template_id_2b192aad_render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_svg_icon = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("svg-icon");
 
-  var _component_emoji_picker = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("emoji-picker");
-
-  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", EmojiPickerContainervue_type_template_id_570a61f5_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", {
+  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", EmojiPickerContainervue_type_template_id_2b192aad_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", {
     "class": Object(external_commonjs_vue_commonjs2_vue_root_Vue_["normalizeClass"])(["vac-svg-button", {
       'vac-emoji-reaction': $props.emojiReaction
     }]),
@@ -35860,15 +35862,12 @@ function EmojiPickerContainervue_type_template_id_570a61f5_render(_ctx, _cache, 
           right: $data.emojiPickerRight,
           display: $data.emojiPickerTop || !$props.emojiReaction ? 'initial' : 'none'
         })
-      }, [$props.emojiOpened ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])(_component_emoji_picker, {
-        key: 0,
-        ref: "emojiPicker"
-      }, null, 512)) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true)], 6)];
+      }, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("emoji-picker", EmojiPickerContainervue_type_template_id_2b192aad_hoisted_2, null, 512)], 6)];
     }),
     _: 1
   })) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true)]);
 }
-// CONCATENATED MODULE: ./src/components/EmojiPickerContainer/EmojiPickerContainer.vue?vue&type=template&id=570a61f5
+// CONCATENATED MODULE: ./src/components/EmojiPickerContainer/EmojiPickerContainer.vue?vue&type=template&id=2b192aad
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader-v16/dist??ref--1-1!./src/components/EmojiPickerContainer/EmojiPickerContainer.vue?vue&type=script&lang=js
 
@@ -35975,7 +35974,7 @@ function EmojiPickerContainervue_type_template_id_570a61f5_render(_ctx, _cache, 
 
 
 
-const EmojiPickerContainer_exports_ = /*#__PURE__*/exportHelper_default()(EmojiPickerContainervue_type_script_lang_js, [['render',EmojiPickerContainervue_type_template_id_570a61f5_render]])
+const EmojiPickerContainer_exports_ = /*#__PURE__*/exportHelper_default()(EmojiPickerContainervue_type_script_lang_js, [['render',EmojiPickerContainervue_type_template_id_2b192aad_render]])
 
 /* harmony default export */ var EmojiPickerContainer = (EmojiPickerContainer_exports_);
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--7!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader-v16/dist??ref--1-1!./src/lib/Room/RoomHeader/RoomHeader.vue?vue&type=template&id=bb442b02
