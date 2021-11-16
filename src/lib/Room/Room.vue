@@ -278,7 +278,7 @@
 						v-if="showFiles"
 						ref="file"
 						type="file"
-						multiple
+            multiple
 						:accept="acceptedFiles"
 						style="display: none"
 						@change="onFileChange($event.target.files)"
@@ -297,6 +297,7 @@
 				</div>
 			</div>
 		</div>
+    <RoomFilePreview v-show="fileModal" :file="modalFile" :current-user-id="currentUserId" @close-file-modal="fileModal=false"/>
 	</div>
 </template>
 
@@ -314,6 +315,7 @@ import RoomMessageReply from './RoomMessageReply/RoomMessageReply'
 import RoomUsersTag from './RoomUsersTag/RoomUsersTag'
 import RoomEmojis from './RoomEmojis/RoomEmojis'
 import RoomTemplatesText from './RoomTemplatesText/RoomTemplatesText'
+import RoomFilePreview from './RoomFilePreview/RoomFilePreview'
 import Message from '../Message/Message'
 
 import filteredItems from '../../utils/filter-items'
@@ -343,7 +345,8 @@ export default {
 		RoomUsersTag,
 		RoomEmojis,
 		RoomTemplatesText,
-		Message
+		Message,
+    RoomFilePreview
 	},
 
 	directives: {
@@ -379,7 +382,8 @@ export default {
 		loadingRooms: { type: Boolean, required: true },
 		roomInfoEnabled: { type: Boolean, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
-		templatesText: { type: Array, default: null }
+		templatesText: { type: Array, default: null },
+    allowFileSize: { type: Number, default: null }
 	},
 
 	emits: [
@@ -431,7 +435,11 @@ export default {
 			emojisDB: new Database(),
 			recorder: this.initRecorder(),
 			isRecording: false,
-			format: 'mp3'
+			format: 'mp3',
+      fileModal: false,
+      modalFile: {
+        url: ''
+      }
 		}
 	},
 
@@ -1202,7 +1210,12 @@ export default {
 			}
 		},
 		openFile({ message, file }) {
-			this.$emit('open-file', { message, file })
+      if (file.action === 'preview') {
+        this.fileModal = true
+        this.modalFile = Object.assign({}, this.modalFile, file.file)
+      } else {
+        this.$emit('open-file', { message, file })
+      }
 		},
 		openUserTag(user) {
 			this.$emit('open-user-tag', user)
