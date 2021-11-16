@@ -323,7 +323,7 @@ const { detectMobile } = require('../../utils/mobile-detection')
 
 const debounce = (func, delay) => {
 	let inDebounce
-	return function() {
+	return function () {
 		const context = this
 		const args = arguments
 		clearTimeout(inDebounce)
@@ -1081,7 +1081,7 @@ export default {
 				setTimeout(() => element.classList.remove('vac-scroll-smooth'))
 			}, 50)
 		},
-		onChangeInput: debounce(function(e) {
+		onChangeInput: debounce(function (e) {
 			if (e?.target?.value || e?.target?.value === '') {
 				this.message = e.target.value
 			}
