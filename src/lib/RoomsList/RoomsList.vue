@@ -99,7 +99,8 @@ export default {
 		loadingRooms: { type: Boolean, required: true },
 		roomsLoaded: { type: Boolean, required: true },
 		room: { type: Object, required: true },
-		roomActions: { type: Array, required: true }
+		roomActions: { type: Array, required: true },
+		scrollDistance: { type: Number, required: true }
 	},
 
 	emits: [
@@ -169,7 +170,7 @@ export default {
 			if (loader) {
 				const options = {
 					root: document.getElementById('rooms-list'),
-					rootMargin: '60px',
+					rootMargin: `${this.scrollDistance}px`,
 					threshold: 0
 				}
 

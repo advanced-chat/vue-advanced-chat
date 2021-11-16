@@ -379,6 +379,7 @@ export default {
 		loadingRooms: { type: Boolean, required: true },
 		roomInfoEnabled: { type: Boolean, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
+		scrollDistance: { type: Number, required: true },
 		templatesText: { type: Array, default: null }
 	},
 
@@ -593,7 +594,7 @@ export default {
 			if (loader) {
 				const options = {
 					root: document.getElementById('messages-list'),
-					rootMargin: '60px',
+					rootMargin: `${this.scrollDistance}px`,
 					threshold: 0
 				}
 
