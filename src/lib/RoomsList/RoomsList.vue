@@ -92,7 +92,7 @@ export default {
 		showRoomsList: { type: Boolean, required: true },
 		showSearch: { type: Boolean, required: true },
 		showAddRoom: { type: Boolean, required: true },
-		textFormatting: { type: Boolean, required: true },
+		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true },
 		isMobile: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },

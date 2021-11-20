@@ -374,7 +374,7 @@ export default {
 		showNewMessagesDivider: { type: Boolean, required: true },
 		showFooter: { type: Boolean, required: true },
 		acceptedFiles: { type: String, required: true },
-		textFormatting: { type: Boolean, required: true },
+		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true },
 		loadingRooms: { type: Boolean, required: true },
 		roomInfoEnabled: { type: Boolean, required: true },

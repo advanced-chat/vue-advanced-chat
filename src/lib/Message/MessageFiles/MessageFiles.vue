@@ -60,7 +60,7 @@ export default {
 		currentUserId: { type: [String, Number], required: true },
 		message: { type: Object, required: true },
 		roomUsers: { type: Array, required: true },
-		textFormatting: { type: Boolean, required: true },
+		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true }
 	},
 

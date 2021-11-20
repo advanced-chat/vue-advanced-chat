@@ -222,7 +222,7 @@ export default {
 		newMessages: { type: Array, default: () => [] },
 		showReactionEmojis: { type: Boolean, required: true },
 		showNewMessagesDivider: { type: Boolean, required: true },
-		textFormatting: { type: Boolean, required: true },
+		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true },
 		hideOptions: { type: Boolean, required: true }
 	},
