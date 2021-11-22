@@ -57,7 +57,8 @@
 				:textarea-action-enabled="textareaActionEnabled"
 				:accepted-files="acceptedFiles"
 				:templates-text="templatesText"
-				@toggle-rooms-list="toggleRoomsList"
+        :media-modal-preview="mediaModalPreview"
+        @toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
 				@send-message="sendMessage"
@@ -144,8 +145,9 @@ export default {
 		textareaActionEnabled: { type: Boolean, default: false },
 		roomMessage: { type: String, default: '' },
 		acceptedFiles: { type: String, default: '*' },
-		templatesText: { type: Array, default: null }
-	},
+		templatesText: { type: Array, default: null },
+    mediaModalPreview: { type: Boolean, default: true }
+  },
 
 	emits: [
 		'toggle-rooms-list',

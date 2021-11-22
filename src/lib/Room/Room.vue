@@ -297,7 +297,7 @@
 				</div>
 			</div>
 		</div>
-    <RoomFilePreview v-show="fileModal" :file="modalFile" :current-user-id="currentUserId" @close-file-modal="fileModal=false"/>
+    <RoomFilePreview v-show="showMediaModal" :file="mediaModal" :current-user-id="currentUserId" @close-file-modal="showMediaModal=false"/>
 	</div>
 </template>
 
@@ -382,7 +382,8 @@ export default {
 		loadingRooms: { type: Boolean, required: true },
 		roomInfoEnabled: { type: Boolean, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
-		templatesText: { type: Array, default: null }
+		templatesText: { type: Array, default: null },
+    mediaModalPreview: { type: Boolean, default: true }
 	},
 
 	emits: [
@@ -435,8 +436,8 @@ export default {
 			recorder: this.initRecorder(),
 			isRecording: false,
 			format: 'mp3',
-      fileModal: false,
-      modalFile: {
+      showMediaModal: false,
+      mediaModal: {
         url: ''
       }
 		}
@@ -1209,9 +1210,9 @@ export default {
 			}
 		},
 		openFile({ message, file }) {
-      if (file.action === 'preview') {
-        this.fileModal = true
-        this.modalFile = Object.assign({}, this.modalFile, file.file)
+      if (this.mediaModalPreview && file.action === 'preview') {
+        this.showMediaModal = true
+        this.mediaModal = Object.assign({}, this.imageModal, file.file)
       } else {
         this.$emit('open-file', { message, file })
       }
