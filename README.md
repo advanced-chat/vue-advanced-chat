@@ -244,9 +244,10 @@ fetchMessages({ room, options }) {
 | `textarea-action-enabled`(18)       | Boolean          | -        | `false`                                            |
 | `responsive-breakpoint`(19)         | Number           | -        | `900`                                              |
 | `single-room`(20)                   | Boolean          | -        | `false`                                            |
-| `theme`(21)                         | Sring            | -        | `light`                                            |
-| `accepted-files`(22)                | String           | -        | `*`                                                |
-| `styles`(23)                        | Object           | -        | (23)                                               |
+| `scroll-distance`(21)               | Number           | -        | `60`                                               |
+| `theme`(22)                         | Sring            | -        | `light`                                            |
+| `accepted-files`(23)                | String           | -        | `*`                                                |
+| `styles`(24)                        | Object           | -        | (23)                                               |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -414,13 +415,15 @@ You can then use the [textarea-action-handler](#events-api) event to call your o
 
 **(20)** `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
 
-**(21)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+**(21)** `scroll-distance` can be used to change the number of pixels before `fetchMessages` event is triggered when scrolling up to load more messages, or `fetchMoreRooms` event is triggered when scrolling down to load more rooms.
 
-**(22)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
+**(22)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+
+**(23)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
 
 Example: set `"accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files only
 
-**(23)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
+**(24)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
 
 ```javascript
 styles="{
@@ -678,8 +681,8 @@ Example:
 ```
 
 | <div style="width:230px">Slot</div> | Action                                                      | Data                                | Overridden slots                                                                                                   |
-| ----------------------------------- | ----------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `custom-action-icon`                | Add a custom icon inside the footer                         | -                                   | -                                                                                                                  |  | `rooms-header` | Add a template on top of rooms list (above the search bar) | - | - |
+| ----------------------------------- | ----------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ | --- | -------------- | ---------------------------------------------------------- | --- | --- |
+| `custom-action-icon`                | Add a custom icon inside the footer                         | -                                   | -                                                                                                                  |     | `rooms-header` | Add a template on top of rooms list (above the search bar) | -   | -   |
 | `room-list-item`                    | Replace the template of the room list items                 | `room`                              | `room-list-avatar`, `room-list-options`                                                                            |
 | `room-list-avatar`                  | Replace the avatar of room list items                       | `room`                              |                                                                                                                    |
 | `room-list-options`                 | Replace the template of the list room options               | `room`                              | `room-list-options-icon`                                                                                           |

@@ -278,7 +278,7 @@
 						v-if="showFiles"
 						ref="file"
 						type="file"
-            multiple
+						multiple
 						:accept="acceptedFiles"
 						style="display: none"
 						@change="onFileChange($event.target.files)"
@@ -325,7 +325,7 @@ const { detectMobile } = require('../../utils/mobile-detection')
 
 const debounce = (func, delay) => {
 	let inDebounce
-	return function() {
+	return function () {
 		const context = this
 		const args = arguments
 		clearTimeout(inDebounce)
@@ -382,6 +382,7 @@ export default {
 		loadingRooms: { type: Boolean, required: true },
 		roomInfoEnabled: { type: Boolean, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
+		scrollDistance: { type: Number, required: true },
 		templatesText: { type: Array, default: null },
     mediaModalPreview: { type: Boolean, default: true }
 	},
@@ -601,7 +602,7 @@ export default {
 			if (loader) {
 				const options = {
 					root: document.getElementById('messages-list'),
-					rootMargin: '60px',
+					rootMargin: `${this.scrollDistance}px`,
 					threshold: 0
 				}
 
@@ -1089,7 +1090,7 @@ export default {
 				setTimeout(() => element.classList.remove('vac-scroll-smooth'))
 			}, 50)
 		},
-		onChangeInput: debounce(function(e) {
+		onChangeInput: debounce(function (e) {
 			if (e?.target?.value || e?.target?.value === '') {
 				this.message = e.target.value
 			}
