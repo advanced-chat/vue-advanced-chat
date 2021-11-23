@@ -137,7 +137,7 @@ export default {
 	props: {
 		currentUserId: { type: [String, Number], required: true },
 		room: { type: Object, required: true },
-		textFormatting: { type: Boolean, required: true },
+		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true },
 		textMessages: { type: Object, required: true },
 		roomActions: { type: Array, required: true }

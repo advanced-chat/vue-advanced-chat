@@ -138,7 +138,18 @@ export default {
 		showReactionEmojis: { type: Boolean, default: true },
 		showNewMessagesDivider: { type: Boolean, default: true },
 		showFooter: { type: Boolean, default: true },
-		textFormatting: { type: Boolean, default: true },
+		textFormatting: {
+			type: Object,
+			default: () => ({
+				disabled: false,
+				italic: '_',
+				bold: '*',
+				strike: '~',
+				underline: '°',
+				multilineCode: '```',
+				inlineCode: '`'
+			})
+		},
 		linkOptions: {
 			type: Object,
 			default: () => ({ disabled: false, target: '_blank', rel: null })
