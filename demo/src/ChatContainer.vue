@@ -52,7 +52,7 @@
 			:menu-actions="menuActions"
 			:room-message="roomMessage"
 			:templates-text="templatesText"
-      @fetch-more-rooms="fetchMoreRooms"
+			@fetch-more-rooms="fetchMoreRooms"
 			@fetch-messages="fetchMessages"
 			@send-message="sendMessage"
 			@edit-message="editMessage"
