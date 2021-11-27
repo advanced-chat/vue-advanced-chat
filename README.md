@@ -242,6 +242,8 @@ fetchMessages({ room, options }) {
 | `link-options`(16)                  | Object           | -        | `{ disabled: false, target: '_blank', rel: null }`                                                                |
 | `room-info-enabled` (17)            | Boolean          | -        | `false`                                                                                                           |
 | `textarea-action-enabled`(18)       | Boolean          | -        | `false`                                                                                                           |
+| `user-tags-enabled`                 | Boolean          | -        | `true`                                                                                                            |
+| `emojis-suggestion-enabled`         | Boolean          | -        | `true`                                                                                                            |
 | `responsive-breakpoint`(19)         | Number           | -        | `900`                                                                                                             |
 | `single-room`(20)                   | Boolean          | -        | `false`                                                                                                           |
 | `scroll-distance`(21)               | Number           | -        | `60`                                                                                                              |
