@@ -58,7 +58,11 @@
 			</div>
 		</div>
 
-		<div v-else-if="isVideo" class="vac-video-container">
+		<div
+			v-else-if="isVideo"
+			class="vac-video-container"
+			@click.stop.prevent="openFile('preview')"
+		>
 			<video width="100%" height="100%" controls>
 				<source :src="file.url" />
 			</video>

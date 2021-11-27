@@ -98,3 +98,34 @@
 		transform: scale(1);
 	}
 }
+
+// Open media preview animation
+.vac-fade-preview-enter {
+	opacity: 0;
+}
+
+.vac-fade-preview-enter-active {
+	transition: opacity 0.1s;
+}
+
+.vac-fade-preview-leave-active {
+	transition: opacity 0.2s;
+	opacity: 0;
+}
+
+.vac-bounce-preview-enter-active {
+	animation: vac-bounce-image-in 0.4s;
+}
+
+.vac-bounce-preview-leave-active {
+	animation: vac-bounce-image-in 0.3s reverse;
+}
+
+@keyframes vac-bounce-image-in {
+	0% {
+		transform: scale(0.6);
+	}
+	100% {
+		transform: scale(1);
+	}
+}

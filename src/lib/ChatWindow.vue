@@ -81,12 +81,20 @@
 				</template>
 			</room>
 		</div>
+		<transition name="vac-fade-preview" appear>
+			<media-preview
+				v-if="showMediaPreview"
+				:file="previewFile"
+				@close-media-preview="showMediaPreview = false"
+			/>
+		</transition>
 	</div>
 </template>
 
 <script>
 import RoomsList from './RoomsList/RoomsList'
 import Room from './Room/Room'
+import MediaPreview from './MediaPreview/MediaPreview'
 
 import locales from '../locales'
 import { defaultThemeStyles, cssThemeVars } from '../themes'
@@ -99,7 +107,8 @@ export default {
 	name: 'ChatContainer',
 	components: {
 		RoomsList,
-		Room
+		Room,
+		MediaPreview
 	},
 
 	props: {
@@ -163,7 +172,8 @@ export default {
 		roomMessage: { type: String, default: '' },
 		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
-		templatesText: { type: Array, default: null }
+		templatesText: { type: Array, default: null },
+		mediaPreviewEnabled: { type: Boolean, default: true }
 	},
 
 	emits: [
@@ -191,7 +201,9 @@ export default {
 			room: {},
 			loadingMoreRooms: false,
 			showRoomsList: true,
-			isMobile: false
+			isMobile: false,
+			showMediaPreview: false,
+			previewFile: {}
 		}
 	},
 
@@ -333,7 +345,12 @@ export default {
 			this.$emit('delete-message', { message, roomId: this.room.roomId })
 		},
 		openFile({ message, file }) {
-			this.$emit('open-file', { message, file })
+			if (this.mediaPreviewEnabled && file.action === 'preview') {
+				this.previewFile = file.file
+				this.showMediaPreview = true
+			} else {
+				this.$emit('open-file', { message, file })
+			}
 		},
 		openUserTag({ user }) {
 			this.$emit('open-user-tag', { user })
