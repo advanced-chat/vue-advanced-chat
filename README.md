@@ -690,7 +690,7 @@ Example:
 ```
 
 | <div style="width:230px">Slot</div> | Action                                                      | Data                                | Overridden slots                                                                                                   |
-| ----------------------------------- | ----------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ | --- | -------------- | ---------------------------------------------------------- | --- | --- |
+| - | - | - | - |
 | `custom-action-icon`                | Add a custom icon inside the footer                         | -                                   | -                                                                                                                  |     | `rooms-header` | Add a template on top of rooms list (above the search bar) | -   | -   |
 | `room-list-item`                    | Replace the template of the room list items                 | `room`                              | `room-list-avatar`, `room-list-options`                                                                            |
 | `room-list-avatar`                  | Replace the avatar of room list items                       | `room`                              |                                                                                                                    |
