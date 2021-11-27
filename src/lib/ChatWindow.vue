@@ -81,7 +81,7 @@
 		<transition name="vac-fade-preview" appear>
 			<media-preview
 				v-if="showMediaPreview"
-				:file="filePreview"
+				:file="previewFile"
 				@close-media-preview="showMediaPreview = false"
 			/>
 		</transition>
@@ -197,9 +197,7 @@ export default {
 			showRoomsList: true,
 			isMobile: false,
 			showMediaPreview: false,
-			filePreview: {
-				url: ''
-			}
+			previewFile: {}
 		}
 	},
 
@@ -342,7 +340,7 @@ export default {
 		},
 		openFile({ message, file }) {
 			if (this.mediaPreviewEnabled && file.action === 'preview') {
-				this.filePreview = file.file
+				this.previewFile = file.file
 				this.showMediaPreview = true
 			} else {
 				this.$emit('open-file', { message, file })

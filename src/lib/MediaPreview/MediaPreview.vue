@@ -25,7 +25,7 @@
 
 		<div class="vac-svg-button">
 			<slot name="preview-close-icon">
-				<svg-icon name="close-outline" param="preview" size="10" />
+				<svg-icon name="close-outline" param="preview" />
 			</slot>
 		</div>
 	</div>
@@ -36,7 +36,7 @@ import SvgIcon from '../../components/SvgIcon/SvgIcon'
 const { isImageFile, isVideoFile } = require('../../utils/media-file')
 
 export default {
-	name: 'RoomFilePreview',
+	name: 'MediaPreview',
 	components: {
 		SvgIcon
 	},
@@ -52,8 +52,7 @@ export default {
 			return isImageFile(this.file)
 		},
 		isVideo() {
-			if (this.file.url) return isVideoFile(this.file)
-			else return false
+			return isVideoFile(this.file)
 		}
 	},
 

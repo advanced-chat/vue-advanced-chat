@@ -52,7 +52,6 @@
 			:menu-actions="menuActions"
 			:room-message="roomMessage"
 			:templates-text="templatesText"
-      :media-modal-preview="true"
       @fetch-more-rooms="fetchMoreRooms"
 			@fetch-messages="fetchMessages"
 			@send-message="sendMessage"
