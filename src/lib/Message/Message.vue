@@ -179,6 +179,17 @@
 					class="vac-avatar vac-avatar-current"
 					:style="{ 'background-image': `url('${message.avatar}')` }"
 				/>
+				<slot name="message-failure" v-bind="{ message }">
+					<div
+						v-if="message.failure && message.senderId === currentUserId"
+						class="vac-failure-container vac-svg-button"
+						@click="$emit('open-failed-message', { message })"
+					>
+						<div class="vac-failure-text">
+							!
+						</div>
+					</div>
+				</slot>
 			</slot>
 		</div>
 	</div>
@@ -232,6 +243,7 @@ export default {
 		'message-added',
 		'open-file',
 		'open-user-tag',
+		'open-failed-message',
 		'message-action-handler',
 		'send-message-reaction'
 	],

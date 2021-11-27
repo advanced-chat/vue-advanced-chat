@@ -525,6 +525,7 @@ Message states:
 - `distributed: true` two checkmarks
 - `seen: true` two blue checkmarks
 - `deleted: true` grey background with deleted message text
+- `failure: true` red clickable failure icon
 
 ```javascript
 messages="[
@@ -542,6 +543,7 @@ messages="[
     distributed: true,
     seen: true,
     deleted: false,
+    failure: true,
     disableActions: false,
     disableReactions: false,
     files: [
@@ -597,6 +599,7 @@ messages="[
 | `delete-message`                     | `{ roomId, message }`                                                     | Deleted a message                               |
 | `open-file`                          | `{ message, file }`                                                       | Clicked to view or download a file              |
 | `open-user-tag`(3)                   | `{ user }`                                                                | Clicked on a user tag inside a message          |
+| `open-failed-message`                | `{ roomId, message }`                                                     | Clicked on the failure icon next to a message   |
 | `add-room`                           | -                                                                         | Clicked on the plus icon next to searchbar      |
 | `room-action-handler`(4)             | `{ roomId, action }`                                                      | Clicked on the vertical dots icon inside a room |
 | `menu-action-handler`(5)             | `{ roomId, action }`                                                      | Clicked on the vertical dots icon inside a room |
@@ -605,7 +608,7 @@ messages="[
 | `room-info` (7)                      | `room`                                                                    | Clicked the room header bar                     |
 | `toggle-rooms-list`                  | `{ opened }`                                                              | Clicked on the toggle icon inside a room header |
 | `textarea-action-handler`(8)         | `{ roomId, message }`                                                     | Clicked on custom icon inside the footer        |
-| `typing-message`                     | `{ message, roomId }`                                                     | Started typing a message                        |
+| `typing-message`                     | `{ roomId, message }`                                                     | Started typing a message                        |
 
 **(1)** `fetch-messages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`.<br>
 **(1)** `fetch-messages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top.

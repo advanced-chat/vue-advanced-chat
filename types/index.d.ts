@@ -58,19 +58,24 @@ export interface MessageReactions {
 
 export interface Message {
 	_id: StringNumber
+	indexId?: StringNumber
 	content: string
 	senderId: StringNumber
+	username?: string
+	avayar?: string
 	date: string
 	timestamp: string
-	username?: string
 	system?: boolean
 	saved?: boolean
 	distributed?: boolean
 	seen?: boolean
+	deleted?: boolean
+	failure?: boolean
 	disableActions?: boolean
 	disableReactions?: boolean
 	files?: MessageFile[]
 	reactions?: MessageReactions
+	replyMessage?: Message
 }
 
 export type Messages = Message[]

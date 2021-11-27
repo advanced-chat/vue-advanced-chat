@@ -86,6 +86,7 @@
 								@message-action-handler="messageActionHandler"
 								@open-file="openFile"
 								@open-user-tag="openUserTag"
+								@open-failed-message="$emit('open-failed-message', $event)"
 								@send-message-reaction="sendMessageReaction"
 								@hide-options="hideOptions = $event"
 							>
@@ -398,6 +399,7 @@ export default {
 		'typing-message',
 		'open-file',
 		'open-user-tag',
+		'open-failed-message',
 		'textarea-action-handler'
 	],
 
