@@ -168,7 +168,7 @@ export default {
 		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
 		templatesText: { type: Array, default: null },
-		mediaModalPreview: { type: Boolean, default: true }
+		mediaPreviewEnabled: { type: Boolean, default: true }
 	},
 
 	emits: [
@@ -341,7 +341,7 @@ export default {
 			this.$emit('delete-message', { message, roomId: this.room.roomId })
 		},
 		openFile({ message, file }) {
-			if (this.mediaModalPreview && file.action === 'preview') {
+			if (this.mediaPreviewEnabled && file.action === 'preview') {
 				this.filePreview = file.file
 				this.showMediaPreview = true
 			} else {

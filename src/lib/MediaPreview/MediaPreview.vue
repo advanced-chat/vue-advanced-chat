@@ -16,8 +16,8 @@
 				/>
 			</div>
 
-			<div v-else-if="isVideo" class="vac-video-preview">
-				<video width="100%" height="100%" controls>
+			<div v-else-if="isVideo" class="vac-media-preview-container">
+				<video width="100%" height="100%" controls autoplay>
 					<source :src="file.url" />
 				</video>
 			</div>
@@ -45,7 +45,7 @@ export default {
 		file: { type: Object, required: true }
 	},
 
-	emits: ['open-file'],
+	emits: ['close-media-preview'],
 
 	computed: {
 		isImage() {
