@@ -77,6 +77,10 @@
 		border-radius: 50%;
 		background-color: #f44336;
 
+		&.vac-failure-container-avatar {
+			margin-right: 6px;
+		}
+
 		.vac-failure-text {
 			position: absolute;
 			top: 50%;
@@ -235,6 +239,10 @@
 
 		.vac-failure-container {
 			margin-left: 2px;
+
+			&.vac-failure-container-avatar {
+				margin-right: 0;
+			}
 		}
 
 		.vac-offset-current {

@@ -174,15 +174,14 @@
 						@send-message-reaction="sendMessageReaction"
 					/>
 				</div>
-				<div
-					v-if="message.avatar && message.senderId === currentUserId"
-					class="vac-avatar vac-avatar-current"
-					:style="{ 'background-image': `url('${message.avatar}')` }"
-				/>
 				<slot name="message-failure" v-bind="{ message }">
 					<div
 						v-if="message.failure && message.senderId === currentUserId"
 						class="vac-failure-container vac-svg-button"
+						:class="{
+							'vac-failure-container-avatar':
+								message.avatar && message.senderId === currentUserId
+						}"
 						@click="$emit('open-failed-message', { message })"
 					>
 						<div class="vac-failure-text">
@@ -190,6 +189,11 @@
 						</div>
 					</div>
 				</slot>
+				<div
+					v-if="message.avatar && message.senderId === currentUserId"
+					class="vac-avatar vac-avatar-current"
+					:style="{ 'background-image': `url('${message.avatar}')` }"
+				/>
 			</slot>
 		</div>
 	</div>
