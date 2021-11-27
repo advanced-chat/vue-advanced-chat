@@ -530,48 +530,53 @@ export default {
 		},
 
 		async uploadFile({ file, messageId, roomId }) {
-			let type = file.extension || file.type
-			if (type === 'svg' || type === 'pdf') {
-				type = file.type
-			}
-
-			const uploadTask = storageService.uploadFileTask(
-				this.currentUserId,
-				messageId,
-				file,
-				type
-			)
-
-			uploadTask.on(
-				'state_changed',
-				snap => {
-					const progress = Math.round(
-						(snap.bytesTransferred / snap.totalBytes) * 100
-					)
-					this.updateFileProgress(messageId, file.localUrl, progress)
-				},
-				_error => {},
-				async () => {
-					const url = await storageService.getFileDownloadUrl(
-						uploadTask.snapshot.ref
-					)
-
-					const messageDoc = await firestoreService.getMessage(
-						roomId,
-						messageId
-					)
-
-					const files = messageDoc.data().files
-
-					files.forEach(f => {
-						if (f.url === file.localUrl) {
-							f.url = url
-						}
-					})
-
-					firestoreService.updateMessage(roomId, messageId, { files })
+			return new Promise(resolve => {
+				let type = file.extension || file.type
+				if (type === 'svg' || type === 'pdf') {
+					type = file.type
 				}
-			)
+
+				const uploadTask = storageService.uploadFileTask(
+					this.currentUserId,
+					messageId,
+					file,
+					type
+				)
+
+				uploadTask.on(
+					'state_changed',
+					snap => {
+						const progress = Math.round(
+							(snap.bytesTransferred / snap.totalBytes) * 100
+						)
+						this.updateFileProgress(messageId, file.localUrl, progress)
+					},
+					_error => {
+						resolve(false)
+					},
+					async () => {
+						const url = await storageService.getFileDownloadUrl(
+							uploadTask.snapshot.ref
+						)
+
+						const messageDoc = await firestoreService.getMessage(
+							roomId,
+							messageId
+						)
+
+						const files = messageDoc.data().files
+
+						files.forEach(f => {
+							if (f.url === file.localUrl) {
+								f.url = url
+							}
+						})
+
+						await firestoreService.updateMessage(roomId, messageId, { files })
+						resolve(true)
+					}
+				)
+			})
 		},
 
 		updateFileProgress(messageId, fileUrl, progress) {
