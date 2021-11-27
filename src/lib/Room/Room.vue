@@ -297,7 +297,6 @@
 				</div>
 			</div>
 		</div>
-    <RoomFilePreview v-show="showMediaModal" :file="mediaModal" :current-user-id="currentUserId" @close-file-modal="showMediaModal=false"/>
 	</div>
 </template>
 
@@ -315,7 +314,6 @@ import RoomMessageReply from './RoomMessageReply/RoomMessageReply'
 import RoomUsersTag from './RoomUsersTag/RoomUsersTag'
 import RoomEmojis from './RoomEmojis/RoomEmojis'
 import RoomTemplatesText from './RoomTemplatesText/RoomTemplatesText'
-import RoomFilePreview from './RoomFilePreview/RoomFilePreview'
 import Message from '../Message/Message'
 
 import filteredItems from '../../utils/filter-items'
@@ -345,8 +343,7 @@ export default {
 		RoomUsersTag,
 		RoomEmojis,
 		RoomTemplatesText,
-		Message,
-    RoomFilePreview
+		Message
 	},
 
 	directives: {
@@ -383,8 +380,7 @@ export default {
 		roomInfoEnabled: { type: Boolean, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
 		scrollDistance: { type: Number, required: true },
-		templatesText: { type: Array, default: null },
-    mediaModalPreview: { type: Boolean, default: true }
+		templatesText: { type: Array, default: null }
 	},
 
 	emits: [
@@ -436,11 +432,7 @@ export default {
 			emojisDB: new Database(),
 			recorder: this.initRecorder(),
 			isRecording: false,
-			format: 'mp3',
-      showMediaModal: false,
-      mediaModal: {
-        url: ''
-      }
+			format: 'mp3'
 		}
 	},
 
@@ -1211,12 +1203,7 @@ export default {
 			}
 		},
 		openFile({ message, file }) {
-      if (this.mediaModalPreview && file.action === 'preview') {
-        this.showMediaModal = true
-        this.mediaModal = Object.assign({}, this.imageModal, file.file)
-      } else {
-        this.$emit('open-file', { message, file })
-      }
+			this.$emit('open-file', { message, file })
 		},
 		openUserTag(user) {
 			this.$emit('open-user-tag', user)

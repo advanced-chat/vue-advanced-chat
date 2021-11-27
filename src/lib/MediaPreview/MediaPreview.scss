@@ -1,0 +1,22 @@
+.vac-room-file-preview {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 11;
+	background-color: rgba(0, 0, 0, 0.5);
+
+	.vac-room-file-preview-container {
+		width: 100%;
+		height: 100%;
+	}
+
+	.vac-image-preview {
+		width: 100%;
+		height: 100%;
+		background-size: contain !important;
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+}

@@ -59,8 +59,7 @@
 				:scroll-distance="scrollDistance"
 				:accepted-files="acceptedFiles"
 				:templates-text="templatesText"
-        :media-modal-preview="mediaModalPreview"
-        @toggle-rooms-list="toggleRoomsList"
+				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
 				@send-message="sendMessage"
@@ -79,12 +78,18 @@
 				</template>
 			</room>
 		</div>
+		<media-preview
+			v-if="showMediaModal"
+			:file="filePreview"
+			@close-file-modal="showMediaModal = false"
+		/>
 	</div>
 </template>
 
 <script>
 import RoomsList from './RoomsList/RoomsList'
 import Room from './Room/Room'
+import MediaPreview from './MediaPreview/MediaPreview'
 
 import locales from '../locales'
 import { defaultThemeStyles, cssThemeVars } from '../themes'
@@ -97,7 +102,8 @@ export default {
 	name: 'ChatContainer',
 	components: {
 		RoomsList,
-		Room
+		Room,
+		MediaPreview
 	},
 
 	props: {
@@ -160,8 +166,8 @@ export default {
 		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
 		templatesText: { type: Array, default: null },
-    mediaModalPreview: { type: Boolean, default: true }
-  },
+		mediaModalPreview: { type: Boolean, default: true }
+	},
 
 	emits: [
 		'toggle-rooms-list',
@@ -187,7 +193,11 @@ export default {
 			room: {},
 			loadingMoreRooms: false,
 			showRoomsList: true,
-			isMobile: false
+			isMobile: false,
+			showMediaModal: false,
+			filePreview: {
+				url: ''
+			}
 		}
 	},
 
@@ -329,7 +339,12 @@ export default {
 			this.$emit('delete-message', { message, roomId: this.room.roomId })
 		},
 		openFile({ message, file }) {
-			this.$emit('open-file', { message, file })
+			if (this.mediaModalPreview && file.action === 'preview') {
+				this.filePreview = file.file
+				this.showMediaModal = true
+			} else {
+				this.$emit('open-file', { message, file })
+			}
 		},
 		openUserTag({ user }) {
 			this.$emit('open-user-tag', { user })
