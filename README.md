@@ -244,6 +244,7 @@ fetchMessages({ room, options }) {
 | `textarea-action-enabled`(18)       | Boolean          | -        | `false`                                                                                                           |
 | `user-tags-enabled`                 | Boolean          | -        | `true`                                                                                                            |
 | `emojis-suggestion-enabled`         | Boolean          | -        | `true`                                                                                                            |
+| `media-preview-enabled`             | Boolean          | -        | `true`                                                                                                            |
 | `responsive-breakpoint`(19)         | Number           | -        | `900`                                                                                                             |
 | `single-room`(20)                   | Boolean          | -        | `false`                                                                                                           |
 | `scroll-distance`(21)               | Number           | -        | `60`                                                                                                              |
@@ -715,6 +716,7 @@ Example:
 | `file-icon`                         | Replace the file icon                                       | -                                   | -                                                                                                                  |
 | `file-close-icon`                   | Replace the file close icon                                 | -                                   | -                                                                                                                  |
 | `edit-close-icon`                   | Replace the edit close icon                                 | -                                   | -                                                                                                                  |
+| `preview-close-icon`                | Replace the media preview close icon                        | -                                   | -                                                                                                                  |
 | `emoji-picker-icon`                 | Replace the emoji picker icon                               | -                                   | -                                                                                                                  |
 | `emoji-picker-reaction-icon`        | Replace the emoji picker reaction icon (in the message box) | -                                   | -                                                                                                                  |
 | `paperclip-icon`                    | Replace the paperclip icon                                  | -                                   | -                                                                                                                  |
