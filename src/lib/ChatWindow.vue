@@ -78,11 +78,13 @@
 				</template>
 			</room>
 		</div>
-		<media-preview
-			v-if="showMediaPreview"
-			:file="filePreview"
-			@close-media-preview="showMediaPreview = false"
-		/>
+		<transition name="vac-fade-preview" appear>
+			<media-preview
+				v-if="showMediaPreview"
+				:file="filePreview"
+				@close-media-preview="showMediaPreview = false"
+			/>
+		</transition>
 	</div>
 </template>
 

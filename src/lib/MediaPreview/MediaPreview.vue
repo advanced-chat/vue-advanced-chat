@@ -6,27 +6,24 @@
 		@click.stop="closeModal"
 		@keydown.esc="closeModal"
 	>
-		<div v-if="isImage" class="vac-media-preview-container">
-			<div
-				class="vac-image-preview"
-				:style="{
-					'background-image': `url('${file.url}')`
-				}"
-				@keypress.esc="closeModal"
-			/>
-		</div>
+		<transition name="vac-bounce-preview" appear>
+			<div v-if="isImage" class="vac-media-preview-container">
+				<div
+					class="vac-image-preview"
+					:style="{
+						'background-image': `url('${file.url}')`
+					}"
+				/>
+			</div>
 
-		<div
-			v-else-if="isVideo"
-			class="vac-video-preview"
-			@keypress.esc="closeModal"
-		>
-			<video width="100%" height="100%" controls>
-				<source :src="file.url" />
-			</video>
-		</div>
+			<div v-else-if="isVideo" class="vac-video-preview">
+				<video width="100%" height="100%" controls>
+					<source :src="file.url" />
+				</video>
+			</div>
+		</transition>
 
-		<div class="vac-svg-button" @click="closeModal">
+		<div class="vac-svg-button">
 			<slot name="preview-close-icon">
 				<svg-icon name="close-outline" param="preview" size="10" />
 			</slot>
