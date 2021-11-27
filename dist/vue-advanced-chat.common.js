@@ -33588,12 +33588,12 @@ if (typeof window !== 'undefined') {
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.object.define-property.js
 var es_object_define_property = __webpack_require__("7a82");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"3129796d-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/ChatWindow.vue?vue&type=template&id=759fd078&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"vac-card-window",style:([{ height: _vm.height }, _vm.cssVars])},[_c('div',{staticClass:"vac-chat-container"},[(!_vm.singleRoom)?_c('rooms-list',{attrs:{"current-user-id":_vm.currentUserId,"rooms":_vm.orderedRooms,"loading-rooms":_vm.loadingRooms,"rooms-loaded":_vm.roomsLoaded,"room":_vm.room,"room-actions":_vm.roomActions,"text-messages":_vm.t,"show-search":_vm.showSearch,"show-add-room":_vm.showAddRoom,"show-rooms-list":_vm.showRoomsList,"text-formatting":_vm.textFormatting,"link-options":_vm.linkOptions,"is-mobile":_vm.isMobile,"scroll-distance":_vm.scrollDistance},on:{"fetch-room":_vm.fetchRoom,"fetch-more-rooms":_vm.fetchMoreRooms,"loading-more-rooms":function($event){_vm.loadingMoreRooms = $event},"add-room":_vm.addRoom,"room-action-handler":_vm.roomActionHandler},scopedSlots:_vm._u([_vm._l((_vm.$scopedSlots),function(i,name){return {key:name,fn:function(data){return [_vm._t(name,null,null,data)]}}})],null,true)}):_vm._e(),_c('room',{attrs:{"current-user-id":_vm.currentUserId,"rooms":_vm.rooms,"room-id":_vm.room.roomId || '',"load-first-room":_vm.loadFirstRoom,"messages":_vm.messages,"room-message":_vm.roomMessage,"messages-loaded":_vm.messagesLoaded,"menu-actions":_vm.menuActions,"message-actions":_vm.messageActions,"show-send-icon":_vm.showSendIcon,"show-files":_vm.showFiles,"show-audio":_vm.showAudio,"audio-bit-rate":_vm.audioBitRate,"audio-sample-rate":_vm.audioSampleRate,"show-emojis":_vm.showEmojis,"show-reaction-emojis":_vm.showReactionEmojis,"show-new-messages-divider":_vm.showNewMessagesDivider,"show-footer":_vm.showFooter,"text-messages":_vm.t,"single-room":_vm.singleRoom,"show-rooms-list":_vm.showRoomsList,"text-formatting":_vm.textFormatting,"link-options":_vm.linkOptions,"is-mobile":_vm.isMobile,"loading-rooms":_vm.loadingRooms,"room-info-enabled":_vm.roomInfoEnabled,"textarea-action-enabled":_vm.textareaActionEnabled,"user-tags-enabled":_vm.userTagsEnabled,"emojis-suggestion-enabled":_vm.emojisSuggestionEnabled,"scroll-distance":_vm.scrollDistance,"accepted-files":_vm.acceptedFiles,"templates-text":_vm.templatesText},on:{"toggle-rooms-list":_vm.toggleRoomsList,"room-info":_vm.roomInfo,"fetch-messages":_vm.fetchMessages,"send-message":_vm.sendMessage,"edit-message":_vm.editMessage,"delete-message":_vm.deleteMessage,"open-file":_vm.openFile,"open-user-tag":_vm.openUserTag,"open-failed-message":_vm.openFailedMessage,"menu-action-handler":_vm.menuActionHandler,"message-action-handler":_vm.messageActionHandler,"send-message-reaction":_vm.sendMessageReaction,"typing-message":_vm.typingMessage,"textarea-action-handler":_vm.textareaActionHandler},scopedSlots:_vm._u([_vm._l((_vm.$scopedSlots),function(i,name){return {key:name,fn:function(data){return [_vm._t(name,null,null,data)]}}})],null,true)})],1)])}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"3129796d-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/ChatWindow.vue?vue&type=template&id=28a59b8e&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"vac-card-window",style:([{ height: _vm.height }, _vm.cssVars])},[_c('div',{staticClass:"vac-chat-container"},[(!_vm.singleRoom)?_c('rooms-list',{attrs:{"current-user-id":_vm.currentUserId,"rooms":_vm.orderedRooms,"loading-rooms":_vm.loadingRooms,"rooms-loaded":_vm.roomsLoaded,"room":_vm.room,"room-actions":_vm.roomActions,"text-messages":_vm.t,"show-search":_vm.showSearch,"show-add-room":_vm.showAddRoom,"show-rooms-list":_vm.showRoomsList,"text-formatting":_vm.textFormatting,"link-options":_vm.linkOptions,"is-mobile":_vm.isMobile,"scroll-distance":_vm.scrollDistance},on:{"fetch-room":_vm.fetchRoom,"fetch-more-rooms":_vm.fetchMoreRooms,"loading-more-rooms":function($event){_vm.loadingMoreRooms = $event},"add-room":_vm.addRoom,"room-action-handler":_vm.roomActionHandler},scopedSlots:_vm._u([_vm._l((_vm.$scopedSlots),function(i,name){return {key:name,fn:function(data){return [_vm._t(name,null,null,data)]}}})],null,true)}):_vm._e(),_c('room',{attrs:{"current-user-id":_vm.currentUserId,"rooms":_vm.rooms,"room-id":_vm.room.roomId || '',"load-first-room":_vm.loadFirstRoom,"messages":_vm.messages,"room-message":_vm.roomMessage,"messages-loaded":_vm.messagesLoaded,"menu-actions":_vm.menuActions,"message-actions":_vm.messageActions,"show-send-icon":_vm.showSendIcon,"show-files":_vm.showFiles,"show-audio":_vm.showAudio,"audio-bit-rate":_vm.audioBitRate,"audio-sample-rate":_vm.audioSampleRate,"show-emojis":_vm.showEmojis,"show-reaction-emojis":_vm.showReactionEmojis,"show-new-messages-divider":_vm.showNewMessagesDivider,"show-footer":_vm.showFooter,"text-messages":_vm.t,"single-room":_vm.singleRoom,"show-rooms-list":_vm.showRoomsList,"text-formatting":_vm.textFormatting,"link-options":_vm.linkOptions,"is-mobile":_vm.isMobile,"loading-rooms":_vm.loadingRooms,"room-info-enabled":_vm.roomInfoEnabled,"textarea-action-enabled":_vm.textareaActionEnabled,"user-tags-enabled":_vm.userTagsEnabled,"emojis-suggestion-enabled":_vm.emojisSuggestionEnabled,"scroll-distance":_vm.scrollDistance,"accepted-files":_vm.acceptedFiles,"templates-text":_vm.templatesText},on:{"toggle-rooms-list":_vm.toggleRoomsList,"room-info":_vm.roomInfo,"fetch-messages":_vm.fetchMessages,"send-message":_vm.sendMessage,"edit-message":_vm.editMessage,"delete-message":_vm.deleteMessage,"open-file":_vm.openFile,"open-user-tag":_vm.openUserTag,"open-failed-message":_vm.openFailedMessage,"menu-action-handler":_vm.menuActionHandler,"message-action-handler":_vm.messageActionHandler,"send-message-reaction":_vm.sendMessageReaction,"typing-message":_vm.typingMessage,"textarea-action-handler":_vm.textareaActionHandler},scopedSlots:_vm._u([_vm._l((_vm.$scopedSlots),function(i,name){return {key:name,fn:function(data){return [_vm._t(name,null,null,data)]}}})],null,true)})],1),_c('transition',{attrs:{"name":"vac-fade-preview","appear":""}},[(_vm.showMediaPreview)?_c('media-preview',{attrs:{"file":_vm.previewFile},on:{"close-media-preview":function($event){_vm.showMediaPreview = false}}}):_vm._e()],1)],1)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/lib/ChatWindow.vue?vue&type=template&id=759fd078&
+// CONCATENATED MODULE: ./src/lib/ChatWindow.vue?vue&type=template&id=28a59b8e&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.object.keys.js
 var es_object_keys = __webpack_require__("b64b");
@@ -36824,18 +36824,18 @@ var MessageFilesvue_type_template_id_45d00444_staticRenderFns = []
 
 // CONCATENATED MODULE: ./src/lib/Message/MessageFiles/MessageFiles.vue?vue&type=template&id=45d00444&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"3129796d-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/Message/MessageFiles/MessageFile/MessageFile.vue?vue&type=template&id=29bb8110&
-var MessageFilevue_type_template_id_29bb8110_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"vac-message-file-container"},[(_vm.isImage)?_c('div',{ref:'imageRef' + _vm.index,staticClass:"vac-message-image-container",on:{"mouseover":function($event){_vm.imageHover = true},"mouseleave":function($event){_vm.imageHover = false},"click":function($event){$event.stopPropagation();return _vm.openFile('preview')}}},[(_vm.file.progress >= 0)?_c('progress-bar',{style:({ top: ((_vm.imageResponsive.loaderTop) + "px") }),attrs:{"progress":_vm.file.progress}}):_c('loader',{style:({ top: ((_vm.imageResponsive.loaderTop) + "px") }),attrs:{"show":_vm.isImageLoading},scopedSlots:_vm._u([_vm._l((_vm.$scopedSlots),function(idx,name){return {key:name,fn:function(data){return [_vm._t(name,null,null,data)]}}})],null,true)}),_c('div',{staticClass:"vac-message-image",class:{
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"3129796d-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/Message/MessageFiles/MessageFile/MessageFile.vue?vue&type=template&id=4dca234d&
+var MessageFilevue_type_template_id_4dca234d_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"vac-message-file-container"},[(_vm.isImage)?_c('div',{ref:'imageRef' + _vm.index,staticClass:"vac-message-image-container",on:{"mouseover":function($event){_vm.imageHover = true},"mouseleave":function($event){_vm.imageHover = false},"click":function($event){$event.stopPropagation();return _vm.openFile('preview')}}},[(_vm.file.progress >= 0)?_c('progress-bar',{style:({ top: ((_vm.imageResponsive.loaderTop) + "px") }),attrs:{"progress":_vm.file.progress}}):_c('loader',{style:({ top: ((_vm.imageResponsive.loaderTop) + "px") }),attrs:{"show":_vm.isImageLoading},scopedSlots:_vm._u([_vm._l((_vm.$scopedSlots),function(idx,name){return {key:name,fn:function(data){return [_vm._t(name,null,null,data)]}}})],null,true)}),_c('div',{staticClass:"vac-message-image",class:{
 				'vac-image-loading':
 					_vm.isImageLoading && _vm.message.senderId === _vm.currentUserId
 			},style:({
 				'background-image': ("url('" + (_vm.isImageLoading ? _vm.file.preview || _vm.file.url : _vm.file.url) + "')"),
 				'max-height': ((_vm.imageResponsive.maxHeight) + "px")
-			})},[_c('transition',{attrs:{"name":"vac-fade-image"}},[(_vm.imageHover && !_vm.isImageLoading)?_c('div',{staticClass:"vac-image-buttons"},[_c('div',{staticClass:"vac-svg-button vac-button-view",on:{"click":function($event){$event.stopPropagation();return _vm.openFile('preview')}}},[_vm._t("eye-icon",function(){return [_c('svg-icon',{attrs:{"name":"eye"}})]})],2),_c('div',{staticClass:"vac-svg-button vac-button-download",on:{"click":function($event){$event.stopPropagation();return _vm.openFile('download')}}},[_vm._t("document-icon",function(){return [_c('svg-icon',{attrs:{"name":"document"}})]})],2)]):_vm._e()])],1)],1):(_vm.isVideo)?_c('div',{staticClass:"vac-video-container"},[_c('video',{attrs:{"width":"100%","height":"100%","controls":""}},[_c('source',{attrs:{"src":_vm.file.url}})])]):_vm._e()])}
-var MessageFilevue_type_template_id_29bb8110_staticRenderFns = []
+			})},[_c('transition',{attrs:{"name":"vac-fade-image"}},[(_vm.imageHover && !_vm.isImageLoading)?_c('div',{staticClass:"vac-image-buttons"},[_c('div',{staticClass:"vac-svg-button vac-button-view",on:{"click":function($event){$event.stopPropagation();return _vm.openFile('preview')}}},[_vm._t("eye-icon",function(){return [_c('svg-icon',{attrs:{"name":"eye"}})]})],2),_c('div',{staticClass:"vac-svg-button vac-button-download",on:{"click":function($event){$event.stopPropagation();return _vm.openFile('download')}}},[_vm._t("document-icon",function(){return [_c('svg-icon',{attrs:{"name":"document"}})]})],2)]):_vm._e()])],1)],1):(_vm.isVideo)?_c('div',{staticClass:"vac-video-container",on:{"click":function($event){$event.stopPropagation();$event.preventDefault();return _vm.openFile('preview')}}},[_c('video',{attrs:{"width":"100%","height":"100%","controls":""}},[_c('source',{attrs:{"src":_vm.file.url}})])]):_vm._e()])}
+var MessageFilevue_type_template_id_4dca234d_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/lib/Message/MessageFiles/MessageFile/MessageFile.vue?vue&type=template&id=29bb8110&
+// CONCATENATED MODULE: ./src/lib/Message/MessageFiles/MessageFile/MessageFile.vue?vue&type=template&id=4dca234d&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"3129796d-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ProgressBar/ProgressBar.vue?vue&type=template&id=561521ed&
 var ProgressBarvue_type_template_id_561521ed_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('transition',{attrs:{"name":"vac-fade-spinner","appear":""}},[_c('div',{ref:"progress",staticClass:"vac-progress-wrapper"},[_c('svg',{attrs:{"height":_vm.radius * 2,"width":_vm.radius * 2}},[_c('circle',{style:({
@@ -36936,6 +36936,10 @@ var ProgressBar_component = normalizeComponent(
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/Message/MessageFiles/MessageFile/MessageFile.vue?vue&type=script&lang=js&
 
 
+//
+//
+//
+//
 //
 //
 //
@@ -37106,8 +37110,8 @@ var MessageFilevue_type_script_lang_js_require = __webpack_require__("bd43"),
 
 var MessageFile_component = normalizeComponent(
   MessageFile_MessageFilevue_type_script_lang_js_,
-  MessageFilevue_type_template_id_29bb8110_render,
-  MessageFilevue_type_template_id_29bb8110_staticRenderFns,
+  MessageFilevue_type_template_id_4dca234d_render,
+  MessageFilevue_type_template_id_4dca234d_staticRenderFns,
   false,
   null,
   null,
@@ -39802,6 +39806,105 @@ var Room_component = normalizeComponent(
 )
 
 /* harmony default export */ var Room = (Room_component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"3129796d-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/MediaPreview/MediaPreview.vue?vue&type=template&id=2d3ea15a&
+var MediaPreviewvue_type_template_id_2d3ea15a_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"modal",staticClass:"vac-media-preview",attrs:{"tabindex":"0"},on:{"click":function($event){$event.stopPropagation();return _vm.closeModal.apply(null, arguments)},"keydown":function($event){if(!$event.type.indexOf('key')&&_vm._k($event.keyCode,"esc",27,$event.key,["Esc","Escape"])){ return null; }return _vm.closeModal.apply(null, arguments)}}},[_c('transition',{attrs:{"name":"vac-bounce-preview","appear":""}},[(_vm.isImage)?_c('div',{staticClass:"vac-media-preview-container"},[_c('div',{staticClass:"vac-image-preview",style:({
+					'background-image': ("url('" + (_vm.file.url) + "')")
+				})})]):(_vm.isVideo)?_c('div',{staticClass:"vac-media-preview-container"},[_c('video',{attrs:{"width":"100%","height":"100%","controls":"","autoplay":""}},[_c('source',{attrs:{"src":_vm.file.url}})])]):_vm._e()]),_c('div',{staticClass:"vac-svg-button"},[_vm._t("preview-close-icon",function(){return [_c('svg-icon',{attrs:{"name":"close-outline","param":"preview"}})]})],2)],1)}
+var MediaPreviewvue_type_template_id_2d3ea15a_staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./src/lib/MediaPreview/MediaPreview.vue?vue&type=template&id=2d3ea15a&
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/MediaPreview/MediaPreview.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+var MediaPreviewvue_type_script_lang_js_require = __webpack_require__("bd43"),
+    MediaPreviewvue_type_script_lang_js_isImageFile = MediaPreviewvue_type_script_lang_js_require.isImageFile,
+    MediaPreviewvue_type_script_lang_js_isVideoFile = MediaPreviewvue_type_script_lang_js_require.isVideoFile;
+
+/* harmony default export */ var MediaPreviewvue_type_script_lang_js_ = ({
+  name: 'MediaPreview',
+  components: {
+    SvgIcon: SvgIcon
+  },
+  props: {
+    file: {
+      type: Object,
+      required: true
+    }
+  },
+  emits: ['close-media-preview'],
+  computed: {
+    isImage: function isImage() {
+      return MediaPreviewvue_type_script_lang_js_isImageFile(this.file);
+    },
+    isVideo: function isVideo() {
+      return MediaPreviewvue_type_script_lang_js_isVideoFile(this.file);
+    }
+  },
+  mounted: function mounted() {
+    this.$refs.modal.focus();
+  },
+  methods: {
+    closeModal: function closeModal() {
+      this.$emit('close-media-preview');
+    }
+  }
+});
+// CONCATENATED MODULE: ./src/lib/MediaPreview/MediaPreview.vue?vue&type=script&lang=js&
+ /* harmony default export */ var MediaPreview_MediaPreviewvue_type_script_lang_js_ = (MediaPreviewvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./src/lib/MediaPreview/MediaPreview.vue
+
+
+
+
+
+/* normalize component */
+
+var MediaPreview_component = normalizeComponent(
+  MediaPreview_MediaPreviewvue_type_script_lang_js_,
+  MediaPreviewvue_type_template_id_2d3ea15a_render,
+  MediaPreviewvue_type_template_id_2d3ea15a_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var MediaPreview = (MediaPreview_component.exports);
 // CONCATENATED MODULE: ./src/locales/index.js
 /* harmony default export */ var locales = ({
   ROOMS_EMPTY: 'No rooms',
@@ -39931,6 +40034,7 @@ var defaultThemeStyles = {
       file: '#1976d2',
       paperclip: '#1976d2',
       closeOutline: '#000',
+      closePreview: '#fff',
       send: '#1976d2',
       sendDisabled: '#9ca6af',
       emoji: '#1976d2',
@@ -40059,6 +40163,7 @@ var defaultThemeStyles = {
       file: '#1976d2',
       paperclip: '#fff',
       closeOutline: '#fff',
+      closePreview: '#fff',
       send: '#fff',
       sendDisabled: '#646a70',
       emoji: '#fff',
@@ -40190,6 +40295,7 @@ var cssThemeVars = function cssThemeVars(_ref) {
     '--chat-icon-color-file': icons.file,
     '--chat-icon-color-paperclip': icons.paperclip,
     '--chat-icon-color-close-outline': icons.closeOutline,
+    '--chat-icon-color-close-preview': icons.closePreview,
     '--chat-icon-color-send': icons.send,
     '--chat-icon-color-send-disabled': icons.sendDisabled,
     '--chat-icon-color-emoji': icons.emoji,
@@ -40308,6 +40414,14 @@ var cssThemeVars = function cssThemeVars(_ref) {
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -40321,7 +40435,8 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
   name: 'ChatContainer',
   components: {
     RoomsList: RoomsList,
-    Room: Room
+    Room: Room,
+    MediaPreview: MediaPreview
   },
   props: {
     height: {
@@ -40522,6 +40637,10 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
     templatesText: {
       type: Array,
       "default": null
+    },
+    mediaPreviewEnabled: {
+      type: Boolean,
+      "default": true
     }
   },
   emits: ['toggle-rooms-list', 'room-info', 'fetch-messages', 'send-message', 'edit-message', 'delete-message', 'open-file', 'open-user-tag', 'open-failed-message', 'menu-action-handler', 'message-action-handler', 'send-message-reaction', 'typing-message', 'textarea-action-handler', 'fetch-more-rooms', 'add-room', 'room-action-handler'],
@@ -40530,7 +40649,9 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
       room: {},
       loadingMoreRooms: false,
       showRoomsList: true,
-      isMobile: false
+      isMobile: false,
+      showMediaPreview: false,
+      previewFile: {}
     };
   },
   computed: {
@@ -40683,10 +40804,16 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
     openFile: function openFile(_ref2) {
       var message = _ref2.message,
           file = _ref2.file;
-      this.$emit('open-file', {
-        message: message,
-        file: file
-      });
+
+      if (this.mediaPreviewEnabled && file.action === 'preview') {
+        this.previewFile = file.file;
+        this.showMediaPreview = true;
+      } else {
+        this.$emit('open-file', {
+          message: message,
+          file: file
+        });
+      }
     },
     openUserTag: function openUserTag(_ref3) {
       var user = _ref3.user;
