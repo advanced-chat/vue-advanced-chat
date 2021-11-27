@@ -613,10 +613,12 @@ export default {
 
 			const observer = new ResizeObserver(_ => {
 				if (container.scrollHeight !== prevScrollHeight) {
-					this.$refs.scrollContainer.scrollTo({
-						top: container.scrollHeight - prevScrollHeight
-					})
-					observer.disconnect()
+					if (this.$refs.scrollContainer) {
+						this.$refs.scrollContainer.scrollTo({
+							top: container.scrollHeight - prevScrollHeight
+						})
+						observer.disconnect()
+					}
 				}
 			})
 
