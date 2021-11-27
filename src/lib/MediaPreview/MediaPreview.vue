@@ -1,43 +1,47 @@
 <template>
-	<div class="vac-room-file-preview">
-		<div
-			v-if="isImage"
-			class="vac-room-file-preview-container"
-			@click.stop="$emit('close-file-modal')"
-			@keypress.esc="$emit('close-file-modal')"
-		>
+	<div
+		ref="modal"
+		tabindex="0"
+		class="vac-media-preview"
+		@click.stop="closeModal"
+		@keydown.esc="closeModal"
+	>
+		<div v-if="isImage" class="vac-media-preview-container">
 			<div
 				class="vac-image-preview"
 				:style="{
 					'background-image': `url('${file.url}')`
 				}"
-				@keypress.esc="$emit('close-file-modal')"
+				@keypress.esc="closeModal"
 			/>
 		</div>
 
 		<div
 			v-else-if="isVideo"
 			class="vac-video-preview"
-			@keypress.esc="$emit('close-file-modal')"
+			@keypress.esc="closeModal"
 		>
 			<video width="100%" height="100%" controls>
 				<source :src="file.url" />
 			</video>
 		</div>
-		<button @click="$emit('close-file-modal')">
-			Close
-		</button>
+
+		<div class="vac-svg-button" @click="closeModal">
+			<slot name="preview-close-icon">
+				<svg-icon name="close-outline" param="preview" size="10" />
+			</slot>
+		</div>
 	</div>
 </template>
 <script>
-// import SvgIcon from '../../../components/SvgIcon/SvgIcon'
+import SvgIcon from '../../components/SvgIcon/SvgIcon'
 
 const { isImageFile, isVideoFile } = require('../../utils/media-file')
 
 export default {
 	name: 'RoomFilePreview',
 	components: {
-		// SvgIcon,
+		SvgIcon
 	},
 
 	props: {
@@ -53,6 +57,16 @@ export default {
 		isVideo() {
 			if (this.file.url) return isVideoFile(this.file)
 			else return false
+		}
+	},
+
+	mounted() {
+		this.$refs.modal.focus()
+	},
+
+	methods: {
+		closeModal() {
+			this.$emit('close-media-preview')
 		}
 	}
 }

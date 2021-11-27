@@ -1,13 +1,14 @@
-.vac-room-file-preview {
+.vac-media-preview {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 11;
-	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 99;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.8);
+	outline: none;
 
-	.vac-room-file-preview-container {
+	.vac-media-preview-container {
 		width: 100%;
 		height: 100%;
 	}
@@ -15,8 +16,23 @@
 	.vac-image-preview {
 		width: 100%;
 		height: 100%;
-		background-size: contain !important;
+		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
+	}
+
+	.vac-svg-button {
+		position: absolute;
+		top: 30px;
+		right: 30px;
+		transform: scale(1.4);
+	}
+
+	@media only screen and (max-width: 768px) {
+		.vac-svg-button {
+			top: 20px;
+			right: 20px;
+			transform: scale(1.2);
+		}
 	}
 }

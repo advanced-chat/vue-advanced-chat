@@ -79,9 +79,9 @@
 			</room>
 		</div>
 		<media-preview
-			v-if="showMediaModal"
+			v-if="showMediaPreview"
 			:file="filePreview"
-			@close-file-modal="showMediaModal = false"
+			@close-media-preview="showMediaPreview = false"
 		/>
 	</div>
 </template>
@@ -194,7 +194,7 @@ export default {
 			loadingMoreRooms: false,
 			showRoomsList: true,
 			isMobile: false,
-			showMediaModal: false,
+			showMediaPreview: false,
 			filePreview: {
 				url: ''
 			}
@@ -341,7 +341,7 @@ export default {
 		openFile({ message, file }) {
 			if (this.mediaModalPreview && file.action === 'preview') {
 				this.filePreview = file.file
-				this.showMediaModal = true
+				this.showMediaPreview = true
 			} else {
 				this.$emit('open-file', { message, file })
 			}
