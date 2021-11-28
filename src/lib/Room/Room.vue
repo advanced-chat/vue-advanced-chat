@@ -1089,9 +1089,9 @@ export default {
 				setTimeout(() => element.classList.remove('vac-scroll-smooth'))
 			}, 50)
 		},
-		onChangeInput: debounce(function (e) {
-			if (e?.target?.value || e?.target?.value === '') {
-				this.message = e.target.value
+		onChangeInput: debounce(function () {
+			if (this.getTextareaRef()?.value || this.getTextareaRef()?.value === '') {
+				this.message = this.getTextareaRef()?.value
 			}
 			this.keepKeyboardOpen = true
 			this.resizeTextarea()
