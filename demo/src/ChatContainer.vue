@@ -301,7 +301,7 @@ export default {
 				messages => {
 					// this.incrementDbCounter('Listen Last Room Message', messages.size)
 					messages.forEach(message => {
-						const lastMessage = this.formatLastMessage(message.data())
+						const lastMessage = this.formatLastMessage(message.data(), room)
 						const roomIndex = this.rooms.findIndex(
 							r => room.roomId === r.roomId
 						)
@@ -322,7 +322,7 @@ export default {
 			this.roomsListeners.push(listener)
 		},
 
-		formatLastMessage(message) {
+		formatLastMessage(message, room) {
 			if (!message.timestamp) return
 
 			let content = message.content
@@ -339,6 +339,8 @@ export default {
 						new Date(message.timestamp.seconds * 1000),
 						message.timestamp
 					),
+					username: room.users.find(user => message.sender_id === user._id)
+						?.username,
 					distributed: true,
 					seen: message.sender_id === this.currentUserId ? message.seen : null,
 					new:
@@ -428,10 +430,6 @@ export default {
 		},
 
 		formatMessage(room, message) {
-			const senderUser = room.users.find(
-				user => message.data().sender_id === user._id
-			)
-
 			const { timestamp } = message.data()
 
 			const formattedMessage = {
@@ -442,7 +440,9 @@ export default {
 					seconds: timestamp.seconds,
 					timestamp: parseTimestamp(timestamp, 'HH:mm'),
 					date: parseTimestamp(timestamp, 'DD MMMM YYYY'),
-					username: senderUser ? senderUser.username : null,
+					username: room.users.find(
+						user => message.data().sender_id === user._id
+					)?.username,
 					// avatar: senderUser ? senderUser.avatar : null,
 					distributed: true
 				}
