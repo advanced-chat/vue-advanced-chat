@@ -331,6 +331,11 @@ export default {
 				content = `${file.name}.${file.extension || file.type}`
 			}
 
+			const username =
+				message.sender_id !== this.currentUserId
+					? room.users.find(user => message.sender_id === user._id)?.username
+					: ''
+
 			return {
 				...message,
 				...{
@@ -339,8 +344,7 @@ export default {
 						new Date(message.timestamp.seconds * 1000),
 						message.timestamp
 					),
-					username: room.users.find(user => message.sender_id === user._id)
-						?.username,
+					username: username,
 					distributed: true,
 					seen: message.sender_id === this.currentUserId ? message.seen : null,
 					new:
