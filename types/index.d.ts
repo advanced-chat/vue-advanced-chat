@@ -62,7 +62,7 @@ export interface Message {
 	content: string
 	senderId: StringNumber
 	username?: string
-	avayar?: string
+	avatar?: string
 	date: string
 	timestamp: string
 	system?: boolean
