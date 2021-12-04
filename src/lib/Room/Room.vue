@@ -1137,17 +1137,26 @@ export default {
 
 			Array.from(files).forEach(async file => {
 				const fileURL = URL.createObjectURL(file)
-				const blobFile = await fetch(fileURL).then(res => res.blob())
 				const typeIndex = file.name.lastIndexOf('.')
 
 				this.files.push({
-					blob: blobFile,
+					loading: true,
 					name: file.name.substring(0, typeIndex),
 					size: file.size,
 					type: file.type,
 					extension: file.name.substring(typeIndex + 1),
 					localUrl: fileURL
 				})
+
+				const blobFile = await fetch(fileURL).then(res => res.blob())
+
+				let loadedFile = this.files.find(file => file.localUrl === fileURL)
+
+				if (loadedFile) {
+					loadedFile.blob = blobFile
+					loadedFile.loading = false
+					delete loadedFile.loading
+				}
 			})
 
 			setTimeout(() => (this.fileDialog = false), 500)

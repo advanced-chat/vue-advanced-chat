@@ -25,7 +25,7 @@
 			<div
 				class="vac-message-image"
 				:class="{
-					'vac-image-loading':
+					'vac-blur-loading':
 						isImageLoading && message.senderId === currentUserId
 				}"
 				:style="{

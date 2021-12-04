@@ -60,6 +60,10 @@
 	border-radius: 50%;
 }
 
+.vac-blur-loading {
+	filter: blur(3px);
+}
+
 .vac-badge-counter {
 	height: 13px;
 	width: auto;
