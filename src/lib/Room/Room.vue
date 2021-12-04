@@ -749,7 +749,8 @@ export default {
 			while (
 				position > 0 &&
 				this.message.charAt(position - 1) !== tagChar &&
-				this.message.charAt(position - 1) !== ' '
+				// eslint-disable-next-line no-unmodified-loop-condition
+				(this.message.charAt(position - 1) !== ' ' || tagChar !== ':')
 			) {
 				position--
 			}
