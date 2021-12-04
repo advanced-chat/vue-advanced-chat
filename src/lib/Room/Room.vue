@@ -292,7 +292,10 @@
 						@click="sendMessage"
 					>
 						<slot name="send-icon">
-							<svg-icon name="send" :param="isMessageEmpty ? 'disabled' : ''" />
+							<svg-icon
+								name="send"
+								:param="isMessageEmpty || isFileLoading ? 'disabled' : ''"
+							/>
 						</slot>
 					</div>
 				</div>
@@ -467,6 +470,9 @@ export default {
 		},
 		isMessageEmpty() {
 			return !this.files.length && !this.message.trim()
+		},
+		isFileLoading() {
+			return this.files.some(e => e.loading)
 		},
 		recordedTime() {
 			return new Date(this.recorder.duration * 1000).toISOString().substr(14, 5)
@@ -963,6 +969,8 @@ export default {
 			let message = this.message.trim()
 
 			if (!this.files.length && !message) return
+
+			if (this.isFileLoading) return
 
 			this.selectedUsersTag.forEach(user => {
 				message = message.replace(
