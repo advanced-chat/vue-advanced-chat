@@ -59,13 +59,23 @@
 		line-height: 1.4;
 	}
 
+	$avatar-size: 28px;
+
 	.vac-avatar {
-		height: 28px;
-		width: 28px;
-		min-height: 28px;
-		min-width: 28px;
+		height: $avatar-size;
+		width: $avatar-size;
+		min-height: $avatar-size;
+		min-width: $avatar-size;
 		margin: 0 0 2px 0;
 		align-self: flex-end;
+	}
+
+	.vac-avatar-current-offset {
+		margin-right: $avatar-size;
+	}
+
+	.vac-avatar-offset {
+		margin-left: $avatar-size;
 	}
 
 	.vac-failure-container {
@@ -225,16 +235,26 @@
 			max-width: 80%;
 		}
 
+		$avatar-size-small: 25px;
+
 		.vac-avatar {
-			height: 25px;
-			width: 25px;
-			min-height: 25px;
-			min-width: 25px;
+			height: $avatar-size-small;
+			width: $avatar-size-small;
+			min-height: $avatar-size-small;
+			min-width: $avatar-size-small;
 			margin: 0 6px 1px 0;
 
 			&.vac-avatar-current {
 				margin: 0 0 1px 6px;
 			}
+		}
+
+		.vac-avatar-current-offset {
+			margin-right: calc(#{$avatar-size-small} + 6px);
+		}
+
+		.vac-avatar-offset {
+			margin-left: calc(#{$avatar-size-small} + 6px);
 		}
 
 		.vac-failure-container {

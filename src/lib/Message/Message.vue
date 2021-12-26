@@ -34,6 +34,10 @@
 					:style="{ 'background-image': `url('${message.avatar}')` }"
 				/>
 				<div
+					v-if="hasSenderUserAvatar && !message.avatar"
+					class="vac-avatar-offset"
+				/>
+				<div
 					class="vac-message-container"
 					:class="{
 						'vac-message-container-offset': messageOffset
@@ -194,6 +198,10 @@
 					class="vac-avatar vac-avatar-current"
 					:style="{ 'background-image': `url('${message.avatar}')` }"
 				/>
+				<div
+					v-if="hasCurrentUserAvatar && !message.avatar"
+					class="vac-avatar-current-offset"
+				/>
 			</slot>
 		</div>
 	</div>
@@ -291,6 +299,16 @@ export default {
 				this.message.senderId === this.currentUserId &&
 				!this.message.deleted &&
 				(this.message.saved || this.message.distributed || this.message.seen)
+			)
+		},
+		hasCurrentUserAvatar() {
+			return this.messages.some(
+				message => message.senderId === this.currentUserId && message.avatar
+			)
+		},
+		hasSenderUserAvatar() {
+			return this.messages.some(
+				message => message.senderId !== this.currentUserId && message.avatar
 			)
 		}
 	},
