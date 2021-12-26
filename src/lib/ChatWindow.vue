@@ -38,6 +38,7 @@
 				:messages-loaded="messagesLoaded"
 				:menu-actions="menuActions"
 				:message-actions="messageActions"
+				:auto-scroll="autoScroll"
 				:show-send-icon="showSendIcon"
 				:show-files="showFiles"
 				:show-audio="showAudio"
@@ -137,6 +138,21 @@ export default {
 				{ name: 'editMessage', title: 'Edit Message', onlyMe: true },
 				{ name: 'deleteMessage', title: 'Delete Message', onlyMe: true }
 			]
+		},
+		autoScroll: {
+			type: Object,
+			default: () => {
+				return {
+					send: {
+						new: true,
+						newAfterScrollUp: true
+					},
+					receive: {
+						new: true,
+						newAfterScrollUp: false
+					}
+				}
+			}
 		},
 		showSearch: { type: Boolean, default: true },
 		showAddRoom: { type: Boolean, default: true },

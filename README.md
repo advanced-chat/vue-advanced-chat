@@ -226,6 +226,7 @@ fetchMessages({ room, options }) {
 | `menu-actions`(9)                   | Array            | -        | `[]`                                                                                                              |
 | `message-actions`(10)               | Array            | -        | (10)                                                                                                              |
 | `templates-text`(11)                | Array            | -        | `null`                                                                                                            |
+| `auto-scroll`(12)                   | Object           | -        | `{ send: { new: true, newAfterScrollUp: true }, receive: { new: true, newAfterScrollUp: false } }`                |
 | `show-search`                       | Boolean          | -        | `true`                                                                                                            |
 | `show-add-room`                     | Boolean          | -        | `true`                                                                                                            |
 | `show-send-icon`                    | Boolean          | -        | `true`                                                                                                            |
@@ -235,22 +236,22 @@ fetchMessages({ room, options }) {
 | `audio-sample-rate`                 | Number           | -        | `44100`                                                                                                           |
 | `show-emojis`                       | Boolean          | -        | `true`                                                                                                            |
 | `show-reaction-emojis`              | Boolean          | -        | `true`                                                                                                            |
-| `show-new-messages-divider`(12)     | Boolean          | -        | `true`                                                                                                            |
-| `show-footer`(13)                   | Boolean          | -        | `true`                                                                                                            |
-| `text-messages`(14)                 | Object           | -        | `null`                                                                                                            |
-| `text-formatting`(15)               | Object           | -        | ` {disabled: false, italic: '_', bold: '*', strike: '~', underline: '°', multilineCode: '```', inlineCode: ' `'}` |
-| `link-options`(16)                  | Object           | -        | `{ disabled: false, target: '_blank', rel: null }`                                                                |
-| `room-info-enabled` (17)            | Boolean          | -        | `false`                                                                                                           |
-| `textarea-action-enabled`(18)       | Boolean          | -        | `false`                                                                                                           |
+| `show-new-messages-divider`(13)     | Boolean          | -        | `true`                                                                                                            |
+| `show-footer`(14)                   | Boolean          | -        | `true`                                                                                                            |
+| `text-messages`(15)                 | Object           | -        | `null`                                                                                                            |
+| `text-formatting`(16)               | Object           | -        | ` {disabled: false, italic: '_', bold: '*', strike: '~', underline: '°', multilineCode: '```', inlineCode: ' `'}` |
+| `link-options`(17)                  | Object           | -        | `{ disabled: false, target: '_blank', rel: null }`                                                                |
+| `room-info-enabled` (18)            | Boolean          | -        | `false`                                                                                                           |
+| `textarea-action-enabled`(19)       | Boolean          | -        | `false`                                                                                                           |
 | `user-tags-enabled`                 | Boolean          | -        | `true`                                                                                                            |
 | `emojis-suggestion-enabled`         | Boolean          | -        | `true`                                                                                                            |
 | `media-preview-enabled`             | Boolean          | -        | `true`                                                                                                            |
-| `responsive-breakpoint`(19)         | Number           | -        | `900`                                                                                                             |
-| `single-room`(20)                   | Boolean          | -        | `false`                                                                                                           |
-| `scroll-distance`(21)               | Number           | -        | `60`                                                                                                              |
-| `theme`(22)                         | Sring            | -        | `light`                                                                                                           |
-| `accepted-files`(23)                | String           | -        | `*`                                                                                                               |
-| `styles`(24)                        | Object           | -        | (23)                                                                                                              |
+| `responsive-breakpoint`(20)         | Number           | -        | `900`                                                                                                             |
+| `single-room`(21)                   | Boolean          | -        | `false`                                                                                                           |
+| `scroll-distance`(22)               | Number           | -        | `60`                                                                                                              |
+| `theme`(23)                         | Sring            | -        | `light`                                                                                                           |
+| `accepted-files`(24)                | String           | -        | `*`                                                                                                               |
+| `styles`(25)                        | Object           | -        | (23)                                                                                                              |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -353,11 +354,26 @@ templatesText="[
 ]"
 ```
 
-**(12)** `show-new-messages-divider` can be used to show/hide the blue line divider between seen and unseen messages.
+**(12)** `auto-scroll` can be used to change the auto scroll behaviour when sending/receiving a message. Ex:
 
-**(13)** `show-footer` can be used to hide the room footer. For example to prevent users to send any message or media.
+```javascript
+auto-scroll="{
+  send: {
+    new: true, // will scroll down after sending a message
+    newAfterScrollUp: false // will not scroll down after sending a message when scrolled up
+  },
+  receive: {
+    new: false, // will not scroll down when receiving a message
+    newAfterScrollUp: true // will scroll down when receiving a message when scrolled up
+  }
+}"
+```
 
-**(14)** `text-messages` can be used to replace default i18n texts. Ex:
+**(13)** `show-new-messages-divider` can be used to show/hide the blue line divider between seen and unseen messages.
+
+**(14)** `show-footer` can be used to hide the room footer. For example to prevent users to send any message or media.
+
+**(15)** `text-messages` can be used to replace default i18n texts. Ex:
 
 ```javascript
 text-messages="{
@@ -375,7 +391,7 @@ text-messages="{
 }"
 ```
 
-**(15)** `text-formatting` can be used to add text formatting. Bold, italic, strikethrough, underline, inline code and multiline code formatting are currently available and can be used in conjonction.
+**(16)** `text-formatting` can be used to add text formatting. Bold, italic, strikethrough, underline, inline code and multiline code formatting are currently available and can be used in conjonction.
 
 - You can disable text formatting by passing the prop `:text-formatting="{disabled: true}"`.
 - You can change markdown characters, for example: `:text-formatting="{italic: '^'}"`
@@ -406,31 +422,31 @@ This is
 multiline code
 ```
 
-**(16)** `link-options` can be used to disable url links in messages, or change urls target. Ex:
+**(17)** `link-options` can be used to disable url links in messages, or change urls target. Ex:
 
 ```javascript
 :link-options="{ disabled: true, target: '_self', rel: null }"
 ```
 
-**(17)** `room-info-enabled` can be used to trigger an event after clicking the room header component.<br>
+**(18)** `room-info-enabled` can be used to trigger an event after clicking the room header component.<br>
 You can then use the [room-info](#events-api) event to call your own action after clicking the header.
 
-**(18)** `textarea-action-enabled` can be used to add an extra icon on the right of the textarea<br>
+**(19)** `textarea-action-enabled` can be used to add an extra icon on the right of the textarea<br>
 You can then use the [textarea-action-handler](#events-api) event to call your own action after clicking the icon.
 
-**(19)** `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
+**(20)** `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
 
-**(20)** `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+**(21)** `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
 
-**(21)** `scroll-distance` can be used to change the number of pixels before `fetchMessages` event is triggered when scrolling up to load more messages, or `fetchMoreRooms` event is triggered when scrolling down to load more rooms.
+**(22)** `scroll-distance` can be used to change the number of pixels before `fetchMessages` event is triggered when scrolling up to load more messages, or `fetchMoreRooms` event is triggered when scrolling down to load more rooms.
 
-**(22)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+**(23)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
 
-**(23)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
+**(24)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
 
 Example: set `"accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files only
 
-**(24)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
+**(25)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
 
 ```javascript
 styles="{

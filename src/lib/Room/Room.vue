@@ -368,6 +368,7 @@ export default {
 		messagesLoaded: { type: Boolean, required: true },
 		menuActions: { type: Array, required: true },
 		messageActions: { type: Array, required: true },
+		autoScroll: { type: Object, required: true },
 		showSendIcon: { type: Boolean, required: true },
 		showFiles: { type: Boolean, required: true },
 		showAudio: { type: Boolean, required: true },
@@ -704,16 +705,34 @@ export default {
 			const autoScrollOffset = ref.offsetHeight + 60
 
 			setTimeout(() => {
-				if (
-					this.getBottomScroll(this.$refs.scrollContainer) < autoScrollOffset
-				) {
-					this.scrollToBottom()
-				} else {
-					if (message.senderId === this.currentUserId) {
-						this.scrollToBottom()
+				const scrolledUp =
+					this.getBottomScroll(this.$refs.scrollContainer) > autoScrollOffset
+
+				if (message.senderId === this.currentUserId) {
+					if (scrolledUp) {
+						if (this.autoScroll.send.newAfterScrollUp) {
+							this.scrollToBottom()
+						}
 					} else {
-						this.scrollIcon = true
-						this.scrollMessagesCount++
+						if (this.autoScroll.send.new) {
+							this.scrollToBottom()
+						}
+					}
+				} else {
+					if (scrolledUp) {
+						if (this.autoScroll.receive.newAfterScrollUp) {
+							this.scrollToBottom()
+						} else {
+							this.scrollIcon = true
+							this.scrollMessagesCount++
+						}
+					} else {
+						if (this.autoScroll.receive.new) {
+							this.scrollToBottom()
+						} else {
+							this.scrollIcon = true
+							this.scrollMessagesCount++
+						}
 					}
 				}
 			})
