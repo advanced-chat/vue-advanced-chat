@@ -791,13 +791,7 @@ export default {
 				position--
 			}
 
-			let endPosition = position
-			while (
-				this.message.charAt(endPosition) &&
-				this.message.charAt(endPosition).trim()
-			) {
-				endPosition++
-			}
+			const endPosition = this.getTextareaRef().selectionEnd
 
 			return { position, endPosition }
 		},
