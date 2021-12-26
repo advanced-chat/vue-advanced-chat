@@ -77,7 +77,7 @@ This component is only compatible with Vue `2.6.14` and above.
 npm install --save vue-advanced-chat
 
 # Using yarn
-yarn add --save vue-advanced-chat
+yarn add vue-advanced-chat
 
 # Using CDN
 <script src="https://cdn.jsdelivr.net/npm/vue-advanced-chat@0.8.8/dist/vue-advanced-chat.min.js"></script>
