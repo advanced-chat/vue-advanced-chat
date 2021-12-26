@@ -96,6 +96,20 @@ export interface TextFormatting {
 	multilineCode?: string
 	inlineCode?: string
 }
+export type TemplateText = { tag: string; text: string }
+
+export type TemplatesText = TemplateText[]
+
+export interface AutoScroll {
+	send: {
+		new: boolean
+		newAfterScrollUp: boolean
+	}
+	receive: {
+		new: boolean
+		newAfterScrollUp: boolean
+	}
+}
 
 export interface Slots {
 	'rooms-header': VNode[]
@@ -152,6 +166,8 @@ export interface Props {
 	'room-actions'?: CustomActions
 	'menu-actions'?: CustomActions
 	'message-actions'?: CustomActions
+	'templates-text'?: TemplatesText
+	'auto-scroll'?: AutoScroll
 	'show-search'?: boolean
 	'show-add-room'?: boolean
 	'show-send-icon'?: boolean
