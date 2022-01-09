@@ -184,8 +184,8 @@ export default {
 					return
 				}
 
-				const menuOptionsTop = this.$refs.menuOptions.getBoundingClientRect()
-					.height
+				const menuOptionsTop =
+					this.$refs.menuOptions.getBoundingClientRect().height
 
 				const actionIconTop = this.$refs.actionIcon.getBoundingClientRect().top
 				const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
