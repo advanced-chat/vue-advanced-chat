@@ -2,6 +2,9 @@ export const defaultThemeStyles = {
 	light: {
 		general: {
 			color: '#0a0a0a',
+			colorButtonClear: '#1976d2',
+			colorButton: '#fff',
+			backgroundColorButton: '#1976d2',
 			backgroundInput: '#fff',
 			colorPlaceholder: '#9ca6af',
 			colorCaret: '#1976d2',
@@ -55,6 +58,7 @@ export const defaultThemeStyles = {
 			color: '#0a0a0a',
 			colorStarted: '#9ca6af',
 			backgroundDeleted: '#dadfe2',
+			backgroundSelected: '#c2dcf2',
 			colorDeleted: '#757e85',
 			colorUsername: '#9ca6af',
 			colorTimestamp: '#828c94',
@@ -143,6 +147,9 @@ export const defaultThemeStyles = {
 	dark: {
 		general: {
 			color: '#fff',
+			colorButtonClear: '#fff',
+			colorButton: '#fff',
+			backgroundColorButton: '#1976d2',
 			backgroundInput: '#202223',
 			colorPlaceholder: '#596269',
 			colorCaret: '#fff',
@@ -196,6 +203,7 @@ export const defaultThemeStyles = {
 			color: '#fff',
 			colorStarted: '#9ca6af',
 			backgroundDeleted: '#1b1c21',
+			backgroundSelected: '#c2dcf2',
 			colorDeleted: '#a2a5a8',
 			colorUsername: '#b3bac9',
 			colorTimestamp: '#ebedf2',
@@ -300,6 +308,9 @@ export const cssThemeVars = ({
 	return {
 		// general
 		'--chat-color': general.color,
+		'--chat-color-button-clear': general.colorButtonClear,
+		'--chat-color-button': general.colorButton,
+		'--chat-bg-color-button': general.backgroundColorButton,
 		'--chat-bg-color-input': general.backgroundInput,
 		'--chat-color-spinner': general.colorSpinner,
 		'--chat-color-placeholder': general.colorPlaceholder,
@@ -344,6 +355,7 @@ export const cssThemeVars = ({
 		'--chat-message-bg-color-me': message.backgroundMe,
 		'--chat-message-color-started': message.colorStarted,
 		'--chat-message-bg-color-deleted': message.backgroundDeleted,
+		'--chat-message-bg-color-selected': message.backgroundSelected,
 		'--chat-message-color-deleted': message.colorDeleted,
 		'--chat-message-color-username': message.colorUsername,
 		'--chat-message-color-timestamp': message.colorTimestamp,

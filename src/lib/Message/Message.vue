@@ -26,6 +26,7 @@
 			v-else
 			class="vac-message-box"
 			:class="{ 'vac-offset-current': message.senderId === currentUserId }"
+			@click="selectMessage"
 		>
 			<slot name="message" v-bind="{ message }">
 				<div
@@ -48,7 +49,9 @@
 						:class="{
 							'vac-message-highlight': isMessageHover,
 							'vac-message-current': message.senderId === currentUserId,
-							'vac-message-deleted': message.deleted
+							'vac-message-deleted': message.deleted,
+							'vac-item-clickable': messageSelectionEnabled,
+							'vac-message-selected': isMessageSelected
 						}"
 						@mouseover="onHoverMessage"
 						@mouseleave="onLeaveMessage"
@@ -102,6 +105,7 @@
 							:room-users="roomUsers"
 							:text-formatting="textFormatting"
 							:link-options="linkOptions"
+							:message-selection-enabled="messageSelectionEnabled"
 							@open-file="openFile"
 						>
 							<template v-for="(i, name) in $scopedSlots" #[name]="data">
@@ -248,7 +252,9 @@ export default {
 		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true },
 		hideOptions: { type: Boolean, required: true },
-		usernameOptions: { type: Object, required: true }
+		usernameOptions: { type: Object, required: true },
+		messageSelectionEnabled: { type: Boolean, required: true },
+		selectedMessages: { type: Array, default: () => [] }
 	},
 
 	emits: [
@@ -258,7 +264,9 @@ export default {
 		'open-user-tag',
 		'open-failed-message',
 		'message-action-handler',
-		'send-message-reaction'
+		'send-message-reaction',
+		'select-message',
+		'unselect-message'
 	],
 
 	data() {
@@ -321,6 +329,14 @@ export default {
 			return this.messages.some(
 				message => message.senderId !== this.currentUserId && message.avatar
 			)
+		},
+		isMessageSelected() {
+			return (
+				this.messageSelectionEnabled &&
+				!!this.selectedMessages.find(
+					message => message._id === this.message._id
+				)
+			)
 		}
 	},
 
@@ -338,6 +354,9 @@ export default {
 					obj.index < res.index ? obj : res
 				)
 			}
+		},
+		messageSelectionEnabled() {
+			this.resetMessageHover()
 		}
 	},
 
@@ -353,14 +372,22 @@ export default {
 
 	methods: {
 		onHoverMessage() {
-			this.messageHover = true
-			if (this.canEditMessage()) this.hoverMessageId = this.message._id
+			if (!this.messageSelectionEnabled) {
+				this.messageHover = true
+				if (this.canEditMessage()) this.hoverMessageId = this.message._id
+			}
 		},
 		canEditMessage() {
 			return !this.message.deleted
 		},
 		onLeaveMessage() {
-			if (!this.optionsOpened && !this.emojiOpened) this.messageHover = false
+			if (!this.messageSelectionEnabled) {
+				if (!this.optionsOpened && !this.emojiOpened) this.messageHover = false
+				this.hoverMessageId = null
+			}
+		},
+		resetMessageHover() {
+			this.messageHover = false
 			this.hoverMessageId = null
 		},
 		openFile(file) {
@@ -370,8 +397,7 @@ export default {
 			this.$emit('open-user-tag', { user })
 		},
 		messageActionHandler(action) {
-			this.messageHover = false
-			this.hoverMessageId = null
+			this.resetMessageHover()
 
 			setTimeout(() => {
 				this.$emit('message-action-handler', { action, message: this.message })
@@ -384,6 +410,15 @@ export default {
 				remove: reaction && reaction.indexOf(this.currentUserId) !== -1
 			})
 			this.messageHover = false
+		},
+		selectMessage() {
+			if (this.messageSelectionEnabled) {
+				if (this.isMessageSelected) {
+					this.$emit('unselect-message', this.message._id)
+				} else {
+					this.$emit('select-message', this.message)
+				}
+			}
 		}
 	}
 }

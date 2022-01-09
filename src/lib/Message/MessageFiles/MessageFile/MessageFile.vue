@@ -6,7 +6,7 @@
 			class="vac-message-image-container"
 			@mouseover="imageHover = true"
 			@mouseleave="imageHover = false"
-			@click.stop="openFile('preview')"
+			@click="openFile($event, 'preview')"
 		>
 			<progress-bar
 				v-if="file.progress >= 0"
@@ -36,10 +36,13 @@
 				}"
 			>
 				<transition name="vac-fade-image">
-					<div v-if="imageHover && !isImageLoading" class="vac-image-buttons">
+					<div
+						v-if="!messageSelectionEnabled && imageHover && !isImageLoading"
+						class="vac-image-buttons"
+					>
 						<div
 							class="vac-svg-button vac-button-view"
-							@click.stop="openFile('preview')"
+							@click="openFile($event, 'preview')"
 						>
 							<slot name="eye-icon">
 								<svg-icon name="eye" />
@@ -47,7 +50,7 @@
 						</div>
 						<div
 							class="vac-svg-button vac-button-download"
-							@click.stop="openFile('download')"
+							@click="openFile($event, 'download')"
 						>
 							<slot name="document-icon">
 								<svg-icon name="document" />
@@ -61,7 +64,7 @@
 		<div
 			v-else-if="isVideo"
 			class="vac-video-container"
-			@click.stop.prevent="openFile('preview')"
+			@click.prevent="openFile('preview')"
 		>
 			<progress-bar v-if="file.progress >= 0" :progress="file.progress" />
 			<video width="100%" height="100%" controls>
@@ -86,7 +89,8 @@ export default {
 		currentUserId: { type: [String, Number], required: true },
 		message: { type: Object, required: true },
 		file: { type: Object, required: true },
-		index: { type: Number, required: true }
+		index: { type: Number, required: true },
+		messageSelectionEnabled: { type: Boolean, required: true }
 	},
 
 	emits: ['open-file'],
@@ -139,8 +143,11 @@ export default {
 			image.src = this.file.url
 			image.addEventListener('load', () => (this.imageLoading = false))
 		},
-		openFile(action) {
-			this.$emit('open-file', { file: this.file, action })
+		openFile(event, action) {
+			if (!this.messageSelectionEnabled) {
+				event.stopPropagation()
+				this.$emit('open-file', { file: this.file, action })
+			}
 		}
 	}
 }

@@ -20,9 +20,14 @@
 			:room-info-enabled="roomInfoEnabled"
 			:menu-actions="menuActions"
 			:room="room"
+			:message-selection-enabled="messageSelectionEnabled"
+			:message-selection-actions="messageSelectionActions"
+			:selected-messages-total="selectedMessages.length"
 			@toggle-rooms-list="$emit('toggle-rooms-list')"
 			@room-info="$emit('room-info')"
 			@menu-action-handler="$emit('menu-action-handler', $event)"
+			@message-selection-action-handler="messageSelectionActionHandler"
+			@cancel-message-selection="messageSelectionEnabled = false"
 		>
 			<template v-for="(i, name) in $scopedSlots" #[name]="data">
 				<slot :name="name" v-bind="data" />
@@ -83,6 +88,8 @@
 								:link-options="linkOptions"
 								:hide-options="hideOptions"
 								:username-options="usernameOptions"
+								:message-selection-enabled="messageSelectionEnabled"
+								:selected-messages="selectedMessages"
 								@message-added="onMessageAdded"
 								@message-action-handler="messageActionHandler"
 								@open-file="openFile"
@@ -90,6 +97,8 @@
 								@open-failed-message="$emit('open-failed-message', $event)"
 								@send-message-reaction="sendMessageReaction"
 								@hide-options="hideOptions = $event"
+								@select-message="selectMessage"
+								@unselect-message="unselectMessage"
 							>
 								<template v-for="(idx, name) in $scopedSlots" #[name]="data">
 									<slot :name="name" v-bind="data" />
@@ -369,6 +378,7 @@ export default {
 		messagesLoaded: { type: Boolean, required: true },
 		menuActions: { type: Array, required: true },
 		messageActions: { type: Array, required: true },
+		messageSelectionActions: { type: Array, required: true },
 		autoScroll: { type: Object, required: true },
 		showSendIcon: { type: Boolean, required: true },
 		showFiles: { type: Boolean, required: true },
@@ -396,6 +406,7 @@ export default {
 		'toggle-rooms-list',
 		'room-info',
 		'menu-action-handler',
+		'message-selection-action-handler',
 		'edit-message',
 		'send-message',
 		'delete-message',
@@ -427,6 +438,8 @@ export default {
 			scrollMessagesCount: 0,
 			newMessages: [],
 			keepKeyboardOpen: false,
+			messageSelectionEnabled: false,
+			selectedMessages: [],
 			filteredEmojis: [],
 			filteredUsersTag: [],
 			selectedUsersTag: [],
@@ -673,6 +686,7 @@ export default {
 			this.loadingMessages = true
 			this.scrollIcon = false
 			this.scrollMessagesCount = 0
+			this.resetMessageSelection()
 			this.resetMessage(true, true)
 
 			if (this.roomMessage) {
@@ -699,6 +713,18 @@ export default {
 						this.loadingMessages = false
 					})
 				}
+			)
+		},
+		resetMessageSelection() {
+			this.messageSelectionEnabled = false
+			this.selectedMessages = []
+		},
+		selectMessage(message) {
+			this.selectedMessages.push(message)
+		},
+		unselectMessage(messageId) {
+			this.selectedMessages = this.selectedMessages.filter(
+				message => message._id !== messageId
 			)
 		},
 		onMessageAdded({ message, index, ref }) {
@@ -1050,9 +1076,20 @@ export default {
 					return this.editMessage(message)
 				case 'deleteMessage':
 					return this.$emit('delete-message', message)
+				case 'selectMessages':
+					this.selectedMessages = [message]
+					this.messageSelectionEnabled = true
+					return
 				default:
 					return this.$emit('message-action-handler', { action, message })
 			}
+		},
+		messageSelectionActionHandler(action) {
+			this.$emit('message-selection-action-handler', {
+				action,
+				messages: this.selectedMessages
+			})
+			this.resetMessageSelection()
 		},
 		sendMessageReaction(messageReaction) {
 			this.$emit('send-message-reaction', messageReaction)

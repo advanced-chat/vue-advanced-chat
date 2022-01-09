@@ -50,6 +50,7 @@
 			:rooms-loaded="roomsLoaded"
 			:room-actions="roomActions"
 			:menu-actions="menuActions"
+			:message-selection-actions="messageSelectionActions"
 			:room-message="roomMessage"
 			:templates-text="templatesText"
 			@fetch-more-rooms="fetchMoreRooms"
@@ -62,6 +63,7 @@
 			@add-room="addRoom"
 			@room-action-handler="menuActionHandler"
 			@menu-action-handler="menuActionHandler"
+			@message-selection-action-handler="messageSelectionActionHandler"
 			@send-message-reaction="sendMessageReaction"
 			@typing-message="typingMessage"
 			@toggle-rooms-list="$emit('show-demo-options', $event.opened)"
@@ -138,6 +140,7 @@ export default {
 				{ name: 'removeUser', title: 'Remove User' },
 				{ name: 'deleteRoom', title: 'Delete Room' }
 			],
+			messageSelectionActions: [{ name: 'deleteMessages', title: 'Delete' }],
 			styles: { container: { borderRadius: '4px' } },
 			templatesText: [
 				{
@@ -684,6 +687,15 @@ export default {
 					return this.removeUser(roomId)
 				case 'deleteRoom':
 					return this.deleteRoom(roomId)
+			}
+		},
+
+		messageSelectionActionHandler({ action, messages, roomId }) {
+			switch (action.name) {
+				case 'deleteMessages':
+					messages.forEach(message => {
+						this.deleteMessage({ message, roomId })
+					})
 			}
 		},
 

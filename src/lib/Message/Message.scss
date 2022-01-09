@@ -18,14 +18,14 @@
 		font-weight: 500;
 		text-transform: uppercase;
 		color: var(--chat-message-color-date);
-		background: var(--chat-message-bg-color-date);
+		background-color: var(--chat-message-bg-color-date);
 	}
 
 	.vac-card-system {
 		max-width: 250px;
 		padding: 8px 4px;
 		color: var(--chat-message-color-system);
-		background: var(--chat-message-bg-color-system);
+		background-color: var(--chat-message-bg-color-system);
 	}
 
 	.vac-line-new {
@@ -120,7 +120,7 @@
 	}
 
 	.vac-message-card {
-		background: var(--chat-message-bg-color);
+		background-color: var(--chat-message-bg-color);
 		color: var(--chat-message-color);
 		border-radius: 8px;
 		font-size: 14px;
@@ -141,14 +141,19 @@
 	}
 
 	.vac-message-current {
-		background: var(--chat-message-bg-color-me) !important;
+		background-color: var(--chat-message-bg-color-me) !important;
 	}
 
 	.vac-message-deleted {
 		color: var(--chat-message-color-deleted) !important;
 		font-size: 13px !important;
 		font-style: italic !important;
-		background: var(--chat-message-bg-color-deleted) !important;
+		background-color: var(--chat-message-bg-color-deleted) !important;
+	}
+
+	.vac-message-selected {
+		background-color: var(--chat-message-bg-color-selected) !important;
+		transition: background-color 0.2s;
 	}
 
 	.vac-icon-deleted {
