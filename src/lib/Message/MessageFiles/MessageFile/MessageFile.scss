@@ -6,10 +6,6 @@
 		cursor: pointer;
 	}
 
-	.vac-image-loading {
-		filter: blur(3px);
-	}
-
 	.vac-image-buttons {
 		position: absolute;
 		width: 100%;
@@ -55,6 +51,7 @@
 		width: 350px;
 		max-width: 100%;
 		margin: 4px auto 5px;
+		cursor: pointer;
 
 		video {
 			border-radius: 4px;

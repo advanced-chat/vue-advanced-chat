@@ -82,10 +82,12 @@
 								:text-formatting="textFormatting"
 								:link-options="linkOptions"
 								:hide-options="hideOptions"
+								:username-options="usernameOptions"
 								@message-added="onMessageAdded"
 								@message-action-handler="messageActionHandler"
 								@open-file="openFile"
 								@open-user-tag="openUserTag"
+								@open-failed-message="$emit('open-failed-message', $event)"
 								@send-message-reaction="sendMessageReaction"
 								@hide-options="hideOptions = $event"
 							>
@@ -291,7 +293,10 @@
 						@click="sendMessage"
 					>
 						<slot name="send-icon">
-							<svg-icon name="send" :param="isMessageEmpty ? 'disabled' : ''" />
+							<svg-icon
+								name="send"
+								:param="isMessageEmpty || isFileLoading ? 'disabled' : ''"
+							/>
 						</slot>
 					</div>
 				</div>
@@ -323,7 +328,7 @@ const { detectMobile } = require('../../utils/mobile-detection')
 
 const debounce = (func, delay) => {
 	let inDebounce
-	return function() {
+	return function () {
 		const context = this
 		const args = arguments
 		clearTimeout(inDebounce)
@@ -364,6 +369,7 @@ export default {
 		messagesLoaded: { type: Boolean, required: true },
 		menuActions: { type: Array, required: true },
 		messageActions: { type: Array, required: true },
+		autoScroll: { type: Object, required: true },
 		showSendIcon: { type: Boolean, required: true },
 		showFiles: { type: Boolean, required: true },
 		showAudio: { type: Boolean, required: true },
@@ -374,12 +380,16 @@ export default {
 		showNewMessagesDivider: { type: Boolean, required: true },
 		showFooter: { type: Boolean, required: true },
 		acceptedFiles: { type: String, required: true },
-		textFormatting: { type: Boolean, required: true },
+		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true },
 		loadingRooms: { type: Boolean, required: true },
 		roomInfoEnabled: { type: Boolean, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
-		templatesText: { type: Array, default: null }
+		userTagsEnabled: { type: Boolean, required: true },
+		emojisSuggestionEnabled: { type: Boolean, required: true },
+		scrollDistance: { type: Number, required: true },
+		templatesText: { type: Array, default: null },
+		usernameOptions: { type: Object, required: true }
 	},
 
 	emits: [
@@ -395,6 +405,7 @@ export default {
 		'typing-message',
 		'open-file',
 		'open-user-tag',
+		'open-failed-message',
 		'textarea-action-handler'
 	],
 
@@ -462,6 +473,9 @@ export default {
 		},
 		isMessageEmpty() {
 			return !this.files.length && !this.message.trim()
+		},
+		isFileLoading() {
+			return this.files.some(e => e.loading)
 		},
 		recordedTime() {
 			return new Date(this.recorder.duration * 1000).toISOString().substr(14, 5)
@@ -593,7 +607,7 @@ export default {
 			if (loader) {
 				const options = {
 					root: document.getElementById('messages-list'),
-					rootMargin: '60px',
+					rootMargin: `${this.scrollDistance}px`,
 					threshold: 0
 				}
 
@@ -612,10 +626,12 @@ export default {
 
 			const observer = new ResizeObserver(_ => {
 				if (container.scrollHeight !== prevScrollHeight) {
-					this.$refs.scrollContainer.scrollTo({
-						top: container.scrollHeight - prevScrollHeight
-					})
-					observer.disconnect()
+					if (this.$refs.scrollContainer) {
+						this.$refs.scrollContainer.scrollTo({
+							top: container.scrollHeight - prevScrollHeight
+						})
+						observer.disconnect()
+					}
 				}
 			})
 
@@ -691,16 +707,34 @@ export default {
 			const autoScrollOffset = ref.offsetHeight + 60
 
 			setTimeout(() => {
-				if (
-					this.getBottomScroll(this.$refs.scrollContainer) < autoScrollOffset
-				) {
-					this.scrollToBottom()
-				} else {
-					if (message.senderId === this.currentUserId) {
-						this.scrollToBottom()
+				const scrolledUp =
+					this.getBottomScroll(this.$refs.scrollContainer) > autoScrollOffset
+
+				if (message.senderId === this.currentUserId) {
+					if (scrolledUp) {
+						if (this.autoScroll.send.newAfterScrollUp) {
+							this.scrollToBottom()
+						}
 					} else {
-						this.scrollIcon = true
-						this.scrollMessagesCount++
+						if (this.autoScroll.send.new) {
+							this.scrollToBottom()
+						}
+					}
+				} else {
+					if (scrolledUp) {
+						if (this.autoScroll.receive.newAfterScrollUp) {
+							this.scrollToBottom()
+						} else {
+							this.scrollIcon = true
+							this.scrollMessagesCount++
+						}
+					} else {
+						if (this.autoScroll.receive.new) {
+							this.scrollToBottom()
+						} else {
+							this.scrollIcon = true
+							this.scrollMessagesCount++
+						}
 					}
 				}
 			})
@@ -717,10 +751,11 @@ export default {
 		updateFooterList(tagChar) {
 			if (!this.getTextareaRef()) return
 
-			if (
-				tagChar === '@' &&
-				(!this.room.users || this.room.users.length <= 2)
-			) {
+			if (tagChar === ':' && !this.emojisSuggestionEnabled) {
+				return
+			}
+
+			if (tagChar === '@' && (!this.userTagsEnabled || !this.room.users)) {
 				return
 			}
 
@@ -741,7 +776,8 @@ export default {
 			while (
 				position > 0 &&
 				this.message.charAt(position - 1) !== tagChar &&
-				this.message.charAt(position - 1) !== ' '
+				// eslint-disable-next-line no-unmodified-loop-condition
+				(this.message.charAt(position - 1) !== ' ' || tagChar !== ':')
 			) {
 				position--
 			}
@@ -776,13 +812,7 @@ export default {
 				position--
 			}
 
-			let endPosition = position
-			while (
-				this.message.charAt(endPosition) &&
-				this.message.charAt(endPosition).trim()
-			) {
-				endPosition++
-			}
+			const endPosition = this.getTextareaRef().selectionEnd
 
 			return { position, endPosition }
 		},
@@ -955,6 +985,8 @@ export default {
 
 			if (!this.files.length && !message) return
 
+			if (this.isFileLoading) return
+
 			this.selectedUsersTag.forEach(user => {
 				message = message.replace(
 					`@${user.username}`,
@@ -1081,9 +1113,9 @@ export default {
 				setTimeout(() => element.classList.remove('vac-scroll-smooth'))
 			}, 50)
 		},
-		onChangeInput: debounce(function(e) {
-			if (e?.target?.value || e?.target?.value === '') {
-				this.message = e.target.value
+		onChangeInput: debounce(function () {
+			if (this.getTextareaRef()?.value || this.getTextareaRef()?.value === '') {
+				this.message = this.getTextareaRef()?.value
 			}
 			this.keepKeyboardOpen = true
 			this.resizeTextarea()
@@ -1128,17 +1160,26 @@ export default {
 
 			Array.from(files).forEach(async file => {
 				const fileURL = URL.createObjectURL(file)
-				const blobFile = await fetch(fileURL).then(res => res.blob())
 				const typeIndex = file.name.lastIndexOf('.')
 
 				this.files.push({
-					blob: blobFile,
+					loading: true,
 					name: file.name.substring(0, typeIndex),
 					size: file.size,
 					type: file.type,
 					extension: file.name.substring(typeIndex + 1),
 					localUrl: fileURL
 				})
+
+				const blobFile = await fetch(fileURL).then(res => res.blob())
+
+				let loadedFile = this.files.find(file => file.localUrl === fileURL)
+
+				if (loadedFile) {
+					loadedFile.blob = blobFile
+					loadedFile.loading = false
+					delete loadedFile.loading
+				}
 			})
 
 			setTimeout(() => (this.fileDialog = false), 500)

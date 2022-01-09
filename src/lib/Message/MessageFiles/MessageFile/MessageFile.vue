@@ -10,13 +10,13 @@
 		>
 			<progress-bar
 				v-if="file.progress >= 0"
-				:style="{ top: `${imageResponsive.loaderTop}px` }"
 				:progress="file.progress"
+				:style="{ top: `${imageResponsive.loaderTop}px` }"
 			/>
 			<loader
 				v-else
-				:style="{ top: `${imageResponsive.loaderTop}px` }"
 				:show="isImageLoading"
+				:style="{ top: `${imageResponsive.loaderTop}px` }"
 			>
 				<template v-for="(idx, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
@@ -25,7 +25,7 @@
 			<div
 				class="vac-message-image"
 				:class="{
-					'vac-image-loading':
+					'vac-blur-loading':
 						isImageLoading && message.senderId === currentUserId
 				}"
 				:style="{
@@ -58,7 +58,12 @@
 			</div>
 		</div>
 
-		<div v-else-if="isVideo" class="vac-video-container">
+		<div
+			v-else-if="isVideo"
+			class="vac-video-container"
+			@click.stop.prevent="openFile('preview')"
+		>
+			<progress-bar v-if="file.progress >= 0" :progress="file.progress" />
 			<video width="100%" height="100%" controls>
 				<source :src="file.url" />
 			</video>
@@ -68,7 +73,7 @@
 
 <script>
 import Loader from '../../../../components/Loader/Loader'
-import ProgressBar from '../../../../components/ProgressBar/ProgressBar.vue'
+import ProgressBar from '../../../../components/ProgressBar/ProgressBar'
 import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
 
 const { isImageFile, isVideoFile } = require('../../../../utils/media-file')

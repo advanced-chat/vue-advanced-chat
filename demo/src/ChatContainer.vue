@@ -301,7 +301,7 @@ export default {
 				messages => {
 					// this.incrementDbCounter('Listen Last Room Message', messages.size)
 					messages.forEach(message => {
-						const lastMessage = this.formatLastMessage(message.data())
+						const lastMessage = this.formatLastMessage(message.data(), room)
 						const roomIndex = this.rooms.findIndex(
 							r => room.roomId === r.roomId
 						)
@@ -322,7 +322,7 @@ export default {
 			this.roomsListeners.push(listener)
 		},
 
-		formatLastMessage(message) {
+		formatLastMessage(message, room) {
 			if (!message.timestamp) return
 
 			let content = message.content
@@ -330,6 +330,11 @@ export default {
 				const file = message.files[0]
 				content = `${file.name}.${file.extension || file.type}`
 			}
+
+			const username =
+				message.sender_id !== this.currentUserId
+					? room.users.find(user => message.sender_id === user._id)?.username
+					: ''
 
 			return {
 				...message,
@@ -339,6 +344,7 @@ export default {
 						new Date(message.timestamp.seconds * 1000),
 						message.timestamp
 					),
+					username: username,
 					distributed: true,
 					seen: message.sender_id === this.currentUserId ? message.seen : null,
 					new:
@@ -428,10 +434,6 @@ export default {
 		},
 
 		formatMessage(room, message) {
-			const senderUser = room.users.find(
-				user => message.data().sender_id === user._id
-			)
-
 			const { timestamp } = message.data()
 
 			const formattedMessage = {
@@ -442,7 +444,9 @@ export default {
 					seconds: timestamp.seconds,
 					timestamp: parseTimestamp(timestamp, 'HH:mm'),
 					date: parseTimestamp(timestamp, 'DD MMMM YYYY'),
-					username: senderUser ? senderUser.username : null,
+					username: room.users.find(
+						user => message.data().sender_id === user._id
+					)?.username,
 					// avatar: senderUser ? senderUser.avatar : null,
 					distributed: true
 				}
@@ -530,48 +534,53 @@ export default {
 		},
 
 		async uploadFile({ file, messageId, roomId }) {
-			let type = file.extension || file.type
-			if (type === 'svg' || type === 'pdf') {
-				type = file.type
-			}
-
-			const uploadTask = storageService.uploadFileTask(
-				this.currentUserId,
-				messageId,
-				file,
-				type
-			)
-
-			uploadTask.on(
-				'state_changed',
-				snap => {
-					const progress = Math.round(
-						(snap.bytesTransferred / snap.totalBytes) * 100
-					)
-					this.updateFileProgress(messageId, file.localUrl, progress)
-				},
-				_error => {},
-				async () => {
-					const url = await storageService.getFileDownloadUrl(
-						uploadTask.snapshot.ref
-					)
-
-					const messageDoc = await firestoreService.getMessage(
-						roomId,
-						messageId
-					)
-
-					const files = messageDoc.data().files
-
-					files.forEach(f => {
-						if (f.url === file.localUrl) {
-							f.url = url
-						}
-					})
-
-					firestoreService.updateMessage(roomId, messageId, { files })
+			return new Promise(resolve => {
+				let type = file.extension || file.type
+				if (type === 'svg' || type === 'pdf') {
+					type = file.type
 				}
-			)
+
+				const uploadTask = storageService.uploadFileTask(
+					this.currentUserId,
+					messageId,
+					file,
+					type
+				)
+
+				uploadTask.on(
+					'state_changed',
+					snap => {
+						const progress = Math.round(
+							(snap.bytesTransferred / snap.totalBytes) * 100
+						)
+						this.updateFileProgress(messageId, file.localUrl, progress)
+					},
+					_error => {
+						resolve(false)
+					},
+					async () => {
+						const url = await storageService.getFileDownloadUrl(
+							uploadTask.snapshot.ref
+						)
+
+						const messageDoc = await firestoreService.getMessage(
+							roomId,
+							messageId
+						)
+
+						const files = messageDoc.data().files
+
+						files.forEach(f => {
+							if (f.url === file.localUrl) {
+								f.url = url
+							}
+						})
+
+						await firestoreService.updateMessage(roomId, messageId, { files })
+						resolve(true)
+					}
+				)
+			})
 		},
 
 		updateFileProgress(messageId, fileUrl, progress) {

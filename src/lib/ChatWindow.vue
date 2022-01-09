@@ -16,6 +16,7 @@
 				:text-formatting="textFormatting"
 				:link-options="linkOptions"
 				:is-mobile="isMobile"
+				:scroll-distance="scrollDistance"
 				@fetch-room="fetchRoom"
 				@fetch-more-rooms="fetchMoreRooms"
 				@loading-more-rooms="loadingMoreRooms = $event"
@@ -37,6 +38,7 @@
 				:messages-loaded="messagesLoaded"
 				:menu-actions="menuActions"
 				:message-actions="messageActions"
+				:auto-scroll="autoScroll"
 				:show-send-icon="showSendIcon"
 				:show-files="showFiles"
 				:show-audio="showAudio"
@@ -55,8 +57,12 @@
 				:loading-rooms="loadingRooms"
 				:room-info-enabled="roomInfoEnabled"
 				:textarea-action-enabled="textareaActionEnabled"
+				:user-tags-enabled="userTagsEnabled"
+				:emojis-suggestion-enabled="emojisSuggestionEnabled"
+				:scroll-distance="scrollDistance"
 				:accepted-files="acceptedFiles"
 				:templates-text="templatesText"
+				:username-options="usernameOptions"
 				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
@@ -65,6 +71,7 @@
 				@delete-message="deleteMessage"
 				@open-file="openFile"
 				@open-user-tag="openUserTag"
+				@open-failed-message="openFailedMessage"
 				@menu-action-handler="menuActionHandler"
 				@message-action-handler="messageActionHandler"
 				@send-message-reaction="sendMessageReaction"
@@ -76,12 +83,20 @@
 				</template>
 			</room>
 		</div>
+		<transition name="vac-fade-preview" appear>
+			<media-preview
+				v-if="showMediaPreview"
+				:file="previewFile"
+				@close-media-preview="showMediaPreview = false"
+			/>
+		</transition>
 	</div>
 </template>
 
 <script>
 import RoomsList from './RoomsList/RoomsList'
 import Room from './Room/Room'
+import MediaPreview from './MediaPreview/MediaPreview'
 
 import locales from '../locales'
 import { defaultThemeStyles, cssThemeVars } from '../themes'
@@ -94,7 +109,8 @@ export default {
 	name: 'ChatContainer',
 	components: {
 		RoomsList,
-		Room
+		Room,
+		MediaPreview
 	},
 
 	props: {
@@ -124,6 +140,21 @@ export default {
 				{ name: 'deleteMessage', title: 'Delete Message', onlyMe: true }
 			]
 		},
+		autoScroll: {
+			type: Object,
+			default: () => {
+				return {
+					send: {
+						new: true,
+						newAfterScrollUp: true
+					},
+					receive: {
+						new: true,
+						newAfterScrollUp: false
+					}
+				}
+			}
+		},
 		showSearch: { type: Boolean, default: true },
 		showAddRoom: { type: Boolean, default: true },
 		showSendIcon: { type: Boolean, default: true },
@@ -135,16 +166,35 @@ export default {
 		showReactionEmojis: { type: Boolean, default: true },
 		showNewMessagesDivider: { type: Boolean, default: true },
 		showFooter: { type: Boolean, default: true },
-		textFormatting: { type: Boolean, default: true },
+		textFormatting: {
+			type: Object,
+			default: () => ({
+				disabled: false,
+				italic: '_',
+				bold: '*',
+				strike: '~',
+				underline: '°',
+				multilineCode: '```',
+				inlineCode: '`'
+			})
+		},
 		linkOptions: {
 			type: Object,
 			default: () => ({ disabled: false, target: '_blank', rel: null })
 		},
 		roomInfoEnabled: { type: Boolean, default: false },
 		textareaActionEnabled: { type: Boolean, default: false },
+		userTagsEnabled: { type: Boolean, default: true },
+		emojisSuggestionEnabled: { type: Boolean, default: true },
 		roomMessage: { type: String, default: '' },
+		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
-		templatesText: { type: Array, default: null }
+		templatesText: { type: Array, default: null },
+		mediaPreviewEnabled: { type: Boolean, default: true },
+		usernameOptions: {
+			type: Object,
+			default: () => ({ minUsers: 3, currentUser: false })
+		}
 	},
 
 	emits: [
@@ -156,6 +206,7 @@ export default {
 		'delete-message',
 		'open-file',
 		'open-user-tag',
+		'open-failed-message',
 		'menu-action-handler',
 		'message-action-handler',
 		'send-message-reaction',
@@ -171,7 +222,9 @@ export default {
 			room: {},
 			loadingMoreRooms: false,
 			showRoomsList: true,
-			isMobile: false
+			isMobile: false,
+			showMediaPreview: false,
+			previewFile: {}
 		}
 	},
 
@@ -313,10 +366,21 @@ export default {
 			this.$emit('delete-message', { message, roomId: this.room.roomId })
 		},
 		openFile({ message, file }) {
-			this.$emit('open-file', { message, file })
+			if (this.mediaPreviewEnabled && file.action === 'preview') {
+				this.previewFile = file.file
+				this.showMediaPreview = true
+			} else {
+				this.$emit('open-file', { message, file })
+			}
 		},
 		openUserTag({ user }) {
 			this.$emit('open-user-tag', { user })
+		},
+		openFailedMessage({ message }) {
+			this.$emit('open-failed-message', {
+				message,
+				roomId: this.room.roomId
+			})
 		},
 		menuActionHandler(ev) {
 			this.$emit('menu-action-handler', {

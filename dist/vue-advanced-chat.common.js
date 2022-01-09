@@ -9125,6 +9125,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 function roomsValidation(obj) {
   var roomsValidate = [{
     key: 'roomId',
@@ -34631,7 +34632,10 @@ var es_set = __webpack_require__("6062");
 
 
 
-var _pseudoMarkdown;
+
+
+
+
 
 
 
@@ -34656,50 +34660,54 @@ var _pseudoMarkdown;
 var linkify = __webpack_require__("74fe"); // require('linkifyjs/plugins/hashtag')(linkify)
 
 
-/* harmony default export */ var format_string = (function (text, doLinkify) {
-  var json = compileToJSON(text);
-  var html = compileToHTML(json);
+/* harmony default export */ var format_string = (function (text, doLinkify, textFormatting) {
+  var _pseudoMarkdown;
+
+  var typeMarkdown = {
+    bold: textFormatting.bold,
+    italic: textFormatting.italic,
+    strike: textFormatting.strike,
+    underline: textFormatting.underline,
+    multilineCode: textFormatting.multilineCode,
+    inlineCode: textFormatting.inlineCode
+  };
+  var pseudoMarkdown = (_pseudoMarkdown = {}, _defineProperty(_pseudoMarkdown, typeMarkdown.bold, {
+    end: '\\' + typeMarkdown.bold,
+    allowed_chars: '.',
+    type: 'bold'
+  }), _defineProperty(_pseudoMarkdown, typeMarkdown.italic, {
+    end: typeMarkdown.italic,
+    allowed_chars: '.',
+    type: 'italic'
+  }), _defineProperty(_pseudoMarkdown, typeMarkdown.strike, {
+    end: typeMarkdown.strike,
+    allowed_chars: '.',
+    type: 'strike'
+  }), _defineProperty(_pseudoMarkdown, typeMarkdown.underline, {
+    end: typeMarkdown.underline,
+    allowed_chars: '.',
+    type: 'underline'
+  }), _defineProperty(_pseudoMarkdown, typeMarkdown.multilineCode, {
+    end: typeMarkdown.multilineCode,
+    allowed_chars: '(.|\n)',
+    type: 'multiline-code'
+  }), _defineProperty(_pseudoMarkdown, typeMarkdown.inlineCode, {
+    end: typeMarkdown.inlineCode,
+    allowed_chars: '.',
+    type: 'inline-code'
+  }), _defineProperty(_pseudoMarkdown, '<usertag>', {
+    allowed_chars: '.',
+    end: '</usertag>',
+    type: 'tag'
+  }), _pseudoMarkdown);
+  var json = compileToJSON(text, pseudoMarkdown);
+  var html = compileToHTML(json, pseudoMarkdown);
   var result = [].concat.apply([], html);
   if (doLinkify) linkifyResult(result);
   return result;
 });
-var typeMarkdown = {
-  bold: '*',
-  italic: '_',
-  strike: '~',
-  underline: '°'
-};
-var pseudoMarkdown = (_pseudoMarkdown = {}, _defineProperty(_pseudoMarkdown, typeMarkdown.bold, {
-  end: '\\' + [typeMarkdown.bold],
-  allowed_chars: '.',
-  type: 'bold'
-}), _defineProperty(_pseudoMarkdown, typeMarkdown.italic, {
-  end: [typeMarkdown.italic],
-  allowed_chars: '.',
-  type: 'italic'
-}), _defineProperty(_pseudoMarkdown, typeMarkdown.strike, {
-  end: [typeMarkdown.strike],
-  allowed_chars: '.',
-  type: 'strike'
-}), _defineProperty(_pseudoMarkdown, typeMarkdown.underline, {
-  end: [typeMarkdown.underline],
-  allowed_chars: '.',
-  type: 'underline'
-}), _defineProperty(_pseudoMarkdown, '```', {
-  end: '```',
-  allowed_chars: '(.|\n)',
-  type: 'multiline-code'
-}), _defineProperty(_pseudoMarkdown, '`', {
-  end: '`',
-  allowed_chars: '.',
-  type: 'inline-code'
-}), _defineProperty(_pseudoMarkdown, '<usertag>', {
-  allowed_chars: '.',
-  end: '</usertag>',
-  type: 'tag'
-}), _pseudoMarkdown);
 
-function compileToJSON(str) {
+function compileToJSON(str, pseudoMarkdown) {
   var result = [];
   var minIndexOf = -1;
   var minIndexOfKey = null;
@@ -34727,7 +34735,7 @@ function compileToJSON(str) {
     var strRight = str.substr(minIndexOf + links[0].value.length);
     result.push(strLeft);
     result.push(strLink);
-    result = result.concat(compileToJSON(strRight));
+    result = result.concat(compileToJSON(strRight, pseudoMarkdown));
     return result;
   }
 
@@ -34754,7 +34762,7 @@ function compileToJSON(str) {
 
       var object = {
         start: _char,
-        content: compileToJSON(match[1]),
+        content: compileToJSON(match[1], pseudoMarkdown),
         end: match[2],
         type: pseudoMarkdown[_char].type
       };
@@ -34762,7 +34770,7 @@ function compileToJSON(str) {
       _strRight = _strRight.substr(match[0].length);
     }
 
-    result = result.concat(compileToJSON(_strRight));
+    result = result.concat(compileToJSON(_strRight, pseudoMarkdown));
     return result;
   } else {
     if (str) {
@@ -34773,7 +34781,7 @@ function compileToJSON(str) {
   }
 }
 
-function compileToHTML(json) {
+function compileToHTML(json, pseudoMarkdown) {
   var result = [];
   json.forEach(function (item) {
     if (typeof item === 'string') {
@@ -34896,7 +34904,7 @@ var constants = __webpack_require__("c9d9");
       "default": false
     },
     textFormatting: {
-      type: Boolean,
+      type: Object,
       required: true
     },
     linkOptions: {
@@ -34909,7 +34917,7 @@ var constants = __webpack_require__("c9d9");
     linkifiedMessage: function linkifiedMessage() {
       var _this = this;
 
-      var message = format_string(this.formatTags(this.content), this.linkify && !this.linkOptions.disabled, this.linkOptions);
+      var message = format_string(this.formatTags(this.content), this.linkify && !this.linkOptions.disabled, this.textFormatting);
       message.forEach(function (m) {
         m.url = _this.checkType(m, 'url');
         m.bold = _this.checkType(m, 'bold');
@@ -35255,7 +35263,7 @@ var _require = __webpack_require__("bd43"),
       required: true
     },
     textFormatting: {
-      type: Boolean,
+      type: Object,
       required: true
     },
     linkOptions: {
@@ -35414,7 +35422,7 @@ function formatString(string) {
       required: true
     },
     textFormatting: {
-      type: Boolean,
+      type: Object,
       required: true
     },
     linkOptions: {
@@ -35443,6 +35451,10 @@ function formatString(string) {
     },
     roomActions: {
       type: Array,
+      required: true
+    },
+    scrollDistance: {
+      type: Number,
       required: true
     }
   },
@@ -35512,7 +35524,7 @@ function formatString(string) {
       if (loader) {
         var options = {
           root: document.getElementById('rooms-list'),
-          rootMargin: '60px',
+          rootMargin: "".concat(this.scrollDistance, "px"),
           threshold: 0
         };
         this.observer = new IntersectionObserver(function (entries) {
@@ -36147,7 +36159,7 @@ function EmojiPickerContainervue_type_template_id_2b192aad_render(_ctx, _cache, 
         setTimeout(function () {
           _this.addCustomStyling();
 
-          document.querySelector('emoji-picker').addEventListener('emoji-click', function (_ref) {
+          _this.$refs.emojiPicker.shadowRoot.addEventListener('emoji-click', function (_ref) {
             var detail = _ref.detail;
 
             _this.$emit('add-emoji', {
@@ -36531,6 +36543,7 @@ var RoomFilevue_type_script_lang_js_require = __webpack_require__("bd43"),
 /* harmony default export */ var RoomFilevue_type_script_lang_js = ({
   name: 'RoomFiles',
   components: {
+    Loader: Loader,
     SvgIcon: SvgIcon
   },
   props: {
@@ -36963,7 +36976,7 @@ var RoomMessageReplyvue_type_script_lang_js_require = __webpack_require__("bd43"
       "default": null
     },
     textFormatting: {
-      type: Boolean,
+      type: Object,
       required: true
     },
     linkOptions: {
@@ -37647,7 +37660,7 @@ var MessageReplyvue_type_script_lang_js_require = __webpack_require__("bd43"),
       required: true
     },
     textFormatting: {
-      type: Boolean,
+      type: Object,
       required: true
     },
     linkOptions: {
@@ -38086,6 +38099,7 @@ var MessageFilesvue_type_script_lang_js_require = __webpack_require__("bd43"),
   components: {
     SvgIcon: SvgIcon,
     FormatMessage: FormatMessage,
+    ProgressBar: ProgressBar,
     MessageFile: MessageFile
   },
   props: {
@@ -38102,7 +38116,7 @@ var MessageFilesvue_type_script_lang_js_require = __webpack_require__("bd43"),
       required: true
     },
     textFormatting: {
-      type: Boolean,
+      type: Object,
       required: true
     },
     linkOptions: {
@@ -38554,7 +38568,7 @@ var _require2 = __webpack_require__("bd43"),
       required: true
     },
     textFormatting: {
-      type: Boolean,
+      type: Object,
       required: true
     },
     linkOptions: {
@@ -38564,9 +38578,13 @@ var _require2 = __webpack_require__("bd43"),
     hideOptions: {
       type: Boolean,
       required: true
+    },
+    usernameOptions: {
+      type: Object,
+      required: true
     }
   },
-  emits: ['hide-options', 'message-added', 'open-file', 'open-user-tag', 'message-action-handler', 'send-message-reaction'],
+  emits: ['hide-options', 'message-added', 'open-file', 'open-user-tag', 'open-failed-message', 'message-action-handler', 'send-message-reaction'],
   data: function data() {
     return {
       hoverMessageId: null,
@@ -38579,6 +38597,13 @@ var _require2 = __webpack_require__("bd43"),
     };
   },
   computed: {
+    showUsername: function showUsername() {
+      if (!this.usernameOptions.currentUser && this.message.senderId === this.currentUserId) {
+        return false;
+      } else {
+        return this.roomUsers.length >= this.usernameOptions.minUsers;
+      }
+    },
     showDate: function showDate() {
       return this.index > 0 && this.message.date !== this.messages[this.index - 1].date;
     },
@@ -38597,6 +38622,20 @@ var _require2 = __webpack_require__("bd43"),
     },
     isCheckmarkVisible: function isCheckmarkVisible() {
       return this.message.senderId === this.currentUserId && !this.message.deleted && (this.message.saved || this.message.distributed || this.message.seen);
+    },
+    hasCurrentUserAvatar: function hasCurrentUserAvatar() {
+      var _this = this;
+
+      return this.messages.some(function (message) {
+        return message.senderId === _this.currentUserId && message.avatar;
+      });
+    },
+    hasSenderUserAvatar: function hasSenderUserAvatar() {
+      var _this2 = this;
+
+      return this.messages.some(function (message) {
+        return message.senderId !== _this2.currentUserId && message.avatar;
+      });
     }
   },
   watch: {
@@ -38647,14 +38686,14 @@ var _require2 = __webpack_require__("bd43"),
       });
     },
     messageActionHandler: function messageActionHandler(action) {
-      var _this = this;
+      var _this3 = this;
 
       this.messageHover = false;
       this.hoverMessageId = null;
       setTimeout(function () {
-        _this.$emit('message-action-handler', {
+        _this3.$emit('message-action-handler', {
           action: action,
-          message: _this.message
+          message: _this3.message
         });
       }, 300);
     },
@@ -39101,7 +39140,6 @@ var recorder_default = /*#__PURE__*/function () {
 
 
 
-
 var Roomvue_type_script_lang_js_require = __webpack_require__("1a98"),
     detectMobile = Roomvue_type_script_lang_js_require.detectMobile;
 
@@ -39187,6 +39225,10 @@ var debounce = function debounce(func, delay) {
       type: Array,
       required: true
     },
+    autoScroll: {
+      type: Object,
+      required: true
+    },
     showSendIcon: {
       type: Boolean,
       required: true
@@ -39228,7 +39270,7 @@ var debounce = function debounce(func, delay) {
       required: true
     },
     textFormatting: {
-      type: Boolean,
+      type: Object,
       required: true
     },
     linkOptions: {
@@ -39247,12 +39289,28 @@ var debounce = function debounce(func, delay) {
       type: Boolean,
       required: true
     },
+    userTagsEnabled: {
+      type: Boolean,
+      required: true
+    },
+    emojisSuggestionEnabled: {
+      type: Boolean,
+      required: true
+    },
+    scrollDistance: {
+      type: Number,
+      required: true
+    },
     templatesText: {
       type: Array,
       "default": null
+    },
+    usernameOptions: {
+      type: Object,
+      required: true
     }
   },
-  emits: ['toggle-rooms-list', 'room-info', 'menu-action-handler', 'edit-message', 'send-message', 'delete-message', 'message-action-handler', 'fetch-messages', 'send-message-reaction', 'typing-message', 'open-file', 'open-user-tag', 'textarea-action-handler'],
+  emits: ['toggle-rooms-list', 'room-info', 'menu-action-handler', 'edit-message', 'send-message', 'delete-message', 'message-action-handler', 'fetch-messages', 'send-message-reaction', 'typing-message', 'open-file', 'open-user-tag', 'open-failed-message', 'textarea-action-handler'],
   data: function data() {
     return {
       message: '',
@@ -39315,6 +39373,11 @@ var debounce = function debounce(func, delay) {
     },
     isMessageEmpty: function isMessageEmpty() {
       return !this.files.length && !this.message.trim();
+    },
+    isFileLoading: function isFileLoading() {
+      return this.files.some(function (e) {
+        return e.loading;
+      });
     },
     recordedTime: function recordedTime() {
       return new Date(this.recorder.duration * 1000).toISOString().substr(14, 5);
@@ -39570,7 +39633,11 @@ var debounce = function debounce(func, delay) {
     updateFooterList: function updateFooterList(tagChar) {
       if (!this.getTextareaRef()) return;
 
-      if (tagChar === '@' && (!this.room.users || this.room.users.length <= 2)) {
+      if (tagChar === ':' && !this.emojisSuggestionEnabled) {
+        return;
+      }
+
+      if (tagChar === '@' && (!this.userTagsEnabled || !this.room.users)) {
         return;
       }
 
@@ -39585,7 +39652,8 @@ var debounce = function debounce(func, delay) {
       this.textareaCursorPosition = this.getTextareaRef().selectionStart;
       var position = this.textareaCursorPosition;
 
-      while (position > 0 && this.message.charAt(position - 1) !== tagChar && this.message.charAt(position - 1) !== ' ') {
+      while (position > 0 && this.message.charAt(position - 1) !== tagChar && ( // eslint-disable-next-line no-unmodified-loop-condition
+      this.message.charAt(position - 1) !== ' ' || tagChar !== ':')) {
         position--;
       }
 
@@ -39614,12 +39682,7 @@ var debounce = function debounce(func, delay) {
         position--;
       }
 
-      var endPosition = position;
-
-      while (this.message.charAt(endPosition) && this.message.charAt(endPosition).trim()) {
-        endPosition++;
-      }
-
+      var endPosition = this.getTextareaRef().selectionEnd;
       return {
         position: position,
         endPosition: endPosition
@@ -39802,6 +39865,7 @@ var debounce = function debounce(func, delay) {
     sendMessage: function sendMessage() {
       var message = this.message.trim();
       if (!this.files.length && !message) return;
+      if (this.isFileLoading) return;
       this.selectedUsersTag.forEach(function (user) {
         message = message.replace("@".concat(user.username), "<usertag>".concat(user._id, "</usertag>"));
       });
@@ -39936,11 +40000,13 @@ var debounce = function debounce(func, delay) {
         });
       }, 50);
     },
-    onChangeInput: debounce(function (e) {
-      var _e$target, _e$target2;
+    onChangeInput: debounce(function () {
+      var _this$getTextareaRef, _this$getTextareaRef2;
 
-      if (e !== null && e !== void 0 && (_e$target = e.target) !== null && _e$target !== void 0 && _e$target.value || (e === null || e === void 0 ? void 0 : (_e$target2 = e.target) === null || _e$target2 === void 0 ? void 0 : _e$target2.value) === '') {
-        this.message = e.target.value;
+      if ((_this$getTextareaRef = this.getTextareaRef()) !== null && _this$getTextareaRef !== void 0 && _this$getTextareaRef.value || ((_this$getTextareaRef2 = this.getTextareaRef()) === null || _this$getTextareaRef2 === void 0 ? void 0 : _this$getTextareaRef2.value) === '') {
+        var _this$getTextareaRef3;
+
+        this.message = (_this$getTextareaRef3 = this.getTextareaRef()) === null || _this$getTextareaRef3 === void 0 ? void 0 : _this$getTextareaRef3.value;
       }
 
       this.keepKeyboardOpen = true;
@@ -39992,19 +40058,12 @@ var debounce = function debounce(func, delay) {
 
                 Array.from(files).forEach( /*#__PURE__*/function () {
                   var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(file) {
-                    var fileURL, blobFile, typeIndex;
+                    var fileURL, typeIndex, blobFile, loadedFile;
                     return regeneratorRuntime.wrap(function _callee2$(_context2) {
                       while (1) {
                         switch (_context2.prev = _context2.next) {
                           case 0:
                             fileURL = URL.createObjectURL(file);
-                            _context2.next = 3;
-                            return fetch(fileURL).then(function (res) {
-                              return res.blob();
-                            });
-
-                          case 3:
-                            blobFile = _context2.sent;
                             typeIndex = file.name.lastIndexOf('.');
 
                             _this18.files.push({
@@ -40016,7 +40075,24 @@ var debounce = function debounce(func, delay) {
                               localUrl: fileURL
                             });
 
-                          case 6:
+                            _context2.next = 5;
+                            return fetch(fileURL).then(function (res) {
+                              return res.blob();
+                            });
+
+                          case 5:
+                            blobFile = _context2.sent;
+                            loadedFile = _this18.files.find(function (file) {
+                              return file.localUrl === fileURL;
+                            });
+
+                            if (loadedFile) {
+                              loadedFile.blob = blobFile;
+                              loadedFile.loading = false;
+                              delete loadedFile.loading;
+                            }
+
+                          case 8:
                           case "end":
                             return _context2.stop();
                         }
@@ -40260,6 +40336,7 @@ var defaultThemeStyles = {
       file: '#1976d2',
       paperclip: '#1976d2',
       closeOutline: '#000',
+      closePreview: '#fff',
       send: '#1976d2',
       sendDisabled: '#9ca6af',
       emoji: '#1976d2',
@@ -40388,6 +40465,7 @@ var defaultThemeStyles = {
       file: '#1976d2',
       paperclip: '#fff',
       closeOutline: '#fff',
+      closePreview: '#fff',
       send: '#fff',
       sendDisabled: '#646a70',
       emoji: '#fff',
@@ -40519,6 +40597,7 @@ var cssThemeVars = function cssThemeVars(_ref) {
     '--chat-icon-color-file': icons.file,
     '--chat-icon-color-paperclip': icons.paperclip,
     '--chat-icon-color-close-outline': icons.closeOutline,
+    '--chat-icon-color-close-preview': icons.closePreview,
     '--chat-icon-color-send': icons.send,
     '--chat-icon-color-send-disabled': icons.sendDisabled,
     '--chat-icon-color-emoji': icons.emoji,
@@ -40564,7 +40643,8 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
   name: 'ChatContainer',
   components: {
     RoomsList: RoomsList,
-    Room: Room
+    Room: Room,
+    MediaPreview: MediaPreview
   },
   props: {
     height: {
@@ -40666,6 +40746,21 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
         }];
       }
     },
+    autoScroll: {
+      type: Object,
+      "default": function _default() {
+        return {
+          send: {
+            "new": true,
+            newAfterScrollUp: true
+          },
+          receive: {
+            "new": true,
+            newAfterScrollUp: false
+          }
+        };
+      }
+    },
     showSearch: {
       type: Boolean,
       "default": true
@@ -40711,8 +40806,18 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
       "default": true
     },
     textFormatting: {
-      type: Boolean,
-      "default": true
+      type: Object,
+      "default": function _default() {
+        return {
+          disabled: false,
+          italic: '_',
+          bold: '*',
+          strike: '~',
+          underline: '°',
+          multilineCode: '```',
+          inlineCode: '`'
+        };
+      }
     },
     linkOptions: {
       type: Object,
@@ -40732,9 +40837,21 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
       type: Boolean,
       "default": false
     },
+    userTagsEnabled: {
+      type: Boolean,
+      "default": true
+    },
+    emojisSuggestionEnabled: {
+      type: Boolean,
+      "default": true
+    },
     roomMessage: {
       type: String,
       "default": ''
+    },
+    scrollDistance: {
+      type: Number,
+      "default": 60
     },
     acceptedFiles: {
       type: String,
@@ -40743,15 +40860,30 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
     templatesText: {
       type: Array,
       "default": null
+    },
+    mediaPreviewEnabled: {
+      type: Boolean,
+      "default": true
+    },
+    usernameOptions: {
+      type: Object,
+      "default": function _default() {
+        return {
+          minUsers: 3,
+          currentUser: false
+        };
+      }
     }
   },
-  emits: ['toggle-rooms-list', 'room-info', 'fetch-messages', 'send-message', 'edit-message', 'delete-message', 'open-file', 'open-user-tag', 'menu-action-handler', 'message-action-handler', 'send-message-reaction', 'typing-message', 'textarea-action-handler', 'fetch-more-rooms', 'add-room', 'room-action-handler'],
+  emits: ['toggle-rooms-list', 'room-info', 'fetch-messages', 'send-message', 'edit-message', 'delete-message', 'open-file', 'open-user-tag', 'open-failed-message', 'menu-action-handler', 'message-action-handler', 'send-message-reaction', 'typing-message', 'textarea-action-handler', 'fetch-more-rooms', 'add-room', 'room-action-handler'],
   data: function data() {
     return {
       room: {},
       loadingMoreRooms: false,
       showRoomsList: true,
-      isMobile: false
+      isMobile: false,
+      showMediaPreview: false,
+      previewFile: {}
     };
   },
   computed: {
@@ -40904,15 +41036,28 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
     openFile: function openFile(_ref2) {
       var message = _ref2.message,
           file = _ref2.file;
-      this.$emit('open-file', {
-        message: message,
-        file: file
-      });
+
+      if (this.mediaPreviewEnabled && file.action === 'preview') {
+        this.previewFile = file.file;
+        this.showMediaPreview = true;
+      } else {
+        this.$emit('open-file', {
+          message: message,
+          file: file
+        });
+      }
     },
     openUserTag: function openUserTag(_ref3) {
       var user = _ref3.user;
       this.$emit('open-user-tag', {
         user: user
+      });
+    },
+    openFailedMessage: function openFailedMessage(_ref4) {
+      var message = _ref4.message;
+      this.$emit('open-failed-message', {
+        message: message,
+        roomId: this.room.roomId
       });
     },
     menuActionHandler: function menuActionHandler(ev) {
@@ -40921,9 +41066,9 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
         roomId: this.room.roomId
       });
     },
-    roomActionHandler: function roomActionHandler(_ref4) {
-      var action = _ref4.action,
-          roomId = _ref4.roomId;
+    roomActionHandler: function roomActionHandler(_ref5) {
+      var action = _ref5.action,
+          roomId = _ref5.roomId;
       this.$emit('room-action-handler', {
         action: action,
         roomId: roomId

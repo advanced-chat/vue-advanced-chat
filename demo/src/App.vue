@@ -173,6 +173,7 @@ export default {
 			})
 
 			this.updatingData = false
+			location.reload()
 		}
 	}
 }

@@ -77,7 +77,7 @@ This component is only compatible with Vue `2.6.14` and above.
 npm install --save vue-advanced-chat
 
 # Using yarn
-yarn add --save vue-advanced-chat
+yarn add vue-advanced-chat
 
 # Using CDN
 <script src="https://cdn.jsdelivr.net/npm/vue-advanced-chat@0.8.8/dist/vue-advanced-chat.min.js"></script>
@@ -208,45 +208,51 @@ fetchMessages({ room, options }) {
 
 ## Props API
 
-| <div style="width:230px">Prop</div> | Type             | Required | Default                                            |
-| ----------------------------------- | ---------------- | -------- | -------------------------------------------------- |
-| `height`                            | String           | -        | `600px`                                            |
-| `current-user-id`(1)                | [String, Number] | `true`   | -                                                  |
-| `rooms`                             | Array            | -        | `[]`                                               |
-| `rooms-order`                       | String           | -        | `desc`                                             |
-| `loading-rooms`(2)                  | Boolean          | -        | `false`                                            |
-| `rooms-loaded`(3)                   | Boolean          | -        | `false`                                            |
-| `room-id`(4)                        | [String, Number] | -        | `null`                                             |
-| `load-first-room`(5)                | Boolean          | -        | `true`                                             |
-| `rooms-list-opened`                 | Boolean          | -        | `true`                                             |
-| `messages`                          | Array            | -        | `[]`                                               |
-| `room-message`(6)                   | String           | -        | `null`                                             |
-| `messages-loaded`(7)                | Boolean          | -        | `false`                                            |
-| `room-actions`(8)                   | Array            | -        | `[]`                                               |
-| `menu-actions`(9)                   | Array            | -        | `[]`                                               |
-| `message-actions`(10)               | Array            | -        | (10)                                               |
-| `templates-text`(11)                | Array            | -        | `null`                                             |
-| `show-search`                       | Boolean          | -        | `true`                                             |
-| `show-add-room`                     | Boolean          | -        | `true`                                             |
-| `show-send-icon`                    | Boolean          | -        | `true`                                             |
-| `show-files`                        | Boolean          | -        | `true`                                             |
-| `show-audio`                        | Boolean          | -        | `true`                                             |
-| `audio-bit-rate`                    | Number           | -        | `128`                                              |
-| `audio-sample-rate`                 | Number           | -        | `44100`                                            |
-| `show-emojis`                       | Boolean          | -        | `true`                                             |
-| `show-reaction-emojis`              | Boolean          | -        | `true`                                             |
-| `show-new-messages-divider`(12)     | Boolean          | -        | `true`                                             |
-| `show-footer`(13)                   | Boolean          | -        | `true`                                             |
-| `text-messages`(14)                 | Object           | -        | `null`                                             |
-| `text-formatting`(15)               | Boolean          | -        | `true`                                             |
-| `link-options`(16)                  | Object           | -        | `{ disabled: false, target: '_blank', rel: null }` |
-| `room-info-enabled` (17)            | Boolean          | -        | `false`                                            |
-| `textarea-action-enabled`(18)       | Boolean          | -        | `false`                                            |
-| `responsive-breakpoint`(19)         | Number           | -        | `900`                                              |
-| `single-room`(20)                   | Boolean          | -        | `false`                                            |
-| `theme`(21)                         | Sring            | -        | `light`                                            |
-| `accepted-files`(22)                | String           | -        | `*`                                                |
-| `styles`(23)                        | Object           | -        | (23)                                               |
+| <div style="width:230px">Prop</div> | Type             | Required | Default                                                                                                           |
+| ----------------------------------- | ---------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
+| `height`                            | String           | -        | `600px`                                                                                                           |
+| `current-user-id`(1)                | [String, Number] | `true`   | -                                                                                                                 |
+| `rooms`                             | Array            | -        | `[]`                                                                                                              |
+| `rooms-order`                       | String           | -        | `desc`                                                                                                            |
+| `loading-rooms`(2)                  | Boolean          | -        | `false`                                                                                                           |
+| `rooms-loaded`(3)                   | Boolean          | -        | `false`                                                                                                           |
+| `room-id`(4)                        | [String, Number] | -        | `null`                                                                                                            |
+| `load-first-room`(5)                | Boolean          | -        | `true`                                                                                                            |
+| `rooms-list-opened`                 | Boolean          | -        | `true`                                                                                                            |
+| `messages`                          | Array            | -        | `[]`                                                                                                              |
+| `room-message`(6)                   | String           | -        | `null`                                                                                                            |
+| `username-options` (7)              | Object           | -        | `{minUsers: 3, currentUser: false}`                                                                               |
+| `messages-loaded`(8)                | Boolean          | -        | `false`                                                                                                           |
+| `room-actions`(9)                   | Array            | -        | `[]`                                                                                                              |
+| `menu-actions`(10)                  | Array            | -        | `[]`                                                                                                              |
+| `message-actions`(11)               | Array            | -        | (11)                                                                                                              |
+| `templates-text`(12)                | Array            | -        | `null`                                                                                                            |
+| `auto-scroll`(13)                   | Object           | -        | `{ send: { new: true, newAfterScrollUp: true }, receive: { new: true, newAfterScrollUp: false } }`                |
+| `show-search`                       | Boolean          | -        | `true`                                                                                                            |
+| `show-add-room`                     | Boolean          | -        | `true`                                                                                                            |
+| `show-send-icon`                    | Boolean          | -        | `true`                                                                                                            |
+| `show-files`                        | Boolean          | -        | `true`                                                                                                            |
+| `show-audio`                        | Boolean          | -        | `true`                                                                                                            |
+| `audio-bit-rate`                    | Number           | -        | `128`                                                                                                             |
+| `audio-sample-rate`                 | Number           | -        | `44100`                                                                                                           |
+| `show-emojis`                       | Boolean          | -        | `true`                                                                                                            |
+| `show-reaction-emojis`              | Boolean          | -        | `true`                                                                                                            |
+| `show-new-messages-divider`(14)     | Boolean          | -        | `true`                                                                                                            |
+| `show-footer`(15)                   | Boolean          | -        | `true`                                                                                                            |
+| `text-messages`(16)                 | Object           | -        | `null`                                                                                                            |
+| `text-formatting`(17)               | Object           | -        | ` {disabled: false, italic: '_', bold: '*', strike: '~', underline: '°', multilineCode: '```', inlineCode: ' `'}` |
+| `link-options`(18)                  | Object           | -        | `{ disabled: false, target: '_blank', rel: null }`                                                                |
+| `room-info-enabled` (19)            | Boolean          | -        | `false`                                                                                                           |
+| `textarea-action-enabled`(20)       | Boolean          | -        | `false`                                                                                                           |
+| `user-tags-enabled`                 | Boolean          | -        | `true`                                                                                                            |
+| `emojis-suggestion-enabled`         | Boolean          | -        | `true`                                                                                                            |
+| `media-preview-enabled`             | Boolean          | -        | `true`                                                                                                            |
+| `responsive-breakpoint`(21)         | Number           | -        | `900`                                                                                                             |
+| `single-room`(22)                   | Boolean          | -        | `false`                                                                                                           |
+| `scroll-distance`(23)               | Number           | -        | `60`                                                                                                              |
+| `theme`(24)                         | Sring            | -        | `light`                                                                                                           |
+| `accepted-files`(25)                | String           | -        | `*`                                                                                                               |
+| `styles`(26)                        | Object           | -        | (24)                                                                                                              |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -260,9 +266,11 @@ fetchMessages({ room, options }) {
 
 **(6)** `room-message` can be used to add a default textarea value
 
-**(7)** `messages-loaded` must be set to `true` when all messages of a conversation have been loaded. Meaning the user cannot scroll on top to load more paginated messages
+**(7)** `username-options` can be used to show/hide room messages username according to the minimum number of users `minUsers` inside a room, and if the message user is the current user `currentUser`
 
-**(8)** `room-actions` can be used to display your own buttons when clicking the dropdown icon of each room inside the rooms list.<br>
+**(8)** `messages-loaded` must be set to `true` when all messages of a conversation have been loaded. Meaning the user cannot scroll on top to load more paginated messages
+
+**(9)** `room-actions` can be used to display your own buttons when clicking the dropdown icon of each room inside the rooms list.<br>
 You can then use the [room-action-handler](#events-api) event to call your own action after clicking a button. Ex:
 
 ```javascript
@@ -274,7 +282,7 @@ room-actions="[
 ]"
 ```
 
-**(9)** `menu-actions` can be used to display your own buttons when clicking the vertical dots icon inside a room.<br>
+**(10)** `menu-actions` can be used to display your own buttons when clicking the vertical dots icon inside a room.<br>
 You can then use the [menu-action-handler](#events-api) event to call your own action after clicking a button. Ex:
 
 ```javascript
@@ -294,7 +302,7 @@ menu-actions="[
 ]"
 ```
 
-**(10)** `message-actions` can be used to display your own buttons when clicking the dropdown icon inside a message.<br>
+**(11)** `message-actions` can be used to display your own buttons when clicking the dropdown icon inside a message.<br>
 You can then use the [message-action-handler](#events-api) event to call your own action after clicking a button. Ex:
 
 ```javascript
@@ -334,7 +342,7 @@ messageActions="[
 ]"
 ```
 
-**(11)** `templates-text` can be used to add autocomplete templates text when typing `/` in the room textarea. Ex:
+**(12)** `templates-text` can be used to add autocomplete templates text when typing `/` in the room textarea. Ex:
 
 ```javascript
 templatesText="[
@@ -349,11 +357,26 @@ templatesText="[
 ]"
 ```
 
-**(12)** `show-new-messages-divider` can be used to show/hide the blue line divider between seen and unseen messages.
+**(13)** `auto-scroll` can be used to change the auto scroll behaviour when sending/receiving a message. Ex:
 
-**(13)** `show-footer` can be used to hide the room footer. For example to prevent users to send any message or media.
+```javascript
+auto-scroll="{
+  send: {
+    new: true, // will scroll down after sending a message
+    newAfterScrollUp: false // will not scroll down after sending a message when scrolled up
+  },
+  receive: {
+    new: false, // will not scroll down when receiving a message
+    newAfterScrollUp: true // will scroll down when receiving a message when scrolled up
+  }
+}"
+```
 
-**(14)** `text-messages` can be used to replace default i18n texts. Ex:
+**(14)** `show-new-messages-divider` can be used to show/hide the blue line divider between seen and unseen messages.
+
+**(15)** `show-footer` can be used to hide the room footer. For example to prevent users to send any message or media.
+
+**(16)** `text-messages` can be used to replace default i18n texts. Ex:
 
 ```javascript
 text-messages="{
@@ -371,7 +394,11 @@ text-messages="{
 }"
 ```
 
-**(15)** `text-formatting` can be used to add text formatting. Currently, bold, italic, strikethrough, underline, inline code and multiline code formatting are available and can be used in conjonction. You can disable text formatting by passing the prop as `:text-formatting="false"`.
+**(17)** `text-formatting` can be used to add text formatting. Bold, italic, strikethrough, underline, inline code and multiline code formatting are currently available and can be used in conjonction.
+
+- You can disable text formatting by passing the prop `:text-formatting="{disabled: true}"`.
+- You can change markdown characters, for example: `:text-formatting="{italic: '^'}"`
+- You can disable a specific markdown character, for example: `:text-formatting="{bold: null}"`
 
 | Style             | Syntax          | Example                                | Output                                 |
 | ----------------- | --------------- | -------------------------------------- | -------------------------------------- |
@@ -398,29 +425,31 @@ This is
 multiline code
 ```
 
-**(16)** `link-options` can be used to disable url links in messages, or change urls target. Ex:
+**(18)** `link-options` can be used to disable url links in messages, or change urls target. Ex:
 
 ```javascript
 :link-options="{ disabled: true, target: '_self', rel: null }"
 ```
 
-**(17)** `room-info-enabled` can be used to trigger an event after clicking the room header component.<br>
+**(19)** `room-info-enabled` can be used to trigger an event after clicking the room header component.<br>
 You can then use the [room-info](#events-api) event to call your own action after clicking the header.
 
-**(18)** `textarea-action-enabled` can be used to add an extra icon on the right of the textarea<br>
+**(20)** `textarea-action-enabled` can be used to add an extra icon on the right of the textarea<br>
 You can then use the [textarea-action-handler](#events-api) event to call your own action after clicking the icon.
 
-**(19)** `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
+**(21)** `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
 
-**(20)** `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+**(22)** `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
 
-**(21)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+**(23)** `scroll-distance` can be used to change the number of pixels before `fetchMessages` event is triggered when scrolling up to load more messages, or `fetchMoreRooms` event is triggered when scrolling down to load more rooms.
 
-**(22)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
+**(24)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+
+**(25)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
 
 Example: set `"accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files only
 
-**(23)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
+**(26)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
 
 ```javascript
 styles="{
@@ -516,6 +545,7 @@ Message states:
 - `distributed: true` two checkmarks
 - `seen: true` two blue checkmarks
 - `deleted: true` grey background with deleted message text
+- `failure: true` red clickable failure icon
 
 ```javascript
 messages="[
@@ -533,6 +563,7 @@ messages="[
     distributed: true,
     seen: true,
     deleted: false,
+    failure: true,
     disableActions: false,
     disableReactions: false,
     files: [
@@ -588,6 +619,7 @@ messages="[
 | `delete-message`                     | `{ roomId, message }`                                                     | Deleted a message                               |
 | `open-file`                          | `{ message, file }`                                                       | Clicked to view or download a file              |
 | `open-user-tag`(3)                   | `{ user }`                                                                | Clicked on a user tag inside a message          |
+| `open-failed-message`                | `{ roomId, message }`                                                     | Clicked on the failure icon next to a message   |
 | `add-room`                           | -                                                                         | Clicked on the plus icon next to searchbar      |
 | `room-action-handler`(4)             | `{ roomId, action }`                                                      | Clicked on the vertical dots icon inside a room |
 | `menu-action-handler`(5)             | `{ roomId, action }`                                                      | Clicked on the vertical dots icon inside a room |
@@ -596,7 +628,7 @@ messages="[
 | `room-info` (7)                      | `room`                                                                    | Clicked the room header bar                     |
 | `toggle-rooms-list`                  | `{ opened }`                                                              | Clicked on the toggle icon inside a room header |
 | `textarea-action-handler`(8)         | `{ roomId, message }`                                                     | Clicked on custom icon inside the footer        |
-| `typing-message`                     | `{ message, roomId }`                                                     | Started typing a message                        |
+| `typing-message`                     | `{ roomId, message }`                                                     | Started typing a message                        |
 
 **(1)** `fetch-messages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`.<br>
 **(1)** `fetch-messages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top.
@@ -678,8 +710,8 @@ Example:
 ```
 
 | <div style="width:230px">Slot</div> | Action                                                      | Data                                | Overridden slots                                                                                                   |
-| ----------------------------------- | ----------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `custom-action-icon`                | Add a custom icon inside the footer                         | -                                   | -                                                                                                                  |  | `rooms-header` | Add a template on top of rooms list (above the search bar) | - | - |
+| - | - | - | - |
+| `custom-action-icon`                | Add a custom icon inside the footer                         | -                                   | -                                                                                                                  |     | `rooms-header` | Add a template on top of rooms list (above the search bar) | -   | -   |
 | `room-list-item`                    | Replace the template of the room list items                 | `room`                              | `room-list-avatar`, `room-list-options`                                                                            |
 | `room-list-avatar`                  | Replace the avatar of room list items                       | `room`                              |                                                                                                                    |
 | `room-list-options`                 | Replace the template of the list room options               | `room`                              | `room-list-options-icon`                                                                                           |
@@ -690,6 +722,7 @@ Example:
 | `room-header-info`                  | Replace the template of the room header text                | `room`, `typingUsers`, `userStatus` |
 | `room-options`                      | Replace the template of the room options                    | -                                   | menu-icon                                                                                                          |
 | `message`                           | Replace the template of the message box                     | `message`                           | `deleted-icon`, `eye-icon`, `document-icon`, `pencil-icon`, `checkmark-icon`, `dropdown-icon`, `emoji-picker-icon` |
+| `message-failure`                   | Replace the message failure icon                            | -                                   | -                                                                                                                  |
 | `messages-empty`                    | Replace the empty message template                          | -                                   | -                                                                                                                  |
 | `rooms-empty`                       | Replace the empty rooms template                            | -                                   | -                                                                                                                  |
 | `no-room-selected`                  | Replace the no room selected template                       | -                                   | -                                                                                                                  |
@@ -702,6 +735,7 @@ Example:
 | `file-icon`                         | Replace the file icon                                       | -                                   | -                                                                                                                  |
 | `file-close-icon`                   | Replace the file close icon                                 | -                                   | -                                                                                                                  |
 | `edit-close-icon`                   | Replace the edit close icon                                 | -                                   | -                                                                                                                  |
+| `preview-close-icon`                | Replace the media preview close icon                        | -                                   | -                                                                                                                  |
 | `emoji-picker-icon`                 | Replace the emoji picker icon                               | -                                   | -                                                                                                                  |
 | `emoji-picker-reaction-icon`        | Replace the emoji picker reaction icon (in the message box) | -                                   | -                                                                                                                  |
 | `paperclip-icon`                    | Replace the paperclip icon                                  | -                                   | -                                                                                                                  |
@@ -842,7 +876,6 @@ yarn add --save vue
   [messagesLoaded]="messagesLoaded"
   [showFiles]="true"
   [showEmojis]="true"
-  [textFormatting]="true"
   [showReactionEmojis]="true"
   [showFooter]="true"
   (fetch-messages)="fetchMessages($event.detail[0])"
@@ -861,39 +894,6 @@ yarn add --save vue
 ```bash
 # Using npm
 npm install --save https://github.com/antoine92190/vue-advanced-chat/tarball/next
-```
-
-### Install vue migration build
-
-```bash
-# Using npm
-npm install --save-dev @vue/compat
-```
-
-### Add migration build config
-
-```javascript
-// vue.config.js
-
-module.exports = {
-  chainWebpack: config => {
-    config.resolve.alias.set('vue', '@vue/compat')
-
-    config.module
-      .rule('vue')
-      .use('vue-loader')
-      .tap(options => {
-        return {
-          ...options,
-          compilerOptions: {
-            compatConfig: {
-              MODE: 3
-            }
-          }
-        }
-      })
-  }
-}
 ```
 
 <br>

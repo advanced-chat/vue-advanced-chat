@@ -34,6 +34,10 @@
 					:style="{ 'background-image': `url('${message.avatar}')` }"
 				/>
 				<div
+					v-if="hasSenderUserAvatar && !message.avatar"
+					class="vac-avatar-offset"
+				/>
+				<div
 					class="vac-message-container"
 					:class="{
 						'vac-message-container-offset': messageOffset
@@ -50,7 +54,7 @@
 						@mouseleave="onLeaveMessage"
 					>
 						<div
-							v-if="roomUsers.length > 2 && message.senderId !== currentUserId"
+							v-if="showUsername"
 							class="vac-text-username"
 							:class="{
 								'vac-username-reply': !message.deleted && message.replyMessage
@@ -174,10 +178,29 @@
 						@send-message-reaction="sendMessageReaction"
 					/>
 				</div>
+				<slot name="message-failure" v-bind="{ message }">
+					<div
+						v-if="message.failure && message.senderId === currentUserId"
+						class="vac-failure-container vac-svg-button"
+						:class="{
+							'vac-failure-container-avatar':
+								message.avatar && message.senderId === currentUserId
+						}"
+						@click="$emit('open-failed-message', { message })"
+					>
+						<div class="vac-failure-text">
+							!
+						</div>
+					</div>
+				</slot>
 				<div
 					v-if="message.avatar && message.senderId === currentUserId"
 					class="vac-avatar vac-avatar-current"
 					:style="{ 'background-image': `url('${message.avatar}')` }"
+				/>
+				<div
+					v-if="hasCurrentUserAvatar && !message.avatar"
+					class="vac-avatar-current-offset"
 				/>
 			</slot>
 		</div>
@@ -222,9 +245,10 @@ export default {
 		newMessages: { type: Array, default: () => [] },
 		showReactionEmojis: { type: Boolean, required: true },
 		showNewMessagesDivider: { type: Boolean, required: true },
-		textFormatting: { type: Boolean, required: true },
+		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true },
-		hideOptions: { type: Boolean, required: true }
+		hideOptions: { type: Boolean, required: true },
+		usernameOptions: { type: Object, required: true }
 	},
 
 	emits: [
@@ -232,6 +256,7 @@ export default {
 		'message-added',
 		'open-file',
 		'open-user-tag',
+		'open-failed-message',
 		'message-action-handler',
 		'send-message-reaction'
 	],
@@ -249,6 +274,16 @@ export default {
 	},
 
 	computed: {
+		showUsername() {
+			if (
+				!this.usernameOptions.currentUser &&
+				this.message.senderId === this.currentUserId
+			) {
+				return false
+			} else {
+				return this.roomUsers.length >= this.usernameOptions.minUsers
+			}
+		},
 		showDate() {
 			return (
 				this.index > 0 &&
@@ -275,6 +310,16 @@ export default {
 				this.message.senderId === this.currentUserId &&
 				!this.message.deleted &&
 				(this.message.saved || this.message.distributed || this.message.seen)
+			)
+		},
+		hasCurrentUserAvatar() {
+			return this.messages.some(
+				message => message.senderId === this.currentUserId && message.avatar
+			)
+		},
+		hasSenderUserAvatar() {
+			return this.messages.some(
+				message => message.senderId !== this.currentUserId && message.avatar
 			)
 		}
 	},

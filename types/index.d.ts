@@ -1,4 +1,4 @@
-import Vue, { VNode, Component, PluginFunction } from 'vue'
+import Vue, { VNode, PluginFunction } from 'vue'
 
 export type StringNumber = string | number
 
@@ -58,19 +58,24 @@ export interface MessageReactions {
 
 export interface Message {
 	_id: StringNumber
+	indexId?: StringNumber
 	content: string
 	senderId: StringNumber
+	username?: string
+	avatar?: string
 	date: string
 	timestamp: string
-	username?: string
 	system?: boolean
 	saved?: boolean
 	distributed?: boolean
 	seen?: boolean
+	deleted?: boolean
+	failure?: boolean
 	disableActions?: boolean
 	disableReactions?: boolean
 	files?: MessageFile[]
 	reactions?: MessageReactions
+	replyMessage?: Message
 }
 
 export type Messages = Message[]
@@ -81,6 +86,32 @@ export interface CustomAction {
 }
 
 export type CustomActions = CustomAction[]
+
+export interface TextFormatting {
+	disabled?: boolean
+	italic?: string
+	bold?: string
+	strike?: string
+	underline?: string
+	multilineCode?: string
+	inlineCode?: string
+}
+export type TemplateText = { tag: string; text: string }
+
+export type TemplatesText = TemplateText[]
+
+export interface AutoScroll {
+	send: {
+		new: boolean
+		newAfterScrollUp: boolean
+	}
+	receive: {
+		new: boolean
+		newAfterScrollUp: boolean
+	}
+}
+
+export type UsernameOptions = { minUsers: number; currentUser: StringNumber }
 
 export interface Slots {
 	'rooms-header': VNode[]
@@ -137,6 +168,8 @@ export interface Props {
 	'room-actions'?: CustomActions
 	'menu-actions'?: CustomActions
 	'message-actions'?: CustomActions
+	'templates-text'?: TemplatesText
+	'auto-scroll'?: AutoScroll
 	'show-search'?: boolean
 	'show-add-room'?: boolean
 	'show-send-icon'?: boolean
@@ -147,10 +180,11 @@ export interface Props {
 	'show-new-messages-divider'?: boolean
 	'show-footer'?: boolean
 	'text-messages'?: Record<string, StringNumber>
-	'text-formatting'?: number
+	'text-formatting'?: TextFormatting
 	'responsive-breakpoint'?: boolean
 	'single-room'?: boolean
 	'accepted-files'?: string
+	'username-options'?: UsernameOptions
 }
 
 export interface AdvancedChatOptions {

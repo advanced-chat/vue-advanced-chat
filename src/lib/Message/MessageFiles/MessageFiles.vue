@@ -15,7 +15,16 @@
 		</div>
 
 		<div v-for="(file, idx) in otherFiles" :key="idx + 'a'">
-			<div class="vac-file-container" @click.stop="openFile(file, 'download')">
+			<progress-bar
+				v-if="file.progress >= 0"
+				:progress="file.progress"
+				:style="{ top: '54px' }"
+			/>
+			<div
+				class="vac-file-container"
+				:class="{ 'vac-file-container-progress': file.progress >= 0 }"
+				@click.stop="openFile(file, 'download')"
+			>
 				<div class="vac-svg-button">
 					<slot name="document-icon">
 						<svg-icon name="document" />
@@ -47,6 +56,7 @@
 <script>
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import FormatMessage from '../../../components/FormatMessage/FormatMessage'
+import ProgressBar from '../../../components/ProgressBar/ProgressBar'
 
 import MessageFile from './MessageFile/MessageFile'
 
@@ -54,13 +64,13 @@ const { isImageVideoFile } = require('../../../utils/media-file')
 
 export default {
 	name: 'MessageFiles',
-	components: { SvgIcon, FormatMessage, MessageFile },
+	components: { SvgIcon, FormatMessage, ProgressBar, MessageFile },
 
 	props: {
 		currentUserId: { type: [String, Number], required: true },
 		message: { type: Object, required: true },
 		roomUsers: { type: Array, required: true },
-		textFormatting: { type: Boolean, required: true },
+		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true }
 	},
 
