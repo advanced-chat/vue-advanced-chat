@@ -82,6 +82,7 @@
 								:text-formatting="textFormatting"
 								:link-options="linkOptions"
 								:hide-options="hideOptions"
+								:username-options="usernameOptions"
 								@message-added="onMessageAdded"
 								@message-action-handler="messageActionHandler"
 								@open-file="openFile"
@@ -387,7 +388,8 @@ export default {
 		userTagsEnabled: { type: Boolean, required: true },
 		emojisSuggestionEnabled: { type: Boolean, required: true },
 		scrollDistance: { type: Number, required: true },
-		templatesText: { type: Array, default: null }
+		templatesText: { type: Array, default: null },
+		usernameOptions: { type: Object, required: true }
 	},
 
 	emits: [

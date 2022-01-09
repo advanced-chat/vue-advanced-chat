@@ -62,6 +62,7 @@
 				:scroll-distance="scrollDistance"
 				:accepted-files="acceptedFiles"
 				:templates-text="templatesText"
+				:username-options="usernameOptions"
 				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
@@ -189,7 +190,11 @@ export default {
 		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
 		templatesText: { type: Array, default: null },
-		mediaPreviewEnabled: { type: Boolean, default: true }
+		mediaPreviewEnabled: { type: Boolean, default: true },
+		usernameOptions: {
+			type: Object,
+			default: () => ({ minUsers: 3, currentUser: false })
+		}
 	},
 
 	emits: [

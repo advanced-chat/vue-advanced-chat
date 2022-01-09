@@ -111,6 +111,8 @@ export interface AutoScroll {
 	}
 }
 
+export type UsernameOptions = { minUsers: number; currentUser: StringNumber }
+
 export interface Slots {
 	'rooms-header': VNode[]
 	'room-list-item': VNode[]
@@ -182,6 +184,7 @@ export interface Props {
 	'responsive-breakpoint'?: boolean
 	'single-room'?: boolean
 	'accepted-files'?: string
+	'username-options'?: UsernameOptions
 }
 
 export interface AdvancedChatOptions {

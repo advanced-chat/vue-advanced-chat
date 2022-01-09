@@ -54,7 +54,7 @@
 						@mouseleave="onLeaveMessage"
 					>
 						<div
-							v-if="roomUsers.length > 2 && message.senderId !== currentUserId"
+							v-if="showUsername"
 							class="vac-text-username"
 							:class="{
 								'vac-username-reply': !message.deleted && message.replyMessage
@@ -247,7 +247,8 @@ export default {
 		showNewMessagesDivider: { type: Boolean, required: true },
 		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true },
-		hideOptions: { type: Boolean, required: true }
+		hideOptions: { type: Boolean, required: true },
+		usernameOptions: { type: Object, required: true }
 	},
 
 	emits: [
@@ -273,6 +274,16 @@ export default {
 	},
 
 	computed: {
+		showUsername() {
+			if (
+				!this.usernameOptions.currentUser &&
+				this.message.senderId === this.currentUserId
+			) {
+				return false
+			} else {
+				return this.roomUsers.length >= this.usernameOptions.minUsers
+			}
+		},
 		showDate() {
 			return (
 				this.index > 0 &&
