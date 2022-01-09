@@ -86,7 +86,6 @@
 								:show-new-messages-divider="showNewMessagesDivider"
 								:text-formatting="textFormatting"
 								:link-options="linkOptions"
-								:hide-options="hideOptions"
 								:username-options="usernameOptions"
 								:message-selection-enabled="messageSelectionEnabled"
 								:selected-messages="selectedMessages"
@@ -96,7 +95,6 @@
 								@open-user-tag="openUserTag"
 								@open-failed-message="$emit('open-failed-message', $event)"
 								@send-message-reaction="sendMessageReaction"
-								@hide-options="hideOptions = $event"
 								@select-message="selectMessage"
 								@unselect-message="unselectMessage"
 							>
@@ -433,7 +431,6 @@ export default {
 			files: [],
 			fileDialog: false,
 			emojiOpened: false,
-			hideOptions: true,
 			scrollIcon: false,
 			scrollMessagesCount: 0,
 			newMessages: [],
@@ -766,8 +763,6 @@ export default {
 			})
 		},
 		onContainerScroll(e) {
-			this.hideOptions = true
-
 			if (!e.target) return
 
 			const bottomScroll = this.getBottomScroll(e.target)

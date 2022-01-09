@@ -100,7 +100,6 @@ export default {
 		messageActions: { type: Array, required: true },
 		roomFooterRef: { type: HTMLDivElement, default: null },
 		showReactionEmojis: { type: Boolean, required: true },
-		hideOptions: { type: Boolean, required: true },
 		messageHover: { type: Boolean, required: true },
 		hoverMessageId: { type: [String, Number], default: null },
 		hoverAudioProgress: { type: Boolean, required: true }
@@ -110,7 +109,6 @@ export default {
 		'update-emoji-opened',
 		'update-options-opened',
 		'update-message-hover',
-		'hide-options',
 		'message-action-handler',
 		'send-message-reaction'
 	],
@@ -155,12 +153,6 @@ export default {
 			this.$emit('update-emoji-opened', val)
 			if (val) this.optionsOpened = false
 		},
-		hideOptions(val) {
-			if (val) {
-				this.closeEmoji()
-				this.closeOptions()
-			}
-		},
 		optionsOpened(val) {
 			this.$emit('update-options-opened', val)
 		}
@@ -172,8 +164,6 @@ export default {
 
 			this.optionsOpened = !this.optionsOpened
 			if (!this.optionsOpened) return
-
-			this.$emit('hide-options', false)
 
 			setTimeout(() => {
 				if (
@@ -205,7 +195,6 @@ export default {
 		},
 		openEmoji() {
 			this.emojiOpened = !this.emojiOpened
-			this.$emit('hide-options', false)
 		},
 		closeEmoji() {
 			this.emojiOpened = false

@@ -159,11 +159,9 @@
 							:message-actions="messageActions"
 							:room-footer-ref="roomFooterRef"
 							:show-reaction-emojis="showReactionEmojis"
-							:hide-options="hideOptions"
 							:message-hover="messageHover"
 							:hover-message-id="hoverMessageId"
 							:hover-audio-progress="hoverAudioProgress"
-							@hide-options="$emit('hide-options', false)"
 							@update-message-hover="messageHover = $event"
 							@update-options-opened="optionsOpened = $event"
 							@update-emoji-opened="emojiOpened = $event"
@@ -251,14 +249,12 @@ export default {
 		showNewMessagesDivider: { type: Boolean, required: true },
 		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true },
-		hideOptions: { type: Boolean, required: true },
 		usernameOptions: { type: Object, required: true },
 		messageSelectionEnabled: { type: Boolean, required: true },
 		selectedMessages: { type: Array, default: () => [] }
 	},
 
 	emits: [
-		'hide-options',
 		'message-added',
 		'open-file',
 		'open-user-tag',
