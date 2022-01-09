@@ -11,6 +11,7 @@
 			</div>
 			<audio-control
 				:percentage="progress"
+				:message-selection-enabled="messageSelectionEnabled"
 				@change-linehead="onUpdateProgress"
 				@hover-audio-progress="$emit('hover-audio-progress', $event)"
 			/>
@@ -34,7 +35,8 @@ export default {
 
 	props: {
 		messageId: { type: [String, Number], default: null },
-		src: { type: String, default: null }
+		src: { type: String, default: null },
+		messageSelectionEnabled: { type: Boolean, required: true }
 	},
 
 	emits: ['hover-audio-progress', 'update-progress-time'],
@@ -80,7 +82,7 @@ export default {
 			return new Date(seconds * 1000).toISOString().substr(14, 5)
 		},
 		playback() {
-			if (!this.audioSource) return
+			if (this.messageSelectionEnabled || !this.audioSource) return
 
 			if (this.isPlaying) this.player.pause()
 			else setTimeout(() => this.player.play())

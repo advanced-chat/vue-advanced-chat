@@ -117,6 +117,7 @@
 							<audio-player
 								:message-id="message._id"
 								:src="message.files[0].url"
+								:message-selection-enabled="messageSelectionEnabled"
 								@update-progress-time="progressTime = $event"
 								@hover-audio-progress="hoverAudioProgress = $event"
 							>
