@@ -24,7 +24,7 @@
 			<div
 				class="vac-file-container"
 				:class="{ 'vac-file-container-progress': file.progress >= 0 }"
-				@click.stop="openFile(file, 'download')"
+				@click="openFile($event, file, 'download')"
 			>
 				<div class="vac-svg-button">
 					<slot name="document-icon">
@@ -88,8 +88,11 @@ export default {
 	},
 
 	methods: {
-		openFile(file, action) {
-			this.$emit('open-file', { file, action })
+		openFile(event, file, action) {
+			if (!this.messageSelectionEnabled) {
+				event.stopPropagation()
+				this.$emit('open-file', { file, action })
+			}
 		}
 	}
 }
