@@ -15,11 +15,15 @@
 			</message-file>
 		</div>
 
-		<div v-for="(file, idx) in otherFiles" :key="idx + 'a'">
+		<div
+			v-for="(file, idx) in otherFiles"
+			:key="idx + 'a'"
+			class="vac-file-wrapper"
+		>
 			<progress-bar
 				v-if="file.progress >= 0"
 				:progress="file.progress"
-				:style="{ top: '54px' }"
+				:style="{ top: '44px' }"
 			/>
 			<div
 				class="vac-file-container"

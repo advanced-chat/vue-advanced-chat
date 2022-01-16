@@ -1,22 +1,26 @@
 .vac-message-files-container {
-	.vac-file-container {
-		height: 60px;
-		width: 60px;
-		margin: 3px 0 5px;
-		cursor: pointer;
-		transition: all 0.6s;
+	.vac-file-wrapper {
+		position: relative;
 
-		&:hover {
-			opacity: 0.85;
-		}
+		.vac-file-container {
+			height: 60px;
+			width: 60px;
+			margin: 3px 0 5px;
+			cursor: pointer;
+			transition: all 0.6s;
 
-		svg {
-			height: 30px;
-			width: 30px;
-		}
+			&:hover {
+				opacity: 0.85;
+			}
 
-		&.vac-file-container-progress {
-			background-color: rgba(0, 0, 0, 0.3);
+			svg {
+				height: 30px;
+				width: 30px;
+			}
+
+			&.vac-file-container-progress {
+				background-color: rgba(0, 0, 0, 0.3);
+			}
 		}
 	}
 }
