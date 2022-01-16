@@ -1,7 +1,7 @@
 <template>
 	<div
 		v-show="Object.keys(room).length && showFooter"
-		ref="roomFooter"
+		id="room-footer"
 		class="vac-room-footer"
 		:class="{
 			'vac-app-box-shadow': shadowFooter
@@ -89,6 +89,7 @@
 			</div>
 
 			<textarea
+				id="roomTextarea"
 				ref="roomTextarea"
 				:placeholder="textMessages.TYPE_MESSAGE"
 				class="vac-textarea"

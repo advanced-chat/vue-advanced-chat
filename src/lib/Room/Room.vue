@@ -80,7 +80,6 @@
 								:message-actions="messageActions"
 								:room-users="room.users"
 								:text-messages="textMessages"
-								:room-footer-ref="footerRef"
 								:new-messages="newMessages"
 								:show-reaction-emojis="showReactionEmojis"
 								:show-new-messages-divider="showNewMessagesDivider"
@@ -267,9 +266,6 @@ export default {
 		},
 		showMessagesStarted() {
 			return this.messages.length && this.messagesLoaded
-		},
-		footerRef() {
-			return this.getFooterParentRef()?.$refs.roomFooter
 		}
 	},
 

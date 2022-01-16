@@ -158,7 +158,6 @@
 							:current-user-id="currentUserId"
 							:message="message"
 							:message-actions="messageActions"
-							:room-footer-ref="roomFooterRef"
 							:show-reaction-emojis="showReactionEmojis"
 							:message-hover="messageHover"
 							:hover-message-id="hoverMessageId"
@@ -244,7 +243,6 @@ export default {
 		editedMessageId: { type: [String, Number], default: null },
 		roomUsers: { type: Array, default: () => [] },
 		messageActions: { type: Array, required: true },
-		roomFooterRef: { type: HTMLDivElement, default: null },
 		newMessages: { type: Array, default: () => [] },
 		showReactionEmojis: { type: Boolean, required: true },
 		showNewMessagesDivider: { type: Boolean, required: true },

@@ -38,7 +38,6 @@
 					:style="{ right: isMessageActions ? '30px' : '5px' }"
 					:emoji-opened="emojiOpened"
 					:emoji-reaction="true"
-					:room-footer-ref="roomFooterRef"
 					:position-right="message.senderId === currentUserId"
 					@add-emoji="sendMessageReaction"
 					@open-emoji="openEmoji"
@@ -98,7 +97,6 @@ export default {
 		currentUserId: { type: [String, Number], required: true },
 		message: { type: Object, required: true },
 		messageActions: { type: Array, required: true },
-		roomFooterRef: { type: HTMLDivElement, default: null },
 		showReactionEmojis: { type: Boolean, required: true },
 		messageHover: { type: Boolean, required: true },
 		hoverMessageId: { type: [String, Number], default: null },
@@ -166,8 +164,10 @@ export default {
 			if (!this.optionsOpened) return
 
 			setTimeout(() => {
+				const roomFooterRef = document.getElementById('room-footer')
+
 				if (
-					!this.roomFooterRef ||
+					!roomFooterRef ||
 					!this.$refs.menuOptions ||
 					!this.$refs.actionIcon
 				) {
@@ -178,7 +178,7 @@ export default {
 					this.$refs.menuOptions.getBoundingClientRect().height
 
 				const actionIconTop = this.$refs.actionIcon.getBoundingClientRect().top
-				const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
+				const roomFooterTop = roomFooterRef.getBoundingClientRect().top
 
 				const optionsTopPosition =
 					roomFooterTop - actionIconTop > menuOptionsTop + 50
