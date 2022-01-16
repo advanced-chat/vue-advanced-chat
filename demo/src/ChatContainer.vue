@@ -537,29 +537,18 @@ export default {
 					type = file.type
 				}
 
-				const uploadTask = storageService.uploadFileTask(
+				storageService.listenUploadImageProgress(
 					this.currentUserId,
 					messageId,
 					file,
-					type
-				)
-
-				uploadTask.on(
-					'state_changed',
-					snap => {
-						const progress = Math.round(
-							(snap.bytesTransferred / snap.totalBytes) * 100
-						)
+					type,
+					progress => {
 						this.updateFileProgress(messageId, file.localUrl, progress)
 					},
 					_error => {
 						resolve(false)
 					},
-					async () => {
-						const url = await storageService.getFileDownloadUrl(
-							uploadTask.snapshot.ref
-						)
-
+					async url => {
 						const message = await firestoreService.getMessage(roomId, messageId)
 
 						message.files.forEach(f => {
