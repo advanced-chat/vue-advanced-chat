@@ -9,6 +9,8 @@ $media-preview-width-sm: 20px;
 	z-index: 99;
 	width: 100vw;
 	height: 100vh;
+	display: flex;
+	align-items: center;
 	background-color: rgba(0, 0, 0, 0.8);
 	outline: none;
 
@@ -16,6 +18,7 @@ $media-preview-width-sm: 20px;
 		height: calc(100% - #{$media-preview-height * 2});
 		width: calc(100% - #{$media-preview-width-lg * 2});
 		padding: $media-preview-height $media-preview-width-lg;
+		margin: 0 auto;
 	}
 
 	.vac-image-preview {
