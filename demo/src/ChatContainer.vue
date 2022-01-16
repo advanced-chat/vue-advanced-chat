@@ -652,8 +652,13 @@ export default {
 				return this.loadRoom(query2)
 			}
 
+			const users =
+				user._id === this.currentUserId
+					? [this.currentUserId]
+					: [user._id, this.currentUserId]
+
 			const room = await firestoreService.addRoom({
-				users: [user._id, this.currentUserId],
+				users: users,
 				lastUpdated: new Date()
 			})
 
