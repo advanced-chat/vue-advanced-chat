@@ -83,8 +83,8 @@
 <script>
 import vClickOutside from 'v-click-outside'
 
-import SvgIcon from '../../../components/SvgIcon/SvgIcon'
-import EmojiPickerContainer from '../../../components/EmojiPickerContainer/EmojiPickerContainer'
+import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
+import EmojiPickerContainer from '../../../../components/EmojiPickerContainer/EmojiPickerContainer'
 
 export default {
 	name: 'MessageActions',

@@ -159,7 +159,7 @@ import SvgIcon from '../../components/SvgIcon/SvgIcon'
 
 import RoomHeader from './RoomHeader/RoomHeader'
 import RoomFooter from './RoomFooter/RoomFooter'
-import Message from '../Message/Message'
+import Message from './Message/Message'
 
 const { detectMobile } = require('../../utils/mobile-detection')
 

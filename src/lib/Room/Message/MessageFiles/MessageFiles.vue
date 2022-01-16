@@ -59,13 +59,13 @@
 </template>
 
 <script>
-import SvgIcon from '../../../components/SvgIcon/SvgIcon'
-import FormatMessage from '../../../components/FormatMessage/FormatMessage'
-import ProgressBar from '../../../components/ProgressBar/ProgressBar'
+import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
+import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
+import ProgressBar from '../../../../components/ProgressBar/ProgressBar'
 
 import MessageFile from './MessageFile/MessageFile'
 
-const { isImageVideoFile } = require('../../../utils/media-file')
+const { isImageVideoFile } = require('../../../../utils/media-file')
 
 export default {
 	name: 'MessageFiles',

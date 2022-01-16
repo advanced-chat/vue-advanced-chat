@@ -211,8 +211,8 @@
 </template>
 
 <script>
-import SvgIcon from '../../components/SvgIcon/SvgIcon'
-import FormatMessage from '../../components/FormatMessage/FormatMessage'
+import SvgIcon from '../../../components/SvgIcon/SvgIcon'
+import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 
 import MessageReply from './MessageReply/MessageReply'
 import MessageFiles from './MessageFiles/MessageFiles'
@@ -220,8 +220,8 @@ import MessageActions from './MessageActions/MessageActions'
 import MessageReactions from './MessageReactions/MessageReactions'
 import AudioPlayer from './AudioPlayer/AudioPlayer'
 
-const { messagesValidation } = require('../../utils/data-validation')
-const { isAudioFile } = require('../../utils/media-file')
+const { messagesValidation } = require('../../../utils/data-validation')
+const { isAudioFile } = require('../../../utils/media-file')
 
 export default {
 	name: 'Message',

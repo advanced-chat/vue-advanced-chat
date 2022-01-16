@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import SvgIcon from '../../../components/SvgIcon/SvgIcon'
+import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
 
 import AudioControl from './AudioControl/AudioControl'
 
