@@ -126,7 +126,7 @@
 		</div>
 
 		<room-footer
-			ref="roomTextareaParent"
+			ref="roomFooterParent"
 			:room="room"
 			:room-message="roomMessage"
 			:text-messages="textMessages"
@@ -271,7 +271,7 @@ export default {
 			return this.messages.length && this.messagesLoaded
 		},
 		footerRef() {
-			return this.getTextareaParentRef()?.$refs.roomFooter
+			return this.getFooterParentRef()?.$refs.roomFooter
 		}
 	},
 
@@ -371,11 +371,11 @@ export default {
 				observer.observe(container.children[i])
 			}
 		},
-		getTextareaParentRef() {
-			return this.$refs.roomTextareaParent
+		getFooterParentRef() {
+			return this.$refs.roomFooterParent
 		},
 		getTextareaRef() {
-			return this.getTextareaParentRef()?.$refs.roomTextarea
+			return this.getFooterParentRef()?.$refs.roomTextarea
 		},
 		focusTextarea(disableMobileFocus) {
 			if (detectMobile() && disableMobileFocus) return
@@ -415,12 +415,12 @@ export default {
 			this.scrollMessagesCount = 0
 			this.resetMessageSelection()
 
-			if (this.getTextareaParentRef()) {
-				this.getTextareaParentRef().resetMessage(true, true)
+			if (this.getFooterParentRef()) {
+				this.getFooterParentRef().resetMessage(true, true)
 
 				if (this.roomMessage) {
-					this.getTextareaParentRef().message = this.roomMessage
-					setTimeout(() => this.getTextareaParentRef().onChangeInput())
+					this.getFooterParentRef().message = this.roomMessage
+					setTimeout(() => this.getFooterParentRef().onChangeInput())
 				}
 			}
 
@@ -526,9 +526,9 @@ export default {
 		messageActionHandler({ action, message }) {
 			switch (action.name) {
 				case 'replyMessage':
-					return this.getTextareaParentRef().replyMessage(message)
+					return this.getFooterParentRef().replyMessage(message)
 				case 'editMessage':
-					return this.getTextareaParentRef().editMessage(message)
+					return this.getFooterParentRef().editMessage(message)
 				case 'deleteMessage':
 					return this.$emit('delete-message', message)
 				case 'selectMessages':

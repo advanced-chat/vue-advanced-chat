@@ -208,7 +208,7 @@ const debounce = (func, delay) => {
 }
 
 export default {
-	name: 'RoomTextarea',
+	name: 'RoomFooter',
 
 	components: {
 		SvgIcon,
