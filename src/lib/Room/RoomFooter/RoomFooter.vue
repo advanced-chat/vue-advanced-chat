@@ -353,9 +353,7 @@ export default {
 				}
 
 				setTimeout(() => {
-					this.updateFooterList('@')
-					this.updateFooterList(':')
-					this.updateFooterList('/')
+					this.updateFooterLists()
 				}, 60)
 			}),
 			50
@@ -363,10 +361,7 @@ export default {
 
 		this.getTextareaRef().addEventListener('click', () => {
 			if (isMobile) this.keepKeyboardOpen = true
-
-			this.updateFooterList('@')
-			this.updateFooterList(':')
-			this.updateFooterList('/')
+			this.updateFooterLists()
 		})
 
 		this.getTextareaRef().addEventListener('blur', () => {
@@ -662,6 +657,11 @@ export default {
 			this.editedMessage = {}
 			this.messageReply = message
 			this.focusTextarea()
+		},
+		updateFooterLists() {
+			this.updateFooterList('@')
+			this.updateFooterList(':')
+			this.updateFooterList('/')
 		},
 		updateFooterList(tagChar) {
 			if (!this.getTextareaRef()) return
