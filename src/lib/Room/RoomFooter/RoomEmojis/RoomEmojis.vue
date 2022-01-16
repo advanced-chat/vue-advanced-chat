@@ -3,7 +3,7 @@
 		<div
 			v-if="filteredEmojis.length"
 			class="vac-emojis-container"
-			:style="{ bottom: `${$parent.$refs.roomFooter.clientHeight}px` }"
+			:style="{ bottom: `${footerHeight}px` }"
 		>
 			<div
 				v-for="(emoji, index) in filteredEmojis"
@@ -34,6 +34,12 @@ export default {
 	data() {
 		return {
 			activeItem: null
+		}
+	},
+
+	computed: {
+		footerHeight() {
+			return document.getElementById('room-footer').clientHeight
 		}
 	},
 
