@@ -161,8 +161,6 @@ import RoomHeader from './RoomHeader/RoomHeader'
 import RoomFooter from './RoomFooter/RoomFooter'
 import RoomMessage from './RoomMessage/RoomMessage'
 
-const { detectMobile } = require('../../utils/mobile-detection')
-
 export default {
 	name: 'Room',
 	components: {
@@ -281,7 +279,6 @@ export default {
 				this.infiniteState = null
 			} else {
 				if (this.infiniteState) this.infiniteState.loaded()
-				this.focusTextarea(true)
 				setTimeout(() => this.initIntersectionObserver())
 			}
 		},
@@ -373,14 +370,6 @@ export default {
 		},
 		getFooterParentRef() {
 			return this.$refs.roomFooterParent
-		},
-		getTextareaRef() {
-			return this.getFooterParentRef()?.$refs.roomTextarea
-		},
-		focusTextarea(disableMobileFocus) {
-			if (detectMobile() && disableMobileFocus) return
-			if (!this.getTextareaRef()) return
-			this.getTextareaRef().focus()
 		},
 		touchStart(touchEvent) {
 			if (this.singleRoom) return
