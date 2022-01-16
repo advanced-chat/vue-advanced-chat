@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import SvgIcon from '../../../components/SvgIcon/SvgIcon'
+import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
 
 import RoomFile from './RoomFile/RoomFile'
 

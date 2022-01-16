@@ -7,14 +7,15 @@
 @import '../lib/MediaPreview/MediaPreview';
 
 @import '../lib/Room/Room';
-@import '../lib/Room/RoomEmojis/RoomEmojis';
 @import '../lib/Room/RoomHeader/RoomHeader';
+
 @import '../lib/Room/RoomFooter/RoomFooter';
-@import '../lib/Room/RoomMessageReply/RoomMessageReply';
-@import '../lib/Room/RoomFiles/RoomFiles';
-@import '../lib/Room/RoomFiles/RoomFile/RoomFile';
-@import '../lib/Room/RoomUsersTag/RoomUsersTag';
-@import '../lib/Room/RoomTemplatesText/RoomTemplatesText';
+@import '../lib/Room/RoomFooter/RoomEmojis/RoomEmojis';
+@import '../lib/Room/RoomFooter/RoomMessageReply/RoomMessageReply';
+@import '../lib/Room/RoomFooter/RoomFiles/RoomFiles';
+@import '../lib/Room/RoomFooter/RoomFiles/RoomFile/RoomFile';
+@import '../lib/Room/RoomFooter/RoomUsersTag/RoomUsersTag';
+@import '../lib/Room/RoomFooter/RoomTemplatesText/RoomTemplatesText';
 
 @import '../lib/RoomsList/RoomsList';
 @import '../lib/RoomsList/RoomContent/RoomContent';

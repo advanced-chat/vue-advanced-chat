@@ -71,16 +71,16 @@
 </template>
 
 <script>
-import SvgIcon from '../../../components/SvgIcon/SvgIcon'
-import FormatMessage from '../../../components/FormatMessage/FormatMessage'
+import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
+import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
 
-import AudioPlayer from '../../Message/AudioPlayer/AudioPlayer'
+import AudioPlayer from '../../../Message/AudioPlayer/AudioPlayer'
 
 const {
 	isAudioFile,
 	isImageFile,
 	isVideoFile
-} = require('../../../utils/media-file')
+} = require('../../../../utils/media-file')
 
 export default {
 	name: 'RoomMessageReply',
