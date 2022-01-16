@@ -274,7 +274,6 @@ export default {
 			filteredUsersTag: [],
 			selectedUsersTag: [],
 			filteredTemplatesText: [],
-			textareaCursorPosition: null,
 			recorder: this.initRecorder(),
 			isRecording: false
 		}
@@ -661,15 +660,9 @@ export default {
 				return
 			}
 
-			if (
-				this.textareaCursorPosition === this.getTextareaRef().selectionStart
-			) {
-				return
-			}
+			const textareaCursorPosition = this.getTextareaRef().selectionStart
 
-			this.textareaCursorPosition = this.getTextareaRef().selectionStart
-
-			let position = this.textareaCursorPosition
+			let position = textareaCursorPosition
 
 			while (
 				position > 0 &&
@@ -687,10 +680,7 @@ export default {
 				this.message.charAt(position - 1) === tagChar &&
 				(!beforeTag || beforeTag === ' ' || notLetterNumber)
 			) {
-				const query = this.message.substring(
-					position,
-					this.textareaCursorPosition
-				)
+				const query = this.message.substring(position, textareaCursorPosition)
 				if (tagChar === ':') {
 					this.updateEmojis(query)
 				} else if (tagChar === '@') {
@@ -774,8 +764,6 @@ export default {
 				this.filteredUsersTag = []
 				this.filteredTemplatesText = []
 			}
-
-			this.textareaCursorPosition = null
 		},
 		resetMessage(disableMobileFocus = false, initRoom = false) {
 			if (!initRoom) {
