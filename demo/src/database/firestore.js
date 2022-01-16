@@ -39,11 +39,13 @@ export const firestoreListener = onSnapshot
 export const deleteDbField = deleteField()
 
 const getDocuments = query => {
-	return getDocs(query)
+	return getDocs(query).then(docs => {
+		return { data: formatQueryDataArray(docs), docs: docs.docs }
+	})
 }
 
 const getDocument = ref => {
-	return getDoc(ref)
+	return getDoc(ref).then(doc => formatQueryDataObject(doc))
 }
 
 const addDocument = (ref, data) => {
@@ -182,9 +184,7 @@ export const getMessages = (roomId, messagesPerPage, lastLoadedMessage) => {
 				limit(messagesPerPage),
 				startAfter(lastLoadedMessage)
 			)
-		).then(messages => {
-			return { messages: formatQueryDataArray(messages), docs: messages.docs }
-		})
+		)
 	} else if (messagesPerPage) {
 		return getDocuments(
 			query(
@@ -192,13 +192,9 @@ export const getMessages = (roomId, messagesPerPage, lastLoadedMessage) => {
 				orderBy(TIMESTAMP_FIELD, 'desc'),
 				limit(messagesPerPage)
 			)
-		).then(messages => {
-			return { messages: formatQueryDataArray(messages), docs: messages.docs }
-		})
+		)
 	} else {
-		return getDocuments(messagesRef(roomId)).then(messages => {
-			return { messages: formatQueryDataArray(messages), docs: messages.docs }
-		})
+		return getDocuments(messagesRef(roomId))
 	}
 }
 
