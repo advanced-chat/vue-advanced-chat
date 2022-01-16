@@ -227,6 +227,7 @@ export default {
 
 	props: {
 		room: { type: Object, required: true },
+		roomId: { type: [String, Number], required: true },
 		roomMessage: { type: String, default: null },
 		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true },
@@ -242,7 +243,9 @@ export default {
 		emojisSuggestionEnabled: { type: Boolean, required: true },
 		templatesText: { type: Array, default: null },
 		audioBitRate: { type: Number, required: true },
-		audioSampleRate: { type: Number, required: true }
+		audioSampleRate: { type: Number, required: true },
+		initReplyMessage: { type: Object, default: null },
+		initEditMessage: { type: Object, default: null }
 	},
 
 	emits: [
@@ -302,6 +305,14 @@ export default {
 	},
 
 	watch: {
+		roomId() {
+			this.resetMessage(true, true)
+
+			if (this.roomMessage) {
+				this.message = this.roomMessage
+				setTimeout(() => this.onChangeInput())
+			}
+		},
 		message(val) {
 			this.getTextareaRef().value = val
 		},
@@ -313,6 +324,12 @@ export default {
 		},
 		editedMessage(val) {
 			this.$emit('update-edited-message-id', val._id)
+		},
+		initReplyMessage(val) {
+			this.replyMessage(val)
+		},
+		initEditMessage(val) {
+			this.editMessage(val)
 		}
 	},
 

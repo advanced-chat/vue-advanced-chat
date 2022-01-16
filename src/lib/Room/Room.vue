@@ -125,8 +125,8 @@
 		</div>
 
 		<room-footer
-			ref="roomFooterParent"
 			:room="room"
+			:room-id="roomId"
 			:room-message="roomMessage"
 			:text-messages="textMessages"
 			:show-send-icon="showSendIcon"
@@ -143,6 +143,8 @@
 			:link-options="linkOptions"
 			:audio-bit-rate="audioBitRate"
 			:audio-sample-rate="audioSampleRate"
+			:init-reply-message="initReplyMessage"
+			:init-edit-message="initEditMessage"
 			@update-edited-message-id="editedMessageId = $event"
 			@edit-message="$emit('edit-message', $event)"
 			@send-message="$emit('send-message', $event)"
@@ -229,6 +231,8 @@ export default {
 	data() {
 		return {
 			editedMessageId: null,
+			initReplyMessage: null,
+			initEditMessage: null,
 			infiniteState: null,
 			loadingMessages: false,
 			observer: null,
@@ -248,7 +252,7 @@ export default {
 		},
 		showNoMessages() {
 			return (
-				this.room.roomId &&
+				this.roomId &&
 				!this.messages.length &&
 				!this.loadingMessages &&
 				!this.loadingRooms
@@ -257,7 +261,7 @@ export default {
 		showNoRoom() {
 			const noRoomSelected =
 				(!this.rooms.length && !this.loadingRooms) ||
-				(!this.room.roomId && !this.loadFirstRoom)
+				(!this.roomId && !this.loadFirstRoom)
 
 			if (noRoomSelected) {
 				this.loadingMessages = false /* eslint-disable-line vue/no-side-effects-in-computed-properties */
@@ -278,13 +282,8 @@ export default {
 				setTimeout(() => this.initIntersectionObserver())
 			}
 		},
-		room: {
-			immediate: true,
-			handler(newVal, oldVal) {
-				if (newVal.roomId && (!oldVal || newVal.roomId !== oldVal.roomId)) {
-					this.onRoomChanged()
-				}
-			}
+		roomId() {
+			this.onRoomChanged()
 		},
 		messages: {
 			deep: true,
@@ -364,9 +363,6 @@ export default {
 				observer.observe(container.children[i])
 			}
 		},
-		getFooterParentRef() {
-			return this.$refs.roomFooterParent
-		},
 		touchStart(touchEvent) {
 			if (this.singleRoom) return
 
@@ -399,15 +395,6 @@ export default {
 			this.scrollIcon = false
 			this.scrollMessagesCount = 0
 			this.resetMessageSelection()
-
-			if (this.getFooterParentRef()) {
-				this.getFooterParentRef().resetMessage(true, true)
-
-				if (this.roomMessage) {
-					this.getFooterParentRef().message = this.roomMessage
-					setTimeout(() => this.getFooterParentRef().onChangeInput())
-				}
-			}
 
 			if (!this.messages.length && this.messagesLoaded) {
 				this.loadingMessages = false
@@ -494,7 +481,7 @@ export default {
 				() => {
 					if (this.loadingMoreMessages) return
 
-					if (this.messagesLoaded || !this.room.roomId) {
+					if (this.messagesLoaded || !this.roomId) {
 						this.loadingMoreMessages = false
 						this.showLoader = false
 						return
@@ -511,9 +498,11 @@ export default {
 		messageActionHandler({ action, message }) {
 			switch (action.name) {
 				case 'replyMessage':
-					return this.getFooterParentRef().replyMessage(message)
+					this.initReplyMessage = message
+					return
 				case 'editMessage':
-					return this.getFooterParentRef().editMessage(message)
+					this.initEditMessage = message
+					return
 				case 'deleteMessage':
 					return this.$emit('delete-message', message)
 				case 'selectMessages':
