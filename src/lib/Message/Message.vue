@@ -241,7 +241,7 @@ export default {
 		index: { type: Number, required: true },
 		message: { type: Object, required: true },
 		messages: { type: Array, required: true },
-		editedMessage: { type: Object, required: true },
+		editedMessageId: { type: [String, Number], default: null },
 		roomUsers: { type: Array, default: () => [] },
 		messageActions: { type: Array, required: true },
 		roomFooterRef: { type: HTMLDivElement, default: null },
@@ -303,7 +303,7 @@ export default {
 		},
 		isMessageHover() {
 			return (
-				this.editedMessage._id === this.message._id ||
+				this.editedMessageId === this.message._id ||
 				this.hoverMessageId === this.message._id
 			)
 		},

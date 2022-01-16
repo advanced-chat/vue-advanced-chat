@@ -1,0 +1,166 @@
+.vac-room-footer {
+	width: 100%;
+	border-bottom-right-radius: 4px;
+	z-index: 10;
+}
+
+.vac-box-footer {
+	display: flex;
+	position: relative;
+	background: var(--chat-footer-bg-color);
+	padding: 10px 8px 10px;
+}
+
+.vac-textarea {
+	height: 20px;
+	width: 100%;
+	line-height: 20px;
+	overflow: hidden;
+	outline: 0;
+	resize: none;
+	border-radius: 20px;
+	padding: 12px 16px;
+	box-sizing: content-box;
+	font-size: 16px;
+	background: var(--chat-bg-color-input);
+	color: var(--chat-color);
+	caret-color: var(--chat-color-caret);
+	border: var(--chat-border-style-input);
+
+	&::placeholder {
+		color: var(--chat-color-placeholder);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}
+
+.vac-textarea-outline {
+	border: 1px solid var(--chat-border-color-input-selected);
+	box-shadow: inset 0px 0px 0px 1px var(--chat-border-color-input-selected);
+}
+
+.vac-icon-textarea,
+.vac-icon-textarea-left {
+	display: flex;
+	align-items: center;
+
+	svg,
+	.vac-wrapper {
+		margin: 0 7px;
+	}
+}
+
+.vac-icon-textarea {
+	margin-left: 5px;
+}
+
+.vac-icon-textarea-left {
+	display: flex;
+	align-items: center;
+	margin-right: 5px;
+
+	svg,
+	.vac-wrapper {
+		margin: 0 7px;
+	}
+
+	.vac-icon-microphone {
+		fill: var(--chat-icon-color-microphone);
+		margin: 0 7px;
+	}
+
+	.vac-dot-audio-record {
+		height: 15px;
+		width: 15px;
+		border-radius: 50%;
+		background-color: var(--chat-message-bg-color-audio-record);
+		animation: vac-scaling 0.8s ease-in-out infinite alternate;
+
+		@keyframes vac-scaling {
+			0% {
+				transform: scale(1);
+				opacity: 0.4;
+			}
+			100% {
+				transform: scale(1.1);
+				opacity: 1;
+			}
+		}
+	}
+
+	.vac-dot-audio-record-time {
+		font-size: 16px;
+		color: var(--chat-color);
+		margin-left: 8px;
+		width: 45px;
+	}
+
+	$audio-icon-size: 28px;
+
+	.vac-icon-audio-stop,
+	.vac-icon-audio-confirm {
+		min-height: $audio-icon-size;
+		min-width: $audio-icon-size;
+
+		svg {
+			min-height: $audio-icon-size;
+			min-width: $audio-icon-size;
+		}
+	}
+
+	.vac-icon-audio-stop {
+		margin-right: 20px;
+
+		#vac-icon-close-outline {
+			fill: var(--chat-icon-color-audio-cancel);
+		}
+	}
+
+	.vac-icon-audio-confirm {
+		margin-right: 3px;
+		margin-left: 12px;
+
+		#vac-icon-checkmark {
+			fill: var(--chat-icon-color-audio-confirm);
+		}
+	}
+}
+
+.vac-send-disabled,
+.vac-send-disabled svg {
+	cursor: none !important;
+	pointer-events: none !important;
+	transform: none !important;
+}
+
+@media only screen and (max-width: 768px) {
+	.vac-room-footer {
+		width: 100%;
+	}
+
+	.vac-box-footer {
+		padding: 7px 2px 7px 7px;
+
+		&.vac-box-footer-border {
+			border-top: var(--chat-border-style-input);
+		}
+	}
+
+	.vac-textarea {
+		padding: 7px;
+		line-height: 18px;
+
+		&::placeholder {
+			color: transparent;
+		}
+	}
+
+	.vac-icon-textarea,
+	.vac-icon-textarea-left {
+		svg,
+		.vac-wrapper {
+			margin: 0 5px !important;
+		}
+	}
+}
