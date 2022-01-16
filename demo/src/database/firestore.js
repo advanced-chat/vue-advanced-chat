@@ -182,7 +182,9 @@ export const getMessages = (roomId, messagesPerPage, lastLoadedMessage) => {
 				limit(messagesPerPage),
 				startAfter(lastLoadedMessage)
 			)
-		)
+		).then(messages => {
+			return { messages: formatQueryDataArray(messages), docs: messages.docs }
+		})
 	} else if (messagesPerPage) {
 		return getDocuments(
 			query(
@@ -190,9 +192,13 @@ export const getMessages = (roomId, messagesPerPage, lastLoadedMessage) => {
 				orderBy(TIMESTAMP_FIELD, 'desc'),
 				limit(messagesPerPage)
 			)
-		)
+		).then(messages => {
+			return { messages: formatQueryDataArray(messages), docs: messages.docs }
+		})
 	} else {
-		return getDocuments(messagesRef(roomId))
+		return getDocuments(messagesRef(roomId)).then(messages => {
+			return { messages: formatQueryDataArray(messages), docs: messages.docs }
+		})
 	}
 }
 
@@ -210,6 +216,12 @@ export const updateMessage = (roomId, messageId, data) => {
 
 export const deleteMessage = (roomId, messageId) => {
 	return deleteDocument(MESSAGE_PATH(roomId), messageId)
+}
+
+export const listenRooms = (query, callback) => {
+	return firestoreListener(query, rooms => {
+		callback(formatQueryDataArray(rooms))
+	})
 }
 
 export const paginatedMessagesQuery = (
@@ -241,8 +253,45 @@ export const paginatedMessagesQuery = (
 	}
 }
 
-export const lastMessageQuery = roomId => {
+export const listenMessages = (
+	roomId,
+	lastLoadedMessage,
+	previousLastLoadedMessage,
+	callback
+) => {
+	return firestoreListener(
+		paginatedMessagesQuery(
+			roomId,
+			lastLoadedMessage,
+			previousLastLoadedMessage
+		),
+		messages => {
+			callback(formatQueryDataArray(messages))
+		}
+	)
+}
+
+const formatQueryDataObject = queryData => {
+	return { ...queryData.data(), id: queryData.id }
+}
+
+const formatQueryDataArray = queryDataArray => {
+	const formattedData = []
+
+	queryDataArray.forEach(data => {
+		formattedData.push(formatQueryDataObject(data))
+	})
+	return formattedData
+}
+
+const lastMessageQuery = roomId => {
 	return query(messagesRef(roomId), orderBy(TIMESTAMP_FIELD, 'desc'), limit(1))
+}
+
+export const listenLastMessage = (roomId, callback) => {
+	return firestoreListener(query(lastMessageQuery(roomId)), messages => {
+		callback(formatQueryDataArray(messages))
+	})
 }
 
 export const updateMessageReactions = (

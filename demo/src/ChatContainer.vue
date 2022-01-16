@@ -299,12 +299,12 @@ export default {
 		},
 
 		listenLastMessage(room) {
-			const listener = firestoreService.firestoreListener(
-				firestoreService.lastMessageQuery(room.roomId),
+			const listener = firestoreService.listenLastMessage(
+				room.roomId,
 				messages => {
-					// this.incrementDbCounter('Listen Last Room Message', messages.size)
+					// this.incrementDbCounter('Listen Last Room Message', messages.length)
 					messages.forEach(message => {
-						const lastMessage = this.formatLastMessage(message.data(), room)
+						const lastMessage = this.formatLastMessage(message, room)
 						const roomIndex = this.rooms.findIndex(
 							r => room.roomId === r.roomId
 						)
@@ -374,11 +374,11 @@ export default {
 
 			firestoreService
 				.getMessages(room.roomId, this.messagesPerPage, this.lastLoadedMessage)
-				.then(messages => {
-					// this.incrementDbCounter('Fetch Room Messages', messages.size)
+				.then(({ messages, docs }) => {
+					// this.incrementDbCounter('Fetch Room Messages', messages.length)
 					if (this.selectedRoom !== room.roomId) return
 
-					if (messages.empty || messages.docs.length < this.messagesPerPage) {
+					if (messages.length === 0 || messages.length < this.messagesPerPage) {
 						setTimeout(() => (this.messagesLoaded = true), 0)
 					}
 
@@ -392,43 +392,42 @@ export default {
 					if (this.lastLoadedMessage) {
 						this.previousLastLoadedMessage = this.lastLoadedMessage
 					}
-					this.lastLoadedMessage = messages.docs[messages.docs.length - 1]
+					this.lastLoadedMessage = docs[docs.length - 1]
 
-					const listener = firestoreService.firestoreListener(
-						firestoreService.paginatedMessagesQuery(
-							room.roomId,
-							this.lastLoadedMessage,
-							this.previousLastLoadedMessage
-						),
-						snapshots => {
-							// this.incrementDbCounter('Listen Room Messages', snapshots.size)
-							this.listenMessages(snapshots, room)
-						}
-					)
-					this.listeners.push(listener)
+					this.listenMessages(room)
 				})
 		},
 
-		listenMessages(messages, room) {
-			messages.forEach(message => {
-				const formattedMessage = this.formatMessage(room, message)
-				const messageIndex = this.messages.findIndex(m => m._id === message.id)
+		listenMessages(room) {
+			const listener = firestoreService.listenMessages(
+				room.roomId,
+				this.lastLoadedMessage,
+				this.previousLastLoadedMessage,
+				messages => {
+					messages.forEach(message => {
+						const formattedMessage = this.formatMessage(room, message)
+						const messageIndex = this.messages.findIndex(
+							m => m._id === message.id
+						)
 
-				if (messageIndex === -1) {
-					this.messages = this.messages.concat([formattedMessage])
-				} else {
-					this.messages[messageIndex] = formattedMessage
-					this.messages = [...this.messages]
+						if (messageIndex === -1) {
+							this.messages = this.messages.concat([formattedMessage])
+						} else {
+							this.messages[messageIndex] = formattedMessage
+							this.messages = [...this.messages]
+						}
+
+						this.markMessagesSeen(room, message)
+					})
 				}
-
-				this.markMessagesSeen(room, message)
-			})
+			)
+			this.listeners.push(listener)
 		},
 
 		markMessagesSeen(room, message) {
 			if (
-				message.data().sender_id !== this.currentUserId &&
-				(!message.data().seen || !message.data().seen[this.currentUserId])
+				message.sender_id !== this.currentUserId &&
+				(!message.seen || !message.seen[this.currentUserId])
 			) {
 				firestoreService.updateMessage(room.roomId, message.id, {
 					[`seen.${this.currentUserId}`]: new Date()
@@ -437,29 +436,26 @@ export default {
 		},
 
 		formatMessage(room, message) {
-			const { timestamp } = message.data()
-
 			const formattedMessage = {
-				...message.data(),
+				...message,
 				...{
-					senderId: message.data().sender_id,
+					senderId: message.sender_id,
 					_id: message.id,
-					seconds: timestamp.seconds,
-					timestamp: parseTimestamp(timestamp, 'HH:mm'),
-					date: parseTimestamp(timestamp, 'DD MMMM YYYY'),
-					username: room.users.find(
-						user => message.data().sender_id === user._id
-					)?.username,
+					seconds: message.timestamp.seconds,
+					timestamp: parseTimestamp(message.timestamp, 'HH:mm'),
+					date: parseTimestamp(message.timestamp, 'DD MMMM YYYY'),
+					username: room.users.find(user => message.sender_id === user._id)
+						?.username,
 					// avatar: senderUser ? senderUser.avatar : null,
 					distributed: true
 				}
 			}
 
-			if (message.data().replyMessage) {
+			if (message.replyMessage) {
 				formattedMessage.replyMessage = {
-					...message.data().replyMessage,
+					...message.replyMessage,
 					...{
-						senderId: message.data().replyMessage.sender_id
+						senderId: message.replyMessage.sender_id
 					}
 				}
 			}
@@ -732,13 +728,13 @@ export default {
 		},
 
 		async listenRooms(query) {
-			const listener = firestoreService.firestoreListener(query, rooms => {
+			const listener = firestoreService.listenRooms(query, rooms => {
 				// this.incrementDbCounter('Listen Rooms Typing Users', rooms.size)
 				rooms.forEach(room => {
 					const foundRoom = this.rooms.find(r => r.roomId === room.id)
 					if (foundRoom) {
-						foundRoom.typingUsers = room.data().typingUsers
-						foundRoom.index = room.data().lastUpdated.seconds
+						foundRoom.typingUsers = room.typingUsers
+						foundRoom.index = room.lastUpdated.seconds
 					}
 				})
 			})
@@ -844,11 +840,11 @@ export default {
 				return alert('Nope, for demo purposes you cannot delete this room')
 			}
 
-			firestoreService.getMessages(roomId).then(messages => {
+			firestoreService.getMessages(roomId).then(({ messages }) => {
 				messages.forEach(message => {
 					firestoreService.deleteMessage(roomId, message.id)
-					if (message.data().files) {
-						message.data().files.forEach(file => {
+					if (message.files) {
+						message.files.forEach(file => {
 							storageService.deleteFile(this.currentUserId, message.id, file)
 						})
 					}
