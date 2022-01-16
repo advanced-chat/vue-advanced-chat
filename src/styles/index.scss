@@ -21,14 +21,14 @@
 @import '../lib/RoomsList/RoomContent/RoomContent';
 @import '../lib/RoomsList/RoomsSearch/RoomsSearch';
 
-@import '../lib/Room/Message/Message';
-@import '../lib/Room/Message/AudioPlayer/AudioPlayer';
-@import '../lib/Room/Message/AudioPlayer/AudioControl/AudioControl';
-@import '../lib/Room/Message/MessageActions/MessageActions';
-@import '../lib/Room/Message/MessageFiles/MessageFiles';
-@import '../lib/Room/Message/MessageFiles/MessageFile/MessageFile';
-@import '../lib/Room/Message/MessageReactions/MessageReactions';
-@import '../lib/Room/Message/MessageReply/MessageReply';
+@import '../lib/Room/RoomMessage/RoomMessage';
+@import '../lib/Room/RoomMessage/AudioPlayer/AudioPlayer';
+@import '../lib/Room/RoomMessage/AudioPlayer/AudioControl/AudioControl';
+@import '../lib/Room/RoomMessage/MessageActions/MessageActions';
+@import '../lib/Room/RoomMessage/MessageFiles/MessageFiles';
+@import '../lib/Room/RoomMessage/MessageFiles/MessageFile/MessageFile';
+@import '../lib/Room/RoomMessage/MessageReactions/MessageReactions';
+@import '../lib/Room/RoomMessage/MessageReply/MessageReply';
 
 @import '../components/EmojiPickerContainer/EmojiPickerContainer';
 @import '../components/FormatMessage/FormatMessage';

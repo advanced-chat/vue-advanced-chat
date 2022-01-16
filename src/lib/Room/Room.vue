@@ -71,7 +71,7 @@
 					</div>
 					<transition-group :key="roomId" name="vac-fade-message" tag="span">
 						<div v-for="(m, i) in messages" :key="m.indexId || m._id">
-							<message
+							<room-message
 								:current-user-id="currentUserId"
 								:message="m"
 								:index="i"
@@ -101,7 +101,7 @@
 								<template v-for="(idx, name) in $scopedSlots" #[name]="data">
 									<slot :name="name" v-bind="data" />
 								</template>
-							</message>
+							</room-message>
 						</div>
 					</transition-group>
 				</div>
@@ -159,7 +159,7 @@ import SvgIcon from '../../components/SvgIcon/SvgIcon'
 
 import RoomHeader from './RoomHeader/RoomHeader'
 import RoomFooter from './RoomFooter/RoomFooter'
-import Message from './Message/Message'
+import RoomMessage from './RoomMessage/RoomMessage'
 
 const { detectMobile } = require('../../utils/mobile-detection')
 
@@ -170,7 +170,7 @@ export default {
 		SvgIcon,
 		RoomHeader,
 		RoomFooter,
-		Message
+		RoomMessage
 	},
 
 	props: {

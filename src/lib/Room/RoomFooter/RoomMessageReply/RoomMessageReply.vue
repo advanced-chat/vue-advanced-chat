@@ -74,7 +74,7 @@
 import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
 import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
 
-import AudioPlayer from '../../Message/AudioPlayer/AudioPlayer'
+import AudioPlayer from '../../RoomMessage/AudioPlayer/AudioPlayer'
 
 const {
 	isAudioFile,

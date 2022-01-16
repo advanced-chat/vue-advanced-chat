@@ -224,7 +224,7 @@ const { messagesValidation } = require('../../../utils/data-validation')
 const { isAudioFile } = require('../../../utils/media-file')
 
 export default {
-	name: 'Message',
+	name: 'RoomMessage',
 	components: {
 		SvgIcon,
 		FormatMessage,
