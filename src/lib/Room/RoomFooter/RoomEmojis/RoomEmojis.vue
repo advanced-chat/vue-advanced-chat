@@ -44,8 +44,10 @@ export default {
 	},
 
 	watch: {
-		filteredEmojis() {
-			this.activeItem = 0
+		filteredEmojis(val, oldVal) {
+			if (!oldVal.length || val.length !== oldVal.length) {
+				this.activeItem = 0
+			}
 		},
 		selectItem(val) {
 			if (val) {
