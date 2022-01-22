@@ -26,6 +26,7 @@
 			v-else
 			class="vac-message-box"
 			:class="{ 'vac-offset-current': message.senderId === currentUserId }"
+			@click="selectMessage"
 		>
 			<slot name="message" v-bind="{ message }">
 				<div
@@ -48,7 +49,9 @@
 						:class="{
 							'vac-message-highlight': isMessageHover,
 							'vac-message-current': message.senderId === currentUserId,
-							'vac-message-deleted': message.deleted
+							'vac-message-deleted': message.deleted,
+							'vac-item-clickable': messageSelectionEnabled,
+							'vac-message-selected': isMessageSelected
 						}"
 						@mouseover="onHoverMessage"
 						@mouseleave="onLeaveMessage"
@@ -102,6 +105,7 @@
 							:room-users="roomUsers"
 							:text-formatting="textFormatting"
 							:link-options="linkOptions"
+							:message-selection-enabled="messageSelectionEnabled"
 							@open-file="openFile"
 						>
 							<template v-for="(i, name) in $slots" #[name]="data">
@@ -113,6 +117,7 @@
 							<audio-player
 								:message-id="message._id"
 								:src="message.files[0].url"
+								:message-selection-enabled="messageSelectionEnabled"
 								@update-progress-time="progressTime = $event"
 								@hover-audio-progress="hoverAudioProgress = $event"
 							>
@@ -153,13 +158,10 @@
 							:current-user-id="currentUserId"
 							:message="message"
 							:message-actions="messageActions"
-							:room-footer-ref="roomFooterRef"
 							:show-reaction-emojis="showReactionEmojis"
-							:hide-options="hideOptions"
 							:message-hover="messageHover"
 							:hover-message-id="hoverMessageId"
 							:hover-audio-progress="hoverAudioProgress"
-							@hide-options="$emit('hide-options', false)"
 							@update-message-hover="messageHover = $event"
 							@update-options-opened="optionsOpened = $event"
 							@update-emoji-opened="emojiOpened = $event"
@@ -208,8 +210,8 @@
 </template>
 
 <script>
-import SvgIcon from '../../components/SvgIcon/SvgIcon'
-import FormatMessage from '../../components/FormatMessage/FormatMessage'
+import SvgIcon from '../../../components/SvgIcon/SvgIcon'
+import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 
 import MessageReply from './MessageReply/MessageReply'
 import MessageFiles from './MessageFiles/MessageFiles'
@@ -217,11 +219,11 @@ import MessageActions from './MessageActions/MessageActions'
 import MessageReactions from './MessageReactions/MessageReactions'
 import AudioPlayer from './AudioPlayer/AudioPlayer'
 
-const { messagesValidation } = require('../../utils/data-validation')
-const { isAudioFile } = require('../../utils/media-file')
+const { messagesValidation } = require('../../../utils/data-validation')
+const { isAudioFile } = require('../../../utils/media-file')
 
 export default {
-	name: 'Message',
+	name: 'RoomMessage',
 	components: {
 		SvgIcon,
 		FormatMessage,
@@ -238,27 +240,28 @@ export default {
 		index: { type: Number, required: true },
 		message: { type: Object, required: true },
 		messages: { type: Array, required: true },
-		editedMessage: { type: Object, required: true },
+		editedMessageId: { type: [String, Number], default: null },
 		roomUsers: { type: Array, default: () => [] },
 		messageActions: { type: Array, required: true },
-		roomFooterRef: { type: HTMLDivElement, default: null },
 		newMessages: { type: Array, default: () => [] },
 		showReactionEmojis: { type: Boolean, required: true },
 		showNewMessagesDivider: { type: Boolean, required: true },
 		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true },
-		hideOptions: { type: Boolean, required: true },
-		usernameOptions: { type: Object, required: true }
+		usernameOptions: { type: Object, required: true },
+		messageSelectionEnabled: { type: Boolean, required: true },
+		selectedMessages: { type: Array, default: () => [] }
 	},
 
 	emits: [
-		'hide-options',
 		'message-added',
 		'open-file',
 		'open-user-tag',
 		'open-failed-message',
 		'message-action-handler',
-		'send-message-reaction'
+		'send-message-reaction',
+		'select-message',
+		'unselect-message'
 	],
 
 	data() {
@@ -298,7 +301,7 @@ export default {
 		},
 		isMessageHover() {
 			return (
-				this.editedMessage._id === this.message._id ||
+				this.editedMessageId === this.message._id ||
 				this.hoverMessageId === this.message._id
 			)
 		},
@@ -321,6 +324,14 @@ export default {
 			return this.messages.some(
 				message => message.senderId !== this.currentUserId && message.avatar
 			)
+		},
+		isMessageSelected() {
+			return (
+				this.messageSelectionEnabled &&
+				!!this.selectedMessages.find(
+					message => message._id === this.message._id
+				)
+			)
 		}
 	},
 
@@ -338,6 +349,9 @@ export default {
 					obj.index < res.index ? obj : res
 				)
 			}
+		},
+		messageSelectionEnabled() {
+			this.resetMessageHover()
 		}
 	},
 
@@ -353,14 +367,22 @@ export default {
 
 	methods: {
 		onHoverMessage() {
-			this.messageHover = true
-			if (this.canEditMessage()) this.hoverMessageId = this.message._id
+			if (!this.messageSelectionEnabled) {
+				this.messageHover = true
+				if (this.canEditMessage()) this.hoverMessageId = this.message._id
+			}
 		},
 		canEditMessage() {
 			return !this.message.deleted
 		},
 		onLeaveMessage() {
-			if (!this.optionsOpened && !this.emojiOpened) this.messageHover = false
+			if (!this.messageSelectionEnabled) {
+				if (!this.optionsOpened && !this.emojiOpened) this.messageHover = false
+				this.hoverMessageId = null
+			}
+		},
+		resetMessageHover() {
+			this.messageHover = false
 			this.hoverMessageId = null
 		},
 		openFile(file) {
@@ -370,8 +392,7 @@ export default {
 			this.$emit('open-user-tag', { user })
 		},
 		messageActionHandler(action) {
-			this.messageHover = false
-			this.hoverMessageId = null
+			this.resetMessageHover()
 
 			setTimeout(() => {
 				this.$emit('message-action-handler', { action, message: this.message })
@@ -384,6 +405,15 @@ export default {
 				remove: reaction && reaction.indexOf(this.currentUserId) !== -1
 			})
 			this.messageHover = false
+		},
+		selectMessage() {
+			if (this.messageSelectionEnabled) {
+				if (this.isMessageSelected) {
+					this.$emit('unselect-message', this.message._id)
+				} else {
+					this.$emit('select-message', this.message)
+				}
+			}
 		}
 	}
 }

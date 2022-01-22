@@ -116,13 +116,13 @@ export default {
 
 	methods: {
 		resetData() {
-			firestoreService.getAllRooms().then(rooms => {
-				rooms.forEach(async room => {
-					await firestoreService.getMessages(room.id).then(messages => {
-						messages.forEach(message => {
+			firestoreService.getAllRooms().then(({ data }) => {
+				data.forEach(async room => {
+					await firestoreService.getMessages(room.id).then(({ data }) => {
+						data.forEach(message => {
 							firestoreService.deleteMessage(room.id, message.id)
-							if (message.data().files) {
-								message.data().files.forEach(file => {
+							if (message.files) {
+								message.files.forEach(file => {
 									storageService.deleteFile(
 										this.currentUserId,
 										message.id,
@@ -137,8 +137,8 @@ export default {
 				})
 			})
 
-			firestoreService.getAllUsers().then(users => {
-				users.forEach(user => {
+			firestoreService.getAllUsers().then(({ data }) => {
+				data.forEach(user => {
 					firestoreService.deleteUser(user.id)
 				})
 			})

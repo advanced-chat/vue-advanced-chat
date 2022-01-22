@@ -3,7 +3,7 @@
 		<div
 			v-if="filteredTemplatesText.length"
 			class="vac-template-container vac-app-box-shadow"
-			:style="{ bottom: `${$parent.$refs.roomFooter.clientHeight}px` }"
+			:style="{ bottom: `${footerHeight}px` }"
 		>
 			<div
 				v-for="(template, index) in filteredTemplatesText"
@@ -44,9 +44,17 @@ export default {
 		}
 	},
 
+	computed: {
+		footerHeight() {
+			return document.getElementById('room-footer').clientHeight
+		}
+	},
+
 	watch: {
-		filteredTemplatesText() {
-			this.activeItem = 0
+		filteredTemplatesText(val, oldVal) {
+			if (!oldVal.length || val.length !== oldVal.length) {
+				this.activeItem = 0
+			}
 		},
 		selectItem(val) {
 			if (val) {

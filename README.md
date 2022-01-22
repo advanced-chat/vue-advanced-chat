@@ -226,8 +226,9 @@ fetchMessages({ room, options }) {
 | `room-actions`(9)                   | Array            | -        | `[]`                                                                                                              |
 | `menu-actions`(10)                  | Array            | -        | `[]`                                                                                                              |
 | `message-actions`(11)               | Array            | -        | (11)                                                                                                              |
-| `templates-text`(12)                | Array            | -        | `null`                                                                                                            |
-| `auto-scroll`(13)                   | Object           | -        | `{ send: { new: true, newAfterScrollUp: true }, receive: { new: true, newAfterScrollUp: false } }`                |
+| `message-selection-actions`(12)     | Array            | -        | (12)                                                                                                              |
+| `templates-text`(13)                | Array            | -        | `null`                                                                                                            |
+| `auto-scroll`(14)                   | Object           | -        | `{ send: { new: true, newAfterScrollUp: true }, receive: { new: true, newAfterScrollUp: false } }`                |
 | `show-search`                       | Boolean          | -        | `true`                                                                                                            |
 | `show-add-room`                     | Boolean          | -        | `true`                                                                                                            |
 | `show-send-icon`                    | Boolean          | -        | `true`                                                                                                            |
@@ -237,22 +238,22 @@ fetchMessages({ room, options }) {
 | `audio-sample-rate`                 | Number           | -        | `44100`                                                                                                           |
 | `show-emojis`                       | Boolean          | -        | `true`                                                                                                            |
 | `show-reaction-emojis`              | Boolean          | -        | `true`                                                                                                            |
-| `show-new-messages-divider`(14)     | Boolean          | -        | `true`                                                                                                            |
-| `show-footer`(15)                   | Boolean          | -        | `true`                                                                                                            |
-| `text-messages`(16)                 | Object           | -        | `null`                                                                                                            |
-| `text-formatting`(17)               | Object           | -        | ` {disabled: false, italic: '_', bold: '*', strike: '~', underline: '°', multilineCode: '```', inlineCode: ' `'}` |
-| `link-options`(18)                  | Object           | -        | `{ disabled: false, target: '_blank', rel: null }`                                                                |
-| `room-info-enabled` (19)            | Boolean          | -        | `false`                                                                                                           |
-| `textarea-action-enabled`(20)       | Boolean          | -        | `false`                                                                                                           |
+| `show-new-messages-divider`(15)     | Boolean          | -        | `true`                                                                                                            |
+| `show-footer`(16)                   | Boolean          | -        | `true`                                                                                                            |
+| `text-messages`(17)                 | Object           | -        | `null`                                                                                                            |
+| `text-formatting`(18)               | Object           | -        | ` {disabled: false, italic: '_', bold: '*', strike: '~', underline: '°', multilineCode: '```', inlineCode: ' `'}` |
+| `link-options`(19)                  | Object           | -        | `{ disabled: false, target: '_blank', rel: null }`                                                                |
+| `room-info-enabled` (20)            | Boolean          | -        | `false`                                                                                                           |
+| `textarea-action-enabled`(21)       | Boolean          | -        | `false`                                                                                                           |
 | `user-tags-enabled`                 | Boolean          | -        | `true`                                                                                                            |
 | `emojis-suggestion-enabled`         | Boolean          | -        | `true`                                                                                                            |
 | `media-preview-enabled`             | Boolean          | -        | `true`                                                                                                            |
-| `responsive-breakpoint`(21)         | Number           | -        | `900`                                                                                                             |
-| `single-room`(22)                   | Boolean          | -        | `false`                                                                                                           |
-| `scroll-distance`(23)               | Number           | -        | `60`                                                                                                              |
-| `theme`(24)                         | Sring            | -        | `light`                                                                                                           |
-| `accepted-files`(25)                | String           | -        | `*`                                                                                                               |
-| `styles`(26)                        | Object           | -        | (24)                                                                                                              |
+| `responsive-breakpoint`(22)         | Number           | -        | `900`                                                                                                             |
+| `single-room`(23)                   | Boolean          | -        | `false`                                                                                                           |
+| `scroll-distance`(24)               | Number           | -        | `60`                                                                                                              |
+| `theme`(25)                         | Sring            | -        | `light`                                                                                                           |
+| `accepted-files`(26)                | String           | -        | `*`                                                                                                               |
+| `styles`(27)                        | Object           | -        | (25)                                                                                                              |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -338,11 +339,30 @@ messageActions="[
     name: 'deleteMessage',
     title: 'Delete Message',
     onlyMe: true
+  },
+  {
+    name: 'selectMessages',
+    title: 'Select'
   }
 ]"
 ```
 
-**(12)** `templates-text` can be used to add autocomplete templates text when typing `/` in the room textarea. Ex:
+**(12)** `message-selection-actions` is related to the above `selectMessages` message action. You can use it to display custom action buttons in the room header when selecting a message. Ex:
+
+```
+messageActions="[
+  {
+    name: 'deleteMessages',
+    title: 'Delete'
+  },
+  {
+    name: 'forwardMessages',
+    title: 'Forward'
+  }
+]"
+```
+
+**(13)** `templates-text` can be used to add autocomplete templates text when typing `/` in the room textarea. Ex:
 
 ```javascript
 templatesText="[
@@ -357,7 +377,7 @@ templatesText="[
 ]"
 ```
 
-**(13)** `auto-scroll` can be used to change the auto scroll behaviour when sending/receiving a message. Ex:
+**(14)** `auto-scroll` can be used to change the auto scroll behaviour when sending/receiving a message. Ex:
 
 ```javascript
 auto-scroll="{
@@ -372,11 +392,11 @@ auto-scroll="{
 }"
 ```
 
-**(14)** `show-new-messages-divider` can be used to show/hide the blue line divider between seen and unseen messages.
+**(15)** `show-new-messages-divider` can be used to show/hide the blue line divider between seen and unseen messages.
 
-**(15)** `show-footer` can be used to hide the room footer. For example to prevent users to send any message or media.
+**(16)** `show-footer` can be used to hide the room footer. For example to prevent users to send any message or media.
 
-**(16)** `text-messages` can be used to replace default i18n texts. Ex:
+**(17)** `text-messages` can be used to replace default i18n texts. Ex:
 
 ```javascript
 text-messages="{
@@ -390,11 +410,12 @@ text-messages="{
   SEARCH: 'Rechercher',
   IS_ONLINE: 'est en ligne',
   LAST_SEEN: 'dernière connexion ',
-  IS_TYPING: 'est en train de taper...'
+  IS_TYPING: 'est en train de taper...',
+  CANCEL_SELECT_MESSAGE: 'Annuler Sélection'
 }"
 ```
 
-**(17)** `text-formatting` can be used to add text formatting. Bold, italic, strikethrough, underline, inline code and multiline code formatting are currently available and can be used in conjonction.
+**(18)** `text-formatting` can be used to add text formatting. Bold, italic, strikethrough, underline, inline code and multiline code formatting are currently available and can be used in conjonction.
 
 - You can disable text formatting by passing the prop `:text-formatting="{disabled: true}"`.
 - You can change markdown characters, for example: `:text-formatting="{italic: '^'}"`
@@ -425,31 +446,31 @@ This is
 multiline code
 ```
 
-**(18)** `link-options` can be used to disable url links in messages, or change urls target. Ex:
+**(19)** `link-options` can be used to disable url links in messages, or change urls target. Ex:
 
 ```javascript
 :link-options="{ disabled: true, target: '_self', rel: null }"
 ```
 
-**(19)** `room-info-enabled` can be used to trigger an event after clicking the room header component.<br>
+**(20)** `room-info-enabled` can be used to trigger an event after clicking the room header component.<br>
 You can then use the [room-info](#events-api) event to call your own action after clicking the header.
 
-**(20)** `textarea-action-enabled` can be used to add an extra icon on the right of the textarea<br>
+**(21)** `textarea-action-enabled` can be used to add an extra icon on the right of the textarea<br>
 You can then use the [textarea-action-handler](#events-api) event to call your own action after clicking the icon.
 
-**(21)** `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
+**(22)** `responsive-breakpoint` can be used to collapse the rooms list on the left when then viewport size goes below the specified width.
 
-**(22)** `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
+**(23)** `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
 
-**(23)** `scroll-distance` can be used to change the number of pixels before `fetchMessages` event is triggered when scrolling up to load more messages, or `fetchMoreRooms` event is triggered when scrolling down to load more rooms.
+**(24)** `scroll-distance` can be used to change the number of pixels before `fetchMessages` event is triggered when scrolling up to load more messages, or `fetchMoreRooms` event is triggered when scrolling down to load more rooms.
 
-**(24)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
+**(25)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
 
-**(25)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
+**(26)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
 
 Example: set `"accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files only
 
-**(26)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
+**(27)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
 
 ```javascript
 styles="{
@@ -610,25 +631,26 @@ messages="[
 
 ## Events API
 
-| <div style="width:230px">Event</div> | Params                                                                    | Fires when a user                               |
-| ------------------------------------ | ------------------------------------------------------------------------- | ----------------------------------------------- |
-| `fetch-messages`(1)                  | `{ room, options }`                                                       | Scrolled on top to load more messages           |
-| `fetch-more-rooms`(2)                | -                                                                         | Scrolled to load more rooms                     |
-| `send-message`                       | `{ roomId, content, files(9), replyMessage(10), usersTag }`               | Sent a message                                  |
-| `edit-message`                       | `{ roomId, messageId, newContent, files(9), replyMessage(10) ,usersTag }` | Edited a message                                |
-| `delete-message`                     | `{ roomId, message }`                                                     | Deleted a message                               |
-| `open-file`                          | `{ message, file }`                                                       | Clicked to view or download a file              |
-| `open-user-tag`(3)                   | `{ user }`                                                                | Clicked on a user tag inside a message          |
-| `open-failed-message`                | `{ roomId, message }`                                                     | Clicked on the failure icon next to a message   |
-| `add-room`                           | -                                                                         | Clicked on the plus icon next to searchbar      |
-| `room-action-handler`(4)             | `{ roomId, action }`                                                      | Clicked on the vertical dots icon inside a room |
-| `menu-action-handler`(5)             | `{ roomId, action }`                                                      | Clicked on the vertical dots icon inside a room |
-| `message-action-handler`(6)          | `{ roomId, action, message }`                                             | Clicked on the dropdown icon inside a message   |
-| `send-message-reaction`              | `{ roomId, messageId, reaction, remove }`                                 | Clicked on the emoji icon inside a message      |
-| `room-info` (7)                      | `room`                                                                    | Clicked the room header bar                     |
-| `toggle-rooms-list`                  | `{ opened }`                                                              | Clicked on the toggle icon inside a room header |
-| `textarea-action-handler`(8)         | `{ roomId, message }`                                                     | Clicked on custom icon inside the footer        |
-| `typing-message`                     | `{ roomId, message }`                                                     | Started typing a message                        |
+| <div style="width:230px">Event</div>  | Params                                                                    | Fires when a user                               |
+| ------------------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------- |
+| `fetch-messages`(1)                   | `{ room, options }`                                                       | Scrolled on top to load more messages           |
+| `fetch-more-rooms`(2)                 | -                                                                         | Scrolled to load more rooms                     |
+| `send-message`                        | `{ roomId, content, files(10), replyMessage(11), usersTag }`              | Sent a message                                  |
+| `edit-message`                        | `{ roomId, messageId, newContent, files(9), replyMessage(11) ,usersTag }` | Edited a message                                |
+| `delete-message`                      | `{ roomId, message }`                                                     | Deleted a message                               |
+| `open-file`                           | `{ message, file }`                                                       | Clicked to view or download a file              |
+| `open-user-tag`(3)                    | `{ user }`                                                                | Clicked on a user tag inside a message          |
+| `open-failed-message`                 | `{ roomId, message }`                                                     | Clicked on the failure icon next to a message   |
+| `add-room`                            | -                                                                         | Clicked on the plus icon next to searchbar      |
+| `room-action-handler`(4)              | `{ roomId, action }`                                                      | Clicked on the vertical dots icon inside a room |
+| `menu-action-handler`(5)              | `{ roomId, action }`                                                      | Clicked on the vertical dots icon inside a room |
+| `message-action-handler`(6)           | `{ roomId, action, message }`                                             | Clicked on the dropdown icon inside a message   |
+| `message-selection-action-handler`(7) | `{ roomId, action, messages }`                                            | Clicked on the select button inside a message   |
+| `send-message-reaction`               | `{ roomId, messageId, reaction, remove }`                                 | Clicked on the emoji icon inside a message      |
+| `room-info` (8)                       | `room`                                                                    | Clicked the room header bar                     |
+| `toggle-rooms-list`                   | `{ opened }`                                                              | Clicked on the toggle icon inside a room header |
+| `textarea-action-handler`(9)          | `{ roomId, message }`                                                     | Clicked on custom icon inside the footer        |
+| `typing-message`                      | `{ roomId, message }`                                                     | Started typing a message                        |
 
 **(1)** `fetch-messages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`.<br>
 **(1)** `fetch-messages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top.
@@ -646,7 +668,7 @@ This will make the tag clickable inside a message. Ex: [message tag content](#me
 
 **(4)** `room-action-handler` is the result of the [`room-actions`](#props-api) prop.<br>
 When clicking a button from your `room-actions` array, `room-action-handler` will give you the name of the button that was click.
-Then you can do whatever you want with it. Ex:
+Then you can do anything you want with it. Ex:
 
 ```javascript
 menuActionHandler({ roomId, action }) {
@@ -659,7 +681,7 @@ menuActionHandler({ roomId, action }) {
 
 **(5)** `menu-action-handler` is the result of the [`menu-actions`](#props-api) prop.<br>
 When clicking a button from your `menu-actions` array, `menu-action-handler` will give you the name of the button that was click.
-Then you can do whatever you want with it. Ex:
+Then you can do anything you want with it. Ex:
 
 ```javascript
 menuActionHandler({ roomId, action }) {
@@ -676,7 +698,7 @@ menuActionHandler({ roomId, action }) {
 
 **(6)** `message-action-handler` is the result of the [`message-actions`](#props-api) prop.<br>
 When clicking a button from your `message-actions` array, `message-action-handler` will give you the name of the button that was click and the corresponding message data.
-Then you can do whatever you want with it. Ex:
+Then you can do anything you want with it. Ex:
 
 ```javascript
 messageActionHandler({ roomId, action, message }) {
@@ -689,13 +711,28 @@ messageActionHandler({ roomId, action, message }) {
 }
 ```
 
-**(7)** `room-info` is the result of the [`room-info-enabled`](#props-api) prop.<br>
+**(7)** `message-selection-action-handler` is the result of the [`message-selection-actions`](#props-api) prop.<br>
+When clicking a button from your `message-selection-actions` array, `message-selection-action-handler` will give you the name of the button that was click and the corresponding selected messages data.
+Then you can do anything you want with it. Ex:
 
-**(8)** `textarea-action-handler` is the result of the [`textarea-action-enabled`](#props-api) prop.<br>
+```javascript
+messageActionHandler({ roomId, action, message }) {
+  switch (action.name) {
+    case 'deleteMessages':
+      // call a method to delete selected messaged
+    case 'shareMessage':
+      // call a method to share selected messaged with another user
+  }
+}
+```
 
-**(9)** Array of files where each file contain: `{ blob, localURL, name, size, type, extension }`
+**(8)** `room-info` is the result of the [`room-info-enabled`](#props-api) prop.<br>
 
-**(10)** `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked.
+**(9)** `textarea-action-handler` is the result of the [`textarea-action-enabled`](#props-api) prop.<br>
+
+**(10)** Array of files where each file contain: `{ blob, localURL, name, size, type, extension }`
+
+**(11)** `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked.
 
 <br>
 

@@ -53,10 +53,10 @@
 </template>
 
 <script>
-import Loader from '../../../../components/Loader/Loader'
-import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
+import Loader from '../../../../../components/Loader/Loader'
+import SvgIcon from '../../../../../components/SvgIcon/SvgIcon'
 
-const { isImageFile, isVideoFile } = require('../../../../utils/media-file')
+const { isImageFile, isVideoFile } = require('../../../../../utils/media-file')
 
 export default {
 	name: 'RoomFiles',

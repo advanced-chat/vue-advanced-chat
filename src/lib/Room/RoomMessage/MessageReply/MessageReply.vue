@@ -64,8 +64,8 @@
 </template>
 
 <script>
-import SvgIcon from '../../../components/SvgIcon/SvgIcon'
-import FormatMessage from '../../../components/FormatMessage/FormatMessage'
+import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
+import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
 
 import AudioPlayer from '../AudioPlayer/AudioPlayer'
 
@@ -73,7 +73,7 @@ const {
 	isAudioFile,
 	isImageFile,
 	isVideoFile
-} = require('../../../utils/media-file')
+} = require('../../../../utils/media-file')
 
 export default {
 	name: 'MessageReply',

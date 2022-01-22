@@ -38,3 +38,32 @@ export const uploadFileTask = (currentUserId, messageId, file, type) => {
 		contentType: type
 	})
 }
+
+export const listenUploadImageProgress = (
+	currentUserId,
+	messageId,
+	file,
+	type,
+	callback,
+	error,
+	success
+) => {
+	const uploadTask = uploadFileTask(currentUserId, messageId, file, type)
+
+	uploadTask.on(
+		'state_changed',
+		snap => {
+			const progress = Math.round(
+				(snap.bytesTransferred / snap.totalBytes) * 100
+			)
+			callback(progress)
+		},
+		_error => {
+			error(_error)
+		},
+		async () => {
+			const url = await getFileDownloadUrl(uploadTask.snapshot.ref)
+			success(url)
+		}
+	)
+}

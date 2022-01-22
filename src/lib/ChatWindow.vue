@@ -38,6 +38,7 @@
 				:messages-loaded="messagesLoaded"
 				:menu-actions="menuActions"
 				:message-actions="messageActions"
+				:message-selection-actions="messageSelectionActions"
 				:auto-scroll="autoScroll"
 				:show-send-icon="showSendIcon"
 				:show-files="showFiles"
@@ -74,6 +75,7 @@
 				@open-failed-message="openFailedMessage"
 				@menu-action-handler="menuActionHandler"
 				@message-action-handler="messageActionHandler"
+				@message-selection-action-handler="messageSelectionActionHandler"
 				@send-message-reaction="sendMessageReaction"
 				@typing-message="typingMessage"
 				@textarea-action-handler="textareaActionHandler"
@@ -137,9 +139,11 @@ export default {
 			default: () => [
 				{ name: 'replyMessage', title: 'Reply' },
 				{ name: 'editMessage', title: 'Edit Message', onlyMe: true },
-				{ name: 'deleteMessage', title: 'Delete Message', onlyMe: true }
+				{ name: 'deleteMessage', title: 'Delete Message', onlyMe: true },
+				{ name: 'selectMessages', title: 'Select' }
 			]
 		},
+		messageSelectionActions: { type: Array, default: () => [] },
 		autoScroll: {
 			type: Object,
 			default: () => {
@@ -214,7 +218,8 @@ export default {
 		'textarea-action-handler',
 		'fetch-more-rooms',
 		'add-room',
-		'room-action-handler'
+		'room-action-handler',
+		'message-selection-action-handler'
 	],
 
 	data() {
@@ -396,6 +401,12 @@ export default {
 		},
 		messageActionHandler(ev) {
 			this.$emit('message-action-handler', {
+				...ev,
+				roomId: this.room.roomId
+			})
+		},
+		messageSelectionActionHandler(ev) {
+			this.$emit('message-selection-action-handler', {
 				...ev,
 				roomId: this.room.roomId
 			})

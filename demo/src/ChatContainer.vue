@@ -50,6 +50,7 @@
 			:rooms-loaded="roomsLoaded"
 			:room-actions="roomActions"
 			:menu-actions="menuActions"
+			:message-selection-actions="messageSelectionActions"
 			:room-message="roomMessage"
 			:templates-text="templatesText"
 			@fetch-more-rooms="fetchMoreRooms"
@@ -62,6 +63,7 @@
 			@add-room="addRoom"
 			@room-action-handler="menuActionHandler"
 			@menu-action-handler="menuActionHandler"
+			@message-selection-action-handler="messageSelectionActionHandler"
 			@send-message-reaction="sendMessageReaction"
 			@typing-message="typingMessage"
 			@toggle-rooms-list="$emit('show-demo-options', $event.opened)"
@@ -138,6 +140,7 @@ export default {
 				{ name: 'removeUser', title: 'Remove User' },
 				{ name: 'deleteRoom', title: 'Delete Room' }
 			],
+			messageSelectionActions: [{ name: 'deleteMessages', title: 'Delete' }],
 			styles: { container: { borderRadius: '4px' } },
 			templatesText: [
 				{
@@ -211,17 +214,17 @@ export default {
 				this.startRooms
 			)
 
-			const rooms = await firestoreService.getRooms(query)
-			// this.incrementDbCounter('Fetch Rooms', rooms.size)
+			const { data, docs } = await firestoreService.getRooms(query)
+			// this.incrementDbCounter('Fetch Rooms', data.length)
 
-			this.roomsLoaded = rooms.empty || rooms.size < this.roomsPerPage
+			this.roomsLoaded = data.length === 0 || data.length < this.roomsPerPage
 
 			if (this.startRooms) this.endRooms = this.startRooms
-			this.startRooms = rooms.docs[rooms.docs.length - 1]
+			this.startRooms = docs[docs.length - 1]
 
 			const roomUserIds = []
-			rooms.forEach(room => {
-				room.data().users.forEach(userId => {
+			data.forEach(room => {
+				room.users.forEach(userId => {
 					const foundUser = this.allUsers.find(user => user?._id === userId)
 					if (!foundUser && roomUserIds.indexOf(userId) === -1) {
 						roomUserIds.push(userId)
@@ -232,19 +235,17 @@ export default {
 			// this.incrementDbCounter('Fetch Room Users', roomUserIds.length)
 			const rawUsers = []
 			roomUserIds.forEach(userId => {
-				const promise = firestoreService
-					.getUser(userId)
-					.then(user => user.data())
+				const promise = firestoreService.getUser(userId)
 				rawUsers.push(promise)
 			})
 
 			this.allUsers = [...this.allUsers, ...(await Promise.all(rawUsers))]
 
 			const roomList = {}
-			rooms.forEach(room => {
-				roomList[room.id] = { ...room.data(), users: [] }
+			data.forEach(room => {
+				roomList[room.id] = { ...room, users: [] }
 
-				room.data().users.forEach(userId => {
+				room.users.forEach(userId => {
 					const foundUser = this.allUsers.find(user => user?._id === userId)
 					if (foundUser) roomList[room.id].users.push(foundUser)
 				})
@@ -296,12 +297,12 @@ export default {
 		},
 
 		listenLastMessage(room) {
-			const listener = firestoreService.firestoreListener(
-				firestoreService.lastMessageQuery(room.roomId),
+			const listener = firestoreService.listenLastMessage(
+				room.roomId,
 				messages => {
-					// this.incrementDbCounter('Listen Last Room Message', messages.size)
+					// this.incrementDbCounter('Listen Last Room Message', messages.length)
 					messages.forEach(message => {
-						const lastMessage = this.formatLastMessage(message.data(), room)
+						const lastMessage = this.formatLastMessage(message, room)
 						const roomIndex = this.rooms.findIndex(
 							r => room.roomId === r.roomId
 						)
@@ -371,17 +372,17 @@ export default {
 
 			firestoreService
 				.getMessages(room.roomId, this.messagesPerPage, this.lastLoadedMessage)
-				.then(messages => {
-					// this.incrementDbCounter('Fetch Room Messages', messages.size)
+				.then(({ data, docs }) => {
+					// this.incrementDbCounter('Fetch Room Messages', messages.length)
 					if (this.selectedRoom !== room.roomId) return
 
-					if (messages.empty || messages.docs.length < this.messagesPerPage) {
+					if (data.length === 0 || data.length < this.messagesPerPage) {
 						setTimeout(() => (this.messagesLoaded = true), 0)
 					}
 
 					if (options.reset) this.messages = []
 
-					messages.forEach(message => {
+					data.forEach(message => {
 						const formattedMessage = this.formatMessage(room, message)
 						this.messages.unshift(formattedMessage)
 					})
@@ -389,43 +390,42 @@ export default {
 					if (this.lastLoadedMessage) {
 						this.previousLastLoadedMessage = this.lastLoadedMessage
 					}
-					this.lastLoadedMessage = messages.docs[messages.docs.length - 1]
+					this.lastLoadedMessage = docs[docs.length - 1]
 
-					const listener = firestoreService.firestoreListener(
-						firestoreService.paginatedMessagesQuery(
-							room.roomId,
-							this.lastLoadedMessage,
-							this.previousLastLoadedMessage
-						),
-						snapshots => {
-							// this.incrementDbCounter('Listen Room Messages', snapshots.size)
-							this.listenMessages(snapshots, room)
-						}
-					)
-					this.listeners.push(listener)
+					this.listenMessages(room)
 				})
 		},
 
-		listenMessages(messages, room) {
-			messages.forEach(message => {
-				const formattedMessage = this.formatMessage(room, message)
-				const messageIndex = this.messages.findIndex(m => m._id === message.id)
+		listenMessages(room) {
+			const listener = firestoreService.listenMessages(
+				room.roomId,
+				this.lastLoadedMessage,
+				this.previousLastLoadedMessage,
+				messages => {
+					messages.forEach(message => {
+						const formattedMessage = this.formatMessage(room, message)
+						const messageIndex = this.messages.findIndex(
+							m => m._id === message.id
+						)
 
-				if (messageIndex === -1) {
-					this.messages = this.messages.concat([formattedMessage])
-				} else {
-					this.messages[messageIndex] = formattedMessage
-					this.messages = [...this.messages]
+						if (messageIndex === -1) {
+							this.messages = this.messages.concat([formattedMessage])
+						} else {
+							this.messages[messageIndex] = formattedMessage
+							this.messages = [...this.messages]
+						}
+
+						this.markMessagesSeen(room, message)
+					})
 				}
-
-				this.markMessagesSeen(room, message)
-			})
+			)
+			this.listeners.push(listener)
 		},
 
 		markMessagesSeen(room, message) {
 			if (
-				message.data().sender_id !== this.currentUserId &&
-				(!message.data().seen || !message.data().seen[this.currentUserId])
+				message.sender_id !== this.currentUserId &&
+				(!message.seen || !message.seen[this.currentUserId])
 			) {
 				firestoreService.updateMessage(room.roomId, message.id, {
 					[`seen.${this.currentUserId}`]: new Date()
@@ -434,29 +434,26 @@ export default {
 		},
 
 		formatMessage(room, message) {
-			const { timestamp } = message.data()
-
 			const formattedMessage = {
-				...message.data(),
+				...message,
 				...{
-					senderId: message.data().sender_id,
+					senderId: message.sender_id,
 					_id: message.id,
-					seconds: timestamp.seconds,
-					timestamp: parseTimestamp(timestamp, 'HH:mm'),
-					date: parseTimestamp(timestamp, 'DD MMMM YYYY'),
-					username: room.users.find(
-						user => message.data().sender_id === user._id
-					)?.username,
+					seconds: message.timestamp.seconds,
+					timestamp: parseTimestamp(message.timestamp, 'HH:mm'),
+					date: parseTimestamp(message.timestamp, 'DD MMMM YYYY'),
+					username: room.users.find(user => message.sender_id === user._id)
+						?.username,
 					// avatar: senderUser ? senderUser.avatar : null,
 					distributed: true
 				}
 			}
 
-			if (message.data().replyMessage) {
+			if (message.replyMessage) {
 				formattedMessage.replyMessage = {
-					...message.data().replyMessage,
+					...message.replyMessage,
 					...{
-						senderId: message.data().replyMessage.sender_id
+						senderId: message.replyMessage.sender_id
 					}
 				}
 			}
@@ -540,43 +537,29 @@ export default {
 					type = file.type
 				}
 
-				const uploadTask = storageService.uploadFileTask(
+				storageService.listenUploadImageProgress(
 					this.currentUserId,
 					messageId,
 					file,
-					type
-				)
-
-				uploadTask.on(
-					'state_changed',
-					snap => {
-						const progress = Math.round(
-							(snap.bytesTransferred / snap.totalBytes) * 100
-						)
+					type,
+					progress => {
 						this.updateFileProgress(messageId, file.localUrl, progress)
 					},
 					_error => {
 						resolve(false)
 					},
-					async () => {
-						const url = await storageService.getFileDownloadUrl(
-							uploadTask.snapshot.ref
-						)
+					async url => {
+						const message = await firestoreService.getMessage(roomId, messageId)
 
-						const messageDoc = await firestoreService.getMessage(
-							roomId,
-							messageId
-						)
-
-						const files = messageDoc.data().files
-
-						files.forEach(f => {
+						message.files.forEach(f => {
 							if (f.url === file.localUrl) {
 								f.url = url
 							}
 						})
 
-						await firestoreService.updateMessage(roomId, messageId, { files })
+						await firestoreService.updateMessage(roomId, messageId, {
+							files: message.files
+						})
 						resolve(true)
 					}
 				)
@@ -645,7 +628,7 @@ export default {
 				user._id
 			)
 
-			if (!query1.empty) {
+			if (query1.data.length) {
 				return this.loadRoom(query1)
 			}
 
@@ -654,12 +637,17 @@ export default {
 				this.currentUserId
 			)
 
-			if (!query2.empty) {
+			if (query2.data.length) {
 				return this.loadRoom(query2)
 			}
 
+			const users =
+				user._id === this.currentUserId
+					? [this.currentUserId]
+					: [user._id, this.currentUserId]
+
 			const room = await firestoreService.addRoom({
-				users: [user._id, this.currentUserId],
+				users: users,
 				lastUpdated: new Date()
 			})
 
@@ -684,6 +672,15 @@ export default {
 					return this.removeUser(roomId)
 				case 'deleteRoom':
 					return this.deleteRoom(roomId)
+			}
+		},
+
+		messageSelectionActionHandler({ action, messages, roomId }) {
+			switch (action.name) {
+				case 'deleteMessages':
+					messages.forEach(message => {
+						this.deleteMessage({ message, roomId })
+					})
 			}
 		},
 
@@ -720,13 +717,13 @@ export default {
 		},
 
 		async listenRooms(query) {
-			const listener = firestoreService.firestoreListener(query, rooms => {
-				// this.incrementDbCounter('Listen Rooms Typing Users', rooms.size)
+			const listener = firestoreService.listenRooms(query, rooms => {
+				// this.incrementDbCounter('Listen Rooms Typing Users', rooms.length)
 				rooms.forEach(room => {
 					const foundRoom = this.rooms.find(r => r.roomId === room.id)
 					if (foundRoom) {
-						foundRoom.typingUsers = room.data().typingUsers
-						foundRoom.index = room.data().lastUpdated.seconds
+						foundRoom.typingUsers = room.typingUsers
+						foundRoom.index = room.lastUpdated.seconds
 					}
 				})
 			})
@@ -832,11 +829,11 @@ export default {
 				return alert('Nope, for demo purposes you cannot delete this room')
 			}
 
-			firestoreService.getMessages(roomId).then(messages => {
-				messages.forEach(message => {
+			firestoreService.getMessages(roomId).then(({ data }) => {
+				data.forEach(message => {
 					firestoreService.deleteMessage(roomId, message.id)
-					if (message.data().files) {
-						message.data().files.forEach(file => {
+					if (message.files) {
+						message.files.forEach(file => {
 							storageService.deleteFile(this.currentUserId, message.id, file)
 						})
 					}

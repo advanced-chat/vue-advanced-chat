@@ -41,7 +41,6 @@ export default {
 	props: {
 		emojiOpened: { type: Boolean, default: false },
 		emojiReaction: { type: Boolean, default: false },
-		roomFooterRef: { type: HTMLDivElement, default: null },
 		positionTop: { type: Boolean, default: false },
 		positionRight: { type: Boolean, default: false }
 	},
@@ -62,12 +61,14 @@ export default {
 				setTimeout(() => {
 					this.addCustomStyling()
 
-					this.$refs.emojiPicker.shadowRoot
-						.addEventListener('emoji-click', ({ detail }) => {
+					this.$refs.emojiPicker.shadowRoot.addEventListener(
+						'emoji-click',
+						({ detail }) => {
 							this.$emit('add-emoji', {
 								unicode: detail.unicode
 							})
-						})
+						}
+					)
 				}, 0)
 			}
 		}
@@ -114,8 +115,9 @@ export default {
 		setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
 			setTimeout(() => {
 				const mobileSize = innerWidth < 500 || innerHeight < 700
+				const roomFooterRef = document.getElementById('room-footer')
 
-				if (!this.roomFooterRef) {
+				if (!roomFooterRef) {
 					if (mobileSize) this.emojiPickerRight = '-50px'
 					return
 				}
@@ -125,7 +127,7 @@ export default {
 					this.emojiPickerTop = 100
 					this.emojiPickerHeight = innerHeight - 200
 				} else {
-					const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
+					const roomFooterTop = roomFooterRef.getBoundingClientRect().top
 					const pickerTopPosition =
 						roomFooterTop - clientY > this.emojiPickerHeight - 50
 

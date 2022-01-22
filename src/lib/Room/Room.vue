@@ -20,9 +20,14 @@
 			:room-info-enabled="roomInfoEnabled"
 			:menu-actions="menuActions"
 			:room="room"
+			:message-selection-enabled="messageSelectionEnabled"
+			:message-selection-actions="messageSelectionActions"
+			:selected-messages-total="selectedMessages.length"
 			@toggle-rooms-list="$emit('toggle-rooms-list')"
 			@room-info="$emit('room-info')"
 			@menu-action-handler="$emit('menu-action-handler', $event)"
+			@message-selection-action-handler="messageSelectionActionHandler"
+			@cancel-message-selection="messageSelectionEnabled = false"
 		>
 			<template v-for="(i, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
@@ -66,35 +71,36 @@
 					</div>
 					<transition-group :key="roomId" name="vac-fade-message" tag="span">
 						<div v-for="(m, i) in messages" :key="m.indexId || m._id">
-							<message
+							<room-message
 								:current-user-id="currentUserId"
 								:message="m"
 								:index="i"
 								:messages="messages"
-								:edited-message="editedMessage"
+								:edited-message-id="editedMessageId"
 								:message-actions="messageActions"
 								:room-users="room.users"
 								:text-messages="textMessages"
-								:room-footer-ref="$refs.roomFooter"
 								:new-messages="newMessages"
 								:show-reaction-emojis="showReactionEmojis"
 								:show-new-messages-divider="showNewMessagesDivider"
 								:text-formatting="textFormatting"
 								:link-options="linkOptions"
-								:hide-options="hideOptions"
 								:username-options="usernameOptions"
+								:message-selection-enabled="messageSelectionEnabled"
+								:selected-messages="selectedMessages"
 								@message-added="onMessageAdded"
 								@message-action-handler="messageActionHandler"
 								@open-file="openFile"
 								@open-user-tag="openUserTag"
 								@open-failed-message="$emit('open-failed-message', $event)"
 								@send-message-reaction="sendMessageReaction"
-								@hide-options="hideOptions = $event"
+								@select-message="selectMessage"
+								@unselect-message="unselectMessage"
 							>
 								<template v-for="(idx, name) in $slots" #[name]="data">
 									<slot :name="name" v-bind="data" />
 								</template>
-							</message>
+							</room-message>
 						</div>
 					</transition-group>
 				</div>
@@ -117,242 +123,53 @@
 				</div>
 			</transition>
 		</div>
-		<div
-			v-show="Object.keys(room).length && showFooter"
-			ref="roomFooter"
-			class="vac-room-footer"
-			:class="{
-				'vac-app-box-shadow': shadowFooter
-			}"
-		>
-			<room-emojis
-				:filtered-emojis="filteredEmojis"
-				:select-item="selectEmojiItem"
-				:active-up-or-down="activeUpOrDownEmojis"
-				@select-emoji="selectEmoji($event)"
-				@activate-item="activeUpOrDownEmojis = 0"
-			/>
 
-			<room-users-tag
-				:filtered-users-tag="filteredUsersTag"
-				:select-item="selectUsersTagItem"
-				:active-up-or-down="activeUpOrDownUsersTag"
-				@select-user-tag="selectUserTag($event)"
-				@activate-item="activeUpOrDownUsersTag = 0"
-			/>
-
-			<room-templates-text
-				:filtered-templates-text="filteredTemplatesText"
-				:select-item="selectTemplatesTextItem"
-				:active-up-or-down="activeUpOrDownTemplatesText"
-				@select-template-text="selectTemplateText($event)"
-				@activate-item="activeUpOrDownTemplatesText = 0"
-			/>
-
-			<room-message-reply
-				:room="room"
-				:message-reply="messageReply"
-				:text-formatting="textFormatting"
-				:link-options="linkOptions"
-				@reset-message="resetMessage"
-			>
-				<template v-for="(i, name) in $slots" #[name]="data">
-					<slot :name="name" v-bind="data" />
-				</template>
-			</room-message-reply>
-
-			<room-files
-				:files="files"
-				@remove-file="removeFile"
-				@reset-message="resetMessage"
-			>
-				<template v-for="(i, name) in $slots" #[name]="data">
-					<slot :name="name" v-bind="data" />
-				</template>
-			</room-files>
-
-			<div
-				class="vac-box-footer"
-				:class="{ 'vac-box-footer-border': !files.length }"
-			>
-				<div v-if="showAudio && !files.length" class="vac-icon-textarea-left">
-					<template v-if="isRecording">
-						<div
-							class="vac-svg-button vac-icon-audio-stop"
-							@click="stopRecorder"
-						>
-							<slot name="audio-stop-icon">
-								<svg-icon name="close-outline" />
-							</slot>
-						</div>
-
-						<div class="vac-dot-audio-record" />
-
-						<div class="vac-dot-audio-record-time">
-							{{ recordedTime }}
-						</div>
-
-						<div
-							class="vac-svg-button vac-icon-audio-confirm"
-							@click="toggleRecorder(false)"
-						>
-							<slot name="audio-stop-icon">
-								<svg-icon name="checkmark" />
-							</slot>
-						</div>
-					</template>
-
-					<div v-else class="vac-svg-button" @click="toggleRecorder(true)">
-						<slot name="microphone-icon">
-							<svg-icon name="microphone" class="vac-icon-microphone" />
-						</slot>
-					</div>
-				</div>
-
-				<textarea
-					ref="roomTextarea"
-					:placeholder="textMessages.TYPE_MESSAGE"
-					class="vac-textarea"
-					:class="{
-						'vac-textarea-outline': editedMessage._id
-					}"
-					:style="{
-						'min-height': `20px`,
-						'padding-left': `12px`
-					}"
-					@input="onChangeInput"
-					@keydown.esc="escapeTextarea"
-					@keydown.enter.exact.prevent="selectItem"
-					@paste="onPasteImage"
-					@keydown.tab.exact.prevent=""
-					@keydown.tab="selectItem"
-					@keydown.up.exact.prevent=""
-					@keydown.up="updateActiveUpOrDown(-1)"
-					@keydown.down.exact.prevent=""
-					@keydown.down="updateActiveUpOrDown(1)"
-				/>
-
-				<div class="vac-icon-textarea">
-					<div
-						v-if="editedMessage._id"
-						class="vac-svg-button"
-						@click="resetMessage"
-					>
-						<slot name="edit-close-icon">
-							<svg-icon name="close-outline" />
-						</slot>
-					</div>
-
-					<emoji-picker-container
-						v-if="showEmojis"
-						v-click-outside="() => (emojiOpened = false)"
-						:emoji-opened="emojiOpened"
-						:position-top="true"
-						@add-emoji="addEmoji"
-						@open-emoji="emojiOpened = $event"
-					>
-						<template v-for="(i, name) in $slots" #[name]="data">
-							<slot :name="name" v-bind="data" />
-						</template>
-					</emoji-picker-container>
-
-					<div
-						v-if="showFiles"
-						class="vac-svg-button"
-						@click="launchFilePicker"
-					>
-						<slot name="paperclip-icon">
-							<svg-icon name="paperclip" />
-						</slot>
-					</div>
-
-					<div
-						v-if="textareaActionEnabled"
-						class="vac-svg-button"
-						@click="textareaActionHandler"
-					>
-						<slot name="custom-action-icon">
-							<svg-icon name="deleted" />
-						</slot>
-					</div>
-
-					<input
-						v-if="showFiles"
-						ref="file"
-						type="file"
-						multiple
-						:accept="acceptedFiles"
-						style="display: none"
-						@change="onFileChange($event.target.files)"
-					/>
-
-					<div
-						v-if="showSendIcon"
-						class="vac-svg-button"
-						:class="{ 'vac-send-disabled': isMessageEmpty }"
-						@click="sendMessage"
-					>
-						<slot name="send-icon">
-							<svg-icon
-								name="send"
-								:param="isMessageEmpty || isFileLoading ? 'disabled' : ''"
-							/>
-						</slot>
-					</div>
-				</div>
-			</div>
-		</div>
+		<room-footer
+			:room="room"
+			:room-id="roomId"
+			:room-message="roomMessage"
+			:text-messages="textMessages"
+			:show-send-icon="showSendIcon"
+			:show-files="showFiles"
+			:show-audio="showAudio"
+			:show-emojis="showEmojis"
+			:show-footer="showFooter"
+			:accepted-files="acceptedFiles"
+			:textarea-action-enabled="textareaActionEnabled"
+			:user-tags-enabled="userTagsEnabled"
+			:emojis-suggestion-enabled="emojisSuggestionEnabled"
+			:templates-text="templatesText"
+			:text-formatting="textFormatting"
+			:link-options="linkOptions"
+			:audio-bit-rate="audioBitRate"
+			:audio-sample-rate="audioSampleRate"
+			:init-reply-message="initReplyMessage"
+			:init-edit-message="initEditMessage"
+			@update-edited-message-id="editedMessageId = $event"
+			@edit-message="$emit('edit-message', $event)"
+			@send-message="$emit('send-message', $event)"
+			@typing-message="$emit('typing-message', $event)"
+			@textarea-action-handler="$emit('textarea-action-handler', $event)"
+		/>
 	</div>
 </template>
 
 <script>
-import { Database } from 'emoji-picker-element'
-
 import Loader from '../../components/Loader/Loader'
 import SvgIcon from '../../components/SvgIcon/SvgIcon'
-import EmojiPickerContainer from '../../components/EmojiPickerContainer/EmojiPickerContainer'
 
 import RoomHeader from './RoomHeader/RoomHeader'
-import RoomFiles from './RoomFiles/RoomFiles'
-import RoomMessageReply from './RoomMessageReply/RoomMessageReply'
-import RoomUsersTag from './RoomUsersTag/RoomUsersTag'
-import RoomEmojis from './RoomEmojis/RoomEmojis'
-import RoomTemplatesText from './RoomTemplatesText/RoomTemplatesText'
-import Message from '../Message/Message'
-
-import vClickOutside from '../../utils/on-click-outside'
-import filteredItems from '../../utils/filter-items'
-import Recorder from '../../utils/recorder'
-
-const { detectMobile } = require('../../utils/mobile-detection')
-
-const debounce = (func, delay) => {
-	let inDebounce
-	return function () {
-		const context = this
-		const args = arguments
-		clearTimeout(inDebounce)
-		inDebounce = setTimeout(() => func.apply(context, args), delay)
-	}
-}
+import RoomFooter from './RoomFooter/RoomFooter'
+import RoomMessage from './RoomMessage/RoomMessage'
 
 export default {
 	name: 'Room',
 	components: {
 		Loader,
 		SvgIcon,
-		EmojiPickerContainer,
 		RoomHeader,
-		RoomFiles,
-		RoomMessageReply,
-		RoomUsersTag,
-		RoomEmojis,
-		RoomTemplatesText,
-		Message
-	},
-
-	directives: {
-		clickOutside: vClickOutside
+		RoomFooter,
+		RoomMessage
 	},
 
 	props: {
@@ -369,6 +186,7 @@ export default {
 		messagesLoaded: { type: Boolean, required: true },
 		menuActions: { type: Array, required: true },
 		messageActions: { type: Array, required: true },
+		messageSelectionActions: { type: Array, required: true },
 		autoScroll: { type: Object, required: true },
 		showSendIcon: { type: Boolean, required: true },
 		showFiles: { type: Boolean, required: true },
@@ -396,6 +214,7 @@ export default {
 		'toggle-rooms-list',
 		'room-info',
 		'menu-action-handler',
+		'message-selection-action-handler',
 		'edit-message',
 		'send-message',
 		'delete-message',
@@ -411,38 +230,19 @@ export default {
 
 	data() {
 		return {
-			message: '',
-			editedMessage: {},
-			messageReply: null,
+			editedMessageId: null,
+			initReplyMessage: null,
+			initEditMessage: null,
 			infiniteState: null,
 			loadingMessages: false,
 			observer: null,
 			showLoader: true,
 			loadingMoreMessages: false,
-			files: [],
-			fileDialog: false,
-			emojiOpened: false,
-			hideOptions: true,
 			scrollIcon: false,
 			scrollMessagesCount: 0,
 			newMessages: [],
-			keepKeyboardOpen: false,
-			filteredEmojis: [],
-			filteredUsersTag: [],
-			selectedUsersTag: [],
-			filteredTemplatesText: [],
-			selectEmojiItem: null,
-			selectUsersTagItem: null,
-			selectTemplatesTextItem: null,
-			activeUpOrDownEmojis: null,
-			activeUpOrDownUsersTag: null,
-			activeUpOrDownTemplatesText: null,
-			textareaCursorPosition: null,
-			cursorRangePosition: null,
-			emojisDB: new Database(),
-			recorder: this.initRecorder(),
-			isRecording: false,
-			format: 'mp3'
+			messageSelectionEnabled: false,
+			selectedMessages: []
 		}
 	},
 
@@ -452,7 +252,7 @@ export default {
 		},
 		showNoMessages() {
 			return (
-				this.room.roomId &&
+				this.roomId &&
 				!this.messages.length &&
 				!this.loadingMessages &&
 				!this.loadingRooms
@@ -461,7 +261,7 @@ export default {
 		showNoRoom() {
 			const noRoomSelected =
 				(!this.rooms.length && !this.loadingRooms) ||
-				(!this.room.roomId && !this.loadFirstRoom)
+				(!this.roomId && !this.loadFirstRoom)
 
 			if (noRoomSelected) {
 				this.loadingMessages = false /* eslint-disable-line vue/no-side-effects-in-computed-properties */
@@ -470,53 +270,20 @@ export default {
 		},
 		showMessagesStarted() {
 			return this.messages.length && this.messagesLoaded
-		},
-		isMessageEmpty() {
-			return !this.files.length && !this.message.trim()
-		},
-		isFileLoading() {
-			return this.files.some(e => e.loading)
-		},
-		recordedTime() {
-			return new Date(this.recorder.duration * 1000).toISOString().substr(14, 5)
-		},
-		shadowFooter() {
-			return (
-				!!this.filteredEmojis.length ||
-				!!this.filteredUsersTag.length ||
-				!!this.filteredTemplatesText.length ||
-				!!this.files.length ||
-				!!this.messageReply
-			)
 		}
 	},
 
 	watch: {
-		message(val) {
-			this.getTextareaRef().value = val
-		},
 		loadingMessages(val) {
 			if (val) {
 				this.infiniteState = null
 			} else {
 				if (this.infiniteState) this.infiniteState.loaded()
-				this.focusTextarea(true)
 				setTimeout(() => this.initIntersectionObserver())
 			}
 		},
-		room: {
-			immediate: true,
-			handler(newVal, oldVal) {
-				if (newVal.roomId && (!oldVal || newVal.roomId !== oldVal.roomId)) {
-					this.onRoomChanged()
-				}
-			}
-		},
-		roomMessage: {
-			immediate: true,
-			handler(val) {
-				if (val) this.message = this.roomMessage
-			}
+		roomId() {
+			this.onRoomChanged()
 		},
 		messages: {
 			deep: true,
@@ -550,49 +317,6 @@ export default {
 
 	mounted() {
 		this.newMessages = []
-		const isMobile = detectMobile()
-
-		this.getTextareaRef().addEventListener(
-			'keyup',
-			debounce(e => {
-				if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
-					if (isMobile) {
-						this.message = this.message + '\n'
-						setTimeout(() => this.onChangeInput())
-					} else if (
-						!this.filteredEmojis.length &&
-						!this.filteredUsersTag.length &&
-						!this.filteredTemplatesText.length
-					) {
-						this.sendMessage()
-					}
-				}
-
-				setTimeout(() => {
-					this.updateFooterList('@')
-					this.updateFooterList(':')
-					this.updateFooterList('/')
-				}, 60)
-			}),
-			50
-		)
-
-		this.getTextareaRef().addEventListener('click', () => {
-			if (isMobile) this.keepKeyboardOpen = true
-
-			this.updateFooterList('@')
-			this.updateFooterList(':')
-			this.updateFooterList('/')
-		})
-
-		this.getTextareaRef().addEventListener('blur', () => {
-			this.resetFooterList()
-			if (isMobile) setTimeout(() => (this.keepKeyboardOpen = false))
-		})
-	},
-
-	beforeUnmount() {
-		this.stopRecorder()
 	},
 
 	methods: {
@@ -639,9 +363,6 @@ export default {
 				observer.observe(container.children[i])
 			}
 		},
-		getTextareaRef() {
-			return this.$refs.roomTextarea
-		},
 		touchStart(touchEvent) {
 			if (this.singleRoom) return
 
@@ -673,12 +394,7 @@ export default {
 			this.loadingMessages = true
 			this.scrollIcon = false
 			this.scrollMessagesCount = 0
-			this.resetMessage(true, true)
-
-			if (this.roomMessage) {
-				this.message = this.roomMessage
-				setTimeout(() => this.onChangeInput())
-			}
+			this.resetMessageSelection()
 
 			if (!this.messages.length && this.messagesLoaded) {
 				this.loadingMessages = false
@@ -699,6 +415,18 @@ export default {
 						this.loadingMessages = false
 					})
 				}
+			)
+		},
+		resetMessageSelection() {
+			this.messageSelectionEnabled = false
+			this.selectedMessages = []
+		},
+		selectMessage(message) {
+			this.selectedMessages.push(message)
+		},
+		unselectMessage(messageId) {
+			this.selectedMessages = this.selectedMessages.filter(
+				message => message._id !== messageId
 			)
 		},
 		onMessageAdded({ message, index, ref }) {
@@ -740,286 +468,11 @@ export default {
 			})
 		},
 		onContainerScroll(e) {
-			this.hideOptions = true
-
 			if (!e.target) return
 
 			const bottomScroll = this.getBottomScroll(e.target)
 			if (bottomScroll < 60) this.scrollMessagesCount = 0
 			this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount
-		},
-		updateFooterList(tagChar) {
-			if (!this.getTextareaRef()) return
-
-			if (tagChar === ':' && !this.emojisSuggestionEnabled) {
-				return
-			}
-
-			if (tagChar === '@' && (!this.userTagsEnabled || !this.room.users)) {
-				return
-			}
-
-			if (tagChar === '/' && !this.templatesText) {
-				return
-			}
-
-			if (
-				this.textareaCursorPosition === this.getTextareaRef().selectionStart
-			) {
-				return
-			}
-
-			this.textareaCursorPosition = this.getTextareaRef().selectionStart
-
-			let position = this.textareaCursorPosition
-
-			while (
-				position > 0 &&
-				this.message.charAt(position - 1) !== tagChar &&
-				// eslint-disable-next-line no-unmodified-loop-condition
-				(this.message.charAt(position - 1) !== ' ' || tagChar !== ':')
-			) {
-				position--
-			}
-
-			const beforeTag = this.message.charAt(position - 2)
-			const notLetterNumber = !beforeTag.match(/^[0-9a-zA-Z]+$/)
-
-			if (
-				this.message.charAt(position - 1) === tagChar &&
-				(!beforeTag || beforeTag === ' ' || notLetterNumber)
-			) {
-				const query = this.message.substring(
-					position,
-					this.textareaCursorPosition
-				)
-				if (tagChar === ':') {
-					this.updateEmojis(query)
-				} else if (tagChar === '@') {
-					this.updateShowUsersTag(query)
-				} else if (tagChar === '/') {
-					this.updateShowTemplatesText(query)
-				}
-			} else {
-				this.resetFooterList(tagChar)
-			}
-		},
-		getCharPosition(tagChar) {
-			const cursorPosition = this.getTextareaRef().selectionStart
-
-			let position = cursorPosition
-			while (position > 0 && this.message.charAt(position - 1) !== tagChar) {
-				position--
-			}
-
-			const endPosition = this.getTextareaRef().selectionEnd
-
-			return { position, endPosition }
-		},
-		async updateEmojis(query) {
-			if (!query) return
-
-			const emojis = await this.emojisDB.getEmojiBySearchQuery(query)
-			this.filteredEmojis = emojis.map(emoji => emoji.unicode)
-		},
-		selectEmoji(emoji) {
-			this.selectEmojiItem = false
-
-			if (!emoji) return
-
-			const { position, endPosition } = this.getCharPosition(':')
-
-			this.message =
-				this.message.substr(0, position - 1) +
-				emoji +
-				this.message.substr(endPosition, this.message.length - 1)
-
-			this.cursorRangePosition = position
-			this.focusTextarea()
-		},
-		updateShowUsersTag(query) {
-			this.filteredUsersTag = filteredItems(
-				this.room.users,
-				'username',
-				query,
-				true
-			).filter(user => user._id !== this.currentUserId)
-		},
-		selectUserTag(user, editMode = false) {
-			this.selectUsersTagItem = false
-
-			if (!user) return
-
-			const { position, endPosition } = this.getCharPosition('@')
-
-			const space = this.message.substr(endPosition, endPosition).length
-				? ''
-				: ' '
-
-			this.message =
-				this.message.substr(0, position) +
-				user.username +
-				space +
-				this.message.substr(endPosition, this.message.length - 1)
-
-			this.selectedUsersTag = [...this.selectedUsersTag, { ...user }]
-
-			if (!editMode) {
-				this.cursorRangePosition =
-					position + user.username.length + space.length + 1
-			}
-
-			this.focusTextarea()
-		},
-		updateShowTemplatesText(query) {
-			this.filteredTemplatesText = filteredItems(
-				this.templatesText,
-				'tag',
-				query,
-				true
-			)
-		},
-		selectTemplateText(template) {
-			this.selectTemplatesTextItem = false
-
-			if (!template) return
-
-			const { position, endPosition } = this.getCharPosition('/')
-
-			const space = this.message.substr(endPosition, endPosition).length
-				? ''
-				: ' '
-
-			this.message =
-				this.message.substr(0, position - 1) +
-				template.text +
-				space +
-				this.message.substr(endPosition, this.message.length - 1)
-
-			this.cursorRangePosition =
-				position + template.text.length + space.length + 1
-
-			this.focusTextarea()
-		},
-		updateActiveUpOrDown(direction) {
-			if (this.filteredEmojis.length) {
-				this.activeUpOrDownEmojis = direction
-			} else if (this.filteredUsersTag.length) {
-				this.activeUpOrDownUsersTag = direction
-			} else if (this.filteredTemplatesText.length) {
-				this.activeUpOrDownTemplatesText = direction
-			}
-		},
-		selectItem() {
-			if (this.filteredEmojis.length) {
-				this.selectEmojiItem = true
-			} else if (this.filteredUsersTag.length) {
-				this.selectUsersTagItem = true
-			} else if (this.filteredTemplatesText.length) {
-				this.selectTemplatesTextItem = true
-			}
-		},
-		resetFooterList(tagChar = null) {
-			if (tagChar === ':') {
-				this.filteredEmojis = []
-			} else if (tagChar === '@') {
-				this.filteredUsersTag = []
-			} else if (tagChar === '/') {
-				this.filteredTemplatesText = []
-			} else {
-				this.filteredEmojis = []
-				this.filteredUsersTag = []
-				this.filteredTemplatesText = []
-			}
-
-			this.textareaCursorPosition = null
-		},
-		escapeTextarea() {
-			if (this.filteredEmojis.length) this.filteredEmojis = []
-			else if (this.filteredUsersTag.length) this.filteredUsersTag = []
-			else if (this.filteredTemplatesText.length) {
-				this.filteredTemplatesText = []
-			} else this.resetMessage()
-		},
-		resetMessage(disableMobileFocus = false, initRoom = false) {
-			if (!initRoom) {
-				this.$emit('typing-message', null)
-			}
-
-			this.selectedUsersTag = []
-			this.resetFooterList()
-			this.resetTextareaSize()
-			this.message = ''
-			this.editedMessage = {}
-			this.messageReply = null
-			this.files = []
-			this.emojiOpened = false
-			this.preventKeyboardFromClosing()
-			setTimeout(() => this.focusTextarea(disableMobileFocus))
-		},
-		resetTextareaSize() {
-			if (this.getTextareaRef()) {
-				this.getTextareaRef().style.height = '20px'
-			}
-		},
-		focusTextarea(disableMobileFocus) {
-			if (detectMobile() && disableMobileFocus) return
-			if (!this.getTextareaRef()) return
-			this.getTextareaRef().focus()
-
-			if (this.cursorRangePosition) {
-				setTimeout(() => {
-					this.getTextareaRef().setSelectionRange(
-						this.cursorRangePosition,
-						this.cursorRangePosition
-					)
-					this.cursorRangePosition = null
-				})
-			}
-		},
-		preventKeyboardFromClosing() {
-			if (this.keepKeyboardOpen) this.getTextareaRef().focus()
-		},
-		sendMessage() {
-			let message = this.message.trim()
-
-			if (!this.files.length && !message) return
-
-			if (this.isFileLoading) return
-
-			this.selectedUsersTag.forEach(user => {
-				message = message.replace(
-					`@${user.username}`,
-					`<usertag>${user._id}</usertag>`
-				)
-			})
-
-			const files = this.files.length ? this.files : null
-
-			if (this.editedMessage._id) {
-				if (
-					this.editedMessage.content !== message ||
-					this.editedMessage.files?.length ||
-					this.files.length
-				) {
-					this.$emit('edit-message', {
-						messageId: this.editedMessage._id,
-						newContent: message,
-						files: files,
-						replyMessage: this.messageReply,
-						usersTag: this.selectedUsersTag
-					})
-				}
-			} else {
-				this.$emit('send-message', {
-					content: message,
-					files: files,
-					replyMessage: this.messageReply,
-					usersTag: this.selectedUsersTag
-				})
-			}
-
-			this.resetMessage(true)
 		},
 		loadMoreMessages() {
 			if (this.loadingMessages) return
@@ -1028,7 +481,7 @@ export default {
 				() => {
 					if (this.loadingMoreMessages) return
 
-					if (this.messagesLoaded || !this.room.roomId) {
+					if (this.messagesLoaded || !this.roomId) {
 						this.loadingMoreMessages = false
 						this.showLoader = false
 						return
@@ -1045,61 +498,30 @@ export default {
 		messageActionHandler({ action, message }) {
 			switch (action.name) {
 				case 'replyMessage':
-					return this.replyMessage(message)
+					this.initReplyMessage = message
+					return
 				case 'editMessage':
-					return this.editMessage(message)
+					this.initEditMessage = message
+					return
 				case 'deleteMessage':
 					return this.$emit('delete-message', message)
+				case 'selectMessages':
+					this.selectedMessages = [message]
+					this.messageSelectionEnabled = true
+					return
 				default:
 					return this.$emit('message-action-handler', { action, message })
 			}
 		},
+		messageSelectionActionHandler(action) {
+			this.$emit('message-selection-action-handler', {
+				action,
+				messages: this.selectedMessages
+			})
+			this.resetMessageSelection()
+		},
 		sendMessageReaction(messageReaction) {
 			this.$emit('send-message-reaction', messageReaction)
-		},
-		replyMessage(message) {
-			this.editedMessage = {}
-			this.messageReply = message
-			this.focusTextarea()
-		},
-		editMessage(message) {
-			this.resetMessage()
-
-			this.editedMessage = { ...message }
-
-			let messageContent = message.content
-			const initialContent = messageContent
-
-			const firstTag = '<usertag>'
-			const secondTag = '</usertag>'
-
-			const usertags = [
-				...messageContent.matchAll(new RegExp(firstTag, 'gi'))
-			].map(a => a.index)
-
-			usertags.forEach(index => {
-				const userId = initialContent.substring(
-					index + firstTag.length,
-					initialContent.indexOf(secondTag, index)
-				)
-
-				const user = this.room.users.find(user => user._id === userId)
-
-				messageContent = messageContent.replace(
-					`${firstTag}${userId}${secondTag}`,
-					`@${user?.username || 'unknown'}`
-				)
-
-				this.selectUserTag(user, true)
-			})
-
-			this.message = messageContent
-
-			if (message.files) {
-				this.files = [...message.files]
-			}
-
-			setTimeout(() => this.resizeTextarea())
 		},
 		getBottomScroll(element) {
 			const { scrollHeight, clientHeight, scrollTop } = element
@@ -1113,143 +535,11 @@ export default {
 				setTimeout(() => element.classList.remove('vac-scroll-smooth'))
 			}, 50)
 		},
-		onChangeInput: debounce(function () {
-			if (this.getTextareaRef()?.value || this.getTextareaRef()?.value === '') {
-				this.message = this.getTextareaRef()?.value
-			}
-			this.keepKeyboardOpen = true
-			this.resizeTextarea()
-			this.$emit('typing-message', this.message)
-		}, 100),
-		resizeTextarea() {
-			const el = this.getTextareaRef()
-
-			if (!el) return
-
-			const padding = window
-				.getComputedStyle(el, null)
-				.getPropertyValue('padding-top')
-				.replace('px', '')
-
-			el.style.height = 0
-			el.style.height = el.scrollHeight - padding * 2 + 'px'
-		},
-		addEmoji(emoji) {
-			this.message += emoji.unicode
-			this.focusTextarea(true)
-		},
-		launchFilePicker() {
-			this.$refs.file.value = ''
-			this.$refs.file.click()
-		},
-		onPasteImage(pasteEvent) {
-			const items = pasteEvent.clipboardData?.items
-
-			if (items) {
-				Array.from(items).forEach(item => {
-					if (item.type.includes('image')) {
-						const blob = item.getAsFile()
-						this.onFileChange([blob])
-					}
-				})
-			}
-		},
-		async onFileChange(files) {
-			this.fileDialog = true
-			this.focusTextarea()
-
-			Array.from(files).forEach(async file => {
-				const fileURL = URL.createObjectURL(file)
-				const typeIndex = file.name.lastIndexOf('.')
-
-				this.files.push({
-					loading: true,
-					name: file.name.substring(0, typeIndex),
-					size: file.size,
-					type: file.type,
-					extension: file.name.substring(typeIndex + 1),
-					localUrl: fileURL
-				})
-
-				const blobFile = await fetch(fileURL).then(res => res.blob())
-
-				let loadedFile = this.files.find(file => file.localUrl === fileURL)
-
-				if (loadedFile) {
-					loadedFile.blob = blobFile
-					loadedFile.loading = false
-					delete loadedFile.loading
-				}
-			})
-
-			setTimeout(() => (this.fileDialog = false), 500)
-		},
-		removeFile(index) {
-			this.files.splice(index, 1)
-			this.focusTextarea()
-		},
-		initRecorder() {
-			this.isRecording = false
-
-			return new Recorder({
-				bitRate: this.audioBitRate,
-				sampleRate: this.audioSampleRate,
-				beforeRecording: null,
-				afterRecording: null,
-				pauseRecording: null,
-				micFailed: this.micFailed
-			})
-		},
-		micFailed() {
-			this.isRecording = false
-			this.recorder = this.initRecorder()
-		},
-		toggleRecorder(recording) {
-			this.isRecording = recording
-
-			if (!this.recorder.isRecording) {
-				setTimeout(() => this.recorder.start(), 200)
-			} else {
-				try {
-					this.recorder.stop()
-
-					const record = this.recorder.records[0]
-
-					this.files.push({
-						blob: record.blob,
-						name: `audio.${this.format}`,
-						size: record.blob.size,
-						duration: record.duration,
-						type: record.blob.type,
-						audio: true,
-						localUrl: URL.createObjectURL(record.blob)
-					})
-
-					this.recorder = this.initRecorder()
-					this.sendMessage()
-				} catch {
-					setTimeout(() => this.stopRecorder(), 100)
-				}
-			}
-		},
-		stopRecorder() {
-			if (this.recorder.isRecording) {
-				try {
-					this.recorder.stop()
-					this.recorder = this.initRecorder()
-				} catch {
-					setTimeout(() => this.stopRecorder(), 100)
-				}
-			}
-		},
 		openFile({ message, file }) {
 			this.$emit('open-file', { message, file })
 		},
 		openUserTag(user) {
 			this.$emit('open-user-tag', user)
-		},
-		textareaActionHandler() {
-			this.$emit('textarea-action-handler', this.message)
 		}
 	}
 }

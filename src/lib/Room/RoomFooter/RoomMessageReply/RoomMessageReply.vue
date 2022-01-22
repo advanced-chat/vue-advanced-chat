@@ -3,7 +3,7 @@
 		<div
 			v-if="messageReply"
 			class="vac-reply-container"
-			:style="{ bottom: `${$parent.$refs.roomFooter.clientHeight}px` }"
+			:style="{ bottom: `${footerHeight}px` }"
 		>
 			<div class="vac-reply-box">
 				<div class="vac-reply-info">
@@ -71,16 +71,16 @@
 </template>
 
 <script>
-import SvgIcon from '../../../components/SvgIcon/SvgIcon'
-import FormatMessage from '../../../components/FormatMessage/FormatMessage'
+import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
+import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
 
-import AudioPlayer from '../../Message/AudioPlayer/AudioPlayer'
+import AudioPlayer from '../../RoomMessage/AudioPlayer/AudioPlayer'
 
 const {
 	isAudioFile,
 	isImageFile,
 	isVideoFile
-} = require('../../../utils/media-file')
+} = require('../../../../utils/media-file')
 
 export default {
 	name: 'RoomMessageReply',
@@ -100,6 +100,9 @@ export default {
 	emits: ['reset-message'],
 
 	computed: {
+		footerHeight() {
+			return document.getElementById('room-footer').clientHeight
+		},
 		firstFile() {
 			return this.messageReply.files?.length ? this.messageReply.files[0] : {}
 		},

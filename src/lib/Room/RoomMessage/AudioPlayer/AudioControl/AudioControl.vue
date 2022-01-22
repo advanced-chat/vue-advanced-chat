@@ -22,7 +22,8 @@
 <script>
 export default {
 	props: {
-		percentage: { type: Number, default: 0 }
+		percentage: { type: Number, default: 0 },
+		messageSelectionEnabled: { type: Boolean, required: true }
 	},
 
 	emits: ['hover-audio-progress', 'change-linehead'],
@@ -35,6 +36,8 @@ export default {
 
 	methods: {
 		onMouseDown(ev) {
+			if (this.messageSelectionEnabled) return
+
 			this.isMouseDown = true
 			const seekPos = this.calculateLineHeadPosition(ev, this.$refs.progress)
 			this.$emit('change-linehead', seekPos)
@@ -42,6 +45,8 @@ export default {
 			document.addEventListener('mouseup', this.onMouseUp)
 		},
 		onMouseUp(ev) {
+			if (this.messageSelectionEnabled) return
+
 			this.isMouseDown = false
 			document.removeEventListener('mouseup', this.onMouseUp)
 			document.removeEventListener('mousemove', this.onMouseMove)
@@ -49,6 +54,8 @@ export default {
 			this.$emit('change-linehead', seekPos)
 		},
 		onMouseMove(ev) {
+			if (this.messageSelectionEnabled) return
+
 			const seekPos = this.calculateLineHeadPosition(ev, this.$refs.progress)
 			this.$emit('change-linehead', seekPos)
 		},

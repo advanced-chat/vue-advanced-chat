@@ -185,6 +185,36 @@ module.exports = Queue;
 
 /***/ }),
 
+/***/ "01b4":
+/***/ (function(module, exports) {
+
+var Queue = function () {
+  this.head = null;
+  this.tail = null;
+};
+
+Queue.prototype = {
+  add: function (item) {
+    var entry = { item: item, next: null };
+    if (this.head) this.tail.next = entry;
+    else this.head = entry;
+    this.tail = entry;
+  },
+  get: function () {
+    var entry = this.head;
+    if (entry) {
+      this.head = entry.next;
+      if (this.tail === entry) this.tail = null;
+      return entry.item;
+    }
+  }
+};
+
+module.exports = Queue;
+
+
+/***/ }),
+
 /***/ "0206":
 /***/ (function(module, exports) {
 
@@ -36234,18 +36264,14 @@ function Roomvue_type_template_id_913548ca_render(_ctx, _cache, $props, $setup, 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.promise.js
 var es_promise = __webpack_require__("e6cf");
 
-// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js
+// CONCATENATED MODULE: ./src/lib/Room/Room.vue?vue&type=template&id=165316fb&
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"5d8f80ca-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/Room/RoomHeader/RoomHeader.vue?vue&type=template&id=240fc906&
+var RoomHeadervue_type_template_id_240fc906_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"vac-room-header vac-app-border-b"},[_vm._t("room-header",function(){return [_c('div',{staticClass:"vac-room-wrapper"},[_c('transition',{attrs:{"name":"vac-slide-up"}},[(_vm.messageSelectionEnabled)?_c('div',{staticClass:"vac-room-selection"},[_vm._l((_vm.messageSelectionActions),function(action){return _c('div',{key:action.name,attrs:{"id":action.name}},[_c('div',{staticClass:"vac-selection-button",on:{"click":function($event){return _vm.messageSelectionActionHandler(action)}}},[_vm._v(" "+_vm._s(action.title)+" "),_c('span',{staticClass:"vac-selection-button-count"},[_vm._v(" "+_vm._s(_vm.selectedMessagesTotal)+" ")])])])}),_c('div',{staticClass:"vac-selection-cancel vac-item-clickable",on:{"click":function($event){return _vm.$emit('cancel-message-selection')}}},[_vm._v(" "+_vm._s(_vm.textMessages.CANCEL_SELECT_MESSAGE)+" ")])],2):_vm._e()]),(!_vm.messageSelectionEnabled && _vm.messageSelectionAnimationEnded)?[(!_vm.singleRoom)?_c('div',{staticClass:"vac-svg-button vac-toggle-button",class:{ 'vac-rotate-icon': !_vm.showRoomsList && !_vm.isMobile },on:{"click":function($event){return _vm.$emit('toggle-rooms-list')}}},[_vm._t("toggle-icon",function(){return [_c('svg-icon',{attrs:{"name":"toggle"}})]})],2):_vm._e(),_c('div',{staticClass:"vac-info-wrapper",class:{ 'vac-item-clickable': _vm.roomInfoEnabled },on:{"click":function($event){return _vm.$emit('room-info')}}},[_vm._t("room-header-avatar",function(){return [(_vm.room.avatar)?_c('div',{staticClass:"vac-avatar",style:({ 'background-image': ("url('" + (_vm.room.avatar) + "')") })}):_vm._e()]},null,{ room: _vm.room }),_vm._t("room-header-info",function(){return [_c('div',{staticClass:"vac-text-ellipsis"},[_c('div',{staticClass:"vac-room-name vac-text-ellipsis"},[_vm._v(" "+_vm._s(_vm.room.roomName)+" ")]),(_vm.typingUsers)?_c('div',{staticClass:"vac-room-info vac-text-ellipsis"},[_vm._v(" "+_vm._s(_vm.typingUsers)+" ")]):_c('div',{staticClass:"vac-room-info vac-text-ellipsis"},[_vm._v(" "+_vm._s(_vm.userStatus)+" ")])])]},null,{ room: _vm.room, typingUsers: _vm.typingUsers, userStatus: _vm.userStatus })],2),(_vm.room.roomId)?_vm._t("room-options",function(){return [(_vm.menuActions.length)?_c('div',{staticClass:"vac-svg-button vac-room-options",on:{"click":function($event){_vm.menuOpened = !_vm.menuOpened}}},[_vm._t("menu-icon",function(){return [_c('svg-icon',{attrs:{"name":"menu"}})]})],2):_vm._e(),(_vm.menuActions.length)?_c('transition',{attrs:{"name":"vac-slide-left"}},[(_vm.menuOpened)?_c('div',{directives:[{name:"click-outside",rawName:"v-click-outside",value:(_vm.closeMenu),expression:"closeMenu"}],staticClass:"vac-menu-options"},[_c('div',{staticClass:"vac-menu-list"},_vm._l((_vm.menuActions),function(action){return _c('div',{key:action.name},[_c('div',{staticClass:"vac-menu-item",on:{"click":function($event){return _vm.menuActionHandler(action)}}},[_vm._v(" "+_vm._s(action.title)+" ")])])}),0)]):_vm._e()]):_vm._e()]}):_vm._e()]:_vm._e()],2)]},null,{ room: _vm.room, typingUsers: _vm.typingUsers, userStatus: _vm.userStatus })],2)}
+var RoomHeadervue_type_template_id_240fc906_staticRenderFns = []
 
 
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
+// CONCATENATED MODULE: ./src/lib/Room/RoomHeader/RoomHeader.vue?vue&type=template&id=240fc906&
 
   if (info.done) {
     resolve(value);
@@ -36619,12 +36645,25 @@ function RoomHeadervue_type_template_id_349cf814_render(_ctx, _cache, $props, $s
     room: {
       type: Object,
       required: true
+    },
+    messageSelectionEnabled: {
+      type: Boolean,
+      required: true
+    },
+    messageSelectionActions: {
+      type: Array,
+      required: true
+    },
+    selectedMessagesTotal: {
+      type: Number,
+      required: true
     }
   },
-  emits: ['toggle-rooms-list', 'room-info', 'menu-action-handler'],
+  emits: ['toggle-rooms-list', 'room-info', 'menu-action-handler', 'cancel-message-selection', 'message-selection-action-handler'],
   data: function data() {
     return {
-      menuOpened: false
+      menuOpened: false,
+      messageSelectionAnimationEnded: true
     };
   },
   computed: {
@@ -36650,6 +36689,19 @@ function RoomHeadervue_type_template_id_349cf814_render(_ctx, _cache, $props, $s
       return text;
     }
   },
+  watch: {
+    messageSelectionEnabled: function messageSelectionEnabled(val) {
+      var _this2 = this;
+
+      if (val) {
+        this.messageSelectionAnimationEnded = false;
+      } else {
+        setTimeout(function () {
+          _this2.messageSelectionAnimationEnded = true;
+        }, 300);
+      }
+    }
+  },
   methods: {
     menuActionHandler: function menuActionHandler(action) {
       this.closeMenu();
@@ -36657,6 +36709,9 @@ function RoomHeadervue_type_template_id_349cf814_render(_ctx, _cache, $props, $s
     },
     closeMenu: function closeMenu() {
       this.menuOpened = false;
+    },
+    messageSelectionActionHandler: function messageSelectionActionHandler(action) {
+      this.$emit('message-selection-action-handler', action);
     }
   }
 });
@@ -36850,7 +36905,12 @@ const RoomFile_exports_ = /*#__PURE__*/exportHelper_default()(RoomFilevue_type_s
       required: true
     }
   },
-  emits: ['remove-file', 'reset-message']
+  emits: ['remove-file', 'reset-message'],
+  computed: {
+    footerHeight: function footerHeight() {
+      return document.getElementById('room-footer').clientHeight;
+    }
+  }
 });
 // CONCATENATED MODULE: ./src/lib/Room/RoomFiles/RoomFiles.vue?vue&type=script&lang=js
  
@@ -37055,6 +37115,10 @@ function AudioControlvue_type_template_id_ee3587d0_render(_ctx, _cache, $props, 
     percentage: {
       type: Number,
       "default": 0
+    },
+    messageSelectionEnabled: {
+      type: Boolean,
+      required: true
     }
   },
   emits: ['hover-audio-progress', 'change-linehead'],
@@ -37065,6 +37129,7 @@ function AudioControlvue_type_template_id_ee3587d0_render(_ctx, _cache, $props, 
   },
   methods: {
     onMouseDown: function onMouseDown(ev) {
+      if (this.messageSelectionEnabled) return;
       this.isMouseDown = true;
       var seekPos = this.calculateLineHeadPosition(ev, this.$refs.progress);
       this.$emit('change-linehead', seekPos);
@@ -37072,6 +37137,7 @@ function AudioControlvue_type_template_id_ee3587d0_render(_ctx, _cache, $props, 
       document.addEventListener('mouseup', this.onMouseUp);
     },
     onMouseUp: function onMouseUp(ev) {
+      if (this.messageSelectionEnabled) return;
       this.isMouseDown = false;
       document.removeEventListener('mouseup', this.onMouseUp);
       document.removeEventListener('mousemove', this.onMouseMove);
@@ -37079,6 +37145,7 @@ function AudioControlvue_type_template_id_ee3587d0_render(_ctx, _cache, $props, 
       this.$emit('change-linehead', seekPos);
     },
     onMouseMove: function onMouseMove(ev) {
+      if (this.messageSelectionEnabled) return;
       var seekPos = this.calculateLineHeadPosition(ev, this.$refs.progress);
       this.$emit('change-linehead', seekPos);
     },
@@ -37125,6 +37192,10 @@ const AudioControl_exports_ = /*#__PURE__*/exportHelper_default()(AudioControlvu
     src: {
       type: String,
       "default": null
+    },
+    messageSelectionEnabled: {
+      type: Boolean,
+      required: true
     }
   },
   emits: ['hover-audio-progress', 'update-progress-time'],
@@ -37169,7 +37240,7 @@ const AudioControl_exports_ = /*#__PURE__*/exportHelper_default()(AudioControlvu
     playback: function playback() {
       var _this2 = this;
 
-      if (!this.audioSource) return;
+      if (this.messageSelectionEnabled || !this.audioSource) return;
       if (this.isPlaying) this.player.pause();else setTimeout(function () {
         return _this2.player.play();
       });
@@ -37244,6 +37315,9 @@ var RoomMessageReplyvue_type_script_lang_js_require = __webpack_require__("bd43"
   },
   emits: ['reset-message'],
   computed: {
+    footerHeight: function footerHeight() {
+      return document.getElementById('room-footer').clientHeight;
+    },
     firstFile: function firstFile() {
       var _this$messageReply$fi;
 
@@ -37346,9 +37420,16 @@ function RoomUsersTagvue_type_template_id_7fb51b20_render(_ctx, _cache, $props, 
       activeItem: null
     };
   },
+  computed: {
+    footerHeight: function footerHeight() {
+      return document.getElementById('room-footer').clientHeight;
+    }
+  },
   watch: {
-    filteredUsersTag: function filteredUsersTag() {
-      this.activeItem = 0;
+    filteredUsersTag: function filteredUsersTag(val, oldVal) {
+      if (!oldVal.length || val.length !== oldVal.length) {
+        this.activeItem = 0;
+      }
     },
     selectItem: function selectItem(val) {
       if (val) {
@@ -37435,9 +37516,16 @@ function RoomEmojisvue_type_template_id_2d791f57_render(_ctx, _cache, $props, $s
       activeItem: null
     };
   },
+  computed: {
+    footerHeight: function footerHeight() {
+      return document.getElementById('room-footer').clientHeight;
+    }
+  },
   watch: {
-    filteredEmojis: function filteredEmojis() {
-      this.activeItem = 0;
+    filteredEmojis: function filteredEmojis(val, oldVal) {
+      if (!oldVal.length || val.length !== oldVal.length) {
+        this.activeItem = 0;
+      }
     },
     selectItem: function selectItem(val) {
       if (val) {
@@ -37533,9 +37621,16 @@ function RoomTemplatesTextvue_type_template_id_01c840e1_render(_ctx, _cache, $pr
       activeItem: null
     };
   },
+  computed: {
+    footerHeight: function footerHeight() {
+      return document.getElementById('room-footer').clientHeight;
+    }
+  },
   watch: {
-    filteredTemplatesText: function filteredTemplatesText() {
-      this.activeItem = 0;
+    filteredTemplatesText: function filteredTemplatesText(val, oldVal) {
+      if (!oldVal.length || val.length !== oldVal.length) {
+        this.activeItem = 0;
+      }
     },
     selectItem: function selectItem(val) {
       if (val) {
@@ -37826,8 +37921,6 @@ function Messagevue_type_template_id_54714e10_render(_ctx, _cache, $props, $setu
 }
 // CONCATENATED MODULE: ./src/lib/Message/Message.vue?vue&type=template&id=54714e10
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.reduce.js
-var es_array_reduce = __webpack_require__("13d5");
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--7!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader-v16/dist??ref--1-1!./src/lib/Message/MessageReply/MessageReply.vue?vue&type=template&id=7f595235
 
@@ -38393,29 +38486,33 @@ const MessageFile_exports_ = /*#__PURE__*/exportHelper_default()(MessageFilevue_
 
 
 
-var MessageFilesvue_type_script_lang_js_require = __webpack_require__("bd43"),
-    isImageVideoFile = MessageFilesvue_type_script_lang_js_require.isImageVideoFile;
 
 /* harmony default export */ var MessageFilesvue_type_script_lang_js = ({
   name: 'MessageFiles',
   components: {
     SvgIcon: SvgIcon,
-    FormatMessage: FormatMessage,
-    ProgressBar: ProgressBar,
-    MessageFile: MessageFile
+    EmojiPickerContainer: EmojiPickerContainer,
+    RoomFiles: RoomFiles,
+    RoomMessageReply: RoomMessageReply,
+    RoomUsersTag: RoomUsersTag,
+    RoomEmojis: RoomEmojis,
+    RoomTemplatesText: RoomTemplatesText
+  },
+  directives: {
+    clickOutside: v_click_outside_umd_default.a.directive
   },
   props: {
-    currentUserId: {
-      type: [String, Number],
-      required: true
-    },
-    message: {
+    room: {
       type: Object,
       required: true
     },
-    roomUsers: {
-      type: Array,
+    roomId: {
+      type: [String, Number],
       required: true
+    },
+    roomMessage: {
+      type: String,
+      "default": null
     },
     textFormatting: {
       type: Object,
@@ -38424,14 +38521,6 @@ var MessageFilesvue_type_script_lang_js_require = __webpack_require__("bd43"),
     linkOptions: {
       type: Object,
       required: true
-    }
-  },
-  emits: ['open-file', 'open-user-tag'],
-  computed: {
-    imageVideoFiles: function imageVideoFiles() {
-      return this.message.files.filter(function (file) {
-        return isImageVideoFile(file);
-      });
     },
     otherFiles: function otherFiles() {
       return this.message.files.filter(function (file) {
@@ -38576,132 +38665,665 @@ function MessageActionsvue_type_template_id_5f840a8f_render(_ctx, _cache, $props
       type: [String, Number],
       required: true
     },
-    message: {
-      type: Object,
+    showSendIcon: {
+      type: Boolean,
       required: true
     },
-    messageActions: {
+    showFiles: {
+      type: Boolean,
+      required: true
+    },
+    showAudio: {
+      type: Boolean,
+      required: true
+    },
+    showEmojis: {
+      type: Boolean,
+      required: true
+    },
+    showFooter: {
+      type: Boolean,
+      required: true
+    },
+    acceptedFiles: {
+      type: String,
+      required: true
+    },
+    textareaActionEnabled: {
+      type: Boolean,
+      required: true
+    },
+    userTagsEnabled: {
+      type: Boolean,
+      required: true
+    },
+    emojisSuggestionEnabled: {
+      type: Boolean,
+      required: true
+    },
+    templatesText: {
       type: Array,
-      required: true
-    },
-    roomFooterRef: {
-      type: HTMLDivElement,
       "default": null
     },
-    showReactionEmojis: {
-      type: Boolean,
+    audioBitRate: {
+      type: Number,
       required: true
     },
-    hideOptions: {
-      type: Boolean,
+    audioSampleRate: {
+      type: Number,
       required: true
     },
-    messageHover: {
-      type: Boolean,
-      required: true
-    },
-    hoverMessageId: {
-      type: [String, Number],
+    initReplyMessage: {
+      type: Object,
       "default": null
     },
-    hoverAudioProgress: {
-      type: Boolean,
-      required: true
+    initEditMessage: {
+      type: Object,
+      "default": null
     }
   },
-  emits: ['update-emoji-opened', 'update-options-opened', 'update-message-hover', 'hide-options', 'message-action-handler', 'send-message-reaction'],
+  emits: ['edit-message', 'send-message', 'update-edited-message-id', 'textarea-action-handler', 'typing-message'],
   data: function data() {
     return {
-      menuOptionsTop: 0,
-      optionsOpened: false,
-      optionsClosing: false,
-      emojiOpened: false
+      message: '',
+      editedMessage: {},
+      messageReply: null,
+      cursorRangePosition: null,
+      files: [],
+      fileDialog: false,
+      selectUsersTagItem: null,
+      selectEmojiItem: null,
+      selectTemplatesTextItem: null,
+      format: 'mp3',
+      activeUpOrDownEmojis: null,
+      activeUpOrDownUsersTag: null,
+      activeUpOrDownTemplatesText: null,
+      emojisDB: new database["a" /* default */](),
+      emojiOpened: false,
+      keepKeyboardOpen: false,
+      filteredEmojis: [],
+      filteredUsersTag: [],
+      selectedUsersTag: [],
+      filteredTemplatesText: [],
+      recorder: this.initRecorder(),
+      isRecording: false
     };
   },
   computed: {
-    isMessageActions: function isMessageActions() {
-      return this.filteredMessageActions.length && this.messageHover && !this.message.deleted && !this.message.disableActions && !this.hoverAudioProgress;
+    isMessageEmpty: function isMessageEmpty() {
+      return !this.files.length && !this.message.trim();
     },
-    isMessageReactions: function isMessageReactions() {
-      return this.showReactionEmojis && this.messageHover && !this.message.deleted && !this.message.disableReactions && !this.hoverAudioProgress;
-    },
-    filteredMessageActions: function filteredMessageActions() {
-      return this.message.senderId === this.currentUserId ? this.messageActions : this.messageActions.filter(function (message) {
-        return !message.onlyMe;
+    isFileLoading: function isFileLoading() {
+      return this.files.some(function (e) {
+        return e.loading;
       });
+    },
+    recordedTime: function recordedTime() {
+      return new Date(this.recorder.duration * 1000).toISOString().substr(14, 5);
+    },
+    shadowFooter: function shadowFooter() {
+      return !!this.filteredEmojis.length || !!this.filteredUsersTag.length || !!this.filteredTemplatesText.length || !!this.files.length || !!this.messageReply;
     }
   },
   watch: {
-    emojiOpened: function emojiOpened(val) {
-      this.$emit('update-emoji-opened', val);
-      if (val) this.optionsOpened = false;
-    },
-    hideOptions: function hideOptions(val) {
-      if (val) {
-        this.closeEmoji();
-        this.closeOptions();
-      }
-    },
-    optionsOpened: function optionsOpened(val) {
-      this.$emit('update-options-opened', val);
-    }
-  },
-  methods: {
-    openOptions: function openOptions() {
+    roomId: function roomId() {
       var _this = this;
 
-      if (this.optionsClosing) return;
-      this.optionsOpened = !this.optionsOpened;
-      if (!this.optionsOpened) return;
-      this.$emit('hide-options', false);
-      setTimeout(function () {
-        if (!_this.roomFooterRef || !_this.$refs.menuOptions || !_this.$refs.actionIcon) {
-          return;
-        }
+      this.resetMessage(true, true);
 
-        var menuOptionsTop = _this.$refs.menuOptions.getBoundingClientRect().height;
-
-        var actionIconTop = _this.$refs.actionIcon.getBoundingClientRect().top;
-
-        var roomFooterTop = _this.roomFooterRef.getBoundingClientRect().top;
-
-        var optionsTopPosition = roomFooterTop - actionIconTop > menuOptionsTop + 50;
-        if (optionsTopPosition) _this.menuOptionsTop = 30;else _this.menuOptionsTop = -menuOptionsTop;
-      });
-    },
-    closeOptions: function closeOptions() {
-      var _this2 = this;
-
-      this.optionsOpened = false;
-      this.optionsClosing = true;
-      this.updateMessageHover();
-      setTimeout(function () {
-        return _this2.optionsClosing = false;
-      }, 100);
-    },
-    openEmoji: function openEmoji() {
-      this.emojiOpened = !this.emojiOpened;
-      this.$emit('hide-options', false);
-    },
-    closeEmoji: function closeEmoji() {
-      this.emojiOpened = false;
-      this.updateMessageHover();
-    },
-    updateMessageHover: function updateMessageHover() {
-      if (this.hoverMessageId !== this.message._id) {
-        this.$emit('update-message-hover', false);
+      if (this.roomMessage) {
+        this.message = this.roomMessage;
+        setTimeout(function () {
+          return _this.onChangeInput();
+        });
       }
     },
-    messageActionHandler: function messageActionHandler(action) {
-      this.closeOptions();
-      this.$emit('message-action-handler', action);
+    message: function message(val) {
+      this.getTextareaRef().value = val;
     },
-    sendMessageReaction: function sendMessageReaction(emoji, reaction) {
-      this.$emit('send-message-reaction', {
-        emoji: emoji,
-        reaction: reaction
+    roomMessage: {
+      immediate: true,
+      handler: function handler(val) {
+        if (val) this.message = this.roomMessage;
+      }
+    },
+    editedMessage: function editedMessage(val) {
+      this.$emit('update-edited-message-id', val._id);
+    },
+    initReplyMessage: function initReplyMessage(val) {
+      this.replyMessage(val);
+    },
+    initEditMessage: function initEditMessage(val) {
+      this.editMessage(val);
+    }
+  },
+  mounted: function mounted() {
+    var _this2 = this;
+
+    var isMobile = detectMobile();
+    this.getTextareaRef().addEventListener('keyup', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey && !_this2.fileDialog) {
+        if (isMobile) {
+          _this2.message = _this2.message + '\n';
+          setTimeout(function () {
+            return _this2.onChangeInput();
+          });
+        } else if (!_this2.filteredEmojis.length && !_this2.filteredUsersTag.length && !_this2.filteredTemplatesText.length) {
+          _this2.sendMessage();
+        }
+      }
+
+      setTimeout(function () {
+        _this2.updateFooterLists();
+      }, 60);
+    });
+    this.getTextareaRef().addEventListener('click', function () {
+      if (isMobile) _this2.keepKeyboardOpen = true;
+
+      _this2.updateFooterLists();
+    });
+    this.getTextareaRef().addEventListener('blur', function () {
+      _this2.resetFooterList();
+
+      if (isMobile) setTimeout(function () {
+        return _this2.keepKeyboardOpen = false;
       });
-      this.closeEmoji();
+    });
+  },
+  beforeDestroy: function beforeDestroy() {
+    this.stopRecorder();
+  },
+  methods: {
+    getTextareaRef: function getTextareaRef() {
+      return this.$refs.roomTextarea;
+    },
+    focusTextarea: function focusTextarea(disableMobileFocus) {
+      var _this3 = this;
+
+      if (detectMobile() && disableMobileFocus) return;
+      if (!this.getTextareaRef()) return;
+      this.getTextareaRef().focus();
+
+      if (this.cursorRangePosition) {
+        setTimeout(function () {
+          _this3.getTextareaRef().setSelectionRange(_this3.cursorRangePosition, _this3.cursorRangePosition);
+
+          _this3.cursorRangePosition = null;
+        });
+      }
+    },
+    onChangeInput: function onChangeInput() {
+      var _this$getTextareaRef, _this$getTextareaRef2;
+
+      if ((_this$getTextareaRef = this.getTextareaRef()) !== null && _this$getTextareaRef !== void 0 && _this$getTextareaRef.value || ((_this$getTextareaRef2 = this.getTextareaRef()) === null || _this$getTextareaRef2 === void 0 ? void 0 : _this$getTextareaRef2.value) === '') {
+        var _this$getTextareaRef3;
+
+        this.message = (_this$getTextareaRef3 = this.getTextareaRef()) === null || _this$getTextareaRef3 === void 0 ? void 0 : _this$getTextareaRef3.value;
+      }
+
+      this.keepKeyboardOpen = true;
+      this.resizeTextarea();
+      this.$emit('typing-message', this.message);
+    },
+    resizeTextarea: function resizeTextarea() {
+      var el = this.getTextareaRef();
+      if (!el) return;
+      var padding = window.getComputedStyle(el, null).getPropertyValue('padding-top').replace('px', '');
+      el.style.height = 0;
+      el.style.height = el.scrollHeight - padding * 2 + 'px';
+    },
+    escapeTextarea: function escapeTextarea() {
+      if (this.filteredEmojis.length) this.filteredEmojis = [];else if (this.filteredUsersTag.length) this.filteredUsersTag = [];else if (this.filteredTemplatesText.length) {
+        this.filteredTemplatesText = [];
+      } else this.resetMessage();
+    },
+    onPasteImage: function onPasteImage(pasteEvent) {
+      var _pasteEvent$clipboard,
+          _this4 = this;
+
+      var items = (_pasteEvent$clipboard = pasteEvent.clipboardData) === null || _pasteEvent$clipboard === void 0 ? void 0 : _pasteEvent$clipboard.items;
+
+      if (items) {
+        Array.from(items).forEach(function (item) {
+          if (item.type.includes('image')) {
+            var blob = item.getAsFile();
+
+            _this4.onFileChange([blob]);
+          }
+        });
+      }
+    },
+    updateActiveUpOrDown: function updateActiveUpOrDown(direction) {
+      if (this.filteredEmojis.length) {
+        this.activeUpOrDownEmojis = direction;
+      } else if (this.filteredUsersTag.length) {
+        this.activeUpOrDownUsersTag = direction;
+      } else if (this.filteredTemplatesText.length) {
+        this.activeUpOrDownTemplatesText = direction;
+      }
+    },
+    selectItem: function selectItem() {
+      if (this.filteredEmojis.length) {
+        this.selectEmojiItem = true;
+      } else if (this.filteredUsersTag.length) {
+        this.selectUsersTagItem = true;
+      } else if (this.filteredTemplatesText.length) {
+        this.selectTemplatesTextItem = true;
+      }
+    },
+    selectEmoji: function selectEmoji(emoji) {
+      this.selectEmojiItem = false;
+      if (!emoji) return;
+
+      var _this$getCharPosition = this.getCharPosition(':'),
+          position = _this$getCharPosition.position,
+          endPosition = _this$getCharPosition.endPosition;
+
+      this.message = this.message.substr(0, position - 1) + emoji + this.message.substr(endPosition, this.message.length - 1);
+      this.cursorRangePosition = position;
+      this.focusTextarea();
+    },
+    selectTemplateText: function selectTemplateText(template) {
+      this.selectTemplatesTextItem = false;
+      if (!template) return;
+
+      var _this$getCharPosition2 = this.getCharPosition('/'),
+          position = _this$getCharPosition2.position,
+          endPosition = _this$getCharPosition2.endPosition;
+
+      var space = this.message.substr(endPosition, endPosition).length ? '' : ' ';
+      this.message = this.message.substr(0, position - 1) + template.text + space + this.message.substr(endPosition, this.message.length - 1);
+      this.cursorRangePosition = position + template.text.length + space.length + 1;
+      this.focusTextarea();
+    },
+    addEmoji: function addEmoji(emoji) {
+      this.message += emoji.unicode;
+      this.focusTextarea(true);
+    },
+    launchFilePicker: function launchFilePicker() {
+      this.$refs.file.value = '';
+      this.$refs.file.click();
+    },
+    onFileChange: function onFileChange(files) {
+      var _this5 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _this5.fileDialog = true;
+
+                _this5.focusTextarea();
+
+                Array.from(files).forEach( /*#__PURE__*/function () {
+                  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(file) {
+                    var fileURL, typeIndex, blobFile, loadedFile;
+                    return regeneratorRuntime.wrap(function _callee$(_context) {
+                      while (1) {
+                        switch (_context.prev = _context.next) {
+                          case 0:
+                            fileURL = URL.createObjectURL(file);
+                            typeIndex = file.name.lastIndexOf('.');
+
+                            _this5.files.push({
+                              loading: true,
+                              name: file.name.substring(0, typeIndex),
+                              size: file.size,
+                              type: file.type,
+                              extension: file.name.substring(typeIndex + 1),
+                              localUrl: fileURL
+                            });
+
+                            _context.next = 5;
+                            return fetch(fileURL).then(function (res) {
+                              return res.blob();
+                            });
+
+                          case 5:
+                            blobFile = _context.sent;
+                            loadedFile = _this5.files.find(function (file) {
+                              return file.localUrl === fileURL;
+                            });
+
+                            if (loadedFile) {
+                              loadedFile.blob = blobFile;
+                              loadedFile.loading = false;
+                              delete loadedFile.loading;
+                            }
+
+                          case 8:
+                          case "end":
+                            return _context.stop();
+                        }
+                      }
+                    }, _callee);
+                  }));
+
+                  return function (_x) {
+                    return _ref.apply(this, arguments);
+                  };
+                }());
+                setTimeout(function () {
+                  return _this5.fileDialog = false;
+                }, 500);
+
+              case 4:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    removeFile: function removeFile(index) {
+      this.files.splice(index, 1);
+      this.focusTextarea();
+    },
+    toggleRecorder: function toggleRecorder(recording) {
+      var _this6 = this;
+
+      this.isRecording = recording;
+
+      if (!this.recorder.isRecording) {
+        setTimeout(function () {
+          return _this6.recorder.start();
+        }, 200);
+      } else {
+        try {
+          this.recorder.stop();
+          var record = this.recorder.records[0];
+          this.files.push({
+            blob: record.blob,
+            name: "audio.".concat(this.format),
+            size: record.blob.size,
+            duration: record.duration,
+            type: record.blob.type,
+            audio: true,
+            localUrl: URL.createObjectURL(record.blob)
+          });
+          this.recorder = this.initRecorder();
+          this.sendMessage();
+        } catch (_unused) {
+          setTimeout(function () {
+            return _this6.stopRecorder();
+          }, 100);
+        }
+      }
+    },
+    stopRecorder: function stopRecorder() {
+      var _this7 = this;
+
+      if (this.recorder.isRecording) {
+        try {
+          this.recorder.stop();
+          this.recorder = this.initRecorder();
+        } catch (_unused2) {
+          setTimeout(function () {
+            return _this7.stopRecorder();
+          }, 100);
+        }
+      }
+    },
+    textareaActionHandler: function textareaActionHandler() {
+      this.$emit('textarea-action-handler', this.message);
+    },
+    sendMessage: function sendMessage() {
+      var message = this.message.trim();
+      if (!this.files.length && !message) return;
+      if (this.isFileLoading) return;
+      this.selectedUsersTag.forEach(function (user) {
+        message = message.replace("@".concat(user.username), "<usertag>".concat(user._id, "</usertag>"));
+      });
+      var files = this.files.length ? this.files : null;
+
+      if (this.editedMessage._id) {
+        var _this$editedMessage$f;
+
+        if (this.editedMessage.content !== message || (_this$editedMessage$f = this.editedMessage.files) !== null && _this$editedMessage$f !== void 0 && _this$editedMessage$f.length || this.files.length) {
+          this.$emit('edit-message', {
+            messageId: this.editedMessage._id,
+            newContent: message,
+            files: files,
+            replyMessage: this.messageReply,
+            usersTag: this.selectedUsersTag
+          });
+        }
+      } else {
+        this.$emit('send-message', {
+          content: message,
+          files: files,
+          replyMessage: this.messageReply,
+          usersTag: this.selectedUsersTag
+        });
+      }
+
+      this.resetMessage(true);
+    },
+    // eslint-disable-next-line vue/no-unused-properties
+    editMessage: function editMessage(message) {
+      var _this8 = this;
+
+      this.resetMessage();
+      this.editedMessage = _objectSpread2({}, message);
+      var messageContent = message.content;
+      var initialContent = messageContent;
+      var firstTag = '<usertag>';
+      var secondTag = '</usertag>';
+
+      var usertags = _toConsumableArray(messageContent.matchAll(new RegExp(firstTag, 'gi'))).map(function (a) {
+        return a.index;
+      });
+
+      usertags.forEach(function (index) {
+        var userId = initialContent.substring(index + firstTag.length, initialContent.indexOf(secondTag, index));
+
+        var user = _this8.room.users.find(function (user) {
+          return user._id === userId;
+        });
+
+        messageContent = messageContent.replace("".concat(firstTag).concat(userId).concat(secondTag), "@".concat((user === null || user === void 0 ? void 0 : user.username) || 'unknown'));
+
+        _this8.selectUserTag(user, true);
+      });
+      this.message = messageContent;
+
+      if (message.files) {
+        this.files = _toConsumableArray(message.files);
+      }
+
+      setTimeout(function () {
+        return _this8.resizeTextarea();
+      });
+    },
+    // eslint-disable-next-line vue/no-unused-properties
+    replyMessage: function replyMessage(message) {
+      this.editedMessage = {};
+      this.messageReply = message;
+      this.focusTextarea();
+    },
+    updateFooterLists: function updateFooterLists() {
+      this.updateFooterList('@');
+      this.updateFooterList(':');
+      this.updateFooterList('/');
+    },
+    updateFooterList: function updateFooterList(tagChar) {
+      if (!this.getTextareaRef()) return;
+
+      if (tagChar === ':' && !this.emojisSuggestionEnabled) {
+        return;
+      }
+
+      if (tagChar === '@' && (!this.userTagsEnabled || !this.room.users)) {
+        return;
+      }
+
+      if (tagChar === '/' && !this.templatesText) {
+        return;
+      }
+
+      var textareaCursorPosition = this.getTextareaRef().selectionStart;
+      var position = textareaCursorPosition;
+
+      while (position > 0 && this.message.charAt(position - 1) !== tagChar && ( // eslint-disable-next-line no-unmodified-loop-condition
+      this.message.charAt(position - 1) !== ' ' || tagChar !== ':')) {
+        position--;
+      }
+
+      var beforeTag = this.message.charAt(position - 2);
+      var notLetterNumber = !beforeTag.match(/^[0-9a-zA-Z]+$/);
+
+      if (this.message.charAt(position - 1) === tagChar && (!beforeTag || beforeTag === ' ' || notLetterNumber)) {
+        var query = this.message.substring(position, textareaCursorPosition);
+
+        if (tagChar === ':') {
+          this.updateEmojis(query);
+        } else if (tagChar === '@') {
+          this.updateShowUsersTag(query);
+        } else if (tagChar === '/') {
+          this.updateShowTemplatesText(query);
+        }
+      } else {
+        this.resetFooterList(tagChar);
+      }
+    },
+    updateShowUsersTag: function updateShowUsersTag(query) {
+      var _this9 = this;
+
+      this.filteredUsersTag = filter_items(this.room.users, 'username', query, true).filter(function (user) {
+        return user._id !== _this9.currentUserId;
+      });
+    },
+    selectUserTag: function selectUserTag(user) {
+      var editMode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      this.selectUsersTagItem = false;
+      if (!user) return;
+
+      var _this$getCharPosition3 = this.getCharPosition('@'),
+          position = _this$getCharPosition3.position,
+          endPosition = _this$getCharPosition3.endPosition;
+
+      var space = this.message.substr(endPosition, endPosition).length ? '' : ' ';
+      this.message = this.message.substr(0, position) + user.username + space + this.message.substr(endPosition, this.message.length - 1);
+      this.selectedUsersTag = [].concat(_toConsumableArray(this.selectedUsersTag), [_objectSpread2({}, user)]);
+
+      if (!editMode) {
+        this.cursorRangePosition = position + user.username.length + space.length + 1;
+      }
+
+      this.focusTextarea();
+    },
+    updateShowTemplatesText: function updateShowTemplatesText(query) {
+      this.filteredTemplatesText = filter_items(this.templatesText, 'tag', query, true);
+    },
+    getCharPosition: function getCharPosition(tagChar) {
+      var cursorPosition = this.getTextareaRef().selectionStart;
+      var position = cursorPosition;
+
+      while (position > 0 && this.message.charAt(position - 1) !== tagChar) {
+        position--;
+      }
+
+      var endPosition = this.getTextareaRef().selectionEnd;
+      return {
+        position: position,
+        endPosition: endPosition
+      };
+    },
+    updateEmojis: function updateEmojis(query) {
+      var _this10 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+        var emojis;
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                if (query) {
+                  _context3.next = 2;
+                  break;
+                }
+
+                return _context3.abrupt("return");
+
+              case 2:
+                _context3.next = 4;
+                return _this10.emojisDB.getEmojiBySearchQuery(query);
+
+              case 4:
+                emojis = _context3.sent;
+                _this10.filteredEmojis = emojis.map(function (emoji) {
+                  return emoji.unicode;
+                });
+
+              case 6:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    resetFooterList: function resetFooterList() {
+      var tagChar = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      if (tagChar === ':') {
+        this.filteredEmojis = [];
+      } else if (tagChar === '@') {
+        this.filteredUsersTag = [];
+      } else if (tagChar === '/') {
+        this.filteredTemplatesText = [];
+      } else {
+        this.filteredEmojis = [];
+        this.filteredUsersTag = [];
+        this.filteredTemplatesText = [];
+      }
+    },
+    resetMessage: function resetMessage() {
+      var _this11 = this;
+
+      var disableMobileFocus = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+      var initRoom = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      if (!initRoom) {
+        this.$emit('typing-message', null);
+      }
+
+      this.selectedUsersTag = [];
+      this.resetFooterList();
+      this.resetTextareaSize();
+      this.message = '';
+      this.editedMessage = {};
+      this.messageReply = null;
+      this.files = [];
+      this.emojiOpened = false;
+      this.preventKeyboardFromClosing();
+      setTimeout(function () {
+        return _this11.focusTextarea(disableMobileFocus);
+      });
+    },
+    resetTextareaSize: function resetTextareaSize() {
+      if (this.getTextareaRef()) {
+        this.getTextareaRef().style.height = '20px';
+      }
+    },
+    preventKeyboardFromClosing: function preventKeyboardFromClosing() {
+      if (this.keepKeyboardOpen) this.getTextareaRef().focus();
+    },
+    initRecorder: function initRecorder() {
+      this.isRecording = false;
+      return new recorder_default({
+        bitRate: this.audioBitRate,
+        sampleRate: this.audioSampleRate,
+        beforeRecording: null,
+        afterRecording: null,
+        pauseRecording: null,
+        micFailed: this.micFailed
+      });
+    },
+    micFailed: function micFailed() {
+      this.isRecording = false;
+      this.recorder = this.initRecorder();
     }
   }
 });
@@ -38718,6 +39340,7 @@ const MessageActions_exports_ = /*#__PURE__*/exportHelper_default()(MessageActio
 /* harmony default export */ var MessageActions = (MessageActions_exports_);
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader-v16/dist/templateLoader.js??ref--7!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader-v16/dist??ref--1-1!./src/lib/Message/MessageReactions/MessageReactions.vue?vue&type=template&id=51f19e1d
 
+// CONCATENATED MODULE: ./src/lib/Room/RoomMessage/RoomMessage.vue?vue&type=template&id=bb9a0802&
 
 var MessageReactionsvue_type_template_id_51f19e1d_hoisted_1 = ["onClick"];
 function MessageReactionsvue_type_template_id_51f19e1d_render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -38796,6 +39419,8 @@ const MessageReactions_exports_ = /*#__PURE__*/exportHelper_default()(MessageRea
 
 
 
+var MessageFilesvue_type_script_lang_js_require = __webpack_require__("bd43"),
+    isImageVideoFile = MessageFilesvue_type_script_lang_js_require.isImageVideoFile;
 
 
 
@@ -38810,63 +39435,20 @@ var _require2 = __webpack_require__("bd43"),
   components: {
     SvgIcon: SvgIcon,
     FormatMessage: FormatMessage,
-    AudioPlayer: AudioPlayer,
-    MessageReply: MessageReply,
-    MessageFiles: MessageFiles,
-    MessageActions: MessageActions,
-    MessageReactions: MessageReactions
+    ProgressBar: ProgressBar,
+    MessageFile: MessageFile
   },
   props: {
     currentUserId: {
       type: [String, Number],
       required: true
     },
-    textMessages: {
-      type: Object,
-      required: true
-    },
-    index: {
-      type: Number,
-      required: true
-    },
     message: {
-      type: Object,
-      required: true
-    },
-    messages: {
-      type: Array,
-      required: true
-    },
-    editedMessage: {
       type: Object,
       required: true
     },
     roomUsers: {
       type: Array,
-      "default": function _default() {
-        return [];
-      }
-    },
-    messageActions: {
-      type: Array,
-      required: true
-    },
-    roomFooterRef: {
-      type: HTMLDivElement,
-      "default": null
-    },
-    newMessages: {
-      type: Array,
-      "default": function _default() {
-        return [];
-      }
-    },
-    showReactionEmojis: {
-      type: Boolean,
-      required: true
-    },
-    showNewMessagesDivider: {
-      type: Boolean,
       required: true
     },
     textFormatting: {
@@ -39228,150 +39810,242 @@ var mp3_encoder_default = /*#__PURE__*/function () {
         remaining -= maxSamples;
       }
     }
-  }, {
-    key: "finish",
-    value: function finish() {
-      this.dataBuffer.push(this.encoder.flush());
-      var blob = new Blob(this.dataBuffer, {
-        type: 'audio/mp3'
+  },
+  emits: ['open-file', 'open-user-tag'],
+  computed: {
+    imageVideoFiles: function imageVideoFiles() {
+      return this.message.files.filter(function (file) {
+        return isImageVideoFile(file);
       });
-      this.dataBuffer = [];
-      return {
-        id: Date.now(),
-        blob: blob,
-        url: URL.createObjectURL(blob)
-      };
+    },
+    otherFiles: function otherFiles() {
+      return this.message.files.filter(function (file) {
+        return !isImageVideoFile(file);
+      });
     }
-  }, {
-    key: "_floatTo16BitPCM",
-    value: function _floatTo16BitPCM(input, output) {
-      for (var i = 0; i < input.length; i++) {
-        var s = Math.max(-1, Math.min(1, input[i]));
-        output[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+  },
+  methods: {
+    openFile: function openFile(event, file, action) {
+      if (!this.messageSelectionEnabled) {
+        event.stopPropagation();
+        this.$emit('open-file', {
+          file: file,
+          action: action
+        });
       }
     }
-  }, {
-    key: "_convertBuffer",
-    value: function _convertBuffer(arrayBuffer) {
-      var data = new Float32Array(arrayBuffer);
-      var out = new Int16Array(arrayBuffer.length);
-
-      this._floatTo16BitPCM(data, out);
-
-      return out;
-    }
-  }]);
-
-  return _default;
-}();
-
-
-// CONCATENATED MODULE: ./src/utils/recorder.js
-
-
-
-
-
-
-
-
-// Credits to https://github.com/grishkovelli/vue-audio-recorder
-
-
-var recorder_default = /*#__PURE__*/function () {
-  function _default() {
-    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    _classCallCheck(this, _default);
-
-    this.beforeRecording = options.beforeRecording;
-    this.pauseRecording = options.pauseRecording;
-    this.afterRecording = options.afterRecording;
-    this.micFailed = options.micFailed;
-    this.encoderOptions = {
-      bitRate: options.bitRate,
-      sampleRate: options.sampleRate
-    };
-    this.bufferSize = 4096;
-    this.records = [];
-    this.isPause = false;
-    this.isRecording = false;
-    this.duration = 0;
-    this.volume = 0;
-    this._duration = 0;
   }
+});
+// CONCATENATED MODULE: ./src/lib/Room/RoomMessage/MessageFiles/MessageFiles.vue?vue&type=script&lang=js&
+ /* harmony default export */ var MessageFiles_MessageFilesvue_type_script_lang_js_ = (MessageFilesvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./src/lib/Room/RoomMessage/MessageFiles/MessageFiles.vue
 
-  _createClass(_default, [{
-    key: "start",
-    value: function start() {
-      var constraints = {
-        video: false,
-        audio: {
-          channelCount: 1,
-          echoCancellation: false
-        }
-      };
-      this.beforeRecording && this.beforeRecording('start recording');
-      navigator.mediaDevices.getUserMedia(constraints).then(this._micCaptured.bind(this))["catch"](this._micError.bind(this));
-      this.isPause = false;
-      this.isRecording = true;
 
-      if (!this.lameEncoder) {
-        this.lameEncoder = new mp3_encoder_default(this.encoderOptions);
-      }
+
+
+
+/* normalize component */
+
+var MessageFiles_component = normalizeComponent(
+  MessageFiles_MessageFilesvue_type_script_lang_js_,
+  MessageFilesvue_type_template_id_60716617_render,
+  MessageFilesvue_type_template_id_60716617_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var MessageFiles = (MessageFiles_component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"5d8f80ca-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/Room/RoomMessage/MessageActions/MessageActions.vue?vue&type=template&id=279805e6&
+var MessageActionsvue_type_template_id_279805e6_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"vac-message-actions-wrapper"},[_c('div',{staticClass:"vac-options-container",style:({
+			display: _vm.hoverAudioProgress ? 'none' : 'initial',
+			width:
+				_vm.filteredMessageActions.length && _vm.showReactionEmojis ? '70px' : '45px'
+		})},[_c('transition-group',{attrs:{"name":"vac-slide-left","tag":"span"}},[(_vm.isMessageActions || _vm.isMessageReactions)?_c('div',{key:"1",staticClass:"vac-blur-container",class:{
+					'vac-options-me': _vm.message.senderId === _vm.currentUserId
+				}}):_vm._e(),(_vm.isMessageActions)?_c('div',{key:"2",ref:"actionIcon",staticClass:"vac-svg-button vac-message-options",on:{"click":_vm.openOptions}},[_vm._t("dropdown-icon",function(){return [_c('svg-icon',{attrs:{"name":"dropdown","param":"message"}})]})],2):_vm._e(),(_vm.isMessageReactions)?_c('emoji-picker-container',{directives:[{name:"click-outside",rawName:"v-click-outside",value:(_vm.closeEmoji),expression:"closeEmoji"}],key:"3",staticClass:"vac-message-emojis",style:({ right: _vm.isMessageActions ? '30px' : '5px' }),attrs:{"emoji-opened":_vm.emojiOpened,"emoji-reaction":true,"position-right":_vm.message.senderId === _vm.currentUserId},on:{"add-emoji":_vm.sendMessageReaction,"open-emoji":_vm.openEmoji},scopedSlots:_vm._u([{key:"emoji-picker-icon",fn:function(){return [_vm._t("emoji-picker-reaction-icon")]},proxy:true}],null,true)}):_vm._e()],1)],1),(_vm.filteredMessageActions.length)?_c('transition',{attrs:{"name":_vm.message.senderId === _vm.currentUserId
+				? 'vac-slide-left'
+				: 'vac-slide-right'}},[(_vm.optionsOpened)?_c('div',{directives:[{name:"click-outside",rawName:"v-click-outside",value:(_vm.closeOptions),expression:"closeOptions"}],ref:"menuOptions",staticClass:"vac-menu-options",class:{
+				'vac-menu-left': _vm.message.senderId !== _vm.currentUserId
+			},style:({ top: (_vm.menuOptionsTop + "px") })},[_c('div',{staticClass:"vac-menu-list"},_vm._l((_vm.filteredMessageActions),function(action){return _c('div',{key:action.name},[_c('div',{staticClass:"vac-menu-item",on:{"click":function($event){return _vm.messageActionHandler(action)}}},[_vm._v(" "+_vm._s(action.title)+" ")])])}),0)]):_vm._e()]):_vm._e()],1)}
+var MessageActionsvue_type_template_id_279805e6_staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./src/lib/Room/RoomMessage/MessageActions/MessageActions.vue?vue&type=template&id=279805e6&
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/Room/RoomMessage/MessageActions/MessageActions.vue?vue&type=script&lang=js&
+
+
+
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ var MessageActionsvue_type_script_lang_js_ = ({
+  name: 'MessageActions',
+  components: {
+    SvgIcon: SvgIcon,
+    EmojiPickerContainer: EmojiPickerContainer
+  },
+  directives: {
+    clickOutside: v_click_outside_umd_default.a.directive
+  },
+  props: {
+    currentUserId: {
+      type: [String, Number],
+      required: true
+    },
+    message: {
+      type: Object,
+      required: true
+    },
+    messageActions: {
+      type: Array,
+      required: true
+    },
+    showReactionEmojis: {
+      type: Boolean,
+      required: true
+    },
+    messageHover: {
+      type: Boolean,
+      required: true
+    },
+    hoverMessageId: {
+      type: [String, Number],
+      "default": null
+    },
+    hoverAudioProgress: {
+      type: Boolean,
+      required: true
     }
-  }, {
-    key: "stop",
-    value: function stop() {
-      this.stream.getTracks().forEach(function (track) {
-        return track.stop();
+  },
+  emits: ['update-emoji-opened', 'update-options-opened', 'update-message-hover', 'message-action-handler', 'send-message-reaction'],
+  data: function data() {
+    return {
+      menuOptionsTop: 0,
+      optionsOpened: false,
+      optionsClosing: false,
+      emojiOpened: false
+    };
+  },
+  computed: {
+    isMessageActions: function isMessageActions() {
+      return this.filteredMessageActions.length && this.messageHover && !this.message.deleted && !this.message.disableActions && !this.hoverAudioProgress;
+    },
+    isMessageReactions: function isMessageReactions() {
+      return this.showReactionEmojis && this.messageHover && !this.message.deleted && !this.message.disableReactions && !this.hoverAudioProgress;
+    },
+    filteredMessageActions: function filteredMessageActions() {
+      return this.message.senderId === this.currentUserId ? this.messageActions : this.messageActions.filter(function (message) {
+        return !message.onlyMe;
       });
-      this.input.disconnect();
-      this.processor.disconnect();
-      this.context.close();
-      var record = null;
-      record = this.lameEncoder.finish();
-      record.duration = this.duration;
-      this.records.push(record);
-      this._duration = 0;
-      this.duration = 0;
-      this.isPause = false;
-      this.isRecording = false;
-      this.afterRecording && this.afterRecording(record);
     }
-  }, {
-    key: "pause",
-    value: function pause() {
-      this.stream.getTracks().forEach(function (track) {
-        return track.stop();
-      });
-      this.input.disconnect();
-      this.processor.disconnect();
-      this._duration = this.duration;
-      this.isPause = true;
-      this.pauseRecording && this.pauseRecording('pause recording');
+  },
+  watch: {
+    emojiOpened: function emojiOpened(val) {
+      this.$emit('update-emoji-opened', val);
+      if (val) this.optionsOpened = false;
+    },
+    optionsOpened: function optionsOpened(val) {
+      this.$emit('update-options-opened', val);
     }
-  }, {
-    key: "_micCaptured",
-    value: function _micCaptured(stream) {
+  },
+  methods: {
+    openOptions: function openOptions() {
       var _this = this;
 
-      this.context = new (window.AudioContext || window.webkitAudioContext)();
-      this.duration = this._duration;
-      this.input = this.context.createMediaStreamSource(stream);
-      this.processor = this.context.createScriptProcessor(this.bufferSize, 1, 1);
-      this.stream = stream;
+      if (this.optionsClosing) return;
+      this.optionsOpened = !this.optionsOpened;
+      if (!this.optionsOpened) return;
+      setTimeout(function () {
+        var roomFooterRef = document.getElementById('room-footer');
 
-      this.processor.onaudioprocess = function (ev) {
-        var sample = ev.inputBuffer.getChannelData(0);
-        var sum = 0.0;
-
-        if (_this.lameEncoder) {
-          _this.lameEncoder.encode(sample);
-        }
-
-        for (var i = 0; i < sample.length; ++i) {
-          sum += sample[i] * sample[i];
+        if (!roomFooterRef || !_this.$refs.menuOptions || !_this.$refs.actionIcon) {
+          return;
         }
 
         _this.duration = parseFloat(_this._duration) + parseFloat(_this.context.currentTime.toFixed(2));
@@ -39405,26 +40079,148 @@ var recorder_default = /*#__PURE__*/function () {
 
 
 
+        var actionIconTop = _this.$refs.actionIcon.getBoundingClientRect().top;
+
+        var roomFooterTop = roomFooterRef.getBoundingClientRect().top;
+        var optionsTopPosition = roomFooterTop - actionIconTop > menuOptionsTop + 50;
+        if (optionsTopPosition) _this.menuOptionsTop = 30;else _this.menuOptionsTop = -menuOptionsTop;
+      });
+    },
+    closeOptions: function closeOptions() {
+      var _this2 = this;
+
+      this.optionsOpened = false;
+      this.optionsClosing = true;
+      this.updateMessageHover();
+      setTimeout(function () {
+        return _this2.optionsClosing = false;
+      }, 100);
+    },
+    openEmoji: function openEmoji() {
+      this.emojiOpened = !this.emojiOpened;
+    },
+    closeEmoji: function closeEmoji() {
+      this.emojiOpened = false;
+      this.updateMessageHover();
+    },
+    updateMessageHover: function updateMessageHover() {
+      if (this.hoverMessageId !== this.message._id) {
+        this.$emit('update-message-hover', false);
+      }
+    },
+    messageActionHandler: function messageActionHandler(action) {
+      this.closeOptions();
+      this.$emit('message-action-handler', action);
+    },
+    sendMessageReaction: function sendMessageReaction(emoji, reaction) {
+      this.$emit('send-message-reaction', {
+        emoji: emoji,
+        reaction: reaction
+      });
+      this.closeEmoji();
+    }
+  }
+});
+// CONCATENATED MODULE: ./src/lib/Room/RoomMessage/MessageActions/MessageActions.vue?vue&type=script&lang=js&
+ /* harmony default export */ var MessageActions_MessageActionsvue_type_script_lang_js_ = (MessageActionsvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./src/lib/Room/RoomMessage/MessageActions/MessageActions.vue
 
 
 
 
 
+/* normalize component */
+
+var MessageActions_component = normalizeComponent(
+  MessageActions_MessageActionsvue_type_script_lang_js_,
+  MessageActionsvue_type_template_id_279805e6_render,
+  MessageActionsvue_type_template_id_279805e6_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var MessageActions = (MessageActions_component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"5d8f80ca-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/Room/RoomMessage/MessageReactions/MessageReactions.vue?vue&type=template&id=3fc44a38&
+var MessageReactionsvue_type_template_id_3fc44a38_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return (!_vm.message.deleted)?_c('transition-group',{attrs:{"name":"vac-slide-left","tag":"span"}},_vm._l((_vm.message.reactions),function(reaction,key){return _c('button',{directives:[{name:"show",rawName:"v-show",value:(reaction.length),expression:"reaction.length"}],key:key + 0,staticClass:"vac-button-reaction",class:{
+			'vac-reaction-me': reaction.indexOf(_vm.currentUserId) !== -1
+		},style:({
+			float: _vm.message.senderId === _vm.currentUserId ? 'right' : 'left'
+		}),on:{"click":function($event){return _vm.sendMessageReaction({ unicode: key }, reaction)}}},[_vm._v(" "+_vm._s(key)),_c('span',[_vm._v(_vm._s(reaction.length))])])}),0):_vm._e()}
+var MessageReactionsvue_type_template_id_3fc44a38_staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./src/lib/Room/RoomMessage/MessageReactions/MessageReactions.vue?vue&type=template&id=3fc44a38&
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/Room/RoomMessage/MessageReactions/MessageReactions.vue?vue&type=script&lang=js&
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ var MessageReactionsvue_type_script_lang_js_ = ({
+  name: 'MessageReactions',
+  props: {
+    currentUserId: {
+      type: [String, Number],
+      required: true
+    },
+    message: {
+      type: Object,
+      required: true
+    }
+  },
+  emits: ['send-message-reaction'],
+  methods: {
+    sendMessageReaction: function sendMessageReaction(emoji, reaction) {
+      this.$emit('send-message-reaction', {
+        emoji: emoji,
+        reaction: reaction
+      });
+    }
+  }
+});
+// CONCATENATED MODULE: ./src/lib/Room/RoomMessage/MessageReactions/MessageReactions.vue?vue&type=script&lang=js&
+ /* harmony default export */ var MessageReactions_MessageReactionsvue_type_script_lang_js_ = (MessageReactionsvue_type_script_lang_js_); 
+// CONCATENATED MODULE: ./src/lib/Room/RoomMessage/MessageReactions/MessageReactions.vue
 
 
 
 
 
+/* normalize component */
 
+var MessageReactions_component = normalizeComponent(
+  MessageReactions_MessageReactionsvue_type_script_lang_js_,
+  MessageReactionsvue_type_template_id_3fc44a38_render,
+  MessageReactionsvue_type_template_id_3fc44a38_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
 
-
-
-
-
-
-
-
-
+/* harmony default export */ var MessageReactions = (MessageReactions_component.exports);
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/Room/RoomMessage/RoomMessage.vue?vue&type=script&lang=js&
 
 
 
@@ -39467,7 +40263,6 @@ var debounce = function debounce(func, delay) {
   components: {
     Loader: Loader,
     SvgIcon: SvgIcon,
-    EmojiPickerContainer: EmojiPickerContainer,
     RoomHeader: RoomHeader,
     RoomFiles: RoomFiles,
     RoomMessageReply: RoomMessageReply,
@@ -39529,6 +40324,10 @@ var debounce = function debounce(func, delay) {
       required: true
     },
     messageActions: {
+      type: Array,
+      required: true
+    },
+    messageSelectionActions: {
       type: Array,
       required: true
     },
@@ -39617,41 +40416,22 @@ var debounce = function debounce(func, delay) {
       required: true
     }
   },
-  emits: ['toggle-rooms-list', 'room-info', 'menu-action-handler', 'edit-message', 'send-message', 'delete-message', 'message-action-handler', 'fetch-messages', 'send-message-reaction', 'typing-message', 'open-file', 'open-user-tag', 'open-failed-message', 'textarea-action-handler'],
+  emits: ['toggle-rooms-list', 'room-info', 'menu-action-handler', 'message-selection-action-handler', 'edit-message', 'send-message', 'delete-message', 'message-action-handler', 'fetch-messages', 'send-message-reaction', 'typing-message', 'open-file', 'open-user-tag', 'open-failed-message', 'textarea-action-handler'],
   data: function data() {
     return {
-      message: '',
-      editedMessage: {},
-      messageReply: null,
+      editedMessageId: null,
+      initReplyMessage: null,
+      initEditMessage: null,
       infiniteState: null,
       loadingMessages: false,
       observer: null,
       showLoader: true,
       loadingMoreMessages: false,
-      files: [],
-      fileDialog: false,
-      emojiOpened: false,
-      hideOptions: true,
       scrollIcon: false,
       scrollMessagesCount: 0,
       newMessages: [],
-      keepKeyboardOpen: false,
-      filteredEmojis: [],
-      filteredUsersTag: [],
-      selectedUsersTag: [],
-      filteredTemplatesText: [],
-      selectEmojiItem: null,
-      selectUsersTagItem: null,
-      selectTemplatesTextItem: null,
-      activeUpOrDownEmojis: null,
-      activeUpOrDownUsersTag: null,
-      activeUpOrDownTemplatesText: null,
-      textareaCursorPosition: null,
-      cursorRangePosition: null,
-      emojisDB: new database["a" /* default */](),
-      recorder: this.initRecorder(),
-      isRecording: false,
-      format: 'mp3'
+      messageSelectionEnabled: false,
+      selectedMessages: []
     };
   },
   computed: {
@@ -39663,10 +40443,10 @@ var debounce = function debounce(func, delay) {
       }) || {};
     },
     showNoMessages: function showNoMessages() {
-      return this.room.roomId && !this.messages.length && !this.loadingMessages && !this.loadingRooms;
+      return this.roomId && !this.messages.length && !this.loadingMessages && !this.loadingRooms;
     },
     showNoRoom: function showNoRoom() {
-      var noRoomSelected = !this.rooms.length && !this.loadingRooms || !this.room.roomId && !this.loadFirstRoom;
+      var noRoomSelected = !this.rooms.length && !this.loadingRooms || !this.roomId && !this.loadFirstRoom;
 
       if (noRoomSelected) {
         this.loadingMessages = false;
@@ -39677,26 +40457,9 @@ var debounce = function debounce(func, delay) {
     },
     showMessagesStarted: function showMessagesStarted() {
       return this.messages.length && this.messagesLoaded;
-    },
-    isMessageEmpty: function isMessageEmpty() {
-      return !this.files.length && !this.message.trim();
-    },
-    isFileLoading: function isFileLoading() {
-      return this.files.some(function (e) {
-        return e.loading;
-      });
-    },
-    recordedTime: function recordedTime() {
-      return new Date(this.recorder.duration * 1000).toISOString().substr(14, 5);
-    },
-    shadowFooter: function shadowFooter() {
-      return !!this.filteredEmojis.length || !!this.filteredUsersTag.length || !!this.filteredTemplatesText.length || !!this.files.length || !!this.messageReply;
     }
   },
   watch: {
-    message: function message(val) {
-      this.getTextareaRef().value = val;
-    },
     loadingMessages: function loadingMessages(val) {
       var _this2 = this;
 
@@ -39704,25 +40467,13 @@ var debounce = function debounce(func, delay) {
         this.infiniteState = null;
       } else {
         if (this.infiniteState) this.infiniteState.loaded();
-        this.focusTextarea(true);
         setTimeout(function () {
           return _this2.initIntersectionObserver();
         });
       }
     },
-    room: {
-      immediate: true,
-      handler: function handler(newVal, oldVal) {
-        if (newVal.roomId && (!oldVal || newVal.roomId !== oldVal.roomId)) {
-          this.onRoomChanged();
-        }
-      }
-    },
-    roomMessage: {
-      immediate: true,
-      handler: function handler(val) {
-        if (val) this.message = this.roomMessage;
-      }
+    roomId: function roomId() {
+      this.onRoomChanged();
     },
     messages: {
       deep: true,
@@ -39757,8 +40508,6 @@ var debounce = function debounce(func, delay) {
     }
   },
   mounted: function mounted() {
-    var _this4 = this;
-
     this.newMessages = [];
     var isMobile = detectMobile();
     this.getTextareaRef().addEventListener('keyup', debounce(function (e) {
@@ -39803,7 +40552,7 @@ var debounce = function debounce(func, delay) {
   },
   methods: {
     initIntersectionObserver: function initIntersectionObserver() {
-      var _this5 = this;
+      var _this4 = this;
 
       if (this.observer) {
         this.showLoader = true;
@@ -39820,21 +40569,21 @@ var debounce = function debounce(func, delay) {
         };
         this.observer = new IntersectionObserver(function (entries) {
           if (entries[0].isIntersecting) {
-            _this5.loadMoreMessages();
+            _this4.loadMoreMessages();
           }
         }, options);
         this.observer.observe(loader);
       }
     },
     preventTopScroll: function preventTopScroll() {
-      var _this6 = this;
+      var _this5 = this;
 
       var container = this.$refs.scrollContainer;
       var prevScrollHeight = container.scrollHeight;
       var observer = new ResizeObserver(function (_) {
         if (container.scrollHeight !== prevScrollHeight) {
-          if (_this6.$refs.scrollContainer) {
-            _this6.$refs.scrollContainer.scrollTo({
+          if (_this5.$refs.scrollContainer) {
+            _this5.$refs.scrollContainer.scrollTo({
               top: container.scrollHeight - prevScrollHeight
             });
 
@@ -39847,11 +40596,8 @@ var debounce = function debounce(func, delay) {
         observer.observe(container.children[i]);
       }
     },
-    getTextareaRef: function getTextareaRef() {
-      return this.$refs.roomTextarea;
-    },
     touchStart: function touchStart(touchEvent) {
-      var _this7 = this;
+      var _this6 = this;
 
       if (this.singleRoom) return;
 
@@ -39859,7 +40605,7 @@ var debounce = function debounce(func, delay) {
         var posXStart = touchEvent.changedTouches[0].clientX;
         var posYStart = touchEvent.changedTouches[0].clientY;
         addEventListener('touchend', function (touchEvent) {
-          return _this7.touchEnd(touchEvent, posXStart, posYStart);
+          return _this6.touchEnd(touchEvent, posXStart, posYStart);
         }, {
           once: true
         });
@@ -39878,41 +40624,46 @@ var debounce = function debounce(func, delay) {
       }
     },
     onRoomChanged: function onRoomChanged() {
-      var _this8 = this;
+      var _this7 = this;
 
       this.loadingMessages = true;
       this.scrollIcon = false;
       this.scrollMessagesCount = 0;
-      this.resetMessage(true, true);
-
-      if (this.roomMessage) {
-        this.message = this.roomMessage;
-        setTimeout(function () {
-          return _this8.onChangeInput();
-        });
-      }
+      this.resetMessageSelection();
 
       if (!this.messages.length && this.messagesLoaded) {
         this.loadingMessages = false;
       }
 
       var unwatch = this.$watch(function () {
-        return _this8.messages;
+        return _this7.messages;
       }, function (val) {
         if (!val || !val.length) return;
-        var element = _this8.$refs.scrollContainer;
+        var element = _this7.$refs.scrollContainer;
         if (!element) return;
         unwatch();
         setTimeout(function () {
           element.scrollTo({
             top: element.scrollHeight
           });
-          _this8.loadingMessages = false;
+          _this7.loadingMessages = false;
         });
       });
     },
+    resetMessageSelection: function resetMessageSelection() {
+      this.messageSelectionEnabled = false;
+      this.selectedMessages = [];
+    },
+    selectMessage: function selectMessage(message) {
+      this.selectedMessages.push(message);
+    },
+    unselectMessage: function unselectMessage(messageId) {
+      this.selectedMessages = this.selectedMessages.filter(function (message) {
+        return message._id !== messageId;
+      });
+    },
     onMessageAdded: function onMessageAdded(_ref) {
-      var _this9 = this;
+      var _this8 = this;
 
       var message = _ref.message,
           index = _ref.index,
@@ -39920,326 +40671,61 @@ var debounce = function debounce(func, delay) {
       if (index !== this.messages.length - 1) return;
       var autoScrollOffset = ref.offsetHeight + 60;
       setTimeout(function () {
-        var scrolledUp = _this9.getBottomScroll(_this9.$refs.scrollContainer) > autoScrollOffset;
+        var scrolledUp = _this8.getBottomScroll(_this8.$refs.scrollContainer) > autoScrollOffset;
 
-        if (message.senderId === _this9.currentUserId) {
+        if (message.senderId === _this8.currentUserId) {
           if (scrolledUp) {
-            if (_this9.autoScroll.send.newAfterScrollUp) {
-              _this9.scrollToBottom();
+            if (_this8.autoScroll.send.newAfterScrollUp) {
+              _this8.scrollToBottom();
             }
           } else {
-            if (_this9.autoScroll.send["new"]) {
-              _this9.scrollToBottom();
+            if (_this8.autoScroll.send["new"]) {
+              _this8.scrollToBottom();
             }
           }
         } else {
           if (scrolledUp) {
-            if (_this9.autoScroll.receive.newAfterScrollUp) {
-              _this9.scrollToBottom();
+            if (_this8.autoScroll.receive.newAfterScrollUp) {
+              _this8.scrollToBottom();
             } else {
-              _this9.scrollIcon = true;
-              _this9.scrollMessagesCount++;
+              _this8.scrollIcon = true;
+              _this8.scrollMessagesCount++;
             }
           } else {
-            if (_this9.autoScroll.receive["new"]) {
-              _this9.scrollToBottom();
+            if (_this8.autoScroll.receive["new"]) {
+              _this8.scrollToBottom();
             } else {
-              _this9.scrollIcon = true;
-              _this9.scrollMessagesCount++;
+              _this8.scrollIcon = true;
+              _this8.scrollMessagesCount++;
             }
           }
         }
       });
     },
     onContainerScroll: function onContainerScroll(e) {
-      this.hideOptions = true;
       if (!e.target) return;
       var bottomScroll = this.getBottomScroll(e.target);
       if (bottomScroll < 60) this.scrollMessagesCount = 0;
       this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount;
     },
-    updateFooterList: function updateFooterList(tagChar) {
-      if (!this.getTextareaRef()) return;
-
-      if (tagChar === ':' && !this.emojisSuggestionEnabled) {
-        return;
-      }
-
-      if (tagChar === '@' && (!this.userTagsEnabled || !this.room.users)) {
-        return;
-      }
-
-      if (tagChar === '/' && !this.templatesText) {
-        return;
-      }
-
-      if (this.textareaCursorPosition === this.getTextareaRef().selectionStart) {
-        return;
-      }
-
-      this.textareaCursorPosition = this.getTextareaRef().selectionStart;
-      var position = this.textareaCursorPosition;
-
-      while (position > 0 && this.message.charAt(position - 1) !== tagChar && ( // eslint-disable-next-line no-unmodified-loop-condition
-      this.message.charAt(position - 1) !== ' ' || tagChar !== ':')) {
-        position--;
-      }
-
-      var beforeTag = this.message.charAt(position - 2);
-      var notLetterNumber = !beforeTag.match(/^[0-9a-zA-Z]+$/);
-
-      if (this.message.charAt(position - 1) === tagChar && (!beforeTag || beforeTag === ' ' || notLetterNumber)) {
-        var query = this.message.substring(position, this.textareaCursorPosition);
-
-        if (tagChar === ':') {
-          this.updateEmojis(query);
-        } else if (tagChar === '@') {
-          this.updateShowUsersTag(query);
-        } else if (tagChar === '/') {
-          this.updateShowTemplatesText(query);
-        }
-      } else {
-        this.resetFooterList(tagChar);
-      }
-    },
-    getCharPosition: function getCharPosition(tagChar) {
-      var cursorPosition = this.getTextareaRef().selectionStart;
-      var position = cursorPosition;
-
-      while (position > 0 && this.message.charAt(position - 1) !== tagChar) {
-        position--;
-      }
-
-      var endPosition = this.getTextareaRef().selectionEnd;
-      return {
-        position: position,
-        endPosition: endPosition
-      };
-    },
-    updateEmojis: function updateEmojis(query) {
-      var _this10 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var emojis;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                if (query) {
-                  _context.next = 2;
-                  break;
-                }
-
-                return _context.abrupt("return");
-
-              case 2:
-                _context.next = 4;
-                return _this10.emojisDB.getEmojiBySearchQuery(query);
-
-              case 4:
-                emojis = _context.sent;
-                _this10.filteredEmojis = emojis.map(function (emoji) {
-                  return emoji.unicode;
-                });
-
-              case 6:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
-    },
-    selectEmoji: function selectEmoji(emoji) {
-      this.selectEmojiItem = false;
-      if (!emoji) return;
-
-      var _this$getCharPosition = this.getCharPosition(':'),
-          position = _this$getCharPosition.position,
-          endPosition = _this$getCharPosition.endPosition;
-
-      this.message = this.message.substr(0, position - 1) + emoji + this.message.substr(endPosition, this.message.length - 1);
-      this.cursorRangePosition = position;
-      this.focusTextarea();
-    },
-    updateShowUsersTag: function updateShowUsersTag(query) {
-      var _this11 = this;
-
-      this.filteredUsersTag = filter_items(this.room.users, 'username', query, true).filter(function (user) {
-        return user._id !== _this11.currentUserId;
-      });
-    },
-    selectUserTag: function selectUserTag(user) {
-      var editMode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      this.selectUsersTagItem = false;
-      if (!user) return;
-
-      var _this$getCharPosition2 = this.getCharPosition('@'),
-          position = _this$getCharPosition2.position,
-          endPosition = _this$getCharPosition2.endPosition;
-
-      var space = this.message.substr(endPosition, endPosition).length ? '' : ' ';
-      this.message = this.message.substr(0, position) + user.username + space + this.message.substr(endPosition, this.message.length - 1);
-      this.selectedUsersTag = [].concat(_toConsumableArray(this.selectedUsersTag), [_objectSpread2({}, user)]);
-
-      if (!editMode) {
-        this.cursorRangePosition = position + user.username.length + space.length + 1;
-      }
-
-      this.focusTextarea();
-    },
-    updateShowTemplatesText: function updateShowTemplatesText(query) {
-      this.filteredTemplatesText = filter_items(this.templatesText, 'tag', query, true);
-    },
-    selectTemplateText: function selectTemplateText(template) {
-      this.selectTemplatesTextItem = false;
-      if (!template) return;
-
-      var _this$getCharPosition3 = this.getCharPosition('/'),
-          position = _this$getCharPosition3.position,
-          endPosition = _this$getCharPosition3.endPosition;
-
-      var space = this.message.substr(endPosition, endPosition).length ? '' : ' ';
-      this.message = this.message.substr(0, position - 1) + template.text + space + this.message.substr(endPosition, this.message.length - 1);
-      this.cursorRangePosition = position + template.text.length + space.length + 1;
-      this.focusTextarea();
-    },
-    updateActiveUpOrDown: function updateActiveUpOrDown(direction) {
-      if (this.filteredEmojis.length) {
-        this.activeUpOrDownEmojis = direction;
-      } else if (this.filteredUsersTag.length) {
-        this.activeUpOrDownUsersTag = direction;
-      } else if (this.filteredTemplatesText.length) {
-        this.activeUpOrDownTemplatesText = direction;
-      }
-    },
-    selectItem: function selectItem() {
-      if (this.filteredEmojis.length) {
-        this.selectEmojiItem = true;
-      } else if (this.filteredUsersTag.length) {
-        this.selectUsersTagItem = true;
-      } else if (this.filteredTemplatesText.length) {
-        this.selectTemplatesTextItem = true;
-      }
-    },
-    resetFooterList: function resetFooterList() {
-      var tagChar = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-
-      if (tagChar === ':') {
-        this.filteredEmojis = [];
-      } else if (tagChar === '@') {
-        this.filteredUsersTag = [];
-      } else if (tagChar === '/') {
-        this.filteredTemplatesText = [];
-      } else {
-        this.filteredEmojis = [];
-        this.filteredUsersTag = [];
-        this.filteredTemplatesText = [];
-      }
-
-      this.textareaCursorPosition = null;
-    },
-    escapeTextarea: function escapeTextarea() {
-      if (this.filteredEmojis.length) this.filteredEmojis = [];else if (this.filteredUsersTag.length) this.filteredUsersTag = [];else if (this.filteredTemplatesText.length) {
-        this.filteredTemplatesText = [];
-      } else this.resetMessage();
-    },
-    resetMessage: function resetMessage() {
-      var _this12 = this;
-
-      var disableMobileFocus = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-      var initRoom = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
-      if (!initRoom) {
-        this.$emit('typing-message', null);
-      }
-
-      this.selectedUsersTag = [];
-      this.resetFooterList();
-      this.resetTextareaSize();
-      this.message = '';
-      this.editedMessage = {};
-      this.messageReply = null;
-      this.files = [];
-      this.emojiOpened = false;
-      this.preventKeyboardFromClosing();
-      setTimeout(function () {
-        return _this12.focusTextarea(disableMobileFocus);
-      });
-    },
-    resetTextareaSize: function resetTextareaSize() {
-      if (this.getTextareaRef()) {
-        this.getTextareaRef().style.height = '20px';
-      }
-    },
-    focusTextarea: function focusTextarea(disableMobileFocus) {
-      var _this13 = this;
-
-      if (detectMobile() && disableMobileFocus) return;
-      if (!this.getTextareaRef()) return;
-      this.getTextareaRef().focus();
-
-      if (this.cursorRangePosition) {
-        setTimeout(function () {
-          _this13.getTextareaRef().setSelectionRange(_this13.cursorRangePosition, _this13.cursorRangePosition);
-
-          _this13.cursorRangePosition = null;
-        });
-      }
-    },
-    preventKeyboardFromClosing: function preventKeyboardFromClosing() {
-      if (this.keepKeyboardOpen) this.getTextareaRef().focus();
-    },
-    sendMessage: function sendMessage() {
-      var message = this.message.trim();
-      if (!this.files.length && !message) return;
-      if (this.isFileLoading) return;
-      this.selectedUsersTag.forEach(function (user) {
-        message = message.replace("@".concat(user.username), "<usertag>".concat(user._id, "</usertag>"));
-      });
-      var files = this.files.length ? this.files : null;
-
-      if (this.editedMessage._id) {
-        var _this$editedMessage$f;
-
-        if (this.editedMessage.content !== message || (_this$editedMessage$f = this.editedMessage.files) !== null && _this$editedMessage$f !== void 0 && _this$editedMessage$f.length || this.files.length) {
-          this.$emit('edit-message', {
-            messageId: this.editedMessage._id,
-            newContent: message,
-            files: files,
-            replyMessage: this.messageReply,
-            usersTag: this.selectedUsersTag
-          });
-        }
-      } else {
-        this.$emit('send-message', {
-          content: message,
-          files: files,
-          replyMessage: this.messageReply,
-          usersTag: this.selectedUsersTag
-        });
-      }
-
-      this.resetMessage(true);
-    },
     loadMoreMessages: function loadMoreMessages() {
-      var _this14 = this;
+      var _this9 = this;
 
       if (this.loadingMessages) return;
       setTimeout(function () {
-        if (_this14.loadingMoreMessages) return;
+        if (_this9.loadingMoreMessages) return;
 
-        if (_this14.messagesLoaded || !_this14.room.roomId) {
-          _this14.loadingMoreMessages = false;
-          _this14.showLoader = false;
+        if (_this9.messagesLoaded || !_this9.roomId) {
+          _this9.loadingMoreMessages = false;
+          _this9.showLoader = false;
           return;
         }
 
-        _this14.preventTopScroll();
+        _this9.preventTopScroll();
 
-        _this14.$emit('fetch-messages');
+        _this9.$emit('fetch-messages');
 
-        _this14.loadingMoreMessages = true;
+        _this9.loadingMoreMessages = true;
       }, // prevent scroll bouncing speed
       500);
     },
@@ -40249,13 +40735,20 @@ var debounce = function debounce(func, delay) {
 
       switch (action.name) {
         case 'replyMessage':
-          return this.replyMessage(message);
+          this.initReplyMessage = message;
+          return;
 
         case 'editMessage':
-          return this.editMessage(message);
+          this.initEditMessage = message;
+          return;
 
         case 'deleteMessage':
           return this.$emit('delete-message', message);
+
+        case 'selectMessages':
+          this.selectedMessages = [message];
+          this.messageSelectionEnabled = true;
+          return;
 
         default:
           return this.$emit('message-action-handler', {
@@ -40264,48 +40757,15 @@ var debounce = function debounce(func, delay) {
           });
       }
     },
+    messageSelectionActionHandler: function messageSelectionActionHandler(action) {
+      this.$emit('message-selection-action-handler', {
+        action: action,
+        messages: this.selectedMessages
+      });
+      this.resetMessageSelection();
+    },
     sendMessageReaction: function sendMessageReaction(messageReaction) {
       this.$emit('send-message-reaction', messageReaction);
-    },
-    replyMessage: function replyMessage(message) {
-      this.editedMessage = {};
-      this.messageReply = message;
-      this.focusTextarea();
-    },
-    editMessage: function editMessage(message) {
-      var _this15 = this;
-
-      this.resetMessage();
-      this.editedMessage = _objectSpread2({}, message);
-      var messageContent = message.content;
-      var initialContent = messageContent;
-      var firstTag = '<usertag>';
-      var secondTag = '</usertag>';
-
-      var usertags = _toConsumableArray(messageContent.matchAll(new RegExp(firstTag, 'gi'))).map(function (a) {
-        return a.index;
-      });
-
-      usertags.forEach(function (index) {
-        var userId = initialContent.substring(index + firstTag.length, initialContent.indexOf(secondTag, index));
-
-        var user = _this15.room.users.find(function (user) {
-          return user._id === userId;
-        });
-
-        messageContent = messageContent.replace("".concat(firstTag).concat(userId).concat(secondTag), "@".concat((user === null || user === void 0 ? void 0 : user.username) || 'unknown'));
-
-        _this15.selectUserTag(user, true);
-      });
-      this.message = messageContent;
-
-      if (message.files) {
-        this.files = _toConsumableArray(message.files);
-      }
-
-      setTimeout(function () {
-        return _this15.resizeTextarea();
-      });
     },
     getBottomScroll: function getBottomScroll(element) {
       var scrollHeight = element.scrollHeight,
@@ -40314,10 +40774,10 @@ var debounce = function debounce(func, delay) {
       return scrollHeight - clientHeight - scrollTop;
     },
     scrollToBottom: function scrollToBottom() {
-      var _this16 = this;
+      var _this10 = this;
 
       setTimeout(function () {
-        var element = _this16.$refs.scrollContainer;
+        var element = _this10.$refs.scrollContainer;
         element.classList.add('vac-scroll-smooth');
         element.scrollTo({
           top: element.scrollHeight,
@@ -40328,189 +40788,9 @@ var debounce = function debounce(func, delay) {
         });
       }, 50);
     },
-    onChangeInput: debounce(function () {
-      var _this$getTextareaRef, _this$getTextareaRef2;
-
-      if ((_this$getTextareaRef = this.getTextareaRef()) !== null && _this$getTextareaRef !== void 0 && _this$getTextareaRef.value || ((_this$getTextareaRef2 = this.getTextareaRef()) === null || _this$getTextareaRef2 === void 0 ? void 0 : _this$getTextareaRef2.value) === '') {
-        var _this$getTextareaRef3;
-
-        this.message = (_this$getTextareaRef3 = this.getTextareaRef()) === null || _this$getTextareaRef3 === void 0 ? void 0 : _this$getTextareaRef3.value;
-      }
-
-      this.keepKeyboardOpen = true;
-      this.resizeTextarea();
-      this.$emit('typing-message', this.message);
-    }, 100),
-    resizeTextarea: function resizeTextarea() {
-      var el = this.getTextareaRef();
-      if (!el) return;
-      var padding = window.getComputedStyle(el, null).getPropertyValue('padding-top').replace('px', '');
-      el.style.height = 0;
-      el.style.height = el.scrollHeight - padding * 2 + 'px';
-    },
-    addEmoji: function addEmoji(emoji) {
-      this.message += emoji.unicode;
-      this.focusTextarea(true);
-    },
-    launchFilePicker: function launchFilePicker() {
-      this.$refs.file.value = '';
-      this.$refs.file.click();
-    },
-    onPasteImage: function onPasteImage(pasteEvent) {
-      var _pasteEvent$clipboard,
-          _this17 = this;
-
-      var items = (_pasteEvent$clipboard = pasteEvent.clipboardData) === null || _pasteEvent$clipboard === void 0 ? void 0 : _pasteEvent$clipboard.items;
-
-      if (items) {
-        Array.from(items).forEach(function (item) {
-          if (item.type.includes('image')) {
-            var blob = item.getAsFile();
-
-            _this17.onFileChange([blob]);
-          }
-        });
-      }
-    },
-    onFileChange: function onFileChange(files) {
-      var _this18 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                _this18.fileDialog = true;
-
-                _this18.focusTextarea();
-
-                Array.from(files).forEach( /*#__PURE__*/function () {
-                  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(file) {
-                    var fileURL, typeIndex, blobFile, loadedFile;
-                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
-                      while (1) {
-                        switch (_context2.prev = _context2.next) {
-                          case 0:
-                            fileURL = URL.createObjectURL(file);
-                            typeIndex = file.name.lastIndexOf('.');
-
-                            _this18.files.push({
-                              loading: true,
-                              name: file.name.substring(0, typeIndex),
-                              size: file.size,
-                              type: file.type,
-                              extension: file.name.substring(typeIndex + 1),
-                              localUrl: fileURL
-                            });
-
-                            _context2.next = 5;
-                            return fetch(fileURL).then(function (res) {
-                              return res.blob();
-                            });
-
-                          case 5:
-                            blobFile = _context2.sent;
-                            loadedFile = _this18.files.find(function (file) {
-                              return file.localUrl === fileURL;
-                            });
-
-                            if (loadedFile) {
-                              loadedFile.blob = blobFile;
-                              loadedFile.loading = false;
-                              delete loadedFile.loading;
-                            }
-
-                          case 8:
-                          case "end":
-                            return _context2.stop();
-                        }
-                      }
-                    }, _callee2);
-                  }));
-
-                  return function (_x) {
-                    return _ref3.apply(this, arguments);
-                  };
-                }());
-                setTimeout(function () {
-                  return _this18.fileDialog = false;
-                }, 500);
-
-              case 4:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
-      }))();
-    },
-    removeFile: function removeFile(index) {
-      this.files.splice(index, 1);
-      this.focusTextarea();
-    },
-    initRecorder: function initRecorder() {
-      this.isRecording = false;
-      return new recorder_default({
-        bitRate: this.audioBitRate,
-        sampleRate: this.audioSampleRate,
-        beforeRecording: null,
-        afterRecording: null,
-        pauseRecording: null,
-        micFailed: this.micFailed
-      });
-    },
-    micFailed: function micFailed() {
-      this.isRecording = false;
-      this.recorder = this.initRecorder();
-    },
-    toggleRecorder: function toggleRecorder(recording) {
-      var _this19 = this;
-
-      this.isRecording = recording;
-
-      if (!this.recorder.isRecording) {
-        setTimeout(function () {
-          return _this19.recorder.start();
-        }, 200);
-      } else {
-        try {
-          this.recorder.stop();
-          var record = this.recorder.records[0];
-          this.files.push({
-            blob: record.blob,
-            name: "audio.".concat(this.format),
-            size: record.blob.size,
-            duration: record.duration,
-            type: record.blob.type,
-            audio: true,
-            localUrl: URL.createObjectURL(record.blob)
-          });
-          this.recorder = this.initRecorder();
-          this.sendMessage();
-        } catch (_unused) {
-          setTimeout(function () {
-            return _this19.stopRecorder();
-          }, 100);
-        }
-      }
-    },
-    stopRecorder: function stopRecorder() {
-      var _this20 = this;
-
-      if (this.recorder.isRecording) {
-        try {
-          this.recorder.stop();
-          this.recorder = this.initRecorder();
-        } catch (_unused2) {
-          setTimeout(function () {
-            return _this20.stopRecorder();
-          }, 100);
-        }
-      }
-    },
-    openFile: function openFile(_ref4) {
-      var message = _ref4.message,
-          file = _ref4.file;
+    openFile: function openFile(_ref3) {
+      var message = _ref3.message,
+          file = _ref3.file;
       this.$emit('open-file', {
         message: message,
         file: file
@@ -40518,9 +40798,6 @@ var debounce = function debounce(func, delay) {
     },
     openUserTag: function openUserTag(user) {
       this.$emit('open-user-tag', user);
-    },
-    textareaActionHandler: function textareaActionHandler() {
-      this.$emit('textarea-action-handler', this.message);
     }
   }
 });
@@ -40651,7 +40928,8 @@ const MediaPreview_exports_ = /*#__PURE__*/exportHelper_default()(MediaPreviewvu
   SEARCH: 'Search',
   IS_ONLINE: 'is online',
   LAST_SEEN: 'last seen ',
-  IS_TYPING: 'is writing...'
+  IS_TYPING: 'is writing...',
+  CANCEL_SELECT_MESSAGE: 'Cancel'
 });
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.string.search.js
 var es_string_search = __webpack_require__("841c");
@@ -40663,6 +40941,9 @@ var defaultThemeStyles = {
   light: {
     general: {
       color: '#0a0a0a',
+      colorButtonClear: '#1976d2',
+      colorButton: '#fff',
+      backgroundColorButton: '#1976d2',
       backgroundInput: '#fff',
       colorPlaceholder: '#9ca6af',
       colorCaret: '#1976d2',
@@ -40708,6 +40989,7 @@ var defaultThemeStyles = {
       color: '#0a0a0a',
       colorStarted: '#9ca6af',
       backgroundDeleted: '#dadfe2',
+      backgroundSelected: '#c2dcf2',
       colorDeleted: '#757e85',
       colorUsername: '#9ca6af',
       colorTimestamp: '#828c94',
@@ -40792,6 +41074,9 @@ var defaultThemeStyles = {
   dark: {
     general: {
       color: '#fff',
+      colorButtonClear: '#fff',
+      colorButton: '#fff',
+      backgroundColorButton: '#1976d2',
       backgroundInput: '#202223',
       colorPlaceholder: '#596269',
       colorCaret: '#fff',
@@ -40837,6 +41122,7 @@ var defaultThemeStyles = {
       color: '#fff',
       colorStarted: '#9ca6af',
       backgroundDeleted: '#1b1c21',
+      backgroundSelected: '#c2dcf2',
       colorDeleted: '#a2a5a8',
       colorUsername: '#b3bac9',
       colorTimestamp: '#ebedf2',
@@ -40935,6 +41221,9 @@ var cssThemeVars = function cssThemeVars(_ref) {
   return {
     // general
     '--chat-color': general.color,
+    '--chat-color-button-clear': general.colorButtonClear,
+    '--chat-color-button': general.colorButton,
+    '--chat-bg-color-button': general.backgroundColorButton,
     '--chat-bg-color-input': general.backgroundInput,
     '--chat-color-spinner': general.colorSpinner,
     '--chat-color-placeholder': general.colorPlaceholder,
@@ -40972,6 +41261,7 @@ var cssThemeVars = function cssThemeVars(_ref) {
     '--chat-message-bg-color-me': message.backgroundMe,
     '--chat-message-color-started': message.colorStarted,
     '--chat-message-bg-color-deleted': message.backgroundDeleted,
+    '--chat-message-bg-color-selected': message.backgroundSelected,
     '--chat-message-color-deleted': message.colorDeleted,
     '--chat-message-color-username': message.colorUsername,
     '--chat-message-color-timestamp': message.colorTimestamp,
@@ -41176,7 +41466,16 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
           name: 'deleteMessage',
           title: 'Delete Message',
           onlyMe: true
+        }, {
+          name: 'selectMessages',
+          title: 'Select'
         }];
+      }
+    },
+    messageSelectionActions: {
+      type: Array,
+      "default": function _default() {
+        return [];
       }
     },
     autoScroll: {
@@ -41308,7 +41607,7 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
       }
     }
   },
-  emits: ['toggle-rooms-list', 'room-info', 'fetch-messages', 'send-message', 'edit-message', 'delete-message', 'open-file', 'open-user-tag', 'open-failed-message', 'menu-action-handler', 'message-action-handler', 'send-message-reaction', 'typing-message', 'textarea-action-handler', 'fetch-more-rooms', 'add-room', 'room-action-handler'],
+  emits: ['toggle-rooms-list', 'room-info', 'fetch-messages', 'send-message', 'edit-message', 'delete-message', 'open-file', 'open-user-tag', 'open-failed-message', 'menu-action-handler', 'message-action-handler', 'send-message-reaction', 'typing-message', 'textarea-action-handler', 'fetch-more-rooms', 'add-room', 'room-action-handler', 'message-selection-action-handler'],
   data: function data() {
     return {
       room: {},
@@ -41509,6 +41808,11 @@ var ChatWindowvue_type_script_lang_js_require = __webpack_require__("4c1d"),
     },
     messageActionHandler: function messageActionHandler(ev) {
       this.$emit('message-action-handler', _objectSpread2(_objectSpread2({}, ev), {}, {
+        roomId: this.room.roomId
+      }));
+    },
+    messageSelectionActionHandler: function messageSelectionActionHandler(ev) {
+      this.$emit('message-selection-action-handler', _objectSpread2(_objectSpread2({}, ev), {}, {
         roomId: this.room.roomId
       }));
     },

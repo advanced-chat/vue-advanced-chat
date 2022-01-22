@@ -39,11 +39,13 @@ export const firestoreListener = onSnapshot
 export const deleteDbField = deleteField()
 
 const getDocuments = query => {
-	return getDocs(query)
+	return getDocs(query).then(docs => {
+		return { data: formatQueryDataArray(docs), docs: docs.docs }
+	})
 }
 
 const getDocument = ref => {
-	return getDoc(ref)
+	return getDoc(ref).then(doc => formatQueryDataObject(doc))
 }
 
 const addDocument = (ref, data) => {
@@ -212,6 +214,12 @@ export const deleteMessage = (roomId, messageId) => {
 	return deleteDocument(MESSAGE_PATH(roomId), messageId)
 }
 
+export const listenRooms = (query, callback) => {
+	return firestoreListener(query, rooms => {
+		callback(formatQueryDataArray(rooms))
+	})
+}
+
 export const paginatedMessagesQuery = (
 	roomId,
 	lastLoadedMessage,
@@ -241,8 +249,45 @@ export const paginatedMessagesQuery = (
 	}
 }
 
-export const lastMessageQuery = roomId => {
+export const listenMessages = (
+	roomId,
+	lastLoadedMessage,
+	previousLastLoadedMessage,
+	callback
+) => {
+	return firestoreListener(
+		paginatedMessagesQuery(
+			roomId,
+			lastLoadedMessage,
+			previousLastLoadedMessage
+		),
+		messages => {
+			callback(formatQueryDataArray(messages))
+		}
+	)
+}
+
+const formatQueryDataObject = queryData => {
+	return { ...queryData.data(), id: queryData.id }
+}
+
+const formatQueryDataArray = queryDataArray => {
+	const formattedData = []
+
+	queryDataArray.forEach(data => {
+		formattedData.push(formatQueryDataObject(data))
+	})
+	return formattedData
+}
+
+const lastMessageQuery = roomId => {
 	return query(messagesRef(roomId), orderBy(TIMESTAMP_FIELD, 'desc'), limit(1))
+}
+
+export const listenLastMessage = (roomId, callback) => {
+	return firestoreListener(query(lastMessageQuery(roomId)), messages => {
+		callback(formatQueryDataArray(messages))
+	})
 }
 
 export const updateMessageReactions = (

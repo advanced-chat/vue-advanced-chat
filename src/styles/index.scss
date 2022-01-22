@@ -7,26 +7,28 @@
 @import '../lib/MediaPreview/MediaPreview';
 
 @import '../lib/Room/Room';
-@import '../lib/Room/RoomEmojis/RoomEmojis';
 @import '../lib/Room/RoomHeader/RoomHeader';
-@import '../lib/Room/RoomMessageReply/RoomMessageReply';
-@import '../lib/Room/RoomFiles/RoomFiles';
-@import '../lib/Room/RoomFiles/RoomFile/RoomFile';
-@import '../lib/Room/RoomUsersTag/RoomUsersTag';
-@import '../lib/Room/RoomTemplatesText/RoomTemplatesText';
+
+@import '../lib/Room/RoomFooter/RoomFooter';
+@import '../lib/Room/RoomFooter/RoomEmojis/RoomEmojis';
+@import '../lib/Room/RoomFooter/RoomMessageReply/RoomMessageReply';
+@import '../lib/Room/RoomFooter/RoomFiles/RoomFiles';
+@import '../lib/Room/RoomFooter/RoomFiles/RoomFile/RoomFile';
+@import '../lib/Room/RoomFooter/RoomUsersTag/RoomUsersTag';
+@import '../lib/Room/RoomFooter/RoomTemplatesText/RoomTemplatesText';
 
 @import '../lib/RoomsList/RoomsList';
 @import '../lib/RoomsList/RoomContent/RoomContent';
 @import '../lib/RoomsList/RoomsSearch/RoomsSearch';
 
-@import '../lib/Message/Message';
-@import '../lib/Message/AudioPlayer/AudioPlayer';
-@import '../lib/Message/AudioPlayer/AudioControl/AudioControl';
-@import '../lib/Message/MessageActions/MessageActions';
-@import '../lib/Message/MessageFiles/MessageFiles';
-@import '../lib/Message/MessageFiles/MessageFile/MessageFile';
-@import '../lib/Message/MessageReactions/MessageReactions';
-@import '../lib/Message/MessageReply/MessageReply';
+@import '../lib/Room/RoomMessage/RoomMessage';
+@import '../lib/Room/RoomMessage/AudioPlayer/AudioPlayer';
+@import '../lib/Room/RoomMessage/AudioPlayer/AudioControl/AudioControl';
+@import '../lib/Room/RoomMessage/MessageActions/MessageActions';
+@import '../lib/Room/RoomMessage/MessageFiles/MessageFiles';
+@import '../lib/Room/RoomMessage/MessageFiles/MessageFile/MessageFile';
+@import '../lib/Room/RoomMessage/MessageReactions/MessageReactions';
+@import '../lib/Room/RoomMessage/MessageReply/MessageReply';
 
 @import '../components/EmojiPickerContainer/EmojiPickerContainer';
 @import '../components/FormatMessage/FormatMessage';

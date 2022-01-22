@@ -87,6 +87,14 @@ export interface CustomAction {
 
 export type CustomActions = CustomAction[]
 
+export interface MessageAction {
+	name: string
+	title: string
+	onlyMe?: boolean
+}
+
+export type MessageActions = MessageAction[]
+
 export interface TextFormatting {
 	disabled?: boolean
 	italic?: string
@@ -167,7 +175,8 @@ export interface Props {
 	'messages-loaded'?: boolean
 	'room-actions'?: CustomActions
 	'menu-actions'?: CustomActions
-	'message-actions'?: CustomActions
+	'message-actions'?: MessageActions
+	'message-selection-actions'?: CustomActions
 	'templates-text'?: TemplatesText
 	'auto-scroll'?: AutoScroll
 	'show-search'?: boolean

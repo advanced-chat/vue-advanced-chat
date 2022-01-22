@@ -1,0 +1,27 @@
+.vac-message-files-container {
+	.vac-file-wrapper {
+		position: relative;
+		width: fit-content;
+
+		.vac-file-container {
+			height: 60px;
+			width: 60px;
+			margin: 3px 0 5px;
+			cursor: pointer;
+			transition: all 0.6s;
+
+			&:hover {
+				opacity: 0.85;
+			}
+
+			svg {
+				height: 30px;
+				width: 30px;
+			}
+
+			&.vac-file-container-progress {
+				background-color: rgba(0, 0, 0, 0.3);
+			}
+		}
+	}
+}

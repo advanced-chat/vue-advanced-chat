@@ -38,7 +38,6 @@
 					:style="{ right: isMessageActions ? '30px' : '5px' }"
 					:emoji-opened="emojiOpened"
 					:emoji-reaction="true"
-					:room-footer-ref="roomFooterRef"
 					:position-right="message.senderId === currentUserId"
 					@add-emoji="sendMessageReaction"
 					@open-emoji="openEmoji"
@@ -83,8 +82,8 @@
 <script>
 import vClickOutside from '../../../utils/on-click-outside'
 
-import SvgIcon from '../../../components/SvgIcon/SvgIcon'
-import EmojiPickerContainer from '../../../components/EmojiPickerContainer/EmojiPickerContainer'
+import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
+import EmojiPickerContainer from '../../../../components/EmojiPickerContainer/EmojiPickerContainer'
 
 export default {
 	name: 'MessageActions',
@@ -98,9 +97,7 @@ export default {
 		currentUserId: { type: [String, Number], required: true },
 		message: { type: Object, required: true },
 		messageActions: { type: Array, required: true },
-		roomFooterRef: { type: HTMLDivElement, default: null },
 		showReactionEmojis: { type: Boolean, required: true },
-		hideOptions: { type: Boolean, required: true },
 		messageHover: { type: Boolean, required: true },
 		hoverMessageId: { type: [String, Number], default: null },
 		hoverAudioProgress: { type: Boolean, required: true }
@@ -110,7 +107,6 @@ export default {
 		'update-emoji-opened',
 		'update-options-opened',
 		'update-message-hover',
-		'hide-options',
 		'message-action-handler',
 		'send-message-reaction'
 	],
@@ -155,12 +151,6 @@ export default {
 			this.$emit('update-emoji-opened', val)
 			if (val) this.optionsOpened = false
 		},
-		hideOptions(val) {
-			if (val) {
-				this.closeEmoji()
-				this.closeOptions()
-			}
-		},
 		optionsOpened(val) {
 			this.$emit('update-options-opened', val)
 		}
@@ -173,22 +163,22 @@ export default {
 			this.optionsOpened = !this.optionsOpened
 			if (!this.optionsOpened) return
 
-			this.$emit('hide-options', false)
-
 			setTimeout(() => {
+				const roomFooterRef = document.getElementById('room-footer')
+
 				if (
-					!this.roomFooterRef ||
+					!roomFooterRef ||
 					!this.$refs.menuOptions ||
 					!this.$refs.actionIcon
 				) {
 					return
 				}
 
-				const menuOptionsTop = this.$refs.menuOptions.getBoundingClientRect()
-					.height
+				const menuOptionsTop =
+					this.$refs.menuOptions.getBoundingClientRect().height
 
 				const actionIconTop = this.$refs.actionIcon.getBoundingClientRect().top
-				const roomFooterTop = this.roomFooterRef.getBoundingClientRect().top
+				const roomFooterTop = roomFooterRef.getBoundingClientRect().top
 
 				const optionsTopPosition =
 					roomFooterTop - actionIconTop > menuOptionsTop + 50
@@ -205,7 +195,6 @@ export default {
 		},
 		openEmoji() {
 			this.emojiOpened = !this.emojiOpened
-			this.$emit('hide-options', false)
 		},
 		closeEmoji() {
 			this.emojiOpened = false

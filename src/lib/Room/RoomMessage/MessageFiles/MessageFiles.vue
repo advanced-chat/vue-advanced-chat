@@ -6,6 +6,7 @@
 				:current-user-id="currentUserId"
 				:message="message"
 				:index="idx"
+				:message-selection-enabled="messageSelectionEnabled"
 				@open-file="$emit('open-file', $event)"
 			>
 				<template v-for="(i, name) in $slots" #[name]="data">
@@ -14,16 +15,20 @@
 			</message-file>
 		</div>
 
-		<div v-for="(file, idx) in otherFiles" :key="idx + 'a'">
+		<div
+			v-for="(file, idx) in otherFiles"
+			:key="idx + 'a'"
+			class="vac-file-wrapper"
+		>
 			<progress-bar
 				v-if="file.progress >= 0"
 				:progress="file.progress"
-				:style="{ top: '54px' }"
+				:style="{ top: '44px' }"
 			/>
 			<div
 				class="vac-file-container"
 				:class="{ 'vac-file-container-progress': file.progress >= 0 }"
-				@click.stop="openFile(file, 'download')"
+				@click="openFile($event, file, 'download')"
 			>
 				<div class="vac-svg-button">
 					<slot name="document-icon">
@@ -54,13 +59,13 @@
 </template>
 
 <script>
-import SvgIcon from '../../../components/SvgIcon/SvgIcon'
-import FormatMessage from '../../../components/FormatMessage/FormatMessage'
-import ProgressBar from '../../../components/ProgressBar/ProgressBar'
+import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
+import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
+import ProgressBar from '../../../../components/ProgressBar/ProgressBar'
 
 import MessageFile from './MessageFile/MessageFile'
 
-const { isImageVideoFile } = require('../../../utils/media-file')
+const { isImageVideoFile } = require('../../../../utils/media-file')
 
 export default {
 	name: 'MessageFiles',
@@ -71,7 +76,8 @@ export default {
 		message: { type: Object, required: true },
 		roomUsers: { type: Array, required: true },
 		textFormatting: { type: Object, required: true },
-		linkOptions: { type: Object, required: true }
+		linkOptions: { type: Object, required: true },
+		messageSelectionEnabled: { type: Boolean, required: true }
 	},
 
 	emits: ['open-file', 'open-user-tag'],
@@ -86,8 +92,11 @@ export default {
 	},
 
 	methods: {
-		openFile(file, action) {
-			this.$emit('open-file', { file, action })
+		openFile(event, file, action) {
+			if (!this.messageSelectionEnabled) {
+				event.stopPropagation()
+				this.$emit('open-file', { file, action })
+			}
 		}
 	}
 }
