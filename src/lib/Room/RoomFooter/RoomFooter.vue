@@ -198,16 +198,6 @@ import Recorder from '../../../utils/recorder'
 
 const { detectMobile } = require('../../../utils/mobile-detection')
 
-const debounce = (func, delay) => {
-	let inDebounce
-	return function () {
-		const context = this
-		const args = arguments
-		clearTimeout(inDebounce)
-		inDebounce = setTimeout(() => func.apply(context, args), delay)
-	}
-}
-
 export default {
 	name: 'RoomFooter',
 
@@ -336,28 +326,24 @@ export default {
 	mounted() {
 		const isMobile = detectMobile()
 
-		this.getTextareaRef().addEventListener(
-			'keyup',
-			debounce(e => {
-				if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
-					if (isMobile) {
-						this.message = this.message + '\n'
-						setTimeout(() => this.onChangeInput())
-					} else if (
-						!this.filteredEmojis.length &&
-						!this.filteredUsersTag.length &&
-						!this.filteredTemplatesText.length
-					) {
-						this.sendMessage()
-					}
+		this.getTextareaRef().addEventListener('keyup', e => {
+			if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
+				if (isMobile) {
+					this.message = this.message + '\n'
+					setTimeout(() => this.onChangeInput())
+				} else if (
+					!this.filteredEmojis.length &&
+					!this.filteredUsersTag.length &&
+					!this.filteredTemplatesText.length
+				) {
+					this.sendMessage()
 				}
+			}
 
-				setTimeout(() => {
-					this.updateFooterLists()
-				}, 60)
-			}),
-			50
-		)
+			setTimeout(() => {
+				this.updateFooterLists()
+			}, 60)
+		})
 
 		this.getTextareaRef().addEventListener('click', () => {
 			if (isMobile) this.keepKeyboardOpen = true
@@ -393,14 +379,14 @@ export default {
 				})
 			}
 		},
-		onChangeInput: debounce(function () {
+		onChangeInput() {
 			if (this.getTextareaRef()?.value || this.getTextareaRef()?.value === '') {
 				this.message = this.getTextareaRef()?.value
 			}
 			this.keepKeyboardOpen = true
 			this.resizeTextarea()
 			this.$emit('typing-message', this.message)
-		}, 100),
+		},
 		resizeTextarea() {
 			const el = this.getTextareaRef()
 
