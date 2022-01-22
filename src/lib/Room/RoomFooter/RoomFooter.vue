@@ -182,7 +182,6 @@
 
 <script>
 import { Database } from 'emoji-picker-element'
-import vClickOutside from 'v-click-outside'
 
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import EmojiPickerContainer from '../../../components/EmojiPickerContainer/EmojiPickerContainer'
@@ -193,6 +192,7 @@ import RoomUsersTag from './RoomUsersTag/RoomUsersTag'
 import RoomEmojis from './RoomEmojis/RoomEmojis'
 import RoomTemplatesText from './RoomTemplatesText/RoomTemplatesText'
 
+import vClickOutside from '../../../utils/on-click-outside'
 import filteredItems from '../../../utils/filter-items'
 import Recorder from '../../../utils/recorder'
 
@@ -212,7 +212,7 @@ export default {
 	},
 
 	directives: {
-		clickOutside: vClickOutside.directive
+		clickOutside: vClickOutside
 	},
 
 	props: {
