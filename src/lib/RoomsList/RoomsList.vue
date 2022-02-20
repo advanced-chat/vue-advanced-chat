@@ -1,8 +1,8 @@
 <template>
 	<div
 		v-show="showRoomsList"
-		class="vac-rooms-container vac-app-border-r"
-		:class="{ 'vac-rooms-container-full': isMobile }"
+		class="vac-rooms-container"
+		:class="{ 'vac-rooms-container-full': isMobile, 'vac-app-border-r': !isMobile }"
 	>
 		<slot name="rooms-header" />
 
