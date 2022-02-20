@@ -49,7 +49,7 @@
 			:users="roomUsers"
 			:text-formatting="textFormatting"
 			:link-options="linkOptions"
-			@open-user-tag="$emit('open-user-tag')"
+			@open-user-tag="$emit('open-user-tag', $event)"
 		>
 			<template v-for="(i, name) in $scopedSlots" #[name]="data">
 				<slot :name="name" v-bind="data" />

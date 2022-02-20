@@ -107,6 +107,7 @@
 							:link-options="linkOptions"
 							:message-selection-enabled="messageSelectionEnabled"
 							@open-file="openFile"
+							@open-user-tag="openUserTag"
 						>
 							<template v-for="(i, name) in $scopedSlots" #[name]="data">
 								<slot :name="name" v-bind="data" />
