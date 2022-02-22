@@ -30,22 +30,27 @@
 					</slot>
 				</div>
 
-				<emoji-picker-container
-					v-if="isMessageReactions"
-					key="3"
-					v-click-outside="closeEmoji"
-					class="vac-message-emojis"
-					:style="{ right: isMessageActions ? '30px' : '5px' }"
-					:emoji-opened="emojiOpened"
-					:emoji-reaction="true"
-					:position-right="message.senderId === currentUserId"
-					@add-emoji="sendMessageReaction"
-					@open-emoji="openEmoji"
-				>
-					<template #emoji-picker-icon>
-						<slot name="emoji-picker-reaction-icon" />
-					</template>
-				</emoji-picker-container>
+				<div v-if="isMessageReactions" key="3" v-click-outside="closeEmoji">
+					<slot
+						name="emoji-picker"
+						v-bind="{ emojiOpened }"
+						:add-emoji="sendMessageReaction"
+					>
+						<emoji-picker-container
+							class="vac-message-emojis"
+							:style="{ right: isMessageActions ? '30px' : '5px' }"
+							:emoji-opened="emojiOpened"
+							:emoji-reaction="true"
+							:position-right="message.senderId === currentUserId"
+							@add-emoji="sendMessageReaction"
+							@open-emoji="openEmoji"
+						>
+							<template #emoji-picker-icon>
+								<slot name="emoji-picker-reaction-icon" />
+							</template>
+						</emoji-picker-container>
+					</slot>
+				</div>
 			</transition-group>
 		</div>
 

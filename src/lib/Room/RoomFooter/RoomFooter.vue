@@ -123,18 +123,24 @@
 					</slot>
 				</div>
 
-				<emoji-picker-container
-					v-if="showEmojis"
-					v-click-outside="() => (emojiOpened = false)"
-					:emoji-opened="emojiOpened"
-					:position-top="true"
-					@add-emoji="addEmoji"
-					@open-emoji="emojiOpened = $event"
-				>
-					<template v-for="(i, name) in $scopedSlots" #[name]="data">
-						<slot :name="name" v-bind="data" />
-					</template>
-				</emoji-picker-container>
+				<div v-if="showEmojis" v-click-outside="() => (emojiOpened = false)">
+					<slot
+						name="emoji-picker"
+						v-bind="{ emojiOpened }"
+						:add-emoji="addEmoji"
+					>
+						<emoji-picker-container
+							:emoji-opened="emojiOpened"
+							:position-top="true"
+							@add-emoji="addEmoji"
+							@open-emoji="emojiOpened = $event"
+						>
+							<template #emoji-picker-icon>
+								<slot name="emoji-picker-icon" />
+							</template>
+						</emoji-picker-container>
+					</slot>
+				</div>
 
 				<div v-if="showFiles" class="vac-svg-button" @click="launchFilePicker">
 					<slot name="paperclip-icon">
