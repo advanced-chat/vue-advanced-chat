@@ -3,7 +3,7 @@ $media-preview-width-lg: 40px;
 $media-preview-width-sm: 20px;
 
 .vac-media-preview {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	z-index: 99;
