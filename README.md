@@ -80,6 +80,7 @@ npm install --save vue-advanced-chat
 yarn add vue-advanced-chat
 
 # Using CDN
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue-advanced-chat@0.8.8/dist/vue-advanced-chat.min.js"></script>
 ```
 
