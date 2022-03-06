@@ -880,7 +880,17 @@ npm install --save vue
 yarn add --save vue
 ```
 
-#### Angular Setup
+<br>
+
+### React Setup
+
+See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/react
+
+<br>
+
+### Angular Setup
+
+See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/angular
 
 ```json
 // angular.json
