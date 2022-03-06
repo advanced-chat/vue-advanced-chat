@@ -888,8 +888,8 @@ See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/t
 
 See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/angular
 
-```json
-/* angular.json */
+```jsonc
+// angular.json
 
 "build": {
   "scripts": [
