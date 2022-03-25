@@ -116,6 +116,14 @@
 				</div>
 			</transition>
 		</div>
+		<div v-show="!!files.length" class="vac-app-box-shadow files-list" style="bottom: 66px;">
+			<div class="vac-files-box">
+				<file-upload v-for="(file, index) in files" :key="index" :index="index" :file="file" @close-single-file="removeSingleFile" />
+			</div>
+			<div style="float:right; padding-top:2px;" @click="closeUploadedFiles">
+				<svg-icon name="close-outline" />
+			</div>
+		</div>
 		<div
 			v-show="Object.keys(room).length && showFooter"
 			ref="roomFooter"
@@ -186,53 +194,6 @@
 					</div>
 				</div>
 
-				<div v-if="imageFile" class="vac-media-container">
-					<div class="vac-svg-button vac-icon-media" @click="resetMediaFile">
-						<slot name="image-close-icon">
-							<svg-icon name="close" param="image" />
-						</slot>
-					</div>
-					<div class="vac-media-file">
-						<img ref="mediaFile" :src="imageFile" @load="onMediaLoad" />
-					</div>
-				</div>
-
-				<div v-else-if="videoFile" class="vac-media-container">
-					<div class="vac-svg-button vac-icon-media" @click="resetMediaFile">
-						<slot name="image-close-icon">
-							<svg-icon name="close" param="image" />
-						</slot>
-					</div>
-					<div ref="mediaFile" class="vac-media-file">
-						<video width="100%" height="100%" controls>
-							<source :src="videoFile" />
-						</video>
-					</div>
-				</div>
-
-				<div
-					v-else-if="file"
-					class="vac-file-container"
-					:class="{ 'vac-file-container-edit': editedMessage._id }"
-				>
-					<div class="vac-icon-file">
-						<slot name="file-icon">
-							<svg-icon name="file" />
-						</slot>
-					</div>
-					<div class="vac-file-message">
-						{{ file.audio ? file.name : message }}
-					</div>
-					<div
-						class="vac-svg-button vac-icon-remove"
-						@click="resetMessage(null, true)"
-					>
-						<slot name="file-close-icon">
-							<svg-icon name="close" />
-						</slot>
-					</div>
-				</div>
-
 				<textarea
 					v-show="!file || imageFile || videoFile"
 					ref="roomTextarea"
@@ -243,10 +204,8 @@
 						'vac-textarea-outline': editedMessage._id
 					}"
 					:style="{
-						'min-height': `${mediaDimensions ? mediaDimensions.height : 20}px`,
-						'padding-left': `${
-							mediaDimensions ? mediaDimensions.width - 10 : 12
-						}px`
+						'min-height': '20px',
+						'padding-left': '12px'
 					}"
 					@input="onChangeInput"
 					@keydown.esc="escapeTextarea"
@@ -299,6 +258,7 @@
 						v-if="showFiles"
 						ref="file"
 						type="file"
+						multiple = "multiple"
 						:accept="acceptedFiles"
 						style="display:none"
 						@change="onFileChange($event.target.files)"
@@ -334,6 +294,7 @@ import RoomMessageReply from './RoomMessageReply'
 import RoomUsersTag from './RoomUsersTag'
 import RoomEmojis from './RoomEmojis'
 import Message from '../Message/Message'
+import FileUpload from '../Files/FileUpload'
 
 import filteredUsers from '../../utils/filter-items'
 import Recorder from '../../utils/recorder'
@@ -351,7 +312,8 @@ export default {
 		RoomMessageReply,
 		RoomUsersTag,
 		RoomEmojis,
-		Message
+		Message,
+		FileUpload
 	},
 
 	directives: {
@@ -395,6 +357,7 @@ export default {
 			infiniteState: null,
 			loadingMessages: false,
 			loadingMoreMessages: false,
+			files: [],
 			file: null,
 			imageFile: null,
 			videoFile: null,
@@ -447,7 +410,7 @@ export default {
 			return this.messages.length && this.messagesLoaded
 		},
 		isMessageEmpty() {
-			return !this.file && !this.message.trim()
+			return !this.files.length && !this.message.trim()
 		},
 		recordedTime() {
 			return new Date(this.recorder.duration * 1000).toISOString().substr(14, 5)
@@ -797,7 +760,7 @@ export default {
 		sendMessage() {
 			let message = this.message.trim()
 
-			if (!this.file && !message) return
+			if (!this.files.length && !message) return
 
 			this.selectedUsersTag.forEach(user => {
 				message = message.replace(
@@ -817,14 +780,26 @@ export default {
 					})
 				}
 			} else {
-				this.$emit('send-message', {
-					content: message,
-					file: this.file,
-					replyMessage: this.messageReply,
-					usersTag: this.selectedUsersTag
-				})
+				if(this.files.length){
+					for(let i = 0; i < this.files.length; i++){
+						const msg = i === (this.files.length - 1) ? message : ""
+						this.$emit('send-message', {
+							content: msg,
+							file: this.files[i],
+							replyMessage: this.messageReply,
+							usersTag: this.selectedUsersTag
+						})
+					}
+				} else{
+					this.$emit('send-message', {
+						content: message,
+						file: this.file,
+						replyMessage: this.messageReply,
+						usersTag: this.selectedUsersTag
+					})
+				}
 			}
-
+			this.files = []
 			this.resetMessage(true)
 		},
 		loadMoreMessages(infiniteState) {
@@ -923,29 +898,24 @@ export default {
 		},
 		async onFileChange(files) {
 			this.fileDialog = true
-			this.resetMediaFile()
+			for(let i = 0; i < files.length; i++){
+				const file = files[i]
+				const fileURL = URL.createObjectURL(file)
+				const blobFile = await fetch(fileURL).then(res => res.blob())
+				const typeIndex = file.name.lastIndexOf('.')
+				const isNotDoc = isImageFile(file) || isVideoFile(file)
 
-			const file = files[0]
-			const fileURL = URL.createObjectURL(file)
-			const blobFile = await fetch(fileURL).then(res => res.blob())
-			const typeIndex = file.name.lastIndexOf('.')
-
-			this.file = {
-				blob: blobFile,
-				name: file.name.substring(0, typeIndex),
-				size: file.size,
-				type: file.type,
-				extension: file.name.substring(typeIndex + 1),
-				localUrl: fileURL
-			}
-
-			if (isImageFile(this.file)) {
-				this.imageFile = fileURL
-			} else if (isVideoFile(this.file)) {
-				this.videoFile = fileURL
-				setTimeout(() => this.onMediaLoad(), 50)
-			} else {
-				this.message = file.name
+				this.file = {
+					blob: blobFile,
+					name: file.name.substring(0, typeIndex),
+					size: file.size,
+					type: file.type,
+					extension: file.name.substring(typeIndex + 1),
+					localUrl: fileURL,
+					isNotDoc: isNotDoc
+				}
+				this.files.push(this.file)
+				this.file = null
 			}
 
 			setTimeout(() => (this.fileDialog = false), 500)
@@ -1010,6 +980,12 @@ export default {
 		},
 		textareaActionHandler() {
 			this.$emit('textarea-action-handler', this.message)
+		},
+		removeSingleFile(index){
+			this.files.splice(index, 1)
+		},
+		closeUploadedFiles(){
+			this.files = []
 		}
 	}
 }
@@ -1394,5 +1370,15 @@ export default {
 			bottom: 70px;
 		}
 	}
+}
+.files-list{
+	display: flex;
+    align-items: center;
+    padding: 10px 6px 0 6px;
+}
+.vac-files-box{
+	display: flex;
+    overflow: auto;
+    width: calc(100% - 30px);
 }
 </style>
