@@ -3,7 +3,7 @@ import 'firebase/firestore'
 import 'firebase/database'
 import 'firebase/storage'
 
-const config =
+const config = 
 	process.env.NODE_ENV === 'development'
 		? JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG)
 		: JSON.parse(process.env.VUE_APP_FIREBASE_CONFIG_PUBLIC)
