@@ -4,6 +4,7 @@
             <div class="vac-svg-button close-button vac-icon-remove" @click="closeFile">
                 <svg-icon name="close" param="image" style="width:20px;" />
 </div>
+            <!--When uploaded file is a doc-->
             <div v-show="!file.isNotDoc" class="doc-svg">
                 <svg-icon class="doc-svg-button" name="file" />
             </div>
@@ -45,7 +46,7 @@
 .doc-svg {
     width: 32px;
     height: 32px;
-    margin: auto auto 15px;
+    margin: auto auto 15px!important;
     padding-top: 15px;
 }
 .doc-svg-button{
