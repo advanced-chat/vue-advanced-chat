@@ -120,7 +120,7 @@
 			<div class="vac-files-box">
 				<file-upload v-for="(item, index) in files" :key="index" :index="index" :file="item" @close-single-file="removeSingleFile" />
 			</div>
-			<div style="float:right; padding-top:2px;" @click="closeUploadedFiles">
+			<div class="vac-svg-button vac-close-all-files" @click="closeUploadedFiles">
 				<svg-icon name="close-outline" />
 			</div>
 		</div>
@@ -1371,5 +1371,9 @@ export default {
 	display: flex;
     overflow: auto;
     width: calc(100% - 30px);
+}
+.vac-close-all-files{
+	float:right;
+	padding-top:2px;
 }
 </style>
