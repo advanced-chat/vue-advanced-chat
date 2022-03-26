@@ -775,7 +775,7 @@ export default {
 				if (this.files.length) {
 					for (let i = 0; i < this.files.length; i++) {
 						this.$emit('send-message', {
-							content: message,
+							content: i === 0 ? message : '',
 							file: this.files[i],
 							replyMessage: this.messageReply,
 							usersTag: this.selectedUsersTag
