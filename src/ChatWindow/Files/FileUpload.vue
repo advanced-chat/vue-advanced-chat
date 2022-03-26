@@ -45,9 +45,8 @@
 .doc-svg {
     width: 32px;
     height: 32px;
-    margin: auto;
+    margin: auto auto 15px;
     padding-top: 15px;
-    margin-bottom: 15px;
 }
 .doc-svg-button{
     width: 30px;
