@@ -1,14 +1,15 @@
 <template>
 	<div class="file-list">
         <div class="vac-file-image" :style="style">
-            <div class="close-button vac-icon-remove" @click="closeFile">
-                <svg-icon name="close" param="image" style="width:20px;" /></div>
+            <div class="vac-svg-button close-button vac-icon-remove" @click="closeFile">
+                <svg-icon name="close" param="image" style="width:20px;" />
+</div>
             <div v-show="!file.isNotDoc" class="doc-svg">
                 <svg-icon class="doc-svg-button" name="file" />
             </div>
             <div v-show="!file.isNotDoc" class="text-container">
                 <div class="vac-text-ellipsis">
-                    {{ file.name }}
+                    <center>{{ file.name }}</center>
                 </div>
                 <div class="vac-text-extension">
                     <center>{{ file.extension }}</center>
@@ -46,6 +47,7 @@
     height: 32px;
     margin: auto;
     padding-top: 15px;
+    margin-bottom: 15px;
 }
 .doc-svg-button{
     width: 30px;
@@ -93,7 +95,5 @@
 .text-container{
     width: 80%;
     margin: auto;
-    align-items: center;
-    align-content: center;
 }
 </style>
