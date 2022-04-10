@@ -33,7 +33,7 @@
 					<div
 						v-if="!singleRoom"
 						class="vac-svg-button vac-toggle-button"
-						:class="{ 'vac-rotate-icon': !showRoomsList && !isMobile }"
+						:class="{ 'vac-rotate-icon-init': !isMobile, 'vac-rotate-icon': !showRoomsList && !isMobile }"
 						@click="$emit('toggle-rooms-list')"
 					>
 						<slot name="toggle-icon">
