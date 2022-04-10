@@ -104,7 +104,7 @@ export default {
 			return document.getElementById('room-footer').clientHeight
 		},
 		firstFile() {
-			return this.messageReply.files?.length ? this.messageReply.files[0] : {}
+			return this.messageReply?.files?.length ? this.messageReply.files[0] : {}
 		},
 		isImage() {
 			return isImageFile(this.firstFile)
@@ -117,7 +117,7 @@ export default {
 		},
 		isOtherFile() {
 			return (
-				this.messageReply.files?.length &&
+				this.messageReply?.files?.length &&
 				!this.isAudio &&
 				!this.isVideo &&
 				!this.isImage
