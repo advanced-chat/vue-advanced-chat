@@ -151,7 +151,7 @@
 			@typing-message="$emit('typing-message', $event)"
 			@textarea-action-handler="$emit('textarea-action-handler', $event)"
 		>
-			<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+			<template v-for="(idx, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</room-footer>
