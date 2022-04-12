@@ -93,7 +93,7 @@ export default {
 			return replyUser ? replyUser.username : ''
 		},
 		firstFile() {
-			return this.message.replyMessage.files?.length
+			return this.message.replyMessage?.files?.length
 				? this.message.replyMessage.files[0]
 				: {}
 		},
