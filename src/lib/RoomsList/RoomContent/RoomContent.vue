@@ -198,14 +198,16 @@ export default {
 			)
 		},
 		formattedDuration() {
-			const file = this.room.lastMessage.files[0]
+			const file = this.room.lastMessage?.files?.[0]
+			if (file) {
+				if (!file.duration) {
+					return `${file.name}.${file.extension}`
+				}
 
-			if (!file.duration) {
-				return `${file.name}.${file.extension}`
+				let s = Math.floor(file.duration)
+				return (s - (s %= 60)) / 60 + (s > 9 ? ':' : ':0') + s
 			}
-
-			let s = Math.floor(file.duration)
-			return (s - (s %= 60)) / 60 + (s > 9 ? ':' : ':0') + s
+			return ''
 		},
 		isAudio() {
 			return this.room.lastMessage.files
