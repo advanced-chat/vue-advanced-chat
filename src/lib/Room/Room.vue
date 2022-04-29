@@ -136,6 +136,7 @@
 			:show-footer="showFooter"
 			:accepted-files="acceptedFiles"
 			:textarea-action-enabled="textareaActionEnabled"
+			:textarea-options="textareaOptions"
 			:user-tags-enabled="userTagsEnabled"
 			:emojis-suggestion-enabled="emojisSuggestionEnabled"
 			:templates-text="templatesText"
@@ -207,6 +208,7 @@ export default {
 		loadingRooms: { type: Boolean, required: true },
 		roomInfoEnabled: { type: Boolean, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
+		textareaOptions: { type: Object, required: true },
 		userTagsEnabled: { type: Boolean, required: true },
 		emojisSuggestionEnabled: { type: Boolean, required: true },
 		scrollDistance: { type: Number, required: true },

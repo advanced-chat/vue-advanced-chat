@@ -102,12 +102,13 @@
 				}"
 				@input="onChangeInput"
 				@keydown.esc="escapeTextarea"
-				@keydown.enter.exact.prevent="selectItem"
+				@keydown.enter.exact="selectItem"
 				@paste="onPasteImage"
 				@keydown.tab.exact.prevent=""
 				@keydown.tab="selectItem"
 				@keydown.up.exact.prevent=""
 				@keydown.up="updateActiveUpOrDown(-1)"
+				@keydown.enter.shift.exact="breakLine"
 				@keydown.down.exact.prevent=""
 				@keydown.down="updateActiveUpOrDown(1)"
 			/>
@@ -235,6 +236,7 @@ export default {
 		showFooter: { type: Boolean, required: true },
 		acceptedFiles: { type: String, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
+		textareaOptions: { type: Object, required: true },
 		userTagsEnabled: { type: Boolean, required: true },
 		emojisSuggestionEnabled: { type: Boolean, required: true },
 		templatesText: { type: Array, default: null },
@@ -333,7 +335,10 @@ export default {
 		const isMobile = detectMobile()
 
 		this.getTextareaRef().addEventListener('keyup', e => {
-			if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
+			let send = this.textareaOptions.shiftEnterToSend
+				? e.shiftKey
+				: !e.shiftKey
+			if (e.key === 'Enter' && send && !this.fileDialog) {
 				if (isMobile) {
 					this.message = this.message + '\n'
 					setTimeout(() => this.onChangeInput())
@@ -434,13 +439,28 @@ export default {
 				this.activeUpOrDownTemplatesText = direction
 			}
 		},
-		selectItem() {
+		selectItem(e) {
 			if (this.filteredEmojis.length) {
 				this.selectEmojiItem = true
 			} else if (this.filteredUsersTag.length) {
 				this.selectUsersTagItem = true
 			} else if (this.filteredTemplatesText.length) {
 				this.selectTemplatesTextItem = true
+			}
+
+			if (
+				e.key === 'Enter' &&
+				(!this.textareaOptions.shiftEnterToSend ||
+					this.filteredEmojis.length ||
+					this.filteredUsersTag.length ||
+					this.filteredTemplatesText.length)
+			) {
+				e.preventDefault()
+			}
+		},
+		breakLine(e) {
+			if (this.textareaOptions.shiftEnterToSend) {
+				e.preventDefault()
 			}
 		},
 		selectEmoji(emoji) {

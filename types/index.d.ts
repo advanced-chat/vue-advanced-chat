@@ -121,6 +121,8 @@ export interface AutoScroll {
 
 export type UsernameOptions = { minUsers: number; currentUser: StringNumber }
 
+export type TextareaOptions = { shiftEnterToSend: boolean }
+
 export interface Slots {
 	'rooms-header': VNode[]
 	'room-list-item': VNode[]
@@ -194,6 +196,7 @@ export interface Props {
 	'single-room'?: boolean
 	'accepted-files'?: string
 	'username-options'?: UsernameOptions
+	'textarea-options'?: TextareaOptions
 }
 
 export interface AdvancedChatOptions {
