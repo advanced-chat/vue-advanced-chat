@@ -162,12 +162,12 @@ export interface Slots {
 export interface Props {
 	'current-user-id': StringNumber
 	rooms: Rooms
-	'rooms-order': 'desc' | 'asc'
 	messages: Messages
-	height?: string
-	theme?: 'light' | 'dark'
-	styles?: Record<string, Record<string, string>>
-	'loading-rooms'?: boolean
+  height?: string
+  theme?: 'light' | 'dark'
+  styles?: Record<string, Record<string, string>>
+  'rooms-order'?: 'desc' | 'asc'
+  'loading-rooms'?: boolean
 	'rooms-loaded'?: boolean
 	'room-id'?: StringNumber
 	'load-first-room'?: boolean
