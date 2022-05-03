@@ -147,6 +147,7 @@
 			:init-edit-message="initEditMessage"
 			@update-edited-message-id="editedMessageId = $event"
 			@edit-message="$emit('edit-message', $event)"
+			@reset-message="$emit('reset-message', $event)"
 			@send-message="$emit('send-message', $event)"
 			@typing-message="$emit('typing-message', $event)"
 			@textarea-action-handler="$emit('textarea-action-handler', $event)"
@@ -220,6 +221,7 @@ export default {
 		'menu-action-handler',
 		'message-selection-action-handler',
 		'edit-message',
+		'reset-message',
 		'send-message',
 		'delete-message',
 		'message-action-handler',
