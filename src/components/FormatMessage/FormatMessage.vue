@@ -47,12 +47,14 @@
 						</div>
 					</template>
 					<template v-else>
-						<span>{{ message.value }}</span>
+						<span :class="{ 'vac-emoji-message': containsOnlyEmojis }">
+							{{ message.value }}
+						</span>
 					</template>
 				</component>
 			</div>
 		</div>
-		<div v-else>
+		<div v-else :class="{ 'vac-emoji-message': containsOnlyEmojis }">
 			{{ formattedContent }}
 		</div>
 	</div>
@@ -102,6 +104,17 @@ export default {
 			})
 
 			return message
+		},
+		containsOnlyEmojis() {
+			const onlyEmojis = this.content.replace(
+				new RegExp('[\u0000-\u1eeff]', 'g'),
+				''
+			)
+			const visibleChars = this.content.replace(
+				new RegExp('[\n\rs]+|( )+', 'g'),
+				''
+			)
+			return onlyEmojis.length === visibleChars.length
 		},
 		formattedContent() {
 			return this.formatTags(this.content)
