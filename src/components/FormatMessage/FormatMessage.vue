@@ -47,16 +47,14 @@
 						</div>
 					</template>
 					<template v-else>
-						<span :class="{ 'vac-emoji-message': containsOnlyEmojis }">
+						<span v-html="message.value">
 							{{ message.value }}
 						</span>
 					</template>
 				</component>
 			</div>
 		</div>
-		<div v-else :class="{ 'vac-emoji-message': containsOnlyEmojis }">
-			{{ formattedContent }}
-		</div>
+		<div v-else v-html="formattedContent" />
 	</div>
 </template>
 
@@ -101,22 +99,10 @@ export default {
 				m.multiline = this.checkType(m, 'multiline-code')
 				m.tag = this.checkType(m, 'tag')
 				m.image = this.checkImageType(m)
+				m.value = this.replaceEmojiByElement(m.value)
 			})
 
 			return message
-		},
-		containsOnlyEmojis() {
-			if (this.singleLine) return false
-
-			const onlyEmojis = this.content.replace(
-				new RegExp('[\u0000-\u1eeff]', 'g'),
-				''
-			)
-			const visibleChars = this.content.replace(
-				new RegExp('[\n\rs]+|( )+', 'g'),
-				''
-			)
-			return onlyEmojis.length === visibleChars.length
 		},
 		formattedContent() {
 			return this.formatTags(this.content)
@@ -183,6 +169,30 @@ export default {
 				)
 				this.$emit('open-user-tag', user)
 			}
+		},
+		replaceEmojiByElement(value) {
+			let emojiSize
+			if (this.singleLine) {
+				emojiSize = 16
+			} else {
+				const onlyEmojis = this.containsOnlyEmojis()
+				emojiSize = onlyEmojis ? 28 : 20
+			}
+
+			return value.replaceAll(/\p{Emoji}/gu, v => {
+				return `<span style="font-size: ${emojiSize}px">${v}</span>`
+			})
+		},
+		containsOnlyEmojis() {
+			const onlyEmojis = this.content.replace(
+				new RegExp('[\u0000-\u1eeff]', 'g'),
+				''
+			)
+			const visibleChars = this.content.replace(
+				new RegExp('[\n\rs]+|( )+', 'g'),
+				''
+			)
+			return onlyEmojis.length === visibleChars.length
 		}
 	}
 }
