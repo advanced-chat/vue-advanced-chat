@@ -106,6 +106,8 @@ export default {
 			return message
 		},
 		containsOnlyEmojis() {
+			if (this.singleLine) return false
+
 			const onlyEmojis = this.content.replace(
 				new RegExp('[\u0000-\u1eeff]', 'g'),
 				''
