@@ -246,7 +246,7 @@ fetchMessages({ room, options }) {
 | `link-options`(19)                  | Object           | -        | `{ disabled: false, target: '_blank', rel: null }`                                                                |
 | `room-info-enabled` (20)            | Boolean          | -        | `false`                                                                                                           |
 | `textarea-action-enabled`(21)       | Boolean          | -        | `false`                                                                                                           |
-| `textarea-options`(28)                  | Object           | -        | `{ shiftEnterToSend: false }`                                                                |
+| `textarea-options`(28)              | Object           | -        | `{ shiftEnterToSend: false }`                                                                                     |
 | `user-tags-enabled`                 | Boolean          | -        | `true`                                                                                                            |
 | `emojis-suggestion-enabled`         | Boolean          | -        | `true`                                                                                                            |
 | `media-preview-enabled`             | Boolean          | -        | `true`                                                                                                            |

@@ -335,10 +335,10 @@ export default {
 		const isMobile = detectMobile()
 
 		this.getTextareaRef().addEventListener('keyup', e => {
-			let send = this.textareaOptions.shiftEnterToSend
+			const sendEnabled = this.textareaOptions.shiftEnterToSend
 				? e.shiftKey
 				: !e.shiftKey
-			if (e.key === 'Enter' && send && !this.fileDialog) {
+			if (e.key === 'Enter' && sendEnabled && !this.fileDialog) {
 				if (isMobile) {
 					this.message = this.message + '\n'
 					setTimeout(() => this.onChangeInput())
