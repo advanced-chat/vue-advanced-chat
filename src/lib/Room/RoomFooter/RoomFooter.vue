@@ -339,7 +339,6 @@ export default {
 				!e.shiftKey &&
 				!this.fileDialog
 			) {
-				console.log('keyup', e.isComposing)
 				if (isMobile) {
 					this.message = this.message + '\n'
 					setTimeout(() => this.onChangeInput())
