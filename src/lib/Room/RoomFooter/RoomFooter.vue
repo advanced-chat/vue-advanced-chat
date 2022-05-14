@@ -331,18 +331,15 @@ export default {
 
 	mounted() {
 		const isMobile = detectMobile()
+		let isComposed = true
 
 		this.getTextareaRef().addEventListener('keyup', e => {
-			if (
-				e.key === 'Enter' &&
-				e.isComposing &&
-				!e.shiftKey &&
-				!this.fileDialog
-			) {
+			if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
 				if (isMobile) {
 					this.message = this.message + '\n'
 					setTimeout(() => this.onChangeInput())
 				} else if (
+					isComposed &&
 					!this.filteredEmojis.length &&
 					!this.filteredUsersTag.length &&
 					!this.filteredTemplatesText.length
@@ -350,6 +347,7 @@ export default {
 					this.sendMessage()
 				}
 			}
+			isComposed = !e.isComposing
 
 			setTimeout(() => {
 				this.updateFooterLists()
