@@ -179,9 +179,12 @@ export default {
 				emojiSize = onlyEmojis ? 28 : 20
 			}
 
-			return value.replaceAll(/\p{Emoji}/gu, v => {
-				return `<span style="font-size: ${emojiSize}px">${v}</span>`
-			})
+			return value.replaceAll(
+				/[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{1F9B0}-\u{1F9B3}]/gu,
+				v => {
+					return `<span style="font-size: ${emojiSize}px">${v}</span>`
+				}
+			)
 		},
 		containsOnlyEmojis() {
 			const onlyEmojis = this.content.replace(
