@@ -65,7 +65,7 @@
 		"node-sass": "^6.0.1",
 		"rimraf": "^3.0.2",
 		"sass-loader": "^10.1.1",
-		"typescript": "^4.0.5",
+		"typescript": "4.6.x",
 		"vue": "^2.6.14",
 		"vue-jest": "^3.0.7",
 		"vue-template-compiler": "^2.6.14"
