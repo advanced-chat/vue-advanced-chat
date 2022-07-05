@@ -235,6 +235,7 @@ export default {
 		showFooter: { type: Boolean, required: true },
 		acceptedFiles: { type: String, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
+		textareaAutoFocus: { type: Boolean, required: true },
 		userTagsEnabled: { type: Boolean, required: true },
 		emojisSuggestionEnabled: { type: Boolean, required: true },
 		templatesText: { type: Array, default: null },
@@ -792,7 +793,10 @@ export default {
 			this.files = []
 			this.emojiOpened = false
 			this.preventKeyboardFromClosing()
-			setTimeout(() => this.focusTextarea(disableMobileFocus))
+
+			if (this.textareaAutoFocus || !initRoom) {
+				setTimeout(() => this.focusTextarea(disableMobileFocus))
+			}
 		},
 		resetTextareaSize() {
 			if (this.getTextareaRef()) {

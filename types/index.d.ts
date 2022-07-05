@@ -163,11 +163,11 @@ export interface Props {
 	'current-user-id': StringNumber
 	rooms: Rooms
 	messages: Messages
-  height?: string
-  theme?: 'light' | 'dark'
-  styles?: Record<string, Record<string, string>>
-  'rooms-order'?: 'desc' | 'asc'
-  'loading-rooms'?: boolean
+	height?: string
+	theme?: 'light' | 'dark'
+	styles?: Record<string, Record<string, string>>
+	'rooms-order'?: 'desc' | 'asc'
+	'loading-rooms'?: boolean
 	'rooms-loaded'?: boolean
 	'room-id'?: StringNumber
 	'load-first-room'?: boolean
@@ -178,6 +178,8 @@ export interface Props {
 	'message-actions'?: MessageActions
 	'message-selection-actions'?: CustomActions
 	'templates-text'?: TemplatesText
+	'textarea-action-enabled'?: boolean
+	'textarea-auto-focus'?: boolean
 	'auto-scroll'?: AutoScroll
 	'show-search'?: boolean
 	'show-add-room'?: boolean
