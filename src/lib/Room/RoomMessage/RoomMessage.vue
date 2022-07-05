@@ -9,17 +9,19 @@
 		</div>
 
 		<div v-if="message.system" class="vac-card-info vac-card-system">
-			<format-message
-				:content="message.content"
-				:users="roomUsers"
-				:text-formatting="textFormatting"
-				:link-options="linkOptions"
-				@open-user-tag="openUserTag"
-			>
-				<template v-for="(i, name) in $scopedSlots" #[name]="data">
-					<slot :name="name" v-bind="data" />
-				</template>
-			</format-message>
+			<slot name="system-message" v-bind="{ message }">
+				<format-message
+					:content="message.content"
+					:users="roomUsers"
+					:text-formatting="textFormatting"
+					:link-options="linkOptions"
+					@open-user-tag="openUserTag"
+				>
+					<template v-for="(i, name) in $scopedSlots" #[name]="data">
+						<slot :name="name" v-bind="data" />
+					</template>
+				</format-message>
+			</slot>
 		</div>
 
 		<div
@@ -191,9 +193,7 @@
 						}"
 						@click="$emit('open-failed-message', { message })"
 					>
-						<div class="vac-failure-text">
-							!
-						</div>
+						<div class="vac-failure-text">!</div>
 					</div>
 				</slot>
 				<div
