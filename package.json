@@ -31,7 +31,7 @@
 	"scripts": {
 		"serve": "vue-cli-service serve",
 		"build": "npm run clean:lib && npm run build:lib && npm run build:wc",
-		"clean:lib": "rimraf dist",
+		"clean:lib": "rm -rf dist/*.js && rm -rf dist/*.map && rm -rf dist/*.css && rm -rf dist/*.html",
 		"build:lib": "vue-cli-service build --target lib --no-clean --name vue-advanced-chat ./src/lib/index.js",
 		"build:wc": "vue-cli-service build --target wc --no-clean --name vue-advanced-chat ./src/lib/ChatWindow.vue",
 		"prepublish": "npm run lint && npm run test && npm run build",
@@ -63,7 +63,6 @@
 		"eslint-plugin-vue": "^7.14.0",
 		"jest": "^23.6.0",
 		"node-sass": "^6.0.1",
-		"rimraf": "^3.0.2",
 		"sass-loader": "^10.1.1",
 		"typescript": "4.6.x",
 		"vue": "^2.6.14",
