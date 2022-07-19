@@ -343,6 +343,7 @@ export default {
 				...message,
 				...{
 					content,
+					senderId: message.sender_id,
 					timestamp: formatTimestamp(
 						new Date(message.timestamp.seconds * 1000),
 						message.timestamp
@@ -352,7 +353,8 @@ export default {
 					seen: message.sender_id === this.currentUserId ? message.seen : null,
 					new:
 						message.sender_id !== this.currentUserId &&
-						(!message.seen || !message.seen[this.currentUserId])
+						(!message.seen || !message.seen[this.currentUserId]),
+					lastMessage: { ...message.lastMessage, senderId: message.sender_id }
 				}
 			}
 		},
@@ -447,7 +449,8 @@ export default {
 					username: room.users.find(user => message.sender_id === user._id)
 						?.username,
 					// avatar: senderUser ? senderUser.avatar : null,
-					distributed: true
+					distributed: true,
+					lastMessage: { ...message.lastMessage, senderId: message.sender_id }
 				}
 			}
 

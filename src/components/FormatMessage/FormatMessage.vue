@@ -47,14 +47,14 @@
 						</div>
 					</template>
 					<template v-else>
-						<span>{{ message.value }}</span>
+						<span v-html="message.value">
+							{{ message.value }}
+						</span>
 					</template>
 				</component>
 			</div>
 		</div>
-		<div v-else>
-			{{ formattedContent }}
-		</div>
+		<div v-else v-html="formattedContent" />
 	</div>
 </template>
 
@@ -99,6 +99,7 @@ export default {
 				m.multiline = this.checkType(m, 'multiline-code')
 				m.tag = this.checkType(m, 'tag')
 				m.image = this.checkImageType(m)
+				m.value = this.replaceEmojiByElement(m.value)
 			})
 
 			return message
@@ -168,6 +169,33 @@ export default {
 				)
 				this.$emit('open-user-tag', user)
 			}
+		},
+		replaceEmojiByElement(value) {
+			let emojiSize
+			if (this.singleLine) {
+				emojiSize = 16
+			} else {
+				const onlyEmojis = this.containsOnlyEmojis()
+				emojiSize = onlyEmojis ? 28 : 20
+			}
+
+			return value.replaceAll(
+				/[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{1F9B0}-\u{1F9B3}]/gu,
+				v => {
+					return `<span style="font-size: ${emojiSize}px">${v}</span>`
+				}
+			)
+		},
+		containsOnlyEmojis() {
+			const onlyEmojis = this.content.replace(
+				new RegExp('[\u0000-\u1eeff]', 'g'),
+				''
+			)
+			const visibleChars = this.content.replace(
+				new RegExp('[\n\rs]+|( )+', 'g'),
+				''
+			)
+			return onlyEmojis.length === visibleChars.length
 		}
 	}
 }

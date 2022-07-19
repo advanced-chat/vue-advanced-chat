@@ -58,6 +58,7 @@
 				:loading-rooms="loadingRooms"
 				:room-info-enabled="roomInfoEnabled"
 				:textarea-action-enabled="textareaActionEnabled"
+				:textarea-auto-focus="textareaAutoFocus"
 				:user-tags-enabled="userTagsEnabled"
 				:emojis-suggestion-enabled="emojisSuggestionEnabled"
 				:scroll-distance="scrollDistance"
@@ -188,6 +189,7 @@ export default {
 		},
 		roomInfoEnabled: { type: Boolean, default: false },
 		textareaActionEnabled: { type: Boolean, default: false },
+		textareaAutoFocus: { type: Boolean, default: true },
 		userTagsEnabled: { type: Boolean, default: true },
 		emojisSuggestionEnabled: { type: Boolean, default: true },
 		roomMessage: { type: String, default: '' },

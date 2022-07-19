@@ -235,6 +235,7 @@ export default {
 		showFooter: { type: Boolean, required: true },
 		acceptedFiles: { type: String, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
+		textareaAutoFocus: { type: Boolean, required: true },
 		userTagsEnabled: { type: Boolean, required: true },
 		emojisSuggestionEnabled: { type: Boolean, required: true },
 		templatesText: { type: Array, default: null },
@@ -331,6 +332,7 @@ export default {
 
 	mounted() {
 		const isMobile = detectMobile()
+		let isComposed = true
 
 		this.getTextareaRef().addEventListener('keyup', e => {
 			if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
@@ -338,6 +340,7 @@ export default {
 					this.message = this.message + '\n'
 					setTimeout(() => this.onChangeInput())
 				} else if (
+					isComposed &&
 					!this.filteredEmojis.length &&
 					!this.filteredUsersTag.length &&
 					!this.filteredTemplatesText.length
@@ -345,6 +348,7 @@ export default {
 					this.sendMessage()
 				}
 			}
+			isComposed = !e.isComposing
 
 			setTimeout(() => {
 				this.updateFooterLists()
@@ -789,7 +793,10 @@ export default {
 			this.files = []
 			this.emojiOpened = false
 			this.preventKeyboardFromClosing()
-			setTimeout(() => this.focusTextarea(disableMobileFocus))
+
+			if (this.textareaAutoFocus || !initRoom) {
+				setTimeout(() => this.focusTextarea(disableMobileFocus))
+			}
 		},
 		resetTextareaSize() {
 			if (this.getTextareaRef()) {

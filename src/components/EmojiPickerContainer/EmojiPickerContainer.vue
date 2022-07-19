@@ -113,34 +113,33 @@ export default {
 			)
 		},
 		setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
-			setTimeout(() => {
-				const mobileSize = innerWidth < 500 || innerHeight < 700
-				const roomFooterRef = document.getElementById('room-footer')
+			const mobileSize = innerWidth < 500 || innerHeight < 700
+			const roomFooterRef = document.getElementById('room-footer')
 
-				if (!roomFooterRef) {
-					if (mobileSize) this.emojiPickerRight = '-50px'
-					return
-				}
+			if (!roomFooterRef) {
+				if (mobileSize) this.emojiPickerRight = '-50px'
+				return
+			}
 
-				if (mobileSize) {
-					this.emojiPickerRight = innerWidth / 2 - 150 + 'px'
-					this.emojiPickerTop = 100
-					this.emojiPickerHeight = innerHeight - 200
-				} else {
-					const roomFooterTop = roomFooterRef.getBoundingClientRect().top
-					const pickerTopPosition =
-						roomFooterTop - clientY > this.emojiPickerHeight - 50
+			if (mobileSize) {
+				this.emojiPickerRight =
+					innerWidth / 2 - (this.positionTop ? 200 : 150) + 'px'
+				this.emojiPickerTop = 100
+				this.emojiPickerHeight = innerHeight - 200
+			} else {
+				const roomFooterTop = roomFooterRef.getBoundingClientRect().top
+				const pickerTopPosition =
+					roomFooterTop - clientY > this.emojiPickerHeight - 50
 
-					if (pickerTopPosition) this.emojiPickerTop = clientY + 10
-					else this.emojiPickerTop = clientY - this.emojiPickerHeight - 10
+				if (pickerTopPosition) this.emojiPickerTop = clientY + 10
+				else this.emojiPickerTop = clientY - this.emojiPickerHeight - 10
 
-					this.emojiPickerRight = this.positionTop
-						? '-50px'
-						: this.positionRight
-						? '60px'
-						: ''
-				}
-			})
+				this.emojiPickerRight = this.positionTop
+					? '0px'
+					: this.positionRight
+					? '60px'
+					: ''
+			}
 		}
 	}
 }

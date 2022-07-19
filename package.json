@@ -1,6 +1,6 @@
 {
 	"name": "vue-advanced-chat",
-	"version": "1.5.3",
+	"version": "1.5.7",
 	"license": "MIT",
 	"description": "A beautiful chat rooms component made with Vue.js - compatible with Vue, React & Angular",
 	"author": {
@@ -31,7 +31,7 @@
 	"scripts": {
 		"serve": "vue-cli-service serve",
 		"build": "npm run clean:lib && npm run build:lib",
-		"clean:lib": "rimraf dist",
+		"clean:lib": "rm -rf dist/*.js && rm -rf dist/*.map && rm -rf dist/*.css && rm -rf dist/*.html",
 		"build:lib": "vue-cli-service build --target lib --no-clean --name vue-advanced-chat ./src/lib/index.js",
 		"build:wc": "vue-cli-service build --target wc --no-clean --name vue-advanced-chat ./src/lib/ChatWindow.vue",
 		"prepublish": "npm run lint && npm run build",
@@ -66,9 +66,8 @@
 		"eslint-plugin-vue": "^7.14.0",
 		"jest": "^27.4.7",
 		"node-sass": "^6.0.1",
-		"rimraf": "^3.0.2",
 		"sass-loader": "^10.1.1",
-		"typescript": "^4.0.5",
+		"typescript": "4.6.x",
 		"vue": "^3.2.22",
 		"vue-loader": "^16.8.3"
 	},
@@ -76,7 +75,7 @@
 		"vue": "^3.2.22"
 	},
 	"dependencies": {
-		"emoji-picker-element": "^1.8.1",
+		"emoji-picker-element": "1.12.1",
 		"linkifyjs": "^2.1.9"
 	},
 	"optionalDependencies": {
