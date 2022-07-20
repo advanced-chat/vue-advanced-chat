@@ -17,7 +17,7 @@
 
 <script>
 export default {
-	name: 'Loader',
+	name: 'AppLoader',
 
 	props: {
 		show: { type: Boolean, default: false },

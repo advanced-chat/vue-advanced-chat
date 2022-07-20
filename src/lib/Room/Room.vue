@@ -168,7 +168,7 @@ import RoomFooter from './RoomFooter/RoomFooter'
 import RoomMessage from './RoomMessage/RoomMessage'
 
 export default {
-	name: 'Room',
+	name: 'ChatRoom',
 	components: {
 		Loader,
 		SvgIcon,
