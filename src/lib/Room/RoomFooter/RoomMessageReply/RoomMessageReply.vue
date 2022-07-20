@@ -76,11 +76,11 @@ import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
 
 import AudioPlayer from '../../RoomMessage/AudioPlayer/AudioPlayer'
 
-const {
+import {
 	isAudioFile,
 	isImageFile,
 	isVideoFile
-} = require('../../../../utils/media-file')
+} from '../../../../utils/media-file'
 
 export default {
 	name: 'RoomMessageReply',

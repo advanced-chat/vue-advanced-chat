@@ -82,6 +82,7 @@ import * as firestoreService from '@/database/firestore'
 import * as firebaseService from '@/database/firebase'
 import * as storageService from '@/database/storage'
 import { parseTimestamp, formatTimestamp } from '@/utils/dates'
+import logoAvatar from '@/assets/logo.png'
 
 import ChatWindow from './../../src/lib/ChatWindow'
 // import ChatWindow, { Rooms } from 'vue-advanced-chat'
@@ -268,7 +269,7 @@ export default {
 				const roomAvatar =
 					roomContacts.length === 1 && roomContacts[0].avatar
 						? roomContacts[0].avatar
-						: require('@/assets/logo.png')
+						: logoAvatar
 
 				formattedRooms.push({
 					...room,

@@ -103,10 +103,10 @@ import MediaPreview from './MediaPreview/MediaPreview'
 
 import locales from '../locales'
 import { defaultThemeStyles, cssThemeVars } from '../themes'
-const {
+import {
 	roomsValidation,
 	partcipantsValidation
-} = require('../utils/data-validation')
+} from '../utils/data-validation'
 
 export default {
 	name: 'ChatContainer',

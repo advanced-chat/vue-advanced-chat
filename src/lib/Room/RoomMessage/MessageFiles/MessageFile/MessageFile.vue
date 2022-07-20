@@ -79,7 +79,7 @@ import Loader from '../../../../../components/Loader/Loader'
 import ProgressBar from '../../../../../components/ProgressBar/ProgressBar'
 import SvgIcon from '../../../../../components/SvgIcon/SvgIcon'
 
-const { isImageFile, isVideoFile } = require('../../../../../utils/media-file')
+import { isImageFile, isVideoFile } from '../../../../../utils/media-file'
 
 export default {
 	name: 'MessageFile',

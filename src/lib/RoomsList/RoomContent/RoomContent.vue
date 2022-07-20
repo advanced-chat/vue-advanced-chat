@@ -120,7 +120,7 @@ import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 
 import vClickOutside from '../../../utils/on-click-outside'
 import typingText from '../../../utils/typing-text'
-const { isAudioFile } = require('../../../utils/media-file')
+import { isAudioFile } from '../../../utils/media-file'
 
 export default {
 	name: 'RoomsContent',

@@ -202,7 +202,7 @@ import vClickOutside from '../../../utils/on-click-outside'
 import filteredItems from '../../../utils/filter-items'
 import Recorder from '../../../utils/recorder'
 
-const { detectMobile } = require('../../../utils/mobile-detection')
+import { detectMobile } from '../../../utils/mobile-detection'
 
 export default {
 	name: 'RoomFooter',

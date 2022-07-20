@@ -1,7 +1,7 @@
 module.exports = {
 	root: true,
 	env: {
-		node: true
+		es2021: true
 	},
 	extends: ['standard', 'plugin:vue/vue3-recommended'],
 	rules: {
@@ -32,8 +32,5 @@ module.exports = {
 				}
 			}
 		]
-	},
-	parserOptions: {
-		parser: 'babel-eslint'
 	}
 }

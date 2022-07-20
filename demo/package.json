@@ -5,10 +5,11 @@
 	"description": "A beautiful chat rooms component made with Vue.js",
 	"author": "Antoine Dupont <antoindupontdev@gmail.com>",
 	"scripts": {
-		"serve": "vue-cli-service serve",
+		"dev": "vite",
+		"build": "vite build",
+		"serve": "vite preview",
 		"s": "npm run serve",
-		"build": "vue-cli-service build",
-		"lint": "vue-cli-service lint",
+		"lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
 		"reset": "rm -rf node_modules && rm -rf package-lock.json && npm i",
 		"reset-all": "npm run reset && cd .. && npm run reset",
 		"gpages": "sh deploy.sh",
@@ -16,20 +17,20 @@
 	},
 	"dependencies": {
 		"firebase": "^9.4.0",
+		"lamejs": "^1.2.1",
 		"vue": "^3.2.37",
 		"vue-advanced-chat": "https://github.com/antoine92190/vue-advanced-chat/tarball/next"
 	},
 	"devDependencies": {
-		"@vue/cli-plugin-babel": "~5.0.0",
-		"@vue/cli-plugin-eslint": "~5.0.0",
-		"@vue/cli-service": "~5.0.0",
+		"@babel/core": "^7.12.16",
+		"@vitejs/plugin-vue": "^1.10.2",
 		"@vue/compiler-sfc": "^3.2.22",
 		"@vue/eslint-config-standard": "^4.0.0",
 		"babel-eslint": "^10.0.3",
 		"eslint": "^7.32.0",
 		"eslint-plugin-vue": "^8.0.3",
 		"node-sass": "^6.0.1",
-		"sass-loader": "^10.1.1",
+		"vite": "^2.9.14",
 		"vue-loader": "^16.8.3"
 	}
 }

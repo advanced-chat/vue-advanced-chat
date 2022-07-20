@@ -65,7 +65,7 @@ import ProgressBar from '../../../../components/ProgressBar/ProgressBar'
 
 import MessageFile from './MessageFile/MessageFile'
 
-const { isImageVideoFile } = require('../../../../utils/media-file')
+import { isImageVideoFile } from '../../../../utils/media-file'
 
 export default {
 	name: 'MessageFiles',

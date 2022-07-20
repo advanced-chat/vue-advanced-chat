@@ -1,4 +1,4 @@
-const linkify = require('linkifyjs')
+import * as linkify from 'linkifyjs'
 // require('linkifyjs/plugins/hashtag')(linkify)
 
 export default (text, doLinkify, textFormatting) => {

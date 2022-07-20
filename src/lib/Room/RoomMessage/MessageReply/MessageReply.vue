@@ -69,11 +69,11 @@ import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
 
 import AudioPlayer from '../AudioPlayer/AudioPlayer'
 
-const {
+import {
 	isAudioFile,
 	isImageFile,
 	isVideoFile
-} = require('../../../../utils/media-file')
+} from '../../../../utils/media-file'
 
 export default {
 	name: 'MessageReply',

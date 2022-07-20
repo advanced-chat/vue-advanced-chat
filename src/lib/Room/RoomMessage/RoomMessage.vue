@@ -222,8 +222,8 @@ import MessageActions from './MessageActions/MessageActions'
 import MessageReactions from './MessageReactions/MessageReactions'
 import AudioPlayer from './AudioPlayer/AudioPlayer'
 
-const { messagesValidation } = require('../../../utils/data-validation')
-const { isAudioFile } = require('../../../utils/media-file')
+import { messagesValidation } from '../../../utils/data-validation'
+import { isAudioFile } from '../../../utils/media-file'
 
 export default {
 	name: 'RoomMessage',
