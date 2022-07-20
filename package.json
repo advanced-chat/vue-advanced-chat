@@ -26,8 +26,16 @@
 		"url": "https://github.com/antoine92190/vue-advanced-chat/issues"
 	},
 	"homepage": "https://github.com/antoine92190/vue-advanced-chat#readme",
-	"main": "./dist/vue-advanced-chat.common.js",
-	"unpkg": "./dist/vue-advanced-chat.min.js",
+	"main": "./dist/vue-advanced-chat.umd.js",
+	"module": "./dist/vue-advanced-chat.es.js",
+	"exports": {
+		".": {
+			"import": "./dist/vue-advanced-chat.es.js",
+			"require": "./dist/vue-advanced-chat.umd.js"
+		}
+	},
+	"unpkg": "./dist/vue-advanced-chat.umd.js",
+	"jsdelivr": "./dist/vue-advanced-chat.umd.js",
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",

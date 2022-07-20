@@ -9292,19 +9292,19 @@ function PsyModel$1() {
   };
 }
 var PsyModel_1 = PsyModel$1;
-function MPEGMode$3(ordinal) {
+function MPEGMode$4(ordinal) {
   var _ordinal = ordinal;
   this.ordinal = function() {
     return _ordinal;
   };
 }
-MPEGMode$3.STEREO = new MPEGMode$3(0);
-MPEGMode$3.JOINT_STEREO = new MPEGMode$3(1);
-MPEGMode$3.DUAL_CHANNEL = new MPEGMode$3(2);
-MPEGMode$3.MONO = new MPEGMode$3(3);
-MPEGMode$3.NOT_SET = new MPEGMode$3(4);
-var MPEGMode_1 = MPEGMode$3;
-var MPEGMode$2 = MPEGMode_1;
+MPEGMode$4.STEREO = new MPEGMode$4(0);
+MPEGMode$4.JOINT_STEREO = new MPEGMode$4(1);
+MPEGMode$4.DUAL_CHANNEL = new MPEGMode$4(2);
+MPEGMode$4.MONO = new MPEGMode$4(3);
+MPEGMode$4.NOT_SET = new MPEGMode$4(4);
+var MPEGMode_1 = MPEGMode$4;
+var MPEGMode$3 = MPEGMode_1;
 function LameGlobalFlags$1() {
   this.class_id = 0;
   this.num_samples = 0;
@@ -9318,7 +9318,7 @@ function LameGlobalFlags$1() {
   this.bWriteVbrTag = false;
   this.decode_only = false;
   this.quality = 0;
-  this.mode = MPEGMode$2.STEREO;
+  this.mode = MPEGMode$3.STEREO;
   this.force_ms = false;
   this.free_format = false;
   this.findReplayGain = false;
@@ -16205,6 +16205,7 @@ var CBRNewIterationLoop = CBRNewIterationLoop_1;
 var BitStream$2 = BitStream_1;
 var Tables$1 = Tables_1;
 var Encoder$1 = Encoder_1;
+var MPEGMode$2 = MPEGMode_1;
 function Lame$2() {
   var self = this;
   var LAME_MAXALBUMART = 128 * 1024;
@@ -16266,7 +16267,7 @@ function Lame$2() {
     var gfc;
     gfp.class_id = LAME_ID;
     gfc = gfp.internal_flags = new LameInternalFlags$1();
-    gfp.mode = MPEGMode.NOT_SET;
+    gfp.mode = MPEGMode$2.NOT_SET;
     gfp.original = 1;
     gfp.in_samplerate = 44100;
     gfp.num_channels = 2;
@@ -16715,10 +16716,10 @@ function Lame$2() {
       gfc.rgdata = new ReplayGain();
     gfc.channels_in = gfp.num_channels;
     if (gfc.channels_in == 1)
-      gfp.mode = MPEGMode.MONO;
-    gfc.channels_out = gfp.mode == MPEGMode.MONO ? 1 : 2;
+      gfp.mode = MPEGMode$2.MONO;
+    gfc.channels_out = gfp.mode == MPEGMode$2.MONO ? 1 : 2;
     gfc.mode_ext = Encoder$1.MPG_MD_MS_LR;
-    if (gfp.mode == MPEGMode.MONO)
+    if (gfp.mode == MPEGMode$2.MONO)
       gfp.force_ms = false;
     if (gfp.VBR == VbrMode$3.vbr_off && gfp.VBR_mean_bitrate_kbps != 128 && gfp.brate == 0)
       gfp.brate = gfp.VBR_mean_bitrate_kbps;
@@ -16810,7 +16811,7 @@ function Lame$2() {
           }
         }
       }
-      if (gfp.mode == MPEGMode.MONO && (gfp.VBR == VbrMode$3.vbr_off || gfp.VBR == VbrMode$3.vbr_abr))
+      if (gfp.mode == MPEGMode$2.MONO && (gfp.VBR == VbrMode$3.vbr_off || gfp.VBR == VbrMode$3.vbr_abr))
         lowpass *= 1.5;
       gfp.lowpassfreq = lowpass | 0;
     }
@@ -16880,8 +16881,8 @@ function Lame$2() {
         gfp.compression_ratio = gfp.out_samplerate * 16 * gfc.channels_out / (1e3 * gfp.brate);
         break;
     }
-    if (gfp.mode == MPEGMode.NOT_SET) {
-      gfp.mode = MPEGMode.JOINT_STEREO;
+    if (gfp.mode == MPEGMode$2.NOT_SET) {
+      gfp.mode = MPEGMode$2.JOINT_STEREO;
     }
     if (gfp.highpassfreq > 0) {
       gfc.highpass1 = 2 * gfp.highpassfreq;
@@ -17064,7 +17065,7 @@ function Lame$2() {
     if (gfp.short_blocks == null) {
       gfp.short_blocks = ShortBlock$1.short_block_allowed;
     }
-    if (gfp.short_blocks == ShortBlock$1.short_block_allowed && (gfp.mode == MPEGMode.JOINT_STEREO || gfp.mode == MPEGMode.STEREO)) {
+    if (gfp.short_blocks == ShortBlock$1.short_block_allowed && (gfp.mode == MPEGMode$2.JOINT_STEREO || gfp.mode == MPEGMode$2.STEREO)) {
       gfp.short_blocks = ShortBlock$1.short_block_coupled;
     }
     if (gfp.quant_comp < 0)
@@ -19510,6 +19511,7 @@ function ID3Tag() {
   };
 }
 function Mp3Encoder$1(channels, samplerate, kbps) {
+  console.error("hello lib");
   if (arguments.length != 3) {
     console.error("WARN: Mp3Encoder(channels, samplerate, kbps) not specified");
     channels = 1;
@@ -19630,6 +19632,7 @@ class Mp3Encoder {
     this.bitRate = config.bitRate;
     this.sampleRate = config.sampleRate;
     this.dataBuffer = [];
+    console.log(Mp3Encoder_1);
     this.encoder = new Mp3Encoder_1(1, this.sampleRate, this.bitRate);
   }
   encode(arrayBuffer) {
