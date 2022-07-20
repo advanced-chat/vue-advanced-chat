@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-v-html -->
 <template>
 	<div
 		class="vac-format-message-wrapper"
@@ -48,9 +47,7 @@
 						</div>
 					</template>
 					<template v-else>
-						<span v-html="message.value">
-							{{ message.value }}
-						</span>
+						<span v-html="message.value" />
 					</template>
 				</component>
 			</div>
