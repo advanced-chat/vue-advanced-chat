@@ -1,4 +1,4 @@
-import { openBlock, createBlock, Transition, withCtx, createElementBlock, normalizeClass, renderSlot, normalizeProps, guardReactiveProps, createCommentVNode, createElementVNode, resolveComponent, Fragment, createVNode, renderList, resolveDynamicComponent, normalizeStyle, toDisplayString, resolveDirective, createTextVNode, withModifiers, withDirectives, createSlots, vShow, withKeys, mergeProps, TransitionGroup } from "vue";
+import { openBlock, createBlock, Transition, withCtx, createElementBlock, normalizeClass, renderSlot, normalizeProps, guardReactiveProps, createCommentVNode, createElementVNode, resolveComponent, Fragment, createVNode, renderList, resolveDynamicComponent, normalizeStyle, toDisplayString, resolveDirective, createTextVNode, withModifiers, withDirectives, createSlots, vShow, withKeys, mergeProps, TransitionGroup, defineCustomComponent } from "vue";
 var _export_sfc = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props) {
@@ -2818,7 +2818,7 @@ function insert(target, node, anchor) {
 function detach(node) {
   node.parentNode.removeChild(node);
 }
-function element(name) {
+function element$1(name) {
   return document.createElement(name);
 }
 function text(data) {
@@ -3331,7 +3331,7 @@ function create_each_block_4(key_1, ctx) {
     key: key_1,
     first: null,
     c() {
-      div = element("div");
+      div = element$1("div");
       t = text(t_value);
       attr(div, "id", div_id_value = "skintone-" + ctx[65]);
       attr(div, "class", div_class_value = "emoji hide-focus " + (ctx[65] === ctx[20] ? "active" : ""));
@@ -3390,8 +3390,8 @@ function create_each_block_3(key_1, ctx) {
     key: key_1,
     first: null,
     c() {
-      button = element("button");
-      div = element("div");
+      button = element$1("button");
+      div = element$1("div");
       t = text(t_value);
       attr(div, "class", "nav-emoji emoji");
       attr(button, "role", "tab");
@@ -3441,7 +3441,7 @@ function create_else_block_1(ctx) {
   let img_src_value;
   return {
     c() {
-      img = element("img");
+      img = element$1("img");
       attr(img, "class", "custom-emoji");
       if (!src_url_equal(img.src, img_src_value = ctx[63].url))
         attr(img, "src", img_src_value);
@@ -3501,7 +3501,7 @@ function create_each_block_2(key_1, ctx) {
     key: key_1,
     first: null,
     c() {
-      button = element("button");
+      button = element$1("button");
       if_block.c();
       attr(button, "role", button_role_value = ctx[4] ? "option" : "menuitem");
       attr(button, "aria-selected", button_aria_selected_value = ctx[4] ? ctx[65] == ctx[5] : "");
@@ -3576,9 +3576,9 @@ function create_each_block_1(key_1, ctx) {
     key: key_1,
     first: null,
     c() {
-      div0 = element("div");
+      div0 = element$1("div");
       t = text(t_value);
-      div1 = element("div");
+      div1 = element$1("div");
       for (let i = 0; i < each_blocks.length; i += 1) {
         each_blocks[i].c();
       }
@@ -3639,7 +3639,7 @@ function create_else_block(ctx) {
   let img_src_value;
   return {
     c() {
-      img = element("img");
+      img = element$1("img");
       attr(img, "class", "custom-emoji");
       if (!src_url_equal(img.src, img_src_value = ctx[63].url))
         attr(img, "src", img_src_value);
@@ -3696,7 +3696,7 @@ function create_each_block(key_1, ctx) {
     key: key_1,
     first: null,
     c() {
-      button = element("button");
+      button = element$1("button");
       if_block.c();
       attr(button, "role", "menuitem");
       attr(button, "aria-label", button_aria_label_value = ctx[28](ctx[63], ctx[8]));
@@ -3824,42 +3824,42 @@ function create_fragment(ctx) {
   }
   return {
     c() {
-      section = element("section");
-      div0 = element("div");
-      div4 = element("div");
-      div1 = element("div");
-      input = element("input");
-      label = element("label");
+      section = element$1("section");
+      div0 = element$1("div");
+      div4 = element$1("div");
+      div1 = element$1("div");
+      input = element$1("input");
+      label = element$1("label");
       t0 = text(t0_value);
-      span0 = element("span");
+      span0 = element$1("span");
       t1 = text(t1_value);
-      div2 = element("div");
-      button0 = element("button");
+      div2 = element$1("div");
+      button0 = element$1("button");
       t2 = text(ctx[21]);
-      span1 = element("span");
+      span1 = element$1("span");
       t3 = text(t3_value);
-      div3 = element("div");
+      div3 = element$1("div");
       for (let i = 0; i < each_blocks_3.length; i += 1) {
         each_blocks_3[i].c();
       }
-      div5 = element("div");
+      div5 = element$1("div");
       for (let i = 0; i < each_blocks_2.length; i += 1) {
         each_blocks_2[i].c();
       }
-      div7 = element("div");
-      div6 = element("div");
-      div8 = element("div");
+      div7 = element$1("div");
+      div6 = element$1("div");
+      div8 = element$1("div");
       t4 = text(ctx[18]);
-      div10 = element("div");
-      div9 = element("div");
+      div10 = element$1("div");
+      div9 = element$1("div");
       for (let i = 0; i < each_blocks_1.length; i += 1) {
         each_blocks_1[i].c();
       }
-      div11 = element("div");
+      div11 = element$1("div");
       for (let i = 0; i < each_blocks.length; i += 1) {
         each_blocks[i].c();
       }
-      button1 = element("button");
+      button1 = element$1("button");
       button1.textContent = "\u{1F600}";
       attr(div0, "class", "pad-top");
       attr(input, "id", "search");
@@ -23121,11 +23121,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ], 4);
 }
 var ChatWindow = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
-Object.defineProperty(ChatWindow, "install", {
-  configurable: false,
-  enumerable: false,
-  value(Vue) {
-    Vue.component("ChatWindow", ChatWindow);
-  }
-});
-export { ChatWindow as default };
+const element = defineCustomComponent(ChatWindow);
+defineCustomComponent.define("vue-advanced-chat", element);
