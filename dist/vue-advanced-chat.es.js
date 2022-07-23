@@ -23123,4 +23123,3 @@ function register() {
   customElements.define("vue-advanced-chat", VueAdvancedChat);
 }
 export { VueAdvancedChat, register };
-//# sourceMappingURL=vue-advanced-chat.es.js.map
