@@ -1,4 +1,5 @@
-import { openBlock, createBlock, Transition, withCtx, createElementBlock, normalizeClass, renderSlot, normalizeProps, guardReactiveProps, createCommentVNode, createElementVNode, resolveComponent, Fragment, createVNode, renderList, resolveDynamicComponent, normalizeStyle, toDisplayString, resolveDirective, createTextVNode, withModifiers, withDirectives, createSlots, vShow, withKeys, mergeProps, TransitionGroup, defineCustomComponent } from "vue";
+import { openBlock, createBlock, Transition, withCtx, createElementBlock, normalizeClass, renderSlot, normalizeProps, guardReactiveProps, createCommentVNode, createElementVNode, resolveComponent, Fragment, createVNode, renderList, resolveDynamicComponent, normalizeStyle, toDisplayString, resolveDirective, createTextVNode, withModifiers, withDirectives, createSlots, vShow, withKeys, mergeProps, TransitionGroup, defineCustomElement } from "vue";
+var index = "";
 var _export_sfc = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props) {
@@ -1124,12 +1125,12 @@ const _sfc_main$n = {
       return message.types.indexOf(type) !== -1;
     },
     checkImageType(message) {
-      let index = message.value.lastIndexOf(".");
+      let index2 = message.value.lastIndexOf(".");
       const slashIndex = message.value.lastIndexOf("/");
-      if (slashIndex > index)
-        index = -1;
-      const type = message.value.substring(index + 1, message.value.length);
-      const isMedia = index > 0 && IMAGE_TYPES.some((t) => type.toLowerCase().includes(t));
+      if (slashIndex > index2)
+        index2 = -1;
+      const type = message.value.substring(index2 + 1, message.value.length);
+      const isMedia = index2 > 0 && IMAGE_TYPES.some((t) => type.toLowerCase().includes(t));
       if (isMedia)
         this.setImageSize(message);
       return isMedia;
@@ -1149,8 +1150,8 @@ const _sfc_main$n = {
       const secondTag = "</usertag>";
       const usertags = [...content.matchAll(new RegExp(firstTag, "gi"))].map((a) => a.index);
       const initialContent = content;
-      usertags.forEach((index) => {
-        const userId = initialContent.substring(index + firstTag.length, initialContent.indexOf(secondTag, index));
+      usertags.forEach((index2) => {
+        const userId = initialContent.substring(index2 + firstTag.length, initialContent.indexOf(secondTag, index2));
         const user = this.users.find((user2) => user2._id === userId);
         content = content.replaceAll(userId, `@${(user == null ? void 0 : user.username) || "unknown"}`);
       });
@@ -2818,7 +2819,7 @@ function insert(target, node, anchor) {
 function detach(node) {
   node.parentNode.removeChild(node);
 }
-function element$1(name) {
+function element(name) {
   return document.createElement(name);
 }
 function text(data) {
@@ -3081,9 +3082,9 @@ class SvelteComponent {
     const callbacks = this.$$.callbacks[type] || (this.$$.callbacks[type] = []);
     callbacks.push(callback);
     return () => {
-      const index = callbacks.indexOf(callback);
-      if (index !== -1)
-        callbacks.splice(index, 1);
+      const index2 = callbacks.indexOf(callback);
+      if (index2 !== -1)
+        callbacks.splice(index2, 1);
     };
   }
   $set($$props) {
@@ -3331,7 +3332,7 @@ function create_each_block_4(key_1, ctx) {
     key: key_1,
     first: null,
     c() {
-      div = element$1("div");
+      div = element("div");
       t = text(t_value);
       attr(div, "id", div_id_value = "skintone-" + ctx[65]);
       attr(div, "class", div_class_value = "emoji hide-focus " + (ctx[65] === ctx[20] ? "active" : ""));
@@ -3390,8 +3391,8 @@ function create_each_block_3(key_1, ctx) {
     key: key_1,
     first: null,
     c() {
-      button = element$1("button");
-      div = element$1("div");
+      button = element("button");
+      div = element("div");
       t = text(t_value);
       attr(div, "class", "nav-emoji emoji");
       attr(button, "role", "tab");
@@ -3441,7 +3442,7 @@ function create_else_block_1(ctx) {
   let img_src_value;
   return {
     c() {
-      img = element$1("img");
+      img = element("img");
       attr(img, "class", "custom-emoji");
       if (!src_url_equal(img.src, img_src_value = ctx[63].url))
         attr(img, "src", img_src_value);
@@ -3501,7 +3502,7 @@ function create_each_block_2(key_1, ctx) {
     key: key_1,
     first: null,
     c() {
-      button = element$1("button");
+      button = element("button");
       if_block.c();
       attr(button, "role", button_role_value = ctx[4] ? "option" : "menuitem");
       attr(button, "aria-selected", button_aria_selected_value = ctx[4] ? ctx[65] == ctx[5] : "");
@@ -3576,9 +3577,9 @@ function create_each_block_1(key_1, ctx) {
     key: key_1,
     first: null,
     c() {
-      div0 = element$1("div");
+      div0 = element("div");
       t = text(t_value);
-      div1 = element$1("div");
+      div1 = element("div");
       for (let i = 0; i < each_blocks.length; i += 1) {
         each_blocks[i].c();
       }
@@ -3639,7 +3640,7 @@ function create_else_block(ctx) {
   let img_src_value;
   return {
     c() {
-      img = element$1("img");
+      img = element("img");
       attr(img, "class", "custom-emoji");
       if (!src_url_equal(img.src, img_src_value = ctx[63].url))
         attr(img, "src", img_src_value);
@@ -3696,7 +3697,7 @@ function create_each_block(key_1, ctx) {
     key: key_1,
     first: null,
     c() {
-      button = element$1("button");
+      button = element("button");
       if_block.c();
       attr(button, "role", "menuitem");
       attr(button, "aria-label", button_aria_label_value = ctx[28](ctx[63], ctx[8]));
@@ -3824,42 +3825,42 @@ function create_fragment(ctx) {
   }
   return {
     c() {
-      section = element$1("section");
-      div0 = element$1("div");
-      div4 = element$1("div");
-      div1 = element$1("div");
-      input = element$1("input");
-      label = element$1("label");
+      section = element("section");
+      div0 = element("div");
+      div4 = element("div");
+      div1 = element("div");
+      input = element("input");
+      label = element("label");
       t0 = text(t0_value);
-      span0 = element$1("span");
+      span0 = element("span");
       t1 = text(t1_value);
-      div2 = element$1("div");
-      button0 = element$1("button");
+      div2 = element("div");
+      button0 = element("button");
       t2 = text(ctx[21]);
-      span1 = element$1("span");
+      span1 = element("span");
       t3 = text(t3_value);
-      div3 = element$1("div");
+      div3 = element("div");
       for (let i = 0; i < each_blocks_3.length; i += 1) {
         each_blocks_3[i].c();
       }
-      div5 = element$1("div");
+      div5 = element("div");
       for (let i = 0; i < each_blocks_2.length; i += 1) {
         each_blocks_2[i].c();
       }
-      div7 = element$1("div");
-      div6 = element$1("div");
-      div8 = element$1("div");
+      div7 = element("div");
+      div6 = element("div");
+      div8 = element("div");
       t4 = text(ctx[18]);
-      div10 = element$1("div");
-      div9 = element$1("div");
+      div10 = element("div");
+      div9 = element("div");
       for (let i = 0; i < each_blocks_1.length; i += 1) {
         each_blocks_1[i].c();
       }
-      div11 = element$1("div");
+      div11 = element("div");
       for (let i = 0; i < each_blocks.length; i += 1) {
         each_blocks[i].c();
       }
-      button1 = element$1("button");
+      button1 = element("button");
       button1.textContent = "\u{1F600}";
       attr(div0, "class", "pad-top");
       attr(input, "id", "search");
@@ -5400,11 +5401,11 @@ function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
         class: "vac-tags-container",
         style: normalizeStyle({ bottom: `${$options.footerHeight}px` })
       }, [
-        (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredUsersTag, (user, index) => {
+        (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredUsersTag, (user, index2) => {
           return openBlock(), createElementBlock("div", {
             key: user._id,
-            class: normalizeClass(["vac-tags-box", { "vac-tags-box-active": index === $data.activeItem }]),
-            onMouseover: ($event) => $data.activeItem = index,
+            class: normalizeClass(["vac-tags-box", { "vac-tags-box-active": index2 === $data.activeItem }]),
+            onMouseover: ($event) => $data.activeItem = index2,
             onClick: ($event) => _ctx.$emit("select-user-tag", user)
           }, [
             createElementVNode("div", _hoisted_2$a, [
@@ -5471,11 +5472,11 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
         class: "vac-emojis-container",
         style: normalizeStyle({ bottom: `${$options.footerHeight}px` })
       }, [
-        (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredEmojis, (emoji, index) => {
+        (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredEmojis, (emoji, index2) => {
           return openBlock(), createElementBlock("div", {
             key: emoji,
-            class: normalizeClass(["vac-emoji-element", { "vac-emoji-element-active": index === $data.activeItem }]),
-            onMouseover: ($event) => $data.activeItem = index,
+            class: normalizeClass(["vac-emoji-element", { "vac-emoji-element-active": index2 === $data.activeItem }]),
+            onMouseover: ($event) => $data.activeItem = index2,
             onClick: ($event) => _ctx.$emit("select-emoji", emoji)
           }, toDisplayString(emoji), 43, _hoisted_1$c);
         }), 128))
@@ -5536,11 +5537,11 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
         class: "vac-template-container vac-app-box-shadow",
         style: normalizeStyle({ bottom: `${$options.footerHeight}px` })
       }, [
-        (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredTemplatesText, (template, index) => {
+        (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredTemplatesText, (template, index2) => {
           return openBlock(), createElementBlock("div", {
-            key: index,
-            class: normalizeClass(["vac-template-box", { "vac-template-active": index === $data.activeItem }]),
-            onMouseover: ($event) => $data.activeItem = index,
+            key: index2,
+            class: normalizeClass(["vac-template-box", { "vac-template-active": index2 === $data.activeItem }]),
+            onMouseover: ($event) => $data.activeItem = index2,
             onClick: ($event) => _ctx.$emit("select-template-text", template)
           }, [
             createElementVNode("div", _hoisted_2$9, [
@@ -9292,19 +9293,19 @@ function PsyModel$1() {
   };
 }
 var PsyModel_1 = PsyModel$1;
-function MPEGMode$4(ordinal) {
+function MPEGMode$3(ordinal) {
   var _ordinal = ordinal;
   this.ordinal = function() {
     return _ordinal;
   };
 }
-MPEGMode$4.STEREO = new MPEGMode$4(0);
-MPEGMode$4.JOINT_STEREO = new MPEGMode$4(1);
-MPEGMode$4.DUAL_CHANNEL = new MPEGMode$4(2);
-MPEGMode$4.MONO = new MPEGMode$4(3);
-MPEGMode$4.NOT_SET = new MPEGMode$4(4);
-var MPEGMode_1 = MPEGMode$4;
-var MPEGMode$3 = MPEGMode_1;
+MPEGMode$3.STEREO = new MPEGMode$3(0);
+MPEGMode$3.JOINT_STEREO = new MPEGMode$3(1);
+MPEGMode$3.DUAL_CHANNEL = new MPEGMode$3(2);
+MPEGMode$3.MONO = new MPEGMode$3(3);
+MPEGMode$3.NOT_SET = new MPEGMode$3(4);
+var MPEGMode_1 = MPEGMode$3;
+var MPEGMode$2 = MPEGMode_1;
 function LameGlobalFlags$1() {
   this.class_id = 0;
   this.num_samples = 0;
@@ -9318,7 +9319,7 @@ function LameGlobalFlags$1() {
   this.bWriteVbrTag = false;
   this.decode_only = false;
   this.quality = 0;
-  this.mode = MPEGMode$3.STEREO;
+  this.mode = MPEGMode$2.STEREO;
   this.force_ms = false;
   this.free_format = false;
   this.findReplayGain = false;
@@ -16205,7 +16206,6 @@ var CBRNewIterationLoop = CBRNewIterationLoop_1;
 var BitStream$2 = BitStream_1;
 var Tables$1 = Tables_1;
 var Encoder$1 = Encoder_1;
-var MPEGMode$2 = MPEGMode_1;
 function Lame$2() {
   var self = this;
   var LAME_MAXALBUMART = 128 * 1024;
@@ -16267,7 +16267,7 @@ function Lame$2() {
     var gfc;
     gfp.class_id = LAME_ID;
     gfc = gfp.internal_flags = new LameInternalFlags$1();
-    gfp.mode = MPEGMode$2.NOT_SET;
+    gfp.mode = MPEGMode.NOT_SET;
     gfp.original = 1;
     gfp.in_samplerate = 44100;
     gfp.num_channels = 2;
@@ -16716,10 +16716,10 @@ function Lame$2() {
       gfc.rgdata = new ReplayGain();
     gfc.channels_in = gfp.num_channels;
     if (gfc.channels_in == 1)
-      gfp.mode = MPEGMode$2.MONO;
-    gfc.channels_out = gfp.mode == MPEGMode$2.MONO ? 1 : 2;
+      gfp.mode = MPEGMode.MONO;
+    gfc.channels_out = gfp.mode == MPEGMode.MONO ? 1 : 2;
     gfc.mode_ext = Encoder$1.MPG_MD_MS_LR;
-    if (gfp.mode == MPEGMode$2.MONO)
+    if (gfp.mode == MPEGMode.MONO)
       gfp.force_ms = false;
     if (gfp.VBR == VbrMode$3.vbr_off && gfp.VBR_mean_bitrate_kbps != 128 && gfp.brate == 0)
       gfp.brate = gfp.VBR_mean_bitrate_kbps;
@@ -16811,7 +16811,7 @@ function Lame$2() {
           }
         }
       }
-      if (gfp.mode == MPEGMode$2.MONO && (gfp.VBR == VbrMode$3.vbr_off || gfp.VBR == VbrMode$3.vbr_abr))
+      if (gfp.mode == MPEGMode.MONO && (gfp.VBR == VbrMode$3.vbr_off || gfp.VBR == VbrMode$3.vbr_abr))
         lowpass *= 1.5;
       gfp.lowpassfreq = lowpass | 0;
     }
@@ -16881,8 +16881,8 @@ function Lame$2() {
         gfp.compression_ratio = gfp.out_samplerate * 16 * gfc.channels_out / (1e3 * gfp.brate);
         break;
     }
-    if (gfp.mode == MPEGMode$2.NOT_SET) {
-      gfp.mode = MPEGMode$2.JOINT_STEREO;
+    if (gfp.mode == MPEGMode.NOT_SET) {
+      gfp.mode = MPEGMode.JOINT_STEREO;
     }
     if (gfp.highpassfreq > 0) {
       gfc.highpass1 = 2 * gfp.highpassfreq;
@@ -17065,7 +17065,7 @@ function Lame$2() {
     if (gfp.short_blocks == null) {
       gfp.short_blocks = ShortBlock$1.short_block_allowed;
     }
-    if (gfp.short_blocks == ShortBlock$1.short_block_allowed && (gfp.mode == MPEGMode$2.JOINT_STEREO || gfp.mode == MPEGMode$2.STEREO)) {
+    if (gfp.short_blocks == ShortBlock$1.short_block_allowed && (gfp.mode == MPEGMode.JOINT_STEREO || gfp.mode == MPEGMode.STEREO)) {
       gfp.short_blocks = ShortBlock$1.short_block_coupled;
     }
     if (gfp.quant_comp < 0)
@@ -19511,7 +19511,6 @@ function ID3Tag() {
   };
 }
 function Mp3Encoder$1(channels, samplerate, kbps) {
-  console.error("hello lib");
   if (arguments.length != 3) {
     console.error("WARN: Mp3Encoder(channels, samplerate, kbps) not specified");
     channels = 1;
@@ -19632,7 +19631,6 @@ class Mp3Encoder {
     this.bitRate = config.bitRate;
     this.sampleRate = config.sampleRate;
     this.dataBuffer = [];
-    console.log(Mp3Encoder_1);
     this.encoder = new Mp3Encoder_1(1, this.sampleRate, this.bitRate);
   }
   encode(arrayBuffer) {
@@ -20030,8 +20028,8 @@ const _sfc_main$a = {
       });
       setTimeout(() => this.fileDialog = false, 500);
     },
-    removeFile(index) {
-      this.files.splice(index, 1);
+    removeFile(index2) {
+      this.files.splice(index2, 1);
       this.focusTextarea();
     },
     toggleRecorder(recording) {
@@ -20112,8 +20110,8 @@ const _sfc_main$a = {
       const usertags = [
         ...messageContent.matchAll(new RegExp(firstTag, "gi"))
       ].map((a) => a.index);
-      usertags.forEach((index) => {
-        const userId = initialContent.substring(index + firstTag.length, initialContent.indexOf(secondTag, index));
+      usertags.forEach((index2) => {
+        const userId = initialContent.substring(index2 + firstTag.length, initialContent.indexOf(secondTag, index2));
         const user = this.room.users.find((user2) => user2._id === userId);
         messageContent = messageContent.replace(`${firstTag}${userId}${secondTag}`, `@${(user == null ? void 0 : user.username) || "unknown"}`);
         this.selectUserTag(user, true);
@@ -21870,8 +21868,8 @@ const _sfc_main$2 = {
     unselectMessage(messageId) {
       this.selectedMessages = this.selectedMessages.filter((message) => message._id !== messageId);
     },
-    onMessageAdded({ message, index, ref }) {
-      if (index !== this.messages.length - 1)
+    onMessageAdded({ message, index: index2, ref }) {
+      if (index2 !== this.messages.length - 1)
         return;
       const autoScrollOffset = ref.offsetHeight + 60;
       setTimeout(() => {
@@ -23121,5 +23119,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ], 4);
 }
 var ChatWindow = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
-const element = defineCustomComponent(ChatWindow);
-defineCustomComponent.define("vue-advanced-chat", element);
+const ChatWindowComponent = defineCustomElement(ChatWindow);
+customElements.define("chat-window", ChatWindowComponent);
