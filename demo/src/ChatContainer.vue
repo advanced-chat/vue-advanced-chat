@@ -38,34 +38,37 @@
 		</form>
 
 		<vue-advanced-chat
-			:height="screenHeight"
-			:theme="theme"
-			:styles="styles"
-			:current-user-id="currentUserId"
-			:room-id="roomId"
-			:rooms="loadedRooms"
-			:loading-rooms="loadingRooms"
-			:messages="messages"
-			:messages-loaded="messagesLoaded"
-			:rooms-loaded="roomsLoaded"
-			:room-actions="roomActions"
-			:menu-actions="menuActions"
-			:message-selection-actions="messageSelectionActions"
-			:room-message="roomMessage"
-			:templates-text="templatesText"
+			ref="chatWindow"
+			.height="screenHeight"
+			.theme="theme"
+			.styles="styles"
+			.current-user-id="currentUserId"
+			.room-id="roomId"
+			.rooms="loadedRooms"
+			.loading-rooms="loadingRooms"
+			.messages="messages"
+			.messages-loaded="messagesLoaded"
+			.rooms-loaded="roomsLoaded"
+			.room-actions="roomActions"
+			.menu-actions="menuActions"
+			.message-selection-actions="messageSelectionActions"
+			.room-message="roomMessage"
+			.templates-text="templatesText"
 			@fetch-more-rooms="fetchMoreRooms"
-			@fetch-messages="fetchMessages"
-			@send-message="sendMessage"
-			@edit-message="editMessage"
-			@delete-message="deleteMessage"
-			@open-file="openFile"
-			@open-user-tag="openUserTag"
-			@add-room="addRoom"
-			@room-action-handler="menuActionHandler"
-			@menu-action-handler="menuActionHandler"
-			@message-selection-action-handler="messageSelectionActionHandler"
-			@send-message-reaction="sendMessageReaction"
-			@typing-message="typingMessage"
+			@fetch-messages="fetchMessages($event.detail[0])"
+			@send-message="sendMessage($event.detail[0])"
+			@edit-message="editMessage($event.detail[0])"
+			@delete-message="deleteMessage($event.detail[0])"
+			@open-file="openFile($event.detail[0])"
+			@open-user-tag="openUserTag($event.detail[0])"
+			@add-room="addRoom($event.detail[0])"
+			@room-action-handler="menuActionHandler($event.detail[0])"
+			@menu-action-handler="menuActionHandler($event.detail[0])"
+			@message-selection-action-handler="
+				messageSelectionActionHandler($event.detail[0])
+			"
+			@send-message-reaction="sendMessageReaction($event.detail[0])"
+			@typing-message="typingMessage($event.detail[0])"
 			@toggle-rooms-list="$emit('show-demo-options', $event.opened)"
 		>
 			<!-- <template #emoji-picker="{ emojiOpened, addEmoji }">
@@ -88,7 +91,9 @@ import logoAvatar from '@/assets/logo.png'
 // import ChatWindow, { Rooms } from 'vue-advanced-chat'
 // import ChatWindow from 'vue-advanced-chat'
 // import 'vue-advanced-chat/dist/style.css'
-import { register } from './../../dist/vue-advanced-chat.es.js'
+// import { register } from './../../dist/vue-advanced-chat.es.js'
+import { register } from './../../src/lib/index.js'
+import styles from './../../src/styles/index.scss'
 register()
 
 export default {
@@ -170,11 +175,17 @@ export default {
 	},
 
 	mounted() {
+		this.addCss()
 		this.fetchRooms()
 		firebaseService.updateUserOnlineStatus(this.currentUserId)
 	},
 
 	methods: {
+		addCss() {
+			const style = document.createElement('style')
+			style.innerHTML = styles
+			this.$refs.chatWindow.shadowRoot.appendChild(style)
+		},
 		resetRooms() {
 			this.loadingRooms = true
 			this.loadingLastMessageByRoom = 0
