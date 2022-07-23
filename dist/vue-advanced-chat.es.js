@@ -23121,3 +23121,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 var ChatWindow = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
 const ChatWindowComponent = defineCustomElement(ChatWindow);
 customElements.define("chat-window", ChatWindowComponent);
+export { ChatWindowComponent as default };
