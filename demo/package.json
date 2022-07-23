@@ -19,7 +19,7 @@
 		"firebase": "^9.4.0",
 		"lamejs": "^1.2.1",
 		"vue": "^3.2.37",
-		"vue-advanced-chat": "https://github.com/antoine92190/vue-advanced-chat/tarball/next"
+		"vue-advanced-chat": "https://github.com/antoine92190/vue-advanced-chat/tarball/vite"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.12.16",
