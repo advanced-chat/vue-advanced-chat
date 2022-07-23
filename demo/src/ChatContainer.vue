@@ -37,7 +37,7 @@
 			</button>
 		</form>
 
-		<chat-window
+		<vue-advanced-chat
 			:height="screenHeight"
 			:theme="theme"
 			:styles="styles"
@@ -73,7 +73,7 @@
 					{{ emojiOpened }}
 				</button>
 			</template> -->
-		</chat-window>
+		</vue-advanced-chat>
 	</div>
 </template>
 
@@ -88,13 +88,10 @@ import logoAvatar from '@/assets/logo.png'
 // import ChatWindow, { Rooms } from 'vue-advanced-chat'
 // import ChatWindow from 'vue-advanced-chat'
 // import 'vue-advanced-chat/dist/style.css'
-import ChatWindow from './../../dist/vue-advanced-chat.umd.js'
+import { register } from './../../dist/vue-advanced-chat.es.js'
+register()
 
 export default {
-	components: {
-		ChatWindow
-	},
-
 	props: {
 		currentUserId: { type: String, required: true },
 		theme: { type: String, required: true },

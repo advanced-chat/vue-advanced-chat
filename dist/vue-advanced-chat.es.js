@@ -1,5 +1,4 @@
 import { openBlock, createBlock, Transition, withCtx, createElementBlock, normalizeClass, renderSlot, normalizeProps, guardReactiveProps, createCommentVNode, createElementVNode, resolveComponent, Fragment, createVNode, renderList, resolveDynamicComponent, normalizeStyle, toDisplayString, resolveDirective, createTextVNode, withModifiers, withDirectives, createSlots, vShow, withKeys, mergeProps, TransitionGroup, defineCustomElement } from "vue";
-var index = "";
 var _export_sfc = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props) {
@@ -1125,12 +1124,12 @@ const _sfc_main$n = {
       return message.types.indexOf(type) !== -1;
     },
     checkImageType(message) {
-      let index2 = message.value.lastIndexOf(".");
+      let index = message.value.lastIndexOf(".");
       const slashIndex = message.value.lastIndexOf("/");
-      if (slashIndex > index2)
-        index2 = -1;
-      const type = message.value.substring(index2 + 1, message.value.length);
-      const isMedia = index2 > 0 && IMAGE_TYPES.some((t) => type.toLowerCase().includes(t));
+      if (slashIndex > index)
+        index = -1;
+      const type = message.value.substring(index + 1, message.value.length);
+      const isMedia = index > 0 && IMAGE_TYPES.some((t) => type.toLowerCase().includes(t));
       if (isMedia)
         this.setImageSize(message);
       return isMedia;
@@ -1150,8 +1149,8 @@ const _sfc_main$n = {
       const secondTag = "</usertag>";
       const usertags = [...content.matchAll(new RegExp(firstTag, "gi"))].map((a) => a.index);
       const initialContent = content;
-      usertags.forEach((index2) => {
-        const userId = initialContent.substring(index2 + firstTag.length, initialContent.indexOf(secondTag, index2));
+      usertags.forEach((index) => {
+        const userId = initialContent.substring(index + firstTag.length, initialContent.indexOf(secondTag, index));
         const user = this.users.find((user2) => user2._id === userId);
         content = content.replaceAll(userId, `@${(user == null ? void 0 : user.username) || "unknown"}`);
       });
@@ -3082,9 +3081,9 @@ class SvelteComponent {
     const callbacks = this.$$.callbacks[type] || (this.$$.callbacks[type] = []);
     callbacks.push(callback);
     return () => {
-      const index2 = callbacks.indexOf(callback);
-      if (index2 !== -1)
-        callbacks.splice(index2, 1);
+      const index = callbacks.indexOf(callback);
+      if (index !== -1)
+        callbacks.splice(index, 1);
     };
   }
   $set($$props) {
@@ -5401,11 +5400,11 @@ function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
         class: "vac-tags-container",
         style: normalizeStyle({ bottom: `${$options.footerHeight}px` })
       }, [
-        (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredUsersTag, (user, index2) => {
+        (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredUsersTag, (user, index) => {
           return openBlock(), createElementBlock("div", {
             key: user._id,
-            class: normalizeClass(["vac-tags-box", { "vac-tags-box-active": index2 === $data.activeItem }]),
-            onMouseover: ($event) => $data.activeItem = index2,
+            class: normalizeClass(["vac-tags-box", { "vac-tags-box-active": index === $data.activeItem }]),
+            onMouseover: ($event) => $data.activeItem = index,
             onClick: ($event) => _ctx.$emit("select-user-tag", user)
           }, [
             createElementVNode("div", _hoisted_2$a, [
@@ -5472,11 +5471,11 @@ function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
         class: "vac-emojis-container",
         style: normalizeStyle({ bottom: `${$options.footerHeight}px` })
       }, [
-        (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredEmojis, (emoji, index2) => {
+        (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredEmojis, (emoji, index) => {
           return openBlock(), createElementBlock("div", {
             key: emoji,
-            class: normalizeClass(["vac-emoji-element", { "vac-emoji-element-active": index2 === $data.activeItem }]),
-            onMouseover: ($event) => $data.activeItem = index2,
+            class: normalizeClass(["vac-emoji-element", { "vac-emoji-element-active": index === $data.activeItem }]),
+            onMouseover: ($event) => $data.activeItem = index,
             onClick: ($event) => _ctx.$emit("select-emoji", emoji)
           }, toDisplayString(emoji), 43, _hoisted_1$c);
         }), 128))
@@ -5537,11 +5536,11 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
         class: "vac-template-container vac-app-box-shadow",
         style: normalizeStyle({ bottom: `${$options.footerHeight}px` })
       }, [
-        (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredTemplatesText, (template, index2) => {
+        (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredTemplatesText, (template, index) => {
           return openBlock(), createElementBlock("div", {
-            key: index2,
-            class: normalizeClass(["vac-template-box", { "vac-template-active": index2 === $data.activeItem }]),
-            onMouseover: ($event) => $data.activeItem = index2,
+            key: index,
+            class: normalizeClass(["vac-template-box", { "vac-template-active": index === $data.activeItem }]),
+            onMouseover: ($event) => $data.activeItem = index,
             onClick: ($event) => _ctx.$emit("select-template-text", template)
           }, [
             createElementVNode("div", _hoisted_2$9, [
@@ -20028,8 +20027,8 @@ const _sfc_main$a = {
       });
       setTimeout(() => this.fileDialog = false, 500);
     },
-    removeFile(index2) {
-      this.files.splice(index2, 1);
+    removeFile(index) {
+      this.files.splice(index, 1);
       this.focusTextarea();
     },
     toggleRecorder(recording) {
@@ -20110,8 +20109,8 @@ const _sfc_main$a = {
       const usertags = [
         ...messageContent.matchAll(new RegExp(firstTag, "gi"))
       ].map((a) => a.index);
-      usertags.forEach((index2) => {
-        const userId = initialContent.substring(index2 + firstTag.length, initialContent.indexOf(secondTag, index2));
+      usertags.forEach((index) => {
+        const userId = initialContent.substring(index + firstTag.length, initialContent.indexOf(secondTag, index));
         const user = this.room.users.find((user2) => user2._id === userId);
         messageContent = messageContent.replace(`${firstTag}${userId}${secondTag}`, `@${(user == null ? void 0 : user.username) || "unknown"}`);
         this.selectUserTag(user, true);
@@ -21868,8 +21867,8 @@ const _sfc_main$2 = {
     unselectMessage(messageId) {
       this.selectedMessages = this.selectedMessages.filter((message) => message._id !== messageId);
     },
-    onMessageAdded({ message, index: index2, ref }) {
-      if (index2 !== this.messages.length - 1)
+    onMessageAdded({ message, index, ref }) {
+      if (index !== this.messages.length - 1)
         return;
       const autoScrollOffset = ref.offsetHeight + 60;
       setTimeout(() => {
@@ -23119,6 +23118,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ], 4);
 }
 var ChatWindow = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
-const ChatWindowComponent = defineCustomElement(ChatWindow);
-customElements.define("chat-window", ChatWindowComponent);
-export { ChatWindowComponent as default };
+const VueAdvancedChat = defineCustomElement(ChatWindow);
+function register() {
+  customElements.define("vue-advanced-chat", VueAdvancedChat);
+}
+export { VueAdvancedChat, register };
