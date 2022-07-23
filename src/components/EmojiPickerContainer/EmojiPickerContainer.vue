@@ -114,7 +114,9 @@ export default {
 		},
 		setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
 			const mobileSize = innerWidth < 500 || innerHeight < 700
-			const roomFooterRef = document.getElementById('room-footer')
+			const roomFooterRef = document
+				.querySelector('vue-advanced-chat')
+				.shadowRoot.getElementById('room-footer')
 
 			if (!roomFooterRef) {
 				if (mobileSize) this.emojiPickerRight = '-50px'

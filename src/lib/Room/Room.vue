@@ -332,11 +332,15 @@ export default {
 				this.observer.disconnect()
 			}
 
-			const loader = document.getElementById('infinite-loader-messages')
+			const loader = document
+				.querySelector('vue-advanced-chat')
+				.shadowRoot.getElementById('infinite-loader-messages')
 
 			if (loader) {
 				const options = {
-					root: document.getElementById('messages-list'),
+					root: document
+						.querySelector('vue-advanced-chat')
+						.shadowRoot.getElementById('messages-list'),
 					rootMargin: `${this.scrollDistance}px`,
 					threshold: 0
 				}

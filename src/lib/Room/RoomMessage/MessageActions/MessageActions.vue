@@ -169,7 +169,9 @@ export default {
 			if (!this.optionsOpened) return
 
 			setTimeout(() => {
-				const roomFooterRef = document.getElementById('room-footer')
+				const roomFooterRef = document
+					.querySelector('vue-advanced-chat')
+					.shadowRoot.getElementById('room-footer')
 
 				if (
 					!roomFooterRef ||

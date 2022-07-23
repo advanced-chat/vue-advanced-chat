@@ -39,7 +39,9 @@ export default {
 
 	computed: {
 		footerHeight() {
-			return document.getElementById('room-footer').clientHeight
+			return document
+				.querySelector('vue-advanced-chat')
+				.shadowRoot.getElementById('room-footer').clientHeight
 		}
 	},
 

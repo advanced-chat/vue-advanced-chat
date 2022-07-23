@@ -2,7 +2,10 @@
 	<div
 		v-show="showRoomsList"
 		class="vac-rooms-container"
-		:class="{ 'vac-rooms-container-full': isMobile, 'vac-app-border-r': !isMobile }"
+		:class="{
+			'vac-rooms-container-full': isMobile,
+			'vac-app-border-r': !isMobile
+		}"
 	>
 		<slot name="rooms-header" />
 
@@ -165,11 +168,15 @@ export default {
 				this.observer.disconnect()
 			}
 
-			const loader = document.getElementById('infinite-loader-rooms')
+			const loader = document
+				.querySelector('vue-advanced-chat')
+				.shadowRoot.getElementById('infinite-loader-rooms')
 
 			if (loader) {
 				const options = {
-					root: document.getElementById('rooms-list'),
+					root: document
+						.querySelector('vue-advanced-chat')
+						.shadowRoot.getElementById('rooms-list'),
 					rootMargin: `${this.scrollDistance}px`,
 					threshold: 0
 				}
