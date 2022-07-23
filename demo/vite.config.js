@@ -3,7 +3,15 @@ import vue from '@vitejs/plugin-vue'
 
 const path = require('path')
 export default defineConfig({
-	plugins: [vue()],
+	plugins: [
+		vue({
+			template: {
+				compilerOptions: {
+					isCustomElement: tagName => tagName.includes('vue-advanced-chat')
+				}
+			}
+		})
+	],
 	resolve: {
 		extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
 		alias: {
