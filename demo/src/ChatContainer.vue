@@ -84,11 +84,11 @@ import * as storageService from '@/database/storage'
 import { parseTimestamp, formatTimestamp } from '@/utils/dates'
 import logoAvatar from '@/assets/logo.png'
 
-import ChatWindow from './../../src/lib/ChatWindow'
+// import ChatWindow from './../../src/lib/ChatWindow'
 // import ChatWindow, { Rooms } from 'vue-advanced-chat'
 // import ChatWindow from 'vue-advanced-chat'
-// import 'vue-advanced-chat/dist/vue-advanced-chat.css'
-// import ChatWindow from './../../dist/vue-advanced-chat.umd.min.js'
+// import 'vue-advanced-chat/dist/style.css'
+import ChatWindow from './../../dist/vue-advanced-chat.umd.js'
 
 export default {
 	components: {
