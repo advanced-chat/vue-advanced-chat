@@ -5,9 +5,7 @@
 			<button type="submit" :disabled="disableForm || !addRoomUsername">
 				Create Room
 			</button>
-			<button class="button-cancel" @click="addNewRoom = false">
-				Cancel
-			</button>
+			<button class="button-cancel" @click="addNewRoom = false">Cancel</button>
 		</form>
 
 		<form v-if="inviteRoomId" @submit.prevent="addRoomUser">
@@ -15,16 +13,12 @@
 			<button type="submit" :disabled="disableForm || !invitedUsername">
 				Add User
 			</button>
-			<button class="button-cancel" @click="inviteRoomId = null">
-				Cancel
-			</button>
+			<button class="button-cancel" @click="inviteRoomId = null">Cancel</button>
 		</form>
 
 		<form v-if="removeRoomId" @submit.prevent="deleteRoomUser">
 			<select v-model="removeUserId">
-				<option default value="">
-					Select User
-				</option>
+				<option default value="">Select User</option>
 				<option v-for="user in removeUsers" :key="user._id" :value="user._id">
 					{{ user.username }}
 				</option>
@@ -32,27 +26,25 @@
 			<button type="submit" :disabled="disableForm || !removeUserId">
 				Remove User
 			</button>
-			<button class="button-cancel" @click="removeRoomId = null">
-				Cancel
-			</button>
+			<button class="button-cancel" @click="removeRoomId = null">Cancel</button>
 		</form>
 
 		<vue-advanced-chat
 			ref="chatWindow"
-			.height="screenHeight"
-			.theme="theme"
-			.styles="styles"
-			.current-user-id="currentUserId"
-			.room-id="roomId"
-			.rooms="loadedRooms"
-			.loading-rooms="loadingRooms"
-			.messages="messages"
-			.messages-loaded="messagesLoaded"
-			.rooms-loaded="roomsLoaded"
+			:height="screenHeight"
+			:theme="theme"
+			:styles="styles"
+			:current-user-id="currentUserId"
+			:room-id="roomId"
+			:rooms="loadedRooms"
+			:loading-rooms="loadingRooms"
+			:rooms-loaded="roomsLoaded"
+			:messages="messages"
+			:messages-loaded="messagesLoaded"
+			:room-message="roomMessage"
 			.room-actions="roomActions"
 			.menu-actions="menuActions"
 			.message-selection-actions="messageSelectionActions"
-			.room-message="roomMessage"
 			.templates-text="templatesText"
 			@fetch-more-rooms="fetchMoreRooms"
 			@fetch-messages="fetchMessages($event.detail[0])"
@@ -69,7 +61,7 @@
 			"
 			@send-message-reaction="sendMessageReaction($event.detail[0])"
 			@typing-message="typingMessage($event.detail[0])"
-			@toggle-rooms-list="$emit('show-demo-options', $event.opened)"
+			@toggle-rooms-list="$emit('show-demo-options', $event.detail[0].opened)"
 		>
 			<!-- <template #emoji-picker="{ emojiOpened, addEmoji }">
 				<button @click="addEmoji({ unicode: '😁' })">
@@ -390,7 +382,9 @@ export default {
 					if (this.selectedRoom !== room.roomId) return
 
 					if (data.length === 0 || data.length < this.messagesPerPage) {
-						setTimeout(() => (this.messagesLoaded = true), 0)
+						setTimeout(() => {
+							this.messagesLoaded = true
+						}, 0)
 					}
 
 					if (options.reset) this.messages = []

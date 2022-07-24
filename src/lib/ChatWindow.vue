@@ -2,16 +2,16 @@
 	<div class="vac-card-window" :style="[{ height }, cssVars]">
 		<div class="vac-chat-container">
 			<rooms-list
-				v-if="!singleRoom"
+				v-if="!singleRoomCasted"
 				:current-user-id="currentUserId"
 				:rooms="orderedRooms"
-				:loading-rooms="loadingRooms"
-				:rooms-loaded="roomsLoaded"
+				:loading-rooms="loadingRoomsCasted"
+				:rooms-loaded="roomsLoadedCasted"
 				:room="room"
 				:room-actions="roomActions"
 				:text-messages="t"
-				:show-search="showSearch"
-				:show-add-room="showAddRoom"
+				:show-search="showSearchCasted"
+				:show-add-room="showAddRoomCasted"
 				:show-rooms-list="showRoomsList"
 				:text-formatting="textFormatting"
 				:link-options="linkOptions"
@@ -30,37 +30,37 @@
 
 			<room
 				:current-user-id="currentUserId"
-				:rooms="rooms"
+				:rooms="roomsCasted"
 				:room-id="room.roomId || ''"
-				:load-first-room="loadFirstRoom"
-				:messages="messages"
+				:load-first-room="loadFirstRoomCasted"
+				:messages="messagesCasted"
 				:room-message="roomMessage"
-				:messages-loaded="messagesLoaded"
+				:messages-loaded="messagesLoadedCasted"
 				:menu-actions="menuActions"
 				:message-actions="messageActions"
 				:message-selection-actions="messageSelectionActions"
 				:auto-scroll="autoScroll"
-				:show-send-icon="showSendIcon"
-				:show-files="showFiles"
-				:show-audio="showAudio"
+				:show-send-icon="showSendIconCasted"
+				:show-files="showFilesCasted"
+				:show-audio="showAudioCasted"
 				:audio-bit-rate="audioBitRate"
 				:audio-sample-rate="audioSampleRate"
-				:show-emojis="showEmojis"
-				:show-reaction-emojis="showReactionEmojis"
-				:show-new-messages-divider="showNewMessagesDivider"
-				:show-footer="showFooter"
+				:show-emojis="showEmojisCasted"
+				:show-reaction-emojis="showReactionEmojisCasted"
+				:show-new-messages-divider="showNewMessagesDividerCasted"
+				:show-footer="showFooterCasted"
 				:text-messages="t"
-				:single-room="singleRoom"
+				:single-room="singleRoomCasted"
 				:show-rooms-list="showRoomsList"
 				:text-formatting="textFormatting"
 				:link-options="linkOptions"
 				:is-mobile="isMobile"
-				:loading-rooms="loadingRooms"
-				:room-info-enabled="roomInfoEnabled"
-				:textarea-action-enabled="textareaActionEnabled"
-				:textarea-auto-focus="textareaAutoFocus"
-				:user-tags-enabled="userTagsEnabled"
-				:emojis-suggestion-enabled="emojisSuggestionEnabled"
+				:loading-rooms="loadingRoomsCasted"
+				:room-info-enabled="roomInfoEnabledCasted"
+				:textarea-action-enabled="textareaActionEnabledCasted"
+				:textarea-auto-focus="textareaAutoFocusCasted"
+				:user-tags-enabled="userTagsEnabledCasted"
+				:emojis-suggestion-enabled="emojisSuggestionEnabledCasted"
 				:scroll-distance="scrollDistance"
 				:accepted-files="acceptedFiles"
 				:templates-text="templatesText"
@@ -119,20 +119,20 @@ export default {
 	props: {
 		height: { type: String, default: '600px' },
 		theme: { type: String, default: 'light' },
-		styles: { type: Object, default: () => ({}) },
+		styles: { type: [Object, String], default: () => ({}) },
 		responsiveBreakpoint: { type: Number, default: 900 },
-		singleRoom: { type: Boolean, default: false },
-		roomsListOpened: { type: Boolean, default: true },
-		textMessages: { type: Object, default: null },
-		currentUserId: { type: [String, Number], default: '' },
-		rooms: { type: Array, default: () => [] },
+		singleRoom: { type: [Boolean, String], default: false },
+		roomsListOpened: { type: [Boolean, String], default: true },
+		textMessages: { type: [Object, String], default: null },
+		currentUserId: { type: String, default: '' },
+		rooms: { type: [Array, String], default: null },
 		roomsOrder: { type: String, default: 'desc' },
-		loadingRooms: { type: Boolean, default: false },
-		roomsLoaded: { type: Boolean, default: false },
-		roomId: { type: [String, Number], default: null },
-		loadFirstRoom: { type: Boolean, default: true },
-		messages: { type: Array, default: () => [] },
-		messagesLoaded: { type: Boolean, default: false },
+		loadingRooms: { type: [Boolean, String], default: false },
+		roomsLoaded: { type: [Boolean, String], default: false },
+		roomId: { type: String, default: null },
+		loadFirstRoom: { type: [Boolean, String], default: true },
+		messages: { type: [Array, String], default: null },
+		messagesLoaded: { type: [Boolean, String], default: false },
 		roomActions: { type: Array, default: () => [] },
 		menuActions: { type: Array, default: () => [] },
 		messageActions: {
@@ -160,17 +160,17 @@ export default {
 				}
 			}
 		},
-		showSearch: { type: Boolean, default: true },
-		showAddRoom: { type: Boolean, default: true },
-		showSendIcon: { type: Boolean, default: true },
-		showFiles: { type: Boolean, default: true },
-		showAudio: { type: Boolean, default: true },
+		showSearch: { type: [Boolean, String], default: true },
+		showAddRoom: { type: [Boolean, String], default: true },
+		showSendIcon: { type: [Boolean, String], default: true },
+		showFiles: { type: [Boolean, String], default: true },
+		showAudio: { type: [Boolean, String], default: true },
 		audioBitRate: { type: Number, default: 128 },
 		audioSampleRate: { type: Number, default: 44100 },
-		showEmojis: { type: Boolean, default: true },
-		showReactionEmojis: { type: Boolean, default: true },
-		showNewMessagesDivider: { type: Boolean, default: true },
-		showFooter: { type: Boolean, default: true },
+		showEmojis: { type: [Boolean, String], default: true },
+		showReactionEmojis: { type: [Boolean, String], default: true },
+		showNewMessagesDivider: { type: [Boolean, String], default: true },
+		showFooter: { type: [Boolean, String], default: true },
 		textFormatting: {
 			type: Object,
 			default: () => ({
@@ -187,16 +187,16 @@ export default {
 			type: Object,
 			default: () => ({ disabled: false, target: '_blank', rel: null })
 		},
-		roomInfoEnabled: { type: Boolean, default: false },
-		textareaActionEnabled: { type: Boolean, default: false },
-		textareaAutoFocus: { type: Boolean, default: true },
-		userTagsEnabled: { type: Boolean, default: true },
-		emojisSuggestionEnabled: { type: Boolean, default: true },
+		roomInfoEnabled: { type: [Boolean, String], default: false },
+		textareaActionEnabled: { type: [Boolean, String], default: false },
+		textareaAutoFocus: { type: [Boolean, String], default: true },
+		userTagsEnabled: { type: [Boolean, String], default: true },
+		emojisSuggestionEnabled: { type: [Boolean, String], default: true },
 		roomMessage: { type: String, default: '' },
 		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
-		templatesText: { type: Array, default: null },
-		mediaPreviewEnabled: { type: Boolean, default: true },
+		templatesText: { type: [Array, String], default: null },
+		mediaPreviewEnabled: { type: [Boolean, String], default: true },
 		usernameOptions: {
 			type: Object,
 			default: () => ({ minUsers: 3, currentUser: false })
@@ -256,7 +256,7 @@ export default {
 			return cssThemeVars(customStyles)
 		},
 		orderedRooms() {
-			return this.rooms.slice().sort((a, b) => {
+			return this.roomsCasted.slice().sort((a, b) => {
 				const aVal = a.index || 0
 				const bVal = b.index || 0
 
@@ -266,6 +266,75 @@ export default {
 
 				return aVal > bVal ? -1 : bVal > aVal ? 1 : 0
 			})
+		},
+		roomsCasted() {
+			return this.rooms || []
+		},
+		messagesCasted() {
+			return this.messages || []
+		},
+		singleRoomCasted() {
+			return this.castBooleanToString(this.singleRoom)
+		},
+		roomsListOpenedCasted() {
+			return this.castBooleanToString(this.roomsListOpened)
+		},
+		loadingRoomsCasted() {
+			return this.castBooleanToString(this.loadingRooms)
+		},
+		roomsLoadedCasted() {
+			return this.castBooleanToString(this.roomsLoaded)
+		},
+		loadFirstRoomCasted() {
+			return this.castBooleanToString(this.loadFirstRoom)
+		},
+		messagesLoadedCasted() {
+			return this.castBooleanToString(this.messagesLoaded)
+		},
+		showSearchCasted() {
+			return this.castBooleanToString(this.showSearch)
+		},
+		showAddRoomCasted() {
+			return this.castBooleanToString(this.showAddRoom)
+		},
+		showSendIconCasted() {
+			return this.castBooleanToString(this.showSendIcon)
+		},
+		showFilesCasted() {
+			return this.castBooleanToString(this.showFiles)
+		},
+		showAudioCasted() {
+			return this.castBooleanToString(this.showAudio)
+		},
+		showEmojisCasted() {
+			return this.castBooleanToString(this.showEmojis)
+		},
+		showReactionEmojisCasted() {
+			return this.castBooleanToString(this.showReactionEmojis)
+		},
+		showNewMessagesDividerCasted() {
+			return this.castBooleanToString(this.showNewMessagesDivider)
+		},
+		showFooterCasted() {
+			return this.castBooleanToString(this.showFooter)
+		},
+		roomInfoEnabledCasted() {
+			return this.castBooleanToString(this.roomInfoEnabled)
+		},
+		textareaActionEnabledCasted() {
+			return this.castBooleanToString(this.textareaActionEnabled)
+		},
+		textareaAutoFocusCasted() {
+			return this.castBooleanToString(this.textareaAutoFocus)
+		},
+		userTagsEnabledCasted() {
+			return this.castBooleanToString(this.userTagsEnabled)
+		},
+		emojisSuggestionEnabledCasted() {
+			return this.castBooleanToString(this.emojisSuggestionEnabled)
+		},
+		mediaPreviewEnabledCasted() {
+			return this.castBooleanToString(this.mediaPreviewEnabled)
 		}
 	},
 
@@ -283,14 +352,14 @@ export default {
 
 				if (
 					!this.loadingMoreRooms &&
-					this.loadFirstRoom &&
+					this.loadFirstRoomCasted &&
 					newVal[0] &&
 					(!oldVal || newVal.length !== oldVal.length)
 				) {
 					if (this.roomId) {
 						const room = newVal.find(r => r.roomId === this.roomId) || {}
 						this.fetchRoom({ room })
-					} else if (!this.isMobile || this.singleRoom) {
+					} else if (!this.isMobile || this.singleRoomCasted) {
 						this.fetchRoom({ room: this.orderedRooms[0] })
 					} else {
 						this.showRoomsList = true
@@ -299,15 +368,15 @@ export default {
 			}
 		},
 
-		loadingRooms(val) {
+		loadingRoomsCasted(val) {
 			if (val) this.room = {}
 		},
 
 		roomId: {
 			immediate: true,
 			handler(newVal, oldVal) {
-				if (newVal && !this.loadingRooms && this.rooms.length) {
-					const room = this.rooms.find(r => r.roomId === newVal)
+				if (newVal && !this.loadingRoomsCasted && this.roomsCasted.length) {
+					const room = this.roomsCasted.find(r => r.roomId === newVal)
 					this.fetchRoom({ room })
 				} else if (oldVal && !newVal) {
 					this.room = {}
@@ -325,7 +394,7 @@ export default {
 			})
 		},
 
-		roomsListOpened(val) {
+		roomsListOpenedCasted(val) {
 			this.showRoomsList = val
 		}
 	},
@@ -338,6 +407,9 @@ export default {
 	},
 
 	methods: {
+		castBooleanToString(val) {
+			return val === 'true' || val === true
+		},
 		updateResponsive() {
 			this.isMobile = window.innerWidth < this.responsiveBreakpoint
 		},
@@ -373,7 +445,7 @@ export default {
 			this.$emit('delete-message', { message, roomId: this.room.roomId })
 		},
 		openFile({ message, file }) {
-			if (this.mediaPreviewEnabled && file.action === 'preview') {
+			if (this.mediaPreviewEnabledCasted && file.action === 'preview') {
 				this.previewFile = file.file
 				this.showMediaPreview = true
 			} else {
