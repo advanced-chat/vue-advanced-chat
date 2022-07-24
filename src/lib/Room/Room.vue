@@ -408,10 +408,6 @@ export default {
 			this.scrollMessagesCount = 0
 			this.resetMessageSelection()
 
-			if (!this.messages.length && this.messagesLoaded) {
-				this.updateLoadingMessages(false)
-			}
-
 			const unwatch = this.$watch(
 				() => this.messages,
 				val => {
