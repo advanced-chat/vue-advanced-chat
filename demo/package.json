@@ -16,21 +16,21 @@
 		"latest": "npm i https://github.com/antoine92190/vue-advanced-chat/tarball/master"
 	},
 	"dependencies": {
-		"firebase": "^9.4.0",
-		"lamejs": "^1.2.1",
-		"vue": "^3.2.37",
+		"firebase": "9.4.0",
+		"lamejs": "1.2.1",
+		"vue": "3.2.37",
 		"vue-advanced-chat": "https://github.com/antoine92190/vue-advanced-chat/tarball/vite"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.12.16",
-		"@vitejs/plugin-vue": "^1.10.2",
-		"@vue/compiler-sfc": "^3.2.22",
-		"@vue/eslint-config-standard": "^4.0.0",
-		"babel-eslint": "^10.0.3",
-		"eslint": "^7.32.0",
-		"eslint-plugin-vue": "^8.0.3",
-		"node-sass": "^6.0.1",
-		"vite": "^2.9.14",
-		"vue-loader": "^16.8.3"
+		"@babel/core": "7.12.16",
+		"@vitejs/plugin-vue": "1.10.2",
+		"@vue/compiler-sfc": "3.2.22",
+		"@vue/eslint-config-standard": "4.0.0",
+		"babel-eslint": "10.0.3",
+		"eslint": "7.32.0",
+		"eslint-plugin-vue": "8.0.3",
+		"node-sass": "6.0.1",
+		"vite": "2.9.14",
+		"vue-loader": "16.8.3"
 	}
 }
