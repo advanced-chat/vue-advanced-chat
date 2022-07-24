@@ -270,7 +270,7 @@ export default {
 				(!this.roomId && !this.loadFirstRoom)
 
 			if (noRoomSelected) {
-				this.loadingMessages = false /* eslint-disable-line vue/no-side-effects-in-computed-properties */
+				this.updateLoadingMessages(false)
 			}
 			return noRoomSelected
 		},
@@ -280,14 +280,6 @@ export default {
 	},
 
 	watch: {
-		loadingMessages(val) {
-			if (val) {
-				this.infiniteState = null
-			} else {
-				if (this.infiniteState) this.infiniteState.loaded()
-				setTimeout(() => this.initIntersectionObserver())
-			}
-		},
 		roomId() {
 			this.onRoomChanged()
 		},
@@ -316,7 +308,7 @@ export default {
 			}
 		},
 		messagesLoaded(val) {
-			if (val) this.loadingMessages = false
+			if (val) this.updateLoadingMessages(false)
 			if (this.infiniteState) this.infiniteState.complete()
 		}
 	},
@@ -326,6 +318,16 @@ export default {
 	},
 
 	methods: {
+		updateLoadingMessages(val) {
+			this.loadingMessages = val
+
+			if (val) {
+				this.infiniteState = null
+			} else {
+				if (this.infiniteState) this.infiniteState.loaded()
+				setTimeout(() => this.initIntersectionObserver())
+			}
+		},
 		initIntersectionObserver() {
 			if (this.observer) {
 				this.showLoader = true
@@ -401,13 +403,13 @@ export default {
 			}
 		},
 		onRoomChanged() {
-			this.loadingMessages = true
+			this.updateLoadingMessages(true)
 			this.scrollIcon = false
 			this.scrollMessagesCount = 0
 			this.resetMessageSelection()
 
 			if (!this.messages.length && this.messagesLoaded) {
-				this.loadingMessages = false
+				this.updateLoadingMessages(false)
 			}
 
 			const unwatch = this.$watch(
@@ -422,7 +424,7 @@ export default {
 
 					setTimeout(() => {
 						element.scrollTo({ top: element.scrollHeight })
-						this.loadingMessages = false
+						this.updateLoadingMessages(false)
 					})
 				}
 			)

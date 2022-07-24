@@ -365,7 +365,6 @@ export default {
 
 			if (options.reset) {
 				this.resetMessages()
-				this.roomId = room.roomId
 			}
 
 			if (this.previousLastLoadedMessage && !this.lastLoadedMessage) {
