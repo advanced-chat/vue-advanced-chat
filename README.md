@@ -212,12 +212,12 @@ fetchMessages({ room, options }) {
 | <div style="width:230px">Prop</div> | Type             | Required | Default                                                                                                           |
 | ----------------------------------- | ---------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
 | `height`                            | String           | -        | `600px`                                                                                                           |
-| `current-user-id`(1)                | [String, Number] | `true`   | -                                                                                                                 |
+| `current-user-id`(1)                | String           | `true`   | -                                                                                                                 |
 | `rooms`                             | Array            | -        | `[]`                                                                                                              |
-| `rooms-order`                       | String           | -        | `desc`                                                                                                            |
+| `rooms-order`                       | `desc` / `asc`   | -        | `desc`                                                                                                            |
 | `loading-rooms`(2)                  | Boolean          | -        | `false`                                                                                                           |
 | `rooms-loaded`(3)                   | Boolean          | -        | `false`                                                                                                           |
-| `room-id`(4)                        | [String, Number] | -        | `null`                                                                                                            |
+| `room-id`(4)                        | String           | -        | `null`                                                                                                            |
 | `load-first-room`(5)                | Boolean          | -        | `true`                                                                                                            |
 | `rooms-list-opened`                 | Boolean          | -        | `true`                                                                                                            |
 | `messages`                          | Array            | -        | `[]`                                                                                                              |
@@ -253,7 +253,7 @@ fetchMessages({ room, options }) {
 | `responsive-breakpoint`(22)         | Number           | -        | `900`                                                                                                             |
 | `single-room`(23)                   | Boolean          | -        | `false`                                                                                                           |
 | `scroll-distance`(24)               | Number           | -        | `60`                                                                                                              |
-| `theme`(25)                         | Sring            | -        | `light`                                                                                                           |
+| `theme`(25)                         | `light` / `dark` | -        | `light`                                                                                                           |
 | `accepted-files`(26)                | String           | -        | `*`                                                                                                               |
 | `styles`(27)                        | Object           | -        | (25)                                                                                                              |
 
@@ -502,7 +502,7 @@ Your props must follow a specific structure to display rooms and messages correc
 ```javascript
 rooms="[
   {
-    roomId: 1,
+    roomId: '1',
     roomName: 'Room 1',
     avatar: 'assets/imgs/people.png',
     unreadCount: 4,
