@@ -7,7 +7,7 @@ export default defineConfig({
 		vue({
 			template: {
 				compilerOptions: {
-					isCustomElement: tagName => tagName.includes('vue-advanced-chat')
+					isCustomElement: tagName => tagName === 'vue-advanced-chat'
 				}
 			}
 		})
