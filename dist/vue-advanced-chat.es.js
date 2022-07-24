@@ -1690,10 +1690,10 @@ const _sfc_main$l = {
         this.showLoader = true;
         this.observer.disconnect();
       }
-      const loader = document.getElementById("infinite-loader-rooms");
+      const loader = document.querySelector("vue-advanced-chat").shadowRoot.getElementById("infinite-loader-rooms");
       if (loader) {
         const options2 = {
-          root: document.getElementById("rooms-list"),
+          root: document.querySelector("vue-advanced-chat").shadowRoot.getElementById("rooms-list"),
           rootMargin: `${this.scrollDistance}px`,
           threshold: 0
         };
@@ -1747,7 +1747,10 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_loader = resolveComponent("loader");
   const _component_room_content = resolveComponent("room-content");
   return withDirectives((openBlock(), createElementBlock("div", {
-    class: normalizeClass(["vac-rooms-container", { "vac-rooms-container-full": $props.isMobile, "vac-app-border-r": !$props.isMobile }])
+    class: normalizeClass(["vac-rooms-container", {
+      "vac-rooms-container-full": $props.isMobile,
+      "vac-app-border-r": !$props.isMobile
+    }])
   }, [
     renderSlot(_ctx.$slots, "rooms-header"),
     renderSlot(_ctx.$slots, "rooms-list-search", {}, () => [
@@ -4829,7 +4832,7 @@ const _sfc_main$j = {
     },
     setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
       const mobileSize = innerWidth < 500 || innerHeight < 700;
-      const roomFooterRef = document.getElementById("room-footer");
+      const roomFooterRef = document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer");
       if (!roomFooterRef) {
         if (mobileSize)
           this.emojiPickerRight = "-50px";
@@ -4988,7 +4991,7 @@ const _sfc_main$h = {
   emits: ["remove-file", "reset-message"],
   computed: {
     footerHeight() {
-      return document.getElementById("room-footer").clientHeight;
+      return document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer").clientHeight;
     }
   }
 };
@@ -5134,7 +5137,7 @@ const _sfc_main$f = {
     }
   },
   mounted() {
-    this.player = document.getElementById(this.playerUniqId);
+    this.player = document.querySelector("vue-advanced-chat").shadowRoot.getElementById(this.playerUniqId);
     this.player.addEventListener("ended", () => {
       this.isPlaying = false;
     });
@@ -5228,7 +5231,7 @@ const _sfc_main$e = {
   emits: ["reset-message"],
   computed: {
     footerHeight() {
-      return document.getElementById("room-footer").clientHeight;
+      return document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer").clientHeight;
     },
     firstFile() {
       var _a, _b;
@@ -5365,7 +5368,7 @@ const _sfc_main$d = {
   },
   computed: {
     footerHeight() {
-      return document.getElementById("room-footer").clientHeight;
+      return document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer").clientHeight;
     }
   },
   watch: {
@@ -5438,7 +5441,7 @@ const _sfc_main$c = {
   },
   computed: {
     footerHeight() {
-      return document.getElementById("room-footer").clientHeight;
+      return document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer").clientHeight;
     }
   },
   watch: {
@@ -5500,7 +5503,7 @@ const _sfc_main$b = {
   },
   computed: {
     footerHeight() {
-      return document.getElementById("room-footer").clientHeight;
+      return document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer").clientHeight;
     }
   },
   watch: {
@@ -20239,8 +20242,8 @@ const _sfc_main$a = {
     initRecorder() {
       this.isRecording = false;
       return new Recorder({
-        bitRate: this.audioBitRate,
-        sampleRate: this.audioSampleRate,
+        bitRate: Number(this.audioBitRate),
+        sampleRate: Number(this.audioSampleRate),
         beforeRecording: null,
         afterRecording: null,
         pauseRecording: null,
@@ -20986,7 +20989,7 @@ const _sfc_main$5 = {
       if (!this.optionsOpened)
         return;
       setTimeout(() => {
-        const roomFooterRef = document.getElementById("room-footer");
+        const roomFooterRef = document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer");
         if (!roomFooterRef || !this.$refs.menuOptions || !this.$refs.actionIcon) {
           return;
         }
@@ -21727,7 +21730,7 @@ const _sfc_main$2 = {
     showNoRoom() {
       const noRoomSelected = !this.rooms.length && !this.loadingRooms || !this.roomId && !this.loadFirstRoom;
       if (noRoomSelected) {
-        this.loadingMessages = false;
+        this.updateLoadingMessages(false);
       }
       return noRoomSelected;
     },
@@ -21736,15 +21739,6 @@ const _sfc_main$2 = {
     }
   },
   watch: {
-    loadingMessages(val) {
-      if (val) {
-        this.infiniteState = null;
-      } else {
-        if (this.infiniteState)
-          this.infiniteState.loaded();
-        setTimeout(() => this.initIntersectionObserver());
-      }
-    },
     roomId() {
       this.onRoomChanged();
     },
@@ -21770,7 +21764,7 @@ const _sfc_main$2 = {
     },
     messagesLoaded(val) {
       if (val)
-        this.loadingMessages = false;
+        this.updateLoadingMessages(false);
       if (this.infiniteState)
         this.infiniteState.complete();
     }
@@ -21779,15 +21773,25 @@ const _sfc_main$2 = {
     this.newMessages = [];
   },
   methods: {
+    updateLoadingMessages(val) {
+      this.loadingMessages = val;
+      if (val) {
+        this.infiniteState = null;
+      } else {
+        if (this.infiniteState)
+          this.infiniteState.loaded();
+        setTimeout(() => this.initIntersectionObserver());
+      }
+    },
     initIntersectionObserver() {
       if (this.observer) {
         this.showLoader = true;
         this.observer.disconnect();
       }
-      const loader = document.getElementById("infinite-loader-messages");
+      const loader = document.querySelector("vue-advanced-chat").shadowRoot.getElementById("infinite-loader-messages");
       if (loader) {
         const options2 = {
-          root: document.getElementById("messages-list"),
+          root: document.querySelector("vue-advanced-chat").shadowRoot.getElementById("messages-list"),
           rootMargin: `${this.scrollDistance}px`,
           threshold: 0
         };
@@ -21837,13 +21841,10 @@ const _sfc_main$2 = {
       }
     },
     onRoomChanged() {
-      this.loadingMessages = true;
+      this.updateLoadingMessages(true);
       this.scrollIcon = false;
       this.scrollMessagesCount = 0;
       this.resetMessageSelection();
-      if (!this.messages.length && this.messagesLoaded) {
-        this.loadingMessages = false;
-      }
       const unwatch = this.$watch(() => this.messages, (val) => {
         if (!val || !val.length)
           return;
@@ -21853,7 +21854,7 @@ const _sfc_main$2 = {
         unwatch();
         setTimeout(() => {
           element2.scrollTo({ top: element2.scrollHeight });
-          this.loadingMessages = false;
+          this.updateLoadingMessages(false);
         });
       });
     },
@@ -22704,20 +22705,20 @@ const _sfc_main = {
   props: {
     height: { type: String, default: "600px" },
     theme: { type: String, default: "light" },
-    styles: { type: Object, default: () => ({}) },
+    styles: { type: [Object, String], default: () => ({}) },
     responsiveBreakpoint: { type: Number, default: 900 },
-    singleRoom: { type: Boolean, default: false },
-    roomsListOpened: { type: Boolean, default: true },
-    textMessages: { type: Object, default: null },
-    currentUserId: { type: [String, Number], default: "" },
-    rooms: { type: Array, default: () => [] },
+    singleRoom: { type: [Boolean, String], default: false },
+    roomsListOpened: { type: [Boolean, String], default: true },
+    textMessages: { type: [Object, String], default: null },
+    currentUserId: { type: String, default: "" },
+    rooms: { type: [Array, String], default: null },
     roomsOrder: { type: String, default: "desc" },
-    loadingRooms: { type: Boolean, default: false },
-    roomsLoaded: { type: Boolean, default: false },
-    roomId: { type: [String, Number], default: null },
-    loadFirstRoom: { type: Boolean, default: true },
-    messages: { type: Array, default: () => [] },
-    messagesLoaded: { type: Boolean, default: false },
+    loadingRooms: { type: [Boolean, String], default: false },
+    roomsLoaded: { type: [Boolean, String], default: false },
+    roomId: { type: String, default: null },
+    loadFirstRoom: { type: [Boolean, String], default: true },
+    messages: { type: [Array, String], default: null },
+    messagesLoaded: { type: [Boolean, String], default: false },
     roomActions: { type: Array, default: () => [] },
     menuActions: { type: Array, default: () => [] },
     messageActions: {
@@ -22745,17 +22746,17 @@ const _sfc_main = {
         };
       }
     },
-    showSearch: { type: Boolean, default: true },
-    showAddRoom: { type: Boolean, default: true },
-    showSendIcon: { type: Boolean, default: true },
-    showFiles: { type: Boolean, default: true },
-    showAudio: { type: Boolean, default: true },
+    showSearch: { type: [Boolean, String], default: true },
+    showAddRoom: { type: [Boolean, String], default: true },
+    showSendIcon: { type: [Boolean, String], default: true },
+    showFiles: { type: [Boolean, String], default: true },
+    showAudio: { type: [Boolean, String], default: true },
     audioBitRate: { type: Number, default: 128 },
     audioSampleRate: { type: Number, default: 44100 },
-    showEmojis: { type: Boolean, default: true },
-    showReactionEmojis: { type: Boolean, default: true },
-    showNewMessagesDivider: { type: Boolean, default: true },
-    showFooter: { type: Boolean, default: true },
+    showEmojis: { type: [Boolean, String], default: true },
+    showReactionEmojis: { type: [Boolean, String], default: true },
+    showNewMessagesDivider: { type: [Boolean, String], default: true },
+    showFooter: { type: [Boolean, String], default: true },
     textFormatting: {
       type: Object,
       default: () => ({
@@ -22772,16 +22773,16 @@ const _sfc_main = {
       type: Object,
       default: () => ({ disabled: false, target: "_blank", rel: null })
     },
-    roomInfoEnabled: { type: Boolean, default: false },
-    textareaActionEnabled: { type: Boolean, default: false },
-    textareaAutoFocus: { type: Boolean, default: true },
-    userTagsEnabled: { type: Boolean, default: true },
-    emojisSuggestionEnabled: { type: Boolean, default: true },
+    roomInfoEnabled: { type: [Boolean, String], default: false },
+    textareaActionEnabled: { type: [Boolean, String], default: false },
+    textareaAutoFocus: { type: [Boolean, String], default: true },
+    userTagsEnabled: { type: [Boolean, String], default: true },
+    emojisSuggestionEnabled: { type: [Boolean, String], default: true },
     roomMessage: { type: String, default: "" },
     scrollDistance: { type: Number, default: 60 },
     acceptedFiles: { type: String, default: "*" },
-    templatesText: { type: Array, default: null },
-    mediaPreviewEnabled: { type: Boolean, default: true },
+    templatesText: { type: [Array, String], default: null },
+    mediaPreviewEnabled: { type: [Boolean, String], default: true },
     usernameOptions: {
       type: Object,
       default: () => ({ minUsers: 3, currentUser: false })
@@ -22836,7 +22837,7 @@ const _sfc_main = {
       return cssThemeVars(customStyles);
     },
     orderedRooms() {
-      return this.rooms.slice().sort((a, b) => {
+      return this.roomsCasted.slice().sort((a, b) => {
         const aVal = a.index || 0;
         const bVal = b.index || 0;
         if (this.roomsOrder === "asc") {
@@ -22844,6 +22845,75 @@ const _sfc_main = {
         }
         return aVal > bVal ? -1 : bVal > aVal ? 1 : 0;
       });
+    },
+    roomsCasted() {
+      return this.rooms || [];
+    },
+    messagesCasted() {
+      return this.messages || [];
+    },
+    singleRoomCasted() {
+      return this.castBooleanToString(this.singleRoom);
+    },
+    roomsListOpenedCasted() {
+      return this.castBooleanToString(this.roomsListOpened);
+    },
+    loadingRoomsCasted() {
+      return this.castBooleanToString(this.loadingRooms);
+    },
+    roomsLoadedCasted() {
+      return this.castBooleanToString(this.roomsLoaded);
+    },
+    loadFirstRoomCasted() {
+      return this.castBooleanToString(this.loadFirstRoom);
+    },
+    messagesLoadedCasted() {
+      return this.castBooleanToString(this.messagesLoaded);
+    },
+    showSearchCasted() {
+      return this.castBooleanToString(this.showSearch);
+    },
+    showAddRoomCasted() {
+      return this.castBooleanToString(this.showAddRoom);
+    },
+    showSendIconCasted() {
+      return this.castBooleanToString(this.showSendIcon);
+    },
+    showFilesCasted() {
+      return this.castBooleanToString(this.showFiles);
+    },
+    showAudioCasted() {
+      return this.castBooleanToString(this.showAudio);
+    },
+    showEmojisCasted() {
+      return this.castBooleanToString(this.showEmojis);
+    },
+    showReactionEmojisCasted() {
+      return this.castBooleanToString(this.showReactionEmojis);
+    },
+    showNewMessagesDividerCasted() {
+      return this.castBooleanToString(this.showNewMessagesDivider);
+    },
+    showFooterCasted() {
+      return this.castBooleanToString(this.showFooter);
+    },
+    roomInfoEnabledCasted() {
+      return this.castBooleanToString(this.roomInfoEnabled);
+    },
+    textareaActionEnabledCasted() {
+      return this.castBooleanToString(this.textareaActionEnabled);
+    },
+    textareaAutoFocusCasted() {
+      return this.castBooleanToString(this.textareaAutoFocus);
+    },
+    userTagsEnabledCasted() {
+      return this.castBooleanToString(this.userTagsEnabled);
+    },
+    emojisSuggestionEnabledCasted() {
+      return this.castBooleanToString(this.emojisSuggestionEnabled);
+    },
+    mediaPreviewEnabledCasted() {
+      return this.castBooleanToString(this.mediaPreviewEnabled);
     }
   },
   watch: {
@@ -22854,11 +22924,11 @@ const _sfc_main = {
         if (!newVal[0] || !newVal.find((room) => room.roomId === this.room.roomId)) {
           this.showRoomsList = true;
         }
-        if (!this.loadingMoreRooms && this.loadFirstRoom && newVal[0] && (!oldVal || newVal.length !== oldVal.length)) {
+        if (!this.loadingMoreRooms && this.loadFirstRoomCasted && newVal[0] && (!oldVal || newVal.length !== oldVal.length)) {
           if (this.roomId) {
             const room = newVal.find((r) => r.roomId === this.roomId) || {};
             this.fetchRoom({ room });
-          } else if (!this.isMobile || this.singleRoom) {
+          } else if (!this.isMobile || this.singleRoomCasted) {
             this.fetchRoom({ room: this.orderedRooms[0] });
           } else {
             this.showRoomsList = true;
@@ -22866,15 +22936,15 @@ const _sfc_main = {
         }
       }
     },
-    loadingRooms(val) {
+    loadingRoomsCasted(val) {
       if (val)
         this.room = {};
     },
     roomId: {
       immediate: true,
       handler(newVal, oldVal) {
-        if (newVal && !this.loadingRooms && this.rooms.length) {
-          const room = this.rooms.find((r) => r.roomId === newVal);
+        if (newVal && !this.loadingRoomsCasted && this.roomsCasted.length) {
+          const room = this.roomsCasted.find((r) => r.roomId === newVal);
           this.fetchRoom({ room });
         } else if (oldVal && !newVal) {
           this.room = {};
@@ -22889,7 +22959,7 @@ const _sfc_main = {
         partcipantsValidation(user);
       });
     },
-    roomsListOpened(val) {
+    roomsListOpenedCasted(val) {
       this.showRoomsList = val;
     }
   },
@@ -22901,8 +22971,11 @@ const _sfc_main = {
     });
   },
   methods: {
+    castBooleanToString(val) {
+      return val === "true" || val === true;
+    },
     updateResponsive() {
-      this.isMobile = window.innerWidth < this.responsiveBreakpoint;
+      this.isMobile = window.innerWidth < Number(this.responsiveBreakpoint);
     },
     toggleRoomsList() {
       this.showRoomsList = !this.showRoomsList;
@@ -22938,7 +23011,7 @@ const _sfc_main = {
       this.$emit("delete-message", { message, roomId: this.room.roomId });
     },
     openFile({ message, file }) {
-      if (this.mediaPreviewEnabled && file.action === "preview") {
+      if (this.mediaPreviewEnabledCasted && file.action === "preview") {
         this.previewFile = file.file;
         this.showMediaPreview = true;
       } else {
@@ -23008,17 +23081,17 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     style: normalizeStyle([{ height: $props.height }, $options.cssVars])
   }, [
     createElementVNode("div", _hoisted_1, [
-      !$props.singleRoom ? (openBlock(), createBlock(_component_rooms_list, {
+      !$options.singleRoomCasted ? (openBlock(), createBlock(_component_rooms_list, {
         key: 0,
         "current-user-id": $props.currentUserId,
         rooms: $options.orderedRooms,
-        "loading-rooms": $props.loadingRooms,
-        "rooms-loaded": $props.roomsLoaded,
+        "loading-rooms": $options.loadingRoomsCasted,
+        "rooms-loaded": $options.roomsLoadedCasted,
         room: $data.room,
         "room-actions": $props.roomActions,
         "text-messages": $options.t,
-        "show-search": $props.showSearch,
-        "show-add-room": $props.showAddRoom,
+        "show-search": $options.showSearchCasted,
+        "show-add-room": $options.showAddRoomCasted,
         "show-rooms-list": $data.showRoomsList,
         "text-formatting": $props.textFormatting,
         "link-options": $props.linkOptions,
@@ -23041,37 +23114,37 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       ]), 1032, ["current-user-id", "rooms", "loading-rooms", "rooms-loaded", "room", "room-actions", "text-messages", "show-search", "show-add-room", "show-rooms-list", "text-formatting", "link-options", "is-mobile", "scroll-distance", "onFetchRoom", "onFetchMoreRooms", "onAddRoom", "onRoomActionHandler"])) : createCommentVNode("", true),
       createVNode(_component_room, {
         "current-user-id": $props.currentUserId,
-        rooms: $props.rooms,
+        rooms: $options.roomsCasted,
         "room-id": $data.room.roomId || "",
-        "load-first-room": $props.loadFirstRoom,
-        messages: $props.messages,
+        "load-first-room": $options.loadFirstRoomCasted,
+        messages: $options.messagesCasted,
         "room-message": $props.roomMessage,
-        "messages-loaded": $props.messagesLoaded,
+        "messages-loaded": $options.messagesLoadedCasted,
         "menu-actions": $props.menuActions,
         "message-actions": $props.messageActions,
         "message-selection-actions": $props.messageSelectionActions,
         "auto-scroll": $props.autoScroll,
-        "show-send-icon": $props.showSendIcon,
-        "show-files": $props.showFiles,
-        "show-audio": $props.showAudio,
+        "show-send-icon": $options.showSendIconCasted,
+        "show-files": $options.showFilesCasted,
+        "show-audio": $options.showAudioCasted,
         "audio-bit-rate": $props.audioBitRate,
         "audio-sample-rate": $props.audioSampleRate,
-        "show-emojis": $props.showEmojis,
-        "show-reaction-emojis": $props.showReactionEmojis,
-        "show-new-messages-divider": $props.showNewMessagesDivider,
-        "show-footer": $props.showFooter,
+        "show-emojis": $options.showEmojisCasted,
+        "show-reaction-emojis": $options.showReactionEmojisCasted,
+        "show-new-messages-divider": $options.showNewMessagesDividerCasted,
+        "show-footer": $options.showFooterCasted,
         "text-messages": $options.t,
-        "single-room": $props.singleRoom,
+        "single-room": $options.singleRoomCasted,
         "show-rooms-list": $data.showRoomsList,
         "text-formatting": $props.textFormatting,
         "link-options": $props.linkOptions,
         "is-mobile": $data.isMobile,
-        "loading-rooms": $props.loadingRooms,
-        "room-info-enabled": $props.roomInfoEnabled,
-        "textarea-action-enabled": $props.textareaActionEnabled,
-        "textarea-auto-focus": $props.textareaAutoFocus,
-        "user-tags-enabled": $props.userTagsEnabled,
-        "emojis-suggestion-enabled": $props.emojisSuggestionEnabled,
+        "loading-rooms": $options.loadingRoomsCasted,
+        "room-info-enabled": $options.roomInfoEnabledCasted,
+        "textarea-action-enabled": $options.textareaActionEnabledCasted,
+        "textarea-auto-focus": $options.textareaAutoFocusCasted,
+        "user-tags-enabled": $options.userTagsEnabledCasted,
+        "emojis-suggestion-enabled": $options.emojisSuggestionEnabledCasted,
         "scroll-distance": $props.scrollDistance,
         "accepted-files": $props.acceptedFiles,
         "templates-text": $props.templatesText,
