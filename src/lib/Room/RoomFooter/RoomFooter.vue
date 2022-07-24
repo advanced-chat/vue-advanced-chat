@@ -810,8 +810,8 @@ export default {
 			this.isRecording = false
 
 			return new Recorder({
-				bitRate: this.audioBitRate,
-				sampleRate: this.audioSampleRate,
+				bitRate: Number(this.audioBitRate),
+				sampleRate: Number(this.audioSampleRate),
 				beforeRecording: null,
 				afterRecording: null,
 				pauseRecording: null,

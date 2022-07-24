@@ -411,7 +411,7 @@ export default {
 			return val === 'true' || val === true
 		},
 		updateResponsive() {
-			this.isMobile = window.innerWidth < this.responsiveBreakpoint
+			this.isMobile = window.innerWidth < Number(this.responsiveBreakpoint)
 		},
 		toggleRoomsList() {
 			this.showRoomsList = !this.showRoomsList
