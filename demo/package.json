@@ -8,7 +8,7 @@
 		"dev": "vite",
 		"build": "vite build",
 		"serve": "vite preview",
-		"s": "npm run serve",
+		"s": "npm run dev",
 		"lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
 		"reset": "rm -rf node_modules && rm -rf package-lock.json && npm i",
 		"reset-all": "npm run reset && cd .. && npm run reset",
@@ -17,7 +17,6 @@
 	},
 	"dependencies": {
 		"firebase": "9.4.0",
-		"lamejs": "1.2.1",
 		"vue": "3.2.37",
 		"vue-advanced-chat": "https://github.com/antoine92190/vue-advanced-chat/tarball/vite"
 	},

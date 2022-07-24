@@ -2,15 +2,6 @@
 
 import { Mp3Encoder } from 'lamejs'
 
-// let lamejs
-// try {
-// 	lamejs = require('lamejs')
-// } catch (e) {
-// 	lamejs = { missing: true }
-// }
-
-// const { Mp3Encoder } = lamejs
-
 export default class {
 	constructor(config) {
 		this.bitRate = config.bitRate

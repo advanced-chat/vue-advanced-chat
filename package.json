@@ -69,9 +69,7 @@
 	},
 	"dependencies": {
 		"emoji-picker-element": "1.12.1",
+		"lamejs": "1.2.1",
 		"linkifyjs": "2.1.9"
-	},
-	"optionalDependencies": {
-		"lamejs": "1.2.1"
 	}
 }
