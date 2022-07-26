@@ -1762,16 +1762,12 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
         "show-add-room": $props.showAddRoom,
         onSearchRoom: $options.searchRoom,
         onAddRoom: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("add-room"))
-      }, createSlots({ _: 2 }, [
-        renderList(_ctx.$slots, (i, name) => {
-          return {
-            name,
-            fn: withCtx((data) => [
-              renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
-            ])
-          };
-        })
-      ]), 1032, ["rooms", "loading-rooms", "text-messages", "show-search", "show-add-room", "onSearchRoom"])
+      }, {
+        "add-icon": withCtx(() => [
+          renderSlot(_ctx.$slots, "add-icon")
+        ]),
+        _: 3
+      }, 8, ["rooms", "loading-rooms", "text-messages", "show-search", "show-add-room", "onSearchRoom"])
     ]),
     createVNode(_component_loader, { show: $props.loadingRooms }, createSlots({ _: 2 }, [
       renderList(_ctx.$slots, (idx, name) => {
@@ -5674,42 +5670,28 @@ VbrMode$7.vbr_mtrh = new VbrMode$7(4);
 VbrMode$7.vbr_default = VbrMode$7.vbr_mtrh;
 var assert$b = function(x) {
 };
-var common$o = {
-  "System": System$a,
-  "VbrMode": VbrMode$7,
-  "Float": Float$2,
-  "ShortBlock": ShortBlock$3,
-  "Util": Util$5,
-  "Arrays": Arrays$7,
-  "new_array_n": new_array_n$1,
-  "new_byte": new_byte$4,
-  "new_double": new_double$1,
-  "new_float": new_float$f,
-  "new_float_n": new_float_n$6,
-  "new_int": new_int$d,
-  "new_int_n": new_int_n$2,
-  "new_short": new_short,
-  "new_short_n": new_short_n$1,
-  "assert": assert$b
+var common = {
+  System: System$a,
+  VbrMode: VbrMode$7,
+  Float: Float$2,
+  ShortBlock: ShortBlock$3,
+  Util: Util$5,
+  Arrays: Arrays$7,
+  new_array_n: new_array_n$1,
+  new_byte: new_byte$4,
+  new_double: new_double$1,
+  new_float: new_float$f,
+  new_float_n: new_float_n$6,
+  new_int: new_int$d,
+  new_int_n: new_int_n$2,
+  new_short,
+  new_short_n: new_short_n$1,
+  assert: assert$b
 };
-function MPEGMode$2(ordinal) {
-  var _ordinal = ordinal;
-  this.ordinal = function() {
-    return _ordinal;
-  };
-}
-MPEGMode$2.STEREO = new MPEGMode$2(0);
-MPEGMode$2.JOINT_STEREO = new MPEGMode$2(1);
-MPEGMode$2.DUAL_CHANNEL = new MPEGMode$2(2);
-MPEGMode$2.MONO = new MPEGMode$2(3);
-MPEGMode$2.NOT_SET = new MPEGMode$2(4);
-var MPEGMode_1 = MPEGMode$2;
-var common$n = common$o;
-var System$9 = common$n.System;
-var Util$4 = common$n.Util;
-var Arrays$6 = common$n.Arrays;
-var new_float$e = common$n.new_float;
-var Encoder$f = Encoder_1;
+var System$9 = common.System;
+var Util$4 = common.Util;
+var Arrays$6 = common.Arrays;
+var new_float$e = common.new_float;
 function NewMDCT() {
   var enwindow = [
     -477e-9 * 0.740951125354959 / 2384e-9,
@@ -6154,10 +6136,10 @@ function NewMDCT() {
       -2382191739347918e-28
     ]
   ];
-  var tantab_l = win[Encoder$f.SHORT_TYPE];
-  var cx = win[Encoder$f.SHORT_TYPE];
-  var ca = win[Encoder$f.SHORT_TYPE];
-  var cs = win[Encoder$f.SHORT_TYPE];
+  var tantab_l = win[Encoder.SHORT_TYPE];
+  var cx = win[Encoder.SHORT_TYPE];
+  var ca = win[Encoder.SHORT_TYPE];
+  var cs = win[Encoder.SHORT_TYPE];
   var order = [
     0,
     1,
@@ -6542,16 +6524,16 @@ function NewMDCT() {
   function mdct_short(inout, inoutPos) {
     for (var l = 0; l < 3; l++) {
       var tc0, tc1, tc2, ts0, ts1, ts2;
-      ts0 = inout[inoutPos + 2 * 3] * win[Encoder$f.SHORT_TYPE][0] - inout[inoutPos + 5 * 3];
-      tc0 = inout[inoutPos + 0 * 3] * win[Encoder$f.SHORT_TYPE][2] - inout[inoutPos + 3 * 3];
+      ts0 = inout[inoutPos + 2 * 3] * win[Encoder.SHORT_TYPE][0] - inout[inoutPos + 5 * 3];
+      tc0 = inout[inoutPos + 0 * 3] * win[Encoder.SHORT_TYPE][2] - inout[inoutPos + 3 * 3];
       tc1 = ts0 + tc0;
       tc2 = ts0 - tc0;
-      ts0 = inout[inoutPos + 5 * 3] * win[Encoder$f.SHORT_TYPE][0] + inout[inoutPos + 2 * 3];
-      tc0 = inout[inoutPos + 3 * 3] * win[Encoder$f.SHORT_TYPE][2] + inout[inoutPos + 0 * 3];
+      ts0 = inout[inoutPos + 5 * 3] * win[Encoder.SHORT_TYPE][0] + inout[inoutPos + 2 * 3];
+      tc0 = inout[inoutPos + 3 * 3] * win[Encoder.SHORT_TYPE][2] + inout[inoutPos + 0 * 3];
       ts1 = ts0 + tc0;
       ts2 = -ts0 + tc0;
-      tc0 = (inout[inoutPos + 1 * 3] * win[Encoder$f.SHORT_TYPE][1] - inout[inoutPos + 4 * 3]) * 2069978111953089e-26;
-      ts0 = (inout[inoutPos + 4 * 3] * win[Encoder$f.SHORT_TYPE][1] + inout[inoutPos + 1 * 3]) * 2069978111953089e-26;
+      tc0 = (inout[inoutPos + 1 * 3] * win[Encoder.SHORT_TYPE][1] - inout[inoutPos + 4 * 3]) * 2069978111953089e-26;
+      ts0 = (inout[inoutPos + 4 * 3] * win[Encoder.SHORT_TYPE][1] + inout[inoutPos + 1 * 3]) * 2069978111953089e-26;
       inout[inoutPos + 3 * 0] = tc1 * 190752519173728e-25 + tc0;
       inout[inoutPos + 3 * 5] = -ts1 * 190752519173728e-25 + ts0;
       tc2 = tc2 * 0.8660254037844387 * 1907525191737281e-26;
@@ -6656,12 +6638,13 @@ function NewMDCT() {
             Arrays$6.fill(mdct_enc, mdct_encPos + 0, mdct_encPos + 18, 0);
           } else {
             if (gfc.amp_filter[band] < 1) {
-              for (var k = 0; k < 18; k++)
+              for (var k = 0; k < 18; k++) {
                 band1[k][order[band]] *= gfc.amp_filter[band];
+              }
             }
-            if (type == Encoder$f.SHORT_TYPE) {
+            if (type == Encoder.SHORT_TYPE) {
               for (var k = -NS / 4; k < 0; k++) {
-                var w = win[Encoder$f.SHORT_TYPE][k + 3];
+                var w = win[Encoder.SHORT_TYPE][k + 3];
                 mdct_enc[mdct_encPos + k * 3 + 9] = band0[9 + k][order[band]] * w - band0[8 - k][order[band]];
                 mdct_enc[mdct_encPos + k * 3 + 18] = band0[14 - k][order[band]] * w + band0[15 + k][order[band]];
                 mdct_enc[mdct_encPos + k * 3 + 10] = band0[15 + k][order[band]] * w - band0[14 - k][order[band]];
@@ -6682,7 +6665,7 @@ function NewMDCT() {
               mdct_long(mdct_enc, mdct_encPos, work);
             }
           }
-          if (type != Encoder$f.SHORT_TYPE && band != 0) {
+          if (type != Encoder.SHORT_TYPE && band != 0) {
             for (var k = 7; k >= 0; --k) {
               var bu, bd;
               bu = mdct_enc[mdct_encPos + k] * ca[20 + k] + mdct_enc[mdct_encPos + -1 - k] * cs[28 + k];
@@ -6703,66 +6686,70 @@ function NewMDCT() {
     }
   };
 }
-var NewMDCT_1 = NewMDCT;
-var Encoder$e = Encoder_1;
-var common$m = common$o;
-var System$8 = common$m.System;
-var new_float$d = common$m.new_float;
-var new_float_n$5 = common$m.new_float_n;
-function III_psy_xmin$2() {
-  this.l = new_float$d(Encoder$e.SBMAX_l);
-  this.s = new_float_n$5([Encoder$e.SBMAX_s, 3]);
+var System$8 = common.System;
+var new_float$d = common.new_float;
+var new_float_n$5 = common.new_float_n;
+function III_psy_xmin() {
+  this.l = new_float$d(Encoder.SBMAX_l);
+  this.s = new_float_n$5([Encoder.SBMAX_s, 3]);
   var self = this;
   this.assign = function(iii_psy_xmin) {
-    System$8.arraycopy(iii_psy_xmin.l, 0, self.l, 0, Encoder$e.SBMAX_l);
-    for (var i = 0; i < Encoder$e.SBMAX_s; i++) {
+    System$8.arraycopy(iii_psy_xmin.l, 0, self.l, 0, Encoder.SBMAX_l);
+    for (var i = 0; i < Encoder.SBMAX_s; i++) {
       for (var j = 0; j < 3; j++) {
         self.s[i][j] = iii_psy_xmin.s[i][j];
       }
     }
   };
 }
-var III_psy_xmin_1 = III_psy_xmin$2;
-var III_psy_xmin$1 = III_psy_xmin_1;
 function III_psy_ratio() {
-  this.thm = new III_psy_xmin$1();
-  this.en = new III_psy_xmin$1();
+  this.thm = new III_psy_xmin();
+  this.en = new III_psy_xmin();
 }
-var III_psy_ratio_1 = III_psy_ratio;
-var common$l = common$o;
-var System$7 = common$l.System;
-var VbrMode$6 = common$l.VbrMode;
-var new_array_n = common$l.new_array_n;
-var new_float$c = common$l.new_float;
-var new_float_n$4 = common$l.new_float_n;
-var new_int$c = common$l.new_int;
-var assert$a = common$l.assert;
-Encoder$d.ENCDELAY = 576;
-Encoder$d.POSTDELAY = 1152;
-Encoder$d.MDCTDELAY = 48;
-Encoder$d.FFTOFFSET = 224 + Encoder$d.MDCTDELAY;
-Encoder$d.DECDELAY = 528;
-Encoder$d.SBLIMIT = 32;
-Encoder$d.CBANDS = 64;
-Encoder$d.SBPSY_l = 21;
-Encoder$d.SBPSY_s = 12;
-Encoder$d.SBMAX_l = 22;
-Encoder$d.SBMAX_s = 13;
-Encoder$d.PSFB21 = 6;
-Encoder$d.PSFB12 = 6;
-Encoder$d.BLKSIZE = 1024;
-Encoder$d.HBLKSIZE = Encoder$d.BLKSIZE / 2 + 1;
-Encoder$d.BLKSIZE_s = 256;
-Encoder$d.HBLKSIZE_s = Encoder$d.BLKSIZE_s / 2 + 1;
-Encoder$d.NORM_TYPE = 0;
-Encoder$d.START_TYPE = 1;
-Encoder$d.SHORT_TYPE = 2;
-Encoder$d.STOP_TYPE = 3;
-Encoder$d.MPG_MD_LR_LR = 0;
-Encoder$d.MPG_MD_LR_I = 1;
-Encoder$d.MPG_MD_MS_LR = 2;
-Encoder$d.MPG_MD_MS_I = 3;
-Encoder$d.fircoef = [
+function MPEGMode(ordinal) {
+  var _ordinal = ordinal;
+  this.ordinal = function() {
+    return _ordinal;
+  };
+}
+MPEGMode.STEREO = new MPEGMode(0);
+MPEGMode.JOINT_STEREO = new MPEGMode(1);
+MPEGMode.DUAL_CHANNEL = new MPEGMode(2);
+MPEGMode.MONO = new MPEGMode(3);
+MPEGMode.NOT_SET = new MPEGMode(4);
+var System$7 = common.System;
+var VbrMode$6 = common.VbrMode;
+var new_array_n = common.new_array_n;
+var new_float$c = common.new_float;
+var new_float_n$4 = common.new_float_n;
+var new_int$c = common.new_int;
+var assert$a = common.assert;
+Encoder.ENCDELAY = 576;
+Encoder.POSTDELAY = 1152;
+Encoder.MDCTDELAY = 48;
+Encoder.FFTOFFSET = 224 + Encoder.MDCTDELAY;
+Encoder.DECDELAY = 528;
+Encoder.SBLIMIT = 32;
+Encoder.CBANDS = 64;
+Encoder.SBPSY_l = 21;
+Encoder.SBPSY_s = 12;
+Encoder.SBMAX_l = 22;
+Encoder.SBMAX_s = 13;
+Encoder.PSFB21 = 6;
+Encoder.PSFB12 = 6;
+Encoder.BLKSIZE = 1024;
+Encoder.HBLKSIZE = Encoder.BLKSIZE / 2 + 1;
+Encoder.BLKSIZE_s = 256;
+Encoder.HBLKSIZE_s = Encoder.BLKSIZE_s / 2 + 1;
+Encoder.NORM_TYPE = 0;
+Encoder.START_TYPE = 1;
+Encoder.SHORT_TYPE = 2;
+Encoder.STOP_TYPE = 3;
+Encoder.MPG_MD_LR_LR = 0;
+Encoder.MPG_MD_LR_I = 1;
+Encoder.MPG_MD_MS_LR = 2;
+Encoder.MPG_MD_MS_I = 3;
+Encoder.fircoef = [
   -0.0207887 * 5,
   -0.0378413 * 5,
   -0.0432472 * 5,
@@ -6773,12 +6760,9 @@ Encoder$d.fircoef = [
   0.151365 * 5,
   0.187098 * 5
 ];
-function Encoder$d() {
-  var MPEGMode2 = MPEGMode_1;
-  var NewMDCT2 = NewMDCT_1;
-  var III_psy_ratio2 = III_psy_ratio_1;
-  var FFTOFFSET = Encoder$d.FFTOFFSET;
-  var MPG_MD_MS_LR = Encoder$d.MPG_MD_MS_LR;
+function Encoder() {
+  var FFTOFFSET = Encoder.FFTOFFSET;
+  var MPG_MD_MS_LR = Encoder.MPG_MD_MS_LR;
   var bs = null;
   this.psy = null;
   var psy = null;
@@ -6791,7 +6775,7 @@ function Encoder$d() {
     vbr = _vbr;
     qupvt = _qupvt;
   };
-  var newMDCT = new NewMDCT2();
+  var newMDCT = new NewMDCT();
   function adjust_ATH(gfc) {
     var gr2_max, max_pow;
     if (gfc.ATH.useAdjust == 0) {
@@ -6842,8 +6826,8 @@ function Encoder$d() {
   }
   function updateStats(gfc) {
     var gr, ch;
-    assert$a(0 <= gfc.bitrate_index && gfc.bitrate_index < 16);
-    assert$a(0 <= gfc.mode_ext && gfc.mode_ext < 4);
+    assert$a(gfc.bitrate_index >= 0 && gfc.bitrate_index < 16);
+    assert$a(gfc.mode_ext >= 0 && gfc.mode_ext < 4);
     gfc.bitrate_stereoMode_Hist[gfc.bitrate_index][4]++;
     gfc.bitrate_stereoMode_Hist[15][4]++;
     if (gfc.channels_out == 2) {
@@ -6884,33 +6868,39 @@ function Encoder$d() {
       }
       for (gr = 0; gr < gfc.mode_gr; gr++) {
         for (ch = 0; ch < gfc.channels_out; ch++) {
-          gfc.l3_side.tt[gr][ch].block_type = Encoder$d.SHORT_TYPE;
+          gfc.l3_side.tt[gr][ch].block_type = Encoder.SHORT_TYPE;
         }
       }
       newMDCT.mdct_sub48(gfc, primebuff0, primebuff1);
-      assert$a(gfc.mf_size >= Encoder$d.BLKSIZE + gfp.framesize - Encoder$d.FFTOFFSET);
+      assert$a(gfc.mf_size >= Encoder.BLKSIZE + gfp.framesize - Encoder.FFTOFFSET);
       assert$a(gfc.mf_size >= 512 + gfp.framesize - 32);
     }
   }
   this.lame_encode_mp3_frame = function(gfp, inbuf_l, inbuf_r, mp3buf, mp3bufPos, mp3buf_size) {
     var mp3count;
     var masking_LR = new_array_n([2, 2]);
-    masking_LR[0][0] = new III_psy_ratio2();
-    masking_LR[0][1] = new III_psy_ratio2();
-    masking_LR[1][0] = new III_psy_ratio2();
-    masking_LR[1][1] = new III_psy_ratio2();
+    masking_LR[0][0] = new III_psy_ratio();
+    masking_LR[0][1] = new III_psy_ratio();
+    masking_LR[1][0] = new III_psy_ratio();
+    masking_LR[1][1] = new III_psy_ratio();
     var masking_MS = new_array_n([2, 2]);
-    masking_MS[0][0] = new III_psy_ratio2();
-    masking_MS[0][1] = new III_psy_ratio2();
-    masking_MS[1][0] = new III_psy_ratio2();
-    masking_MS[1][1] = new III_psy_ratio2();
+    masking_MS[0][0] = new III_psy_ratio();
+    masking_MS[0][1] = new III_psy_ratio();
+    masking_MS[1][0] = new III_psy_ratio();
+    masking_MS[1][1] = new III_psy_ratio();
     var masking;
     var inbuf = [null, null];
     var gfc = gfp.internal_flags;
     var tot_ener = new_float_n$4([2, 4]);
     var ms_ener_ratio = [0.5, 0.5];
-    var pe = [[0, 0], [0, 0]];
-    var pe_MS = [[0, 0], [0, 0]];
+    var pe = [
+      [0, 0],
+      [0, 0]
+    ];
+    var pe_MS = [
+      [0, 0],
+      [0, 0]
+    ];
     var pe_use;
     var ch, gr;
     inbuf[0] = inbuf_l;
@@ -6931,7 +6921,7 @@ function Encoder$d() {
       for (gr = 0; gr < gfc.mode_gr; gr++) {
         for (ch = 0; ch < gfc.channels_out; ch++) {
           bufp[ch] = inbuf[ch];
-          bufpPos = 576 + gr * 576 - Encoder$d.FFTOFFSET;
+          bufpPos = 576 + gr * 576 - Encoder.FFTOFFSET;
         }
         if (gfp.VBR == VbrMode$6.vbr_mtrh || gfp.VBR == VbrMode$6.vbr_mt) {
           ret = psy.L3psycho_anal_vbr(gfp, bufp, bufpPos, gr, masking_LR, masking_MS, pe[gr], pe_MS[gr], tot_ener[gr], blocktype);
@@ -6940,10 +6930,11 @@ function Encoder$d() {
         }
         if (ret != 0)
           return -4;
-        if (gfp.mode == MPEGMode2.JOINT_STEREO) {
+        if (gfp.mode == MPEGMode.JOINT_STEREO) {
           ms_ener_ratio[gr] = tot_ener[gr][2] + tot_ener[gr][3];
-          if (ms_ener_ratio[gr] > 0)
+          if (ms_ener_ratio[gr] > 0) {
             ms_ener_ratio[gr] = tot_ener[gr][3] / ms_ener_ratio[gr];
+          }
         }
         for (ch = 0; ch < gfc.channels_out; ch++) {
           var cod_info = gfc.l3_side.tt[gr][ch];
@@ -6952,19 +6943,20 @@ function Encoder$d() {
         }
       }
     } else {
-      for (gr = 0; gr < gfc.mode_gr; gr++)
+      for (gr = 0; gr < gfc.mode_gr; gr++) {
         for (ch = 0; ch < gfc.channels_out; ch++) {
-          gfc.l3_side.tt[gr][ch].block_type = Encoder$d.NORM_TYPE;
+          gfc.l3_side.tt[gr][ch].block_type = Encoder.NORM_TYPE;
           gfc.l3_side.tt[gr][ch].mixed_block_flag = 0;
           pe_MS[gr][ch] = pe[gr][ch] = 700;
         }
+      }
     }
     adjust_ATH(gfc);
     newMDCT.mdct_sub48(gfc, inbuf[0], inbuf[1]);
-    gfc.mode_ext = Encoder$d.MPG_MD_LR_LR;
+    gfc.mode_ext = Encoder.MPG_MD_LR_LR;
     if (gfp.force_ms) {
-      gfc.mode_ext = Encoder$d.MPG_MD_MS_LR;
-    } else if (gfp.mode == MPEGMode2.JOINT_STEREO) {
+      gfc.mode_ext = Encoder.MPG_MD_MS_LR;
+    } else if (gfp.mode == MPEGMode.JOINT_STEREO) {
       var sum_pe_MS = 0;
       var sum_pe_LR = 0;
       for (gr = 0; gr < gfc.mode_gr; gr++) {
@@ -6977,7 +6969,7 @@ function Encoder$d() {
         var gi0 = gfc.l3_side.tt[0];
         var gi1 = gfc.l3_side.tt[gfc.mode_gr - 1];
         if (gi0[0].block_type == gi0[1].block_type && gi1[0].block_type == gi1[1].block_type) {
-          gfc.mode_ext = Encoder$d.MPG_MD_MS_LR;
+          gfc.mode_ext = Encoder.MPG_MD_MS_LR;
         }
       }
     }
@@ -7009,13 +7001,15 @@ function Encoder$d() {
       for (i = 0; i < 18; i++)
         gfc.nsPsy.pefirbuf[i] = gfc.nsPsy.pefirbuf[i + 1];
       f = 0;
-      for (gr = 0; gr < gfc.mode_gr; gr++)
+      for (gr = 0; gr < gfc.mode_gr; gr++) {
         for (ch = 0; ch < gfc.channels_out; ch++)
           f += pe_use[gr][ch];
+      }
       gfc.nsPsy.pefirbuf[18] = f;
       f = gfc.nsPsy.pefirbuf[9];
-      for (i = 0; i < 9; i++)
-        f += (gfc.nsPsy.pefirbuf[i] + gfc.nsPsy.pefirbuf[18 - i]) * Encoder$d.fircoef[i];
+      for (i = 0; i < 9; i++) {
+        f += (gfc.nsPsy.pefirbuf[i] + gfc.nsPsy.pefirbuf[18 - i]) * Encoder.fircoef[i];
+      }
       f = 670 * 5 * gfc.mode_gr * gfc.channels_out / f;
       for (gr = 0; gr < gfc.mode_gr; gr++) {
         for (ch = 0; ch < gfc.channels_out; ch++) {
@@ -7031,8 +7025,9 @@ function Encoder$d() {
     if (gfp.analysis && gfc.pinfo != null) {
       for (ch = 0; ch < gfc.channels_out; ch++) {
         var j;
-        for (j = 0; j < FFTOFFSET; j++)
+        for (j = 0; j < FFTOFFSET; j++) {
           gfc.pinfo.pcmdata[ch][j] = gfc.pinfo.pcmdata[ch][j + gfp.framesize];
+        }
         for (j = FFTOFFSET; j < 1600; j++) {
           gfc.pinfo.pcmdata[ch][j] = inbuf[ch][j - FFTOFFSET];
         }
@@ -7043,14 +7038,11 @@ function Encoder$d() {
     return mp3count;
   };
 }
-var Encoder_1 = Encoder$d;
-var common$k = common$o;
-var Util$3 = common$k.Util;
-var new_float$b = common$k.new_float;
-var Encoder$c = Encoder_1;
-function FFT$1() {
-  var window2 = new_float$b(Encoder$c.BLKSIZE);
-  var window_s = new_float$b(Encoder$c.BLKSIZE_s / 2);
+var Util$3 = common.Util;
+var new_float$b = common.new_float;
+function FFT() {
+  var window2 = new_float$b(Encoder.BLKSIZE);
+  var window_s = new_float$b(Encoder.BLKSIZE_s / 2);
   var costab = [
     0.9238795325112867,
     0.3826834323650898,
@@ -7276,9 +7268,9 @@ function FFT$1() {
   ];
   this.fft_short = function(gfc, x_real, chn, buffer, bufPos) {
     for (var b = 0; b < 3; b++) {
-      var x = Encoder$c.BLKSIZE_s / 2;
+      var x = Encoder.BLKSIZE_s / 2;
       var k = 65535 & 576 / 3 * (b + 1);
-      var j = Encoder$c.BLKSIZE_s / 8 - 1;
+      var j = Encoder.BLKSIZE_s / 8 - 1;
       do {
         var f0, f1, f2, f3, w;
         var i = rv_tbl[j << 2] & 255;
@@ -7303,17 +7295,17 @@ function FFT$1() {
         w = window_s[62 - i] * buffer[chn][bufPos + i + k + 193];
         f3 = f2 - w;
         f2 = f2 + w;
-        x_real[b][x + Encoder$c.BLKSIZE_s / 2 + 0] = f0 + f2;
-        x_real[b][x + Encoder$c.BLKSIZE_s / 2 + 2] = f0 - f2;
-        x_real[b][x + Encoder$c.BLKSIZE_s / 2 + 1] = f1 + f3;
-        x_real[b][x + Encoder$c.BLKSIZE_s / 2 + 3] = f1 - f3;
+        x_real[b][x + Encoder.BLKSIZE_s / 2 + 0] = f0 + f2;
+        x_real[b][x + Encoder.BLKSIZE_s / 2 + 2] = f0 - f2;
+        x_real[b][x + Encoder.BLKSIZE_s / 2 + 1] = f1 + f3;
+        x_real[b][x + Encoder.BLKSIZE_s / 2 + 3] = f1 - f3;
       } while (--j >= 0);
-      fht(x_real[b], x, Encoder$c.BLKSIZE_s / 2);
+      fht(x_real[b], x, Encoder.BLKSIZE_s / 2);
     }
   };
   this.fft_long = function(gfc, y, chn, buffer, bufPos) {
-    var jj = Encoder$c.BLKSIZE / 8 - 1;
-    var x = Encoder$c.BLKSIZE / 2;
+    var jj = Encoder.BLKSIZE / 8 - 1;
+    var x = Encoder.BLKSIZE / 2;
     do {
       var f0, f1, f2, f3, w;
       var i = rv_tbl[jj] & 255;
@@ -7338,35 +7330,32 @@ function FFT$1() {
       w = window2[i + 769] * buffer[chn][bufPos + i + 769];
       f3 = f2 - w;
       f2 = f2 + w;
-      y[x + Encoder$c.BLKSIZE / 2 + 0] = f0 + f2;
-      y[x + Encoder$c.BLKSIZE / 2 + 2] = f0 - f2;
-      y[x + Encoder$c.BLKSIZE / 2 + 1] = f1 + f3;
-      y[x + Encoder$c.BLKSIZE / 2 + 3] = f1 - f3;
+      y[x + Encoder.BLKSIZE / 2 + 0] = f0 + f2;
+      y[x + Encoder.BLKSIZE / 2 + 2] = f0 - f2;
+      y[x + Encoder.BLKSIZE / 2 + 1] = f1 + f3;
+      y[x + Encoder.BLKSIZE / 2 + 3] = f1 - f3;
     } while (--jj >= 0);
-    fht(y, x, Encoder$c.BLKSIZE / 2);
+    fht(y, x, Encoder.BLKSIZE / 2);
   };
   this.init_fft = function(gfc) {
-    for (var i = 0; i < Encoder$c.BLKSIZE; i++)
-      window2[i] = 0.42 - 0.5 * Math.cos(2 * Math.PI * (i + 0.5) / Encoder$c.BLKSIZE) + 0.08 * Math.cos(4 * Math.PI * (i + 0.5) / Encoder$c.BLKSIZE);
-    for (var i = 0; i < Encoder$c.BLKSIZE_s / 2; i++)
-      window_s[i] = 0.5 * (1 - Math.cos(2 * Math.PI * (i + 0.5) / Encoder$c.BLKSIZE_s));
+    for (var i = 0; i < Encoder.BLKSIZE; i++) {
+      window2[i] = 0.42 - 0.5 * Math.cos(2 * Math.PI * (i + 0.5) / Encoder.BLKSIZE) + 0.08 * Math.cos(4 * Math.PI * (i + 0.5) / Encoder.BLKSIZE);
+    }
+    for (var i = 0; i < Encoder.BLKSIZE_s / 2; i++) {
+      window_s[i] = 0.5 * (1 - Math.cos(2 * Math.PI * (i + 0.5) / Encoder.BLKSIZE_s));
+    }
   };
 }
-var FFT_1 = FFT$1;
-var common$j = common$o;
-var VbrMode$5 = common$j.VbrMode;
-var Float$1 = common$j.Float;
-var ShortBlock$2 = common$j.ShortBlock;
-var Util$2 = common$j.Util;
-var Arrays$5 = common$j.Arrays;
-var new_float$a = common$j.new_float;
-var new_float_n$3 = common$j.new_float_n;
-var new_int$b = common$j.new_int;
-var assert$9 = common$j.assert;
-var FFT = FFT_1;
-var Encoder$b = Encoder_1;
-function PsyModel$1() {
-  var MPEGMode2 = MPEGMode_1;
+var VbrMode$5 = common.VbrMode;
+var Float$1 = common.Float;
+var ShortBlock$2 = common.ShortBlock;
+var Util$2 = common.Util;
+var Arrays$5 = common.Arrays;
+var new_float$a = common.new_float;
+var new_float_n$3 = common.new_float_n;
+var new_int$b = common.new_int;
+var assert$9 = common.assert;
+function PsyModel() {
   var fft = new FFT();
   var LOG10 = 2.302585092994046;
   var rpelev = 2;
@@ -7374,7 +7363,7 @@ function PsyModel$1() {
   var rpelev_s = 2;
   var rpelev2_s = 16;
   var DELBARK = 0.34;
-  var VO_SCALE = 1 / (14752 * 14752) / (Encoder$b.BLKSIZE / 2);
+  var VO_SCALE = 1 / (14752 * 14752) / (Encoder.BLKSIZE / 2);
   var temporalmask_sustain_sec = 0.01;
   var NS_PREECHO_ATT0 = 0.8;
   var NS_PREECHO_ATT1 = 0.6;
@@ -7387,8 +7376,9 @@ function PsyModel$1() {
   }
   function psycho_loudness_approx(energy, gfc) {
     var loudness_power = 0;
-    for (var i = 0; i < Encoder$b.BLKSIZE / 2; ++i)
+    for (var i = 0; i < Encoder.BLKSIZE / 2; ++i) {
       loudness_power += energy[i] * gfc.ATH.eql_w[i];
+    }
     loudness_power *= VO_SCALE;
     return loudness_power;
   }
@@ -7398,14 +7388,14 @@ function PsyModel$1() {
       fft.fft_long(gfc, wsamp_l[wsamp_lPos], chn, buffer, bufPos);
       fft.fft_short(gfc, wsamp_s[wsamp_sPos], chn, buffer, bufPos);
     } else if (chn == 2) {
-      for (var j = Encoder$b.BLKSIZE - 1; j >= 0; --j) {
+      for (var j = Encoder.BLKSIZE - 1; j >= 0; --j) {
         var l = wsamp_l[wsamp_lPos + 0][j];
         var r = wsamp_l[wsamp_lPos + 1][j];
         wsamp_l[wsamp_lPos + 0][j] = (l + r) * Util$2.SQRT2 * 0.5;
         wsamp_l[wsamp_lPos + 1][j] = (l - r) * Util$2.SQRT2 * 0.5;
       }
       for (var b = 2; b >= 0; --b) {
-        for (var j = Encoder$b.BLKSIZE_s - 1; j >= 0; --j) {
+        for (var j = Encoder.BLKSIZE_s - 1; j >= 0; --j) {
           var l = wsamp_s[wsamp_sPos + 0][b][j];
           var r = wsamp_s[wsamp_sPos + 1][b][j];
           wsamp_s[wsamp_sPos + 0][b][j] = (l + r) * Util$2.SQRT2 * 0.5;
@@ -7415,28 +7405,28 @@ function PsyModel$1() {
     }
     fftenergy[0] = NON_LINEAR_SCALE_ENERGY(wsamp_l[wsamp_lPos + 0][0]);
     fftenergy[0] *= fftenergy[0];
-    for (var j = Encoder$b.BLKSIZE / 2 - 1; j >= 0; --j) {
-      var re = wsamp_l[wsamp_lPos + 0][Encoder$b.BLKSIZE / 2 - j];
-      var im = wsamp_l[wsamp_lPos + 0][Encoder$b.BLKSIZE / 2 + j];
-      fftenergy[Encoder$b.BLKSIZE / 2 - j] = NON_LINEAR_SCALE_ENERGY((re * re + im * im) * 0.5);
+    for (var j = Encoder.BLKSIZE / 2 - 1; j >= 0; --j) {
+      var re = wsamp_l[wsamp_lPos + 0][Encoder.BLKSIZE / 2 - j];
+      var im = wsamp_l[wsamp_lPos + 0][Encoder.BLKSIZE / 2 + j];
+      fftenergy[Encoder.BLKSIZE / 2 - j] = NON_LINEAR_SCALE_ENERGY((re * re + im * im) * 0.5);
     }
     for (var b = 2; b >= 0; --b) {
       fftenergy_s[b][0] = wsamp_s[wsamp_sPos + 0][b][0];
       fftenergy_s[b][0] *= fftenergy_s[b][0];
-      for (var j = Encoder$b.BLKSIZE_s / 2 - 1; j >= 0; --j) {
-        var re = wsamp_s[wsamp_sPos + 0][b][Encoder$b.BLKSIZE_s / 2 - j];
-        var im = wsamp_s[wsamp_sPos + 0][b][Encoder$b.BLKSIZE_s / 2 + j];
-        fftenergy_s[b][Encoder$b.BLKSIZE_s / 2 - j] = NON_LINEAR_SCALE_ENERGY((re * re + im * im) * 0.5);
+      for (var j = Encoder.BLKSIZE_s / 2 - 1; j >= 0; --j) {
+        var re = wsamp_s[wsamp_sPos + 0][b][Encoder.BLKSIZE_s / 2 - j];
+        var im = wsamp_s[wsamp_sPos + 0][b][Encoder.BLKSIZE_s / 2 + j];
+        fftenergy_s[b][Encoder.BLKSIZE_s / 2 - j] = NON_LINEAR_SCALE_ENERGY((re * re + im * im) * 0.5);
       }
     }
     {
       var totalenergy = 0;
-      for (var j = 11; j < Encoder$b.HBLKSIZE; j++)
+      for (var j = 11; j < Encoder.HBLKSIZE; j++)
         totalenergy += fftenergy[j];
       gfc.tot_ener[chn] = totalenergy;
     }
     if (gfp.analysis) {
-      for (var j = 0; j < Encoder$b.HBLKSIZE; j++) {
+      for (var j = 0; j < Encoder.HBLKSIZE; j++) {
         gfc.pinfo.energy[gr_out][chn][j] = gfc.pinfo.energy_save[chn][j];
         gfc.pinfo.energy_save[chn][j] = fftenergy[j];
       }
@@ -7596,7 +7586,7 @@ function PsyModel$1() {
     } else {
       ratio = m1 / m2;
     }
-    if (-2 <= b && b <= 2) {
+    if (b >= -2 && b <= 2) {
       if (ratio >= ma_max_i1) {
         return m1 + m2;
       } else {
@@ -7615,13 +7605,13 @@ function PsyModel$1() {
   function calc_interchannel_masking(gfp, ratio) {
     var gfc = gfp.internal_flags;
     if (gfc.channels_out > 1) {
-      for (var sb = 0; sb < Encoder$b.SBMAX_l; sb++) {
+      for (var sb = 0; sb < Encoder.SBMAX_l; sb++) {
         var l = gfc.thm[0].l[sb];
         var r = gfc.thm[1].l[sb];
         gfc.thm[0].l[sb] += r * ratio;
         gfc.thm[1].l[sb] += l * ratio;
       }
-      for (var sb = 0; sb < Encoder$b.SBMAX_s; sb++) {
+      for (var sb = 0; sb < Encoder.SBMAX_s; sb++) {
         for (var sblock = 0; sblock < 3; sblock++) {
           var l = gfc.thm[0].s[sb][sblock];
           var r = gfc.thm[1].s[sb][sblock];
@@ -7632,9 +7622,10 @@ function PsyModel$1() {
     }
   }
   function msfix1(gfc) {
-    for (var sb = 0; sb < Encoder$b.SBMAX_l; sb++) {
-      if (gfc.thm[0].l[sb] > 1.58 * gfc.thm[1].l[sb] || gfc.thm[1].l[sb] > 1.58 * gfc.thm[0].l[sb])
+    for (var sb = 0; sb < Encoder.SBMAX_l; sb++) {
+      if (gfc.thm[0].l[sb] > 1.58 * gfc.thm[1].l[sb] || gfc.thm[1].l[sb] > 1.58 * gfc.thm[0].l[sb]) {
         continue;
+      }
       var mld = gfc.mld_l[sb] * gfc.en[3].l[sb];
       var rmid = Math.max(gfc.thm[2].l[sb], Math.min(gfc.thm[3].l[sb], mld));
       mld = gfc.mld_l[sb] * gfc.en[2].l[sb];
@@ -7642,10 +7633,11 @@ function PsyModel$1() {
       gfc.thm[2].l[sb] = rmid;
       gfc.thm[3].l[sb] = rside;
     }
-    for (var sb = 0; sb < Encoder$b.SBMAX_s; sb++) {
+    for (var sb = 0; sb < Encoder.SBMAX_s; sb++) {
       for (var sblock = 0; sblock < 3; sblock++) {
-        if (gfc.thm[0].s[sb][sblock] > 1.58 * gfc.thm[1].s[sb][sblock] || gfc.thm[1].s[sb][sblock] > 1.58 * gfc.thm[0].s[sb][sblock])
+        if (gfc.thm[0].s[sb][sblock] > 1.58 * gfc.thm[1].s[sb][sblock] || gfc.thm[1].s[sb][sblock] > 1.58 * gfc.thm[0].s[sb][sblock]) {
           continue;
+        }
         var mld = gfc.mld_s[sb] * gfc.en[3].s[sb][sblock];
         var rmid = Math.max(gfc.thm[2].s[sb][sblock], Math.min(gfc.thm[3].s[sb][sblock], mld));
         mld = gfc.mld_s[sb] * gfc.en[2].s[sb][sblock];
@@ -7660,7 +7652,7 @@ function PsyModel$1() {
     var athlower = Math.pow(10, athadjust);
     msfix *= 2;
     msfix2 *= 2;
-    for (var sb = 0; sb < Encoder$b.SBMAX_l; sb++) {
+    for (var sb = 0; sb < Encoder.SBMAX_l; sb++) {
       var thmLR, thmM, thmS, ath;
       ath = gfc.ATH.cb_l[gfc.bm_l[sb]] * athlower;
       thmLR = Math.min(Math.max(gfc.thm[0].l[sb], ath), Math.max(gfc.thm[1].l[sb], ath));
@@ -7674,8 +7666,8 @@ function PsyModel$1() {
       gfc.thm[2].l[sb] = Math.min(thmM, gfc.thm[2].l[sb]);
       gfc.thm[3].l[sb] = Math.min(thmS, gfc.thm[3].l[sb]);
     }
-    athlower *= Encoder$b.BLKSIZE_s / Encoder$b.BLKSIZE;
-    for (var sb = 0; sb < Encoder$b.SBMAX_s; sb++) {
+    athlower *= Encoder.BLKSIZE_s / Encoder.BLKSIZE;
+    for (var sb = 0; sb < Encoder.SBMAX_s; sb++) {
       for (var sblock = 0; sblock < 3; sblock++) {
         var thmLR, thmM, thmS, ath;
         ath = gfc.ATH.cb_s[gfc.bm_s[sb]] * athlower;
@@ -7696,7 +7688,7 @@ function PsyModel$1() {
     var sb, b;
     var enn = 0;
     var thmm = 0;
-    for (sb = b = 0; sb < Encoder$b.SBMAX_s; ++b, ++sb) {
+    for (sb = b = 0; sb < Encoder.SBMAX_s; ++b, ++sb) {
       var bo_s_sb = gfc.bo_s[sb];
       var npart_s = gfc.npart_s;
       var b_lim = bo_s_sb < npart_s ? bo_s_sb : npart_s;
@@ -7726,7 +7718,7 @@ function PsyModel$1() {
         thmm = w_next * thr[b];
       }
     }
-    for (; sb < Encoder$b.SBMAX_s; ++sb) {
+    for (; sb < Encoder.SBMAX_s; ++sb) {
       gfc.en[chn].s[sb][sblock] = 0;
       gfc.thm[chn].s[sb][sblock] = 0;
     }
@@ -7735,7 +7727,7 @@ function PsyModel$1() {
     var sb, b;
     var enn = 0;
     var thmm = 0;
-    for (sb = b = 0; sb < Encoder$b.SBMAX_l; ++b, ++sb) {
+    for (sb = b = 0; sb < Encoder.SBMAX_l; ++b, ++sb) {
       var bo_l_sb = gfc.bo_l[sb];
       var npart_l = gfc.npart_l;
       var b_lim = bo_l_sb < npart_l ? bo_l_sb : npart_l;
@@ -7765,7 +7757,7 @@ function PsyModel$1() {
         thmm = w_next * thr[b];
       }
     }
-    for (; sb < Encoder$b.SBMAX_l; ++sb) {
+    for (; sb < Encoder.SBMAX_l; ++sb) {
       gfc.en[chn].l[sb] = 0;
       gfc.thm[chn].l[sb] = 0;
     }
@@ -7796,7 +7788,7 @@ function PsyModel$1() {
         var x = rpelev_s * gfc.nb_s1[chn][b];
         thr[b] = Math.min(ecb, x);
       }
-      if (gfc.blocktype_old[chn & 1] == Encoder$b.SHORT_TYPE) {
+      if (gfc.blocktype_old[chn & 1] == Encoder.SHORT_TYPE) {
         var x = rpelev2_s * gfc.nb_s2[chn][b];
         var y = thr[b];
         thr[b] = Math.min(x, y);
@@ -7805,32 +7797,37 @@ function PsyModel$1() {
       gfc.nb_s1[chn][b] = ecb;
       assert$9(thr[b] >= 0);
     }
-    for (; b <= Encoder$b.CBANDS; ++b) {
+    for (; b <= Encoder.CBANDS; ++b) {
       eb[b] = 0;
       thr[b] = 0;
     }
   }
   function block_type_set(gfp, uselongblock, blocktype_d, blocktype) {
     var gfc = gfp.internal_flags;
-    if (gfp.short_blocks == ShortBlock$2.short_block_coupled && !(uselongblock[0] != 0 && uselongblock[1] != 0))
+    if (gfp.short_blocks == ShortBlock$2.short_block_coupled && !(uselongblock[0] != 0 && uselongblock[1] != 0)) {
       uselongblock[0] = uselongblock[1] = 0;
+    }
     for (var chn = 0; chn < gfc.channels_out; chn++) {
-      blocktype[chn] = Encoder$b.NORM_TYPE;
-      if (gfp.short_blocks == ShortBlock$2.short_block_dispensed)
+      blocktype[chn] = Encoder.NORM_TYPE;
+      if (gfp.short_blocks == ShortBlock$2.short_block_dispensed) {
         uselongblock[chn] = 1;
-      if (gfp.short_blocks == ShortBlock$2.short_block_forced)
+      }
+      if (gfp.short_blocks == ShortBlock$2.short_block_forced) {
         uselongblock[chn] = 0;
+      }
       if (uselongblock[chn] != 0) {
-        assert$9(gfc.blocktype_old[chn] != Encoder$b.START_TYPE);
-        if (gfc.blocktype_old[chn] == Encoder$b.SHORT_TYPE)
-          blocktype[chn] = Encoder$b.STOP_TYPE;
-      } else {
-        blocktype[chn] = Encoder$b.SHORT_TYPE;
-        if (gfc.blocktype_old[chn] == Encoder$b.NORM_TYPE) {
-          gfc.blocktype_old[chn] = Encoder$b.START_TYPE;
+        assert$9(gfc.blocktype_old[chn] != Encoder.START_TYPE);
+        if (gfc.blocktype_old[chn] == Encoder.SHORT_TYPE) {
+          blocktype[chn] = Encoder.STOP_TYPE;
         }
-        if (gfc.blocktype_old[chn] == Encoder$b.STOP_TYPE)
-          gfc.blocktype_old[chn] = Encoder$b.SHORT_TYPE;
+      } else {
+        blocktype[chn] = Encoder.SHORT_TYPE;
+        if (gfc.blocktype_old[chn] == Encoder.NORM_TYPE) {
+          gfc.blocktype_old[chn] = Encoder.START_TYPE;
+        }
+        if (gfc.blocktype_old[chn] == Encoder.STOP_TYPE) {
+          gfc.blocktype_old[chn] = Encoder.SHORT_TYPE;
+        }
       }
       blocktype_d[chn] = gfc.blocktype_old[chn];
       gfc.blocktype_old[chn] = blocktype[chn];
@@ -7863,7 +7860,7 @@ function PsyModel$1() {
   ];
   function pecalc_s(mr, masking_lower) {
     var pe_s = 1236.28 / 4;
-    for (var sb = 0; sb < Encoder$b.SBMAX_s - 1; sb++) {
+    for (var sb = 0; sb < Encoder.SBMAX_s - 1; sb++) {
       for (var sblock = 0; sblock < 3; sblock++) {
         var thm = mr.thm.s[sb][sblock];
         if (thm > 0) {
@@ -7906,7 +7903,7 @@ function PsyModel$1() {
   ];
   function pecalc_l(mr, masking_lower) {
     var pe_l = 1124.23 / 4;
-    for (var sb = 0; sb < Encoder$b.SBMAX_l - 1; sb++) {
+    for (var sb = 0; sb < Encoder.SBMAX_l - 1; sb++) {
       var thm = mr.thm.l[sb];
       if (thm > 0) {
         var x = thm * masking_lower;
@@ -7925,7 +7922,8 @@ function PsyModel$1() {
   function calc_energy(gfc, fftenergy, eb, max, avg) {
     var b, j;
     for (b = j = 0; b < gfc.npart_l; ++b) {
-      var ebb = 0, m = 0;
+      var ebb = 0;
+      var m = 0;
       var i;
       for (i = 0; i < gfc.numlines_l[b]; ++i, ++j) {
         var el = fftenergy[j];
@@ -8008,25 +8006,27 @@ function PsyModel$1() {
   ];
   this.L3psycho_anal_ns = function(gfp, buffer, bufPos, gr_out, masking_ratio, masking_MS_ratio, percep_entropy, percep_MS_entropy, energy, blocktype_d) {
     var gfc = gfp.internal_flags;
-    var wsamp_L = new_float_n$3([2, Encoder$b.BLKSIZE]);
-    var wsamp_S = new_float_n$3([2, 3, Encoder$b.BLKSIZE_s]);
-    var eb_l = new_float$a(Encoder$b.CBANDS + 1);
-    var eb_s = new_float$a(Encoder$b.CBANDS + 1);
-    var thr = new_float$a(Encoder$b.CBANDS + 2);
-    var blocktype = new_int$b(2), uselongblock = new_int$b(2);
+    var wsamp_L = new_float_n$3([2, Encoder.BLKSIZE]);
+    var wsamp_S = new_float_n$3([2, 3, Encoder.BLKSIZE_s]);
+    var eb_l = new_float$a(Encoder.CBANDS + 1);
+    var eb_s = new_float$a(Encoder.CBANDS + 1);
+    var thr = new_float$a(Encoder.CBANDS + 2);
+    var blocktype = new_int$b(2);
+    var uselongblock = new_int$b(2);
     var numchn, chn;
     var b, i, j, k;
     var sb, sblock;
     var ns_hpfsmpl = new_float_n$3([2, 576]);
     var pcfact;
-    var mask_idx_l = new_int$b(Encoder$b.CBANDS + 2), mask_idx_s = new_int$b(Encoder$b.CBANDS + 2);
+    var mask_idx_l = new_int$b(Encoder.CBANDS + 2);
+    var mask_idx_s = new_int$b(Encoder.CBANDS + 2);
     Arrays$5.fill(mask_idx_s, 0);
     numchn = gfc.channels_out;
-    if (gfp.mode == MPEGMode2.JOINT_STEREO)
+    if (gfp.mode == MPEGMode.JOINT_STEREO)
       numchn = 4;
-    if (gfp.VBR == VbrMode$5.vbr_off)
+    if (gfp.VBR == VbrMode$5.vbr_off) {
       pcfact = gfc.ResvMax == 0 ? 0 : gfc.ResvSize / gfc.ResvMax * 0.5;
-    else if (gfp.VBR == VbrMode$5.vbr_rh || gfp.VBR == VbrMode$5.vbr_mtrh || gfp.VBR == VbrMode$5.vbr_mt) {
+    } else if (gfp.VBR == VbrMode$5.vbr_rh || gfp.VBR == VbrMode$5.vbr_mtrh || gfp.VBR == VbrMode$5.vbr_mt) {
       pcfact = 0.6;
     } else
       pcfact = 1;
@@ -8058,12 +8058,13 @@ function PsyModel$1() {
       var attack_intensity = new_float$a(12);
       var ns_uselongblock = 1;
       var attackThreshold;
-      var max = new_float$a(Encoder$b.CBANDS), avg = new_float$a(Encoder$b.CBANDS);
+      var max = new_float$a(Encoder.CBANDS);
+      var avg = new_float$a(Encoder.CBANDS);
       var ns_attacks = [0, 0, 0, 0];
-      var fftenergy = new_float$a(Encoder$b.HBLKSIZE);
-      var fftenergy_s = new_float_n$3([3, Encoder$b.HBLKSIZE_s]);
-      assert$9(gfc.npart_s <= Encoder$b.CBANDS);
-      assert$9(gfc.npart_l <= Encoder$b.CBANDS);
+      var fftenergy = new_float$a(Encoder.HBLKSIZE);
+      var fftenergy_s = new_float_n$3([3, Encoder.HBLKSIZE_s]);
+      assert$9(gfc.npart_s <= Encoder.CBANDS);
+      assert$9(gfc.npart_l <= Encoder.CBANDS);
       for (i = 0; i < 3; i++) {
         en_subshort[i] = gfc.nsPsy.last_en_subshort[chn][i + 6];
         assert$9(gfc.nsPsy.last_en_subshort[chn][i + 4] > 0);
@@ -8085,9 +8086,10 @@ function PsyModel$1() {
         for (i = 0; i < 9; i++) {
           var pfe = pfPos + 576 / 9;
           var p = 1;
-          for (; pfPos < pfe; pfPos++)
+          for (; pfPos < pfe; pfPos++) {
             if (p < Math.abs(pf[pfPos]))
               p = Math.abs(pf[pfPos]);
+          }
           gfc.nsPsy.last_en_subshort[chn][i] = en_subshort[i + 3] = p;
           en_short[1 + i / 3] += p;
           if (p > en_subshort[i + 3 - 2]) {
@@ -8102,16 +8104,19 @@ function PsyModel$1() {
       }
       if (gfp.analysis) {
         var x = attack_intensity[0];
-        for (i = 1; i < 12; i++)
+        for (i = 1; i < 12; i++) {
           if (x < attack_intensity[i])
             x = attack_intensity[i];
+        }
         gfc.pinfo.ers[gr_out][chn] = gfc.pinfo.ers_save[chn];
         gfc.pinfo.ers_save[chn] = x;
       }
       attackThreshold = chn == 3 ? gfc.nsPsy.attackthre_s : gfc.nsPsy.attackthre;
-      for (i = 0; i < 12; i++)
-        if (0 == ns_attacks[i / 3] && attack_intensity[i] > attackThreshold)
+      for (i = 0; i < 12; i++) {
+        if (ns_attacks[i / 3] == 0 && attack_intensity[i] > attackThreshold) {
           ns_attacks[i / 3] = i % 3 + 1;
+        }
+      }
       for (i = 1; i < 4; i++) {
         var ratio;
         if (en_short[i - 1] > en_short[i]) {
@@ -8127,8 +8132,9 @@ function PsyModel$1() {
             ns_attacks[0] = 0;
         }
       }
-      if (ns_attacks[0] != 0 && gfc.nsPsy.lastAttacks[chn] != 0)
+      if (ns_attacks[0] != 0 && gfc.nsPsy.lastAttacks[chn] != 0) {
         ns_attacks[0] = 0;
+      }
       if (gfc.nsPsy.lastAttacks[chn] == 3 || ns_attacks[0] + ns_attacks[1] + ns_attacks[2] + ns_attacks[3] != 0) {
         ns_uselongblock = 0;
         if (ns_attacks[1] != 0 && ns_attacks[0] != 0)
@@ -8155,7 +8161,7 @@ function PsyModel$1() {
         var enn, thmm;
         compute_masking_s(gfp, fftenergy_s, eb_s, thr, chn, sblock);
         convert_partition2scalefac_s(gfc, eb_s, thr, chn, sblock);
-        for (sb = 0; sb < Encoder$b.SBMAX_s; sb++) {
+        for (sb = 0; sb < Encoder.SBMAX_s; sb++) {
           thmm = gfc.thm[chn].s[sb][sblock];
           thmm *= NS_PREECHO_ATT0;
           if (ns_attacks[sblock] >= 2 || ns_attacks[sblock + 1] == 1) {
@@ -8193,31 +8199,33 @@ function PsyModel$1() {
             ecb = mask_add(ecb, gfc.s3_ll[k++] * eb2, kk, kk - b, gfc, 0);
           }
           ecb *= 0.158489319246111;
-          if (gfc.blocktype_old[chn & 1] == Encoder$b.SHORT_TYPE)
+          if (gfc.blocktype_old[chn & 1] == Encoder.SHORT_TYPE)
             thr[b] = ecb;
-          else
+          else {
             thr[b] = NS_INTERP(Math.min(ecb, Math.min(rpelev * gfc.nb_1[chn][b], rpelev2 * gfc.nb_2[chn][b])), ecb, pcfact);
+          }
           gfc.nb_2[chn][b] = gfc.nb_1[chn][b];
           gfc.nb_1[chn][b] = ecb;
         }
       }
-      for (; b <= Encoder$b.CBANDS; ++b) {
+      for (; b <= Encoder.CBANDS; ++b) {
         eb_l[b] = 0;
         thr[b] = 0;
       }
       convert_partition2scalefac_l(gfc, eb_l, thr, chn);
     }
-    if (gfp.mode == MPEGMode2.STEREO || gfp.mode == MPEGMode2.JOINT_STEREO) {
+    if (gfp.mode == MPEGMode.STEREO || gfp.mode == MPEGMode.JOINT_STEREO) {
       if (gfp.interChRatio > 0) {
         calc_interchannel_masking(gfp, gfp.interChRatio);
       }
     }
-    if (gfp.mode == MPEGMode2.JOINT_STEREO) {
+    if (gfp.mode == MPEGMode.JOINT_STEREO) {
       var msfix;
       msfix1(gfc);
       msfix = gfp.msfix;
-      if (Math.abs(msfix) > 0)
+      if (Math.abs(msfix) > 0) {
         ns_msfix(gfc, msfix, gfp.ATHlower * gfc.ATH.adjust);
+      }
     }
     block_type_set(gfp, uselongblock, blocktype_d, blocktype);
     for (chn = 0; chn < numchn; chn++) {
@@ -8228,9 +8236,10 @@ function PsyModel$1() {
       if (chn > 1) {
         ppe = percep_MS_entropy;
         ppePos = -2;
-        type = Encoder$b.NORM_TYPE;
-        if (blocktype_d[0] == Encoder$b.SHORT_TYPE || blocktype_d[1] == Encoder$b.SHORT_TYPE)
-          type = Encoder$b.SHORT_TYPE;
+        type = Encoder.NORM_TYPE;
+        if (blocktype_d[0] == Encoder.SHORT_TYPE || blocktype_d[1] == Encoder.SHORT_TYPE) {
+          type = Encoder.SHORT_TYPE;
+        }
         mr = masking_MS_ratio[gr_out][chn - 2];
       } else {
         ppe = percep_entropy;
@@ -8238,9 +8247,9 @@ function PsyModel$1() {
         type = blocktype_d[chn];
         mr = masking_ratio[gr_out][chn];
       }
-      if (type == Encoder$b.SHORT_TYPE)
+      if (type == Encoder.SHORT_TYPE) {
         ppe[ppePos + chn] = pecalc_s(mr, gfc.masking_lower);
-      else
+      } else
         ppe[ppePos + chn] = pecalc_l(mr, gfc.masking_lower);
       if (gfp.analysis)
         gfc.pinfo.pe[gr_out][chn] = ppe[ppePos + chn];
@@ -8252,7 +8261,7 @@ function PsyModel$1() {
     if (chn < 2) {
       fft.fft_long(gfc, wsamp_l[wsamp_lPos], chn, buffer, bufPos);
     } else if (chn == 2) {
-      for (var j = Encoder$b.BLKSIZE - 1; j >= 0; --j) {
+      for (var j = Encoder.BLKSIZE - 1; j >= 0; --j) {
         var l = wsamp_l[wsamp_lPos + 0][j];
         var r = wsamp_l[wsamp_lPos + 1][j];
         wsamp_l[wsamp_lPos + 0][j] = (l + r) * Util$2.SQRT2 * 0.5;
@@ -8261,19 +8270,19 @@ function PsyModel$1() {
     }
     fftenergy[0] = NON_LINEAR_SCALE_ENERGY(wsamp_l[wsamp_lPos + 0][0]);
     fftenergy[0] *= fftenergy[0];
-    for (var j = Encoder$b.BLKSIZE / 2 - 1; j >= 0; --j) {
-      var re = wsamp_l[wsamp_lPos + 0][Encoder$b.BLKSIZE / 2 - j];
-      var im = wsamp_l[wsamp_lPos + 0][Encoder$b.BLKSIZE / 2 + j];
-      fftenergy[Encoder$b.BLKSIZE / 2 - j] = NON_LINEAR_SCALE_ENERGY((re * re + im * im) * 0.5);
+    for (var j = Encoder.BLKSIZE / 2 - 1; j >= 0; --j) {
+      var re = wsamp_l[wsamp_lPos + 0][Encoder.BLKSIZE / 2 - j];
+      var im = wsamp_l[wsamp_lPos + 0][Encoder.BLKSIZE / 2 + j];
+      fftenergy[Encoder.BLKSIZE / 2 - j] = NON_LINEAR_SCALE_ENERGY((re * re + im * im) * 0.5);
     }
     {
       var totalenergy = 0;
-      for (var j = 11; j < Encoder$b.HBLKSIZE; j++)
+      for (var j = 11; j < Encoder.HBLKSIZE; j++)
         totalenergy += fftenergy[j];
       gfc.tot_ener[chn] = totalenergy;
     }
     if (gfp.analysis) {
-      for (var j = 0; j < Encoder$b.HBLKSIZE; j++) {
+      for (var j = 0; j < Encoder.HBLKSIZE; j++) {
         gfc.pinfo.energy[gr_out][chn][j] = gfc.pinfo.energy_save[chn][j];
         gfc.pinfo.energy_save[chn][j] = fftenergy[j];
       }
@@ -8286,7 +8295,7 @@ function PsyModel$1() {
       fft.fft_short(gfc, wsamp_s[wsamp_sPos], chn, buffer, bufPos);
     }
     if (chn == 2) {
-      for (var j = Encoder$b.BLKSIZE_s - 1; j >= 0; --j) {
+      for (var j = Encoder.BLKSIZE_s - 1; j >= 0; --j) {
         var l = wsamp_s[wsamp_sPos + 0][sblock][j];
         var r = wsamp_s[wsamp_sPos + 1][sblock][j];
         wsamp_s[wsamp_sPos + 0][sblock][j] = (l + r) * Util$2.SQRT2 * 0.5;
@@ -8295,10 +8304,10 @@ function PsyModel$1() {
     }
     fftenergy_s[sblock][0] = wsamp_s[wsamp_sPos + 0][sblock][0];
     fftenergy_s[sblock][0] *= fftenergy_s[sblock][0];
-    for (var j = Encoder$b.BLKSIZE_s / 2 - 1; j >= 0; --j) {
-      var re = wsamp_s[wsamp_sPos + 0][sblock][Encoder$b.BLKSIZE_s / 2 - j];
-      var im = wsamp_s[wsamp_sPos + 0][sblock][Encoder$b.BLKSIZE_s / 2 + j];
-      fftenergy_s[sblock][Encoder$b.BLKSIZE_s / 2 - j] = NON_LINEAR_SCALE_ENERGY((re * re + im * im) * 0.5);
+    for (var j = Encoder.BLKSIZE_s / 2 - 1; j >= 0; --j) {
+      var re = wsamp_s[wsamp_sPos + 0][sblock][Encoder.BLKSIZE_s / 2 - j];
+      var im = wsamp_s[wsamp_sPos + 0][sblock][Encoder.BLKSIZE_s / 2 + j];
+      fftenergy_s[sblock][Encoder.BLKSIZE_s / 2 - j] = NON_LINEAR_SCALE_ENERGY((re * re + im * im) * 0.5);
     }
   }
   function vbrpsy_compute_loudness_approximation_l(gfp, gr_out, chn, fftenergy) {
@@ -8324,7 +8333,7 @@ function PsyModel$1() {
     var ns_hpfsmpl = new_float_n$3([2, 576]);
     var gfc = gfp.internal_flags;
     var n_chn_out = gfc.channels_out;
-    var n_chn_psy = gfp.mode == MPEGMode2.JOINT_STEREO ? 4 : n_chn_out;
+    var n_chn_psy = gfp.mode == MPEGMode.JOINT_STEREO ? 4 : n_chn_out;
     for (var chn = 0; chn < n_chn_out; chn++) {
       firbuf = buffer[chn];
       var firbufPos = bufPos + 576 - 350 - NSFIRLEN + 192;
@@ -8370,9 +8379,10 @@ function PsyModel$1() {
       for (var i = 0; i < 9; i++) {
         var pfe = pfPos + 576 / 9;
         var p = 1;
-        for (; pfPos < pfe; pfPos++)
+        for (; pfPos < pfe; pfPos++) {
           if (p < Math.abs(pf[pfPos]))
             p = Math.abs(pf[pfPos]);
+        }
         gfc.nsPsy.last_en_subshort[chn][i] = en_subshort[i + 3] = p;
         en_short[1 + i / 3] += p;
         if (p > en_subshort[i + 3 - 2]) {
@@ -8407,7 +8417,7 @@ function PsyModel$1() {
         gfc.pinfo.ers_save[chn] = x;
       }
       for (var i = 0; i < 12; i++) {
-        if (0 == ns_attacks[chn][i / 3] && attack_intensity[i] > attackThreshold) {
+        if (ns_attacks[chn][i / 3] == 0 && attack_intensity[i] > attackThreshold) {
           ns_attacks[chn][i / 3] = i % 3 + 1;
         }
       }
@@ -8518,11 +8528,13 @@ function PsyModel$1() {
   }
   function vbrpsy_compute_masking_s(gfp, fftenergy_s, eb, thr, chn, sblock) {
     var gfc = gfp.internal_flags;
-    var max = new float[Encoder$b.CBANDS](), avg = new_float$a(Encoder$b.CBANDS);
+    var max = new float[Encoder.CBANDS]();
+    var avg = new_float$a(Encoder.CBANDS);
     var i, j, b;
-    var mask_idx_s = new int[Encoder$b.CBANDS]();
+    var mask_idx_s = new int[Encoder.CBANDS]();
     for (b = j = 0; b < gfc.npart_s; ++b) {
-      var ebb = 0, m = 0;
+      var ebb = 0;
+      var m = 0;
       var n = gfc.numlines_s[b];
       for (i = 0; i < n; ++i, ++j) {
         var el = fftenergy_s[sblock][j];
@@ -8536,7 +8548,7 @@ function PsyModel$1() {
       assert$9(avg[b] >= 0);
     }
     assert$9(b == gfc.npart_s);
-    for (; b < Encoder$b.CBANDS; ++b) {
+    for (; b < Encoder.CBANDS; ++b) {
       max[b] = 0;
       avg[b] = 0;
     }
@@ -8584,14 +8596,15 @@ function PsyModel$1() {
       }
       assert$9(thr[b] >= 0);
     }
-    for (; b < Encoder$b.CBANDS; ++b) {
+    for (; b < Encoder.CBANDS; ++b) {
       eb[b] = 0;
       thr[b] = 0;
     }
   }
   function vbrpsy_compute_masking_l(gfc, fftenergy, eb_l, thr, chn) {
-    var max = new_float$a(Encoder$b.CBANDS), avg = new_float$a(Encoder$b.CBANDS);
-    var mask_idx_l = new_int$b(Encoder$b.CBANDS + 2);
+    var max = new_float$a(Encoder.CBANDS);
+    var avg = new_float$a(Encoder.CBANDS);
+    var mask_idx_l = new_int$b(Encoder.CBANDS + 2);
     var b;
     calc_energy(gfc, fftenergy, eb_l, max, avg);
     calc_mask_index_l(gfc, max, avg, mask_idx_l);
@@ -8600,7 +8613,8 @@ function PsyModel$1() {
       var x, ecb, avg_mask, t;
       var kk = gfc.s3ind[b][0];
       var last = gfc.s3ind[b][1];
-      var dd = 0, dd_n = 0;
+      var dd = 0;
+      var dd_n = 0;
       dd = mask_idx_l[kk];
       dd_n += 1;
       ecb = gfc.s3_ll[k] * eb_l[kk] * tab[mask_idx_l[kk]];
@@ -8618,7 +8632,7 @@ function PsyModel$1() {
       dd = (1 + 2 * dd) / (2 * dd_n);
       avg_mask = tab[dd] * 0.5;
       ecb *= avg_mask;
-      if (gfc.blocktype_old[chn & 1] == Encoder$b.SHORT_TYPE) {
+      if (gfc.blocktype_old[chn & 1] == Encoder.SHORT_TYPE) {
         var ecb_limit = rpelev * gfc.nb_1[chn][b];
         if (ecb_limit > 0) {
           thr[b] = Math.min(ecb, ecb_limit);
@@ -8635,7 +8649,7 @@ function PsyModel$1() {
         if (ecb_limit_1 <= 0) {
           ecb_limit_1 = ecb;
         }
-        if (gfc.blocktype_old[chn & 1] == Encoder$b.NORM_TYPE) {
+        if (gfc.blocktype_old[chn & 1] == Encoder.NORM_TYPE) {
           ecb_limit = Math.min(ecb_limit_1, ecb_limit_2);
         } else {
           ecb_limit = ecb_limit_1;
@@ -8663,15 +8677,16 @@ function PsyModel$1() {
       }
       assert$9(thr[b] >= 0);
     }
-    for (; b < Encoder$b.CBANDS; ++b) {
+    for (; b < Encoder.CBANDS; ++b) {
       eb_l[b] = 0;
       thr[b] = 0;
     }
   }
   function vbrpsy_compute_block_type(gfp, uselongblock) {
     var gfc = gfp.internal_flags;
-    if (gfp.short_blocks == ShortBlock$2.short_block_coupled && !(uselongblock[0] != 0 && uselongblock[1] != 0))
+    if (gfp.short_blocks == ShortBlock$2.short_block_coupled && !(uselongblock[0] != 0 && uselongblock[1] != 0)) {
       uselongblock[0] = uselongblock[1] = 0;
+    }
     for (var chn = 0; chn < gfc.channels_out; chn++) {
       if (gfp.short_blocks == ShortBlock$2.short_block_dispensed) {
         uselongblock[chn] = 1;
@@ -8684,18 +8699,20 @@ function PsyModel$1() {
   function vbrpsy_apply_block_type(gfp, uselongblock, blocktype_d) {
     var gfc = gfp.internal_flags;
     for (var chn = 0; chn < gfc.channels_out; chn++) {
-      var blocktype = Encoder$b.NORM_TYPE;
+      var blocktype = Encoder.NORM_TYPE;
       if (uselongblock[chn] != 0) {
-        assert$9(gfc.blocktype_old[chn] != Encoder$b.START_TYPE);
-        if (gfc.blocktype_old[chn] == Encoder$b.SHORT_TYPE)
-          blocktype = Encoder$b.STOP_TYPE;
-      } else {
-        blocktype = Encoder$b.SHORT_TYPE;
-        if (gfc.blocktype_old[chn] == Encoder$b.NORM_TYPE) {
-          gfc.blocktype_old[chn] = Encoder$b.START_TYPE;
+        assert$9(gfc.blocktype_old[chn] != Encoder.START_TYPE);
+        if (gfc.blocktype_old[chn] == Encoder.SHORT_TYPE) {
+          blocktype = Encoder.STOP_TYPE;
         }
-        if (gfc.blocktype_old[chn] == Encoder$b.STOP_TYPE)
-          gfc.blocktype_old[chn] = Encoder$b.SHORT_TYPE;
+      } else {
+        blocktype = Encoder.SHORT_TYPE;
+        if (gfc.blocktype_old[chn] == Encoder.NORM_TYPE) {
+          gfc.blocktype_old[chn] = Encoder.START_TYPE;
+        }
+        if (gfc.blocktype_old[chn] == Encoder.STOP_TYPE) {
+          gfc.blocktype_old[chn] = Encoder.SHORT_TYPE;
+        }
       }
       blocktype_d[chn] = gfc.blocktype_old[chn];
       gfc.blocktype_old[chn] = blocktype;
@@ -8750,11 +8767,12 @@ function PsyModel$1() {
     var gfc = gfp.internal_flags;
     var wsamp_l;
     var wsamp_s;
-    var fftenergy = new_float$a(Encoder$b.HBLKSIZE);
-    var fftenergy_s = new_float_n$3([3, Encoder$b.HBLKSIZE_s]);
-    var wsamp_L = new_float_n$3([2, Encoder$b.BLKSIZE]);
-    var wsamp_S = new_float_n$3([2, 3, Encoder$b.BLKSIZE_s]);
-    var eb = new_float_n$3([4, Encoder$b.CBANDS]), thr = new_float_n$3([4, Encoder$b.CBANDS]);
+    var fftenergy = new_float$a(Encoder.HBLKSIZE);
+    var fftenergy_s = new_float_n$3([3, Encoder.HBLKSIZE_s]);
+    var wsamp_L = new_float_n$3([2, Encoder.BLKSIZE]);
+    var wsamp_S = new_float_n$3([2, 3, Encoder.BLKSIZE_s]);
+    var eb = new_float_n$3([4, Encoder.CBANDS]);
+    var thr = new_float_n$3([4, Encoder.CBANDS]);
     var sub_short_factor = new_float_n$3([4, 3]);
     var pcfact = 0.6;
     var ns_attacks = [
@@ -8764,7 +8782,7 @@ function PsyModel$1() {
       [0, 0, 0, 0]
     ];
     var uselongblock = new_int$b(2);
-    var n_chn_psy = gfp.mode == MPEGMode2.JOINT_STEREO ? 4 : gfc.channels_out;
+    var n_chn_psy = gfp.mode == MPEGMode.JOINT_STEREO ? 4 : gfc.channels_out;
     vbrpsy_attack_detection(gfp, buffer, bufPos, gr_out, masking_ratio, masking_MS_ratio, energy, sub_short_factor, ns_attacks, uselongblock);
     vbrpsy_compute_block_type(gfp, uselongblock);
     {
@@ -8780,7 +8798,7 @@ function PsyModel$1() {
         }
       }
       if (uselongblock[0] + uselongblock[1] == 2) {
-        if (gfp.mode == MPEGMode2.JOINT_STEREO) {
+        if (gfp.mode == MPEGMode.JOINT_STEREO) {
           vbrpsy_compute_MS_thresholds(eb, thr, gfc.mld_cb_l, gfc.ATH.cb_l, gfp.ATHlower * gfc.ATH.adjust, gfp.msfix, gfc.npart_l);
         }
       }
@@ -8804,13 +8822,13 @@ function PsyModel$1() {
           }
         }
         if (uselongblock[0] + uselongblock[1] == 0) {
-          if (gfp.mode == MPEGMode2.JOINT_STEREO) {
+          if (gfp.mode == MPEGMode.JOINT_STEREO) {
             vbrpsy_compute_MS_thresholds(eb, thr, gfc.mld_cb_s, gfc.ATH.cb_s, gfp.ATHlower * gfc.ATH.adjust, gfp.msfix, gfc.npart_s);
           }
         }
         for (var chn = 0; chn < n_chn_psy; ++chn) {
           var ch01 = chn & 1;
-          if (0 == uselongblock[ch01]) {
+          if (uselongblock[ch01] == 0) {
             convert_partition2scalefac_s(gfc, eb[chn], thr[chn], chn, sblock);
           }
         }
@@ -8820,7 +8838,7 @@ function PsyModel$1() {
         if (uselongblock[ch01] != 0) {
           continue;
         }
-        for (var sb = 0; sb < Encoder$b.SBMAX_s; sb++) {
+        for (var sb = 0; sb < Encoder.SBMAX_s; sb++) {
           var new_thmm = new_float$a(3);
           for (var sblock = 0; sblock < 3; sblock++) {
             var thmm = gfc.thm[chn].s[sb][sblock];
@@ -8859,9 +8877,10 @@ function PsyModel$1() {
       if (chn > 1) {
         ppe = percep_MS_entropy;
         ppePos = -2;
-        type = Encoder$b.NORM_TYPE;
-        if (blocktype_d[0] == Encoder$b.SHORT_TYPE || blocktype_d[1] == Encoder$b.SHORT_TYPE)
-          type = Encoder$b.SHORT_TYPE;
+        type = Encoder.NORM_TYPE;
+        if (blocktype_d[0] == Encoder.SHORT_TYPE || blocktype_d[1] == Encoder.SHORT_TYPE) {
+          type = Encoder.SHORT_TYPE;
+        }
         mr = masking_MS_ratio[gr_out][chn - 2];
       } else {
         ppe = percep_entropy;
@@ -8869,7 +8888,7 @@ function PsyModel$1() {
         type = blocktype_d[chn];
         mr = masking_ratio[gr_out][chn];
       }
-      if (type == Encoder$b.SHORT_TYPE) {
+      if (type == Encoder.SHORT_TYPE) {
         ppe[ppePos + chn] = pecalc_s(mr, gfc.masking_lower);
       } else {
         ppe[ppePos + chn] = pecalc_l(mr, gfc.masking_lower);
@@ -8881,7 +8900,8 @@ function PsyModel$1() {
     return 0;
   };
   function s3_func_x(bark, hf_slope) {
-    var tempx = bark, tempy;
+    var tempx = bark;
+    var tempy;
     if (tempx >= 0) {
       tempy = -tempx * 27;
     } else {
@@ -8893,9 +8913,12 @@ function PsyModel$1() {
     return Math.exp(tempy * LN_TO_LOG10);
   }
   function norm_s3_func_x(hf_slope) {
-    var lim_a = 0, lim_b = 0;
+    var lim_a = 0;
+    var lim_b = 0;
     {
-      var x = 0, l, h;
+      var x = 0;
+      var l;
+      var h;
       for (x = 0; s3_func_x(x, hf_slope) > 1e-20; x -= 1)
         ;
       l = x;
@@ -8911,7 +8934,9 @@ function PsyModel$1() {
       lim_a = l;
     }
     {
-      var x = 0, l, h;
+      var x = 0;
+      var l;
+      var h;
       for (x = 0; s3_func_x(x, hf_slope) > 1e-20; x += 1)
         ;
       l = 0;
@@ -8968,14 +8993,14 @@ function PsyModel$1() {
     return 13 * Math.atan(0.76 * freq) + 3.5 * Math.atan(freq * freq / (7.5 * 7.5));
   }
   function init_numline(numlines, bo, bm, bval, bval_width, mld, bo_w, sfreq, blksize, scalepos, deltafreq, sbmax) {
-    var b_frq = new_float$a(Encoder$b.CBANDS + 1);
+    var b_frq = new_float$a(Encoder.CBANDS + 1);
     var sample_freq_frac = sfreq / (sbmax > 15 ? 2 * 576 : 2 * 192);
-    var partition = new_int$b(Encoder$b.HBLKSIZE);
+    var partition = new_int$b(Encoder.HBLKSIZE);
     var i;
     sfreq /= blksize;
     var j = 0;
     var ni = 0;
-    for (i = 0; i < Encoder$b.CBANDS; i++) {
+    for (i = 0; i < Encoder.CBANDS; i++) {
       var bark1;
       var j2;
       bark1 = freq2bark(sfreq * j);
@@ -9035,7 +9060,7 @@ function PsyModel$1() {
     return ni;
   }
   function init_s3_values(s3ind, npart, bval, bval_width, norm, use_old_s3) {
-    var s3 = new_float_n$3([Encoder$b.CBANDS, Encoder$b.CBANDS]);
+    var s3 = new_float_n$3([Encoder.CBANDS, Encoder.CBANDS]);
     var j;
     var numberOfNoneZero = 0;
     if (use_old_s3) {
@@ -9070,9 +9095,10 @@ function PsyModel$1() {
     }
     var p = new_float$a(numberOfNoneZero);
     var k = 0;
-    for (var i = 0; i < npart; i++)
+    for (var i = 0; i < npart; i++) {
       for (j = s3ind[i][0]; j <= s3ind[i][1]; j++)
         p[k++] = s3[i][j];
+    }
     return p;
   }
   function stereo_demask(f) {
@@ -9084,12 +9110,15 @@ function PsyModel$1() {
     var gfc = gfp.internal_flags;
     var i;
     var useOldS3 = true;
-    var bvl_a = 13, bvl_b = 24;
-    var snr_l_a = 0, snr_l_b = 0;
-    var snr_s_a = -8.25, snr_s_b = -4.5;
-    var bval = new_float$a(Encoder$b.CBANDS);
-    var bval_width = new_float$a(Encoder$b.CBANDS);
-    var norm = new_float$a(Encoder$b.CBANDS);
+    var bvl_a = 13;
+    var bvl_b = 24;
+    var snr_l_a = 0;
+    var snr_l_b = 0;
+    var snr_s_a = -8.25;
+    var snr_s_b = -4.5;
+    var bval = new_float$a(Encoder.CBANDS);
+    var bval_width = new_float$a(Encoder.CBANDS);
+    var norm = new_float$a(Encoder.CBANDS);
     var sfreq = gfp.out_samplerate;
     switch (gfp.experimentalZ) {
       default:
@@ -9097,7 +9126,7 @@ function PsyModel$1() {
         useOldS3 = true;
         break;
       case 1:
-        useOldS3 = gfp.VBR == VbrMode$5.vbr_mtrh || gfp.VBR == VbrMode$5.vbr_mt ? false : true;
+        useOldS3 = !(gfp.VBR == VbrMode$5.vbr_mtrh || gfp.VBR == VbrMode$5.vbr_mt);
         break;
       case 2:
         useOldS3 = false;
@@ -9111,19 +9140,19 @@ function PsyModel$1() {
         break;
     }
     gfc.ms_ener_ratio_old = 0.25;
-    gfc.blocktype_old[0] = gfc.blocktype_old[1] = Encoder$b.NORM_TYPE;
+    gfc.blocktype_old[0] = gfc.blocktype_old[1] = Encoder.NORM_TYPE;
     for (i = 0; i < 4; ++i) {
-      for (var j = 0; j < Encoder$b.CBANDS; ++j) {
+      for (var j = 0; j < Encoder.CBANDS; ++j) {
         gfc.nb_1[i][j] = 1e20;
         gfc.nb_2[i][j] = 1e20;
         gfc.nb_s1[i][j] = gfc.nb_s2[i][j] = 1;
       }
-      for (var sb = 0; sb < Encoder$b.SBMAX_l; sb++) {
+      for (var sb = 0; sb < Encoder.SBMAX_l; sb++) {
         gfc.en[i].l[sb] = 1e20;
         gfc.thm[i].l[sb] = 1e20;
       }
       for (var j = 0; j < 3; ++j) {
-        for (var sb = 0; sb < Encoder$b.SBMAX_s; sb++) {
+        for (var sb = 0; sb < Encoder.SBMAX_s; sb++) {
           gfc.en[i].s[sb][j] = 1e20;
           gfc.thm[i].s[sb][j] = 1e20;
         }
@@ -9133,8 +9162,8 @@ function PsyModel$1() {
         gfc.nsPsy.last_en_subshort[i][j] = 10;
     }
     gfc.loudness_sq_save[0] = gfc.loudness_sq_save[1] = 0;
-    gfc.npart_l = init_numline(gfc.numlines_l, gfc.bo_l, gfc.bm_l, bval, bval_width, gfc.mld_l, gfc.PSY.bo_l_weight, sfreq, Encoder$b.BLKSIZE, gfc.scalefac_band.l, Encoder$b.BLKSIZE / (2 * 576), Encoder$b.SBMAX_l);
-    assert$9(gfc.npart_l < Encoder$b.CBANDS);
+    gfc.npart_l = init_numline(gfc.numlines_l, gfc.bo_l, gfc.bm_l, bval, bval_width, gfc.mld_l, gfc.PSY.bo_l_weight, sfreq, Encoder.BLKSIZE, gfc.scalefac_band.l, Encoder.BLKSIZE / (2 * 576), Encoder.SBMAX_l);
+    assert$9(gfc.npart_l < Encoder.CBANDS);
     for (i = 0; i < gfc.npart_l; i++) {
       var snr = snr_l_a;
       if (bval[i] >= bvl_a) {
@@ -9153,7 +9182,7 @@ function PsyModel$1() {
       var x;
       x = Float$1.MAX_VALUE;
       for (var k = 0; k < gfc.numlines_l[i]; k++, j++) {
-        var freq = sfreq * j / (1e3 * Encoder$b.BLKSIZE);
+        var freq = sfreq * j / (1e3 * Encoder.BLKSIZE);
         var level;
         level = this.ATHformula(freq * 1e3, gfp) - 20;
         level = Math.pow(10, 0.1 * level);
@@ -9172,8 +9201,8 @@ function PsyModel$1() {
       x -= 8;
       gfc.minval_l[i] = Math.pow(10, x / 10) * gfc.numlines_l[i];
     }
-    gfc.npart_s = init_numline(gfc.numlines_s, gfc.bo_s, gfc.bm_s, bval, bval_width, gfc.mld_s, gfc.PSY.bo_s_weight, sfreq, Encoder$b.BLKSIZE_s, gfc.scalefac_band.s, Encoder$b.BLKSIZE_s / (2 * 192), Encoder$b.SBMAX_s);
-    assert$9(gfc.npart_s < Encoder$b.CBANDS);
+    gfc.npart_s = init_numline(gfc.numlines_s, gfc.bo_s, gfc.bm_s, bval, bval_width, gfc.mld_s, gfc.PSY.bo_s_weight, sfreq, Encoder.BLKSIZE_s, gfc.scalefac_band.s, Encoder.BLKSIZE_s / (2 * 192), Encoder.SBMAX_s);
+    assert$9(gfc.npart_s < Encoder.CBANDS);
     j = 0;
     for (i = 0; i < gfc.npart_s; i++) {
       var x;
@@ -9184,7 +9213,7 @@ function PsyModel$1() {
       norm[i] = Math.pow(10, snr / 10);
       x = Float$1.MAX_VALUE;
       for (var k = 0; k < gfc.numlines_s[i]; k++, j++) {
-        var freq = sfreq * j / (1e3 * Encoder$b.BLKSIZE_s);
+        var freq = sfreq * j / (1e3 * Encoder.BLKSIZE_s);
         var level;
         level = this.ATHformula(freq * 1e3, gfp) - 20;
         level = Math.pow(10, 0.1 * level);
@@ -9218,28 +9247,29 @@ function PsyModel$1() {
       if (Math.abs(gfp.msfix) > 0)
         msfix = gfp.msfix;
       gfp.msfix = msfix;
-      for (var b = 0; b < gfc.npart_l; b++)
+      for (var b = 0; b < gfc.npart_l; b++) {
         if (gfc.s3ind[b][1] > gfc.npart_l - 1)
           gfc.s3ind[b][1] = gfc.npart_l - 1;
+      }
     }
     var frame_duration = 576 * gfc.mode_gr / sfreq;
     gfc.ATH.decay = Math.pow(10, -12 / 10 * frame_duration);
     gfc.ATH.adjust = 0.01;
     gfc.ATH.adjustLimit = 1;
-    assert$9(gfc.bo_l[Encoder$b.SBMAX_l - 1] <= gfc.npart_l);
-    assert$9(gfc.bo_s[Encoder$b.SBMAX_s - 1] <= gfc.npart_s);
+    assert$9(gfc.bo_l[Encoder.SBMAX_l - 1] <= gfc.npart_l);
+    assert$9(gfc.bo_s[Encoder.SBMAX_s - 1] <= gfc.npart_s);
     if (gfp.ATHtype != -1) {
       var freq;
-      var freq_inc = gfp.out_samplerate / Encoder$b.BLKSIZE;
+      var freq_inc = gfp.out_samplerate / Encoder.BLKSIZE;
       var eql_balance = 0;
       freq = 0;
-      for (i = 0; i < Encoder$b.BLKSIZE / 2; ++i) {
+      for (i = 0; i < Encoder.BLKSIZE / 2; ++i) {
         freq += freq_inc;
         gfc.ATH.eql_w[i] = 1 / Math.pow(10, this.ATHformula(freq, gfp) / 10);
         eql_balance += gfc.ATH.eql_w[i];
       }
       eql_balance = 1 / eql_balance;
-      for (i = Encoder$b.BLKSIZE / 2; --i >= 0; ) {
+      for (i = Encoder.BLKSIZE / 2; --i >= 0; ) {
         gfc.ATH.eql_w[i] *= eql_balance;
       }
     }
@@ -9257,20 +9287,20 @@ function PsyModel$1() {
     }
     j = 0;
     for (i = 0; i < gfc.npart_l; i++) {
-      var freq = sfreq * (j + gfc.numlines_l[i] / 2) / (1 * Encoder$b.BLKSIZE);
+      var freq = sfreq * (j + gfc.numlines_l[i] / 2) / (1 * Encoder.BLKSIZE);
       gfc.mld_cb_l[i] = stereo_demask(freq);
       j += gfc.numlines_l[i];
     }
-    for (; i < Encoder$b.CBANDS; ++i) {
+    for (; i < Encoder.CBANDS; ++i) {
       gfc.mld_cb_l[i] = 1;
     }
     j = 0;
     for (i = 0; i < gfc.npart_s; i++) {
-      var freq = sfreq * (j + gfc.numlines_s[i] / 2) / (1 * Encoder$b.BLKSIZE_s);
+      var freq = sfreq * (j + gfc.numlines_s[i] / 2) / (1 * Encoder.BLKSIZE_s);
       gfc.mld_cb_s[i] = stereo_demask(freq);
       j += gfc.numlines_s[i];
     }
-    for (; i < Encoder$b.CBANDS; ++i) {
+    for (; i < Encoder.CBANDS; ++i) {
       gfc.mld_cb_s[i] = 1;
     }
     return 0;
@@ -9308,9 +9338,7 @@ function PsyModel$1() {
     return ath;
   };
 }
-var PsyModel_1 = PsyModel$1;
-var MPEGMode$1 = MPEGMode_1;
-function LameGlobalFlags$1() {
+function LameGlobalFlags() {
   this.class_id = 0;
   this.num_samples = 0;
   this.num_channels = 0;
@@ -9323,7 +9351,7 @@ function LameGlobalFlags$1() {
   this.bWriteVbrTag = false;
   this.decode_only = false;
   this.quality = 0;
-  this.mode = MPEGMode$1.STEREO;
+  this.mode = MPEGMode.STEREO;
   this.force_ms = false;
   this.free_format = false;
   this.findReplayGain = false;
@@ -9380,19 +9408,14 @@ function LameGlobalFlags$1() {
   this.lame_allocated_gfp = 0;
   this.internal_flags = null;
 }
-var LameGlobalFlags_1 = LameGlobalFlags$1;
-var Encoder$a = Encoder_1;
-var L3Side$5 = {};
-L3Side$5.SFBMAX = Encoder$a.SBMAX_s * 3;
-var L3Side_1 = L3Side$5;
-var common$i = common$o;
-var new_float$9 = common$i.new_float;
-var new_int$a = common$i.new_int;
-var L3Side$4 = L3Side_1;
-function GrInfo$3() {
+var L3Side$1 = {};
+L3Side$1.SFBMAX = Encoder.SBMAX_s * 3;
+var new_float$9 = common.new_float;
+var new_int$a = common.new_int;
+function GrInfo() {
   this.xr = new_float$9(576);
   this.l3_enc = new_int$a(576);
-  this.scalefac = new_int$a(L3Side$4.SFBMAX);
+  this.scalefac = new_int$a(L3Side$1.SFBMAX);
   this.xrpow_max = 0;
   this.part2_3_length = 0;
   this.big_values = 0;
@@ -9415,8 +9438,8 @@ function GrInfo$3() {
   this.sfbmax = 0;
   this.psymax = 0;
   this.sfbdivide = 0;
-  this.width = new_int$a(L3Side$4.SFBMAX);
-  this.window = new_int$a(L3Side$4.SFBMAX);
+  this.width = new_int$a(L3Side$1.SFBMAX);
+  this.window = new_int$a(L3Side$1.SFBMAX);
   this.count1bits = 0;
   this.sfb_partition_table = null;
   this.slen = new_int$a(4);
@@ -9462,12 +9485,12 @@ function GrInfo$3() {
     self.max_nonzero_coeff = other.max_nonzero_coeff;
   };
 }
-var GrInfo_1 = GrInfo$3;
-var common$h = common$o;
-var new_int$9 = common$h.new_int;
-var GrInfo$2 = GrInfo_1;
-function IIISideInfo$1() {
-  this.tt = [[null, null], [null, null]];
+var new_int$9 = common.new_int;
+function IIISideInfo() {
+  this.tt = [
+    [null, null],
+    [null, null]
+  ];
   this.main_data_begin = 0;
   this.private_bits = 0;
   this.resvDrain_pre = 0;
@@ -9475,20 +9498,17 @@ function IIISideInfo$1() {
   this.scfsi = [new_int$9(4), new_int$9(4)];
   for (var gr = 0; gr < 2; gr++) {
     for (var ch = 0; ch < 2; ch++) {
-      this.tt[gr][ch] = new GrInfo$2();
+      this.tt[gr][ch] = new GrInfo();
     }
   }
 }
-var IIISideInfo_1 = IIISideInfo$1;
-var common$g = common$o;
-var System$6 = common$g.System;
-var new_int$8 = common$g.new_int;
-var Encoder$9 = Encoder_1;
-function ScaleFac$2(arrL, arrS, arr21, arr12) {
-  this.l = new_int$8(1 + Encoder$9.SBMAX_l);
-  this.s = new_int$8(1 + Encoder$9.SBMAX_s);
-  this.psfb21 = new_int$8(1 + Encoder$9.PSFB21);
-  this.psfb12 = new_int$8(1 + Encoder$9.PSFB12);
+var System$6 = common.System;
+var new_int$8 = common.new_int;
+function ScaleFac(arrL, arrS, arr21, arr12) {
+  this.l = new_int$8(1 + Encoder.SBMAX_l);
+  this.s = new_int$8(1 + Encoder.SBMAX_s);
+  this.psfb21 = new_int$8(1 + Encoder.PSFB21);
+  this.psfb12 = new_int$8(1 + Encoder.PSFB12);
   var l = this.l;
   var s = this.s;
   if (arguments.length == 4) {
@@ -9502,23 +9522,19 @@ function ScaleFac$2(arrL, arrS, arr21, arr12) {
     System$6.arraycopy(this.arr12, 0, this.psfb12, 0, Math.min(this.arr12.length, this.psfb12.length));
   }
 }
-var ScaleFac_1 = ScaleFac$2;
-var common$f = common$o;
-var new_float$8 = common$f.new_float;
-var new_float_n$2 = common$f.new_float_n;
-var new_int$7 = common$f.new_int;
-var Encoder$8 = Encoder_1;
-function NsPsy$1() {
+var new_float$8 = common.new_float;
+var new_float_n$2 = common.new_float_n;
+var new_int$7 = common.new_int;
+function NsPsy() {
   this.last_en_subshort = new_float_n$2([4, 9]);
   this.lastAttacks = new_int$7(4);
   this.pefirbuf = new_float$8(19);
-  this.longfact = new_float$8(Encoder$8.SBMAX_l);
-  this.shortfact = new_float$8(Encoder$8.SBMAX_s);
+  this.longfact = new_float$8(Encoder.SBMAX_l);
+  this.shortfact = new_float$8(Encoder.SBMAX_s);
   this.attackthre = 0;
   this.attackthre_s = 0;
 }
-var NsPsy_1 = NsPsy$1;
-function VBRSeekInfo$1() {
+function VBRSeekInfo() {
   this.sum = 0;
   this.seen = 0;
   this.want = 0;
@@ -9529,33 +9545,24 @@ function VBRSeekInfo$1() {
   this.nBytesWritten = 0;
   this.TotalFrameSize = 0;
 }
-var VBRSeekInfo_1 = VBRSeekInfo$1;
-var common$e = common$o;
-var new_byte$3 = common$e.new_byte;
-var new_double = common$e.new_double;
-var new_float$7 = common$e.new_float;
-var new_float_n$1 = common$e.new_float_n;
-var new_int$6 = common$e.new_int;
-var new_int_n$1 = common$e.new_int_n;
-var IIISideInfo = IIISideInfo_1;
-var ScaleFac$1 = ScaleFac_1;
-var NsPsy = NsPsy_1;
-var VBRSeekInfo = VBRSeekInfo_1;
-var III_psy_xmin = III_psy_xmin_1;
-var Encoder$7 = Encoder_1;
-var L3Side$3 = L3Side_1;
-LameInternalFlags$5.MFSIZE = 3 * 1152 + Encoder$7.ENCDELAY - Encoder$7.MDCTDELAY;
-LameInternalFlags$5.MAX_HEADER_BUF = 256;
-LameInternalFlags$5.MAX_BITS_PER_CHANNEL = 4095;
-LameInternalFlags$5.MAX_BITS_PER_GRANULE = 7680;
-LameInternalFlags$5.BPC = 320;
-function LameInternalFlags$5() {
+var new_byte$3 = common.new_byte;
+var new_double = common.new_double;
+var new_float$7 = common.new_float;
+var new_float_n$1 = common.new_float_n;
+var new_int$6 = common.new_int;
+var new_int_n$1 = common.new_int_n;
+LameInternalFlags$1.MFSIZE = 3 * 1152 + Encoder.ENCDELAY - Encoder.MDCTDELAY;
+LameInternalFlags$1.MAX_HEADER_BUF = 256;
+LameInternalFlags$1.MAX_BITS_PER_CHANNEL = 4095;
+LameInternalFlags$1.MAX_BITS_PER_GRANULE = 7680;
+LameInternalFlags$1.BPC = 320;
+function LameInternalFlags$1() {
   var MAX_HEADER_LEN = 40;
   this.Class_ID = 0;
   this.lame_encode_frame_init = 0;
   this.iteration_init_init = 0;
   this.fill_buffer_resample_init = 0;
-  this.mfbuf = new_float_n$1([2, LameInternalFlags$5.MFSIZE]);
+  this.mfbuf = new_float_n$1([2, LameInternalFlags$1.MFSIZE]);
   this.mode_gr = 0;
   this.channels_in = 0;
   this.channels_out = 0;
@@ -9590,32 +9597,32 @@ function LameInternalFlags$5() {
   this.CurrentStep = new_int$6(2);
   this.masking_lower = 0;
   this.bv_scf = new_int$6(576);
-  this.pseudohalf = new_int$6(L3Side$3.SFBMAX);
+  this.pseudohalf = new_int$6(L3Side$1.SFBMAX);
   this.sfb21_extra = false;
   this.inbuf_old = new Array(2);
-  this.blackfilt = new Array(2 * LameInternalFlags$5.BPC + 1);
+  this.blackfilt = new Array(2 * LameInternalFlags$1.BPC + 1);
   this.itime = new_double(2);
   this.sideinfo_len = 0;
-  this.sb_sample = new_float_n$1([2, 2, 18, Encoder$7.SBLIMIT]);
+  this.sb_sample = new_float_n$1([2, 2, 18, Encoder.SBLIMIT]);
   this.amp_filter = new_float$7(32);
   function Header() {
     this.write_timing = 0;
     this.ptr = 0;
     this.buf = new_byte$3(MAX_HEADER_LEN);
   }
-  this.header = new Array(LameInternalFlags$5.MAX_HEADER_BUF);
+  this.header = new Array(LameInternalFlags$1.MAX_HEADER_BUF);
   this.h_ptr = 0;
   this.w_ptr = 0;
   this.ancillary_flag = 0;
   this.ResvSize = 0;
   this.ResvMax = 0;
-  this.scalefac_band = new ScaleFac$1();
-  this.minval_l = new_float$7(Encoder$7.CBANDS);
-  this.minval_s = new_float$7(Encoder$7.CBANDS);
-  this.nb_1 = new_float_n$1([4, Encoder$7.CBANDS]);
-  this.nb_2 = new_float_n$1([4, Encoder$7.CBANDS]);
-  this.nb_s1 = new_float_n$1([4, Encoder$7.CBANDS]);
-  this.nb_s2 = new_float_n$1([4, Encoder$7.CBANDS]);
+  this.scalefac_band = new ScaleFac();
+  this.minval_l = new_float$7(Encoder.CBANDS);
+  this.minval_s = new_float$7(Encoder.CBANDS);
+  this.nb_1 = new_float_n$1([4, Encoder.CBANDS]);
+  this.nb_2 = new_float_n$1([4, Encoder.CBANDS]);
+  this.nb_s1 = new_float_n$1([4, Encoder.CBANDS]);
+  this.nb_s2 = new_float_n$1([4, Encoder.CBANDS]);
   this.s3_ss = null;
   this.s3_ll = null;
   this.decay = 0;
@@ -9624,21 +9631,21 @@ function LameInternalFlags$5() {
   this.tot_ener = new_float$7(4);
   this.loudness_sq = new_float_n$1([2, 2]);
   this.loudness_sq_save = new_float$7(2);
-  this.mld_l = new_float$7(Encoder$7.SBMAX_l);
-  this.mld_s = new_float$7(Encoder$7.SBMAX_s);
-  this.bm_l = new_int$6(Encoder$7.SBMAX_l);
-  this.bo_l = new_int$6(Encoder$7.SBMAX_l);
-  this.bm_s = new_int$6(Encoder$7.SBMAX_s);
-  this.bo_s = new_int$6(Encoder$7.SBMAX_s);
+  this.mld_l = new_float$7(Encoder.SBMAX_l);
+  this.mld_s = new_float$7(Encoder.SBMAX_s);
+  this.bm_l = new_int$6(Encoder.SBMAX_l);
+  this.bo_l = new_int$6(Encoder.SBMAX_l);
+  this.bm_s = new_int$6(Encoder.SBMAX_s);
+  this.bo_s = new_int$6(Encoder.SBMAX_s);
   this.npart_l = 0;
   this.npart_s = 0;
-  this.s3ind = new_int_n$1([Encoder$7.CBANDS, 2]);
-  this.s3ind_s = new_int_n$1([Encoder$7.CBANDS, 2]);
-  this.numlines_s = new_int$6(Encoder$7.CBANDS);
-  this.numlines_l = new_int$6(Encoder$7.CBANDS);
-  this.rnumlines_l = new_float$7(Encoder$7.CBANDS);
-  this.mld_cb_l = new_float$7(Encoder$7.CBANDS);
-  this.mld_cb_s = new_float$7(Encoder$7.CBANDS);
+  this.s3ind = new_int_n$1([Encoder.CBANDS, 2]);
+  this.s3ind_s = new_int_n$1([Encoder.CBANDS, 2]);
+  this.numlines_s = new_int$6(Encoder.CBANDS);
+  this.numlines_l = new_int$6(Encoder.CBANDS);
+  this.rnumlines_l = new_float$7(Encoder.CBANDS);
+  this.mld_cb_l = new_float$7(Encoder.CBANDS);
+  this.mld_cb_s = new_float$7(Encoder.CBANDS);
   this.numlines_s_num1 = 0;
   this.numlines_l_num1 = 0;
   this.pe = new_float$7(4);
@@ -9679,47 +9686,42 @@ function LameInternalFlags$5() {
     this.header[i] = new Header();
   }
 }
-var LameInternalFlags_1 = LameInternalFlags$5;
-var common$d = common$o;
-var new_float$6 = common$d.new_float;
-var Encoder$6 = Encoder_1;
-function ATH$1() {
+var new_float$6 = common.new_float;
+function ATH() {
   this.useAdjust = 0;
   this.aaSensitivityP = 0;
   this.adjust = 0;
   this.adjustLimit = 0;
   this.decay = 0;
   this.floor = 0;
-  this.l = new_float$6(Encoder$6.SBMAX_l);
-  this.s = new_float$6(Encoder$6.SBMAX_s);
-  this.psfb21 = new_float$6(Encoder$6.PSFB21);
-  this.psfb12 = new_float$6(Encoder$6.PSFB12);
-  this.cb_l = new_float$6(Encoder$6.CBANDS);
-  this.cb_s = new_float$6(Encoder$6.CBANDS);
-  this.eql_w = new_float$6(Encoder$6.BLKSIZE / 2);
+  this.l = new_float$6(Encoder.SBMAX_l);
+  this.s = new_float$6(Encoder.SBMAX_s);
+  this.psfb21 = new_float$6(Encoder.PSFB21);
+  this.psfb12 = new_float$6(Encoder.PSFB12);
+  this.cb_l = new_float$6(Encoder.CBANDS);
+  this.cb_s = new_float$6(Encoder.CBANDS);
+  this.eql_w = new_float$6(Encoder.BLKSIZE / 2);
 }
-var ATH_1 = ATH$1;
-var common$c = common$o;
-var System$5 = common$c.System;
-var Arrays$4 = common$c.Arrays;
-GainAnalysis$3.STEPS_per_dB = 100;
-GainAnalysis$3.MAX_dB = 120;
-GainAnalysis$3.GAIN_NOT_ENOUGH_SAMPLES = -24601;
-GainAnalysis$3.GAIN_ANALYSIS_ERROR = 0;
-GainAnalysis$3.GAIN_ANALYSIS_OK = 1;
-GainAnalysis$3.INIT_GAIN_ANALYSIS_ERROR = 0;
-GainAnalysis$3.INIT_GAIN_ANALYSIS_OK = 1;
-GainAnalysis$3.YULE_ORDER = 10;
-GainAnalysis$3.MAX_ORDER = GainAnalysis$3.YULE_ORDER;
-GainAnalysis$3.MAX_SAMP_FREQ = 48e3;
-GainAnalysis$3.RMS_WINDOW_TIME_NUMERATOR = 1;
-GainAnalysis$3.RMS_WINDOW_TIME_DENOMINATOR = 20;
-GainAnalysis$3.MAX_SAMPLES_PER_WINDOW = GainAnalysis$3.MAX_SAMP_FREQ * GainAnalysis$3.RMS_WINDOW_TIME_NUMERATOR / GainAnalysis$3.RMS_WINDOW_TIME_DENOMINATOR + 1;
-function GainAnalysis$3() {
+var System$5 = common.System;
+var Arrays$4 = common.Arrays;
+GainAnalysis$1.STEPS_per_dB = 100;
+GainAnalysis$1.MAX_dB = 120;
+GainAnalysis$1.GAIN_NOT_ENOUGH_SAMPLES = -24601;
+GainAnalysis$1.GAIN_ANALYSIS_ERROR = 0;
+GainAnalysis$1.GAIN_ANALYSIS_OK = 1;
+GainAnalysis$1.INIT_GAIN_ANALYSIS_ERROR = 0;
+GainAnalysis$1.INIT_GAIN_ANALYSIS_OK = 1;
+GainAnalysis$1.YULE_ORDER = 10;
+GainAnalysis$1.MAX_ORDER = GainAnalysis$1.YULE_ORDER;
+GainAnalysis$1.MAX_SAMP_FREQ = 48e3;
+GainAnalysis$1.RMS_WINDOW_TIME_NUMERATOR = 1;
+GainAnalysis$1.RMS_WINDOW_TIME_DENOMINATOR = 20;
+GainAnalysis$1.MAX_SAMPLES_PER_WINDOW = GainAnalysis$1.MAX_SAMP_FREQ * GainAnalysis$1.RMS_WINDOW_TIME_NUMERATOR / GainAnalysis$1.RMS_WINDOW_TIME_DENOMINATOR + 1;
+function GainAnalysis$1() {
   var PINK_REF = 64.82;
   var RMS_PERCENTILE = 0.95;
-  var RMS_WINDOW_TIME_NUMERATOR = GainAnalysis$3.RMS_WINDOW_TIME_NUMERATOR;
-  var RMS_WINDOW_TIME_DENOMINATOR = GainAnalysis$3.RMS_WINDOW_TIME_DENOMINATOR;
+  var RMS_WINDOW_TIME_NUMERATOR = GainAnalysis$1.RMS_WINDOW_TIME_NUMERATOR;
+  var RMS_WINDOW_TIME_DENOMINATOR = GainAnalysis$1.RMS_WINDOW_TIME_DENOMINATOR;
   var ABYule = [
     [
       0.038575994352,
@@ -10009,8 +10011,9 @@ function GainAnalysis$3() {
     }
   }
   function ResetSampleFrequency(rgData, samplefreq) {
-    for (var i = 0; i < MAX_ORDER; i++)
+    for (var i = 0; i < MAX_ORDER; i++) {
       rgData.linprebuf[i] = rgData.lstepbuf[i] = rgData.loutbuf[i] = rgData.rinprebuf[i] = rgData.rstepbuf[i] = rgData.routbuf[i] = 0;
+    }
     switch (0 | samplefreq) {
       case 48e3:
         rgData.reqindex = 0;
@@ -10101,8 +10104,9 @@ function GainAnalysis$3() {
         curleftBase = rgData.linprebuf;
         curright = rgData.rinpre + cursamplepos;
         currightBase = rgData.rinprebuf;
-        if (cursamples > MAX_ORDER - cursamplepos)
+        if (cursamples > MAX_ORDER - cursamplepos) {
           cursamples = MAX_ORDER - cursamplepos;
+        }
       } else {
         curleft = left_samplesPos + cursamplepos;
         curleftBase = left_samples;
@@ -10133,7 +10137,7 @@ function GainAnalysis$3() {
       cursamplepos += cursamples;
       rgData.totsamp += cursamples;
       if (rgData.totsamp == rgData.sampleWindow) {
-        var val = GainAnalysis$3.STEPS_per_dB * 10 * Math.log10((rgData.lsum + rgData.rsum) / rgData.totsamp * 0.5 + 1e-37);
+        var val = GainAnalysis$1.STEPS_per_dB * 10 * Math.log10((rgData.lsum + rgData.rsum) / rgData.totsamp * 0.5 + 1e-37);
         var ival = val <= 0 ? 0 : 0 | val;
         if (ival >= rgData.A.length)
           ival = rgData.A.length - 1;
@@ -10172,7 +10176,7 @@ function GainAnalysis$3() {
       if ((upper -= Array2[i]) <= 0)
         break;
     }
-    return PINK_REF - i / GainAnalysis$3.STEPS_per_dB;
+    return PINK_REF - i / GainAnalysis$1.STEPS_per_dB;
   }
   this.GetTitleGain = function(rgData) {
     var retval = analyzeResult(rgData.A, rgData.A.length);
@@ -10180,30 +10184,28 @@ function GainAnalysis$3() {
       rgData.B[i] += rgData.A[i];
       rgData.A[i] = 0;
     }
-    for (var i = 0; i < MAX_ORDER; i++)
+    for (var i = 0; i < MAX_ORDER; i++) {
       rgData.linprebuf[i] = rgData.lstepbuf[i] = rgData.loutbuf[i] = rgData.rinprebuf[i] = rgData.rstepbuf[i] = rgData.routbuf[i] = 0;
+    }
     rgData.totsamp = 0;
     rgData.lsum = rgData.rsum = 0;
     return retval;
   };
 }
-var GainAnalysis_1 = GainAnalysis$3;
-var common$b = common$o;
-var new_float$5 = common$b.new_float;
-var new_int$5 = common$b.new_int;
-var GainAnalysis$2 = GainAnalysis_1;
-function ReplayGain$1() {
-  this.linprebuf = new_float$5(GainAnalysis$2.MAX_ORDER * 2);
+var new_float$5 = common.new_float;
+var new_int$5 = common.new_int;
+function ReplayGain() {
+  this.linprebuf = new_float$5(void 0 * 2);
   this.linpre = 0;
-  this.lstepbuf = new_float$5(GainAnalysis$2.MAX_SAMPLES_PER_WINDOW + GainAnalysis$2.MAX_ORDER);
+  this.lstepbuf = new_float$5(void 0 + void 0);
   this.lstep = 0;
-  this.loutbuf = new_float$5(GainAnalysis$2.MAX_SAMPLES_PER_WINDOW + GainAnalysis$2.MAX_ORDER);
+  this.loutbuf = new_float$5(void 0 + void 0);
   this.lout = 0;
-  this.rinprebuf = new_float$5(GainAnalysis$2.MAX_ORDER * 2);
+  this.rinprebuf = new_float$5(void 0 * 2);
   this.rinpre = 0;
-  this.rstepbuf = new_float$5(GainAnalysis$2.MAX_SAMPLES_PER_WINDOW + GainAnalysis$2.MAX_ORDER);
+  this.rstepbuf = new_float$5(void 0 + void 0);
   this.rstep = 0;
-  this.routbuf = new_float$5(GainAnalysis$2.MAX_SAMPLES_PER_WINDOW + GainAnalysis$2.MAX_ORDER);
+  this.routbuf = new_float$5(void 0 + void 0);
   this.rout = 0;
   this.sampleWindow = 0;
   this.totsamp = 0;
@@ -10211,45 +10213,39 @@ function ReplayGain$1() {
   this.rsum = 0;
   this.freqindex = 0;
   this.first = 0;
-  this.A = new_int$5(0 | GainAnalysis$2.STEPS_per_dB * GainAnalysis$2.MAX_dB);
-  this.B = new_int$5(0 | GainAnalysis$2.STEPS_per_dB * GainAnalysis$2.MAX_dB);
+  this.A = new_int$5(0 | void 0 * void 0);
+  this.B = new_int$5(0 | void 0 * void 0);
 }
-var ReplayGain_1 = ReplayGain$1;
-function MeanBits$3(meanBits) {
+function MeanBits$1(meanBits) {
   this.bits = meanBits;
 }
-var MeanBits_1 = MeanBits$3;
-var common$a = common$o;
-var new_float$4 = common$a.new_float;
-var new_int$4 = common$a.new_int;
-var assert$8 = common$a.assert;
-var MeanBits$2 = MeanBits_1;
-var Encoder$5 = Encoder_1;
-var L3Side$2 = L3Side_1;
-var LameInternalFlags$4 = LameInternalFlags_1;
-function CBRNewIterationLoop$1(_quantize) {
+var new_float$4 = common.new_float;
+var new_int$4 = common.new_int;
+var assert$8 = common.assert;
+function CBRNewIterationLoop(_quantize) {
   var quantize = _quantize;
   this.quantize = quantize;
   this.iteration_loop = function(gfp, pe, ms_ener_ratio, ratio) {
     var gfc = gfp.internal_flags;
-    var l3_xmin = new_float$4(L3Side$2.SFBMAX);
+    var l3_xmin = new_float$4(L3Side$1.SFBMAX);
     var xrpow = new_float$4(576);
     var targ_bits = new_int$4(2);
-    var mean_bits = 0, max_bits;
+    var mean_bits = 0;
+    var max_bits;
     var l3_side = gfc.l3_side;
-    var mb = new MeanBits$2(mean_bits);
+    var mb = new MeanBits$1(mean_bits);
     this.quantize.rv.ResvFrameBegin(gfp, mb);
     mean_bits = mb.bits;
     for (var gr = 0; gr < gfc.mode_gr; gr++) {
       max_bits = this.quantize.qupvt.on_pe(gfp, pe, targ_bits, mean_bits, gr, gr);
-      if (gfc.mode_ext == Encoder$5.MPG_MD_MS_LR) {
+      if (gfc.mode_ext == Encoder.MPG_MD_MS_LR) {
         this.quantize.ms_convert(gfc.l3_side, gr);
         this.quantize.qupvt.reduce_side(targ_bits, ms_ener_ratio[gr], mean_bits, max_bits);
       }
       for (var ch = 0; ch < gfc.channels_out; ch++) {
         var adjust, masking_lower_db;
         var cod_info = l3_side.tt[gr][ch];
-        if (cod_info.block_type != Encoder$5.SHORT_TYPE) {
+        if (cod_info.block_type != Encoder.SHORT_TYPE) {
           adjust = 0;
           masking_lower_db = gfc.PSY.mask_adjust - adjust;
         } else {
@@ -10263,86 +10259,26 @@ function CBRNewIterationLoop$1(_quantize) {
           this.quantize.outer_loop(gfp, cod_info, l3_xmin, xrpow, ch, targ_bits[ch]);
         }
         this.quantize.iteration_finish_one(gfc, gr, ch);
-        assert$8(cod_info.part2_3_length <= LameInternalFlags$4.MAX_BITS_PER_CHANNEL);
+        assert$8(cod_info.part2_3_length <= LameInternalFlags$1.MAX_BITS_PER_CHANNEL);
         assert$8(cod_info.part2_3_length <= targ_bits[ch]);
       }
     }
     this.quantize.rv.ResvFrameEnd(gfc, mean_bits);
   };
 }
-var CBRNewIterationLoop_1 = CBRNewIterationLoop$1;
 function HuffCodeTab(len, max, tab, hl) {
   this.xlen = len;
   this.linmax = max;
   this.table = tab;
   this.hlen = hl;
 }
-var Tables$4 = {};
-Tables$4.t1HB = [
-  1,
-  1,
-  1,
-  0
-];
-Tables$4.t2HB = [
-  1,
-  2,
-  1,
-  3,
-  1,
-  1,
-  3,
-  2,
-  0
-];
-Tables$4.t3HB = [
-  3,
-  2,
-  1,
-  1,
-  1,
-  1,
-  3,
-  2,
-  0
-];
-Tables$4.t5HB = [
-  1,
-  2,
-  6,
-  5,
-  3,
-  1,
-  4,
-  4,
-  7,
-  5,
-  7,
-  1,
-  6,
-  1,
-  1,
-  0
-];
-Tables$4.t6HB = [
-  7,
-  3,
-  5,
-  1,
-  6,
-  2,
-  3,
-  2,
-  5,
-  4,
-  4,
-  1,
-  3,
-  3,
-  2,
-  0
-];
-Tables$4.t7HB = [
+var Tables$1 = {};
+Tables$1.t1HB = [1, 1, 1, 0];
+Tables$1.t2HB = [1, 2, 1, 3, 1, 1, 3, 2, 0];
+Tables$1.t3HB = [3, 2, 1, 1, 1, 1, 3, 2, 0];
+Tables$1.t5HB = [1, 2, 6, 5, 3, 1, 4, 4, 7, 5, 7, 1, 6, 1, 1, 0];
+Tables$1.t6HB = [7, 3, 5, 1, 6, 2, 3, 2, 5, 4, 4, 1, 3, 3, 2, 0];
+Tables$1.t7HB = [
   1,
   2,
   10,
@@ -10380,7 +10316,7 @@ Tables$4.t7HB = [
   2,
   0
 ];
-Tables$4.t8HB = [
+Tables$1.t8HB = [
   3,
   4,
   6,
@@ -10418,7 +10354,7 @@ Tables$4.t8HB = [
   1,
   0
 ];
-Tables$4.t9HB = [
+Tables$1.t9HB = [
   7,
   5,
   9,
@@ -10456,7 +10392,7 @@ Tables$4.t9HB = [
   6,
   0
 ];
-Tables$4.t10HB = [
+Tables$1.t10HB = [
   1,
   2,
   10,
@@ -10522,7 +10458,7 @@ Tables$4.t10HB = [
   2,
   0
 ];
-Tables$4.t11HB = [
+Tables$1.t11HB = [
   3,
   4,
   10,
@@ -10588,7 +10524,7 @@ Tables$4.t11HB = [
   2,
   0
 ];
-Tables$4.t12HB = [
+Tables$1.t12HB = [
   9,
   6,
   16,
@@ -10654,7 +10590,7 @@ Tables$4.t12HB = [
   1,
   0
 ];
-Tables$4.t13HB = [
+Tables$1.t13HB = [
   1,
   5,
   14,
@@ -10912,7 +10848,7 @@ Tables$4.t13HB = [
   0,
   1
 ];
-Tables$4.t15HB = [
+Tables$1.t15HB = [
   7,
   12,
   18,
@@ -11170,7 +11106,7 @@ Tables$4.t15HB = [
   2,
   0
 ];
-Tables$4.t16HB = [
+Tables$1.t16HB = [
   1,
   5,
   14,
@@ -11428,7 +11364,7 @@ Tables$4.t16HB = [
   1,
   3
 ];
-Tables$4.t24HB = [
+Tables$1.t24HB = [
   15,
   13,
   46,
@@ -11686,7 +11622,7 @@ Tables$4.t24HB = [
   1,
   3
 ];
-Tables$4.t32HB = [
+Tables$1.t32HB = [
   1 << 0,
   5 << 1,
   4 << 1,
@@ -11704,7 +11640,7 @@ Tables$4.t32HB = [
   3 << 3,
   1 << 4
 ];
-Tables$4.t33HB = [
+Tables$1.t33HB = [
   15 << 0,
   14 << 1,
   13 << 1,
@@ -11722,71 +11658,12 @@ Tables$4.t33HB = [
   1 << 3,
   0 << 4
 ];
-Tables$4.t1l = [
-  1,
-  4,
-  3,
-  5
-];
-Tables$4.t2l = [
-  1,
-  4,
-  7,
-  4,
-  5,
-  7,
-  6,
-  7,
-  8
-];
-Tables$4.t3l = [
-  2,
-  3,
-  7,
-  4,
-  4,
-  7,
-  6,
-  7,
-  8
-];
-Tables$4.t5l = [
-  1,
-  4,
-  7,
-  8,
-  4,
-  5,
-  8,
-  9,
-  7,
-  8,
-  9,
-  10,
-  8,
-  8,
-  9,
-  10
-];
-Tables$4.t6l = [
-  3,
-  4,
-  6,
-  8,
-  4,
-  4,
-  6,
-  7,
-  5,
-  6,
-  7,
-  8,
-  7,
-  7,
-  8,
-  9
-];
-Tables$4.t7l = [
+Tables$1.t1l = [1, 4, 3, 5];
+Tables$1.t2l = [1, 4, 7, 4, 5, 7, 6, 7, 8];
+Tables$1.t3l = [2, 3, 7, 4, 4, 7, 6, 7, 8];
+Tables$1.t5l = [1, 4, 7, 8, 4, 5, 8, 9, 7, 8, 9, 10, 8, 8, 9, 10];
+Tables$1.t6l = [3, 4, 6, 8, 4, 4, 6, 7, 5, 6, 7, 8, 7, 7, 8, 9];
+Tables$1.t7l = [
   1,
   4,
   7,
@@ -11824,7 +11701,7 @@ Tables$4.t7l = [
   12,
   12
 ];
-Tables$4.t8l = [
+Tables$1.t8l = [
   2,
   4,
   7,
@@ -11862,7 +11739,7 @@ Tables$4.t8l = [
   13,
   13
 ];
-Tables$4.t9l = [
+Tables$1.t9l = [
   3,
   4,
   6,
@@ -11900,7 +11777,7 @@ Tables$4.t9l = [
   11,
   11
 ];
-Tables$4.t10l = [
+Tables$1.t10l = [
   1,
   4,
   7,
@@ -11966,7 +11843,7 @@ Tables$4.t10l = [
   13,
   13
 ];
-Tables$4.t11l = [
+Tables$1.t11l = [
   2,
   4,
   6,
@@ -12032,7 +11909,7 @@ Tables$4.t11l = [
   12,
   12
 ];
-Tables$4.t12l = [
+Tables$1.t12l = [
   4,
   4,
   6,
@@ -12098,7 +11975,7 @@ Tables$4.t12l = [
   11,
   12
 ];
-Tables$4.t13l = [
+Tables$1.t13l = [
   1,
   5,
   7,
@@ -12356,7 +12233,7 @@ Tables$4.t13l = [
   21,
   18
 ];
-Tables$4.t15l = [
+Tables$1.t15l = [
   3,
   5,
   6,
@@ -12614,7 +12491,7 @@ Tables$4.t15l = [
   15,
   15
 ];
-Tables$4.t16_5l = [
+Tables$1.t16_5l = [
   1,
   5,
   7,
@@ -12872,7 +12749,7 @@ Tables$4.t16_5l = [
   14,
   12
 ];
-Tables$4.t16l = [
+Tables$1.t16l = [
   1,
   5,
   7,
@@ -13130,7 +13007,7 @@ Tables$4.t16l = [
   13,
   10
 ];
-Tables$4.t24l = [
+Tables$1.t24l = [
   4,
   5,
   7,
@@ -13388,7 +13265,7 @@ Tables$4.t24l = [
   10,
   6
 ];
-Tables$4.t32l = [
+Tables$1.t32l = [
   1 + 0,
   4 + 1,
   4 + 1,
@@ -13406,7 +13283,7 @@ Tables$4.t32l = [
   6 + 3,
   6 + 4
 ];
-Tables$4.t33l = [
+Tables$1.t33l = [
   4 + 0,
   4 + 1,
   4 + 1,
@@ -13424,43 +13301,43 @@ Tables$4.t33l = [
   4 + 3,
   4 + 4
 ];
-Tables$4.ht = [
+Tables$1.ht = [
   new HuffCodeTab(0, 0, null, null),
-  new HuffCodeTab(2, 0, Tables$4.t1HB, Tables$4.t1l),
-  new HuffCodeTab(3, 0, Tables$4.t2HB, Tables$4.t2l),
-  new HuffCodeTab(3, 0, Tables$4.t3HB, Tables$4.t3l),
+  new HuffCodeTab(2, 0, Tables$1.t1HB, Tables$1.t1l),
+  new HuffCodeTab(3, 0, Tables$1.t2HB, Tables$1.t2l),
+  new HuffCodeTab(3, 0, Tables$1.t3HB, Tables$1.t3l),
   new HuffCodeTab(0, 0, null, null),
-  new HuffCodeTab(4, 0, Tables$4.t5HB, Tables$4.t5l),
-  new HuffCodeTab(4, 0, Tables$4.t6HB, Tables$4.t6l),
-  new HuffCodeTab(6, 0, Tables$4.t7HB, Tables$4.t7l),
-  new HuffCodeTab(6, 0, Tables$4.t8HB, Tables$4.t8l),
-  new HuffCodeTab(6, 0, Tables$4.t9HB, Tables$4.t9l),
-  new HuffCodeTab(8, 0, Tables$4.t10HB, Tables$4.t10l),
-  new HuffCodeTab(8, 0, Tables$4.t11HB, Tables$4.t11l),
-  new HuffCodeTab(8, 0, Tables$4.t12HB, Tables$4.t12l),
-  new HuffCodeTab(16, 0, Tables$4.t13HB, Tables$4.t13l),
-  new HuffCodeTab(0, 0, null, Tables$4.t16_5l),
-  new HuffCodeTab(16, 0, Tables$4.t15HB, Tables$4.t15l),
-  new HuffCodeTab(1, 1, Tables$4.t16HB, Tables$4.t16l),
-  new HuffCodeTab(2, 3, Tables$4.t16HB, Tables$4.t16l),
-  new HuffCodeTab(3, 7, Tables$4.t16HB, Tables$4.t16l),
-  new HuffCodeTab(4, 15, Tables$4.t16HB, Tables$4.t16l),
-  new HuffCodeTab(6, 63, Tables$4.t16HB, Tables$4.t16l),
-  new HuffCodeTab(8, 255, Tables$4.t16HB, Tables$4.t16l),
-  new HuffCodeTab(10, 1023, Tables$4.t16HB, Tables$4.t16l),
-  new HuffCodeTab(13, 8191, Tables$4.t16HB, Tables$4.t16l),
-  new HuffCodeTab(4, 15, Tables$4.t24HB, Tables$4.t24l),
-  new HuffCodeTab(5, 31, Tables$4.t24HB, Tables$4.t24l),
-  new HuffCodeTab(6, 63, Tables$4.t24HB, Tables$4.t24l),
-  new HuffCodeTab(7, 127, Tables$4.t24HB, Tables$4.t24l),
-  new HuffCodeTab(8, 255, Tables$4.t24HB, Tables$4.t24l),
-  new HuffCodeTab(9, 511, Tables$4.t24HB, Tables$4.t24l),
-  new HuffCodeTab(11, 2047, Tables$4.t24HB, Tables$4.t24l),
-  new HuffCodeTab(13, 8191, Tables$4.t24HB, Tables$4.t24l),
-  new HuffCodeTab(0, 0, Tables$4.t32HB, Tables$4.t32l),
-  new HuffCodeTab(0, 0, Tables$4.t33HB, Tables$4.t33l)
+  new HuffCodeTab(4, 0, Tables$1.t5HB, Tables$1.t5l),
+  new HuffCodeTab(4, 0, Tables$1.t6HB, Tables$1.t6l),
+  new HuffCodeTab(6, 0, Tables$1.t7HB, Tables$1.t7l),
+  new HuffCodeTab(6, 0, Tables$1.t8HB, Tables$1.t8l),
+  new HuffCodeTab(6, 0, Tables$1.t9HB, Tables$1.t9l),
+  new HuffCodeTab(8, 0, Tables$1.t10HB, Tables$1.t10l),
+  new HuffCodeTab(8, 0, Tables$1.t11HB, Tables$1.t11l),
+  new HuffCodeTab(8, 0, Tables$1.t12HB, Tables$1.t12l),
+  new HuffCodeTab(16, 0, Tables$1.t13HB, Tables$1.t13l),
+  new HuffCodeTab(0, 0, null, Tables$1.t16_5l),
+  new HuffCodeTab(16, 0, Tables$1.t15HB, Tables$1.t15l),
+  new HuffCodeTab(1, 1, Tables$1.t16HB, Tables$1.t16l),
+  new HuffCodeTab(2, 3, Tables$1.t16HB, Tables$1.t16l),
+  new HuffCodeTab(3, 7, Tables$1.t16HB, Tables$1.t16l),
+  new HuffCodeTab(4, 15, Tables$1.t16HB, Tables$1.t16l),
+  new HuffCodeTab(6, 63, Tables$1.t16HB, Tables$1.t16l),
+  new HuffCodeTab(8, 255, Tables$1.t16HB, Tables$1.t16l),
+  new HuffCodeTab(10, 1023, Tables$1.t16HB, Tables$1.t16l),
+  new HuffCodeTab(13, 8191, Tables$1.t16HB, Tables$1.t16l),
+  new HuffCodeTab(4, 15, Tables$1.t24HB, Tables$1.t24l),
+  new HuffCodeTab(5, 31, Tables$1.t24HB, Tables$1.t24l),
+  new HuffCodeTab(6, 63, Tables$1.t24HB, Tables$1.t24l),
+  new HuffCodeTab(7, 127, Tables$1.t24HB, Tables$1.t24l),
+  new HuffCodeTab(8, 255, Tables$1.t24HB, Tables$1.t24l),
+  new HuffCodeTab(9, 511, Tables$1.t24HB, Tables$1.t24l),
+  new HuffCodeTab(11, 2047, Tables$1.t24HB, Tables$1.t24l),
+  new HuffCodeTab(13, 8191, Tables$1.t24HB, Tables$1.t24l),
+  new HuffCodeTab(0, 0, Tables$1.t32HB, Tables$1.t32l),
+  new HuffCodeTab(0, 0, Tables$1.t33HB, Tables$1.t33l)
 ];
-Tables$4.largetbl = [
+Tables$1.largetbl = [
   65540,
   327685,
   458759,
@@ -13718,7 +13595,7 @@ Tables$4.largetbl = [
   851978,
   655366
 ];
-Tables$4.table23 = [
+Tables$1.table23 = [
   65538,
   262147,
   458759,
@@ -13729,7 +13606,7 @@ Tables$4.table23 = [
   458759,
   524296
 ];
-Tables$4.table56 = [
+Tables$1.table56 = [
   65539,
   262148,
   458758,
@@ -13747,35 +13624,62 @@ Tables$4.table56 = [
   589832,
   655369
 ];
-Tables$4.bitrate_table = [
-  [0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, -1],
-  [0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, -1],
+Tables$1.bitrate_table = [
+  [
+    0,
+    8,
+    16,
+    24,
+    32,
+    40,
+    48,
+    56,
+    64,
+    80,
+    96,
+    112,
+    128,
+    144,
+    160,
+    -1
+  ],
+  [
+    0,
+    32,
+    40,
+    48,
+    56,
+    64,
+    80,
+    96,
+    112,
+    128,
+    160,
+    192,
+    224,
+    256,
+    320,
+    -1
+  ],
   [0, 8, 16, 24, 32, 40, 48, 56, 64, -1, -1, -1, -1, -1, -1, -1]
 ];
-Tables$4.samplerate_table = [
+Tables$1.samplerate_table = [
   [22050, 24e3, 16e3, -1],
   [44100, 48e3, 32e3, -1],
   [11025, 12e3, 8e3, -1]
 ];
-Tables$4.scfsi_band = [0, 6, 11, 16, 21];
-var Tables_1 = Tables$4;
-var ScaleFac = ScaleFac_1;
-var common$9 = common$o;
-var VbrMode$4 = common$9.VbrMode;
-var Float = common$9.Float;
-var Util$1 = common$9.Util;
-var new_float$3 = common$9.new_float;
-var new_int$3 = common$9.new_int;
-var assert$7 = common$9.assert;
-var Encoder$4 = Encoder_1;
-var MeanBits$1 = MeanBits_1;
-var LameInternalFlags$3 = LameInternalFlags_1;
-QuantizePVT$2.Q_MAX = 256 + 1;
-QuantizePVT$2.Q_MAX2 = 116;
-QuantizePVT$2.LARGE_BITS = 1e5;
-QuantizePVT$2.IXMAX_VAL = 8206;
-function QuantizePVT$2() {
-  var BitStream2 = BitStream_1;
+Tables$1.scfsi_band = [0, 6, 11, 16, 21];
+var VbrMode$4 = common.VbrMode;
+var Float = common.Float;
+var Util$1 = common.Util;
+var new_float$3 = common.new_float;
+var new_int$3 = common.new_int;
+var assert$7 = common.assert;
+QuantizePVT.Q_MAX = 256 + 1;
+QuantizePVT.Q_MAX2 = 116;
+QuantizePVT.LARGE_BITS = 1e5;
+QuantizePVT.IXMAX_VAL = 8206;
+function QuantizePVT() {
   var tak = null;
   var rv = null;
   var psy = null;
@@ -13785,24 +13689,48 @@ function QuantizePVT$2() {
     psy = _psy;
   };
   function POW20(x) {
-    return pow20[x + QuantizePVT$2.Q_MAX2];
+    return pow20[x + QuantizePVT.Q_MAX2];
   }
   this.IPOW20 = function(x) {
     return ipow20[x];
   };
   var DBL_EPSILON = 2220446049250313e-31;
-  var IXMAX_VAL = QuantizePVT$2.IXMAX_VAL;
+  var IXMAX_VAL = QuantizePVT.IXMAX_VAL;
   var PRECALC_SIZE = IXMAX_VAL + 2;
-  var Q_MAX = QuantizePVT$2.Q_MAX;
-  var Q_MAX2 = QuantizePVT$2.Q_MAX2;
+  var Q_MAX = QuantizePVT.Q_MAX;
+  var Q_MAX2 = QuantizePVT.Q_MAX2;
   var NSATHSCALE = 100;
   this.nr_of_sfb_block = [
-    [[6, 5, 5, 5], [9, 9, 9, 9], [6, 9, 9, 9]],
-    [[6, 5, 7, 3], [9, 9, 12, 6], [6, 9, 12, 6]],
-    [[11, 10, 0, 0], [18, 18, 0, 0], [15, 18, 0, 0]],
-    [[7, 7, 7, 0], [12, 12, 12, 0], [6, 15, 12, 0]],
-    [[6, 6, 6, 3], [12, 9, 9, 6], [6, 12, 9, 6]],
-    [[8, 8, 5, 0], [15, 12, 9, 0], [6, 18, 9, 0]]
+    [
+      [6, 5, 5, 5],
+      [9, 9, 9, 9],
+      [6, 9, 9, 9]
+    ],
+    [
+      [6, 5, 7, 3],
+      [9, 9, 12, 6],
+      [6, 9, 12, 6]
+    ],
+    [
+      [11, 10, 0, 0],
+      [18, 18, 0, 0],
+      [15, 18, 0, 0]
+    ],
+    [
+      [7, 7, 7, 0],
+      [12, 12, 12, 0],
+      [6, 15, 12, 0]
+    ],
+    [
+      [6, 6, 6, 3],
+      [12, 9, 9, 6],
+      [6, 12, 9, 6]
+    ],
+    [
+      [8, 8, 5, 0],
+      [15, 12, 9, 0],
+      [6, 18, 9, 0]
+    ]
   ];
   var pretab = [
     0,
@@ -14119,7 +14047,7 @@ function QuantizePVT$2() {
     var ATH_psfb12 = gfp.internal_flags.ATH.psfb12;
     var gfc = gfp.internal_flags;
     var samp_freq = gfp.out_samplerate;
-    for (var sfb = 0; sfb < Encoder$4.SBMAX_l; sfb++) {
+    for (var sfb = 0; sfb < Encoder.SBMAX_l; sfb++) {
       var start2 = gfc.scalefac_band.l[sfb];
       var end = gfc.scalefac_band.l[sfb + 1];
       ATH_l[sfb] = Float.MAX_VALUE;
@@ -14129,7 +14057,7 @@ function QuantizePVT$2() {
         ATH_l[sfb] = Math.min(ATH_l[sfb], ATH_f);
       }
     }
-    for (var sfb = 0; sfb < Encoder$4.PSFB21; sfb++) {
+    for (var sfb = 0; sfb < Encoder.PSFB21; sfb++) {
       var start2 = gfc.scalefac_band.psfb21[sfb];
       var end = gfc.scalefac_band.psfb21[sfb + 1];
       ATH_psfb21[sfb] = Float.MAX_VALUE;
@@ -14139,7 +14067,7 @@ function QuantizePVT$2() {
         ATH_psfb21[sfb] = Math.min(ATH_psfb21[sfb], ATH_f);
       }
     }
-    for (var sfb = 0; sfb < Encoder$4.SBMAX_s; sfb++) {
+    for (var sfb = 0; sfb < Encoder.SBMAX_s; sfb++) {
       var start2 = gfc.scalefac_band.s[sfb];
       var end = gfc.scalefac_band.s[sfb + 1];
       ATH_s[sfb] = Float.MAX_VALUE;
@@ -14150,7 +14078,7 @@ function QuantizePVT$2() {
       }
       ATH_s[sfb] *= gfc.scalefac_band.s[sfb + 1] - gfc.scalefac_band.s[sfb];
     }
-    for (var sfb = 0; sfb < Encoder$4.PSFB12; sfb++) {
+    for (var sfb = 0; sfb < Encoder.PSFB12; sfb++) {
       var start2 = gfc.scalefac_band.psfb12[sfb];
       var end = gfc.scalefac_band.psfb12[sfb + 1];
       ATH_psfb12[sfb] = Float.MAX_VALUE;
@@ -14162,16 +14090,16 @@ function QuantizePVT$2() {
       ATH_psfb12[sfb] *= gfc.scalefac_band.s[13] - gfc.scalefac_band.s[12];
     }
     if (gfp.noATH) {
-      for (var sfb = 0; sfb < Encoder$4.SBMAX_l; sfb++) {
+      for (var sfb = 0; sfb < Encoder.SBMAX_l; sfb++) {
         ATH_l[sfb] = 1e-20;
       }
-      for (var sfb = 0; sfb < Encoder$4.PSFB21; sfb++) {
+      for (var sfb = 0; sfb < Encoder.PSFB21; sfb++) {
         ATH_psfb21[sfb] = 1e-20;
       }
-      for (var sfb = 0; sfb < Encoder$4.SBMAX_s; sfb++) {
+      for (var sfb = 0; sfb < Encoder.SBMAX_s; sfb++) {
         ATH_s[sfb] = 1e-20;
       }
-      for (var sfb = 0; sfb < Encoder$4.PSFB12; sfb++) {
+      for (var sfb = 0; sfb < Encoder.PSFB12; sfb++) {
         ATH_psfb12[sfb] = 1e-20;
       }
     }
@@ -14188,13 +14116,15 @@ function QuantizePVT$2() {
       pow43[0] = 0;
       for (i = 1; i < PRECALC_SIZE; i++)
         pow43[i] = Math.pow(i, 4 / 3);
-      for (i = 0; i < PRECALC_SIZE - 1; i++)
+      for (i = 0; i < PRECALC_SIZE - 1; i++) {
         adj43[i] = i + 1 - Math.pow(0.5 * (pow43[i] + pow43[i + 1]), 0.75);
+      }
       adj43[i] = 0.5;
       for (i = 0; i < Q_MAX; i++)
         ipow20[i] = Math.pow(2, (i - 210) * -0.1875);
-      for (i = 0; i <= Q_MAX + Q_MAX2; i++)
+      for (i = 0; i <= Q_MAX + Q_MAX2; i++) {
         pow20[i] = Math.pow(2, (i - 210 - Q_MAX2) * 0.25);
+      }
       tak.huffman_init(gfc);
       {
         var bass, alto, treble, sfb21;
@@ -14214,7 +14144,7 @@ function QuantizePVT$2() {
         if (i >= 32)
           i -= 64;
         sfb21 = treble * Math.pow(10, i / 4 / 10);
-        for (i = 0; i < Encoder$4.SBMAX_l; i++) {
+        for (i = 0; i < Encoder.SBMAX_l; i++) {
           var f;
           if (i <= 6)
             f = bass;
@@ -14226,7 +14156,7 @@ function QuantizePVT$2() {
             f = sfb21;
           gfc.nsPsy.longfact[i] = f;
         }
-        for (i = 0; i < Encoder$4.SBMAX_s; i++) {
+        for (i = 0; i < Encoder.SBMAX_s; i++) {
           var f;
           if (i <= 5)
             f = bass;
@@ -14243,25 +14173,27 @@ function QuantizePVT$2() {
   };
   this.on_pe = function(gfp, pe, targ_bits, mean_bits, gr, cbr) {
     var gfc = gfp.internal_flags;
-    var tbits = 0, bits;
+    var tbits = 0;
+    var bits;
     var add_bits = new_int$3(2);
     var ch;
     var mb = new MeanBits$1(tbits);
     var extra_bits = rv.ResvMaxBits(gfp, mean_bits, mb, cbr);
     tbits = mb.bits;
     var max_bits = tbits + extra_bits;
-    if (max_bits > LameInternalFlags$3.MAX_BITS_PER_GRANULE) {
-      max_bits = LameInternalFlags$3.MAX_BITS_PER_GRANULE;
+    if (max_bits > LameInternalFlags$1.MAX_BITS_PER_GRANULE) {
+      max_bits = LameInternalFlags$1.MAX_BITS_PER_GRANULE;
     }
     for (bits = 0, ch = 0; ch < gfc.channels_out; ++ch) {
-      targ_bits[ch] = Math.min(LameInternalFlags$3.MAX_BITS_PER_CHANNEL, tbits / gfc.channels_out);
+      targ_bits[ch] = Math.min(LameInternalFlags$1.MAX_BITS_PER_CHANNEL, tbits / gfc.channels_out);
       add_bits[ch] = 0 | targ_bits[ch] * pe[gr][ch] / 700 - targ_bits[ch];
       if (add_bits[ch] > mean_bits * 3 / 4)
         add_bits[ch] = mean_bits * 3 / 4;
       if (add_bits[ch] < 0)
         add_bits[ch] = 0;
-      if (add_bits[ch] + targ_bits[ch] > LameInternalFlags$3.MAX_BITS_PER_CHANNEL)
-        add_bits[ch] = Math.max(0, LameInternalFlags$3.MAX_BITS_PER_CHANNEL - targ_bits[ch]);
+      if (add_bits[ch] + targ_bits[ch] > LameInternalFlags$1.MAX_BITS_PER_CHANNEL) {
+        add_bits[ch] = Math.max(0, LameInternalFlags$1.MAX_BITS_PER_CHANNEL - targ_bits[ch]);
+      }
       bits += add_bits[ch];
     }
     if (bits > extra_bits) {
@@ -14276,10 +14208,10 @@ function QuantizePVT$2() {
     for (bits = 0, ch = 0; ch < gfc.channels_out; ++ch) {
       bits += targ_bits[ch];
     }
-    if (bits > LameInternalFlags$3.MAX_BITS_PER_GRANULE) {
+    if (bits > LameInternalFlags$1.MAX_BITS_PER_GRANULE) {
       var sum = 0;
       for (ch = 0; ch < gfc.channels_out; ++ch) {
-        targ_bits[ch] *= LameInternalFlags$3.MAX_BITS_PER_GRANULE;
+        targ_bits[ch] *= LameInternalFlags$1.MAX_BITS_PER_GRANULE;
         targ_bits[ch] /= bits;
         sum += targ_bits[ch];
       }
@@ -14287,15 +14219,15 @@ function QuantizePVT$2() {
     return max_bits;
   };
   this.reduce_side = function(targ_bits, ms_ener_ratio, mean_bits, max_bits) {
-    assert$7(targ_bits[0] + targ_bits[1] <= LameInternalFlags$3.MAX_BITS_PER_GRANULE);
+    assert$7(targ_bits[0] + targ_bits[1] <= LameInternalFlags$1.MAX_BITS_PER_GRANULE);
     var fac = 0.33 * (0.5 - ms_ener_ratio) / 0.5;
     if (fac < 0)
       fac = 0;
     if (fac > 0.5)
       fac = 0.5;
     var move_bits = 0 | fac * 0.5 * (targ_bits[0] + targ_bits[1]);
-    if (move_bits > LameInternalFlags$3.MAX_BITS_PER_CHANNEL - targ_bits[0]) {
-      move_bits = LameInternalFlags$3.MAX_BITS_PER_CHANNEL - targ_bits[0];
+    if (move_bits > LameInternalFlags$1.MAX_BITS_PER_CHANNEL - targ_bits[0]) {
+      move_bits = LameInternalFlags$1.MAX_BITS_PER_CHANNEL - targ_bits[0];
     }
     if (move_bits < 0)
       move_bits = 0;
@@ -14314,9 +14246,9 @@ function QuantizePVT$2() {
       targ_bits[0] = max_bits * targ_bits[0] / move_bits;
       targ_bits[1] = max_bits * targ_bits[1] / move_bits;
     }
-    assert$7(targ_bits[0] <= LameInternalFlags$3.MAX_BITS_PER_CHANNEL);
-    assert$7(targ_bits[1] <= LameInternalFlags$3.MAX_BITS_PER_CHANNEL);
-    assert$7(targ_bits[0] + targ_bits[1] <= LameInternalFlags$3.MAX_BITS_PER_GRANULE);
+    assert$7(targ_bits[0] <= LameInternalFlags$1.MAX_BITS_PER_CHANNEL);
+    assert$7(targ_bits[1] <= LameInternalFlags$1.MAX_BITS_PER_CHANNEL);
+    assert$7(targ_bits[0] + targ_bits[1] <= LameInternalFlags$1.MAX_BITS_PER_GRANULE);
   };
   this.athAdjust = function(a, x, athFloor) {
     var o = 90.30873362;
@@ -14336,7 +14268,9 @@ function QuantizePVT$2() {
   this.calc_xmin = function(gfp, ratio, cod_info, pxmin) {
     var pxminPos = 0;
     var gfc = gfp.internal_flags;
-    var gsfb, j = 0, ath_over = 0;
+    var gsfb;
+    var j = 0;
+    var ath_over = 0;
     var ATH2 = gfc.ATH;
     var xr = cod_info.xr;
     var enable_athaa_fix = gfp.VBR == VbrMode$4.vbr_mtrh ? 1 : 0;
@@ -14348,9 +14282,9 @@ function QuantizePVT$2() {
       var en0, xmin;
       var rh1, rh2;
       var width, l;
-      if (gfp.VBR == VbrMode$4.vbr_rh || gfp.VBR == VbrMode$4.vbr_mtrh)
+      if (gfp.VBR == VbrMode$4.vbr_rh || gfp.VBR == VbrMode$4.vbr_mtrh) {
         xmin = athAdjust(ATH2.adjust, ATH2.l[gsfb], ATH2.floor);
-      else
+      } else
         xmin = ATH2.adjust * ATH2.l[gsfb];
       width = cod_info.width[gsfb];
       rh1 = xmin / width;
@@ -14370,7 +14304,7 @@ function QuantizePVT$2() {
       } while (--l > 0);
       if (en0 > xmin)
         ath_over++;
-      if (gsfb == Encoder$4.SBPSY_l) {
+      if (gsfb == Encoder.SBPSY_l) {
         var x = xmin * gfc.nsPsy.longfact[gsfb];
         if (rh2 < x) {
           rh2 = x;
@@ -14396,9 +14330,9 @@ function QuantizePVT$2() {
         pxmin[pxminPos++] = xmin * gfc.nsPsy.longfact[gsfb];
     }
     var max_nonzero = 575;
-    if (cod_info.block_type != Encoder$4.SHORT_TYPE) {
+    if (cod_info.block_type != Encoder.SHORT_TYPE) {
       var k = 576;
-      while (k-- != 0 && BitStream2.EQ(xr[k], 0)) {
+      while (k-- != 0 && BitStream$1.EQ(xr[k], 0)) {
         max_nonzero = k;
       }
     }
@@ -14406,13 +14340,14 @@ function QuantizePVT$2() {
     for (var sfb = cod_info.sfb_smin; gsfb < cod_info.psymax; sfb++, gsfb += 3) {
       var width, b;
       var tmpATH;
-      if (gfp.VBR == VbrMode$4.vbr_rh || gfp.VBR == VbrMode$4.vbr_mtrh)
+      if (gfp.VBR == VbrMode$4.vbr_rh || gfp.VBR == VbrMode$4.vbr_mtrh) {
         tmpATH = athAdjust(ATH2.adjust, ATH2.s[sfb], ATH2.floor);
-      else
+      } else
         tmpATH = ATH2.adjust * ATH2.s[sfb];
       width = cod_info.width[gsfb];
       for (b = 0; b < 3; b++) {
-        var en0 = 0, xmin;
+        var en0 = 0;
+        var xmin;
         var rh1, rh2;
         var l = width >> 1;
         rh1 = tmpATH / width;
@@ -14430,7 +14365,7 @@ function QuantizePVT$2() {
         } while (--l > 0);
         if (en0 > tmpATH)
           ath_over++;
-        if (sfb == Encoder$4.SBPSY_s) {
+        if (sfb == Encoder.SBPSY_s) {
           var x = tmpATH * gfc.nsPsy.shortfact[sfb];
           if (rh2 < x) {
             rh2 = x;
@@ -14457,10 +14392,12 @@ function QuantizePVT$2() {
           pxmin[pxminPos++] = xmin * gfc.nsPsy.shortfact[sfb];
       }
       if (gfp.useTemporal) {
-        if (pxmin[pxminPos - 3] > pxmin[pxminPos - 3 + 1])
+        if (pxmin[pxminPos - 3] > pxmin[pxminPos - 3 + 1]) {
           pxmin[pxminPos - 3 + 1] += (pxmin[pxminPos - 3] - pxmin[pxminPos - 3 + 1]) * gfc.decay;
-        if (pxmin[pxminPos - 3 + 1] > pxmin[pxminPos - 3 + 2])
+        }
+        if (pxmin[pxminPos - 3 + 1] > pxmin[pxminPos - 3 + 2]) {
           pxmin[pxminPos - 3 + 2] += (pxmin[pxminPos - 3 + 1] - pxmin[pxminPos - 3 + 2]) * gfc.decay;
+        }
       }
     }
     return ath_over;
@@ -14512,7 +14449,9 @@ function QuantizePVT$2() {
   this.calc_noise = function(cod_info, l3_xmin, distort, res, prev_noise) {
     var distortPos = 0;
     var l3_xminPos = 0;
-    var sfb, l, over = 0;
+    var sfb;
+    var l;
+    var over = 0;
     var over_noise_db = 0;
     var tot_noise_db = 0;
     var max_noise = -20;
@@ -14585,8 +14524,9 @@ function QuantizePVT$2() {
     calc_noise(cod_info, l3_xmin, xfsf, noise, null);
     var j = 0;
     sfb2 = cod_info.sfb_lmax;
-    if (cod_info.block_type != Encoder$4.SHORT_TYPE && 0 == cod_info.mixed_block_flag)
+    if (cod_info.block_type != Encoder.SHORT_TYPE && cod_info.mixed_block_flag == 0) {
       sfb2 = 22;
+    }
     for (sfb = 0; sfb < sfb2; sfb++) {
       var start2 = gfc.scalefac_band.l[sfb];
       var end = gfc.scalefac_band.l[sfb + 1];
@@ -14603,16 +14543,17 @@ function QuantizePVT$2() {
         en0 = 0;
       gfc.pinfo.thr[gr][ch][sfb] = en1 * Math.max(en0 * ratio.thm.l[sfb], gfc.ATH.l[sfb]);
       gfc.pinfo.LAMEsfb[gr][ch][sfb] = 0;
-      if (cod_info.preflag != 0 && sfb >= 11)
+      if (cod_info.preflag != 0 && sfb >= 11) {
         gfc.pinfo.LAMEsfb[gr][ch][sfb] = -ifqstep * pretab[sfb];
-      if (sfb < Encoder$4.SBPSY_l) {
+      }
+      if (sfb < Encoder.SBPSY_l) {
         assert$7(scalefac[sfb] >= 0);
         gfc.pinfo.LAMEsfb[gr][ch][sfb] -= ifqstep * scalefac[sfb];
       }
     }
-    if (cod_info.block_type == Encoder$4.SHORT_TYPE) {
+    if (cod_info.block_type == Encoder.SHORT_TYPE) {
       sfb2 = sfb;
-      for (sfb = cod_info.sfb_smin; sfb < Encoder$4.SBMAX_s; sfb++) {
+      for (sfb = cod_info.sfb_smin; sfb < Encoder.SBMAX_s; sfb++) {
         var start2 = gfc.scalefac_band.s[sfb];
         var end = gfc.scalefac_band.s[sfb + 1];
         var bw = end - start2;
@@ -14633,7 +14574,7 @@ function QuantizePVT$2() {
             en0 = 0;
           gfc.pinfo.thr_s[gr][ch][3 * sfb + i] = en1 * Math.max(en0 * ratio.thm.s[sfb][i], gfc.ATH.s[sfb]);
           gfc.pinfo.LAMEsfb_s[gr][ch][3 * sfb + i] = -2 * cod_info.subblock_gain[i];
-          if (sfb < Encoder$4.SBPSY_s) {
+          if (sfb < Encoder.SBPSY_s) {
             gfc.pinfo.LAMEsfb_s[gr][ch][3 * sfb + i] -= ifqstep * scalefac[sfb2];
           }
           sfb2++;
@@ -14650,17 +14591,11 @@ function QuantizePVT$2() {
     gfc.pinfo.over_SSD[gr][ch] = noise.over_SSD;
   };
 }
-var QuantizePVT_1 = QuantizePVT$2;
-var common$8 = common$o;
-var System$4 = common$8.System;
-var Arrays$3 = common$8.Arrays;
-var new_int$2 = common$8.new_int;
-var assert$6 = common$8.assert;
-var Encoder$3 = Encoder_1;
-var Tables$3 = Tables_1;
-var GrInfo$1 = GrInfo_1;
-var QuantizePVT$1 = QuantizePVT_1;
-function Takehiro$2() {
+var System$4 = common.System;
+var Arrays$3 = common.Arrays;
+var new_int$2 = common.new_int;
+var assert$6 = common.assert;
+function Takehiro() {
   var qupvt = null;
   this.qupvt = null;
   this.setModules = function(_qupvt) {
@@ -14755,13 +14690,13 @@ function Takehiro$2() {
     var acc_xp = xp;
     var acc_xpPos = 0;
     prev_data_use = prevNoise != null && codInfo.global_gain == prevNoise.global_gain;
-    if (codInfo.block_type == Encoder$3.SHORT_TYPE)
+    if (codInfo.block_type == Encoder.SHORT_TYPE)
       sfbmax = 38;
     else
       sfbmax = 21;
     for (sfb = 0; sfb <= sfbmax; sfb++) {
       var step = -1;
-      if (prev_data_use || codInfo.block_type == Encoder$3.NORM_TYPE) {
+      if (prev_data_use || codInfo.block_type == Encoder.NORM_TYPE) {
         step = codInfo.global_gain - (codInfo.scalefac[sfb] + (codInfo.preflag != 0 ? qupvt.pretab[sfb] : 0) << codInfo.scalefac_scale + 1) - codInfo.subblock_gain[codInfo.window[sfb]] * 8;
       }
       assert$6(codInfo.width[sfb] >= 0);
@@ -14786,7 +14721,7 @@ function Takehiro$2() {
           }
           sfb = sfbmax + 1;
         }
-        if (0 == accumulate && 0 == accumulate01) {
+        if (accumulate == 0 && accumulate01 == 0) {
           acc_iData = iData;
           acc_iDataPos = iDataPos;
           acc_xp = xp;
@@ -14841,7 +14776,8 @@ function Takehiro$2() {
     }
   }
   function ix_max(ix, ixPos, endPos) {
-    var max1 = 0, max2 = 0;
+    var max1 = 0;
+    var max2 = 0;
     do {
       var x1 = ix[ixPos++];
       var x2 = ix[ixPos++];
@@ -14855,8 +14791,9 @@ function Takehiro$2() {
     return max1;
   }
   function count_bit_ESC(ix, ixPos, end, t1, t2, s) {
-    var linbits = Tables$3.ht[t1].xlen * 65536 + Tables$3.ht[t2].xlen;
-    var sum = 0, sum2;
+    var linbits = Tables$1.ht[t1].xlen * 65536 + Tables$1.ht[t2].xlen;
+    var sum = 0;
+    var sum2;
     do {
       var x = ix[ixPos++];
       var y = ix[ixPos++];
@@ -14874,7 +14811,7 @@ function Takehiro$2() {
         }
         x += y;
       }
-      sum += Tables$3.largetbl[x];
+      sum += Tables$1.largetbl[x];
     } while (ixPos < end);
     sum2 = sum & 65535;
     sum >>= 16;
@@ -14887,7 +14824,7 @@ function Takehiro$2() {
   }
   function count_bit_noESC(ix, ixPos, end, s) {
     var sum1 = 0;
-    var hlen1 = Tables$3.ht[1].hlen;
+    var hlen1 = Tables$1.ht[1].hlen;
     do {
       var x = ix[ixPos + 0] * 2 + ix[ixPos + 1];
       ixPos += 2;
@@ -14897,13 +14834,14 @@ function Takehiro$2() {
     return 1;
   }
   function count_bit_noESC_from2(ix, ixPos, end, t1, s) {
-    var sum = 0, sum2;
-    var xlen = Tables$3.ht[t1].xlen;
+    var sum = 0;
+    var sum2;
+    var xlen = Tables$1.ht[t1].xlen;
     var hlen;
     if (t1 == 2)
-      hlen = Tables$3.table23;
+      hlen = Tables$1.table23;
     else
-      hlen = Tables$3.table56;
+      hlen = Tables$1.table56;
     do {
       var x = ix[ixPos + 0] * xlen + ix[ixPos + 1];
       ixPos += 2;
@@ -14922,10 +14860,10 @@ function Takehiro$2() {
     var sum1 = 0;
     var sum2 = 0;
     var sum3 = 0;
-    var xlen = Tables$3.ht[t1].xlen;
-    var hlen1 = Tables$3.ht[t1].hlen;
-    var hlen2 = Tables$3.ht[t1 + 1].hlen;
-    var hlen3 = Tables$3.ht[t1 + 2].hlen;
+    var xlen = Tables$1.ht[t1].xlen;
+    var hlen1 = Tables$1.ht[t1].hlen;
+    var hlen2 = Tables$1.ht[t1 + 1].hlen;
+    var hlen3 = Tables$1.ht[t1 + 2].hlen;
     do {
       var x = ix[ixPos + 0] * xlen + ix[ixPos + 1];
       ixPos += 2;
@@ -14945,23 +14883,7 @@ function Takehiro$2() {
     s.bits += sum1;
     return t;
   }
-  var huf_tbl_noESC = [
-    1,
-    2,
-    5,
-    7,
-    7,
-    10,
-    10,
-    13,
-    13,
-    13,
-    13,
-    13,
-    13,
-    13,
-    13
-  ];
+  var huf_tbl_noESC = [1, 2, 5, 7, 7, 10, 10, 13, 13, 13, 13, 13, 13, 13, 13];
   function choose_table(ix, ixPos, endPos, s) {
     var max = ix_max(ix, ixPos, endPos);
     switch (max) {
@@ -14986,20 +14908,20 @@ function Takehiro$2() {
       case 15:
         return count_bit_noESC_from3(ix, ixPos, endPos, huf_tbl_noESC[max - 1], s);
       default:
-        if (max > QuantizePVT$1.IXMAX_VAL) {
-          s.bits = QuantizePVT$1.LARGE_BITS;
+        if (max > QuantizePVT.IXMAX_VAL) {
+          s.bits = QuantizePVT.LARGE_BITS;
           return -1;
         }
         max -= 15;
         var choice2;
         for (choice2 = 24; choice2 < 32; choice2++) {
-          if (Tables$3.ht[choice2].linmax >= max) {
+          if (Tables$1.ht[choice2].linmax >= max) {
             break;
           }
         }
         var choice;
         for (choice = choice2 - 8; choice < 24; choice++) {
-          if (Tables$3.ht[choice].linmax >= max) {
+          if (Tables$1.ht[choice].linmax >= max) {
             break;
           }
         }
@@ -15023,8 +14945,8 @@ function Takehiro$2() {
         break;
       }
       p = ((ix[i - 4] * 2 + ix[i - 3]) * 2 + ix[i - 2]) * 2 + ix[i - 1];
-      a1 += Tables$3.t32l[p];
-      a2 += Tables$3.t33l[p];
+      a1 += Tables$1.t32l[p];
+      a2 += Tables$1.t33l[p];
     }
     var bits = a1;
     gi.count1table_select = 0;
@@ -15036,12 +14958,12 @@ function Takehiro$2() {
     gi.big_values = i;
     if (i == 0)
       return bits;
-    if (gi.block_type == Encoder$3.SHORT_TYPE) {
+    if (gi.block_type == Encoder.SHORT_TYPE) {
       a1 = 3 * gfc.scalefac_band.s[3];
       if (a1 > gi.big_values)
         a1 = gi.big_values;
       a2 = gi.big_values;
-    } else if (gi.block_type == Encoder$3.NORM_TYPE) {
+    } else if (gi.block_type == Encoder.NORM_TYPE) {
       a1 = gi.region0_count = gfc.bv_scf[i - 2];
       a2 = gi.region1_count = gfc.bv_scf[i - 1];
       a2 = gfc.scalefac_band.l[a1 + a2 + 2];
@@ -15053,7 +14975,7 @@ function Takehiro$2() {
       }
     } else {
       gi.region0_count = 7;
-      gi.region1_count = Encoder$3.SBMAX_l - 1 - 7 - 1;
+      gi.region1_count = Encoder.SBMAX_l - 1 - 7 - 1;
       a1 = gfc.scalefac_band.l[7 + 1];
       a2 = i;
       if (a1 > a2) {
@@ -15062,7 +14984,7 @@ function Takehiro$2() {
     }
     a1 = Math.min(a1, i);
     a2 = Math.min(a2, i);
-    if (0 < a1) {
+    if (a1 > 0) {
       var bi = new Bits(bits);
       gi.table_select[0] = choose_table(ix, 0, a1, bi);
       bits = bi.bits;
@@ -15078,7 +15000,7 @@ function Takehiro$2() {
       bits = gi.part2_3_length;
     }
     if (prev_noise != null) {
-      if (gi.block_type == Encoder$3.NORM_TYPE) {
+      if (gi.block_type == Encoder.NORM_TYPE) {
         var sfb = 0;
         while (gfc.scalefac_band.l[sfb] < gi.big_values) {
           sfb++;
@@ -15090,9 +15012,9 @@ function Takehiro$2() {
   };
   this.count_bits = function(gfc, xr, gi, prev_noise) {
     var ix = gi.l3_enc;
-    var w = QuantizePVT$1.IXMAX_VAL / qupvt.IPOW20(gi.global_gain);
+    var w = QuantizePVT.IXMAX_VAL / qupvt.IPOW20(gi.global_gain);
     if (gi.xrpow_max > w)
-      return QuantizePVT$1.LARGE_BITS;
+      return QuantizePVT.LARGE_BITS;
     quantize_xrpow(xr, ix, qupvt.IPOW20(gi.global_gain), gi, prev_noise);
     if ((gfc.substep_shaping & 2) != 0) {
       var j = 0;
@@ -15100,7 +15022,7 @@ function Takehiro$2() {
       var roundfac = 0.634521682242439 / qupvt.IPOW20(gain);
       for (var sfb = 0; sfb < gi.sfbmax; sfb++) {
         var width = gi.width[sfb];
-        if (0 == gfc.pseudohalf[sfb]) {
+        if (gfc.pseudohalf[sfb] == 0) {
           j += width;
         } else {
           var k;
@@ -15115,7 +15037,7 @@ function Takehiro$2() {
   function recalc_divide_init(gfc, cod_info, ix, r01_bits, r01_div, r0_tbl, r1_tbl) {
     var bigv = cod_info.big_values;
     for (var r0 = 0; r0 <= 7 + 15; r0++) {
-      r01_bits[r0] = QuantizePVT$1.LARGE_BITS;
+      r01_bits[r0] = QuantizePVT.LARGE_BITS;
     }
     for (var r0 = 0; r0 < 16; r0++) {
       var a1 = gfc.scalefac_band.l[r0 + 1];
@@ -15144,7 +15066,7 @@ function Takehiro$2() {
   }
   function recalc_divide_sub(gfc, cod_info2, gi, ix, r01_bits, r01_div, r0_tbl, r1_tbl) {
     var bigv = cod_info2.big_values;
-    for (var r2 = 2; r2 < Encoder$3.SBMAX_l + 1; r2++) {
+    for (var r2 = 2; r2 < Encoder.SBMAX_l + 1; r2++) {
       var a2 = gfc.scalefac_band.l[r2];
       if (a2 >= bigv)
         break;
@@ -15166,16 +15088,16 @@ function Takehiro$2() {
     }
   }
   this.best_huffman_divide = function(gfc, gi) {
-    var cod_info2 = new GrInfo$1();
+    var cod_info2 = new GrInfo();
     var ix = gi.l3_enc;
     var r01_bits = new_int$2(7 + 15 + 1);
     var r01_div = new_int$2(7 + 15 + 1);
     var r0_tbl = new_int$2(7 + 15 + 1);
     var r1_tbl = new_int$2(7 + 15 + 1);
-    if (gi.block_type == Encoder$3.SHORT_TYPE && gfc.mode_gr == 1)
+    if (gi.block_type == Encoder.SHORT_TYPE && gfc.mode_gr == 1)
       return;
     cod_info2.assign(gi);
-    if (gi.block_type == Encoder$3.NORM_TYPE) {
+    if (gi.block_type == Encoder.NORM_TYPE) {
       recalc_divide_init(gfc, gi, ix, r01_bits, r01_div, r0_tbl, r1_tbl);
       recalc_divide_sub(gfc, cod_info2, gi, ix, r01_bits, r01_div, r0_tbl, r1_tbl);
     }
@@ -15191,8 +15113,8 @@ function Takehiro$2() {
     var a2 = 0;
     for (; i > cod_info2.big_values; i -= 4) {
       var p = ((ix[i - 4] * 2 + ix[i - 3]) * 2 + ix[i - 2]) * 2 + ix[i - 1];
-      a1 += Tables$3.t32l[p];
-      a2 += Tables$3.t33l[p];
+      a1 += Tables$1.t32l[p];
+      a2 += Tables$1.t33l[p];
     }
     cod_info2.big_values = i;
     cod_info2.count1table_select = 0;
@@ -15201,9 +15123,9 @@ function Takehiro$2() {
       cod_info2.count1table_select = 1;
     }
     cod_info2.count1bits = a1;
-    if (cod_info2.block_type == Encoder$3.NORM_TYPE)
+    if (cod_info2.block_type == Encoder.NORM_TYPE) {
       recalc_divide_sub(gfc, cod_info2, gi, ix, r01_bits, r01_div, r0_tbl, r1_tbl);
-    else {
+    } else {
       cod_info2.part2_3_length = a1;
       a1 = gfc.scalefac_band.l[7 + 1];
       if (a1 > i) {
@@ -15227,19 +15149,19 @@ function Takehiro$2() {
   var slen2_n = [1, 2, 4, 8, 1, 2, 4, 8, 2, 4, 8, 2, 4, 8, 4, 8];
   var slen1_tab = [0, 0, 0, 0, 3, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4];
   var slen2_tab = [0, 1, 2, 3, 0, 1, 2, 3, 1, 2, 3, 1, 2, 3, 2, 3];
-  Takehiro$2.slen1_tab = slen1_tab;
-  Takehiro$2.slen2_tab = slen2_tab;
+  Takehiro.slen1_tab = slen1_tab;
+  Takehiro.slen2_tab = slen2_tab;
   function scfsi_calc(ch, l3_side) {
     var sfb;
     var gi = l3_side.tt[1][ch];
     var g0 = l3_side.tt[0][ch];
-    for (var i = 0; i < Tables$3.scfsi_band.length - 1; i++) {
-      for (sfb = Tables$3.scfsi_band[i]; sfb < Tables$3.scfsi_band[i + 1]; sfb++) {
+    for (var i = 0; i < Tables$1.scfsi_band.length - 1; i++) {
+      for (sfb = Tables$1.scfsi_band[i]; sfb < Tables$1.scfsi_band[i + 1]; sfb++) {
         if (g0.scalefac[sfb] != gi.scalefac[sfb] && gi.scalefac[sfb] >= 0)
           break;
       }
-      if (sfb == Tables$3.scfsi_band[i + 1]) {
-        for (sfb = Tables$3.scfsi_band[i]; sfb < Tables$3.scfsi_band[i + 1]; sfb++) {
+      if (sfb == Tables$1.scfsi_band[i + 1]) {
+        for (sfb = Tables$1.scfsi_band[i]; sfb < Tables$1.scfsi_band[i + 1]; sfb++) {
           gi.scalefac[sfb] = -1;
         }
         l3_side.scfsi[ch][i] = 1;
@@ -15256,7 +15178,7 @@ function Takehiro$2() {
     }
     var s2 = 0;
     var c2 = 0;
-    for (; sfb < Encoder$3.SBPSY_l; sfb++) {
+    for (; sfb < Encoder.SBPSY_l; sfb++) {
       if (gi.scalefac[sfb] == -1)
         continue;
       c2++;
@@ -15288,32 +15210,37 @@ function Takehiro$2() {
       if (l == 0)
         gi.scalefac[sfb] = recalc = -2;
     }
-    if (0 == gi.scalefac_scale && 0 == gi.preflag) {
+    if (gi.scalefac_scale == 0 && gi.preflag == 0) {
       var s = 0;
-      for (sfb = 0; sfb < gi.sfbmax; sfb++)
+      for (sfb = 0; sfb < gi.sfbmax; sfb++) {
         if (gi.scalefac[sfb] > 0)
           s |= gi.scalefac[sfb];
-      if (0 == (s & 1) && s != 0) {
-        for (sfb = 0; sfb < gi.sfbmax; sfb++)
+      }
+      if ((s & 1) == 0 && s != 0) {
+        for (sfb = 0; sfb < gi.sfbmax; sfb++) {
           if (gi.scalefac[sfb] > 0)
             gi.scalefac[sfb] >>= 1;
+        }
         gi.scalefac_scale = recalc = 1;
       }
     }
-    if (0 == gi.preflag && gi.block_type != Encoder$3.SHORT_TYPE && gfc.mode_gr == 2) {
-      for (sfb = 11; sfb < Encoder$3.SBPSY_l; sfb++)
-        if (gi.scalefac[sfb] < qupvt.pretab[sfb] && gi.scalefac[sfb] != -2)
+    if (gi.preflag == 0 && gi.block_type != Encoder.SHORT_TYPE && gfc.mode_gr == 2) {
+      for (sfb = 11; sfb < Encoder.SBPSY_l; sfb++) {
+        if (gi.scalefac[sfb] < qupvt.pretab[sfb] && gi.scalefac[sfb] != -2) {
           break;
-      if (sfb == Encoder$3.SBPSY_l) {
-        for (sfb = 11; sfb < Encoder$3.SBPSY_l; sfb++)
+        }
+      }
+      if (sfb == Encoder.SBPSY_l) {
+        for (sfb = 11; sfb < Encoder.SBPSY_l; sfb++) {
           if (gi.scalefac[sfb] > 0)
             gi.scalefac[sfb] -= qupvt.pretab[sfb];
+        }
         gi.preflag = recalc = 1;
       }
     }
     for (i = 0; i < 4; i++)
       l3_side.scfsi[ch][i] = 0;
-    if (gfc.mode_gr == 2 && gr == 1 && l3_side.tt[0][ch].block_type != Encoder$3.SHORT_TYPE && l3_side.tt[1][ch].block_type != Encoder$3.SHORT_TYPE) {
+    if (gfc.mode_gr == 2 && gr == 1 && l3_side.tt[0][ch].block_type != Encoder.SHORT_TYPE && l3_side.tt[1][ch].block_type != Encoder.SHORT_TYPE) {
       scfsi_calc(ch, l3_side);
       recalc = 0;
     }
@@ -15392,41 +15319,48 @@ function Takehiro$2() {
     74
   ];
   this.scale_bitcount = function(cod_info) {
-    var k, sfb, max_slen1 = 0, max_slen2 = 0;
+    var k;
+    var sfb;
+    var max_slen1 = 0;
+    var max_slen2 = 0;
     var tab;
     var scalefac = cod_info.scalefac;
     assert$6(all_scalefactors_not_negative(scalefac, cod_info.sfbmax));
-    if (cod_info.block_type == Encoder$3.SHORT_TYPE) {
+    if (cod_info.block_type == Encoder.SHORT_TYPE) {
       tab = scale_short;
       if (cod_info.mixed_block_flag != 0)
         tab = scale_mixed;
     } else {
       tab = scale_long;
-      if (0 == cod_info.preflag) {
-        for (sfb = 11; sfb < Encoder$3.SBPSY_l; sfb++)
+      if (cod_info.preflag == 0) {
+        for (sfb = 11; sfb < Encoder.SBPSY_l; sfb++) {
           if (scalefac[sfb] < qupvt.pretab[sfb])
             break;
-        if (sfb == Encoder$3.SBPSY_l) {
+        }
+        if (sfb == Encoder.SBPSY_l) {
           cod_info.preflag = 1;
-          for (sfb = 11; sfb < Encoder$3.SBPSY_l; sfb++)
+          for (sfb = 11; sfb < Encoder.SBPSY_l; sfb++) {
             scalefac[sfb] -= qupvt.pretab[sfb];
+          }
         }
       }
     }
-    for (sfb = 0; sfb < cod_info.sfbdivide; sfb++)
+    for (sfb = 0; sfb < cod_info.sfbdivide; sfb++) {
       if (max_slen1 < scalefac[sfb])
         max_slen1 = scalefac[sfb];
-    for (; sfb < cod_info.sfbmax; sfb++)
+    }
+    for (; sfb < cod_info.sfbmax; sfb++) {
       if (max_slen2 < scalefac[sfb])
         max_slen2 = scalefac[sfb];
-    cod_info.part2_length = QuantizePVT$1.LARGE_BITS;
+    }
+    cod_info.part2_length = QuantizePVT.LARGE_BITS;
     for (k = 0; k < 16; k++) {
       if (max_slen1 < slen1_n[k] && max_slen2 < slen2_n[k] && cod_info.part2_length > tab[k]) {
         cod_info.part2_length = tab[k];
         cod_info.scalefac_compress = k;
       }
     }
-    return cod_info.part2_length == QuantizePVT$1.LARGE_BITS;
+    return cod_info.part2_length == QuantizePVT.LARGE_BITS;
   };
   var max_range_sfac_tab = [
     [15, 15, 7, 7],
@@ -15448,35 +15382,42 @@ function Takehiro$2() {
       table_number = 0;
     for (i = 0; i < 4; i++)
       max_sfac[i] = 0;
-    if (cod_info.block_type == Encoder$3.SHORT_TYPE) {
+    if (cod_info.block_type == Encoder.SHORT_TYPE) {
       row_in_table = 1;
       var partition_table = qupvt.nr_of_sfb_block[table_number][row_in_table];
       for (sfb = 0, partition = 0; partition < 4; partition++) {
         nr_sfb = partition_table[partition] / 3;
-        for (i = 0; i < nr_sfb; i++, sfb++)
-          for (window2 = 0; window2 < 3; window2++)
-            if (scalefac[sfb * 3 + window2] > max_sfac[partition])
+        for (i = 0; i < nr_sfb; i++, sfb++) {
+          for (window2 = 0; window2 < 3; window2++) {
+            if (scalefac[sfb * 3 + window2] > max_sfac[partition]) {
               max_sfac[partition] = scalefac[sfb * 3 + window2];
+            }
+          }
+        }
       }
     } else {
       row_in_table = 0;
       var partition_table = qupvt.nr_of_sfb_block[table_number][row_in_table];
       for (sfb = 0, partition = 0; partition < 4; partition++) {
         nr_sfb = partition_table[partition];
-        for (i = 0; i < nr_sfb; i++, sfb++)
-          if (scalefac[sfb] > max_sfac[partition])
+        for (i = 0; i < nr_sfb; i++, sfb++) {
+          if (scalefac[sfb] > max_sfac[partition]) {
             max_sfac[partition] = scalefac[sfb];
+          }
+        }
       }
     }
     for (over = false, partition = 0; partition < 4; partition++) {
-      if (max_sfac[partition] > max_range_sfac_tab[table_number][partition])
+      if (max_sfac[partition] > max_range_sfac_tab[table_number][partition]) {
         over = true;
+      }
     }
     if (!over) {
       var slen1, slen2, slen3, slen4;
       cod_info.sfb_partition_table = qupvt.nr_of_sfb_block[table_number][row_in_table];
-      for (partition = 0; partition < 4; partition++)
+      for (partition = 0; partition < 4; partition++) {
         cod_info.slen[partition] = log2tab[max_sfac[partition]];
+      }
       slen1 = cod_info.slen[0];
       slen2 = cod_info.slen[1];
       slen3 = cod_info.slen[2];
@@ -15499,32 +15440,17 @@ function Takehiro$2() {
     if (!over) {
       assert$6(cod_info.sfb_partition_table != null);
       cod_info.part2_length = 0;
-      for (partition = 0; partition < 4; partition++)
+      for (partition = 0; partition < 4; partition++) {
         cod_info.part2_length += cod_info.slen[partition] * cod_info.sfb_partition_table[partition];
+      }
     }
     return over;
   };
-  var log2tab = [
-    0,
-    1,
-    2,
-    2,
-    3,
-    3,
-    3,
-    3,
-    4,
-    4,
-    4,
-    4,
-    4,
-    4,
-    4,
-    4
-  ];
+  var log2tab = [0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4];
   this.huffman_init = function(gfc) {
     for (var i = 2; i <= 576; i += 2) {
-      var scfb_anz = 0, bv_index;
+      var scfb_anz = 0;
+      var bv_index;
       while (gfc.scalefac_band.l[++scfb_anz] < i)
         ;
       bv_index = subdv_table[scfb_anz][0];
@@ -15535,8 +15461,9 @@ function Takehiro$2() {
       }
       gfc.bv_scf[i - 2] = bv_index;
       bv_index = subdv_table[scfb_anz][1];
-      while (gfc.scalefac_band.l[bv_index + gfc.bv_scf[i - 2] + 2] > i)
+      while (gfc.scalefac_band.l[bv_index + gfc.bv_scf[i - 2] + 2] > i) {
         bv_index--;
+      }
       if (bv_index < 0) {
         bv_index = subdv_table[scfb_anz][1];
       }
@@ -15544,26 +15471,19 @@ function Takehiro$2() {
     }
   };
 }
-var Takehiro_1 = Takehiro$2;
-var common$7 = common$o;
-var System$3 = common$7.System;
-var Arrays$2 = common$7.Arrays;
-var new_byte$2 = common$7.new_byte;
-var new_float_n = common$7.new_float_n;
-var new_int$1 = common$7.new_int;
-var assert$5 = common$7.assert;
-var Takehiro$1 = Takehiro_1;
-var Tables$2 = Tables_1;
-var Encoder$2 = Encoder_1;
-var LameInternalFlags$2 = LameInternalFlags_1;
-BitStream$3.EQ = function(a, b) {
+var System$3 = common.System;
+var Arrays$2 = common.Arrays;
+var new_byte$2 = common.new_byte;
+var new_float_n = common.new_float_n;
+var new_int$1 = common.new_int;
+var assert$5 = common.assert;
+BitStream$1.EQ = function(a, b) {
   return Math.abs(a) > Math.abs(b) ? Math.abs(a - b) <= Math.abs(a) * 1e-6 : Math.abs(a - b) <= Math.abs(b) * 1e-6;
 };
-BitStream$3.NEQ = function(a, b) {
-  return !BitStream$3.EQ(a, b);
+BitStream$1.NEQ = function(a, b) {
+  return !BitStream$1.EQ(a, b);
 };
-function BitStream$3() {
-  var Lame2 = Lame_1;
+function BitStream$1() {
   var self = this;
   var CRC16_POLYNOMIAL = 32773;
   var ga = null;
@@ -15583,9 +15503,9 @@ function BitStream$3() {
   this.getframebits = function(gfp) {
     var gfc = gfp.internal_flags;
     var bit_rate;
-    if (gfc.bitrate_index != 0)
-      bit_rate = Tables$2.bitrate_table[gfp.version][gfc.bitrate_index];
-    else
+    if (gfc.bitrate_index != 0) {
+      bit_rate = Tables$1.bitrate_table[gfp.version][gfc.bitrate_index];
+    } else
       bit_rate = gfp.brate;
     var bytes = 0 | (gfp.version + 1) * 72e3 * bit_rate / gfp.out_samplerate + gfc.padding;
     return 8 * bytes;
@@ -15594,7 +15514,7 @@ function BitStream$3() {
     System$3.arraycopy(gfc.header[gfc.w_ptr].buf, 0, buf, bufByteIdx, gfc.sideinfo_len);
     bufByteIdx += gfc.sideinfo_len;
     totbit += gfc.sideinfo_len * 8;
-    gfc.w_ptr = gfc.w_ptr + 1 & LameInternalFlags$2.MAX_HEADER_BUF - 1;
+    gfc.w_ptr = gfc.w_ptr + 1 & LameInternalFlags$1.MAX_HEADER_BUF - 1;
   }
   function putbits2(gfc, val, j) {
     while (j > 0) {
@@ -15651,11 +15571,12 @@ function BitStream$3() {
     }
     if (remainingBits >= 32) {
       var version = ver.getLameShortVersion();
-      if (remainingBits >= 32)
+      if (remainingBits >= 32) {
         for (i = 0; i < version.length && remainingBits >= 8; ++i) {
           remainingBits -= 8;
           putbits2(gfc, version.charAt(i), 8);
         }
+      }
     }
     for (; remainingBits >= 1; remainingBits -= 1) {
       putbits2(gfc, gfc.ancillary_flag, 1);
@@ -15738,7 +15659,7 @@ function BitStream$3() {
           writeheader(gfc, gi.big_values / 2, 9);
           writeheader(gfc, gi.global_gain, 8);
           writeheader(gfc, gi.scalefac_compress, 4);
-          if (gi.block_type != Encoder$2.NORM_TYPE) {
+          if (gi.block_type != Encoder.NORM_TYPE) {
             writeheader(gfc, 1, 1);
             writeheader(gfc, gi.block_type, 2);
             writeheader(gfc, gi.mixed_block_flag, 1);
@@ -15762,8 +15683,8 @@ function BitStream$3() {
             if (gi.table_select[2] == 14)
               gi.table_select[2] = 16;
             writeheader(gfc, gi.table_select[2], 5);
-            assert$5(0 <= gi.region0_count && gi.region0_count < 16);
-            assert$5(0 <= gi.region1_count && gi.region1_count < 8);
+            assert$5(gi.region0_count >= 0 && gi.region0_count < 16);
+            assert$5(gi.region1_count >= 0 && gi.region1_count < 8);
             writeheader(gfc, gi.region0_count, 4);
             writeheader(gfc, gi.region1_count, 3);
           }
@@ -15783,7 +15704,7 @@ function BitStream$3() {
         writeheader(gfc, gi.big_values / 2, 9);
         writeheader(gfc, gi.global_gain, 8);
         writeheader(gfc, gi.scalefac_compress, 9);
-        if (gi.block_type != Encoder$2.NORM_TYPE) {
+        if (gi.block_type != Encoder.NORM_TYPE) {
           writeheader(gfc, 1, 1);
           writeheader(gfc, gi.block_type, 2);
           writeheader(gfc, gi.mixed_block_flag, 1);
@@ -15807,8 +15728,8 @@ function BitStream$3() {
           if (gi.table_select[2] == 14)
             gi.table_select[2] = 16;
           writeheader(gfc, gi.table_select[2], 5);
-          assert$5(0 <= gi.region0_count && gi.region0_count < 16);
-          assert$5(0 <= gi.region1_count && gi.region1_count < 8);
+          assert$5(gi.region0_count >= 0 && gi.region0_count < 16);
+          assert$5(gi.region1_count >= 0 && gi.region1_count < 8);
           writeheader(gfc, gi.region0_count, 4);
           writeheader(gfc, gi.region1_count, 3);
         }
@@ -15822,7 +15743,7 @@ function BitStream$3() {
     {
       var old = gfc.h_ptr;
       assert$5(gfc.header[old].ptr == gfc.sideinfo_len * 8);
-      gfc.h_ptr = old + 1 & LameInternalFlags$2.MAX_HEADER_BUF - 1;
+      gfc.h_ptr = old + 1 & LameInternalFlags$1.MAX_HEADER_BUF - 1;
       gfc.header[gfc.h_ptr].write_timing = gfc.header[old].write_timing + bitsPerFrame;
       if (gfc.h_ptr == gfc.w_ptr) {
         System$3.err.println("Error: MAX_HEADER_BUF too small in bitstream.c \n");
@@ -15830,14 +15751,16 @@ function BitStream$3() {
     }
   }
   function huffman_coder_count1(gfc, gi) {
-    var h = Tables$2.ht[gi.count1table_select + 32];
-    var i, bits = 0;
+    var h = Tables$1.ht[gi.count1table_select + 32];
+    var i;
+    var bits = 0;
     var ix = gi.big_values;
     var xr = gi.big_values;
     assert$5(gi.count1table_select < 2);
     for (i = (gi.count1 - gi.big_values) / 4; i > 0; --i) {
       var huffbits = 0;
-      var p = 0, v;
+      var p = 0;
+      var v;
       v = gi.l3_enc[ix + 0];
       if (v != 0) {
         p += 8;
@@ -15873,9 +15796,9 @@ function BitStream$3() {
     return bits;
   }
   function Huffmancode(gfc, tableindex, start2, end, gi) {
-    var h = Tables$2.ht[tableindex];
+    var h = Tables$1.ht[tableindex];
     var bits = 0;
-    if (0 == tableindex)
+    if (tableindex == 0)
       return bits;
     for (var i = start2; i < end; i += 2) {
       var cbits = 0;
@@ -15951,15 +15874,19 @@ function BitStream$3() {
     return bits;
   }
   function writeMainData(gfp) {
-    var gr, ch, sfb, data_bits, tot_bits = 0;
+    var gr;
+    var ch;
+    var sfb;
+    var data_bits;
+    var tot_bits = 0;
     var gfc = gfp.internal_flags;
     var l3_side = gfc.l3_side;
     if (gfp.version == 1) {
       for (gr = 0; gr < 2; gr++) {
         for (ch = 0; ch < gfc.channels_out; ch++) {
           var gi = l3_side.tt[gr][ch];
-          var slen1 = Takehiro$1.slen1_tab[gi.scalefac_compress];
-          var slen2 = Takehiro$1.slen2_tab[gi.scalefac_compress];
+          var slen1 = Takehiro.slen1_tab[gi.scalefac_compress];
+          var slen2 = Takehiro.slen2_tab[gi.scalefac_compress];
           data_bits = 0;
           for (sfb = 0; sfb < gi.sfbdivide; sfb++) {
             if (gi.scalefac[sfb] == -1)
@@ -15974,7 +15901,7 @@ function BitStream$3() {
             data_bits += slen2;
           }
           assert$5(data_bits == gi.part2_length);
-          if (gi.block_type == Encoder$2.SHORT_TYPE) {
+          if (gi.block_type == Encoder.SHORT_TYPE) {
             data_bits += ShortHuffmancodebits(gfc, gi);
           } else {
             data_bits += LongHuffmancodebits(gfc, gi);
@@ -15988,12 +15915,14 @@ function BitStream$3() {
       gr = 0;
       for (ch = 0; ch < gfc.channels_out; ch++) {
         var gi = l3_side.tt[gr][ch];
-        var i, sfb_partition, scale_bits = 0;
+        var i;
+        var sfb_partition;
+        var scale_bits = 0;
         assert$5(gi.sfb_partition_table != null);
         data_bits = 0;
         sfb = 0;
         sfb_partition = 0;
-        if (gi.block_type == Encoder$2.SHORT_TYPE) {
+        if (gi.block_type == Encoder.SHORT_TYPE) {
           for (; sfb_partition < 4; sfb_partition++) {
             var sfbs = gi.sfb_partition_table[sfb_partition] / 3;
             var slen = gi.slen[sfb_partition];
@@ -16035,21 +15964,22 @@ function BitStream$3() {
     first_ptr = gfc.w_ptr;
     last_ptr = gfc.h_ptr - 1;
     if (last_ptr == -1)
-      last_ptr = LameInternalFlags$2.MAX_HEADER_BUF - 1;
+      last_ptr = LameInternalFlags$1.MAX_HEADER_BUF - 1;
     flushbits = gfc.header[last_ptr].write_timing - totbit;
     total_bytes_output.total = flushbits;
     if (flushbits >= 0) {
       remaining_headers = 1 + last_ptr - first_ptr;
-      if (last_ptr < first_ptr)
-        remaining_headers = 1 + last_ptr - first_ptr + LameInternalFlags$2.MAX_HEADER_BUF;
+      if (last_ptr < first_ptr) {
+        remaining_headers = 1 + last_ptr - first_ptr + LameInternalFlags$1.MAX_HEADER_BUF;
+      }
       flushbits -= remaining_headers * 8 * gfc.sideinfo_len;
     }
     bitsPerFrame = self.getframebits(gfp);
     flushbits += bitsPerFrame;
     total_bytes_output.total += bitsPerFrame;
-    if (total_bytes_output.total % 8 != 0)
+    if (total_bytes_output.total % 8 != 0) {
       total_bytes_output.total = 1 + total_bytes_output.total / 8;
-    else
+    } else
       total_bytes_output.total = total_bytes_output.total / 8;
     total_bytes_output.total += bufByteIdx + 1;
     if (flushbits < 0) {
@@ -16063,7 +15993,7 @@ function BitStream$3() {
     var flushbits;
     var last_ptr = gfc.h_ptr - 1;
     if (last_ptr == -1)
-      last_ptr = LameInternalFlags$2.MAX_HEADER_BUF - 1;
+      last_ptr = LameInternalFlags$1.MAX_HEADER_BUF - 1;
     l3_side = gfc.l3_side;
     if ((flushbits = compute_flushbits(gfp, new TotalBytes())) < 0)
       return;
@@ -16079,13 +16009,14 @@ function BitStream$3() {
     if (gfc.findPeakSample) {
       gfc.noclipGainChange = Math.ceil(Math.log10(gfc.PeakSample / 32767) * 20 * 10) | 0;
       if (gfc.noclipGainChange > 0) {
-        if (EQ(gfp.scale, 1) || EQ(gfp.scale, 0))
+        if (EQ(gfp.scale, 1) || EQ(gfp.scale, 0)) {
           gfc.noclipScale = Math.floor(32767 / gfc.PeakSample * 100) / 100;
-        else {
+        } else {
           gfc.noclipScale = -1;
         }
-      } else
+      } else {
         gfc.noclipScale = -1;
+      }
     }
   };
   this.add_dummy_byte = function(gfp, val, n) {
@@ -16093,8 +16024,9 @@ function BitStream$3() {
     var i;
     while (n-- > 0) {
       putbits_noheaders(gfc, val, 8);
-      for (i = 0; i < LameInternalFlags$2.MAX_HEADER_BUF; ++i)
+      for (i = 0; i < LameInternalFlags$1.MAX_HEADER_BUF; ++i) {
         gfc.header[i].write_timing += 8;
+      }
     }
   };
   this.format_bitstream = function(gfp) {
@@ -16122,8 +16054,9 @@ function BitStream$3() {
     }
     if (totbit > 1e9) {
       var i;
-      for (i = 0; i < LameInternalFlags$2.MAX_HEADER_BUF; ++i)
+      for (i = 0; i < LameInternalFlags$1.MAX_HEADER_BUF; ++i) {
         gfc.header[i].write_timing -= totbit;
+      }
       totbit = 0;
     }
     return 0;
@@ -16160,22 +16093,26 @@ function BitStream$3() {
           if (samples_out > 0) {
             if (gfc.findPeakSample) {
               for (i = 0; i < samples_out; i++) {
-                if (pcm_buf[0][i] > gfc.PeakSample)
+                if (pcm_buf[0][i] > gfc.PeakSample) {
                   gfc.PeakSample = pcm_buf[0][i];
-                else if (-pcm_buf[0][i] > gfc.PeakSample)
+                } else if (-pcm_buf[0][i] > gfc.PeakSample) {
                   gfc.PeakSample = -pcm_buf[0][i];
-              }
-              if (gfc.channels_out > 1)
-                for (i = 0; i < samples_out; i++) {
-                  if (pcm_buf[1][i] > gfc.PeakSample)
-                    gfc.PeakSample = pcm_buf[1][i];
-                  else if (-pcm_buf[1][i] > gfc.PeakSample)
-                    gfc.PeakSample = -pcm_buf[1][i];
                 }
+              }
+              if (gfc.channels_out > 1) {
+                for (i = 0; i < samples_out; i++) {
+                  if (pcm_buf[1][i] > gfc.PeakSample) {
+                    gfc.PeakSample = pcm_buf[1][i];
+                  } else if (-pcm_buf[1][i] > gfc.PeakSample) {
+                    gfc.PeakSample = -pcm_buf[1][i];
+                  }
+                }
+              }
             }
             if (gfc.findReplayGain) {
-              if (ga.AnalyzeSamples(gfc.rgdata, pcm_buf[0], 0, pcm_buf[1], 0, samples_out, gfc.channels_out) == GainAnalysis.GAIN_ANALYSIS_ERROR)
+              if (ga.AnalyzeSamples(gfc.rgdata, pcm_buf[0], 0, pcm_buf[1], 0, samples_out, gfc.channels_out) == GainAnalysis.GAIN_ANALYSIS_ERROR) {
                 return -6;
+              }
             }
           }
         }
@@ -16184,7 +16121,7 @@ function BitStream$3() {
     return minimum;
   };
   this.init_bit_stream_w = function(gfc) {
-    buf = new_byte$2(Lame2.LAME_MAXMP3BUFFER);
+    buf = new_byte$2(Lame$1.LAME_MAXMP3BUFFER);
     gfc.h_ptr = gfc.w_ptr = 0;
     gfc.header[gfc.h_ptr].write_timing = 0;
     bufByteIdx = -1;
@@ -16192,48 +16129,36 @@ function BitStream$3() {
     totbit = 0;
   };
 }
-var BitStream_1 = BitStream$3;
-var common$6 = common$o;
-var System$2 = common$6.System;
-var VbrMode$3 = common$6.VbrMode;
-var ShortBlock$1 = common$6.ShortBlock;
-var new_float$2 = common$6.new_float;
-var new_int_n = common$6.new_int_n;
-var new_short_n = common$6.new_short_n;
-var assert$4 = common$6.assert;
-var PsyModel = PsyModel_1;
-var LameGlobalFlags = LameGlobalFlags_1;
-var LameInternalFlags$1 = LameInternalFlags_1;
-var ATH = ATH_1;
-var ReplayGain = ReplayGain_1;
-var CBRNewIterationLoop = CBRNewIterationLoop_1;
-var BitStream$2 = BitStream_1;
-var Tables$1 = Tables_1;
-var Encoder$1 = Encoder_1;
-function Lame$2() {
-  var MPEGMode2 = MPEGMode_1;
+var System$2 = common.System;
+var VbrMode$3 = common.VbrMode;
+var ShortBlock$1 = common.ShortBlock;
+var new_float$2 = common.new_float;
+var new_int_n = common.new_int_n;
+var new_short_n = common.new_short_n;
+var assert$4 = common.assert;
+function Lame$1() {
   var self = this;
   var LAME_MAXALBUMART = 128 * 1024;
-  Lame$2.V9 = 410;
-  Lame$2.V8 = 420;
-  Lame$2.V7 = 430;
-  Lame$2.V6 = 440;
-  Lame$2.V5 = 450;
-  Lame$2.V4 = 460;
-  Lame$2.V3 = 470;
-  Lame$2.V2 = 480;
-  Lame$2.V1 = 490;
-  Lame$2.V0 = 500;
-  Lame$2.R3MIX = 1e3;
-  Lame$2.STANDARD = 1001;
-  Lame$2.EXTREME = 1002;
-  Lame$2.INSANE = 1003;
-  Lame$2.STANDARD_FAST = 1004;
-  Lame$2.EXTREME_FAST = 1005;
-  Lame$2.MEDIUM = 1006;
-  Lame$2.MEDIUM_FAST = 1007;
+  Lame$1.V9 = 410;
+  Lame$1.V8 = 420;
+  Lame$1.V7 = 430;
+  Lame$1.V6 = 440;
+  Lame$1.V5 = 450;
+  Lame$1.V4 = 460;
+  Lame$1.V3 = 470;
+  Lame$1.V2 = 480;
+  Lame$1.V1 = 490;
+  Lame$1.V0 = 500;
+  Lame$1.R3MIX = 1e3;
+  Lame$1.STANDARD = 1001;
+  Lame$1.EXTREME = 1002;
+  Lame$1.INSANE = 1003;
+  Lame$1.STANDARD_FAST = 1004;
+  Lame$1.EXTREME_FAST = 1005;
+  Lame$1.MEDIUM = 1006;
+  Lame$1.MEDIUM_FAST = 1007;
   var LAME_MAXMP3BUFFER = 16384 + LAME_MAXALBUMART;
-  Lame$2.LAME_MAXMP3BUFFER = LAME_MAXMP3BUFFER;
+  Lame$1.LAME_MAXMP3BUFFER = LAME_MAXMP3BUFFER;
   var ga;
   var bs;
   var p;
@@ -16243,7 +16168,7 @@ function Lame$2() {
   var vbr;
   var id3;
   var mpglib;
-  this.enc = new Encoder$1();
+  this.enc = new Encoder();
   this.setModules = function(_ga, _bs, _p, _qupvt, _qu, _vbr, _ver, _id3, _mpglib) {
     ga = _ga;
     bs = _bs;
@@ -16258,8 +16183,8 @@ function Lame$2() {
   function PSY() {
     this.mask_adjust = 0;
     this.mask_adjust_short = 0;
-    this.bo_l_weight = new_float$2(Encoder$1.SBMAX_l);
-    this.bo_s_weight = new_float$2(Encoder$1.SBMAX_s);
+    this.bo_l_weight = new_float$2(Encoder.SBMAX_l);
+    this.bo_s_weight = new_float$2(Encoder.SBMAX_s);
   }
   function LowPassHighPass() {
     this.lowerlimit = 0;
@@ -16272,7 +16197,7 @@ function Lame$2() {
     var gfc;
     gfp.class_id = LAME_ID;
     gfc = gfp.internal_flags = new LameInternalFlags$1();
-    gfp.mode = MPEGMode2.NOT_SET;
+    gfp.mode = MPEGMode.NOT_SET;
     gfp.original = 1;
     gfp.in_samplerate = 44100;
     gfp.num_channels = 2;
@@ -16312,9 +16237,9 @@ function Lame$2() {
     gfp.athaa_sensitivity = 0;
     gfp.useTemporal = null;
     gfp.interChRatio = -1;
-    gfc.mf_samples_to_encode = Encoder$1.ENCDELAY + Encoder$1.POSTDELAY;
+    gfc.mf_samples_to_encode = Encoder.ENCDELAY + Encoder.POSTDELAY;
     gfp.encoder_padding = 0;
-    gfc.mf_size = Encoder$1.ENCDELAY - Encoder$1.MDCTDELAY;
+    gfc.mf_size = Encoder.ENCDELAY - Encoder.MDCTDELAY;
     gfp.findReplayGain = false;
     gfp.decode_on_the_fly = false;
     gfc.decode_on_the_fly = false;
@@ -16361,7 +16286,10 @@ function Lame$2() {
       256,
       320
     ];
-    var lower_range = 0, lower_range_kbps = 0, upper_range = 0, upper_range_kbps = 0;
+    var lower_range = 0;
+    var lower_range_kbps = 0;
+    var upper_range = 0;
+    var upper_range_kbps = 0;
     upper_range_kbps = full_bitrate_table[16];
     upper_range = 16;
     lower_range_kbps = full_bitrate_table[16];
@@ -16487,8 +16415,9 @@ function Lame$2() {
     var bitrate = Tables$1.bitrate_table[version][1];
     for (var i = 2; i <= 14; i++) {
       if (Tables$1.bitrate_table[version][i] > 0) {
-        if (Math.abs(Tables$1.bitrate_table[version][i] - bRate) < Math.abs(bitrate - bRate))
+        if (Math.abs(Tables$1.bitrate_table[version][i] - bRate) < Math.abs(bitrate - bRate)) {
           bitrate = Tables$1.bitrate_table[version][i];
+        }
       }
     }
     return bitrate;
@@ -16721,29 +16650,32 @@ function Lame$2() {
       gfc.rgdata = new ReplayGain();
     gfc.channels_in = gfp.num_channels;
     if (gfc.channels_in == 1)
-      gfp.mode = MPEGMode2.MONO;
-    gfc.channels_out = gfp.mode == MPEGMode2.MONO ? 1 : 2;
-    gfc.mode_ext = Encoder$1.MPG_MD_MS_LR;
-    if (gfp.mode == MPEGMode2.MONO)
+      gfp.mode = MPEGMode.MONO;
+    gfc.channels_out = gfp.mode == MPEGMode.MONO ? 1 : 2;
+    gfc.mode_ext = Encoder.MPG_MD_MS_LR;
+    if (gfp.mode == MPEGMode.MONO)
       gfp.force_ms = false;
-    if (gfp.VBR == VbrMode$3.vbr_off && gfp.VBR_mean_bitrate_kbps != 128 && gfp.brate == 0)
+    if (gfp.VBR == VbrMode$3.vbr_off && gfp.VBR_mean_bitrate_kbps != 128 && gfp.brate == 0) {
       gfp.brate = gfp.VBR_mean_bitrate_kbps;
+    }
     if (gfp.VBR == VbrMode$3.vbr_off || gfp.VBR == VbrMode$3.vbr_mtrh || gfp.VBR == VbrMode$3.vbr_mt)
       ;
     else {
       gfp.free_format = false;
     }
     if (gfp.VBR == VbrMode$3.vbr_off && gfp.brate == 0) {
-      if (BitStream$2.EQ(gfp.compression_ratio, 0))
+      if (BitStream$1.EQ(gfp.compression_ratio, 0))
         gfp.compression_ratio = 11.025;
     }
     if (gfp.VBR == VbrMode$3.vbr_off && gfp.compression_ratio > 0) {
-      if (gfp.out_samplerate == 0)
+      if (gfp.out_samplerate == 0) {
         gfp.out_samplerate = map2MP3Frequency(int(0.97 * gfp.in_samplerate));
+      }
       gfp.brate = 0 | gfp.out_samplerate * 16 * gfc.channels_out / (1e3 * gfp.compression_ratio);
       gfc.samplerate_index = SmpFrqIndex(gfp.out_samplerate, gfp);
-      if (!gfp.free_format)
+      if (!gfp.free_format) {
         gfp.brate = FindNearestBitrate(gfp.brate, gfp.version, gfp.out_samplerate);
+      }
     }
     if (gfp.out_samplerate != 0) {
       if (gfp.out_samplerate < 16e3) {
@@ -16786,8 +16718,10 @@ function Lame$2() {
             1e4,
             3950
           ];
-          if (0 <= gfp.VBR_q && gfp.VBR_q <= 9) {
-            var a = x[gfp.VBR_q], b = x[gfp.VBR_q + 1], m = gfp.VBR_q_frac;
+          if (gfp.VBR_q >= 0 && gfp.VBR_q <= 9) {
+            var a = x[gfp.VBR_q];
+            var b = x[gfp.VBR_q + 1];
+            var m = gfp.VBR_q_frac;
             lowpass = linear_int(a, b, m);
           } else {
             lowpass = 19500;
@@ -16808,16 +16742,19 @@ function Lame$2() {
             9500,
             3950
           ];
-          if (0 <= gfp.VBR_q && gfp.VBR_q <= 9) {
-            var a = x[gfp.VBR_q], b = x[gfp.VBR_q + 1], m = gfp.VBR_q_frac;
+          if (gfp.VBR_q >= 0 && gfp.VBR_q <= 9) {
+            var a = x[gfp.VBR_q];
+            var b = x[gfp.VBR_q + 1];
+            var m = gfp.VBR_q_frac;
             lowpass = linear_int(a, b, m);
           } else {
             lowpass = 19500;
           }
         }
       }
-      if (gfp.mode == MPEGMode2.MONO && (gfp.VBR == VbrMode$3.vbr_off || gfp.VBR == VbrMode$3.vbr_abr))
+      if (gfp.mode == MPEGMode.MONO && (gfp.VBR == VbrMode$3.vbr_off || gfp.VBR == VbrMode$3.vbr_abr)) {
         lowpass *= 1.5;
+      }
       gfp.lowpassfreq = lowpass | 0;
     }
     if (gfp.out_samplerate == 0) {
@@ -16857,25 +16794,14 @@ function Lame$2() {
     }
     gfc.mode_gr = gfp.out_samplerate <= 24e3 ? 1 : 2;
     gfp.framesize = 576 * gfc.mode_gr;
-    gfp.encoder_delay = Encoder$1.ENCDELAY;
+    gfp.encoder_delay = Encoder.ENCDELAY;
     gfc.resample_ratio = gfp.in_samplerate / gfp.out_samplerate;
     switch (gfp.VBR) {
       case VbrMode$3.vbr_mt:
       case VbrMode$3.vbr_rh:
       case VbrMode$3.vbr_mtrh:
         {
-          var cmp = [
-            5.7,
-            6.5,
-            7.3,
-            8.2,
-            10,
-            11.9,
-            13,
-            14,
-            15,
-            16.5
-          ];
+          var cmp = [5.7, 6.5, 7.3, 8.2, 10, 11.9, 13, 14, 15, 16.5];
           gfp.compression_ratio = cmp[gfp.VBR_q];
         }
         break;
@@ -16886,15 +16812,16 @@ function Lame$2() {
         gfp.compression_ratio = gfp.out_samplerate * 16 * gfc.channels_out / (1e3 * gfp.brate);
         break;
     }
-    if (gfp.mode == MPEGMode2.NOT_SET) {
-      gfp.mode = MPEGMode2.JOINT_STEREO;
+    if (gfp.mode == MPEGMode.NOT_SET) {
+      gfp.mode = MPEGMode.JOINT_STEREO;
     }
     if (gfp.highpassfreq > 0) {
       gfc.highpass1 = 2 * gfp.highpassfreq;
-      if (gfp.highpasswidth >= 0)
+      if (gfp.highpasswidth >= 0) {
         gfc.highpass2 = 2 * (gfp.highpassfreq + gfp.highpasswidth);
-      else
+      } else {
         gfc.highpass2 = (1 + 0) * 2 * gfp.highpassfreq;
+      }
       gfc.highpass1 /= gfp.out_samplerate;
       gfc.highpass2 /= gfp.out_samplerate;
     } else {
@@ -16942,25 +16869,27 @@ function Lame$2() {
       gfp.bWriteVbrTag = false;
     bs.init_bit_stream_w(gfc);
     var j = gfc.samplerate_index + 3 * gfp.version + 6 * (gfp.out_samplerate < 16e3 ? 1 : 0);
-    for (var i = 0; i < Encoder$1.SBMAX_l + 1; i++)
+    for (var i = 0; i < Encoder.SBMAX_l + 1; i++) {
       gfc.scalefac_band.l[i] = qupvt.sfBandIndex[j].l[i];
-    for (var i = 0; i < Encoder$1.PSFB21 + 1; i++) {
-      var size = (gfc.scalefac_band.l[22] - gfc.scalefac_band.l[21]) / Encoder$1.PSFB21;
+    }
+    for (var i = 0; i < Encoder.PSFB21 + 1; i++) {
+      var size = (gfc.scalefac_band.l[22] - gfc.scalefac_band.l[21]) / Encoder.PSFB21;
       var start2 = gfc.scalefac_band.l[21] + i * size;
       gfc.scalefac_band.psfb21[i] = start2;
     }
-    gfc.scalefac_band.psfb21[Encoder$1.PSFB21] = 576;
-    for (var i = 0; i < Encoder$1.SBMAX_s + 1; i++)
+    gfc.scalefac_band.psfb21[Encoder.PSFB21] = 576;
+    for (var i = 0; i < Encoder.SBMAX_s + 1; i++) {
       gfc.scalefac_band.s[i] = qupvt.sfBandIndex[j].s[i];
-    for (var i = 0; i < Encoder$1.PSFB12 + 1; i++) {
-      var size = (gfc.scalefac_band.s[13] - gfc.scalefac_band.s[12]) / Encoder$1.PSFB12;
+    }
+    for (var i = 0; i < Encoder.PSFB12 + 1; i++) {
+      var size = (gfc.scalefac_band.s[13] - gfc.scalefac_band.s[12]) / Encoder.PSFB12;
       var start2 = gfc.scalefac_band.s[12] + i * size;
       gfc.scalefac_band.psfb12[i] = start2;
     }
-    gfc.scalefac_band.psfb12[Encoder$1.PSFB12] = 192;
-    if (gfp.version == 1)
+    gfc.scalefac_band.psfb12[Encoder.PSFB12] = 192;
+    if (gfp.version == 1) {
       gfc.sideinfo_len = gfc.channels_out == 1 ? 4 + 17 : 4 + 32;
-    else
+    } else
       gfc.sideinfo_len = gfc.channels_out == 1 ? 4 + 9 : 4 + 17;
     if (gfp.error_protection)
       gfc.sideinfo_len += 2;
@@ -16968,8 +16897,9 @@ function Lame$2() {
     gfc.Class_ID = LAME_ID;
     {
       var k;
-      for (k = 0; k < 19; k++)
+      for (k = 0; k < 19; k++) {
         gfc.nsPsy.pefirbuf[k] = 700 * gfc.mode_gr * gfc.channels_out;
+      }
       if (gfp.ATHtype == -1)
         gfp.ATHtype = 4;
     }
@@ -17070,7 +17000,7 @@ function Lame$2() {
     if (gfp.short_blocks == null) {
       gfp.short_blocks = ShortBlock$1.short_block_allowed;
     }
-    if (gfp.short_blocks == ShortBlock$1.short_block_allowed && (gfp.mode == MPEGMode2.JOINT_STEREO || gfp.mode == MPEGMode2.STEREO)) {
+    if (gfp.short_blocks == ShortBlock$1.short_block_allowed && (gfp.mode == MPEGMode.JOINT_STEREO || gfp.mode == MPEGMode.STEREO)) {
       gfp.short_blocks = ShortBlock$1.short_block_coupled;
     }
     if (gfp.quant_comp < 0)
@@ -17080,10 +17010,12 @@ function Lame$2() {
     if (gfp.msfix < 0)
       gfp.msfix = 0;
     gfp.exp_nspsytune = gfp.exp_nspsytune | 1;
-    if (gfp.internal_flags.nsPsy.attackthre < 0)
+    if (gfp.internal_flags.nsPsy.attackthre < 0) {
       gfp.internal_flags.nsPsy.attackthre = PsyModel.NSATTACKTHRE;
-    if (gfp.internal_flags.nsPsy.attackthre_s < 0)
+    }
+    if (gfp.internal_flags.nsPsy.attackthre_s < 0) {
       gfp.internal_flags.nsPsy.attackthre_s = PsyModel.NSATTACKTHRE_S;
+    }
     assert$4(gfp.scale >= 0);
     if (gfp.scale < 0)
       gfp.scale = 1;
@@ -17098,8 +17030,9 @@ function Lame$2() {
     if (gfp.useTemporal == null)
       gfp.useTemporal = true;
     gfc.slot_lag = gfc.frac_SpF = 0;
-    if (gfp.VBR == VbrMode$3.vbr_off)
+    if (gfp.VBR == VbrMode$3.vbr_off) {
       gfc.slot_lag = gfc.frac_SpF = (gfp.version + 1) * 72e3 * gfp.brate % gfp.out_samplerate | 0;
+    }
     qupvt.iteration_init(gfp);
     psy.psymodel_init(gfp);
     assert$4(gfp.scale >= 0);
@@ -17115,10 +17048,12 @@ function Lame$2() {
   this.lame_encode_flush = function(gfp, mp3buffer, mp3bufferPos, mp3buffer_size) {
     var gfc = gfp.internal_flags;
     var buffer = new_short_n([2, 1152]);
-    var imp3 = 0, mp3count, mp3buffer_size_remaining;
+    var imp3 = 0;
+    var mp3count;
+    var mp3buffer_size_remaining;
     var end_padding;
     var frames_left;
-    var samples_to_encode = gfc.mf_samples_to_encode - Encoder$1.POSTDELAY;
+    var samples_to_encode = gfc.mf_samples_to_encode - Encoder.POSTDELAY;
     var mf_needed = calcNeeded(gfp);
     if (gfc.mf_samples_to_encode < 1) {
       return 0;
@@ -17194,13 +17129,17 @@ function Lame$2() {
     return lame_encode_buffer_sample(gfp, in_buffer[0], in_buffer[1], nsamples, mp3buf, mp3bufPos, mp3buf_size);
   };
   function calcNeeded(gfp) {
-    var mf_needed = Encoder$1.BLKSIZE + gfp.framesize - Encoder$1.FFTOFFSET;
+    var mf_needed = Encoder.BLKSIZE + gfp.framesize - Encoder.FFTOFFSET;
     mf_needed = Math.max(mf_needed, 512 + gfp.framesize - 32);
     return mf_needed;
   }
   function lame_encode_buffer_sample(gfp, buffer_l, buffer_r, nsamples, mp3buf, mp3bufPos, mp3buf_size) {
     var gfc = gfp.internal_flags;
-    var mp3size = 0, ret, i, ch, mf_needed;
+    var mp3size = 0;
+    var ret;
+    var i;
+    var ch;
+    var mf_needed;
     var mp3out;
     var mfbuf = [null, null];
     var in_buffer = [null, null];
@@ -17215,19 +17154,19 @@ function Lame$2() {
     mp3size += mp3out;
     in_buffer[0] = buffer_l;
     in_buffer[1] = buffer_r;
-    if (BitStream$2.NEQ(gfp.scale, 0) && BitStream$2.NEQ(gfp.scale, 1)) {
+    if (BitStream$1.NEQ(gfp.scale, 0) && BitStream$1.NEQ(gfp.scale, 1)) {
       for (i = 0; i < nsamples; ++i) {
         in_buffer[0][i] *= gfp.scale;
         if (gfc.channels_out == 2)
           in_buffer[1][i] *= gfp.scale;
       }
     }
-    if (BitStream$2.NEQ(gfp.scale_left, 0) && BitStream$2.NEQ(gfp.scale_left, 1)) {
+    if (BitStream$1.NEQ(gfp.scale_left, 0) && BitStream$1.NEQ(gfp.scale_left, 1)) {
       for (i = 0; i < nsamples; ++i) {
         in_buffer[0][i] *= gfp.scale_left;
       }
     }
-    if (BitStream$2.NEQ(gfp.scale_right, 0) && BitStream$2.NEQ(gfp.scale_right, 1)) {
+    if (BitStream$1.NEQ(gfp.scale_right, 0) && BitStream$1.NEQ(gfp.scale_right, 1)) {
       for (i = 0; i < nsamples; ++i) {
         in_buffer[1][i] *= gfp.scale_right;
       }
@@ -17253,8 +17192,9 @@ function Lame$2() {
       n_in = inOut.n_in;
       n_out = inOut.n_out;
       if (gfc.findReplayGain && !gfc.decode_on_the_fly) {
-        if (ga.AnalyzeSamples(gfc.rgdata, mfbuf[0], gfc.mf_size, mfbuf[1], gfc.mf_size, n_out, gfc.channels_out) == GainAnalysis.GAIN_ANALYSIS_ERROR)
+        if (ga.AnalyzeSamples(gfc.rgdata, mfbuf[0], gfc.mf_size, mfbuf[1], gfc.mf_size, n_out, gfc.channels_out) == GainAnalysis.GAIN_ANALYSIS_ERROR) {
           return -6;
+        }
       }
       nsamples -= n_in;
       in_bufferPos += n_in;
@@ -17263,7 +17203,7 @@ function Lame$2() {
       gfc.mf_size += n_out;
       assert$4(gfc.mf_size <= LameInternalFlags$1.MFSIZE);
       if (gfc.mf_samples_to_encode < 1) {
-        gfc.mf_samples_to_encode = Encoder$1.ENCDELAY + Encoder$1.POSTDELAY;
+        gfc.mf_samples_to_encode = Encoder.ENCDELAY + Encoder.POSTDELAY;
       }
       gfc.mf_samples_to_encode += n_out;
       if (gfc.mf_size >= mf_needed) {
@@ -17277,9 +17217,11 @@ function Lame$2() {
         mp3size += ret;
         gfc.mf_size -= gfp.framesize;
         gfc.mf_samples_to_encode -= gfp.framesize;
-        for (ch = 0; ch < gfc.channels_out; ch++)
-          for (i = 0; i < gfc.mf_size; i++)
+        for (ch = 0; ch < gfc.channels_out; ch++) {
+          for (i = 0; i < gfc.mf_size; i++) {
             mfbuf[ch][i] = mfbuf[ch][i + gfp.framesize];
+          }
+        }
       }
     }
     return mp3size;
@@ -17315,7 +17257,9 @@ function Lame$2() {
   }
   function fill_buffer_resample(gfp, outbuf, outbufPos, desired_len, inbuf, in_bufferPos, len, num_used, ch) {
     var gfc = gfp.internal_flags;
-    var i, j = 0, k;
+    var i;
+    var j = 0;
+    var k;
     var bpc = gfp.out_samplerate / gcd(gfp.out_samplerate, gfp.in_samplerate);
     if (bpc > LameInternalFlags$1.BPC)
       bpc = LameInternalFlags$1.BPC;
@@ -17324,7 +17268,7 @@ function Lame$2() {
     if (fcn > 1)
       fcn = 1;
     var filter_l = 31;
-    if (0 == filter_l % 2)
+    if (filter_l % 2 == 0)
       --filter_l;
     filter_l += intratio;
     var BLACKSIZE = filter_l + 1;
@@ -17338,8 +17282,9 @@ function Lame$2() {
       for (j = 0; j <= 2 * bpc; j++) {
         var sum = 0;
         var offset = (j - bpc) / (2 * bpc);
-        for (i = 0; i <= filter_l; i++)
+        for (i = 0; i <= filter_l; i++) {
           sum += gfc.blackfilt[j][i] = blackman(i - offset, fcn, filter_l);
+        }
         for (i = 0; i <= filter_l; i++)
           gfc.blackfilt[j][i] /= sum;
       }
@@ -17367,14 +17312,17 @@ function Lame$2() {
     num_used.num_used = Math.min(len, filter_l + j - filter_l / 2);
     gfc.itime[ch] += num_used.num_used - k * gfc.resample_ratio;
     if (num_used.num_used >= BLACKSIZE) {
-      for (i = 0; i < BLACKSIZE; i++)
+      for (i = 0; i < BLACKSIZE; i++) {
         inbuf_old[i] = inbuf[in_bufferPos + num_used.num_used + i - BLACKSIZE];
+      }
     } else {
       var n_shift = BLACKSIZE - num_used.num_used;
-      for (i = 0; i < n_shift; ++i)
+      for (i = 0; i < n_shift; ++i) {
         inbuf_old[i] = inbuf_old[i + num_used.num_used];
-      for (j = 0; i < BLACKSIZE; ++i, ++j)
+      }
+      for (j = 0; i < BLACKSIZE; ++i, ++j) {
         inbuf_old[i] = inbuf[in_bufferPos + j];
+      }
       assert$4(j == num_used.num_used);
     }
     return k;
@@ -17392,17 +17340,15 @@ function Lame$2() {
       io.n_in = io.n_out;
       for (var i = 0; i < io.n_out; ++i) {
         mfbuf[0][gfc.mf_size + i] = in_buffer[0][in_bufferPos + i];
-        if (gfc.channels_out == 2)
+        if (gfc.channels_out == 2) {
           mfbuf[1][gfc.mf_size + i] = in_buffer[1][in_bufferPos + i];
+        }
       }
     }
   }
 }
-var Lame_1 = Lame$2;
-var common$5 = common$o;
-var VbrMode$2 = common$5.VbrMode;
-function Presets$1() {
-  var Lame2 = Lame_1;
+var VbrMode$2 = common.VbrMode;
+function Presets() {
   function VBRPresets(qual, comp, compS, y, shThreshold, shThresholdS, adj, adjShort, lower, curve, sens, inter, joint, mod, fix) {
     this.vbr_q = qual;
     this.quant_comp = comp;
@@ -17483,48 +17429,57 @@ function Presets$1() {
     lame_set_VBR_q(gfp, set2.vbr_q);
     if (enforce != 0)
       gfp.quant_comp = set2.quant_comp;
-    else if (!(Math.abs(gfp.quant_comp - -1) > 0))
+    else if (!(Math.abs(gfp.quant_comp - -1) > 0)) {
       gfp.quant_comp = set2.quant_comp;
+    }
     if (enforce != 0)
       gfp.quant_comp_short = set2.quant_comp_s;
-    else if (!(Math.abs(gfp.quant_comp_short - -1) > 0))
+    else if (!(Math.abs(gfp.quant_comp_short - -1) > 0)) {
       gfp.quant_comp_short = set2.quant_comp_s;
+    }
     if (set2.expY != 0) {
       gfp.experimentalY = set2.expY != 0;
     }
     if (enforce != 0)
       gfp.internal_flags.nsPsy.attackthre = set2.st_lrm;
-    else if (!(Math.abs(gfp.internal_flags.nsPsy.attackthre - -1) > 0))
+    else if (!(Math.abs(gfp.internal_flags.nsPsy.attackthre - -1) > 0)) {
       gfp.internal_flags.nsPsy.attackthre = set2.st_lrm;
+    }
     if (enforce != 0)
       gfp.internal_flags.nsPsy.attackthre_s = set2.st_s;
-    else if (!(Math.abs(gfp.internal_flags.nsPsy.attackthre_s - -1) > 0))
+    else if (!(Math.abs(gfp.internal_flags.nsPsy.attackthre_s - -1) > 0)) {
       gfp.internal_flags.nsPsy.attackthre_s = set2.st_s;
+    }
     if (enforce != 0)
       gfp.maskingadjust = set2.masking_adj;
-    else if (!(Math.abs(gfp.maskingadjust - 0) > 0))
+    else if (!(Math.abs(gfp.maskingadjust - 0) > 0)) {
       gfp.maskingadjust = set2.masking_adj;
+    }
     if (enforce != 0)
       gfp.maskingadjust_short = set2.masking_adj_short;
-    else if (!(Math.abs(gfp.maskingadjust_short - 0) > 0))
+    else if (!(Math.abs(gfp.maskingadjust_short - 0) > 0)) {
       gfp.maskingadjust_short = set2.masking_adj_short;
+    }
     if (enforce != 0)
       gfp.ATHlower = -set2.ath_lower / 10;
-    else if (!(Math.abs(-gfp.ATHlower * 10 - 0) > 0))
+    else if (!(Math.abs(-gfp.ATHlower * 10 - 0) > 0)) {
       gfp.ATHlower = -set2.ath_lower / 10;
+    }
     if (enforce != 0)
       gfp.ATHcurve = set2.ath_curve;
     else if (!(Math.abs(gfp.ATHcurve - -1) > 0))
       gfp.ATHcurve = set2.ath_curve;
     if (enforce != 0)
       gfp.athaa_sensitivity = set2.ath_sensitivity;
-    else if (!(Math.abs(gfp.athaa_sensitivity - -1) > 0))
+    else if (!(Math.abs(gfp.athaa_sensitivity - -1) > 0)) {
       gfp.athaa_sensitivity = set2.ath_sensitivity;
+    }
     if (set2.interch > 0) {
       if (enforce != 0)
         gfp.interChRatio = set2.interch;
-      else if (!(Math.abs(gfp.interChRatio - -1) > 0))
+      else if (!(Math.abs(gfp.interChRatio - -1) > 0)) {
         gfp.interChRatio = set2.interch;
+      }
     }
     if (set2.safejoint > 0) {
       gfp.exp_nspsytune = gfp.exp_nspsytune | set2.safejoint;
@@ -17571,8 +17526,9 @@ function Presets$1() {
     if (gfp.VBR_mean_bitrate_kbps > 320) {
       gfp.disable_reservoir = true;
     }
-    if (abr_switch_map[r].safejoint > 0)
+    if (abr_switch_map[r].safejoint > 0) {
       gfp.exp_nspsytune = gfp.exp_nspsytune | 2;
+    }
     if (abr_switch_map[r].sfscale > 0) {
       gfp.internal_flags.noise_shaping = 2;
     }
@@ -17584,95 +17540,107 @@ function Presets$1() {
     }
     if (enforce != 0)
       gfp.quant_comp = abr_switch_map[r].quant_comp;
-    else if (!(Math.abs(gfp.quant_comp - -1) > 0))
+    else if (!(Math.abs(gfp.quant_comp - -1) > 0)) {
       gfp.quant_comp = abr_switch_map[r].quant_comp;
+    }
     if (enforce != 0)
       gfp.quant_comp_short = abr_switch_map[r].quant_comp_s;
-    else if (!(Math.abs(gfp.quant_comp_short - -1) > 0))
+    else if (!(Math.abs(gfp.quant_comp_short - -1) > 0)) {
       gfp.quant_comp_short = abr_switch_map[r].quant_comp_s;
+    }
     if (enforce != 0)
       gfp.msfix = abr_switch_map[r].nsmsfix;
-    else if (!(Math.abs(gfp.msfix - -1) > 0))
+    else if (!(Math.abs(gfp.msfix - -1) > 0)) {
       gfp.msfix = abr_switch_map[r].nsmsfix;
-    if (enforce != 0)
+    }
+    if (enforce != 0) {
       gfp.internal_flags.nsPsy.attackthre = abr_switch_map[r].st_lrm;
-    else if (!(Math.abs(gfp.internal_flags.nsPsy.attackthre - -1) > 0))
+    } else if (!(Math.abs(gfp.internal_flags.nsPsy.attackthre - -1) > 0)) {
       gfp.internal_flags.nsPsy.attackthre = abr_switch_map[r].st_lrm;
-    if (enforce != 0)
+    }
+    if (enforce != 0) {
       gfp.internal_flags.nsPsy.attackthre_s = abr_switch_map[r].st_s;
-    else if (!(Math.abs(gfp.internal_flags.nsPsy.attackthre_s - -1) > 0))
+    } else if (!(Math.abs(gfp.internal_flags.nsPsy.attackthre_s - -1) > 0)) {
       gfp.internal_flags.nsPsy.attackthre_s = abr_switch_map[r].st_s;
+    }
     if (enforce != 0)
       gfp.scale = abr_switch_map[r].scale;
-    else if (!(Math.abs(gfp.scale - -1) > 0))
+    else if (!(Math.abs(gfp.scale - -1) > 0)) {
       gfp.scale = abr_switch_map[r].scale;
+    }
     if (enforce != 0)
       gfp.maskingadjust = abr_switch_map[r].masking_adj;
-    else if (!(Math.abs(gfp.maskingadjust - 0) > 0))
+    else if (!(Math.abs(gfp.maskingadjust - 0) > 0)) {
       gfp.maskingadjust = abr_switch_map[r].masking_adj;
+    }
     if (abr_switch_map[r].masking_adj > 0) {
-      if (enforce != 0)
+      if (enforce != 0) {
         gfp.maskingadjust_short = abr_switch_map[r].masking_adj * 0.9;
-      else if (!(Math.abs(gfp.maskingadjust_short - 0) > 0))
+      } else if (!(Math.abs(gfp.maskingadjust_short - 0) > 0)) {
         gfp.maskingadjust_short = abr_switch_map[r].masking_adj * 0.9;
+      }
     } else {
-      if (enforce != 0)
+      if (enforce != 0) {
         gfp.maskingadjust_short = abr_switch_map[r].masking_adj * 1.1;
-      else if (!(Math.abs(gfp.maskingadjust_short - 0) > 0))
+      } else if (!(Math.abs(gfp.maskingadjust_short - 0) > 0)) {
         gfp.maskingadjust_short = abr_switch_map[r].masking_adj * 1.1;
+      }
     }
     if (enforce != 0)
       gfp.ATHlower = -abr_switch_map[r].ath_lower / 10;
-    else if (!(Math.abs(-gfp.ATHlower * 10 - 0) > 0))
+    else if (!(Math.abs(-gfp.ATHlower * 10 - 0) > 0)) {
       gfp.ATHlower = -abr_switch_map[r].ath_lower / 10;
+    }
     if (enforce != 0)
       gfp.ATHcurve = abr_switch_map[r].ath_curve;
-    else if (!(Math.abs(gfp.ATHcurve - -1) > 0))
+    else if (!(Math.abs(gfp.ATHcurve - -1) > 0)) {
       gfp.ATHcurve = abr_switch_map[r].ath_curve;
+    }
     if (enforce != 0)
       gfp.interChRatio = abr_switch_map[r].interch;
-    else if (!(Math.abs(gfp.interChRatio - -1) > 0))
+    else if (!(Math.abs(gfp.interChRatio - -1) > 0)) {
       gfp.interChRatio = abr_switch_map[r].interch;
+    }
     return preset;
   }
   this.apply_preset = function(gfp, preset, enforce) {
     switch (preset) {
-      case Lame2.R3MIX: {
-        preset = Lame2.V3;
+      case Lame$1.R3MIX: {
+        preset = Lame$1.V3;
         gfp.VBR = VbrMode$2.vbr_mtrh;
         break;
       }
-      case Lame2.MEDIUM: {
-        preset = Lame2.V4;
+      case Lame$1.MEDIUM: {
+        preset = Lame$1.V4;
         gfp.VBR = VbrMode$2.vbr_rh;
         break;
       }
-      case Lame2.MEDIUM_FAST: {
-        preset = Lame2.V4;
+      case Lame$1.MEDIUM_FAST: {
+        preset = Lame$1.V4;
         gfp.VBR = VbrMode$2.vbr_mtrh;
         break;
       }
-      case Lame2.STANDARD: {
-        preset = Lame2.V2;
+      case Lame$1.STANDARD: {
+        preset = Lame$1.V2;
         gfp.VBR = VbrMode$2.vbr_rh;
         break;
       }
-      case Lame2.STANDARD_FAST: {
-        preset = Lame2.V2;
+      case Lame$1.STANDARD_FAST: {
+        preset = Lame$1.V2;
         gfp.VBR = VbrMode$2.vbr_mtrh;
         break;
       }
-      case Lame2.EXTREME: {
-        preset = Lame2.V0;
+      case Lame$1.EXTREME: {
+        preset = Lame$1.V0;
         gfp.VBR = VbrMode$2.vbr_rh;
         break;
       }
-      case Lame2.EXTREME_FAST: {
-        preset = Lame2.V0;
+      case Lame$1.EXTREME_FAST: {
+        preset = Lame$1.V0;
         gfp.VBR = VbrMode$2.vbr_mtrh;
         break;
       }
-      case Lame2.INSANE: {
+      case Lame$1.INSANE: {
         preset = 320;
         gfp.preset = preset;
         apply_abr_preset(gfp, preset, enforce);
@@ -17683,39 +17651,39 @@ function Presets$1() {
     gfp.preset = preset;
     {
       switch (preset) {
-        case Lame2.V9:
+        case Lame$1.V9:
           apply_vbr_preset(gfp, 9, enforce);
           return preset;
-        case Lame2.V8:
+        case Lame$1.V8:
           apply_vbr_preset(gfp, 8, enforce);
           return preset;
-        case Lame2.V7:
+        case Lame$1.V7:
           apply_vbr_preset(gfp, 7, enforce);
           return preset;
-        case Lame2.V6:
+        case Lame$1.V6:
           apply_vbr_preset(gfp, 6, enforce);
           return preset;
-        case Lame2.V5:
+        case Lame$1.V5:
           apply_vbr_preset(gfp, 5, enforce);
           return preset;
-        case Lame2.V4:
+        case Lame$1.V4:
           apply_vbr_preset(gfp, 4, enforce);
           return preset;
-        case Lame2.V3:
+        case Lame$1.V3:
           apply_vbr_preset(gfp, 3, enforce);
           return preset;
-        case Lame2.V2:
+        case Lame$1.V2:
           apply_vbr_preset(gfp, 2, enforce);
           return preset;
-        case Lame2.V1:
+        case Lame$1.V1:
           apply_vbr_preset(gfp, 1, enforce);
           return preset;
-        case Lame2.V0:
+        case Lame$1.V0:
           apply_vbr_preset(gfp, 0, enforce);
           return preset;
       }
     }
-    if (8 <= preset && preset <= 320) {
+    if (preset >= 8 && preset <= 320) {
       return apply_abr_preset(gfp, preset, enforce);
     }
     gfp.preset = 0;
@@ -17723,11 +17691,11 @@ function Presets$1() {
   };
   function lame_set_VBR_q(gfp, VBR_q) {
     var ret = 0;
-    if (0 > VBR_q) {
+    if (VBR_q < 0) {
       ret = -1;
       VBR_q = 0;
     }
-    if (9 < VBR_q) {
+    if (VBR_q > 9) {
       ret = -1;
       VBR_q = 9;
     }
@@ -17736,13 +17704,11 @@ function Presets$1() {
     return ret;
   }
 }
-var Presets_1 = Presets$1;
-function VBRQuantize$1() {
+function VBRQuantize() {
   this.setModules = function(_qupvt, _tk) {
   };
 }
-var VBRQuantize_1 = VBRQuantize$1;
-function CalcNoiseResult$2() {
+function CalcNoiseResult$1() {
   this.over_noise = 0;
   this.tot_noise = 0;
   this.max_noise = 0;
@@ -17750,32 +17716,22 @@ function CalcNoiseResult$2() {
   this.over_SSD = 0;
   this.bits = 0;
 }
-var CalcNoiseResult_1 = CalcNoiseResult$2;
-var common$4 = common$o;
-var new_float$1 = common$4.new_float;
-var new_int = common$4.new_int;
-function CalcNoiseData$1() {
+var new_float$1 = common.new_float;
+var new_int = common.new_int;
+function CalcNoiseData() {
   this.global_gain = 0;
   this.sfb_count1 = 0;
   this.step = new_int(39);
   this.noise = new_float$1(39);
   this.noise_log = new_float$1(39);
 }
-var CalcNoiseData_1 = CalcNoiseData$1;
-var common$3 = common$o;
-var System$1 = common$3.System;
-var VbrMode$1 = common$3.VbrMode;
-var Util = common$3.Util;
-var Arrays$1 = common$3.Arrays;
-var new_float = common$3.new_float;
-var assert$3 = common$3.assert;
-var VBRQuantize = VBRQuantize_1;
-var CalcNoiseResult$1 = CalcNoiseResult_1;
-var CalcNoiseData = CalcNoiseData_1;
-var Encoder = Encoder_1;
-var GrInfo = GrInfo_1;
-var L3Side$1 = L3Side_1;
-function Quantize$1() {
+var System$1 = common.System;
+var VbrMode$1 = common.VbrMode;
+var Util = common.Util;
+var Arrays$1 = common.Arrays;
+var new_float = common.new_float;
+var assert$3 = common.assert;
+function Quantize() {
   var bs;
   this.rv = null;
   var rv;
@@ -17997,8 +17953,9 @@ function Quantize$1() {
   }
   this.trancate_smallspectrums = function(gfc, gi, l3_xmin, work) {
     var distort = new_float(L3Side$1.SFBMAX);
-    if (0 == (gfc.substep_shaping & 4) && gi.block_type == Encoder.SHORT_TYPE || (gfc.substep_shaping & 128) != 0)
+    if ((gfc.substep_shaping & 4) == 0 && gi.block_type == Encoder.SHORT_TYPE || (gfc.substep_shaping & 128) != 0) {
       return;
+    }
     qupvt.calc_noise(gi, l3_xmin, distort, new CalcNoiseResult$1(), null);
     for (var j = 0; j < 576; j++) {
       var xr = 0;
@@ -18025,9 +17982,11 @@ function Quantize$1() {
       start2 = 0;
       do {
         var noise;
-        for (nsame = 1; start2 + nsame < width; nsame++)
-          if (BitStream.NEQ(work[start2 + j - width], work[start2 + j + nsame - width]))
+        for (nsame = 1; start2 + nsame < width; nsame++) {
+          if (BitStream.NEQ(work[start2 + j - width], work[start2 + j + nsame - width])) {
             break;
+          }
+        }
         noise = work[start2 + j - width] * work[start2 + j - width] * nsame;
         if (allowedNoise < noise) {
           if (start2 != 0)
@@ -18040,16 +17999,19 @@ function Quantize$1() {
       if (BitStream.EQ(trancateThreshold, 0))
         continue;
       do {
-        if (Math.abs(gi.xr[j - width]) <= trancateThreshold)
+        if (Math.abs(gi.xr[j - width]) <= trancateThreshold) {
           gi.l3_enc[j - width] = 0;
+        }
       } while (--width > 0);
     } while (++sfb < gi.psymax);
     gi.part2_3_length = tk.noquant_count_bits(gfc, gi, null);
   };
   function loop_break(cod_info) {
-    for (var sfb = 0; sfb < cod_info.sfbmax; sfb++)
-      if (cod_info.scalefac[sfb] + cod_info.subblock_gain[cod_info.window[sfb]] == 0)
+    for (var sfb = 0; sfb < cod_info.sfbmax; sfb++) {
+      if (cod_info.scalefac[sfb] + cod_info.subblock_gain[cod_info.window[sfb]] == 0) {
         return false;
+      }
+    }
     return true;
   }
   function penalties(noise) {
@@ -18057,8 +18019,9 @@ function Quantize$1() {
   }
   function get_klemm_noise(distort, gi) {
     var klemm_noise = 1e-37;
-    for (var sfb = 0; sfb < gi.psymax; sfb++)
+    for (var sfb = 0; sfb < gi.psymax; sfb++) {
       klemm_noise += penalties(distort[sfb]);
+    }
     return Math.max(1e-20, klemm_noise);
   }
   function quant_compare(quant_comp, best, calc, gi, distort) {
@@ -18152,8 +18115,8 @@ function Quantize$1() {
       if (distort[sfb] < trigger)
         continue;
       if ((gfc.substep_shaping & 2) != 0) {
-        gfc.pseudohalf[sfb] = 0 == gfc.pseudohalf[sfb] ? 1 : 0;
-        if (0 == gfc.pseudohalf[sfb] && gfc.noise_shaping_amp == 2)
+        gfc.pseudohalf[sfb] = gfc.pseudohalf[sfb] == 0 ? 1 : 0;
+        if (gfc.pseudohalf[sfb] == 0 && gfc.noise_shaping_amp == 2)
           return;
       }
       cod_info.scalefac[sfb]++;
@@ -18179,8 +18142,9 @@ function Quantize$1() {
         s++;
         for (var l = -width; l < 0; l++) {
           xrpow[j + l] *= ifqstep34;
-          if (xrpow[j + l] > cod_info.xrpow_max)
+          if (xrpow[j + l] > cod_info.xrpow_max) {
             cod_info.xrpow_max = xrpow[j + l];
+          }
         }
       }
       cod_info.scalefac[sfb] = s >> 1;
@@ -18230,8 +18194,9 @@ function Quantize$1() {
         j += width * (window2 + 1);
         for (var l = -width; l < 0; l++) {
           xrpow[j + l] *= amp;
-          if (xrpow[j + l] > cod_info.xrpow_max)
+          if (xrpow[j + l] > cod_info.xrpow_max) {
             cod_info.xrpow_max = xrpow[j + l];
+          }
         }
         j += width * (3 - window2 - 1);
       }
@@ -18240,8 +18205,9 @@ function Quantize$1() {
         j += cod_info.width[sfb] * (window2 + 1);
         for (var l = -cod_info.width[sfb]; l < 0; l++) {
           xrpow[j + l] *= amp;
-          if (xrpow[j + l] > cod_info.xrpow_max)
+          if (xrpow[j + l] > cod_info.xrpow_max) {
             cod_info.xrpow_max = xrpow[j + l];
+          }
         }
       }
     }
@@ -18261,7 +18227,7 @@ function Quantize$1() {
       return true;
     if (gfc.noise_shaping > 1) {
       Arrays$1.fill(gfc.pseudohalf, 0);
-      if (0 == cod_info.scalefac_scale) {
+      if (cod_info.scalefac_scale == 0) {
         inc_scalefac_scale(cod_info, xrpow);
         status = false;
       } else {
@@ -18291,8 +18257,9 @@ function Quantize$1() {
     var bRefine = false;
     var best_ggain_pass1 = 0;
     bin_search_StepSize(gfc, cod_info, targ_bits, ch, xrpow);
-    if (0 == gfc.noise_shaping)
+    if (gfc.noise_shaping == 0) {
       return 100;
+    }
     qupvt.calc_noise(cod_info, l3_xmin, distort, best_noise_info, prev_noise);
     best_noise_info.bits = cod_info.part2_3_length;
     cod_info_w.assign(cod_info);
@@ -18311,8 +18278,9 @@ function Quantize$1() {
         if (gfc.sfb21_extra) {
           if (distort[cod_info_w.sfbmax] > 1)
             break;
-          if (cod_info_w.block_type == Encoder.SHORT_TYPE && (distort[cod_info_w.sfbmax + 1] > 1 || distort[cod_info_w.sfbmax + 2] > 1))
+          if (cod_info_w.block_type == Encoder.SHORT_TYPE && (distort[cod_info_w.sfbmax + 1] > 1 || distort[cod_info_w.sfbmax + 2] > 1)) {
             break;
+          }
         }
         if (!balance_noise(gfp, cod_info_w, distort, xrpow, bRefine))
           break;
@@ -18321,13 +18289,15 @@ function Quantize$1() {
         var huff_bits = targ_bits - cod_info_w.part2_length;
         if (huff_bits <= 0)
           break;
-        while ((cod_info_w.part2_3_length = tk.count_bits(gfc, xrpow, cod_info_w, prev_noise)) > huff_bits && cod_info_w.global_gain <= maxggain)
+        while ((cod_info_w.part2_3_length = tk.count_bits(gfc, xrpow, cod_info_w, prev_noise)) > huff_bits && cod_info_w.global_gain <= maxggain) {
           cod_info_w.global_gain++;
+        }
         if (cod_info_w.global_gain > maxggain)
           break;
         if (best_noise_info.over_count == 0) {
-          while ((cod_info_w.part2_3_length = tk.count_bits(gfc, xrpow, cod_info_w, prev_noise)) > best_part2_3_length && cod_info_w.global_gain <= maxggain)
+          while ((cod_info_w.part2_3_length = tk.count_bits(gfc, xrpow, cod_info_w, prev_noise)) > best_part2_3_length && cod_info_w.global_gain <= maxggain) {
             cod_info_w.global_gain++;
+          }
           if (cod_info_w.global_gain > maxggain)
             break;
         }
@@ -18350,8 +18320,9 @@ function Quantize$1() {
               break;
             if (gfc.noise_shaping_amp == 3 && bRefine && age > 30)
               break;
-            if (gfc.noise_shaping_amp == 3 && bRefine && cod_info_w.global_gain - best_ggain_pass1 > 15)
+            if (gfc.noise_shaping_amp == 3 && bRefine && cod_info_w.global_gain - best_ggain_pass1 > 15) {
               break;
+            }
           }
         }
       } while (cod_info_w.global_gain + cod_info_w.scalefac_scale < 255);
@@ -18370,10 +18341,11 @@ function Quantize$1() {
       }
     }
     assert$3(cod_info.global_gain + cod_info.scalefac_scale <= 255);
-    if (gfp.VBR == VbrMode$1.vbr_rh || gfp.VBR == VbrMode$1.vbr_mtrh)
+    if (gfp.VBR == VbrMode$1.vbr_rh || gfp.VBR == VbrMode$1.vbr_mtrh) {
       System$1.arraycopy(save_xrpow, 0, xrpow, 0, 576);
-    else if ((gfc.substep_shaping & 1) != 0)
+    } else if ((gfc.substep_shaping & 1) != 0) {
       trancate_smallspectrums(gfc, cod_info, l3_xmin, xrpow);
+    }
     return best_noise_info.over_count;
   };
   this.iteration_finish_one = function(gfc, gr, ch) {
@@ -18391,7 +18363,9 @@ function Quantize$1() {
     var Max_bits = max_bits;
     var real_bits = max_bits + 1;
     var this_bits = (max_bits + min_bits) / 2;
-    var dbits, over, found = 0;
+    var dbits;
+    var over;
+    var found = 0;
     var sfb21_extra = gfc.sfb21_extra;
     assert$3(Max_bits <= LameInternalFlags.MAX_BITS_PER_CHANNEL);
     Arrays$1.fill(bst_cod_info.l3_enc, 0);
@@ -18441,7 +18415,8 @@ function Quantize$1() {
   };
   this.VBR_old_prepare = function(gfp, pe, ms_ener_ratio, ratio, l3_xmin, frameBits, min_bits, max_bits, bands) {
     var gfc = gfp.internal_flags;
-    var masking_lower_db, adjust = 0;
+    var masking_lower_db;
+    var adjust = 0;
     var analog_silence = 1;
     var bits = 0;
     gfc.bitrate_index = gfc.VBR_max_bitrate;
@@ -18477,8 +18452,9 @@ function Quantize$1() {
           max_bits[gr][ch] *= frameBits[gfc.VBR_max_bitrate];
           max_bits[gr][ch] /= bits;
         }
-        if (min_bits[gr][ch] > max_bits[gr][ch])
+        if (min_bits[gr][ch] > max_bits[gr][ch]) {
           min_bits[gr][ch] = max_bits[gr][ch];
+        }
       }
     }
     return analog_silence;
@@ -18489,8 +18465,9 @@ function Quantize$1() {
         var gi = gfc.l3_side.tt[gr][ch];
         var pxmin = l3_xmin[gr][ch];
         var pxminPos = 0;
-        for (var sfb = 0; sfb < gi.psy_lmax; sfb++)
+        for (var sfb = 0; sfb < gi.psy_lmax; sfb++) {
           pxmin[pxminPos++] *= 1 + 0.029 * sfb * sfb / Encoder.SBMAX_l / Encoder.SBMAX_l;
+        }
         if (gi.block_type == Encoder.SHORT_TYPE) {
           for (var sfb = gi.sfb_smin; sfb < Encoder.SBMAX_s; sfb++) {
             pxmin[pxminPos++] *= 1 + 0.029 * sfb * sfb / Encoder.SBMAX_s / Encoder.SBMAX_s;
@@ -18505,7 +18482,8 @@ function Quantize$1() {
   this.VBR_new_prepare = function(gfp, pe, ratio, l3_xmin, frameBits, max_bits) {
     var gfc = gfp.internal_flags;
     var analog_silence = 1;
-    var avg = 0, bits = 0;
+    var avg = 0;
+    var bits = 0;
     var maximum_framebits;
     if (!gfp.free_format) {
       gfc.bitrate_index = gfc.VBR_max_bitrate;
@@ -18530,8 +18508,9 @@ function Quantize$1() {
         var cod_info = gfc.l3_side.tt[gr][ch];
         gfc.masking_lower = Math.pow(10, gfc.PSY.mask_adjust * 0.1);
         init_outer_loop(gfc, cod_info);
-        if (0 != qupvt.calc_xmin(gfp, ratio[gr][ch], cod_info, l3_xmin[gr][ch]))
+        if (qupvt.calc_xmin(gfp, ratio[gr][ch], cod_info, l3_xmin[gr][ch]) != 0) {
           analog_silence = 0;
+        }
         bits += max_bits[gr][ch];
       }
     }
@@ -18549,7 +18528,10 @@ function Quantize$1() {
     var gfc = gfp.internal_flags;
     var l3_side = gfc.l3_side;
     var res_factor;
-    var gr, ch, totbits, mean_bits = 0;
+    var gr;
+    var ch;
+    var totbits;
+    var mean_bits = 0;
     gfc.bitrate_index = gfc.VBR_max_bitrate;
     var mb = new MeanBits(mean_bits);
     max_frame_bits[0] = rv.ResvFrameBegin(gfp, mb);
@@ -18598,15 +18580,17 @@ function Quantize$1() {
         }
       }
     }
-    if (gfc.mode_ext == Encoder.MPG_MD_MS_LR)
+    if (gfc.mode_ext == Encoder.MPG_MD_MS_LR) {
       for (gr = 0; gr < gfc.mode_gr; gr++) {
         qupvt.reduce_side(targ_bits[gr], ms_ener_ratio[gr], mean_bits * gfc.channels_out, LameInternalFlags.MAX_BITS_PER_GRANULE);
       }
+    }
     totbits = 0;
     for (gr = 0; gr < gfc.mode_gr; gr++) {
       for (ch = 0; ch < gfc.channels_out; ch++) {
-        if (targ_bits[gr][ch] > LameInternalFlags.MAX_BITS_PER_CHANNEL)
+        if (targ_bits[gr][ch] > LameInternalFlags.MAX_BITS_PER_CHANNEL) {
           targ_bits[gr][ch] = LameInternalFlags.MAX_BITS_PER_CHANNEL;
+        }
         totbits += targ_bits[gr][ch];
       }
     }
@@ -18620,10 +18604,8 @@ function Quantize$1() {
     }
   };
 }
-var Quantize_1 = Quantize$1;
-var common$2 = common$o;
-var assert$2 = common$2.assert;
-function Reservoir$1() {
+var assert$2 = common.assert;
+function Reservoir() {
   var bs;
   this.setModules = function(_bs) {
     bs = _bs;
@@ -18651,7 +18633,7 @@ function Reservoir$1() {
     var fullFrameBits = mean_bits.bits * gfc.mode_gr + Math.min(gfc.ResvSize, gfc.ResvMax);
     if (fullFrameBits > maxmp3buf)
       fullFrameBits = maxmp3buf;
-    assert$2(0 == gfc.ResvMax % 8);
+    assert$2(gfc.ResvMax % 8 == 0);
     assert$2(gfc.ResvMax >= 0);
     l3_side.resvDrain_pre = 0;
     if (gfc.pinfo != null) {
@@ -18663,7 +18645,8 @@ function Reservoir$1() {
   this.ResvMaxBits = function(gfp, mean_bits, targ_bits, cbr) {
     var gfc = gfp.internal_flags;
     var add_bits;
-    var ResvSize = gfc.ResvSize, ResvMax = gfc.ResvMax;
+    var ResvSize = gfc.ResvSize;
+    var ResvMax = gfc.ResvMax;
     if (cbr != 0)
       ResvSize += mean_bits;
     if ((gfc.substep_shaping & 1) != 0)
@@ -18676,8 +18659,9 @@ function Reservoir$1() {
     } else {
       add_bits = 0;
       gfc.substep_shaping &= 127;
-      if (!gfp.disable_reservoir && 0 == (gfc.substep_shaping & 1))
+      if (!gfp.disable_reservoir && (gfc.substep_shaping & 1) == 0) {
         targ_bits.bits -= 0.1 * mean_bits;
+      }
     }
     var extra_bits = ResvSize < gfc.ResvMax * 6 / 10 ? ResvSize : gfc.ResvMax * 6 / 10;
     extra_bits -= add_bits;
@@ -18712,8 +18696,7 @@ function Reservoir$1() {
     gfc.ResvSize -= stuffingBits;
   };
 }
-var Reservoir_1 = Reservoir$1;
-function Version$1() {
+function Version() {
   var LAME_URL = "http://www.mp3dev.org/";
   var LAME_MAJOR_VERSION = 3;
   var LAME_MINOR_VERSION = 98;
@@ -18739,17 +18722,15 @@ function Version$1() {
     return "32bits";
   };
 }
-var Version_1 = Version$1;
-var common$1 = common$o;
-var System = common$1.System;
-var VbrMode = common$1.VbrMode;
-var ShortBlock = common$1.ShortBlock;
-var Arrays = common$1.Arrays;
-var new_byte$1 = common$1.new_byte;
-var assert$1 = common$1.assert;
-VBRTag$1.NUMTOCENTRIES = 100;
-VBRTag$1.MAXFRAMESIZE = 2880;
-function VBRTag$1() {
+var System = common.System;
+var VbrMode = common.VbrMode;
+var ShortBlock = common.ShortBlock;
+var Arrays = common.Arrays;
+var new_byte$1 = common.new_byte;
+var assert$1 = common.assert;
+VBRTag.NUMTOCENTRIES = 100;
+VBRTag.MAXFRAMESIZE = 2880;
+function VBRTag() {
   var lame;
   var bs;
   var v;
@@ -18762,8 +18743,8 @@ function VBRTag$1() {
   var BYTES_FLAG = 2;
   var TOC_FLAG = 4;
   var VBR_SCALE_FLAG = 8;
-  var NUMTOCENTRIES = VBRTag$1.NUMTOCENTRIES;
-  var MAXFRAMESIZE = VBRTag$1.MAXFRAMESIZE;
+  var NUMTOCENTRIES = VBRTag.NUMTOCENTRIES;
+  var MAXFRAMESIZE = VBRTag.MAXFRAMESIZE;
   var VBRHEADERSIZE = NUMTOCENTRIES + 4 + 4 + 4 + 4 + 4;
   var LAMEHEADERSIZE = VBRHEADERSIZE + 9 + 1 + 1 + 8 + 1 + 1 + 3 + 1 + 1 + 2 + 4 + 2 + 2;
   var XING_BITRATE1 = 128;
@@ -19054,7 +19035,9 @@ function VBRTag$1() {
     if (v2.pos <= 0)
       return;
     for (var i = 1; i < NUMTOCENTRIES; ++i) {
-      var j = i / NUMTOCENTRIES, act, sum;
+      var j = i / NUMTOCENTRIES;
+      var act;
+      var sum;
       var indx = 0 | Math.floor(j * v2.pos);
       if (indx > v2.pos - 1)
         indx = v2.pos - 1;
@@ -19118,7 +19101,7 @@ function VBRTag$1() {
     buffer[0] = 255;
     var abyte = 255 & (buffer[1] & 241);
     var bitrate;
-    if (1 == gfp.version) {
+    if (gfp.version == 1) {
       bitrate = XING_BITRATE1;
     } else {
       if (gfp.out_samplerate < 16e3)
@@ -19131,8 +19114,9 @@ function VBRTag$1() {
     var bbyte;
     if (gfp.free_format)
       bbyte = 0;
-    else
+    else {
       bbyte = 255 & 16 * lame.BitrateIndex(bitrate, gfp.version, gfp.out_samplerate);
+    }
     if (gfp.version == 1) {
       buffer[1] = 255 & (abyte | 10);
       abyte = 255 & (buffer[2] & 13);
@@ -19152,9 +19136,9 @@ function VBRTag$1() {
     var hMode = buf[bufPos + 3] >> 6 & 3;
     var hBitrate = buf[bufPos + 2] >> 4 & 15;
     hBitrate = Tables.bitrate_table[hId][hBitrate];
-    if (buf[bufPos + 1] >> 4 == 14)
+    if (buf[bufPos + 1] >> 4 == 14) {
       pTagData.samprate = Tables.samplerate_table[2][hSrIndex];
-    else
+    } else
       pTagData.samprate = Tables.samplerate_table[hId][hSrIndex];
     if (hId != 0) {
       if (hMode != 3)
@@ -19183,8 +19167,9 @@ function VBRTag$1() {
     }
     if ((head_flags & TOC_FLAG) != 0) {
       if (pTagData.toc != null) {
-        for (var i = 0; i < NUMTOCENTRIES; i++)
+        for (var i = 0; i < NUMTOCENTRIES; i++) {
           pTagData.toc[i] = buf[bufPos + i];
+        }
       }
       bufPos += NUMTOCENTRIES;
     }
@@ -19210,7 +19195,7 @@ function VBRTag$1() {
   this.InitVbrTag = function(gfp) {
     var gfc = gfp.internal_flags;
     var kbps_header;
-    if (1 == gfp.version) {
+    if (gfp.version == 1) {
       kbps_header = XING_BITRATE1;
     } else {
       if (gfp.out_samplerate < 16e3)
@@ -19250,8 +19235,9 @@ function VBRTag$1() {
     return crc;
   }
   this.updateMusicCRC = function(crc, buffer, bufferPos, size) {
-    for (var i = 0; i < size; ++i)
+    for (var i = 0; i < size; ++i) {
       crc[0] = crcUpdateLookup(buffer[bufferPos + i], crc[0]);
+    }
   };
   function putLameVBR(gfp, musicLength, streamBuffer, streamBufferPos, crc) {
     var gfc = gfp.internal_flags;
@@ -19293,9 +19279,9 @@ function VBRTag$1() {
       default:
         abrBitrate = gfp.VBR_min_bitrate_kbps;
     }
-    if (gfp.VBR.ordinal() < vbrTypeTranslator.length)
+    if (gfp.VBR.ordinal() < vbrTypeTranslator.length) {
       vbr = vbrTypeTranslator[gfp.VBR.ordinal()];
-    else
+    } else
       vbr = 0;
     revMethod = 16 * revision + vbr;
     if (gfc.findReplayGain) {
@@ -19312,8 +19298,9 @@ function VBRTag$1() {
         radioReplayGain |= -gfc.RadioGain;
       }
     }
-    if (gfc.findPeakSample)
+    if (gfc.findPeakSample) {
       peakSignalAmplitude = Math.abs(0 | gfc.PeakSample / 32767 * Math.pow(2, 23) + 0.5);
+    }
     if (noGapCount != -1) {
       if (noGapCurr > 0)
         noGapPrevious = true;
@@ -19353,8 +19340,9 @@ function VBRTag$1() {
     else {
       sourceFreq = 1;
     }
-    if (gfp.short_blocks == ShortBlock.short_block_forced || gfp.short_blocks == ShortBlock.short_block_dispensed || gfp.lowpassfreq == -1 && gfp.highpassfreq == -1 || gfp.scale_left < gfp.scale_right || gfp.scale_left > gfp.scale_right || gfp.disable_reservoir && gfp.brate < 320 || gfp.noATH || gfp.ATHonly || athType == 0 || gfp.in_samplerate <= 32e3)
+    if (gfp.short_blocks == ShortBlock.short_block_forced || gfp.short_blocks == ShortBlock.short_block_dispensed || gfp.lowpassfreq == -1 && gfp.highpassfreq == -1 || gfp.scale_left < gfp.scale_right || gfp.scale_left > gfp.scale_right || gfp.disable_reservoir && gfp.brate < 320 || gfp.noATH || gfp.ATHonly || athType == 0 || gfp.in_samplerate <= 32e3) {
       nonOptimal = 1;
+    }
     misc = noiseShaping + (stereoMode << 2) + (nonOptimal << 5) + (sourceFreq << 6);
     musicCRC = gfc.nMusicCRC;
     createInteger(streamBuffer, streamBufferPos + bytesWritten, quality);
@@ -19393,8 +19381,9 @@ function VBRTag$1() {
     bytesWritten += 4;
     createShort(streamBuffer, streamBufferPos + bytesWritten, musicCRC);
     bytesWritten += 2;
-    for (var i = 0; i < bytesWritten; i++)
+    for (var i = 0; i < bytesWritten; i++) {
       crc = crcUpdateLookup(streamBuffer[streamBufferPos + i], crc);
+    }
     createShort(streamBuffer, streamBufferPos + bytesWritten, crc);
     bytesWritten += 2;
     return bytesWritten;
@@ -19487,22 +19476,8 @@ function VBRTag$1() {
     return 0;
   };
 }
-var VBRTag_1 = VBRTag$1;
-var common = common$o;
 var new_byte = common.new_byte;
 var assert = common.assert;
-console.log("hey");
-var Lame$1 = Lame_1;
-var Presets = Presets_1;
-var GainAnalysis$1 = GainAnalysis_1;
-var QuantizePVT = QuantizePVT_1;
-var Quantize = Quantize_1;
-var Takehiro = Takehiro_1;
-var Reservoir = Reservoir_1;
-var MPEGMode = MPEGMode_1;
-var BitStream$1 = BitStream_1;
-var Version = Version_1;
-var VBRTag = VBRTag_1;
 function GetAudio() {
   this.setModules = function(parse2, mpg2) {
   };
@@ -19580,65 +19555,19 @@ function Mp3Encoder$1(channels, samplerate, kbps) {
     return new Int8Array(mp3buf.subarray(0, _sz));
   };
 }
-function WavHeader() {
-  this.dataOffset = 0;
-  this.dataLen = 0;
-  this.channels = 0;
-  this.sampleRate = 0;
-}
 function fourccToInt(fourcc) {
   return fourcc.charCodeAt(0) << 24 | fourcc.charCodeAt(1) << 16 | fourcc.charCodeAt(2) << 8 | fourcc.charCodeAt(3);
 }
-WavHeader.RIFF = fourccToInt("RIFF");
-WavHeader.WAVE = fourccToInt("WAVE");
-WavHeader.fmt_ = fourccToInt("fmt ");
-WavHeader.data = fourccToInt("data");
-WavHeader.readHeader = function(dataView) {
-  var w = new WavHeader();
-  var header = dataView.getUint32(0, false);
-  if (WavHeader.RIFF != header) {
-    return;
-  }
-  dataView.getUint32(4, true);
-  if (WavHeader.WAVE != dataView.getUint32(8, false)) {
-    return;
-  }
-  if (WavHeader.fmt_ != dataView.getUint32(12, false)) {
-    return;
-  }
-  var fmtLen = dataView.getUint32(16, true);
-  var pos = 16 + 4;
-  switch (fmtLen) {
-    case 16:
-    case 18:
-      w.channels = dataView.getUint16(pos + 2, true);
-      w.sampleRate = dataView.getUint32(pos + 4, true);
-      break;
-    default:
-      throw "extended fmt chunk not implemented";
-  }
-  pos += fmtLen;
-  var data = WavHeader.data;
-  var len = 0;
-  while (data != header) {
-    header = dataView.getUint32(pos, false);
-    len = dataView.getUint32(pos + 4, true);
-    if (data == header) {
-      break;
-    }
-    pos += len + 8;
-  }
-  w.dataLen = len;
-  w.dataOffset = pos + 8;
-  return w;
-};
-var Mp3Encoder_1 = Mp3Encoder$1;
+fourccToInt("RIFF");
+fourccToInt("WAVE");
+fourccToInt("fmt ");
+fourccToInt("data");
 class Mp3Encoder {
   constructor(config) {
     this.bitRate = config.bitRate;
     this.sampleRate = config.sampleRate;
     this.dataBuffer = [];
-    this.encoder = new Mp3Encoder_1(1, this.sampleRate, this.bitRate);
+    this.encoder = new Mp3Encoder$1(1, this.sampleRate, this.bitRate);
   }
   encode(arrayBuffer) {
     const maxSamples = 1152;
