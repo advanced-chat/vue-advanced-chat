@@ -164,7 +164,9 @@ export default {
 	},
 
 	mounted() {
-		this.addCss()
+		if (import.meta.env.MODE === 'development') {
+			this.addCss()
+		}
 		this.fetchRooms()
 		firebaseService.updateUserOnlineStatus(this.currentUserId)
 	},
