@@ -4,6 +4,7 @@ module.exports = {
 		es2021: true
 	},
 	extends: ['standard', 'plugin:vue/vue3-recommended', '@vue/typescript'],
+	ignorePatterns: ['src/utils/lamejs/*.js'],
 	rules: {
 		'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 		'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
