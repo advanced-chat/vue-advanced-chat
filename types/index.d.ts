@@ -39,6 +39,11 @@ export interface LastMessage {
 	files?: MessageFile[]
 }
 
+export interface Tag {
+	content: string
+	color: string
+}
+
 export interface Room {
 	roomId: StringNumber
 	roomName: string
@@ -47,6 +52,7 @@ export interface Room {
 	unreadCount?: StringNumber
 	index?: StringNumber | Date
 	lastMessage?: LastMessage
+	tags?: Tag[],
 	typingUsers?: StringNumber[]
 }
 

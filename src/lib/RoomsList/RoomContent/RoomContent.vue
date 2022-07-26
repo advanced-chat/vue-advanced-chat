@@ -109,6 +109,11 @@
 						</slot>
 					</div>
 				</div>
+				<div class="row">
+					<span v-for="tag in room.tags" :key="tag.name" class="chip primary">
+						{{ tag.content }}
+					</span>
+				</div>
 			</div>
 		</slot>
 	</div>
@@ -230,3 +235,77 @@ export default {
 	}
 }
 </script>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro|Nunito&display=swap');
+
+body{
+	height: 100vh;
+	width: 100%;
+	margin: 0;
+
+	background: #d9e0ea;
+	font-family: 'Source Sans Pro', sans-serif;
+}
+h3{
+	text-align: center;
+	margin: 2rem auto;
+	color: #2F4058;
+	font-family: Nunito;
+}
+.row{
+	margin-bottom: 8px;
+}
+
+.chip{
+	padding: 8px 10px;
+	border-radius: 10px;
+	font-weight: 600;
+	font-size: 10px;
+	box-shadow: 0 2px 5px rgba(0,0,0,.25);
+	/* margin: 0 10px; */
+
+	cursor: pointer;
+}
+
+.chip.primary{
+	background: #2F4058;
+	color: whitesmoke;
+}
+
+.chip.secondary{
+	background: #242933;
+	color: #777;
+}
+
+.chip.warning{
+	background:#FEB904;
+	color: whitesmoke;
+}
+.chip.danger{
+	background: #DA605B;
+	color: whitesmoke;
+}
+
+.chip.info{
+	background: #5FD6D4;
+	color: whitesmoke;
+}
+
+.chip-avatar{
+	border-radius: 30px;
+	justify-content: center;
+	display: flex;
+	align-items: center;
+}
+.chip-avatar img{
+	height: 25px;
+	width: 25px;
+	border-radius: 50px;
+}
+
+.chip-avatar label{
+	margin-left: 5px;
+	font-size: 12px;
+}
+</style>
