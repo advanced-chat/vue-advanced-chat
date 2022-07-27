@@ -63,6 +63,8 @@
 			@typing-message="typingMessage($event.detail[0])"
 			@toggle-rooms-list="$emit('show-demo-options', $event.detail[0].opened)"
 		>
+			<!-- <div slot="message">Message</div> -->
+
 			<!-- <template #emoji-picker="{ emojiOpened, addEmoji }">
 				<button @click="addEmoji({ unicode: '😁' })">
 					{{ emojiOpened }}
