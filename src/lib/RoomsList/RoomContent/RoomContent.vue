@@ -61,8 +61,8 @@
 						:link-options="linkOptions"
 						:single-line="true"
 					>
-						<template #deleted-icon="data">
-							<slot name="deleted-icon" v-bind="data" />
+						<template #deleted-icon>
+							<slot name="deleted-icon" />
 						</template>
 					</format-message>
 					<div

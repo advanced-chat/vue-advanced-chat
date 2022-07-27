@@ -29,9 +29,11 @@
 					:rel="message.href ? linkOptions.rel : null"
 					@click="openTag(message)"
 				>
-					<slot name="deleted-icon" v-bind="{ deleted }">
-						<svg-icon v-if="deleted" name="deleted" class="vac-icon-deleted" />
-					</slot>
+					<template v-if="deleted">
+						<slot name="deleted-icon">
+							<svg-icon name="deleted" class="vac-icon-deleted" />
+						</slot>
+					</template>
 					<template v-if="message.url && message.image">
 						<div class="vac-image-link-container">
 							<div
