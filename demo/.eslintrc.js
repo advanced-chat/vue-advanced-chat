@@ -23,6 +23,7 @@ module.exports = {
 		'space-before-function-paren': 'off',
 		'vue/max-attributes-per-line': 'off',
 		'vue/singleline-html-element-content-newline': 'off',
+		'vue/no-deprecated-slot-attribute': 'off',
 		'vue/html-self-closing': [
 			'error',
 			{
