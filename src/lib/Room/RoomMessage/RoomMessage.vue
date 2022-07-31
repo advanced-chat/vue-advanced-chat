@@ -9,7 +9,7 @@
 		</div>
 
 		<div v-if="message.system" class="vac-card-info vac-card-system">
-			<slot name="system-message" v-bind="{ message }">
+			<slot :name="'message_' + message._id">
 				<format-message
 					:content="message.content"
 					:users="roomUsers"
@@ -30,7 +30,7 @@
 			:class="{ 'vac-offset-current': message.senderId === currentUserId }"
 			@click="selectMessage"
 		>
-			<slot name="message" v-bind="{ message }">
+			<slot :name="'message_' + message._id">
 				<div
 					v-if="message.avatar && message.senderId !== currentUserId"
 					class="vac-avatar"
@@ -193,9 +193,7 @@
 						}"
 						@click="$emit('open-failed-message', { message })"
 					>
-						<div class="vac-failure-text">
-							!
-						</div>
+						<div class="vac-failure-text">!</div>
 					</div>
 				</slot>
 				<div

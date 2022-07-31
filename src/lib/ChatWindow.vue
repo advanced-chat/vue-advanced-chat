@@ -226,6 +226,7 @@ export default {
 
 	data() {
 		return {
+			slots: [],
 			room: {},
 			loadingMoreRooms: false,
 			showRoomsList: true,
@@ -236,10 +237,6 @@ export default {
 	},
 
 	computed: {
-		slots() {
-			const slots = document.querySelectorAll('[slot]')
-			return slots
-		},
 		t() {
 			return {
 				...locales,
@@ -408,6 +405,13 @@ export default {
 		window.addEventListener('resize', ev => {
 			if (ev.isTrusted) this.updateResponsive()
 		})
+	},
+
+	updated() {
+		const slots = document.querySelectorAll('[slot]')
+		if (this.slots.length !== slots.length) {
+			this.slots = slots
+		}
 	},
 
 	methods: {
