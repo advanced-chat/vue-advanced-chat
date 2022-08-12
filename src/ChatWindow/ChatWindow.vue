@@ -53,6 +53,8 @@
 				:room-info="$listeners['room-info']"
 				:textarea-action="$listeners['textarea-action-handler']"
 				:accepted-files="acceptedFiles"
+				:max-file-size="maxFileSize"
+				:max-files-sum-size="maxFilesSumSize"
 				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
@@ -60,6 +62,7 @@
 				@edit-message="editMessage"
 				@delete-message="deleteMessage"
 				@open-file="openFile"
+				@limit-size-exceeded="limitSizeExceeded"
 				@open-user-tag="openUserTag"
 				@menu-action-handler="menuActionHandler"
 				@message-action-handler="messageActionHandler"
@@ -133,7 +136,9 @@ export default {
 		},
 		newMessage: { type: Object, default: null },
 		roomMessage: { type: String, default: '' },
-		acceptedFiles: { type: String, default: '*' }
+		acceptedFiles: { type: String, default: '*' },
+		maxFileSize: { type: Number, default: null },
+		maxFilesSumSize: { type: Number, default: null }
 	},
 
 	data() {
@@ -279,6 +284,9 @@ export default {
 		},
 		openFile({ message, action }) {
 			this.$emit('open-file', { message, action })
+		},
+		limitSizeExceeded() {
+			this.$emit('limit-size-exceeded')
 		},
 		openUserTag({ user }) {
 			this.$emit('open-user-tag', { user })
