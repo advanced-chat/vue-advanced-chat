@@ -17,11 +17,7 @@
 							:text-formatting="textFormatting"
 							:link-options="linkOptions"
 							:reply="true"
-						>
-							<template v-for="(i, name) in $slots" #[name]="data">
-								<slot :name="name" v-bind="data" />
-							</template>
-						</format-message>
+						/>
 					</div>
 				</div>
 

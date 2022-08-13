@@ -50,11 +50,7 @@
 			:text-formatting="textFormatting"
 			:link-options="linkOptions"
 			@open-user-tag="$emit('open-user-tag', $event)"
-		>
-			<template v-for="(i, name) in $slots" #[name]="data">
-				<slot :name="name" v-bind="data" />
-			</template>
-		</format-message>
+		/>
 	</div>
 </template>
 

@@ -19,8 +19,8 @@
 					:link-options="linkOptions"
 					@open-user-tag="openUserTag"
 				>
-					<template v-for="(i, name) in $slots" #[name]="data">
-						<slot :name="name" v-bind="data" />
+					<template #deleted-icon>
+						<slot name="deleted-icon" />
 					</template>
 				</format-message>
 			</slot>
@@ -94,8 +94,8 @@
 							:link-options="linkOptions"
 							@open-user-tag="openUserTag"
 						>
-							<template v-for="(i, name) in $slots" #[name]="data">
-								<slot :name="name" v-bind="data" />
+							<template #deleted-icon>
+								<slot name="deleted-icon" />
 							</template>
 						</format-message>
 
