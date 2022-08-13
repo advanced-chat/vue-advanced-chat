@@ -12,7 +12,9 @@
 			<slot :name="'message_' + message._id">
 				<format-message
 					:content="message.content"
+					:deleted="!!message.deleted"
 					:users="roomUsers"
+					:text-messages="textMessages"
 					:text-formatting="textFormatting"
 					:link-options="linkOptions"
 					@open-user-tag="openUserTag"
@@ -80,18 +82,15 @@
 							</template>
 						</message-reply>
 
-						<div v-if="message.deleted">
-							<slot name="deleted-icon">
-								<svg-icon name="deleted" class="vac-icon-deleted" />
-							</slot>
-							<span>{{ textMessages.MESSAGE_DELETED }}</span>
-						</div>
-
 						<format-message
-							v-else-if="!message.files || !message.files.length"
+							v-else-if="
+								!!message.deleted || !message.files || !message.files.length
+							"
 							:content="message.content"
+							:deleted="!!message.deleted"
 							:users="roomUsers"
 							:text-formatting="textFormatting"
+							:text-messages="textMessages"
 							:link-options="linkOptions"
 							@open-user-tag="openUserTag"
 						>

@@ -31,10 +31,15 @@
 				>
 					<template v-if="deleted">
 						<slot name="deleted-icon">
-							<svg-icon name="deleted" class="vac-icon-deleted" />
+							<svg-icon
+								name="deleted"
+								class="vac-icon-deleted"
+								:class="{ 'vac-icon-deleted-room': roomList }"
+							/>
 						</slot>
+						{{ textMessages.MESSAGE_DELETED }}
 					</template>
-					<template v-if="message.url && message.image">
+					<template v-else-if="message.url && message.image">
 						<div class="vac-image-link-container">
 							<div
 								class="vac-image-link"
@@ -69,6 +74,7 @@ export default {
 	components: { SvgIcon },
 
 	props: {
+		roomList: { type: Boolean, default: false },
 		content: { type: [String, Number], required: true },
 		deleted: { type: Boolean, default: false },
 		users: { type: Array, default: () => [] },
@@ -76,6 +82,7 @@ export default {
 		singleLine: { type: Boolean, default: false },
 		reply: { type: Boolean, default: false },
 		textFormatting: { type: Object, required: true },
+		textMessages: { type: Object, default: () => {} },
 		linkOptions: { type: Object, required: true }
 	},
 
@@ -83,6 +90,10 @@ export default {
 
 	computed: {
 		linkifiedMessage() {
+			if (this.deleted) {
+				return [{ value: this.textMessages.MESSAGE_DELETED }]
+			}
+
 			const message = formatString(
 				this.formatTags(this.content),
 				this.linkify && !this.linkOptions.disabled,
@@ -105,7 +116,12 @@ export default {
 			return message
 		},
 		formattedContent() {
-			return this.formatTags(this.content)
+			if (this.deleted) {
+				console.log('heuy')
+				return this.textMessages.MESSAGE_DELETED
+			} else {
+				return this.formatTags(this.content)
+			}
 		}
 	},
 

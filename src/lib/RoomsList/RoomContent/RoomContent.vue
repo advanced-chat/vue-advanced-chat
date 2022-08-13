@@ -53,9 +53,11 @@
 					</div>
 					<format-message
 						v-else-if="room.lastMessage"
+						:room-list="true"
 						:content="getLastMessage"
 						:deleted="!!room.lastMessage.deleted && !typingUsers"
 						:users="room.users"
+						:text-messages="textMessages"
 						:linkify="false"
 						:text-formatting="textFormatting"
 						:link-options="linkOptions"
@@ -155,9 +157,7 @@ export default {
 			const isTyping = this.typingUsers
 			if (isTyping) return isTyping
 
-			const content = this.room.lastMessage.deleted
-				? this.textMessages.MESSAGE_DELETED
-				: this.room.lastMessage.content
+			const content = this.room.lastMessage.content
 
 			if (this.room.users.length <= 2) {
 				return content
