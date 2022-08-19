@@ -40,7 +40,7 @@
 			class="vac-container-scroll"
 			@scroll="onContainerScroll"
 		>
-			<loader :show="loadingMessages">
+			<loader :show="loadingMessages" type="messages">
 				<template v-for="(idx, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
@@ -63,7 +63,7 @@
 						v-if="messages.length && !messagesLoaded"
 						id="infinite-loader-messages"
 					>
-						<loader :show="true" :infinite="true">
+						<loader :show="true" :infinite="true" type="infinite-messages">
 							<template v-for="(idx, name) in $slots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>

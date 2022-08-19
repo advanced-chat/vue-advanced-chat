@@ -63,11 +63,13 @@
 			@typing-message="typingMessage($event.detail[0])"
 			@toggle-rooms-list="$emit('show-demo-options', $event.detail[0].opened)"
 		>
-			<!-- <template #emoji-picker="{ emojiOpened, addEmoji }">
-				<button @click="addEmoji({ unicode: '😁' })">
-					{{ emojiOpened }}
-				</button>
-			</template> -->
+			<!-- <div
+				v-for="message in messages"
+				:slot="'message_' + message._id"
+				:key="message._id"
+			>
+				New message container
+			</div> -->
 		</vue-advanced-chat>
 	</div>
 </template>
@@ -342,6 +344,7 @@ export default {
 			return {
 				...message,
 				...{
+					_id: message.id,
 					content,
 					senderId: message.sender_id,
 					timestamp: formatTimestamp(
@@ -354,7 +357,11 @@ export default {
 					new:
 						message.sender_id !== this.currentUserId &&
 						(!message.seen || !message.seen[this.currentUserId]),
-					lastMessage: { ...message.lastMessage, senderId: message.sender_id }
+					lastMessage: {
+						...message.lastMessage,
+						_id: message.id,
+						senderId: message.sender_id
+					}
 				}
 			}
 		},

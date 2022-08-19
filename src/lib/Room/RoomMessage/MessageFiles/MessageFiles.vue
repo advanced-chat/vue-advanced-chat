@@ -1,23 +1,23 @@
 <template>
 	<div class="vac-message-files-container">
-		<div v-for="(file, idx) in imageVideoFiles" :key="idx + 'iv'">
+		<div v-for="(file, i) in imageVideoFiles" :key="i + 'iv'">
 			<message-file
 				:file="file"
 				:current-user-id="currentUserId"
 				:message="message"
-				:index="idx"
+				:index="i"
 				:message-selection-enabled="messageSelectionEnabled"
 				@open-file="$emit('open-file', $event)"
 			>
-				<template v-for="(i, name) in $slots" #[name]="data">
+				<template v-for="(idx, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</message-file>
 		</div>
 
 		<div
-			v-for="(file, idx) in otherFiles"
-			:key="idx + 'a'"
+			v-for="(file, i) in otherFiles"
+			:key="i + 'a'"
 			class="vac-file-wrapper"
 		>
 			<progress-bar
@@ -45,6 +45,7 @@
 		</div>
 
 		<format-message
+			:message-id="message._id"
 			:content="message.content"
 			:users="roomUsers"
 			:text-formatting="textFormatting"

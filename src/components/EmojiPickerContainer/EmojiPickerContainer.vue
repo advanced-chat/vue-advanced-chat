@@ -5,7 +5,13 @@
 			:class="{ 'vac-emoji-reaction': emojiReaction }"
 			@click="openEmoji"
 		>
-			<slot name="emoji-picker-icon">
+			<slot
+				:name="
+					messageId
+						? 'emoji-picker-reaction-icon_' + messageId
+						: 'emoji-picker-icon'
+				"
+			>
 				<svg-icon name="emoji" :param="emojiReaction ? 'reaction' : ''" />
 			</slot>
 		</div>
@@ -42,7 +48,8 @@ export default {
 		emojiOpened: { type: Boolean, default: false },
 		emojiReaction: { type: Boolean, default: false },
 		positionTop: { type: Boolean, default: false },
-		positionRight: { type: Boolean, default: false }
+		positionRight: { type: Boolean, default: false },
+		messageId: { type: String, default: '' }
 	},
 
 	emits: ['add-emoji', 'open-emoji'],

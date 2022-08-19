@@ -30,7 +30,13 @@
 					@click="openTag(message)"
 				>
 					<template v-if="deleted">
-						<slot name="deleted-icon">
+						<slot
+							:name="
+								roomList
+									? 'deleted-icon-room_' + roomId
+									: 'deleted-icon_' + messageId
+							"
+						>
 							<svg-icon
 								name="deleted"
 								class="vac-icon-deleted"
@@ -74,6 +80,8 @@ export default {
 	components: { SvgIcon },
 
 	props: {
+		messageId: { type: String, default: '' },
+		roomId: { type: String, default: '' },
 		roomList: { type: Boolean, default: false },
 		content: { type: [String, Number], required: true },
 		deleted: { type: Boolean, default: false },

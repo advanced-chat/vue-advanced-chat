@@ -11,13 +11,17 @@
 						:file="file"
 						:index="i"
 						@remove-file="$emit('remove-file', $event)"
-					/>
+					>
+						<template v-for="(idx, name) in $slots" #[name]="data">
+							<slot :name="name" v-bind="data" />
+						</template>
+					</room-file>
 				</div>
 			</div>
 
 			<div class="vac-icon-close">
 				<div class="vac-svg-button" @click="$emit('reset-message')">
-					<slot name="reply-close-icon">
+					<slot name="files-close-icon">
 						<svg-icon name="close-outline" />
 					</slot>
 				</div>

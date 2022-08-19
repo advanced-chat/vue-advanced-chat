@@ -12,6 +12,7 @@
 					</div>
 					<div class="vac-reply-content">
 						<format-message
+							:message-id="messageReply._id"
 							:content="messageReply.content"
 							:users="room.users"
 							:text-formatting="textFormatting"
@@ -30,9 +31,10 @@
 				<audio-player
 					v-else-if="isAudio"
 					:src="firstFile.url"
+					:message-selection-enabled="false"
 					class="vac-audio-reply"
 				>
-					<template v-for="(i, name) in $slots" #[name]="data">
+					<template v-for="(idx, name) in $slots" #[name]="data">
 						<slot :name="name" v-bind="data" />
 					</template>
 				</audio-player>

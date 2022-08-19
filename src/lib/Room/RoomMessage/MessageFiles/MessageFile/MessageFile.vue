@@ -16,6 +16,8 @@
 			<loader
 				v-else
 				:show="isImageLoading"
+				type="message-file"
+				:message-id="message._id"
 				:style="{ top: `${imageResponsive.loaderTop}px` }"
 			>
 				<template v-for="(idx, name) in $slots" #[name]="data">
@@ -44,7 +46,7 @@
 							class="vac-svg-button vac-button-view"
 							@click="openFile($event, 'preview')"
 						>
-							<slot name="eye-icon">
+							<slot :name="'eye-icon_' + message._id">
 								<svg-icon name="eye" />
 							</slot>
 						</div>
@@ -52,7 +54,7 @@
 							class="vac-svg-button vac-button-download"
 							@click="openFile($event, 'download')"
 						>
-							<slot name="document-icon">
+							<slot :name="'document-icon_' + message._id">
 								<svg-icon name="document" />
 							</slot>
 						</div>

@@ -11,6 +11,7 @@
 		<div v-if="message.system" class="vac-card-info vac-card-system">
 			<slot :name="'message_' + message._id">
 				<format-message
+					:message-id="message._id"
 					:content="message.content"
 					:deleted="!!message.deleted"
 					:users="roomUsers"
@@ -19,8 +20,8 @@
 					:link-options="linkOptions"
 					@open-user-tag="openUserTag"
 				>
-					<template #deleted-icon>
-						<slot name="deleted-icon" />
+					<template v-for="(idx, name) in $slots" #[name]="data">
+						<slot :name="name" v-bind="data" />
 					</template>
 				</format-message>
 			</slot>
@@ -86,6 +87,7 @@
 							v-else-if="
 								!!message.deleted || !message.files || !message.files.length
 							"
+							:message-id="message._id"
 							:content="message.content"
 							:deleted="!!message.deleted"
 							:users="roomUsers"
@@ -94,8 +96,8 @@
 							:link-options="linkOptions"
 							@open-user-tag="openUserTag"
 						>
-							<template #deleted-icon>
-								<slot name="deleted-icon" />
+							<template v-for="(idx, name) in $slots" #[name]="data">
+								<slot :name="name" v-bind="data" />
 							</template>
 						</format-message>
 
@@ -138,13 +140,13 @@
 								v-if="message.edited && !message.deleted"
 								class="vac-icon-edited"
 							>
-								<slot name="pencil-icon">
+								<slot :name="'pencil-icon_' + message._id">
 									<svg-icon name="pencil" />
 								</slot>
 							</div>
 							<span>{{ message.timestamp }}</span>
 							<span v-if="isCheckmarkVisible">
-								<slot name="checkmark-icon" v-bind="{ message }">
+								<slot :name="'checkmark-icon_' + message._id">
 									<svg-icon
 										:name="
 											message.distributed ? 'double-checkmark' : 'checkmark'
@@ -182,7 +184,7 @@
 						@send-message-reaction="sendMessageReaction"
 					/>
 				</div>
-				<slot name="message-failure" v-bind="{ message }">
+				<slot :name="'message-failure_' + message._id">
 					<div
 						v-if="message.failure && message.senderId === currentUserId"
 						class="vac-failure-container vac-svg-button"

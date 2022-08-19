@@ -2,10 +2,10 @@
 	<div>
 		<div class="vac-audio-player">
 			<div class="vac-svg-button" @click="playback">
-				<slot v-if="isPlaying" name="audio-pause-icon">
+				<slot v-if="isPlaying" :name="'audio-pause-icon_' + messageId">
 					<svg-icon name="audio-pause" />
 				</slot>
-				<slot v-else name="audio-play-icon">
+				<slot v-else :name="'audio-play-icon_' + messageId">
 					<svg-icon name="audio-play" />
 				</slot>
 			</div>

@@ -75,7 +75,7 @@
 						class="vac-svg-button vac-icon-audio-confirm"
 						@click="toggleRecorder(false)"
 					>
-						<slot name="audio-stop-icon">
+						<slot name="audio-check-icon">
 							<svg-icon name="checkmark" />
 						</slot>
 					</div>

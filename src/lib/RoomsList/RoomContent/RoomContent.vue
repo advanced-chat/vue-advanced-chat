@@ -1,7 +1,7 @@
 <template>
 	<div class="vac-room-container">
-		<slot name="room-list-item" v-bind="{ room }">
-			<slot name="room-list-avatar" v-bind="{ room }">
+		<slot :name="'room-list-item_' + room.roomId">
+			<slot :name="'room-list-avatar_' + room.roomId">
 				<div
 					v-if="room.avatar"
 					class="vac-avatar"
@@ -30,7 +30,7 @@
 					}"
 				>
 					<span v-if="isMessageCheckmarkVisible">
-						<slot name="checkmark-icon" v-bind="{ message: room.lastMessage }">
+						<slot :name="'checkmark-icon_' + room.roomId">
 							<svg-icon
 								:name="
 									room.lastMessage.distributed
@@ -46,13 +46,15 @@
 						v-if="room.lastMessage && !room.lastMessage.deleted && isAudio"
 						class="vac-text-ellipsis"
 					>
-						<slot name="microphone-icon">
+						<slot :name="'microphone-icon_' + room.roomId">
 							<svg-icon name="microphone" class="vac-icon-microphone" />
 						</slot>
 						{{ formattedDuration }}
 					</div>
 					<format-message
 						v-else-if="room.lastMessage"
+						:message-id="room.lastMessage._id"
+						:room-id="room.roomId"
 						:room-list="true"
 						:content="getLastMessage"
 						:deleted="!!room.lastMessage.deleted && !typingUsers"
@@ -63,8 +65,8 @@
 						:link-options="linkOptions"
 						:single-line="true"
 					>
-						<template #deleted-icon>
-							<slot name="deleted-icon" />
+						<template v-for="(idx, name) in $slots" #[name]="data">
+							<slot :name="name" v-bind="data" />
 						</template>
 					</format-message>
 					<div
@@ -80,13 +82,13 @@
 						>
 							{{ room.unreadCount }}
 						</div>
-						<slot name="room-list-options" v-bind="{ room }">
+						<slot :name="'room-list-options_' + room.roomId">
 							<div
 								v-if="roomActions.length"
 								class="vac-svg-button vac-list-room-options"
 								@click.stop="roomMenuOpened = room.roomId"
 							>
-								<slot name="room-list-options-icon">
+								<slot :name="'room-list-options-icon_' + room.roomId">
 									<svg-icon name="dropdown" param="room" />
 								</slot>
 							</div>

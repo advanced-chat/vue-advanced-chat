@@ -91,7 +91,11 @@
 				v-if="showMediaPreview"
 				:file="previewFile"
 				@close-media-preview="showMediaPreview = false"
-			/>
+			>
+				<template v-for="el in slots" #[el.slot]="data">
+					<slot :name="el.slot" v-bind="data" />
+				</template>
+			</media-preview>
 		</transition>
 	</div>
 </template>

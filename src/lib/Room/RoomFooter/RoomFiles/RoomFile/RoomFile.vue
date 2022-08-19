@@ -1,6 +1,6 @@
 <template>
 	<div class="vac-room-file-container">
-		<loader :show="file.loading">
+		<loader :show="file.loading" type="room-file">
 			<template v-for="(idx, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
