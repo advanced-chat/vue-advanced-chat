@@ -21263,7 +21263,9 @@ const _sfc_main$a = {
       this.updateFooterLists();
     });
     this.getTextareaRef().addEventListener("blur", () => {
-      this.resetFooterList();
+      setTimeout(() => {
+        this.resetFooterList();
+      }, 100);
       if (isMobile)
         setTimeout(() => this.keepKeyboardOpen = false);
     });
