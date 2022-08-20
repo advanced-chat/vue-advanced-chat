@@ -98,26 +98,30 @@ npm install lamejs --save
 
 ```javascript
 <template>
-  <chat-window
+  <vue-advanced-chat
+    ref="chatWindow"
     :current-user-id="currentUserId"
     :rooms="rooms"
     :messages="messages"
+    .room-actions="roomActions"
   />
 </template>
 
 <script>
-  import ChatWindow from 'vue-advanced-chat'
-  import 'vue-advanced-chat/dist/vue-advanced-chat.css'
+  import { register } from 'vue-advanced-chat'
+  register()
 
   export default {
-    components: {
-      ChatWindow
-    },
     data() {
       return {
+        currentUserId: '1234',
         rooms: [],
         messages: [],
-        currentUserId: 1234
+        roomActions: [
+          { name: 'inviteUser', title: 'Invite User' },
+          { name: 'removeUser', title: 'Remove User' },
+          { name: 'deleteRoom', title: 'Delete Room' }
+			  ]
       }
     }
   }
@@ -135,9 +139,9 @@ npm install lamejs --save
 export default {
   data() {
     return {
+      currentUserId: '1234'
       rooms: [],
       messages: [],
-      currentUserId: 1234
     }
   },
   mounted() {
@@ -510,7 +514,7 @@ rooms="[
     lastMessage: {
       _id: 'xyz',
       content: 'Last message received',
-      senderId: 1234,
+      senderId: '1234',
       username: 'John Doe',
       timestamp: '10:20',
       saved: true,
@@ -520,7 +524,7 @@ rooms="[
     },
     users: [
       {
-        _id: 1234,
+        _id: '1234',
         username: 'John Doe',
         avatar: 'assets/imgs/doe.png',
         status: {
@@ -529,7 +533,7 @@ rooms="[
         }
       },
       {
-        _id: 4321,
+        _id: '4321',
         username: 'John Snow',
         avatar: 'assets/imgs/snow.png',
         status: {
@@ -574,10 +578,10 @@ Message states:
 ```javascript
 messages="[
   {
-    _id: 7890,
+    _id: '7890',
     indexId: 12092,
     content: 'Message 1',
-    senderId: 1234,
+    senderId: '1234',
     username: 'John Doe',
     avatar: 'assets/imgs/doe.png',
     date: '13 November',
@@ -604,16 +608,16 @@ messages="[
     ],
     reactions: {
       😁: [
-        1234, // USER_ID
-        4321
+        '1234', // USER_ID
+        '4321'
       ],
       🥰: [
-        1234
+        '1234'
       ]
     },
     replyMessage: {
       content: 'Reply Message',
-      senderId: 4321,
+      senderId: '4321',
       files: [
         {
           name: 'My Replied File',
@@ -839,15 +843,15 @@ To help you get started, I added in `demo/src/App.vue` a method `addData` to ini
 ```javascript
 users: {
   USER_ID_1: {
-    _id: 1,
+    _id: '1',
     username: 'User 1'
   },
   USER_ID_2: {
-    _id: 2,
+    _id: '2',
     username: 'User 2'
   },
   USER_ID_3: {
-    _id: 3,
+    _id: '3',
     username: 'User 2'
   }
 }
@@ -858,10 +862,10 @@ users: {
 ```javascript
 chatRooms: {
   ROOM_ID_1: {
-    users: [1, 3]
+    users: ['1', '3']
   },
   ROOM_ID_2: {
-    users: [1, 2, 3]
+    users: ['1', '2', '3']
   }
 }
 ```
@@ -872,7 +876,7 @@ chatRooms: {
 messages: {
   MESSAGE_ID_1: {
     content: 'My first message to <usertag>John</usertag>',
-    senderId: 2,
+    senderId: '2',
     timestamp: 'December 11, 2019 at 4:00:00 PM',
     seen: true
   }
