@@ -35,8 +35,6 @@
 		"build": "vite build",
 		"serve": "vite preview",
 		"clean:lib": "rm -rf dist/*.js && rm -rf dist/*.map && rm -rf dist/*.css && rm -rf dist/*.html",
-		"build:lib": "vue-cli-service build --target lib --no-clean --name vue-advanced-chat ./src/lib/index.js",
-		"build:wc": "vue-cli-service build --target wc --no-clean --name vue-advanced-chat ./src/lib/ChatWindow.vue",
 		"prepublish": "npm run lint && npm run build",
 		"lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
 		"reset": "rm -rf node_modules && rm -rf package-lock.json && npm i",
