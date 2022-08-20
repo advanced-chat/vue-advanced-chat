@@ -24616,7 +24616,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 var ChatWindow = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
 const VueAdvancedChat = defineCustomElement(ChatWindow);
+const PACKAGE_NAME = "vue-advanced-chat";
 function register() {
-  customElements.define("vue-advanced-chat", VueAdvancedChat);
+  if (!customElements.get(PACKAGE_NAME)) {
+    customElements.define(PACKAGE_NAME, VueAdvancedChat);
+  }
 }
 export { VueAdvancedChat, register };
