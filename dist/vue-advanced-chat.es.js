@@ -1,4 +1,4 @@
-import { openBlock, createBlock, Transition, withCtx, createElementBlock, normalizeClass, renderSlot, normalizeProps, guardReactiveProps, createCommentVNode, createElementVNode, resolveComponent, Fragment, createVNode, renderList, resolveDynamicComponent, normalizeStyle, toDisplayString, resolveDirective, createTextVNode, withModifiers, withDirectives, createSlots, vShow, withKeys, mergeProps, TransitionGroup, defineCustomElement } from "vue";
+import { openBlock, createBlock, Transition, withCtx, createElementBlock, normalizeClass, renderSlot, createCommentVNode, createElementVNode, resolveComponent, Fragment, createVNode, renderList, resolveDynamicComponent, createTextVNode, toDisplayString, normalizeStyle, resolveDirective, createSlots, normalizeProps, guardReactiveProps, withModifiers, withDirectives, vShow, withKeys, mergeProps, TransitionGroup, defineCustomElement } from "vue";
 var _export_sfc = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props) {
@@ -10,10 +10,17 @@ const _sfc_main$q = {
   name: "AppLoader",
   props: {
     show: { type: Boolean, default: false },
-    infinite: { type: Boolean, default: false }
+    infinite: { type: Boolean, default: false },
+    type: { type: String, required: true },
+    messageId: { type: String, default: "" }
   }
 };
 const _hoisted_1$q = /* @__PURE__ */ createElementVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_2$n = /* @__PURE__ */ createElementVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_3$i = /* @__PURE__ */ createElementVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_4$g = /* @__PURE__ */ createElementVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_5$a = /* @__PURE__ */ createElementVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_6$7 = /* @__PURE__ */ createElementVNode("div", { id: "vac-circle" }, null, -1);
 function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock(Transition, {
     name: "vac-fade-spinner",
@@ -27,9 +34,24 @@ function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
           "vac-container-top": $props.infinite
         }])
       }, [
-        renderSlot(_ctx.$slots, "spinner-icon", normalizeProps(guardReactiveProps({ show: $props.show, infinite: $props.infinite })), () => [
+        $props.type === "rooms" ? renderSlot(_ctx.$slots, "spinner-icon-rooms", { key: 0 }, () => [
           _hoisted_1$q
-        ])
+        ]) : createCommentVNode("", true),
+        $props.type === "infinite-rooms" ? renderSlot(_ctx.$slots, "spinner-icon-infinite-rooms", { key: 1 }, () => [
+          _hoisted_2$n
+        ]) : createCommentVNode("", true),
+        $props.type === "message-file" ? renderSlot(_ctx.$slots, "spinner-icon-message-file_" + $props.messageId, { key: 2 }, () => [
+          _hoisted_3$i
+        ]) : createCommentVNode("", true),
+        $props.type === "room-file" ? renderSlot(_ctx.$slots, "spinner-icon-room-file", { key: 3 }, () => [
+          _hoisted_4$g
+        ]) : createCommentVNode("", true),
+        $props.type === "messages" ? renderSlot(_ctx.$slots, "spinner-icon-messages", { key: 4 }, () => [
+          _hoisted_5$a
+        ]) : createCommentVNode("", true),
+        $props.type === "infinite-messages" ? renderSlot(_ctx.$slots, "spinner-icon-infinite-messages", { key: 5 }, () => [
+          _hoisted_6$7
+        ]) : createCommentVNode("", true)
       ], 2)) : createCommentVNode("", true)
     ]),
     _: 3
@@ -1006,7 +1028,12 @@ function compileToJSON(str, pseudoMarkdown) {
     if (str.replace(/\s/g, "").length === char.length * 2) {
       return [str];
     }
-    const match = strRight.match(new RegExp("^(" + (pseudoMarkdown[char].allowed_chars || ".") + "*" + (pseudoMarkdown[char].end ? "?" : "") + ")" + (pseudoMarkdown[char].end ? "(" + pseudoMarkdown[char].end + ")" : ""), "m"));
+    const match = strRight.match(
+      new RegExp(
+        "^(" + (pseudoMarkdown[char].allowed_chars || ".") + "*" + (pseudoMarkdown[char].end ? "?" : "") + ")" + (pseudoMarkdown[char].end ? "(" + pseudoMarkdown[char].end + ")" : ""),
+        "m"
+      )
+    );
     if (!match || !match[1]) {
       strLeft = strLeft + char;
       result.push(strLeft);
@@ -1059,7 +1086,11 @@ function iterateContent(item, result, types) {
         value: it
       });
     } else {
-      iterateContent(it, result, removeDuplicates([it.type].concat([item.type]).concat(types)));
+      iterateContent(
+        it,
+        result,
+        removeDuplicates([it.type].concat([item.type]).concat(types))
+      );
     }
   });
 }
@@ -1088,6 +1119,9 @@ const _sfc_main$n = {
   name: "FormatMessage",
   components: { SvgIcon },
   props: {
+    messageId: { type: String, default: "" },
+    roomId: { type: String, default: "" },
+    roomList: { type: Boolean, default: false },
     content: { type: [String, Number], required: true },
     deleted: { type: Boolean, default: false },
     users: { type: Array, default: () => [] },
@@ -1095,12 +1129,21 @@ const _sfc_main$n = {
     singleLine: { type: Boolean, default: false },
     reply: { type: Boolean, default: false },
     textFormatting: { type: Object, required: true },
+    textMessages: { type: Object, default: () => {
+    } },
     linkOptions: { type: Object, required: true }
   },
   emits: ["open-user-tag"],
   computed: {
     linkifiedMessage() {
-      const message = formatString$1(this.formatTags(this.content), this.linkify && !this.linkOptions.disabled, this.textFormatting);
+      if (this.deleted) {
+        return [{ value: this.textMessages.MESSAGE_DELETED }];
+      }
+      const message = formatString$1(
+        this.formatTags(this.content),
+        this.linkify && !this.linkOptions.disabled,
+        this.textFormatting
+      );
       message.forEach((m) => {
         m.url = this.checkType(m, "url");
         m.bold = this.checkType(m, "bold");
@@ -1116,7 +1159,12 @@ const _sfc_main$n = {
       return message;
     },
     formattedContent() {
-      return this.formatTags(this.content);
+      if (this.deleted) {
+        console.log("heuy");
+        return this.textMessages.MESSAGE_DELETED;
+      } else {
+        return this.formatTags(this.content);
+      }
     }
   },
   methods: {
@@ -1147,10 +1195,15 @@ const _sfc_main$n = {
     formatTags(content) {
       const firstTag = "<usertag>";
       const secondTag = "</usertag>";
-      const usertags = [...content.matchAll(new RegExp(firstTag, "gi"))].map((a) => a.index);
+      const usertags = [...content.matchAll(new RegExp(firstTag, "gi"))].map(
+        (a) => a.index
+      );
       const initialContent = content;
       usertags.forEach((index) => {
-        const userId = initialContent.substring(index + firstTag.length, initialContent.indexOf(secondTag, index));
+        const userId = initialContent.substring(
+          index + firstTag.length,
+          initialContent.indexOf(secondTag, index)
+        );
         const user = this.users.find((user2) => user2._id === userId);
         content = content.replaceAll(userId, `@${(user == null ? void 0 : user.username) || "unknown"}`);
       });
@@ -1158,7 +1211,9 @@ const _sfc_main$n = {
     },
     openTag(message) {
       if (!this.singleLine && this.checkType(message, "tag")) {
-        const user = this.users.find((u) => message.value.indexOf(u.username) !== -1);
+        const user = this.users.find(
+          (u) => message.value.indexOf(u.username) !== -1
+        );
         this.$emit("open-user-tag", user);
       }
     },
@@ -1170,13 +1225,22 @@ const _sfc_main$n = {
         const onlyEmojis = this.containsOnlyEmojis();
         emojiSize = onlyEmojis ? 28 : 20;
       }
-      return value.replaceAll(/[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{1F9B0}-\u{1F9B3}]/gu, (v) => {
-        return `<span style="font-size: ${emojiSize}px">${v}</span>`;
-      });
+      return value.replaceAll(
+        /[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{1F9B0}-\u{1F9B3}]/gu,
+        (v) => {
+          return `<span style="font-size: ${emojiSize}px">${v}</span>`;
+        }
+      );
     },
     containsOnlyEmojis() {
-      const onlyEmojis = this.content.replace(new RegExp("[\0-\u1EEFf]", "g"), "");
-      const visibleChars = this.content.replace(new RegExp("[\n\rs]+|( )+", "g"), "");
+      const onlyEmojis = this.content.replace(
+        new RegExp("[\0-\u1EEFf]", "g"),
+        ""
+      );
+      const visibleChars = this.content.replace(
+        new RegExp("[\n\rs]+|( )+", "g"),
+        ""
+      );
       return onlyEmojis.length === visibleChars.length;
     }
   }
@@ -1216,14 +1280,20 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
             onClick: ($event) => $options.openTag(message)
           }, {
             default: withCtx(() => [
-              renderSlot(_ctx.$slots, "deleted-icon", normalizeProps(guardReactiveProps({ deleted: $props.deleted })), () => [
-                $props.deleted ? (openBlock(), createBlock(_component_svg_icon, {
-                  key: 0,
-                  name: "deleted",
-                  class: "vac-icon-deleted"
-                })) : createCommentVNode("", true)
-              ]),
-              message.url && message.image ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
+              $props.deleted ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
+                renderSlot(
+                  _ctx.$slots,
+                  $props.roomList ? "deleted-icon-room_" + $props.roomId : "deleted-icon_" + $props.messageId,
+                  {},
+                  () => [
+                    createVNode(_component_svg_icon, {
+                      name: "deleted",
+                      class: normalizeClass(["vac-icon-deleted", { "vac-icon-deleted-room": $props.roomList }])
+                    }, null, 8, ["class"])
+                  ]
+                ),
+                createTextVNode(" " + toDisplayString($props.textMessages.MESSAGE_DELETED), 1)
+              ], 64)) : message.url && message.image ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
                 createElementVNode("div", _hoisted_1$n, [
                   createElementVNode("div", {
                     class: "vac-image-link",
@@ -1237,7 +1307,7 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
                   createElementVNode("span", null, toDisplayString(message.value), 1)
                 ])
               ], 64)) : (openBlock(), createElementBlock("span", {
-                key: 1,
+                key: 2,
                 innerHTML: message.value
               }, null, 8, _hoisted_3$g))
             ]),
@@ -1260,7 +1330,9 @@ const EVENTS = IS_TOUCH ? ["touchstart"] : ["click"];
 const processDirectiveArguments = (bindingValue) => {
   const isFunction = typeof bindingValue === "function";
   if (!isFunction && typeof bindingValue !== "object") {
-    throw new Error("v-click-outside: Binding value must be a function or an object");
+    throw new Error(
+      "v-click-outside: Binding value must be a function or an object"
+    );
   }
   return {
     handler: isFunction ? bindingValue : bindingValue.handler,
@@ -1319,16 +1391,20 @@ const beforeMount = (el, { value }) => {
     };
     el[HANDLERS_PROPERTY] = [...el[HANDLERS_PROPERTY], detectIframeEvent];
   }
-  el[HANDLERS_PROPERTY].forEach(({ event, srcTarget, handler: thisHandler }) => setTimeout(() => {
-    if (!el[HANDLERS_PROPERTY]) {
-      return;
-    }
-    srcTarget.addEventListener(event, thisHandler, capture);
-  }, 0));
+  el[HANDLERS_PROPERTY].forEach(
+    ({ event, srcTarget, handler: thisHandler }) => setTimeout(() => {
+      if (!el[HANDLERS_PROPERTY]) {
+        return;
+      }
+      srcTarget.addEventListener(event, thisHandler, capture);
+    }, 0)
+  );
 };
 const unmounted = (el) => {
   const handlers = el[HANDLERS_PROPERTY] || [];
-  handlers.forEach(({ event, srcTarget, handler, capture }) => srcTarget.removeEventListener(event, handler, capture));
+  handlers.forEach(
+    ({ event, srcTarget, handler, capture }) => srcTarget.removeEventListener(event, handler, capture)
+  );
   delete el[HANDLERS_PROPERTY];
 };
 const updated = (el, { value, oldValue }) => {
@@ -1409,11 +1485,13 @@ const _sfc_main$m = {
       const isTyping = this.typingUsers;
       if (isTyping)
         return isTyping;
-      const content = this.room.lastMessage.deleted ? this.textMessages.MESSAGE_DELETED : this.room.lastMessage.content;
+      const content = this.room.lastMessage.content;
       if (this.room.users.length <= 2) {
         return content;
       }
-      const user = this.room.users.find((user2) => user2._id === this.room.lastMessage.senderId);
+      const user = this.room.users.find(
+        (user2) => user2._id === this.room.lastMessage.senderId
+      );
       if (this.room.lastMessage.username) {
         return `${this.room.lastMessage.username} - ${content}`;
       } else if (!user || user._id === this.currentUserId) {
@@ -1488,14 +1566,14 @@ const _hoisted_11$3 = {
   class: "vac-menu-options"
 };
 const _hoisted_12$2 = { class: "vac-menu-list" };
-const _hoisted_13$2 = ["onClick"];
+const _hoisted_13$1 = ["onClick"];
 function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   const _component_format_message = resolveComponent("format-message");
   const _directive_click_outside = resolveDirective("click-outside");
   return openBlock(), createElementBlock("div", _hoisted_1$m, [
-    renderSlot(_ctx.$slots, "room-list-item", normalizeProps(guardReactiveProps({ room: $props.room })), () => [
-      renderSlot(_ctx.$slots, "room-list-avatar", normalizeProps(guardReactiveProps({ room: $props.room })), () => [
+    renderSlot(_ctx.$slots, "room-list-item_" + $props.room.roomId, {}, () => [
+      renderSlot(_ctx.$slots, "room-list-avatar_" + $props.room.roomId, {}, () => [
         $props.room.avatar ? (openBlock(), createElementBlock("div", {
           key: 0,
           class: "vac-avatar",
@@ -1517,7 +1595,7 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
           }])
         }, [
           $options.isMessageCheckmarkVisible ? (openBlock(), createElementBlock("span", _hoisted_6$6, [
-            renderSlot(_ctx.$slots, "checkmark-icon", normalizeProps(guardReactiveProps({ message: $props.room.lastMessage })), () => [
+            renderSlot(_ctx.$slots, "checkmark-icon_" + $props.room.roomId, {}, () => [
               createVNode(_component_svg_icon, {
                 name: $props.room.lastMessage.distributed ? "double-checkmark" : "checkmark",
                 param: $props.room.lastMessage.seen ? "seen" : "",
@@ -1526,7 +1604,7 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
             ])
           ])) : createCommentVNode("", true),
           $props.room.lastMessage && !$props.room.lastMessage.deleted && $options.isAudio ? (openBlock(), createElementBlock("div", _hoisted_7$6, [
-            renderSlot(_ctx.$slots, "microphone-icon", {}, () => [
+            renderSlot(_ctx.$slots, "microphone-icon_" + $props.room.roomId, {}, () => [
               createVNode(_component_svg_icon, {
                 name: "microphone",
                 class: "vac-icon-microphone"
@@ -1535,29 +1613,37 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
             createTextVNode(" " + toDisplayString($options.formattedDuration), 1)
           ])) : $props.room.lastMessage ? (openBlock(), createBlock(_component_format_message, {
             key: 2,
+            "message-id": $props.room.lastMessage._id,
+            "room-id": $props.room.roomId,
+            "room-list": true,
             content: $options.getLastMessage,
             deleted: !!$props.room.lastMessage.deleted && !$options.typingUsers,
             users: $props.room.users,
+            "text-messages": $props.textMessages,
             linkify: false,
             "text-formatting": $props.textFormatting,
             "link-options": $props.linkOptions,
             "single-line": true
-          }, {
-            "deleted-icon": withCtx((data) => [
-              renderSlot(_ctx.$slots, "deleted-icon", normalizeProps(guardReactiveProps(data)))
-            ]),
-            _: 3
-          }, 8, ["content", "deleted", "users", "text-formatting", "link-options"])) : createCommentVNode("", true),
+          }, createSlots({ _: 2 }, [
+            renderList(_ctx.$slots, (idx, name) => {
+              return {
+                name,
+                fn: withCtx((data) => [
+                  renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                ])
+              };
+            })
+          ]), 1032, ["message-id", "room-id", "content", "deleted", "users", "text-messages", "text-formatting", "link-options"])) : createCommentVNode("", true),
           !$props.room.lastMessage && $options.typingUsers ? (openBlock(), createElementBlock("div", _hoisted_8$4, toDisplayString($options.typingUsers), 1)) : createCommentVNode("", true),
           createElementVNode("div", _hoisted_9$4, [
             $props.room.unreadCount ? (openBlock(), createElementBlock("div", _hoisted_10$4, toDisplayString($props.room.unreadCount), 1)) : createCommentVNode("", true),
-            renderSlot(_ctx.$slots, "room-list-options", normalizeProps(guardReactiveProps({ room: $props.room })), () => [
+            renderSlot(_ctx.$slots, "room-list-options_" + $props.room.roomId, {}, () => [
               $props.roomActions.length ? (openBlock(), createElementBlock("div", {
                 key: 0,
                 class: "vac-svg-button vac-list-room-options",
                 onClick: _cache[0] || (_cache[0] = withModifiers(($event) => $data.roomMenuOpened = $props.room.roomId, ["stop"]))
               }, [
-                renderSlot(_ctx.$slots, "room-list-options-icon", {}, () => [
+                renderSlot(_ctx.$slots, "room-list-options-icon_" + $props.room.roomId, {}, () => [
                   createVNode(_component_svg_icon, {
                     name: "dropdown",
                     param: "room"
@@ -1578,7 +1664,7 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
                           createElementVNode("div", {
                             class: "vac-menu-item",
                             onClick: withModifiers(($event) => $options.roomActionHandler(action), ["stop"])
-                          }, toDisplayString(action.title), 9, _hoisted_13$2)
+                          }, toDisplayString(action.title), 9, _hoisted_13$1)
                         ]);
                       }), 128))
                     ])
@@ -1706,7 +1792,11 @@ const _sfc_main$l = {
       }
     },
     searchRoom(ev) {
-      this.filteredRooms = filteredItems(this.rooms, "roomName", ev.target.value);
+      this.filteredRooms = filteredItems(
+        this.rooms,
+        "roomName",
+        ev.target.value
+      );
     },
     openRoom(room) {
       if (room.roomId === this.room.roomId && !this.isMobile)
@@ -1762,14 +1852,21 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
         "show-add-room": $props.showAddRoom,
         onSearchRoom: $options.searchRoom,
         onAddRoom: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("add-room"))
-      }, {
-        "add-icon": withCtx(() => [
-          renderSlot(_ctx.$slots, "add-icon")
-        ]),
-        _: 3
-      }, 8, ["rooms", "loading-rooms", "text-messages", "show-search", "show-add-room", "onSearchRoom"])
+      }, createSlots({ _: 2 }, [
+        renderList(_ctx.$slots, (idx, name) => {
+          return {
+            name,
+            fn: withCtx((data) => [
+              renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+            ])
+          };
+        })
+      ]), 1032, ["rooms", "loading-rooms", "text-messages", "show-search", "show-add-room", "onSearchRoom"])
     ]),
-    createVNode(_component_loader, { show: $props.loadingRooms }, createSlots({ _: 2 }, [
+    createVNode(_component_loader, {
+      show: $props.loadingRooms,
+      type: "rooms"
+    }, createSlots({ _: 2 }, [
       renderList(_ctx.$slots, (idx, name) => {
         return {
           name,
@@ -1801,7 +1898,7 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
             "room-actions": $props.roomActions,
             onRoomActionHandler: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("room-action-handler", $event))
           }, createSlots({ _: 2 }, [
-            renderList(_ctx.$slots, (i, name) => {
+            renderList(_ctx.$slots, (idx, name) => {
               return {
                 name,
                 fn: withCtx((data) => [
@@ -1817,7 +1914,8 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
           $props.rooms.length && !$props.loadingRooms ? (openBlock(), createElementBlock("div", _hoisted_4$d, [
             createVNode(_component_loader, {
               show: $data.showLoader,
-              infinite: true
+              infinite: true,
+              type: "infinite-rooms"
             }, createSlots({ _: 2 }, [
               renderList(_ctx.$slots, (idx, name) => {
                 return {
@@ -1939,12 +2037,12 @@ const _hoisted_11$2 = {
   class: "vac-menu-options"
 };
 const _hoisted_12$1 = { class: "vac-menu-list" };
-const _hoisted_13$1 = ["onClick"];
+const _hoisted_13 = ["onClick"];
 function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   const _directive_click_outside = resolveDirective("click-outside");
   return openBlock(), createElementBlock("div", _hoisted_1$k, [
-    renderSlot(_ctx.$slots, "room-header", normalizeProps(guardReactiveProps({ room: $props.room, typingUsers: $options.typingUsers, userStatus: $options.userStatus })), () => [
+    renderSlot(_ctx.$slots, "room-header", {}, () => [
       createElementVNode("div", _hoisted_2$h, [
         createVNode(Transition, { name: "vac-slide-up" }, {
           default: withCtx(() => [
@@ -1974,7 +2072,10 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
         !$props.messageSelectionEnabled && $data.messageSelectionAnimationEnded ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
           !$props.singleRoom ? (openBlock(), createElementBlock("div", {
             key: 0,
-            class: normalizeClass(["vac-svg-button vac-toggle-button", { "vac-rotate-icon-init": !$props.isMobile, "vac-rotate-icon": !$props.showRoomsList && !$props.isMobile }]),
+            class: normalizeClass(["vac-svg-button vac-toggle-button", {
+              "vac-rotate-icon-init": !$props.isMobile,
+              "vac-rotate-icon": !$props.showRoomsList && !$props.isMobile
+            }]),
             onClick: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("toggle-rooms-list"))
           }, [
             renderSlot(_ctx.$slots, "toggle-icon", {}, () => [
@@ -1985,14 +2086,14 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
             class: normalizeClass(["vac-info-wrapper", { "vac-item-clickable": $props.roomInfoEnabled }]),
             onClick: _cache[2] || (_cache[2] = ($event) => _ctx.$emit("room-info"))
           }, [
-            renderSlot(_ctx.$slots, "room-header-avatar", normalizeProps(guardReactiveProps({ room: $props.room })), () => [
+            renderSlot(_ctx.$slots, "room-header-avatar", {}, () => [
               $props.room.avatar ? (openBlock(), createElementBlock("div", {
                 key: 0,
                 class: "vac-avatar",
                 style: normalizeStyle({ "background-image": `url('${$props.room.avatar}')` })
               }, null, 4)) : createCommentVNode("", true)
             ]),
-            renderSlot(_ctx.$slots, "room-header-info", normalizeProps(guardReactiveProps({ room: $props.room, typingUsers: $options.typingUsers, userStatus: $options.userStatus })), () => [
+            renderSlot(_ctx.$slots, "room-header-info", {}, () => [
               createElementVNode("div", _hoisted_7$5, [
                 createElementVNode("div", _hoisted_8$3, toDisplayString($props.room.roomName), 1),
                 $options.typingUsers ? (openBlock(), createElementBlock("div", _hoisted_9$3, toDisplayString($options.typingUsers), 1)) : (openBlock(), createElementBlock("div", _hoisted_10$3, toDisplayString($options.userStatus), 1))
@@ -2023,7 +2124,7 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
                         createElementVNode("div", {
                           class: "vac-menu-item",
                           onClick: ($event) => $options.menuActionHandler(action)
-                        }, toDisplayString(action.title), 9, _hoisted_13$1)
+                        }, toDisplayString(action.title), 9, _hoisted_13)
                       ]);
                     }), 128))
                   ])
@@ -2221,12 +2322,14 @@ function normalizeTokens(str) {
 }
 function transformEmojiData(emojiData) {
   const res = emojiData.map(({ annotation, emoticon, group, order, shortcodes, skins, tags, emoji, version }) => {
-    const tokens = [...new Set(normalizeTokens([
-      ...(shortcodes || []).map(extractTokens).flat(),
-      ...tags.map(extractTokens).flat(),
-      ...extractTokens(annotation),
-      emoticon
-    ]))].sort();
+    const tokens = [...new Set(
+      normalizeTokens([
+        ...(shortcodes || []).map(extractTokens).flat(),
+        ...tags.map(extractTokens).flat(),
+        ...extractTokens(annotation),
+        emoticon
+      ])
+    )].sort();
     const res2 = {
       annotation,
       group,
@@ -4396,10 +4499,13 @@ function instance($$self, $$props, $$invalidate) {
       {
         async function handleDatabaseLoading() {
           let showingLoadingMessage = false;
-          const timeoutHandle = setTimeout(() => {
-            showingLoadingMessage = true;
-            $$invalidate(18, message = i18n.loadingMessage);
-          }, TIMEOUT_BEFORE_LOADING_MESSAGE);
+          const timeoutHandle = setTimeout(
+            () => {
+              showingLoadingMessage = true;
+              $$invalidate(18, message = i18n.loadingMessage);
+            },
+            TIMEOUT_BEFORE_LOADING_MESSAGE
+          );
           try {
             await database.ready();
             $$invalidate(14, databaseLoaded = true);
@@ -4557,9 +4663,13 @@ function instance($$self, $$props, $$invalidate) {
     if ($$self.$$.dirty[0] & 192) {
       {
         if (skinTonePickerExpanded) {
-          skinToneDropdown.addEventListener("transitionend", () => {
-            $$invalidate(19, skinTonePickerExpandedAfterAnimation = true);
-          }, { once: true });
+          skinToneDropdown.addEventListener(
+            "transitionend",
+            () => {
+              $$invalidate(19, skinTonePickerExpandedAfterAnimation = true);
+            },
+            { once: true }
+          );
         } else {
           $$invalidate(19, skinTonePickerExpandedAfterAnimation = false);
         }
@@ -4625,13 +4735,22 @@ function instance($$self, $$props, $$invalidate) {
 class Picker extends SvelteComponent {
   constructor(options2) {
     super();
-    init(this, options2, instance, create_fragment, safe_not_equal, {
-      skinToneEmoji: 40,
-      i18n: 0,
-      database: 39,
-      customEmoji: 41,
-      customCategorySorting: 42
-    }, null, [-1, -1, -1]);
+    init(
+      this,
+      options2,
+      instance,
+      create_fragment,
+      safe_not_equal,
+      {
+        skinToneEmoji: 40,
+        i18n: 0,
+        database: 39,
+        customEmoji: 41,
+        customCategorySorting: 42
+      },
+      null,
+      [-1, -1, -1]
+    );
   }
 }
 const DEFAULT_DATA_SOURCE = "https://cdn.jsdelivr.net/npm/emoji-picker-element-data@^1/en/emojibase/data.json";
@@ -4721,7 +4840,10 @@ class PickerElement extends HTMLElement {
     return ["locale", "data-source", "skin-tone-emoji"];
   }
   attributeChangedCallback(attrName, oldValue, newValue) {
-    this._set(attrName.replace(/-([a-z])/g, (_, up) => up.toUpperCase()), newValue);
+    this._set(
+      attrName.replace(/-([a-z])/g, (_, up) => up.toUpperCase()),
+      newValue
+    );
   }
   _set(prop, newValue) {
     this._ctx[prop] = newValue;
@@ -4772,7 +4894,8 @@ const _sfc_main$j = {
     emojiOpened: { type: Boolean, default: false },
     emojiReaction: { type: Boolean, default: false },
     positionTop: { type: Boolean, default: false },
-    positionRight: { type: Boolean, default: false }
+    positionRight: { type: Boolean, default: false },
+    messageId: { type: String, default: "" }
   },
   emits: ["add-emoji", "open-emoji"],
   data() {
@@ -4787,11 +4910,14 @@ const _sfc_main$j = {
       if (val) {
         setTimeout(() => {
           this.addCustomStyling();
-          this.$refs.emojiPicker.shadowRoot.addEventListener("emoji-click", ({ detail }) => {
-            this.$emit("add-emoji", {
-              unicode: detail.unicode
-            });
-          });
+          this.$refs.emojiPicker.shadowRoot.addEventListener(
+            "emoji-click",
+            ({ detail }) => {
+              this.$emit("add-emoji", {
+                unicode: detail.unicode
+              });
+            }
+          );
         }, 0);
       }
     }
@@ -4824,7 +4950,11 @@ const _sfc_main$j = {
     },
     openEmoji(ev) {
       this.$emit("open-emoji", !this.emojiOpened);
-      this.setEmojiPickerPosition(ev.clientY, ev.view.innerWidth, ev.view.innerHeight);
+      this.setEmojiPickerPosition(
+        ev.clientY,
+        ev.view.innerWidth,
+        ev.view.innerHeight
+      );
     },
     setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
       const mobileSize = innerWidth < 500 || innerHeight < 700;
@@ -4862,12 +4992,17 @@ function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
       class: normalizeClass(["vac-svg-button", { "vac-emoji-reaction": $props.emojiReaction }]),
       onClick: _cache[0] || (_cache[0] = (...args) => $options.openEmoji && $options.openEmoji(...args))
     }, [
-      renderSlot(_ctx.$slots, "emoji-picker-icon", {}, () => [
-        createVNode(_component_svg_icon, {
-          name: "emoji",
-          param: $props.emojiReaction ? "reaction" : ""
-        }, null, 8, ["param"])
-      ])
+      renderSlot(
+        _ctx.$slots,
+        $props.messageId ? "emoji-picker-reaction-icon_" + $props.messageId : "emoji-picker-icon",
+        {},
+        () => [
+          createVNode(_component_svg_icon, {
+            name: "emoji",
+            param: $props.emojiReaction ? "reaction" : ""
+          }, null, 8, ["param"])
+        ]
+      )
     ], 2),
     $props.emojiOpened ? (openBlock(), createBlock(Transition, {
       key: 0,
@@ -4924,7 +5059,8 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createElementBlock("div", _hoisted_1$i, [
     createVNode(_component_loader, {
-      show: $props.file.loading
+      show: $props.file.loading,
+      type: "room-file"
     }, createSlots({ _: 2 }, [
       renderList(_ctx.$slots, (idx, name) => {
         return {
@@ -5010,7 +5146,16 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
                 file,
                 index: i,
                 onRemoveFile: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("remove-file", $event))
-              }, null, 8, ["file", "index"])
+              }, createSlots({ _: 2 }, [
+                renderList(_ctx.$slots, (idx, name) => {
+                  return {
+                    name,
+                    fn: withCtx((data) => [
+                      renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                    ])
+                  };
+                })
+              ]), 1032, ["file", "index"])
             ]);
           }), 128))
         ]),
@@ -5019,7 +5164,7 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
             class: "vac-svg-button",
             onClick: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("reset-message"))
           }, [
-            renderSlot(_ctx.$slots, "reply-close-icon", {}, () => [
+            renderSlot(_ctx.$slots, "files-close-icon", {}, () => [
               createVNode(_component_svg_icon, { name: "close-outline" })
             ])
           ])
@@ -5176,7 +5321,10 @@ const _sfc_main$f = {
         this.player.currentTime = pos * this.player.duration;
     },
     updateProgressTime() {
-      this.$emit("update-progress-time", this.progress > 1 ? this.playedTime : this.duration);
+      this.$emit(
+        "update-progress-time",
+        this.progress > 1 ? this.playedTime : this.duration
+      );
     }
   }
 };
@@ -5191,9 +5339,9 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
         class: "vac-svg-button",
         onClick: _cache[0] || (_cache[0] = (...args) => $options.playback && $options.playback(...args))
       }, [
-        $data.isPlaying ? renderSlot(_ctx.$slots, "audio-pause-icon", { key: 0 }, () => [
+        $data.isPlaying ? renderSlot(_ctx.$slots, "audio-pause-icon_" + $props.messageId, { key: 0 }, () => [
           createVNode(_component_svg_icon, { name: "audio-pause" })
-        ]) : renderSlot(_ctx.$slots, "audio-play-icon", { key: 1 }, () => [
+        ]) : renderSlot(_ctx.$slots, "audio-play-icon_" + $props.messageId, { key: 1 }, () => [
           createVNode(_component_svg_icon, { name: "audio-play" })
         ])
       ]),
@@ -5285,21 +5433,13 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
             createElementVNode("div", _hoisted_3$b, toDisplayString($props.messageReply.username), 1),
             createElementVNode("div", _hoisted_4$a, [
               createVNode(_component_format_message, {
+                "message-id": $props.messageReply._id,
                 content: $props.messageReply.content,
                 users: $props.room.users,
                 "text-formatting": $props.textFormatting,
                 "link-options": $props.linkOptions,
                 reply: true
-              }, createSlots({ _: 2 }, [
-                renderList(_ctx.$slots, (i, name) => {
-                  return {
-                    name,
-                    fn: withCtx((data) => [
-                      renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
-                    ])
-                  };
-                })
-              ]), 1032, ["content", "users", "text-formatting", "link-options"])
+              }, null, 8, ["message-id", "content", "users", "text-formatting", "link-options"])
             ])
           ]),
           $options.isImage ? (openBlock(), createElementBlock("img", {
@@ -5313,9 +5453,10 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
           ])) : $options.isAudio ? (openBlock(), createBlock(_component_audio_player, {
             key: 2,
             src: $options.firstFile.url,
+            "message-selection-enabled": false,
             class: "vac-audio-reply"
           }, createSlots({ _: 2 }, [
-            renderList(_ctx.$slots, (i, name) => {
+            renderList(_ctx.$slots, (idx, name) => {
               return {
                 name,
                 fn: withCtx((data) => [
@@ -5510,7 +5651,10 @@ const _sfc_main$b = {
     },
     selectItem(val) {
       if (val) {
-        this.$emit("select-template-text", this.filteredTemplatesText[this.activeItem]);
+        this.$emit(
+          "select-template-text",
+          this.filteredTemplatesText[this.activeItem]
+        );
       }
     },
     activeUpOrDown() {
@@ -6680,7 +6824,13 @@ function NewMDCT() {
       wkPos = 286;
       if (gfc.mode_gr == 1) {
         for (var i = 0; i < 18; i++) {
-          System$9.arraycopy(gfc.sb_sample[ch][1][i], 0, gfc.sb_sample[ch][0][i], 0, 32);
+          System$9.arraycopy(
+            gfc.sb_sample[ch][1][i],
+            0,
+            gfc.sb_sample[ch][0][i],
+            0,
+            32
+          );
         }
       }
     }
@@ -6924,9 +7074,31 @@ function Encoder() {
           bufpPos = 576 + gr * 576 - Encoder.FFTOFFSET;
         }
         if (gfp.VBR == VbrMode$6.vbr_mtrh || gfp.VBR == VbrMode$6.vbr_mt) {
-          ret = psy.L3psycho_anal_vbr(gfp, bufp, bufpPos, gr, masking_LR, masking_MS, pe[gr], pe_MS[gr], tot_ener[gr], blocktype);
+          ret = psy.L3psycho_anal_vbr(
+            gfp,
+            bufp,
+            bufpPos,
+            gr,
+            masking_LR,
+            masking_MS,
+            pe[gr],
+            pe_MS[gr],
+            tot_ener[gr],
+            blocktype
+          );
         } else {
-          ret = psy.L3psycho_anal_ns(gfp, bufp, bufpPos, gr, masking_LR, masking_MS, pe[gr], pe_MS[gr], tot_ener[gr], blocktype);
+          ret = psy.L3psycho_anal_ns(
+            gfp,
+            bufp,
+            bufpPos,
+            gr,
+            masking_LR,
+            masking_MS,
+            pe[gr],
+            pe_MS[gr],
+            tot_ener[gr],
+            blocktype
+          );
         }
         if (ret != 0)
           return -4;
@@ -6987,10 +7159,22 @@ function Encoder() {
           gfc.pinfo.ms_ener_ratio[gr] = ms_ener_ratio[gr];
           gfc.pinfo.blocktype[gr][ch] = gfc.l3_side.tt[gr][ch].block_type;
           gfc.pinfo.pe[gr][ch] = pe_use[gr][ch];
-          System$7.arraycopy(gfc.l3_side.tt[gr][ch].xr, 0, gfc.pinfo.xr[gr][ch], 0, 576);
+          System$7.arraycopy(
+            gfc.l3_side.tt[gr][ch].xr,
+            0,
+            gfc.pinfo.xr[gr][ch],
+            0,
+            576
+          );
           if (gfc.mode_ext == MPG_MD_MS_LR) {
             gfc.pinfo.ers[gr][ch] = gfc.pinfo.ers[gr][ch + 2];
-            System$7.arraycopy(gfc.pinfo.energy[gr][ch + 2], 0, gfc.pinfo.energy[gr][ch], 0, gfc.pinfo.energy[gr][ch].length);
+            System$7.arraycopy(
+              gfc.pinfo.energy[gr][ch + 2],
+              0,
+              gfc.pinfo.energy[gr][ch],
+              0,
+              gfc.pinfo.energy[gr][ch].length
+            );
           }
         }
       }
@@ -7408,7 +7592,9 @@ function PsyModel() {
     for (var j = Encoder.BLKSIZE / 2 - 1; j >= 0; --j) {
       var re = wsamp_l[wsamp_lPos + 0][Encoder.BLKSIZE / 2 - j];
       var im = wsamp_l[wsamp_lPos + 0][Encoder.BLKSIZE / 2 + j];
-      fftenergy[Encoder.BLKSIZE / 2 - j] = NON_LINEAR_SCALE_ENERGY((re * re + im * im) * 0.5);
+      fftenergy[Encoder.BLKSIZE / 2 - j] = NON_LINEAR_SCALE_ENERGY(
+        (re * re + im * im) * 0.5
+      );
     }
     for (var b = 2; b >= 0; --b) {
       fftenergy_s[b][0] = wsamp_s[wsamp_sPos + 0][b][0];
@@ -7416,7 +7602,9 @@ function PsyModel() {
       for (var j = Encoder.BLKSIZE_s / 2 - 1; j >= 0; --j) {
         var re = wsamp_s[wsamp_sPos + 0][b][Encoder.BLKSIZE_s / 2 - j];
         var im = wsamp_s[wsamp_sPos + 0][b][Encoder.BLKSIZE_s / 2 + j];
-        fftenergy_s[b][Encoder.BLKSIZE_s / 2 - j] = NON_LINEAR_SCALE_ENERGY((re * re + im * im) * 0.5);
+        fftenergy_s[b][Encoder.BLKSIZE_s / 2 - j] = NON_LINEAR_SCALE_ENERGY(
+          (re * re + im * im) * 0.5
+        );
       }
     }
     {
@@ -7639,9 +7827,15 @@ function PsyModel() {
           continue;
         }
         var mld = gfc.mld_s[sb] * gfc.en[3].s[sb][sblock];
-        var rmid = Math.max(gfc.thm[2].s[sb][sblock], Math.min(gfc.thm[3].s[sb][sblock], mld));
+        var rmid = Math.max(
+          gfc.thm[2].s[sb][sblock],
+          Math.min(gfc.thm[3].s[sb][sblock], mld)
+        );
         mld = gfc.mld_s[sb] * gfc.en[2].s[sb][sblock];
-        var rside = Math.max(gfc.thm[3].s[sb][sblock], Math.min(gfc.thm[2].s[sb][sblock], mld));
+        var rside = Math.max(
+          gfc.thm[3].s[sb][sblock],
+          Math.min(gfc.thm[2].s[sb][sblock], mld)
+        );
         gfc.thm[2].s[sb][sblock] = rmid;
         gfc.thm[3].s[sb][sblock] = rside;
       }
@@ -7655,7 +7849,10 @@ function PsyModel() {
     for (var sb = 0; sb < Encoder.SBMAX_l; sb++) {
       var thmLR, thmM, thmS, ath;
       ath = gfc.ATH.cb_l[gfc.bm_l[sb]] * athlower;
-      thmLR = Math.min(Math.max(gfc.thm[0].l[sb], ath), Math.max(gfc.thm[1].l[sb], ath));
+      thmLR = Math.min(
+        Math.max(gfc.thm[0].l[sb], ath),
+        Math.max(gfc.thm[1].l[sb], ath)
+      );
       thmM = Math.max(gfc.thm[2].l[sb], ath);
       thmS = Math.max(gfc.thm[3].l[sb], ath);
       if (thmLR * msfix < thmM + thmS) {
@@ -7671,7 +7868,10 @@ function PsyModel() {
       for (var sblock = 0; sblock < 3; sblock++) {
         var thmLR, thmM, thmS, ath;
         ath = gfc.ATH.cb_s[gfc.bm_s[sb]] * athlower;
-        thmLR = Math.min(Math.max(gfc.thm[0].s[sb][sblock], ath), Math.max(gfc.thm[1].s[sb][sblock], ath));
+        thmLR = Math.min(
+          Math.max(gfc.thm[0].s[sb][sblock], ath),
+          Math.max(gfc.thm[1].s[sb][sblock], ath)
+        );
         thmM = Math.max(gfc.thm[2].s[sb][sblock], ath);
         thmS = Math.max(gfc.thm[3].s[sb][sblock], ath);
         if (thmLR * msfix < thmM + thmS) {
@@ -7965,7 +8165,9 @@ function PsyModel() {
           m = max[b];
         if (m < max[b + 1])
           m = max[b + 1];
-        assert$9(gfc.numlines_l[b - 1] + gfc.numlines_l[b] + gfc.numlines_l[b + 1] - 1 > 0);
+        assert$9(
+          gfc.numlines_l[b - 1] + gfc.numlines_l[b] + gfc.numlines_l[b + 1] - 1 > 0
+        );
         a = 20 * (m * 3 - a) / (a * (gfc.numlines_l[b - 1] + gfc.numlines_l[b] + gfc.numlines_l[b + 1] - 1));
         var k = 0 | a;
         if (k > last_tab_entry)
@@ -8154,7 +8356,19 @@ function PsyModel() {
       energy[chn] = gfc.tot_ener[chn];
       wsamp_s = wsamp_S;
       wsamp_l = wsamp_L;
-      compute_ffts(gfp, fftenergy, fftenergy_s, wsamp_l, chn & 1, wsamp_s, chn & 1, gr_out, chn, buffer, bufPos);
+      compute_ffts(
+        gfp,
+        fftenergy,
+        fftenergy_s,
+        wsamp_l,
+        chn & 1,
+        wsamp_s,
+        chn & 1,
+        gr_out,
+        chn,
+        buffer,
+        bufPos
+      );
       calc_energy(gfc, fftenergy, eb_l, max, avg);
       calc_mask_index_l(gfc, max, avg, mask_idx_l);
       for (sblock = 0; sblock < 3; sblock++) {
@@ -8166,16 +8380,28 @@ function PsyModel() {
           thmm *= NS_PREECHO_ATT0;
           if (ns_attacks[sblock] >= 2 || ns_attacks[sblock + 1] == 1) {
             var idx = sblock != 0 ? sblock - 1 : 2;
-            var p = NS_INTERP(gfc.thm[chn].s[sb][idx], thmm, NS_PREECHO_ATT1 * pcfact);
+            var p = NS_INTERP(
+              gfc.thm[chn].s[sb][idx],
+              thmm,
+              NS_PREECHO_ATT1 * pcfact
+            );
             thmm = Math.min(thmm, p);
           }
           if (ns_attacks[sblock] == 1) {
             var idx = sblock != 0 ? sblock - 1 : 2;
-            var p = NS_INTERP(gfc.thm[chn].s[sb][idx], thmm, NS_PREECHO_ATT2 * pcfact);
+            var p = NS_INTERP(
+              gfc.thm[chn].s[sb][idx],
+              thmm,
+              NS_PREECHO_ATT2 * pcfact
+            );
             thmm = Math.min(thmm, p);
           } else if (sblock != 0 && ns_attacks[sblock - 1] == 3 || sblock == 0 && gfc.nsPsy.lastAttacks[chn] == 3) {
             var idx = sblock != 2 ? sblock + 1 : 0;
-            var p = NS_INTERP(gfc.thm[chn].s[sb][idx], thmm, NS_PREECHO_ATT2 * pcfact);
+            var p = NS_INTERP(
+              gfc.thm[chn].s[sb][idx],
+              thmm,
+              NS_PREECHO_ATT2 * pcfact
+            );
             thmm = Math.min(thmm, p);
           }
           enn = en_subshort[sblock * 3 + 3] + en_subshort[sblock * 3 + 4] + en_subshort[sblock * 3 + 5];
@@ -8202,7 +8428,14 @@ function PsyModel() {
           if (gfc.blocktype_old[chn & 1] == Encoder.SHORT_TYPE)
             thr[b] = ecb;
           else {
-            thr[b] = NS_INTERP(Math.min(ecb, Math.min(rpelev * gfc.nb_1[chn][b], rpelev2 * gfc.nb_2[chn][b])), ecb, pcfact);
+            thr[b] = NS_INTERP(
+              Math.min(
+                ecb,
+                Math.min(rpelev * gfc.nb_1[chn][b], rpelev2 * gfc.nb_2[chn][b])
+              ),
+              ecb,
+              pcfact
+            );
           }
           gfc.nb_2[chn][b] = gfc.nb_1[chn][b];
           gfc.nb_1[chn][b] = ecb;
@@ -8273,7 +8506,9 @@ function PsyModel() {
     for (var j = Encoder.BLKSIZE / 2 - 1; j >= 0; --j) {
       var re = wsamp_l[wsamp_lPos + 0][Encoder.BLKSIZE / 2 - j];
       var im = wsamp_l[wsamp_lPos + 0][Encoder.BLKSIZE / 2 + j];
-      fftenergy[Encoder.BLKSIZE / 2 - j] = NON_LINEAR_SCALE_ENERGY((re * re + im * im) * 0.5);
+      fftenergy[Encoder.BLKSIZE / 2 - j] = NON_LINEAR_SCALE_ENERGY(
+        (re * re + im * im) * 0.5
+      );
     }
     {
       var totalenergy = 0;
@@ -8307,7 +8542,9 @@ function PsyModel() {
     for (var j = Encoder.BLKSIZE_s / 2 - 1; j >= 0; --j) {
       var re = wsamp_s[wsamp_sPos + 0][sblock][Encoder.BLKSIZE_s / 2 - j];
       var im = wsamp_s[wsamp_sPos + 0][sblock][Encoder.BLKSIZE_s / 2 + j];
-      fftenergy_s[sblock][Encoder.BLKSIZE_s / 2 - j] = NON_LINEAR_SCALE_ENERGY((re * re + im * im) * 0.5);
+      fftenergy_s[sblock][Encoder.BLKSIZE_s / 2 - j] = NON_LINEAR_SCALE_ENERGY(
+        (re * re + im * im) * 0.5
+      );
     }
   }
   function vbrpsy_compute_loudness_approximation_l(gfp, gr_out, chn, fftenergy) {
@@ -8499,7 +8736,9 @@ function PsyModel() {
           m = max[b];
         if (m < max[b + 1])
           m = max[b + 1];
-        assert$9(gfc.numlines_s[b - 1] + gfc.numlines_s[b] + gfc.numlines_s[b + 1] - 1 > 0);
+        assert$9(
+          gfc.numlines_s[b - 1] + gfc.numlines_s[b] + gfc.numlines_s[b + 1] - 1 > 0
+        );
         a = 20 * (m * 3 - a) / (a * (gfc.numlines_s[b - 1] + gfc.numlines_s[b] + gfc.numlines_s[b + 1] - 1));
         var k = 0 | a;
         if (k > last_tab_entry)
@@ -8783,13 +9022,33 @@ function PsyModel() {
     ];
     var uselongblock = new_int$b(2);
     var n_chn_psy = gfp.mode == MPEGMode.JOINT_STEREO ? 4 : gfc.channels_out;
-    vbrpsy_attack_detection(gfp, buffer, bufPos, gr_out, masking_ratio, masking_MS_ratio, energy, sub_short_factor, ns_attacks, uselongblock);
+    vbrpsy_attack_detection(
+      gfp,
+      buffer,
+      bufPos,
+      gr_out,
+      masking_ratio,
+      masking_MS_ratio,
+      energy,
+      sub_short_factor,
+      ns_attacks,
+      uselongblock
+    );
     vbrpsy_compute_block_type(gfp, uselongblock);
     {
       for (var chn = 0; chn < n_chn_psy; chn++) {
         var ch01 = chn & 1;
         wsamp_l = wsamp_L;
-        vbrpsy_compute_fft_l(gfp, buffer, bufPos, chn, gr_out, fftenergy, wsamp_l, ch01);
+        vbrpsy_compute_fft_l(
+          gfp,
+          buffer,
+          bufPos,
+          chn,
+          gr_out,
+          fftenergy,
+          wsamp_l,
+          ch01
+        );
         vbrpsy_compute_loudness_approximation_l(gfp, gr_out, chn, fftenergy);
         if (uselongblock[ch01] != 0) {
           vbrpsy_compute_masking_l(gfc, fftenergy, eb[chn], thr[chn], chn);
@@ -8799,7 +9058,15 @@ function PsyModel() {
       }
       if (uselongblock[0] + uselongblock[1] == 2) {
         if (gfp.mode == MPEGMode.JOINT_STEREO) {
-          vbrpsy_compute_MS_thresholds(eb, thr, gfc.mld_cb_l, gfc.ATH.cb_l, gfp.ATHlower * gfc.ATH.adjust, gfp.msfix, gfc.npart_l);
+          vbrpsy_compute_MS_thresholds(
+            eb,
+            thr,
+            gfc.mld_cb_l,
+            gfc.ATH.cb_l,
+            gfp.ATHlower * gfc.ATH.adjust,
+            gfp.msfix,
+            gfc.npart_l
+          );
         }
       }
       for (var chn = 0; chn < n_chn_psy; chn++) {
@@ -8817,13 +9084,37 @@ function PsyModel() {
             vbrpsy_skip_masking_s(gfc, chn, sblock);
           } else {
             wsamp_s = wsamp_S;
-            vbrpsy_compute_fft_s(gfp, buffer, bufPos, chn, sblock, fftenergy_s, wsamp_s, ch01);
-            vbrpsy_compute_masking_s(gfp, fftenergy_s, eb[chn], thr[chn], chn, sblock);
+            vbrpsy_compute_fft_s(
+              gfp,
+              buffer,
+              bufPos,
+              chn,
+              sblock,
+              fftenergy_s,
+              wsamp_s,
+              ch01
+            );
+            vbrpsy_compute_masking_s(
+              gfp,
+              fftenergy_s,
+              eb[chn],
+              thr[chn],
+              chn,
+              sblock
+            );
           }
         }
         if (uselongblock[0] + uselongblock[1] == 0) {
           if (gfp.mode == MPEGMode.JOINT_STEREO) {
-            vbrpsy_compute_MS_thresholds(eb, thr, gfc.mld_cb_s, gfc.ATH.cb_s, gfp.ATHlower * gfc.ATH.adjust, gfp.msfix, gfc.npart_s);
+            vbrpsy_compute_MS_thresholds(
+              eb,
+              thr,
+              gfc.mld_cb_s,
+              gfc.ATH.cb_s,
+              gfp.ATHlower * gfc.ATH.adjust,
+              gfp.msfix,
+              gfc.npart_s
+            );
           }
         }
         for (var chn = 0; chn < n_chn_psy; ++chn) {
@@ -8845,15 +9136,27 @@ function PsyModel() {
             thmm *= NS_PREECHO_ATT0;
             if (ns_attacks[chn][sblock] >= 2 || ns_attacks[chn][sblock + 1] == 1) {
               var idx = sblock != 0 ? sblock - 1 : 2;
-              var p = NS_INTERP(gfc.thm[chn].s[sb][idx], thmm, NS_PREECHO_ATT1 * pcfact);
+              var p = NS_INTERP(
+                gfc.thm[chn].s[sb][idx],
+                thmm,
+                NS_PREECHO_ATT1 * pcfact
+              );
               thmm = Math.min(thmm, p);
             } else if (ns_attacks[chn][sblock] == 1) {
               var idx = sblock != 0 ? sblock - 1 : 2;
-              var p = NS_INTERP(gfc.thm[chn].s[sb][idx], thmm, NS_PREECHO_ATT2 * pcfact);
+              var p = NS_INTERP(
+                gfc.thm[chn].s[sb][idx],
+                thmm,
+                NS_PREECHO_ATT2 * pcfact
+              );
               thmm = Math.min(thmm, p);
             } else if (sblock != 0 && ns_attacks[chn][sblock - 1] == 3 || sblock == 0 && gfc.nsPsy.lastAttacks[chn] == 3) {
               var idx = sblock != 2 ? sblock + 1 : 0;
-              var p = NS_INTERP(gfc.thm[chn].s[sb][idx], thmm, NS_PREECHO_ATT2 * pcfact);
+              var p = NS_INTERP(
+                gfc.thm[chn].s[sb][idx],
+                thmm,
+                NS_PREECHO_ATT2 * pcfact
+              );
               thmm = Math.min(thmm, p);
             }
             thmm *= sub_short_factor[chn][sblock];
@@ -9162,7 +9465,20 @@ function PsyModel() {
         gfc.nsPsy.last_en_subshort[i][j] = 10;
     }
     gfc.loudness_sq_save[0] = gfc.loudness_sq_save[1] = 0;
-    gfc.npart_l = init_numline(gfc.numlines_l, gfc.bo_l, gfc.bm_l, bval, bval_width, gfc.mld_l, gfc.PSY.bo_l_weight, sfreq, Encoder.BLKSIZE, gfc.scalefac_band.l, Encoder.BLKSIZE / (2 * 576), Encoder.SBMAX_l);
+    gfc.npart_l = init_numline(
+      gfc.numlines_l,
+      gfc.bo_l,
+      gfc.bm_l,
+      bval,
+      bval_width,
+      gfc.mld_l,
+      gfc.PSY.bo_l_weight,
+      sfreq,
+      Encoder.BLKSIZE,
+      gfc.scalefac_band.l,
+      Encoder.BLKSIZE / (2 * 576),
+      Encoder.SBMAX_l
+    );
     assert$9(gfc.npart_l < Encoder.CBANDS);
     for (i = 0; i < gfc.npart_l; i++) {
       var snr = snr_l_a;
@@ -9176,7 +9492,14 @@ function PsyModel() {
         gfc.rnumlines_l[i] = 0;
       }
     }
-    gfc.s3_ll = init_s3_values(gfc.s3ind, gfc.npart_l, bval, bval_width, norm, useOldS3);
+    gfc.s3_ll = init_s3_values(
+      gfc.s3ind,
+      gfc.npart_l,
+      bval,
+      bval_width,
+      norm,
+      useOldS3
+    );
     var j = 0;
     for (i = 0; i < gfc.npart_l; i++) {
       var x;
@@ -9201,7 +9524,20 @@ function PsyModel() {
       x -= 8;
       gfc.minval_l[i] = Math.pow(10, x / 10) * gfc.numlines_l[i];
     }
-    gfc.npart_s = init_numline(gfc.numlines_s, gfc.bo_s, gfc.bm_s, bval, bval_width, gfc.mld_s, gfc.PSY.bo_s_weight, sfreq, Encoder.BLKSIZE_s, gfc.scalefac_band.s, Encoder.BLKSIZE_s / (2 * 192), Encoder.SBMAX_s);
+    gfc.npart_s = init_numline(
+      gfc.numlines_s,
+      gfc.bo_s,
+      gfc.bm_s,
+      bval,
+      bval_width,
+      gfc.mld_s,
+      gfc.PSY.bo_s_weight,
+      sfreq,
+      Encoder.BLKSIZE_s,
+      gfc.scalefac_band.s,
+      Encoder.BLKSIZE_s / (2 * 192),
+      Encoder.SBMAX_s
+    );
     assert$9(gfc.npart_s < Encoder.CBANDS);
     j = 0;
     for (i = 0; i < gfc.npart_s; i++) {
@@ -9235,10 +9571,19 @@ function PsyModel() {
       x -= 8;
       gfc.minval_s[i] = Math.pow(10, x / 10) * gfc.numlines_s[i];
     }
-    gfc.s3_ss = init_s3_values(gfc.s3ind_s, gfc.npart_s, bval, bval_width, norm, useOldS3);
+    gfc.s3_ss = init_s3_values(
+      gfc.s3ind_s,
+      gfc.npart_s,
+      bval,
+      bval_width,
+      norm,
+      useOldS3
+    );
     init_mask_add_max_values();
     fft.init_fft(gfc);
-    gfc.decay = Math.exp(-1 * LOG10 / (temporalmask_sustain_sec * sfreq / 192));
+    gfc.decay = Math.exp(
+      -1 * LOG10 / (temporalmask_sustain_sec * sfreq / 192)
+    );
     {
       var msfix;
       msfix = NS_MSFIX;
@@ -9516,10 +9861,34 @@ function ScaleFac(arrL, arrS, arr21, arr12) {
     this.arrS = arguments[1];
     this.arr21 = arguments[2];
     this.arr12 = arguments[3];
-    System$6.arraycopy(this.arrL, 0, l, 0, Math.min(this.arrL.length, this.l.length));
-    System$6.arraycopy(this.arrS, 0, s, 0, Math.min(this.arrS.length, this.s.length));
-    System$6.arraycopy(this.arr21, 0, this.psfb21, 0, Math.min(this.arr21.length, this.psfb21.length));
-    System$6.arraycopy(this.arr12, 0, this.psfb12, 0, Math.min(this.arr12.length, this.psfb12.length));
+    System$6.arraycopy(
+      this.arrL,
+      0,
+      l,
+      0,
+      Math.min(this.arrL.length, this.l.length)
+    );
+    System$6.arraycopy(
+      this.arrS,
+      0,
+      s,
+      0,
+      Math.min(this.arrS.length, this.s.length)
+    );
+    System$6.arraycopy(
+      this.arr21,
+      0,
+      this.psfb21,
+      0,
+      Math.min(this.arr21.length, this.psfb21.length)
+    );
+    System$6.arraycopy(
+      this.arr12,
+      0,
+      this.psfb12,
+      0,
+      Math.min(this.arr12.length, this.psfb12.length)
+    );
   }
 }
 var new_float$8 = common.new_float;
@@ -10091,11 +10460,35 @@ function GainAnalysis$1() {
         return GAIN_ANALYSIS_ERROR;
     }
     if (num_samples < MAX_ORDER) {
-      System$5.arraycopy(left_samples, left_samplesPos, rgData.linprebuf, MAX_ORDER, num_samples);
-      System$5.arraycopy(right_samples, right_samplesPos, rgData.rinprebuf, MAX_ORDER, num_samples);
+      System$5.arraycopy(
+        left_samples,
+        left_samplesPos,
+        rgData.linprebuf,
+        MAX_ORDER,
+        num_samples
+      );
+      System$5.arraycopy(
+        right_samples,
+        right_samplesPos,
+        rgData.rinprebuf,
+        MAX_ORDER,
+        num_samples
+      );
     } else {
-      System$5.arraycopy(left_samples, left_samplesPos, rgData.linprebuf, MAX_ORDER, MAX_ORDER);
-      System$5.arraycopy(right_samples, right_samplesPos, rgData.rinprebuf, MAX_ORDER, MAX_ORDER);
+      System$5.arraycopy(
+        left_samples,
+        left_samplesPos,
+        rgData.linprebuf,
+        MAX_ORDER,
+        MAX_ORDER
+      );
+      System$5.arraycopy(
+        right_samples,
+        right_samplesPos,
+        rgData.rinprebuf,
+        MAX_ORDER,
+        MAX_ORDER
+      );
     }
     while (batchsamples > 0) {
       cursamples = batchsamples > rgData.sampleWindow - rgData.totsamp ? rgData.sampleWindow - rgData.totsamp : batchsamples;
@@ -10113,10 +10506,38 @@ function GainAnalysis$1() {
         curright = right_samplesPos + cursamplepos;
         currightBase = right_samples;
       }
-      filterYule(curleftBase, curleft, rgData.lstepbuf, rgData.lstep + rgData.totsamp, cursamples, ABYule[rgData.reqindex]);
-      filterYule(currightBase, curright, rgData.rstepbuf, rgData.rstep + rgData.totsamp, cursamples, ABYule[rgData.reqindex]);
-      filterButter(rgData.lstepbuf, rgData.lstep + rgData.totsamp, rgData.loutbuf, rgData.lout + rgData.totsamp, cursamples, ABButter[rgData.reqindex]);
-      filterButter(rgData.rstepbuf, rgData.rstep + rgData.totsamp, rgData.routbuf, rgData.rout + rgData.totsamp, cursamples, ABButter[rgData.reqindex]);
+      filterYule(
+        curleftBase,
+        curleft,
+        rgData.lstepbuf,
+        rgData.lstep + rgData.totsamp,
+        cursamples,
+        ABYule[rgData.reqindex]
+      );
+      filterYule(
+        currightBase,
+        curright,
+        rgData.rstepbuf,
+        rgData.rstep + rgData.totsamp,
+        cursamples,
+        ABYule[rgData.reqindex]
+      );
+      filterButter(
+        rgData.lstepbuf,
+        rgData.lstep + rgData.totsamp,
+        rgData.loutbuf,
+        rgData.lout + rgData.totsamp,
+        cursamples,
+        ABButter[rgData.reqindex]
+      );
+      filterButter(
+        rgData.rstepbuf,
+        rgData.rstep + rgData.totsamp,
+        rgData.routbuf,
+        rgData.rout + rgData.totsamp,
+        cursamples,
+        ABButter[rgData.reqindex]
+      );
       curleft = rgData.lout + rgData.totsamp;
       curleftBase = rgData.loutbuf;
       curright = rgData.rout + rgData.totsamp;
@@ -10137,16 +10558,42 @@ function GainAnalysis$1() {
       cursamplepos += cursamples;
       rgData.totsamp += cursamples;
       if (rgData.totsamp == rgData.sampleWindow) {
-        var val = GainAnalysis$1.STEPS_per_dB * 10 * Math.log10((rgData.lsum + rgData.rsum) / rgData.totsamp * 0.5 + 1e-37);
+        var val = GainAnalysis$1.STEPS_per_dB * 10 * Math.log10(
+          (rgData.lsum + rgData.rsum) / rgData.totsamp * 0.5 + 1e-37
+        );
         var ival = val <= 0 ? 0 : 0 | val;
         if (ival >= rgData.A.length)
           ival = rgData.A.length - 1;
         rgData.A[ival]++;
         rgData.lsum = rgData.rsum = 0;
-        System$5.arraycopy(rgData.loutbuf, rgData.totsamp, rgData.loutbuf, 0, MAX_ORDER);
-        System$5.arraycopy(rgData.routbuf, rgData.totsamp, rgData.routbuf, 0, MAX_ORDER);
-        System$5.arraycopy(rgData.lstepbuf, rgData.totsamp, rgData.lstepbuf, 0, MAX_ORDER);
-        System$5.arraycopy(rgData.rstepbuf, rgData.totsamp, rgData.rstepbuf, 0, MAX_ORDER);
+        System$5.arraycopy(
+          rgData.loutbuf,
+          rgData.totsamp,
+          rgData.loutbuf,
+          0,
+          MAX_ORDER
+        );
+        System$5.arraycopy(
+          rgData.routbuf,
+          rgData.totsamp,
+          rgData.routbuf,
+          0,
+          MAX_ORDER
+        );
+        System$5.arraycopy(
+          rgData.lstepbuf,
+          rgData.totsamp,
+          rgData.lstepbuf,
+          0,
+          MAX_ORDER
+        );
+        System$5.arraycopy(
+          rgData.rstepbuf,
+          rgData.totsamp,
+          rgData.rstepbuf,
+          0,
+          MAX_ORDER
+        );
         rgData.totsamp = 0;
       }
       if (rgData.totsamp > rgData.sampleWindow) {
@@ -10154,13 +10601,49 @@ function GainAnalysis$1() {
       }
     }
     if (num_samples < MAX_ORDER) {
-      System$5.arraycopy(rgData.linprebuf, num_samples, rgData.linprebuf, 0, MAX_ORDER - num_samples);
-      System$5.arraycopy(rgData.rinprebuf, num_samples, rgData.rinprebuf, 0, MAX_ORDER - num_samples);
-      System$5.arraycopy(left_samples, left_samplesPos, rgData.linprebuf, MAX_ORDER - num_samples, num_samples);
-      System$5.arraycopy(right_samples, right_samplesPos, rgData.rinprebuf, MAX_ORDER - num_samples, num_samples);
+      System$5.arraycopy(
+        rgData.linprebuf,
+        num_samples,
+        rgData.linprebuf,
+        0,
+        MAX_ORDER - num_samples
+      );
+      System$5.arraycopy(
+        rgData.rinprebuf,
+        num_samples,
+        rgData.rinprebuf,
+        0,
+        MAX_ORDER - num_samples
+      );
+      System$5.arraycopy(
+        left_samples,
+        left_samplesPos,
+        rgData.linprebuf,
+        MAX_ORDER - num_samples,
+        num_samples
+      );
+      System$5.arraycopy(
+        right_samples,
+        right_samplesPos,
+        rgData.rinprebuf,
+        MAX_ORDER - num_samples,
+        num_samples
+      );
     } else {
-      System$5.arraycopy(left_samples, left_samplesPos + num_samples - MAX_ORDER, rgData.linprebuf, 0, MAX_ORDER);
-      System$5.arraycopy(right_samples, right_samplesPos + num_samples - MAX_ORDER, rgData.rinprebuf, 0, MAX_ORDER);
+      System$5.arraycopy(
+        left_samples,
+        left_samplesPos + num_samples - MAX_ORDER,
+        rgData.linprebuf,
+        0,
+        MAX_ORDER
+      );
+      System$5.arraycopy(
+        right_samples,
+        right_samplesPos + num_samples - MAX_ORDER,
+        rgData.rinprebuf,
+        0,
+        MAX_ORDER
+      );
     }
     return GAIN_ANALYSIS_OK;
   };
@@ -10197,15 +10680,23 @@ var new_int$5 = common.new_int;
 function ReplayGain() {
   this.linprebuf = new_float$5(void 0 * 2);
   this.linpre = 0;
-  this.lstepbuf = new_float$5(void 0 + void 0);
+  this.lstepbuf = new_float$5(
+    void 0 + void 0
+  );
   this.lstep = 0;
-  this.loutbuf = new_float$5(void 0 + void 0);
+  this.loutbuf = new_float$5(
+    void 0 + void 0
+  );
   this.lout = 0;
   this.rinprebuf = new_float$5(void 0 * 2);
   this.rinpre = 0;
-  this.rstepbuf = new_float$5(void 0 + void 0);
+  this.rstepbuf = new_float$5(
+    void 0 + void 0
+  );
   this.rstep = 0;
-  this.routbuf = new_float$5(void 0 + void 0);
+  this.routbuf = new_float$5(
+    void 0 + void 0
+  );
   this.rout = 0;
   this.sampleWindow = 0;
   this.totsamp = 0;
@@ -10237,10 +10728,22 @@ function CBRNewIterationLoop(_quantize) {
     this.quantize.rv.ResvFrameBegin(gfp, mb);
     mean_bits = mb.bits;
     for (var gr = 0; gr < gfc.mode_gr; gr++) {
-      max_bits = this.quantize.qupvt.on_pe(gfp, pe, targ_bits, mean_bits, gr, gr);
+      max_bits = this.quantize.qupvt.on_pe(
+        gfp,
+        pe,
+        targ_bits,
+        mean_bits,
+        gr,
+        gr
+      );
       if (gfc.mode_ext == Encoder.MPG_MD_MS_LR) {
         this.quantize.ms_convert(gfc.l3_side, gr);
-        this.quantize.qupvt.reduce_side(targ_bits, ms_ener_ratio[gr], mean_bits, max_bits);
+        this.quantize.qupvt.reduce_side(
+          targ_bits,
+          ms_ener_ratio[gr],
+          mean_bits,
+          max_bits
+        );
       }
       for (var ch = 0; ch < gfc.channels_out; ch++) {
         var adjust, masking_lower_db;
@@ -10256,10 +10759,19 @@ function CBRNewIterationLoop(_quantize) {
         this.quantize.init_outer_loop(gfc, cod_info);
         if (this.quantize.init_xrpow(gfc, cod_info, xrpow)) {
           this.quantize.qupvt.calc_xmin(gfp, ratio[gr][ch], cod_info, l3_xmin);
-          this.quantize.outer_loop(gfp, cod_info, l3_xmin, xrpow, ch, targ_bits[ch]);
+          this.quantize.outer_loop(
+            gfp,
+            cod_info,
+            l3_xmin,
+            xrpow,
+            ch,
+            targ_bits[ch]
+          );
         }
         this.quantize.iteration_finish_one(gfc, gr, ch);
-        assert$8(cod_info.part2_3_length <= LameInternalFlags$1.MAX_BITS_PER_CHANNEL);
+        assert$8(
+          cod_info.part2_3_length <= LameInternalFlags$1.MAX_BITS_PER_CHANNEL
+        );
         assert$8(cod_info.part2_3_length <= targ_bits[ch]);
       }
     }
@@ -13758,276 +14270,321 @@ function QuantizePVT() {
   ];
   this.pretab = pretab;
   this.sfBandIndex = [
-    new ScaleFac([
-      0,
-      6,
-      12,
-      18,
-      24,
-      30,
-      36,
-      44,
-      54,
-      66,
-      80,
-      96,
-      116,
-      140,
-      168,
-      200,
-      238,
-      284,
-      336,
-      396,
-      464,
-      522,
-      576
-    ], [0, 4, 8, 12, 18, 24, 32, 42, 56, 74, 100, 132, 174, 192], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]),
-    new ScaleFac([
-      0,
-      6,
-      12,
-      18,
-      24,
-      30,
-      36,
-      44,
-      54,
-      66,
-      80,
-      96,
-      114,
-      136,
-      162,
-      194,
-      232,
-      278,
-      332,
-      394,
-      464,
-      540,
-      576
-    ], [0, 4, 8, 12, 18, 26, 36, 48, 62, 80, 104, 136, 180, 192], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]),
-    new ScaleFac([
-      0,
-      6,
-      12,
-      18,
-      24,
-      30,
-      36,
-      44,
-      54,
-      66,
-      80,
-      96,
-      116,
-      140,
-      168,
-      200,
-      238,
-      284,
-      336,
-      396,
-      464,
-      522,
-      576
-    ], [0, 4, 8, 12, 18, 26, 36, 48, 62, 80, 104, 134, 174, 192], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]),
-    new ScaleFac([
-      0,
-      4,
-      8,
-      12,
-      16,
-      20,
-      24,
-      30,
-      36,
-      44,
-      52,
-      62,
-      74,
-      90,
-      110,
-      134,
-      162,
-      196,
-      238,
-      288,
-      342,
-      418,
-      576
-    ], [0, 4, 8, 12, 16, 22, 30, 40, 52, 66, 84, 106, 136, 192], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]),
-    new ScaleFac([
-      0,
-      4,
-      8,
-      12,
-      16,
-      20,
-      24,
-      30,
-      36,
-      42,
-      50,
-      60,
-      72,
-      88,
-      106,
-      128,
-      156,
-      190,
-      230,
-      276,
-      330,
-      384,
-      576
-    ], [0, 4, 8, 12, 16, 22, 28, 38, 50, 64, 80, 100, 126, 192], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]),
-    new ScaleFac([
-      0,
-      4,
-      8,
-      12,
-      16,
-      20,
-      24,
-      30,
-      36,
-      44,
-      54,
-      66,
-      82,
-      102,
-      126,
-      156,
-      194,
-      240,
-      296,
-      364,
-      448,
-      550,
-      576
-    ], [0, 4, 8, 12, 16, 22, 30, 42, 58, 78, 104, 138, 180, 192], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]),
-    new ScaleFac([
-      0,
-      6,
-      12,
-      18,
-      24,
-      30,
-      36,
-      44,
-      54,
-      66,
-      80,
-      96,
-      116,
-      140,
-      168,
-      200,
-      238,
-      284,
-      336,
-      396,
-      464,
-      522,
-      576
-    ], [
-      0 / 3,
-      12 / 3,
-      24 / 3,
-      36 / 3,
-      54 / 3,
-      78 / 3,
-      108 / 3,
-      144 / 3,
-      186 / 3,
-      240 / 3,
-      312 / 3,
-      402 / 3,
-      522 / 3,
-      576 / 3
-    ], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]),
-    new ScaleFac([
-      0,
-      6,
-      12,
-      18,
-      24,
-      30,
-      36,
-      44,
-      54,
-      66,
-      80,
-      96,
-      116,
-      140,
-      168,
-      200,
-      238,
-      284,
-      336,
-      396,
-      464,
-      522,
-      576
-    ], [
-      0 / 3,
-      12 / 3,
-      24 / 3,
-      36 / 3,
-      54 / 3,
-      78 / 3,
-      108 / 3,
-      144 / 3,
-      186 / 3,
-      240 / 3,
-      312 / 3,
-      402 / 3,
-      522 / 3,
-      576 / 3
-    ], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]),
-    new ScaleFac([
-      0,
-      12,
-      24,
-      36,
-      48,
-      60,
-      72,
-      88,
-      108,
-      132,
-      160,
-      192,
-      232,
-      280,
-      336,
-      400,
-      476,
-      566,
-      568,
-      570,
-      572,
-      574,
-      576
-    ], [
-      0 / 3,
-      24 / 3,
-      48 / 3,
-      72 / 3,
-      108 / 3,
-      156 / 3,
-      216 / 3,
-      288 / 3,
-      372 / 3,
-      480 / 3,
-      486 / 3,
-      492 / 3,
-      498 / 3,
-      576 / 3
-    ], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0])
+    new ScaleFac(
+      [
+        0,
+        6,
+        12,
+        18,
+        24,
+        30,
+        36,
+        44,
+        54,
+        66,
+        80,
+        96,
+        116,
+        140,
+        168,
+        200,
+        238,
+        284,
+        336,
+        396,
+        464,
+        522,
+        576
+      ],
+      [0, 4, 8, 12, 18, 24, 32, 42, 56, 74, 100, 132, 174, 192],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0]
+    ),
+    new ScaleFac(
+      [
+        0,
+        6,
+        12,
+        18,
+        24,
+        30,
+        36,
+        44,
+        54,
+        66,
+        80,
+        96,
+        114,
+        136,
+        162,
+        194,
+        232,
+        278,
+        332,
+        394,
+        464,
+        540,
+        576
+      ],
+      [0, 4, 8, 12, 18, 26, 36, 48, 62, 80, 104, 136, 180, 192],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0]
+    ),
+    new ScaleFac(
+      [
+        0,
+        6,
+        12,
+        18,
+        24,
+        30,
+        36,
+        44,
+        54,
+        66,
+        80,
+        96,
+        116,
+        140,
+        168,
+        200,
+        238,
+        284,
+        336,
+        396,
+        464,
+        522,
+        576
+      ],
+      [0, 4, 8, 12, 18, 26, 36, 48, 62, 80, 104, 134, 174, 192],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0]
+    ),
+    new ScaleFac(
+      [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        30,
+        36,
+        44,
+        52,
+        62,
+        74,
+        90,
+        110,
+        134,
+        162,
+        196,
+        238,
+        288,
+        342,
+        418,
+        576
+      ],
+      [0, 4, 8, 12, 16, 22, 30, 40, 52, 66, 84, 106, 136, 192],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0]
+    ),
+    new ScaleFac(
+      [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        30,
+        36,
+        42,
+        50,
+        60,
+        72,
+        88,
+        106,
+        128,
+        156,
+        190,
+        230,
+        276,
+        330,
+        384,
+        576
+      ],
+      [0, 4, 8, 12, 16, 22, 28, 38, 50, 64, 80, 100, 126, 192],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0]
+    ),
+    new ScaleFac(
+      [
+        0,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        30,
+        36,
+        44,
+        54,
+        66,
+        82,
+        102,
+        126,
+        156,
+        194,
+        240,
+        296,
+        364,
+        448,
+        550,
+        576
+      ],
+      [0, 4, 8, 12, 16, 22, 30, 42, 58, 78, 104, 138, 180, 192],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0]
+    ),
+    new ScaleFac(
+      [
+        0,
+        6,
+        12,
+        18,
+        24,
+        30,
+        36,
+        44,
+        54,
+        66,
+        80,
+        96,
+        116,
+        140,
+        168,
+        200,
+        238,
+        284,
+        336,
+        396,
+        464,
+        522,
+        576
+      ],
+      [
+        0 / 3,
+        12 / 3,
+        24 / 3,
+        36 / 3,
+        54 / 3,
+        78 / 3,
+        108 / 3,
+        144 / 3,
+        186 / 3,
+        240 / 3,
+        312 / 3,
+        402 / 3,
+        522 / 3,
+        576 / 3
+      ],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0]
+    ),
+    new ScaleFac(
+      [
+        0,
+        6,
+        12,
+        18,
+        24,
+        30,
+        36,
+        44,
+        54,
+        66,
+        80,
+        96,
+        116,
+        140,
+        168,
+        200,
+        238,
+        284,
+        336,
+        396,
+        464,
+        522,
+        576
+      ],
+      [
+        0 / 3,
+        12 / 3,
+        24 / 3,
+        36 / 3,
+        54 / 3,
+        78 / 3,
+        108 / 3,
+        144 / 3,
+        186 / 3,
+        240 / 3,
+        312 / 3,
+        402 / 3,
+        522 / 3,
+        576 / 3
+      ],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0]
+    ),
+    new ScaleFac(
+      [
+        0,
+        12,
+        24,
+        36,
+        48,
+        60,
+        72,
+        88,
+        108,
+        132,
+        160,
+        192,
+        232,
+        280,
+        336,
+        400,
+        476,
+        566,
+        568,
+        570,
+        572,
+        574,
+        576
+      ],
+      [
+        0 / 3,
+        24 / 3,
+        48 / 3,
+        72 / 3,
+        108 / 3,
+        156 / 3,
+        216 / 3,
+        288 / 3,
+        372 / 3,
+        480 / 3,
+        486 / 3,
+        492 / 3,
+        498 / 3,
+        576 / 3
+      ],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0]
+    )
   ];
   var pow20 = new_float$3(Q_MAX + Q_MAX2 + 1);
   var ipow20 = new_float$3(Q_MAX);
@@ -14185,14 +14742,20 @@ function QuantizePVT() {
       max_bits = LameInternalFlags$1.MAX_BITS_PER_GRANULE;
     }
     for (bits = 0, ch = 0; ch < gfc.channels_out; ++ch) {
-      targ_bits[ch] = Math.min(LameInternalFlags$1.MAX_BITS_PER_CHANNEL, tbits / gfc.channels_out);
+      targ_bits[ch] = Math.min(
+        LameInternalFlags$1.MAX_BITS_PER_CHANNEL,
+        tbits / gfc.channels_out
+      );
       add_bits[ch] = 0 | targ_bits[ch] * pe[gr][ch] / 700 - targ_bits[ch];
       if (add_bits[ch] > mean_bits * 3 / 4)
         add_bits[ch] = mean_bits * 3 / 4;
       if (add_bits[ch] < 0)
         add_bits[ch] = 0;
       if (add_bits[ch] + targ_bits[ch] > LameInternalFlags$1.MAX_BITS_PER_CHANNEL) {
-        add_bits[ch] = Math.max(0, LameInternalFlags$1.MAX_BITS_PER_CHANNEL - targ_bits[ch]);
+        add_bits[ch] = Math.max(
+          0,
+          LameInternalFlags$1.MAX_BITS_PER_CHANNEL - targ_bits[ch]
+        );
       }
       bits += add_bits[ch];
     }
@@ -14219,7 +14782,9 @@ function QuantizePVT() {
     return max_bits;
   };
   this.reduce_side = function(targ_bits, ms_ener_ratio, mean_bits, max_bits) {
-    assert$7(targ_bits[0] + targ_bits[1] <= LameInternalFlags$1.MAX_BITS_PER_GRANULE);
+    assert$7(
+      targ_bits[0] + targ_bits[1] <= LameInternalFlags$1.MAX_BITS_PER_GRANULE
+    );
     var fac = 0.33 * (0.5 - ms_ener_ratio) / 0.5;
     if (fac < 0)
       fac = 0;
@@ -14248,7 +14813,9 @@ function QuantizePVT() {
     }
     assert$7(targ_bits[0] <= LameInternalFlags$1.MAX_BITS_PER_CHANNEL);
     assert$7(targ_bits[1] <= LameInternalFlags$1.MAX_BITS_PER_CHANNEL);
-    assert$7(targ_bits[0] + targ_bits[1] <= LameInternalFlags$1.MAX_BITS_PER_GRANULE);
+    assert$7(
+      targ_bits[0] + targ_bits[1] <= LameInternalFlags$1.MAX_BITS_PER_GRANULE
+    );
   };
   this.athAdjust = function(a, x, athFloor) {
     var o = 90.30873362;
@@ -14702,11 +15269,25 @@ function Takehiro() {
       assert$6(codInfo.width[sfb] >= 0);
       if (prev_data_use && prevNoise.step[sfb] == step) {
         if (accumulate != 0) {
-          quantize_lines_xrpow(accumulate, istep, acc_xp, acc_xpPos, acc_iData, acc_iDataPos);
+          quantize_lines_xrpow(
+            accumulate,
+            istep,
+            acc_xp,
+            acc_xpPos,
+            acc_iData,
+            acc_iDataPos
+          );
           accumulate = 0;
         }
         if (accumulate01 != 0) {
-          quantize_lines_xrpow_01(accumulate01, istep, acc_xp, acc_xpPos, acc_iData, acc_iDataPos);
+          quantize_lines_xrpow_01(
+            accumulate01,
+            istep,
+            acc_xp,
+            acc_xpPos,
+            acc_iData,
+            acc_iDataPos
+          );
           accumulate01 = 0;
         }
       } else {
@@ -14729,7 +15310,14 @@ function Takehiro() {
         }
         if (prevNoise != null && prevNoise.sfb_count1 > 0 && sfb >= prevNoise.sfb_count1 && prevNoise.step[sfb] > 0 && step >= prevNoise.step[sfb]) {
           if (accumulate != 0) {
-            quantize_lines_xrpow(accumulate, istep, acc_xp, acc_xpPos, acc_iData, acc_iDataPos);
+            quantize_lines_xrpow(
+              accumulate,
+              istep,
+              acc_xp,
+              acc_xpPos,
+              acc_iData,
+              acc_iDataPos
+            );
             accumulate = 0;
             acc_iData = iData;
             acc_iDataPos = iDataPos;
@@ -14739,7 +15327,14 @@ function Takehiro() {
           accumulate01 += l;
         } else {
           if (accumulate01 != 0) {
-            quantize_lines_xrpow_01(accumulate01, istep, acc_xp, acc_xpPos, acc_iData, acc_iDataPos);
+            quantize_lines_xrpow_01(
+              accumulate01,
+              istep,
+              acc_xp,
+              acc_xpPos,
+              acc_iData,
+              acc_iDataPos
+            );
             accumulate01 = 0;
             acc_iData = iData;
             acc_iDataPos = iDataPos;
@@ -14750,11 +15345,25 @@ function Takehiro() {
         }
         if (l <= 0) {
           if (accumulate01 != 0) {
-            quantize_lines_xrpow_01(accumulate01, istep, acc_xp, acc_xpPos, acc_iData, acc_iDataPos);
+            quantize_lines_xrpow_01(
+              accumulate01,
+              istep,
+              acc_xp,
+              acc_xpPos,
+              acc_iData,
+              acc_iDataPos
+            );
             accumulate01 = 0;
           }
           if (accumulate != 0) {
-            quantize_lines_xrpow(accumulate, istep, acc_xp, acc_xpPos, acc_iData, acc_iDataPos);
+            quantize_lines_xrpow(
+              accumulate,
+              istep,
+              acc_xp,
+              acc_xpPos,
+              acc_iData,
+              acc_iDataPos
+            );
             accumulate = 0;
           }
           break;
@@ -14767,11 +15376,25 @@ function Takehiro() {
       }
     }
     if (accumulate != 0) {
-      quantize_lines_xrpow(accumulate, istep, acc_xp, acc_xpPos, acc_iData, acc_iDataPos);
+      quantize_lines_xrpow(
+        accumulate,
+        istep,
+        acc_xp,
+        acc_xpPos,
+        acc_iData,
+        acc_iDataPos
+      );
       accumulate = 0;
     }
     if (accumulate01 != 0) {
-      quantize_lines_xrpow_01(accumulate01, istep, acc_xp, acc_xpPos, acc_iData, acc_iDataPos);
+      quantize_lines_xrpow_01(
+        accumulate01,
+        istep,
+        acc_xp,
+        acc_xpPos,
+        acc_iData,
+        acc_iDataPos
+      );
       accumulate01 = 0;
     }
   }
@@ -14893,7 +15516,13 @@ function Takehiro() {
         return count_bit_noESC(ix, ixPos, endPos, s);
       case 2:
       case 3:
-        return count_bit_noESC_from2(ix, ixPos, endPos, huf_tbl_noESC[max - 1], s);
+        return count_bit_noESC_from2(
+          ix,
+          ixPos,
+          endPos,
+          huf_tbl_noESC[max - 1],
+          s
+        );
       case 4:
       case 5:
       case 6:
@@ -14906,7 +15535,13 @@ function Takehiro() {
       case 13:
       case 14:
       case 15:
-        return count_bit_noESC_from3(ix, ixPos, endPos, huf_tbl_noESC[max - 1], s);
+        return count_bit_noESC_from3(
+          ix,
+          ixPos,
+          endPos,
+          huf_tbl_noESC[max - 1],
+          s
+        );
       default:
         if (max > QuantizePVT.IXMAX_VAL) {
           s.bits = QuantizePVT.LARGE_BITS;
@@ -15099,7 +15734,16 @@ function Takehiro() {
     cod_info2.assign(gi);
     if (gi.block_type == Encoder.NORM_TYPE) {
       recalc_divide_init(gfc, gi, ix, r01_bits, r01_div, r0_tbl, r1_tbl);
-      recalc_divide_sub(gfc, cod_info2, gi, ix, r01_bits, r01_div, r0_tbl, r1_tbl);
+      recalc_divide_sub(
+        gfc,
+        cod_info2,
+        gi,
+        ix,
+        r01_bits,
+        r01_div,
+        r0_tbl,
+        r1_tbl
+      );
     }
     var i = cod_info2.big_values;
     if (i == 0 || (ix[i - 2] | ix[i - 1]) > 1)
@@ -15124,7 +15768,16 @@ function Takehiro() {
     }
     cod_info2.count1bits = a1;
     if (cod_info2.block_type == Encoder.NORM_TYPE) {
-      recalc_divide_sub(gfc, cod_info2, gi, ix, r01_bits, r01_div, r0_tbl, r1_tbl);
+      recalc_divide_sub(
+        gfc,
+        cod_info2,
+        gi,
+        ix,
+        r01_bits,
+        r01_div,
+        r0_tbl,
+        r1_tbl
+      );
     } else {
       cod_info2.part2_3_length = a1;
       a1 = gfc.scalefac_band.l[7 + 1];
@@ -15511,7 +16164,13 @@ function BitStream$1() {
     return 8 * bytes;
   };
   function putheader_bits(gfc) {
-    System$3.arraycopy(gfc.header[gfc.w_ptr].buf, 0, buf, bufByteIdx, gfc.sideinfo_len);
+    System$3.arraycopy(
+      gfc.header[gfc.w_ptr].buf,
+      0,
+      buf,
+      bufByteIdx,
+      gfc.sideinfo_len
+    );
     bufByteIdx += gfc.sideinfo_len;
     totbit += gfc.sideinfo_len * 8;
     gfc.w_ptr = gfc.w_ptr + 1 & LameInternalFlags$1.MAX_HEADER_BUF - 1;
@@ -15851,7 +16510,13 @@ function BitStream$1() {
     if (region1Start > gi.big_values)
       region1Start = gi.big_values;
     var bits = Huffmancode(gfc, gi.table_select[0], 0, region1Start, gi);
-    bits += Huffmancode(gfc, gi.table_select[1], region1Start, gi.big_values, gi);
+    bits += Huffmancode(
+      gfc,
+      gi.table_select[1],
+      region1Start,
+      gi.big_values,
+      gi
+    );
     return bits;
   }
   function LongHuffmancodebits(gfc, gi) {
@@ -16045,9 +16710,24 @@ function BitStream$1() {
       System$3.err.println("Internal buffer inconsistency. flushbits <> ResvSize");
     }
     if (l3_side.main_data_begin * 8 != gfc.ResvSize) {
-      System$3.err.printf("bit reservoir error: \nl3_side.main_data_begin: %d \nResvoir size:             %d \nresv drain (post)         %d \nresv drain (pre)          %d \nheader and sideinfo:      %d \ndata bits:                %d \ntotal bits:               %d (remainder: %d) \nbitsperframe:             %d \n", 8 * l3_side.main_data_begin, gfc.ResvSize, l3_side.resvDrain_post, l3_side.resvDrain_pre, 8 * gfc.sideinfo_len, bits - l3_side.resvDrain_post - 8 * gfc.sideinfo_len, bits, bits % 8, bitsPerFrame);
-      System$3.err.println("This is a fatal error.  It has several possible causes:");
-      System$3.err.println("90%%  LAME compiled with buggy version of gcc using advanced optimizations");
+      System$3.err.printf(
+        "bit reservoir error: \nl3_side.main_data_begin: %d \nResvoir size:             %d \nresv drain (post)         %d \nresv drain (pre)          %d \nheader and sideinfo:      %d \ndata bits:                %d \ntotal bits:               %d (remainder: %d) \nbitsperframe:             %d \n",
+        8 * l3_side.main_data_begin,
+        gfc.ResvSize,
+        l3_side.resvDrain_post,
+        l3_side.resvDrain_pre,
+        8 * gfc.sideinfo_len,
+        bits - l3_side.resvDrain_post - 8 * gfc.sideinfo_len,
+        bits,
+        bits % 8,
+        bitsPerFrame
+      );
+      System$3.err.println(
+        "This is a fatal error.  It has several possible causes:"
+      );
+      System$3.err.println(
+        "90%%  LAME compiled with buggy version of gcc using advanced optimizations"
+      );
       System$3.err.println(" 9%%  Your system is overclocked");
       System$3.err.println(" 1%%  bug in LAME encoding library");
       gfc.ResvSize = l3_side.main_data_begin * 8;
@@ -16085,7 +16765,14 @@ function BitStream$1() {
         var samples_out = -1;
         var i;
         while (samples_out != 0) {
-          samples_out = mpg.hip_decode1_unclipped(gfc.hip, buffer, bufferPos, mp3_in, pcm_buf[0], pcm_buf[1]);
+          samples_out = mpg.hip_decode1_unclipped(
+            gfc.hip,
+            buffer,
+            bufferPos,
+            mp3_in,
+            pcm_buf[0],
+            pcm_buf[1]
+          );
           mp3_in = 0;
           if (samples_out == -1) {
             samples_out = 0;
@@ -16110,7 +16797,15 @@ function BitStream$1() {
               }
             }
             if (gfc.findReplayGain) {
-              if (ga.AnalyzeSamples(gfc.rgdata, pcm_buf[0], 0, pcm_buf[1], 0, samples_out, gfc.channels_out) == GainAnalysis.GAIN_ANALYSIS_ERROR) {
+              if (ga.AnalyzeSamples(
+                gfc.rgdata,
+                pcm_buf[0],
+                0,
+                pcm_buf[1],
+                0,
+                samples_out,
+                gfc.channels_out
+              ) == GainAnalysis.GAIN_ANALYSIS_ERROR) {
                 return -6;
               }
             }
@@ -16483,7 +17178,9 @@ function Lame$1() {
       if (gfc.highpass2 < 0.9 * (0.75 / 31)) {
         gfc.highpass1 = 0;
         gfc.highpass2 = 0;
-        System$2.err.println("Warning: highpass filter disabled.  highpass frequency too small\n");
+        System$2.err.println(
+          "Warning: highpass filter disabled.  highpass frequency too small\n"
+        );
       }
     }
     if (gfc.highpass2 > 0) {
@@ -16508,12 +17205,16 @@ function Lame$1() {
       var fc1, fc2;
       var freq = band / 31;
       if (gfc.highpass2 > gfc.highpass1) {
-        fc1 = filter_coef((gfc.highpass2 - freq) / (gfc.highpass2 - gfc.highpass1 + 1e-20));
+        fc1 = filter_coef(
+          (gfc.highpass2 - freq) / (gfc.highpass2 - gfc.highpass1 + 1e-20)
+        );
       } else {
         fc1 = 1;
       }
       if (gfc.lowpass2 > gfc.lowpass1) {
-        fc2 = filter_coef((freq - gfc.lowpass1) / (gfc.lowpass2 - gfc.lowpass1 + 1e-20));
+        fc2 = filter_coef(
+          (freq - gfc.lowpass1) / (gfc.lowpass2 - gfc.lowpass1 + 1e-20)
+        );
       } else {
         fc2 = 1;
       }
@@ -16674,7 +17375,11 @@ function Lame$1() {
       gfp.brate = 0 | gfp.out_samplerate * 16 * gfc.channels_out / (1e3 * gfp.compression_ratio);
       gfc.samplerate_index = SmpFrqIndex(gfp.out_samplerate, gfp);
       if (!gfp.free_format) {
-        gfp.brate = FindNearestBitrate(gfp.brate, gfp.version, gfp.out_samplerate);
+        gfp.brate = FindNearestBitrate(
+          gfp.brate,
+          gfp.version,
+          gfp.out_samplerate
+        );
       }
     }
     if (gfp.out_samplerate != 0) {
@@ -16761,7 +17466,10 @@ function Lame$1() {
       if (2 * gfp.lowpassfreq > gfp.in_samplerate) {
         gfp.lowpassfreq = gfp.in_samplerate / 2;
       }
-      gfp.out_samplerate = optimum_samplefreq(gfp.lowpassfreq | 0, gfp.in_samplerate);
+      gfp.out_samplerate = optimum_samplefreq(
+        gfp.lowpassfreq | 0,
+        gfp.in_samplerate
+      );
     }
     gfp.lowpassfreq = Math.min(20500, gfp.lowpassfreq);
     gfp.lowpassfreq = Math.min(gfp.out_samplerate / 2, gfp.lowpassfreq);
@@ -16853,8 +17561,16 @@ function Lame$1() {
       if (gfp.free_format) {
         gfc.bitrate_index = 0;
       } else {
-        gfp.brate = FindNearestBitrate(gfp.brate, gfp.version, gfp.out_samplerate);
-        gfc.bitrate_index = BitrateIndex(gfp.brate, gfp.version, gfp.out_samplerate);
+        gfp.brate = FindNearestBitrate(
+          gfp.brate,
+          gfp.version,
+          gfp.out_samplerate
+        );
+        gfc.bitrate_index = BitrateIndex(
+          gfp.brate,
+          gfp.version,
+          gfp.out_samplerate
+        );
         if (gfc.bitrate_index <= 0) {
           gfp.internal_flags = null;
           return -1;
@@ -16970,21 +17686,43 @@ function Lame$1() {
       if (gfp.out_samplerate < 16e3)
         gfc.VBR_max_bitrate = 8;
       if (gfp.VBR_min_bitrate_kbps != 0) {
-        gfp.VBR_min_bitrate_kbps = FindNearestBitrate(gfp.VBR_min_bitrate_kbps, gfp.version, gfp.out_samplerate);
-        gfc.VBR_min_bitrate = BitrateIndex(gfp.VBR_min_bitrate_kbps, gfp.version, gfp.out_samplerate);
+        gfp.VBR_min_bitrate_kbps = FindNearestBitrate(
+          gfp.VBR_min_bitrate_kbps,
+          gfp.version,
+          gfp.out_samplerate
+        );
+        gfc.VBR_min_bitrate = BitrateIndex(
+          gfp.VBR_min_bitrate_kbps,
+          gfp.version,
+          gfp.out_samplerate
+        );
         if (gfc.VBR_min_bitrate < 0)
           return -1;
       }
       if (gfp.VBR_max_bitrate_kbps != 0) {
-        gfp.VBR_max_bitrate_kbps = FindNearestBitrate(gfp.VBR_max_bitrate_kbps, gfp.version, gfp.out_samplerate);
-        gfc.VBR_max_bitrate = BitrateIndex(gfp.VBR_max_bitrate_kbps, gfp.version, gfp.out_samplerate);
+        gfp.VBR_max_bitrate_kbps = FindNearestBitrate(
+          gfp.VBR_max_bitrate_kbps,
+          gfp.version,
+          gfp.out_samplerate
+        );
+        gfc.VBR_max_bitrate = BitrateIndex(
+          gfp.VBR_max_bitrate_kbps,
+          gfp.version,
+          gfp.out_samplerate
+        );
         if (gfc.VBR_max_bitrate < 0)
           return -1;
       }
       gfp.VBR_min_bitrate_kbps = Tables$1.bitrate_table[gfp.version][gfc.VBR_min_bitrate];
       gfp.VBR_max_bitrate_kbps = Tables$1.bitrate_table[gfp.version][gfc.VBR_max_bitrate];
-      gfp.VBR_mean_bitrate_kbps = Math.min(Tables$1.bitrate_table[gfp.version][gfc.VBR_max_bitrate], gfp.VBR_mean_bitrate_kbps);
-      gfp.VBR_mean_bitrate_kbps = Math.max(Tables$1.bitrate_table[gfp.version][gfc.VBR_min_bitrate], gfp.VBR_mean_bitrate_kbps);
+      gfp.VBR_mean_bitrate_kbps = Math.min(
+        Tables$1.bitrate_table[gfp.version][gfc.VBR_max_bitrate],
+        gfp.VBR_mean_bitrate_kbps
+      );
+      gfp.VBR_mean_bitrate_kbps = Math.max(
+        Tables$1.bitrate_table[gfp.version][gfc.VBR_min_bitrate],
+        gfp.VBR_mean_bitrate_kbps
+      );
     }
     if (gfp.tune) {
       gfc.PSY.mask_adjust += gfp.tune_value_a;
@@ -17079,7 +17817,15 @@ function Lame$1() {
       mp3buffer_size_remaining = mp3buffer_size - mp3count;
       if (mp3buffer_size == 0)
         mp3buffer_size_remaining = 0;
-      imp3 = this.lame_encode_buffer(gfp, buffer[0], buffer[1], bunch, mp3buffer, mp3bufferPos, mp3buffer_size_remaining);
+      imp3 = this.lame_encode_buffer(
+        gfp,
+        buffer[0],
+        buffer[1],
+        bunch,
+        mp3buffer,
+        mp3bufferPos,
+        mp3buffer_size_remaining
+      );
       mp3bufferPos += imp3;
       mp3count += imp3;
       frames_left -= frame_num != gfp.frameNum ? 1 : 0;
@@ -17092,7 +17838,13 @@ function Lame$1() {
     if (mp3buffer_size == 0)
       mp3buffer_size_remaining = 0;
     bs.flush_bitstream(gfp);
-    imp3 = bs.copy_buffer(gfc, mp3buffer, mp3bufferPos, mp3buffer_size_remaining, 1);
+    imp3 = bs.copy_buffer(
+      gfc,
+      mp3buffer,
+      mp3bufferPos,
+      mp3buffer_size_remaining,
+      1
+    );
     if (imp3 < 0) {
       return imp3;
     }
@@ -17103,7 +17855,13 @@ function Lame$1() {
       mp3buffer_size_remaining = 0;
     if (gfp.write_id3tag_automatic) {
       id3.id3tag_write_v1(gfp);
-      imp3 = bs.copy_buffer(gfc, mp3buffer, mp3bufferPos, mp3buffer_size_remaining, 0);
+      imp3 = bs.copy_buffer(
+        gfc,
+        mp3buffer,
+        mp3bufferPos,
+        mp3buffer_size_remaining,
+        0
+      );
       if (imp3 < 0) {
         return imp3;
       }
@@ -17126,7 +17884,15 @@ function Lame$1() {
       if (gfc.channels_in > 1)
         in_buffer[1][i] = buffer_r[i];
     }
-    return lame_encode_buffer_sample(gfp, in_buffer[0], in_buffer[1], nsamples, mp3buf, mp3bufPos, mp3buf_size);
+    return lame_encode_buffer_sample(
+      gfp,
+      in_buffer[0],
+      in_buffer[1],
+      nsamples,
+      mp3buf,
+      mp3bufPos,
+      mp3buf_size
+    );
   };
   function calcNeeded(gfp) {
     var mf_needed = Encoder.BLKSIZE + gfp.framesize - Encoder.FFTOFFSET;
@@ -17192,7 +17958,15 @@ function Lame$1() {
       n_in = inOut.n_in;
       n_out = inOut.n_out;
       if (gfc.findReplayGain && !gfc.decode_on_the_fly) {
-        if (ga.AnalyzeSamples(gfc.rgdata, mfbuf[0], gfc.mf_size, mfbuf[1], gfc.mf_size, n_out, gfc.channels_out) == GainAnalysis.GAIN_ANALYSIS_ERROR) {
+        if (ga.AnalyzeSamples(
+          gfc.rgdata,
+          mfbuf[0],
+          gfc.mf_size,
+          mfbuf[1],
+          gfc.mf_size,
+          n_out,
+          gfc.channels_out
+        ) == GainAnalysis.GAIN_ANALYSIS_ERROR) {
           return -6;
         }
       }
@@ -17210,7 +17984,14 @@ function Lame$1() {
         var buf_size = mp3buf_size - mp3size;
         if (mp3buf_size == 0)
           buf_size = 0;
-        ret = lame_encode_frame(gfp, mfbuf[0], mfbuf[1], mp3buf, mp3bufPos, buf_size);
+        ret = lame_encode_frame(
+          gfp,
+          mfbuf[0],
+          mfbuf[1],
+          mp3buf,
+          mp3bufPos,
+          buf_size
+        );
         if (ret < 0)
           return ret;
         mp3bufPos += ret;
@@ -17227,7 +18008,14 @@ function Lame$1() {
     return mp3size;
   }
   function lame_encode_frame(gfp, inbuf_l, inbuf_r, mp3buf, mp3bufPos, mp3buf_size) {
-    var ret = self.enc.lame_encode_mp3_frame(gfp, inbuf_l, inbuf_r, mp3buf, mp3bufPos, mp3buf_size);
+    var ret = self.enc.lame_encode_mp3_frame(
+      gfp,
+      inbuf_l,
+      inbuf_r,
+      mp3buf,
+      mp3bufPos,
+      mp3buf_size
+    );
     gfp.frameNum++;
     return ret;
   }
@@ -17332,7 +18120,17 @@ function Lame$1() {
     if (gfc.resample_ratio < 0.9999 || gfc.resample_ratio > 1.0001) {
       for (var ch = 0; ch < gfc.channels_out; ch++) {
         var numUsed = new NumUsed();
-        io.n_out = fill_buffer_resample(gfp, mfbuf[ch], gfc.mf_size, gfp.framesize, in_buffer[ch], in_bufferPos, nsamples, numUsed, ch);
+        io.n_out = fill_buffer_resample(
+          gfp,
+          mfbuf[ch],
+          gfc.mf_size,
+          gfp.framesize,
+          in_buffer[ch],
+          in_bufferPos,
+          nsamples,
+          numUsed,
+          ch
+        );
         io.n_in = numUsed.num_used;
       }
     } else {
@@ -17386,30 +18184,350 @@ function Presets() {
     lame = _lame;
   };
   var vbr_old_switch_map = [
-    new VBRPresets(0, 9, 9, 0, 5.2, 125, -4.2, -6.3, 4.8, 1, 0, 0, 2, 21, 0.97),
-    new VBRPresets(1, 9, 9, 0, 5.3, 125, -3.6, -5.6, 4.5, 1.5, 0, 0, 2, 21, 1.35),
-    new VBRPresets(2, 9, 9, 0, 5.6, 125, -2.2, -3.5, 2.8, 2, 0, 0, 2, 21, 1.49),
-    new VBRPresets(3, 9, 9, 1, 5.8, 130, -1.8, -2.8, 2.6, 3, -4, 0, 2, 20, 1.64),
-    new VBRPresets(4, 9, 9, 1, 6, 135, -0.7, -1.1, 1.1, 3.5, -8, 0, 2, 0, 1.79),
-    new VBRPresets(5, 9, 9, 1, 6.4, 140, 0.5, 0.4, -7.5, 4, -12, 2e-4, 0, 0, 1.95),
-    new VBRPresets(6, 9, 9, 1, 6.6, 145, 0.67, 0.65, -14.7, 6.5, -19, 4e-4, 0, 0, 2.3),
-    new VBRPresets(7, 9, 9, 1, 6.6, 145, 0.8, 0.75, -19.7, 8, -22, 6e-4, 0, 0, 2.7),
-    new VBRPresets(8, 9, 9, 1, 6.6, 145, 1.2, 1.15, -27.5, 10, -23, 7e-4, 0, 0, 0),
-    new VBRPresets(9, 9, 9, 1, 6.6, 145, 1.6, 1.6, -36, 11, -25, 8e-4, 0, 0, 0),
-    new VBRPresets(10, 9, 9, 1, 6.6, 145, 2, 2, -36, 12, -25, 8e-4, 0, 0, 0)
+    new VBRPresets(
+      0,
+      9,
+      9,
+      0,
+      5.2,
+      125,
+      -4.2,
+      -6.3,
+      4.8,
+      1,
+      0,
+      0,
+      2,
+      21,
+      0.97
+    ),
+    new VBRPresets(
+      1,
+      9,
+      9,
+      0,
+      5.3,
+      125,
+      -3.6,
+      -5.6,
+      4.5,
+      1.5,
+      0,
+      0,
+      2,
+      21,
+      1.35
+    ),
+    new VBRPresets(
+      2,
+      9,
+      9,
+      0,
+      5.6,
+      125,
+      -2.2,
+      -3.5,
+      2.8,
+      2,
+      0,
+      0,
+      2,
+      21,
+      1.49
+    ),
+    new VBRPresets(
+      3,
+      9,
+      9,
+      1,
+      5.8,
+      130,
+      -1.8,
+      -2.8,
+      2.6,
+      3,
+      -4,
+      0,
+      2,
+      20,
+      1.64
+    ),
+    new VBRPresets(
+      4,
+      9,
+      9,
+      1,
+      6,
+      135,
+      -0.7,
+      -1.1,
+      1.1,
+      3.5,
+      -8,
+      0,
+      2,
+      0,
+      1.79
+    ),
+    new VBRPresets(
+      5,
+      9,
+      9,
+      1,
+      6.4,
+      140,
+      0.5,
+      0.4,
+      -7.5,
+      4,
+      -12,
+      2e-4,
+      0,
+      0,
+      1.95
+    ),
+    new VBRPresets(
+      6,
+      9,
+      9,
+      1,
+      6.6,
+      145,
+      0.67,
+      0.65,
+      -14.7,
+      6.5,
+      -19,
+      4e-4,
+      0,
+      0,
+      2.3
+    ),
+    new VBRPresets(
+      7,
+      9,
+      9,
+      1,
+      6.6,
+      145,
+      0.8,
+      0.75,
+      -19.7,
+      8,
+      -22,
+      6e-4,
+      0,
+      0,
+      2.7
+    ),
+    new VBRPresets(
+      8,
+      9,
+      9,
+      1,
+      6.6,
+      145,
+      1.2,
+      1.15,
+      -27.5,
+      10,
+      -23,
+      7e-4,
+      0,
+      0,
+      0
+    ),
+    new VBRPresets(
+      9,
+      9,
+      9,
+      1,
+      6.6,
+      145,
+      1.6,
+      1.6,
+      -36,
+      11,
+      -25,
+      8e-4,
+      0,
+      0,
+      0
+    ),
+    new VBRPresets(
+      10,
+      9,
+      9,
+      1,
+      6.6,
+      145,
+      2,
+      2,
+      -36,
+      12,
+      -25,
+      8e-4,
+      0,
+      0,
+      0
+    )
   ];
   var vbr_psy_switch_map = [
-    new VBRPresets(0, 9, 9, 0, 4.2, 25, -7, -4, 7.5, 1, 0, 0, 2, 26, 0.97),
-    new VBRPresets(1, 9, 9, 0, 4.2, 25, -5.6, -3.6, 4.5, 1.5, 0, 0, 2, 21, 1.35),
+    new VBRPresets(
+      0,
+      9,
+      9,
+      0,
+      4.2,
+      25,
+      -7,
+      -4,
+      7.5,
+      1,
+      0,
+      0,
+      2,
+      26,
+      0.97
+    ),
+    new VBRPresets(
+      1,
+      9,
+      9,
+      0,
+      4.2,
+      25,
+      -5.6,
+      -3.6,
+      4.5,
+      1.5,
+      0,
+      0,
+      2,
+      21,
+      1.35
+    ),
     new VBRPresets(2, 9, 9, 0, 4.2, 25, -4.4, -1.8, 2, 2, 0, 0, 2, 18, 1.49),
-    new VBRPresets(3, 9, 9, 1, 4.2, 25, -3.4, -1.25, 1.1, 3, -4, 0, 2, 15, 1.64),
+    new VBRPresets(
+      3,
+      9,
+      9,
+      1,
+      4.2,
+      25,
+      -3.4,
+      -1.25,
+      1.1,
+      3,
+      -4,
+      0,
+      2,
+      15,
+      1.64
+    ),
     new VBRPresets(4, 9, 9, 1, 4.2, 25, -2.2, 0.1, 0, 3.5, -8, 0, 2, 0, 1.79),
-    new VBRPresets(5, 9, 9, 1, 4.2, 25, -1, 1.65, -7.7, 4, -12, 2e-4, 0, 0, 1.95),
-    new VBRPresets(6, 9, 9, 1, 4.2, 25, -0, 2.47, -7.7, 6.5, -19, 4e-4, 0, 0, 2),
-    new VBRPresets(7, 9, 9, 1, 4.2, 25, 0.5, 2, -14.5, 8, -22, 6e-4, 0, 0, 2),
-    new VBRPresets(8, 9, 9, 1, 4.2, 25, 1, 2.4, -22, 10, -23, 7e-4, 0, 0, 2),
-    new VBRPresets(9, 9, 9, 1, 4.2, 25, 1.5, 2.95, -30, 11, -25, 8e-4, 0, 0, 2),
-    new VBRPresets(10, 9, 9, 1, 4.2, 25, 2, 2.95, -36, 12, -30, 8e-4, 0, 0, 2)
+    new VBRPresets(
+      5,
+      9,
+      9,
+      1,
+      4.2,
+      25,
+      -1,
+      1.65,
+      -7.7,
+      4,
+      -12,
+      2e-4,
+      0,
+      0,
+      1.95
+    ),
+    new VBRPresets(
+      6,
+      9,
+      9,
+      1,
+      4.2,
+      25,
+      -0,
+      2.47,
+      -7.7,
+      6.5,
+      -19,
+      4e-4,
+      0,
+      0,
+      2
+    ),
+    new VBRPresets(
+      7,
+      9,
+      9,
+      1,
+      4.2,
+      25,
+      0.5,
+      2,
+      -14.5,
+      8,
+      -22,
+      6e-4,
+      0,
+      0,
+      2
+    ),
+    new VBRPresets(
+      8,
+      9,
+      9,
+      1,
+      4.2,
+      25,
+      1,
+      2.4,
+      -22,
+      10,
+      -23,
+      7e-4,
+      0,
+      0,
+      2
+    ),
+    new VBRPresets(
+      9,
+      9,
+      9,
+      1,
+      4.2,
+      25,
+      1.5,
+      2.95,
+      -30,
+      11,
+      -25,
+      8e-4,
+      0,
+      0,
+      2
+    ),
+    new VBRPresets(
+      10,
+      9,
+      9,
+      1,
+      4.2,
+      25,
+      2,
+      2.95,
+      -36,
+      12,
+      -30,
+      8e-4,
+      0,
+      0,
+      2
+    )
   ];
   function apply_vbr_preset(gfp, a, enforce) {
     var vbr_preset = gfp.VBR == VbrMode$2.vbr_rh ? vbr_old_switch_map : vbr_psy_switch_map;
@@ -17497,23 +18615,278 @@ function Presets() {
     }
   }
   var abr_switch_map = [
-    new ABRPresets(8, 9, 9, 0, 0, 6.6, 145, 0, 0.95, 0, -30, 11, 12e-4, 1),
-    new ABRPresets(16, 9, 9, 0, 0, 6.6, 145, 0, 0.95, 0, -25, 11, 1e-3, 1),
-    new ABRPresets(24, 9, 9, 0, 0, 6.6, 145, 0, 0.95, 0, -20, 11, 1e-3, 1),
-    new ABRPresets(32, 9, 9, 0, 0, 6.6, 145, 0, 0.95, 0, -15, 11, 1e-3, 1),
-    new ABRPresets(40, 9, 9, 0, 0, 6.6, 145, 0, 0.95, 0, -10, 11, 9e-4, 1),
-    new ABRPresets(48, 9, 9, 0, 0, 6.6, 145, 0, 0.95, 0, -10, 11, 9e-4, 1),
-    new ABRPresets(56, 9, 9, 0, 0, 6.6, 145, 0, 0.95, 0, -6, 11, 8e-4, 1),
-    new ABRPresets(64, 9, 9, 0, 0, 6.6, 145, 0, 0.95, 0, -2, 11, 8e-4, 1),
-    new ABRPresets(80, 9, 9, 0, 0, 6.6, 145, 0, 0.95, 0, 0, 8, 7e-4, 1),
-    new ABRPresets(96, 9, 9, 0, 2.5, 6.6, 145, 0, 0.95, 0, 1, 5.5, 6e-4, 1),
-    new ABRPresets(112, 9, 9, 0, 2.25, 6.6, 145, 0, 0.95, 0, 2, 4.5, 5e-4, 1),
-    new ABRPresets(128, 9, 9, 0, 1.95, 6.4, 140, 0, 0.95, 0, 3, 4, 2e-4, 1),
-    new ABRPresets(160, 9, 9, 1, 1.79, 6, 135, 0, 0.95, -2, 5, 3.5, 0, 1),
-    new ABRPresets(192, 9, 9, 1, 1.49, 5.6, 125, 0, 0.97, -4, 7, 3, 0, 0),
-    new ABRPresets(224, 9, 9, 1, 1.25, 5.2, 125, 0, 0.98, -6, 9, 2, 0, 0),
-    new ABRPresets(256, 9, 9, 1, 0.97, 5.2, 125, 0, 1, -8, 10, 1, 0, 0),
-    new ABRPresets(320, 9, 9, 1, 0.9, 5.2, 125, 0, 1, -10, 12, 0, 0, 0)
+    new ABRPresets(
+      8,
+      9,
+      9,
+      0,
+      0,
+      6.6,
+      145,
+      0,
+      0.95,
+      0,
+      -30,
+      11,
+      12e-4,
+      1
+    ),
+    new ABRPresets(
+      16,
+      9,
+      9,
+      0,
+      0,
+      6.6,
+      145,
+      0,
+      0.95,
+      0,
+      -25,
+      11,
+      1e-3,
+      1
+    ),
+    new ABRPresets(
+      24,
+      9,
+      9,
+      0,
+      0,
+      6.6,
+      145,
+      0,
+      0.95,
+      0,
+      -20,
+      11,
+      1e-3,
+      1
+    ),
+    new ABRPresets(
+      32,
+      9,
+      9,
+      0,
+      0,
+      6.6,
+      145,
+      0,
+      0.95,
+      0,
+      -15,
+      11,
+      1e-3,
+      1
+    ),
+    new ABRPresets(
+      40,
+      9,
+      9,
+      0,
+      0,
+      6.6,
+      145,
+      0,
+      0.95,
+      0,
+      -10,
+      11,
+      9e-4,
+      1
+    ),
+    new ABRPresets(
+      48,
+      9,
+      9,
+      0,
+      0,
+      6.6,
+      145,
+      0,
+      0.95,
+      0,
+      -10,
+      11,
+      9e-4,
+      1
+    ),
+    new ABRPresets(
+      56,
+      9,
+      9,
+      0,
+      0,
+      6.6,
+      145,
+      0,
+      0.95,
+      0,
+      -6,
+      11,
+      8e-4,
+      1
+    ),
+    new ABRPresets(
+      64,
+      9,
+      9,
+      0,
+      0,
+      6.6,
+      145,
+      0,
+      0.95,
+      0,
+      -2,
+      11,
+      8e-4,
+      1
+    ),
+    new ABRPresets(
+      80,
+      9,
+      9,
+      0,
+      0,
+      6.6,
+      145,
+      0,
+      0.95,
+      0,
+      0,
+      8,
+      7e-4,
+      1
+    ),
+    new ABRPresets(
+      96,
+      9,
+      9,
+      0,
+      2.5,
+      6.6,
+      145,
+      0,
+      0.95,
+      0,
+      1,
+      5.5,
+      6e-4,
+      1
+    ),
+    new ABRPresets(
+      112,
+      9,
+      9,
+      0,
+      2.25,
+      6.6,
+      145,
+      0,
+      0.95,
+      0,
+      2,
+      4.5,
+      5e-4,
+      1
+    ),
+    new ABRPresets(
+      128,
+      9,
+      9,
+      0,
+      1.95,
+      6.4,
+      140,
+      0,
+      0.95,
+      0,
+      3,
+      4,
+      2e-4,
+      1
+    ),
+    new ABRPresets(
+      160,
+      9,
+      9,
+      1,
+      1.79,
+      6,
+      135,
+      0,
+      0.95,
+      -2,
+      5,
+      3.5,
+      0,
+      1
+    ),
+    new ABRPresets(
+      192,
+      9,
+      9,
+      1,
+      1.49,
+      5.6,
+      125,
+      0,
+      0.97,
+      -4,
+      7,
+      3,
+      0,
+      0
+    ),
+    new ABRPresets(
+      224,
+      9,
+      9,
+      1,
+      1.25,
+      5.2,
+      125,
+      0,
+      0.98,
+      -6,
+      9,
+      2,
+      0,
+      0
+    ),
+    new ABRPresets(
+      256,
+      9,
+      9,
+      1,
+      0.97,
+      5.2,
+      125,
+      0,
+      1,
+      -8,
+      10,
+      1,
+      0,
+      0
+    ),
+    new ABRPresets(
+      320,
+      9,
+      9,
+      1,
+      0.9,
+      5.2,
+      125,
+      0,
+      1,
+      -10,
+      12,
+      0,
+      0,
+      0
+    )
   ];
   function apply_abr_preset(gfp, preset, enforce) {
     var actual_bitrate = preset;
@@ -17983,7 +19356,10 @@ function Quantize() {
       do {
         var noise;
         for (nsame = 1; start2 + nsame < width; nsame++) {
-          if (BitStream.NEQ(work[start2 + j - width], work[start2 + j + nsame - width])) {
+          if (BitStream.NEQ(
+            work[start2 + j - width],
+            work[start2 + j + nsame - width]
+          )) {
             break;
           }
         }
@@ -18289,13 +19665,23 @@ function Quantize() {
         var huff_bits = targ_bits - cod_info_w.part2_length;
         if (huff_bits <= 0)
           break;
-        while ((cod_info_w.part2_3_length = tk.count_bits(gfc, xrpow, cod_info_w, prev_noise)) > huff_bits && cod_info_w.global_gain <= maxggain) {
+        while ((cod_info_w.part2_3_length = tk.count_bits(
+          gfc,
+          xrpow,
+          cod_info_w,
+          prev_noise
+        )) > huff_bits && cod_info_w.global_gain <= maxggain) {
           cod_info_w.global_gain++;
         }
         if (cod_info_w.global_gain > maxggain)
           break;
         if (best_noise_info.over_count == 0) {
-          while ((cod_info_w.part2_3_length = tk.count_bits(gfc, xrpow, cod_info_w, prev_noise)) > best_part2_3_length && cod_info_w.global_gain <= maxggain) {
+          while ((cod_info_w.part2_3_length = tk.count_bits(
+            gfc,
+            xrpow,
+            cod_info_w,
+            prev_noise
+          )) > best_part2_3_length && cod_info_w.global_gain <= maxggain) {
             cod_info_w.global_gain++;
           }
           if (cod_info_w.global_gain > maxggain)
@@ -18307,7 +19693,13 @@ function Quantize() {
           better = gfp.quant_comp;
         } else
           better = gfp.quant_comp_short;
-        better = quant_compare(better, best_noise_info, noise_info, cod_info_w, distort) ? 1 : 0;
+        better = quant_compare(
+          better,
+          best_noise_info,
+          noise_info,
+          cod_info_w,
+          distort
+        ) ? 1 : 0;
         if (better != 0) {
           best_part2_3_length = cod_info.part2_3_length;
           best_noise_info = noise_info;
@@ -18439,7 +19831,12 @@ function Quantize() {
         }
         gfc.masking_lower = Math.pow(10, masking_lower_db * 0.1);
         init_outer_loop(gfc, cod_info);
-        bands[gr][ch] = qupvt.calc_xmin(gfp, ratio[gr][ch], cod_info, l3_xmin[gr][ch]);
+        bands[gr][ch] = qupvt.calc_xmin(
+          gfp,
+          ratio[gr][ch],
+          cod_info,
+          l3_xmin[gr][ch]
+        );
         if (bands[gr][ch] != 0)
           analog_silence = 0;
         min_bits[gr][ch] = 126;
@@ -18582,7 +19979,12 @@ function Quantize() {
     }
     if (gfc.mode_ext == Encoder.MPG_MD_MS_LR) {
       for (gr = 0; gr < gfc.mode_gr; gr++) {
-        qupvt.reduce_side(targ_bits[gr], ms_ener_ratio[gr], mean_bits * gfc.channels_out, LameInternalFlags.MAX_BITS_PER_GRANULE);
+        qupvt.reduce_side(
+          targ_bits[gr],
+          ms_ener_ratio[gr],
+          mean_bits * gfc.channels_out,
+          LameInternalFlags.MAX_BITS_PER_GRANULE
+        );
       }
     }
     totbits = 0;
@@ -19085,7 +20487,11 @@ function VBRTag() {
     var gfc = gfp.internal_flags;
     buffer[0] = shiftInBitsValue(buffer[0], 8, 255);
     buffer[1] = shiftInBitsValue(buffer[1], 3, 7);
-    buffer[1] = shiftInBitsValue(buffer[1], 1, gfp.out_samplerate < 16e3 ? 0 : 1);
+    buffer[1] = shiftInBitsValue(
+      buffer[1],
+      1,
+      gfp.out_samplerate < 16e3 ? 0 : 1
+    );
     buffer[1] = shiftInBitsValue(buffer[1], 1, gfp.version);
     buffer[1] = shiftInBitsValue(buffer[1], 2, 4 - 3);
     buffer[1] = shiftInBitsValue(buffer[1], 1, !gfp.error_protection ? 1 : 0);
@@ -19299,7 +20705,9 @@ function VBRTag() {
       }
     }
     if (gfc.findPeakSample) {
-      peakSignalAmplitude = Math.abs(0 | gfc.PeakSample / 32767 * Math.pow(2, 23) + 0.5);
+      peakSignalAmplitude = Math.abs(
+        0 | gfc.PeakSample / 32767 * Math.pow(2, 23) + 0.5
+      );
     }
     if (noGapCount != -1) {
       if (noGapCurr > 0)
@@ -19355,11 +20763,19 @@ function VBRTag() {
     bytesWritten++;
     streamBuffer[streamBufferPos + bytesWritten] = 255 & lowpass;
     bytesWritten++;
-    createInteger(streamBuffer, streamBufferPos + bytesWritten, peakSignalAmplitude);
+    createInteger(
+      streamBuffer,
+      streamBufferPos + bytesWritten,
+      peakSignalAmplitude
+    );
     bytesWritten += 4;
     createShort(streamBuffer, streamBufferPos + bytesWritten, radioReplayGain);
     bytesWritten += 2;
-    createShort(streamBuffer, streamBufferPos + bytesWritten, audiophileReplayGain);
+    createShort(
+      streamBuffer,
+      streamBufferPos + bytesWritten,
+      audiophileReplayGain
+    );
     bytesWritten += 2;
     streamBuffer[streamBufferPos + bytesWritten] = 255 & flags;
     bytesWritten++;
@@ -19437,7 +20853,11 @@ function VBRTag() {
       buffer[streamIndex++] = 255 & VBRTag0.charAt(2);
       buffer[streamIndex++] = 255 & VBRTag0.charAt(3);
     }
-    createInteger(buffer, streamIndex, FRAMES_FLAG + BYTES_FLAG + TOC_FLAG + VBR_SCALE_FLAG);
+    createInteger(
+      buffer,
+      streamIndex,
+      FRAMES_FLAG + BYTES_FLAG + TOC_FLAG + VBR_SCALE_FLAG
+    );
     streamIndex += 4;
     createInteger(buffer, streamIndex, gfc.VBR_seek_table.nVbrNumFrames);
     streamIndex += 4;
@@ -19547,7 +20967,15 @@ function Mp3Encoder$1(channels, samplerate, kbps) {
       mp3buf_size = 0 | 1.25 * maxSamples + 7200;
       mp3buf = new_byte(mp3buf_size);
     }
-    var _sz = lame.lame_encode_buffer(gfp, left, right, left.length, mp3buf, 0, mp3buf_size);
+    var _sz = lame.lame_encode_buffer(
+      gfp,
+      left,
+      right,
+      left.length,
+      mp3buf,
+      0,
+      mp3buf_size
+    );
     return new Int8Array(mp3buf.subarray(0, _sz));
   };
   this.flush = function() {
@@ -19688,7 +21116,11 @@ class Recorder {
 function detectMobile() {
   var userAgent = getUserAgent();
   var userAgentPart = userAgent.substr(0, 4);
-  return /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(userAgent) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw(n|u)|c55\/|capi|ccwa|cdm|cell|chtm|cldc|cmd|co(mp|nd)|craw|da(it|ll|ng)|dbte|dcs|devi|dica|dmob|do(c|p)o|ds(12|d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(|_)|g1 u|g560|gene|gf5|gmo|go(\.w|od)|gr(ad|un)|haie|hcit|hd(m|p|t)|hei|hi(pt|ta)|hp( i|ip)|hsc|ht(c(| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i(20|go|ma)|i230|iac( ||\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|[a-w])|libw|lynx|m1w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|mcr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|([1-8]|c))|phil|pire|pl(ay|uc)|pn2|po(ck|rt|se)|prox|psio|ptg|qaa|qc(07|12|21|32|60|[2-7]|i)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h|oo|p)|sdk\/|se(c(|0|1)|47|mc|nd|ri)|sgh|shar|sie(|m)|sk0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h|v|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl|tdg|tel(i|m)|tim|tmo|to(pl|sh)|ts(70|m|m3|m5)|tx9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas|your|zeto|zte/i.test(userAgentPart);
+  return /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(
+    userAgent
+  ) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw(n|u)|c55\/|capi|ccwa|cdm|cell|chtm|cldc|cmd|co(mp|nd)|craw|da(it|ll|ng)|dbte|dcs|devi|dica|dmob|do(c|p)o|ds(12|d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(|_)|g1 u|g560|gene|gf5|gmo|go(\.w|od)|gr(ad|un)|haie|hcit|hd(m|p|t)|hei|hi(pt|ta)|hp( i|ip)|hsc|ht(c(| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i(20|go|ma)|i230|iac( ||\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|[a-w])|libw|lynx|m1w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|mcr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|([1-8]|c))|phil|pire|pl(ay|uc)|pn2|po(ck|rt|se)|prox|psio|ptg|qaa|qc(07|12|21|32|60|[2-7]|i)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h|oo|p)|sdk\/|se(c(|0|1)|47|mc|nd|ri)|sgh|shar|sie(|m)|sk0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h|v|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl|tdg|tel(i|m)|tim|tmo|to(pl|sh)|ts(70|m|m3|m5)|tx9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas|your|zeto|zte/i.test(
+    userAgentPart
+  );
 }
 function getUserAgent() {
   var userAgent = navigator.userAgent || navigator.vendor || window.opera || null;
@@ -19851,7 +21283,10 @@ const _sfc_main$a = {
       this.getTextareaRef().focus();
       if (this.cursorRangePosition) {
         setTimeout(() => {
-          this.getTextareaRef().setSelectionRange(this.cursorRangePosition, this.cursorRangePosition);
+          this.getTextareaRef().setSelectionRange(
+            this.cursorRangePosition,
+            this.cursorRangePosition
+          );
           this.cursorRangePosition = null;
         });
       }
@@ -20013,7 +21448,10 @@ const _sfc_main$a = {
       if (this.isFileLoading)
         return;
       this.selectedUsersTag.forEach((user) => {
-        message = message.replace(`@${user.username}`, `<usertag>${user._id}</usertag>`);
+        message = message.replace(
+          `@${user.username}`,
+          `<usertag>${user._id}</usertag>`
+        );
       });
       const files = this.files.length ? this.files : null;
       if (this.editedMessage._id) {
@@ -20047,9 +21485,15 @@ const _sfc_main$a = {
         ...messageContent.matchAll(new RegExp(firstTag, "gi"))
       ].map((a) => a.index);
       usertags.forEach((index) => {
-        const userId = initialContent.substring(index + firstTag.length, initialContent.indexOf(secondTag, index));
+        const userId = initialContent.substring(
+          index + firstTag.length,
+          initialContent.indexOf(secondTag, index)
+        );
         const user = this.room.users.find((user2) => user2._id === userId);
-        messageContent = messageContent.replace(`${firstTag}${userId}${secondTag}`, `@${(user == null ? void 0 : user.username) || "unknown"}`);
+        messageContent = messageContent.replace(
+          `${firstTag}${userId}${secondTag}`,
+          `@${(user == null ? void 0 : user.username) || "unknown"}`
+        );
         this.selectUserTag(user, true);
       });
       this.message = messageContent;
@@ -20101,7 +21545,12 @@ const _sfc_main$a = {
       }
     },
     updateShowUsersTag(query) {
-      this.filteredUsersTag = filteredItems(this.room.users, "username", query, true).filter((user) => user._id !== this.currentUserId);
+      this.filteredUsersTag = filteredItems(
+        this.room.users,
+        "username",
+        query,
+        true
+      ).filter((user) => user._id !== this.currentUserId);
     },
     selectUserTag(user, editMode = false) {
       this.selectUsersTagItem = false;
@@ -20117,7 +21566,12 @@ const _sfc_main$a = {
       this.focusTextarea();
     },
     updateShowTemplatesText(query) {
-      this.filteredTemplatesText = filteredItems(this.templatesText, "tag", query, true);
+      this.filteredTemplatesText = filteredItems(
+        this.templatesText,
+        "tag",
+        query,
+        true
+      );
     },
     getCharPosition(tagChar) {
       const cursorPosition = this.getTextareaRef().selectionStart;
@@ -20285,7 +21739,7 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
             class: "vac-svg-button vac-icon-audio-confirm",
             onClick: _cache[7] || (_cache[7] = ($event) => $options.toggleRecorder(false))
           }, [
-            renderSlot(_ctx.$slots, "audio-stop-icon", {}, () => [
+            renderSlot(_ctx.$slots, "audio-check-icon", {}, () => [
               createVNode(_component_svg_icon, { name: "checkmark" })
             ])
           ])
@@ -20484,10 +21938,11 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     ])) : $options.isAudio ? (openBlock(), createBlock(_component_audio_player, {
       key: 2,
       src: $options.firstFile.url,
+      "message-selection-enabled": false,
       onUpdateProgressTime: _cache[0] || (_cache[0] = ($event) => _ctx.progressTime = $event),
       onHoverAudioProgress: _cache[1] || (_cache[1] = ($event) => _ctx.hoverAudioProgress = $event)
     }, createSlots({ _: 2 }, [
-      renderList(_ctx.$slots, (i, name) => {
+      renderList(_ctx.$slots, (idx, name) => {
         return {
           name,
           fn: withCtx((data) => [
@@ -20506,21 +21961,13 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
     ])) : createCommentVNode("", true),
     createElementVNode("div", _hoisted_10$1, [
       createVNode(_component_format_message, {
+        "message-id": $props.message.replyMessage._id,
         content: $props.message.replyMessage.content,
         users: $props.roomUsers,
         "text-formatting": $props.textFormatting,
         "link-options": $props.linkOptions,
         reply: true
-      }, createSlots({ _: 2 }, [
-        renderList(_ctx.$slots, (i, name) => {
-          return {
-            name,
-            fn: withCtx((data) => [
-              renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
-            ])
-          };
-        })
-      ]), 1032, ["content", "users", "text-formatting", "link-options"])
+      }, null, 8, ["message-id", "content", "users", "text-formatting", "link-options"])
     ])
   ]);
 }
@@ -20693,6 +22140,8 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
       }, null, 8, ["progress", "style"])) : (openBlock(), createBlock(_component_loader, {
         key: 1,
         show: $options.isImageLoading,
+        type: "message-file",
+        "message-id": $props.message._id,
         style: normalizeStyle({ top: `${$data.imageResponsive.loaderTop}px` })
       }, createSlots({ _: 2 }, [
         renderList(_ctx.$slots, (idx, name) => {
@@ -20703,7 +22152,7 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
             ])
           };
         })
-      ]), 1032, ["show", "style"])),
+      ]), 1032, ["show", "message-id", "style"])),
       createElementVNode("div", {
         class: normalizeClass(["vac-message-image", {
           "vac-blur-loading": $options.isImageLoading && $props.message.senderId === $props.currentUserId
@@ -20720,7 +22169,7 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
                 class: "vac-svg-button vac-button-view",
                 onClick: _cache[0] || (_cache[0] = ($event) => $options.openFile($event, "preview"))
               }, [
-                renderSlot(_ctx.$slots, "eye-icon", {}, () => [
+                renderSlot(_ctx.$slots, "eye-icon_" + $props.message._id, {}, () => [
                   createVNode(_component_svg_icon, { name: "eye" })
                 ])
               ]),
@@ -20728,7 +22177,7 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
                 class: "vac-svg-button vac-button-download",
                 onClick: _cache[1] || (_cache[1] = ($event) => $options.openFile($event, "download"))
               }, [
-                renderSlot(_ctx.$slots, "document-icon", {}, () => [
+                renderSlot(_ctx.$slots, "document-icon_" + $props.message._id, {}, () => [
                   createVNode(_component_svg_icon, { name: "document" })
                 ])
               ])
@@ -20798,19 +22247,19 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   const _component_format_message = resolveComponent("format-message");
   return openBlock(), createElementBlock("div", _hoisted_1$6, [
-    (openBlock(true), createElementBlock(Fragment, null, renderList($options.imageVideoFiles, (file, idx) => {
+    (openBlock(true), createElementBlock(Fragment, null, renderList($options.imageVideoFiles, (file, i) => {
       return openBlock(), createElementBlock("div", {
-        key: idx + "iv"
+        key: i + "iv"
       }, [
         createVNode(_component_message_file, {
           file,
           "current-user-id": $props.currentUserId,
           message: $props.message,
-          index: idx,
+          index: i,
           "message-selection-enabled": $props.messageSelectionEnabled,
           onOpenFile: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("open-file", $event))
         }, createSlots({ _: 2 }, [
-          renderList(_ctx.$slots, (i, name) => {
+          renderList(_ctx.$slots, (idx, name) => {
             return {
               name,
               fn: withCtx((data) => [
@@ -20821,9 +22270,9 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
         ]), 1032, ["file", "current-user-id", "message", "index", "message-selection-enabled"])
       ]);
     }), 128)),
-    (openBlock(true), createElementBlock(Fragment, null, renderList($options.otherFiles, (file, idx) => {
+    (openBlock(true), createElementBlock(Fragment, null, renderList($options.otherFiles, (file, i) => {
       return openBlock(), createElementBlock("div", {
-        key: idx + "a",
+        key: i + "a",
         class: "vac-file-wrapper"
       }, [
         file.progress >= 0 ? (openBlock(), createBlock(_component_progress_bar, {
@@ -20846,21 +22295,13 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
       ]);
     }), 128)),
     createVNode(_component_format_message, {
+      "message-id": $props.message._id,
       content: $props.message.content,
       users: $props.roomUsers,
       "text-formatting": $props.textFormatting,
       "link-options": $props.linkOptions,
       onOpenUserTag: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("open-user-tag", $event))
-    }, createSlots({ _: 2 }, [
-      renderList(_ctx.$slots, (i, name) => {
-        return {
-          name,
-          fn: withCtx((data) => [
-            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
-          ])
-        };
-      })
-    ]), 1032, ["content", "users", "text-formatting", "link-options"])
+    }, null, 8, ["message-id", "content", "users", "text-formatting", "link-options"])
   ]);
 }
 var MessageFiles = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6]]);
@@ -20998,7 +22439,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
             class: "vac-svg-button vac-message-options",
             onClick: _cache[0] || (_cache[0] = (...args) => $options.openOptions && $options.openOptions(...args))
           }, [
-            renderSlot(_ctx.$slots, "dropdown-icon", {}, () => [
+            renderSlot(_ctx.$slots, "dropdown-icon_" + $props.message._id, {}, () => [
               createVNode(_component_svg_icon, {
                 name: "dropdown",
                 param: "message"
@@ -21013,14 +22454,19 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
                 "emoji-opened": $data.emojiOpened,
                 "emoji-reaction": true,
                 "position-right": $props.message.senderId === $props.currentUserId,
+                "message-id": $props.message._id,
                 onAddEmoji: $options.sendMessageReaction,
                 onOpenEmoji: $options.openEmoji
-              }, {
-                "emoji-picker-icon": withCtx(() => [
-                  renderSlot(_ctx.$slots, "emoji-picker-reaction-icon")
-                ]),
-                _: 3
-              }, 8, ["style", "emoji-opened", "position-right", "onAddEmoji", "onOpenEmoji"])
+              }, createSlots({ _: 2 }, [
+                renderList(_ctx.$slots, (idx, name) => {
+                  return {
+                    name,
+                    fn: withCtx((data) => [
+                      renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                    ])
+                  };
+                })
+              ]), 1032, ["style", "emoji-opened", "position-right", "message-id", "onAddEmoji", "onOpenEmoji"])
             ])
           ])), [
             [_directive_click_outside, $options.closeEmoji]
@@ -21124,7 +22570,9 @@ function roomsValidation(obj) {
     });
   };
   if (!validate(obj, roomsValidate)) {
-    throw new Error("Rooms object is not valid! Must contain roomId[String, Number], roomName[String] and users[Array]");
+    throw new Error(
+      "Rooms object is not valid! Must contain roomId[String, Number], roomName[String] and users[Array]"
+    );
   }
 }
 function partcipantsValidation(obj) {
@@ -21139,7 +22587,9 @@ function partcipantsValidation(obj) {
     });
   };
   if (!validate(obj, participantsValidate)) {
-    throw new Error("Participants object is not valid! Must contain _id[String, Number] and username[String]");
+    throw new Error(
+      "Participants object is not valid! Must contain _id[String, Number] and username[String]"
+    );
   }
 }
 function messagesValidation(obj) {
@@ -21155,7 +22605,9 @@ function messagesValidation(obj) {
     });
   };
   if (!validate(obj, messagesValidate)) {
-    throw new Error("Messages object is not valid! Must contain _id[String, Number], content[String, Number] and senderId[String, Number]");
+    throw new Error(
+      "Messages object is not valid! Must contain _id[String, Number], content[String, Number] and senderId[String, Number]"
+    );
   }
 }
 function checkObjectValid(obj, key) {
@@ -21236,13 +22688,19 @@ const _sfc_main$3 = {
       return this.message.senderId === this.currentUserId && !this.message.deleted && (this.message.saved || this.message.distributed || this.message.seen);
     },
     hasCurrentUserAvatar() {
-      return this.messages.some((message) => message.senderId === this.currentUserId && message.avatar);
+      return this.messages.some(
+        (message) => message.senderId === this.currentUserId && message.avatar
+      );
     },
     hasSenderUserAvatar() {
-      return this.messages.some((message) => message.senderId !== this.currentUserId && message.avatar);
+      return this.messages.some(
+        (message) => message.senderId !== this.currentUserId && message.avatar
+      );
     },
     isMessageSelected() {
-      return this.messageSelectionEnabled && !!this.selectedMessages.find((message) => message._id === this.message._id);
+      return this.messageSelectionEnabled && !!this.selectedMessages.find(
+        (message) => message._id === this.message._id
+      );
     }
   },
   watch: {
@@ -21254,7 +22712,9 @@ const _sfc_main$3 = {
           this.newMessage = {};
           return;
         }
-        this.newMessage = val.reduce((res, obj) => obj.index < res.index ? obj : res);
+        this.newMessage = val.reduce(
+          (res, obj) => obj.index < res.index ? obj : res
+        );
       }
     },
     messageSelectionEnabled() {
@@ -21339,31 +22799,30 @@ const _hoisted_5$2 = {
   key: 1,
   class: "vac-avatar-offset"
 };
-const _hoisted_6$1 = { key: 2 };
-const _hoisted_7$1 = {
+const _hoisted_6$1 = {
   key: 0,
   class: "vac-progress-time"
 };
-const _hoisted_8 = { class: "vac-text-timestamp" };
-const _hoisted_9 = {
+const _hoisted_7$1 = { class: "vac-text-timestamp" };
+const _hoisted_8 = {
   key: 0,
   class: "vac-icon-edited"
 };
-const _hoisted_10 = { key: 1 };
-const _hoisted_11 = /* @__PURE__ */ createElementVNode("div", { class: "vac-failure-text" }, " ! ", -1);
-const _hoisted_12 = [
-  _hoisted_11
+const _hoisted_9 = { key: 1 };
+const _hoisted_10 = /* @__PURE__ */ createElementVNode("div", { class: "vac-failure-text" }, "!", -1);
+const _hoisted_11 = [
+  _hoisted_10
 ];
-const _hoisted_13 = {
+const _hoisted_12 = {
   key: 3,
   class: "vac-avatar-current-offset"
 };
 function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_format_message = resolveComponent("format-message");
   const _component_message_reply = resolveComponent("message-reply");
-  const _component_svg_icon = resolveComponent("svg-icon");
   const _component_message_files = resolveComponent("message-files");
   const _component_audio_player = resolveComponent("audio-player");
+  const _component_svg_icon = resolveComponent("svg-icon");
   const _component_message_actions = resolveComponent("message-actions");
   const _component_message_reactions = resolveComponent("message-reactions");
   return openBlock(), createElementBlock("div", {
@@ -21374,15 +22833,18 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     $options.showDate ? (openBlock(), createElementBlock("div", _hoisted_2$2, toDisplayString($props.message.date), 1)) : createCommentVNode("", true),
     $data.newMessage._id === $props.message._id ? (openBlock(), createElementBlock("div", _hoisted_3$2, toDisplayString($props.textMessages.NEW_MESSAGES), 1)) : createCommentVNode("", true),
     $props.message.system ? (openBlock(), createElementBlock("div", _hoisted_4$2, [
-      renderSlot(_ctx.$slots, "system-message", normalizeProps(guardReactiveProps({ message: $props.message })), () => [
+      renderSlot(_ctx.$slots, "message_" + $props.message._id, {}, () => [
         createVNode(_component_format_message, {
+          "message-id": $props.message._id,
           content: $props.message.content,
+          deleted: !!$props.message.deleted,
           users: $props.roomUsers,
+          "text-messages": $props.textMessages,
           "text-formatting": $props.textFormatting,
           "link-options": $props.linkOptions,
           onOpenUserTag: $options.openUserTag
         }, createSlots({ _: 2 }, [
-          renderList(_ctx.$slots, (i, name) => {
+          renderList(_ctx.$slots, (idx, name) => {
             return {
               name,
               fn: withCtx((data) => [
@@ -21390,14 +22852,14 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
               ])
             };
           })
-        ]), 1032, ["content", "users", "text-formatting", "link-options", "onOpenUserTag"])
+        ]), 1032, ["message-id", "content", "deleted", "users", "text-messages", "text-formatting", "link-options", "onOpenUserTag"])
       ])
     ])) : (openBlock(), createElementBlock("div", {
       key: 3,
       class: normalizeClass(["vac-message-box", { "vac-offset-current": $props.message.senderId === $props.currentUserId }]),
       onClick: _cache[8] || (_cache[8] = (...args) => $options.selectMessage && $options.selectMessage(...args))
     }, [
-      renderSlot(_ctx.$slots, "message", normalizeProps(guardReactiveProps({ message: $props.message })), () => [
+      renderSlot(_ctx.$slots, "message_" + $props.message._id, {}, () => [
         $props.message.avatar && $props.message.senderId !== $props.currentUserId ? (openBlock(), createElementBlock("div", {
           key: 0,
           class: "vac-avatar",
@@ -21443,24 +22905,18 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
                   ])
                 };
               })
-            ]), 1032, ["message", "room-users", "text-formatting", "link-options"])) : createCommentVNode("", true),
-            $props.message.deleted ? (openBlock(), createElementBlock("div", _hoisted_6$1, [
-              renderSlot(_ctx.$slots, "deleted-icon", {}, () => [
-                createVNode(_component_svg_icon, {
-                  name: "deleted",
-                  class: "vac-icon-deleted"
-                })
-              ]),
-              createElementVNode("span", null, toDisplayString($props.textMessages.MESSAGE_DELETED), 1)
-            ])) : !$props.message.files || !$props.message.files.length ? (openBlock(), createBlock(_component_format_message, {
-              key: 3,
+            ]), 1032, ["message", "room-users", "text-formatting", "link-options"])) : !!$props.message.deleted || !$props.message.files || !$props.message.files.length ? (openBlock(), createBlock(_component_format_message, {
+              key: 2,
+              "message-id": $props.message._id,
               content: $props.message.content,
+              deleted: !!$props.message.deleted,
               users: $props.roomUsers,
               "text-formatting": $props.textFormatting,
+              "text-messages": $props.textMessages,
               "link-options": $props.linkOptions,
               onOpenUserTag: $options.openUserTag
             }, createSlots({ _: 2 }, [
-              renderList(_ctx.$slots, (i, name) => {
+              renderList(_ctx.$slots, (idx, name) => {
                 return {
                   name,
                   fn: withCtx((data) => [
@@ -21468,8 +22924,8 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
                   ])
                 };
               })
-            ]), 1032, ["content", "users", "text-formatting", "link-options", "onOpenUserTag"])) : !$options.isAudio || $props.message.files.length > 1 ? (openBlock(), createBlock(_component_message_files, {
-              key: 4,
+            ]), 1032, ["message-id", "content", "deleted", "users", "text-formatting", "text-messages", "link-options", "onOpenUserTag"])) : !$options.isAudio || $props.message.files.length > 1 ? (openBlock(), createBlock(_component_message_files, {
+              key: 3,
               "current-user-id": $props.currentUserId,
               message: $props.message,
               "room-users": $props.roomUsers,
@@ -21487,7 +22943,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
                   ])
                 };
               })
-            ]), 1032, ["current-user-id", "message", "room-users", "text-formatting", "link-options", "message-selection-enabled", "onOpenFile", "onOpenUserTag"])) : (openBlock(), createElementBlock(Fragment, { key: 5 }, [
+            ]), 1032, ["current-user-id", "message", "room-users", "text-formatting", "link-options", "message-selection-enabled", "onOpenFile", "onOpenUserTag"])) : (openBlock(), createElementBlock(Fragment, { key: 4 }, [
               createVNode(_component_audio_player, {
                 "message-id": $props.message._id,
                 src: $props.message.files[0].url,
@@ -21504,17 +22960,17 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
                   };
                 })
               ]), 1032, ["message-id", "src", "message-selection-enabled"]),
-              !$props.message.deleted ? (openBlock(), createElementBlock("div", _hoisted_7$1, toDisplayString($data.progressTime), 1)) : createCommentVNode("", true)
+              !$props.message.deleted ? (openBlock(), createElementBlock("div", _hoisted_6$1, toDisplayString($data.progressTime), 1)) : createCommentVNode("", true)
             ], 64)),
-            createElementVNode("div", _hoisted_8, [
-              $props.message.edited && !$props.message.deleted ? (openBlock(), createElementBlock("div", _hoisted_9, [
-                renderSlot(_ctx.$slots, "pencil-icon", {}, () => [
+            createElementVNode("div", _hoisted_7$1, [
+              $props.message.edited && !$props.message.deleted ? (openBlock(), createElementBlock("div", _hoisted_8, [
+                renderSlot(_ctx.$slots, "pencil-icon_" + $props.message._id, {}, () => [
                   createVNode(_component_svg_icon, { name: "pencil" })
                 ])
               ])) : createCommentVNode("", true),
               createElementVNode("span", null, toDisplayString($props.message.timestamp), 1),
-              $options.isCheckmarkVisible ? (openBlock(), createElementBlock("span", _hoisted_10, [
-                renderSlot(_ctx.$slots, "checkmark-icon", normalizeProps(guardReactiveProps({ message: $props.message })), () => [
+              $options.isCheckmarkVisible ? (openBlock(), createElementBlock("span", _hoisted_9, [
+                renderSlot(_ctx.$slots, "checkmark-icon_" + $props.message._id, {}, () => [
                   createVNode(_component_svg_icon, {
                     name: $props.message.distributed ? "double-checkmark" : "checkmark",
                     param: $props.message.seen ? "seen" : "",
@@ -21553,21 +23009,21 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
             onSendMessageReaction: $options.sendMessageReaction
           }, null, 8, ["current-user-id", "message", "onSendMessageReaction"])
         ], 2),
-        renderSlot(_ctx.$slots, "message-failure", normalizeProps(guardReactiveProps({ message: $props.message })), () => [
+        renderSlot(_ctx.$slots, "message-failure_" + $props.message._id, {}, () => [
           $props.message.failure && $props.message.senderId === $props.currentUserId ? (openBlock(), createElementBlock("div", {
             key: 0,
             class: normalizeClass(["vac-failure-container vac-svg-button", {
               "vac-failure-container-avatar": $props.message.avatar && $props.message.senderId === $props.currentUserId
             }]),
             onClick: _cache[7] || (_cache[7] = ($event) => _ctx.$emit("open-failed-message", { message: $props.message }))
-          }, _hoisted_12, 2)) : createCommentVNode("", true)
+          }, _hoisted_11, 2)) : createCommentVNode("", true)
         ]),
         $props.message.avatar && $props.message.senderId === $props.currentUserId ? (openBlock(), createElementBlock("div", {
           key: 2,
           class: "vac-avatar vac-avatar-current",
           style: normalizeStyle({ "background-image": `url('${$props.message.avatar}')` })
         }, null, 4)) : createCommentVNode("", true),
-        $options.hasCurrentUserAvatar && !$props.message.avatar ? (openBlock(), createElementBlock("div", _hoisted_13)) : createCommentVNode("", true)
+        $options.hasCurrentUserAvatar && !$props.message.avatar ? (openBlock(), createElementBlock("div", _hoisted_12)) : createCommentVNode("", true)
       ])
     ], 2))
   ], 8, _hoisted_1$3);
@@ -21760,7 +23216,11 @@ const _sfc_main$2 = {
       if (touchEvent.changedTouches.length === 1) {
         const posXStart = touchEvent.changedTouches[0].clientX;
         const posYStart = touchEvent.changedTouches[0].clientY;
-        addEventListener("touchend", (touchEvent2) => this.touchEnd(touchEvent2, posXStart, posYStart), { once: true });
+        addEventListener(
+          "touchend",
+          (touchEvent2) => this.touchEnd(touchEvent2, posXStart, posYStart),
+          { once: true }
+        );
       }
     },
     touchEnd(touchEvent, posXStart, posYStart) {
@@ -21779,18 +23239,21 @@ const _sfc_main$2 = {
       this.scrollIcon = false;
       this.scrollMessagesCount = 0;
       this.resetMessageSelection();
-      const unwatch = this.$watch(() => this.messages, (val) => {
-        if (!val || !val.length)
-          return;
-        const element2 = this.$refs.scrollContainer;
-        if (!element2)
-          return;
-        unwatch();
-        setTimeout(() => {
-          element2.scrollTo({ top: element2.scrollHeight });
-          this.updateLoadingMessages(false);
-        });
-      });
+      const unwatch = this.$watch(
+        () => this.messages,
+        (val) => {
+          if (!val || !val.length)
+            return;
+          const element2 = this.$refs.scrollContainer;
+          if (!element2)
+            return;
+          unwatch();
+          setTimeout(() => {
+            element2.scrollTo({ top: element2.scrollHeight });
+            this.updateLoadingMessages(false);
+          });
+        }
+      );
     },
     resetMessageSelection() {
       this.messageSelectionEnabled = false;
@@ -21800,7 +23263,9 @@ const _sfc_main$2 = {
       this.selectedMessages.push(message);
     },
     unselectMessage(messageId) {
-      this.selectedMessages = this.selectedMessages.filter((message) => message._id !== messageId);
+      this.selectedMessages = this.selectedMessages.filter(
+        (message) => message._id !== messageId
+      );
     },
     onMessageAdded({ message, index, ref }) {
       if (index !== this.messages.length - 1)
@@ -21848,18 +23313,21 @@ const _sfc_main$2 = {
     loadMoreMessages() {
       if (this.loadingMessages)
         return;
-      setTimeout(() => {
-        if (this.loadingMoreMessages)
-          return;
-        if (this.messagesLoaded || !this.roomId) {
-          this.loadingMoreMessages = false;
-          this.showLoader = false;
-          return;
-        }
-        this.preventTopScroll();
-        this.$emit("fetch-messages");
-        this.loadingMoreMessages = true;
-      }, 500);
+      setTimeout(
+        () => {
+          if (this.loadingMoreMessages)
+            return;
+          if (this.messagesLoaded || !this.roomId) {
+            this.loadingMoreMessages = false;
+            this.showLoader = false;
+            return;
+          }
+          this.preventTopScroll();
+          this.$emit("fetch-messages");
+          this.loadingMoreMessages = true;
+        },
+        500
+      );
     },
     messageActionHandler({ action, message }) {
       switch (action.name) {
@@ -21976,7 +23444,10 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
       class: "vac-container-scroll",
       onScroll: _cache[5] || (_cache[5] = (...args) => $options.onContainerScroll && $options.onContainerScroll(...args))
     }, [
-      createVNode(_component_loader, { show: $data.loadingMessages }, createSlots({ _: 2 }, [
+      createVNode(_component_loader, {
+        show: $data.loadingMessages,
+        type: "messages"
+      }, createSlots({ _: 2 }, [
         renderList(_ctx.$slots, (idx, name) => {
           return {
             name,
@@ -22006,7 +23477,8 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
           $props.messages.length && !$props.messagesLoaded ? (openBlock(), createElementBlock("div", _hoisted_5$1, [
             createVNode(_component_loader, {
               show: true,
-              infinite: true
+              infinite: true,
+              type: "infinite-messages"
             }, createSlots({ _: 2 }, [
               renderList(_ctx.$slots, (idx, name) => {
                 return {
@@ -22628,7 +24100,7 @@ const cssThemeVars = ({
     "--chat-icon-color-audio-confirm": icons.audioConfirm
   };
 };
-var _style_0 = '.vac-fade-spinner-enter-from{opacity:0}.vac-fade-spinner-enter-active{transition:opacity .8s}.vac-fade-spinner-leave-active{transition:opacity .2s;opacity:0}.vac-fade-image-enter-from{opacity:0}.vac-fade-image-enter-active{transition:opacity 1s}.vac-fade-image-leave-active{transition:opacity .5s;opacity:0}.vac-fade-message-enter-from{opacity:0}.vac-fade-message-enter-active{transition:opacity .5s}.vac-fade-message-leave-active{transition:opacity .2s;opacity:0}.vac-slide-left-enter-active,.vac-slide-right-enter-active{transition:all .3s ease;transition-property:transform,opacity}.vac-slide-left-leave-active,.vac-slide-right-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)!important;transition-property:transform,opacity}.vac-slide-left-enter-from,.vac-slide-left-leave-to{transform:translate(10px);opacity:0}.vac-slide-right-enter-from,.vac-slide-right-leave-to{transform:translate(-10px);opacity:0}.vac-slide-up-enter-active{transition:all .3s ease}.vac-slide-up-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)}.vac-slide-up-enter-from,.vac-slide-up-leave-to{transform:translateY(10px);opacity:0}.vac-bounce-enter-active{animation:vac-bounce-in .5s}.vac-bounce-leave-active{animation:vac-bounce-in .3s reverse}@keyframes vac-bounce-in{0%{transform:scale(0)}50%{transform:scale(1.05)}to{transform:scale(1)}}.vac-fade-preview-enter{opacity:0}.vac-fade-preview-enter-active{transition:opacity .1s}.vac-fade-preview-leave-active{transition:opacity .2s;opacity:0}.vac-bounce-preview-enter-active{animation:vac-bounce-image-in .4s}.vac-bounce-preview-leave-active{animation:vac-bounce-image-in .3s reverse}@keyframes vac-bounce-image-in{0%{transform:scale(.6)}to{transform:scale(1)}}.vac-menu-list{border-radius:4px;display:block;cursor:pointer;background:var(--chat-dropdown-bg-color);padding:6px 0}.vac-menu-list :hover{background:var(--chat-dropdown-bg-color-hover);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-list :not(:hover){transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-item{-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-flex:1;-ms-flex:1 1 100%;flex:1 1 100%;min-height:30px;padding:5px 16px;position:relative;white-space:nowrap;line-height:30px}.vac-menu-options{position:absolute;right:10px;top:20px;z-index:9999;min-width:150px;display:inline-block;border-radius:4px;font-size:14px;color:var(--chat-color);overflow-y:auto;overflow-x:hidden;contain:content;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-app-border{border:var(--chat-border-style)}.vac-app-border-t{border-top:var(--chat-border-style)}.vac-app-border-r{border-right:var(--chat-border-style)}.vac-app-border-b{border-bottom:var(--chat-border-style)}.vac-app-box-shadow{transition:all .5s;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-item-clickable{cursor:pointer}.vac-vertical-center{display:flex;align-items:center;height:100%}.vac-vertical-center .vac-vertical-container{width:100%;text-align:center}.vac-svg-button{max-height:30px;display:flex;cursor:pointer;transition:all .2s}.vac-svg-button:hover{transform:scale(1.1);opacity:.7}.vac-avatar{background-size:cover;background-position:center center;background-repeat:no-repeat;background-color:#ddd;height:42px;width:42px;min-height:42px;min-width:42px;margin-right:15px;border-radius:50%}.vac-blur-loading{filter:blur(3px)}.vac-badge-counter{height:13px;width:auto;min-width:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:3px;font-size:11px;font-weight:500}.vac-text-ellipsis{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-text-bold{font-weight:700}.vac-text-italic{font-style:italic}.vac-text-strike{text-decoration:line-through}.vac-text-underline{text-decoration:underline}.vac-text-inline-code{display:inline-block;font-size:12px;color:var(--chat-markdown-color);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:2px 0;padding:2px 3px}.vac-text-multiline-code{display:block;font-size:12px;color:var(--chat-markdown-color-multi);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:4px 0;padding:7px}.vac-text-tag{color:var(--chat-message-color-tag);cursor:pointer}.vac-file-container{display:flex;align-content:center;justify-content:center;flex-wrap:wrap;text-align:center;background:var(--chat-bg-color-input);border:var(--chat-border-style-input);border-radius:4px;padding:10px}.vac-file-container svg{height:28px;width:28px}.vac-file-container .vac-text-extension{font-size:12px;color:var(--chat-message-color-file-extension);margin-top:-2px}.vac-card-window{width:100%;display:block;max-width:100%;background:var(--chat-content-bg-color);color:var(--chat-color);overflow-wrap:break-word;white-space:normal;border:var(--chat-container-border);border-radius:var(--chat-container-border-radius);box-shadow:var(--chat-container-box-shadow);-webkit-tap-highlight-color:transparent}.vac-card-window *{font-family:inherit}.vac-card-window a{color:#0d579c;font-weight:500}.vac-card-window .vac-chat-container{height:100%;display:flex}.vac-card-window .vac-chat-container input{min-width:10px}.vac-card-window .vac-chat-container textarea,.vac-card-window .vac-chat-container input[type=text],.vac-card-window .vac-chat-container input[type=search]{-webkit-appearance:none}.vac-media-preview{position:fixed;top:0;left:0;z-index:99;width:100vw;height:100vh;display:flex;align-items:center;background-color:#000c;outline:none}.vac-media-preview .vac-media-preview-container{height:calc(100% - 140px);width:calc(100% - 80px);padding:70px 40px;margin:0 auto}.vac-media-preview .vac-image-preview{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}.vac-media-preview .vac-svg-button{position:absolute;top:30px;right:30px;transform:scale(1.4)}@media only screen and (max-width: 768px){.vac-media-preview .vac-svg-button{top:20px;right:20px;transform:scale(1.2)}.vac-media-preview .vac-media-preview-container{width:calc(100% - 40px);padding:70px 20px}}.vac-col-messages{position:relative;height:100%;flex:1;overflow:hidden;display:flex;flex-flow:column}.vac-col-messages .vac-container-center{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.vac-col-messages .vac-room-empty{font-size:14px;color:#9ca6af;font-style:italic;line-height:20px;white-space:pre-line}.vac-col-messages .vac-room-empty div{padding:0 10%}.vac-col-messages .vac-container-scroll{background:var(--chat-content-bg-color);flex:1;overflow-y:auto;margin-right:1px;margin-top:60px;-webkit-overflow-scrolling:touch}.vac-col-messages .vac-container-scroll.vac-scroll-smooth{scroll-behavior:smooth}.vac-col-messages .vac-messages-container{padding:0 5px 5px}.vac-col-messages .vac-text-started{font-size:14px;color:var(--chat-message-color-started);font-style:italic;text-align:center;margin-top:30px;margin-bottom:20px}.vac-col-messages .vac-icon-scroll{position:absolute;bottom:80px;right:20px;padding:8px;background:var(--chat-bg-scroll-icon);border-radius:50%;box-shadow:0 1px 1px -1px #0003,0 1px 1px #00000024,0 1px 2px #0000001f;display:flex;cursor:pointer;z-index:10}.vac-col-messages .vac-icon-scroll svg{height:25px;width:25px}.vac-col-messages .vac-messages-count{position:absolute;top:-8px;left:11px;background-color:var(--chat-message-bg-color-scroll-counter);color:var(--chat-message-color-scroll-counter)}.vac-col-messages .vac-messages-hidden{opacity:0}@media only screen and (max-width: 768px){.vac-col-messages .vac-container-scroll{margin-top:50px}.vac-col-messages .vac-text-started{margin-top:20px}.vac-col-messages .vac-icon-scroll{bottom:70px}}.vac-room-header{position:absolute;display:flex;align-items:center;height:64px;width:100%;z-index:10;margin-right:1px;background:var(--chat-header-bg-color);border-top-right-radius:var(--chat-container-border-radius)}.vac-room-header .vac-room-wrapper{display:flex;align-items:center;min-width:0;height:100%;width:100%;padding:0 16px}.vac-room-header .vac-toggle-button{margin-right:15px}.vac-room-header .vac-toggle-button svg{height:26px;width:26px}.vac-room-header .vac-rotate-icon{transform:rotate(180deg)!important}.vac-room-header .vac-rotate-icon-init{transform:rotate(360deg)}.vac-room-header .vac-info-wrapper,.vac-room-header .vac-room-selection{display:flex;align-items:center;min-width:0;width:100%;height:100%}.vac-room-header .vac-room-selection .vac-selection-button{padding:8px 16px;color:var(--chat-color-button);background-color:var(--chat-bg-color-button);border-radius:4px;margin-right:10px;cursor:pointer;transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-button:hover{opacity:.7}.vac-room-header .vac-room-selection .vac-selection-button:active{opacity:.9}.vac-room-header .vac-room-selection .vac-selection-button .vac-selection-button-count{margin-left:6px;opacity:.9}.vac-room-header .vac-room-selection .vac-selection-cancel{display:flex;align-items:center;margin-left:auto;white-space:nowrap;color:var(--chat-color-button-clear);transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-cancel:hover{opacity:.7}.vac-room-header .vac-room-name{font-size:17px;font-weight:500;line-height:22px;color:var(--chat-header-color-name)}.vac-room-header .vac-room-info{font-size:13px;line-height:18px;color:var(--chat-header-color-info)}.vac-room-header .vac-room-options{margin-left:auto}@media only screen and (max-width: 768px){.vac-room-header{height:50px}.vac-room-header .vac-room-wrapper{padding:0 10px}.vac-room-header .vac-room-name{font-size:16px;line-height:22px}.vac-room-header .vac-room-info{font-size:12px;line-height:16px}.vac-room-header .vac-avatar{height:37px;width:37px;min-height:37px;min-width:37px}}.vac-room-footer{width:100%;border-bottom-right-radius:4px;z-index:10}.vac-box-footer{display:flex;position:relative;background:var(--chat-footer-bg-color);padding:10px 8px}.vac-textarea{height:20px;width:100%;line-height:20px;overflow:hidden;outline:0;resize:none;border-radius:20px;padding:12px 16px;box-sizing:content-box;font-size:16px;background:var(--chat-bg-color-input);color:var(--chat-color);caret-color:var(--chat-color-caret);border:var(--chat-border-style-input)}.vac-textarea::placeholder{color:var(--chat-color-placeholder);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-textarea-outline{border:1px solid var(--chat-border-color-input-selected);box-shadow:inset 0 0 0 1px var(--chat-border-color-input-selected)}.vac-icon-textarea,.vac-icon-textarea-left{display:flex;align-items:center}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea{margin-left:5px}.vac-icon-textarea-left{display:flex;align-items:center;margin-right:5px}.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea-left .vac-icon-microphone{fill:var(--chat-icon-color-microphone);margin:0 7px}.vac-icon-textarea-left .vac-dot-audio-record{height:15px;width:15px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-record);animation:vac-scaling .8s ease-in-out infinite alternate}@keyframes vac-scaling{0%{transform:scale(1);opacity:.4}to{transform:scale(1.1);opacity:1}}.vac-icon-textarea-left .vac-dot-audio-record-time{font-size:16px;color:var(--chat-color);margin-left:8px;width:45px}.vac-icon-textarea-left .vac-icon-audio-stop,.vac-icon-textarea-left .vac-icon-audio-confirm{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop svg,.vac-icon-textarea-left .vac-icon-audio-confirm svg{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop{margin-right:20px}.vac-icon-textarea-left .vac-icon-audio-stop #vac-icon-close-outline{fill:var(--chat-icon-color-audio-cancel)}.vac-icon-textarea-left .vac-icon-audio-confirm{margin-right:3px;margin-left:12px}.vac-icon-textarea-left .vac-icon-audio-confirm #vac-icon-checkmark{fill:var(--chat-icon-color-audio-confirm)}.vac-send-disabled,.vac-send-disabled svg{cursor:none!important;pointer-events:none!important;transform:none!important}@media only screen and (max-width: 768px){.vac-room-footer{width:100%}.vac-box-footer{padding:7px 2px 7px 7px}.vac-box-footer.vac-box-footer-border{border-top:var(--chat-border-style-input)}.vac-textarea{padding:7px;line-height:18px}.vac-textarea::placeholder{color:transparent}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 5px!important}}.vac-emojis-container{width:calc(100% - 16px);padding:10px 8px;background:var(--chat-footer-bg-color);display:flex;align-items:center;overflow:auto}.vac-emojis-container .vac-emoji-element{padding:0 8px;font-size:30px;border-radius:4px;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-emojis-container .vac-emoji-element-active{background:var(--chat-footer-bg-color-tag-active)}@media only screen and (max-width: 768px){.vac-emojis-container{width:calc(100% - 10px);padding:7px 5px}.vac-emojis-container .vac-emoji-element{padding:0 7px;font-size:26px}}.vac-reply-container{display:flex;padding:10px 10px 0;background:var(--chat-footer-bg-color);align-items:center;width:calc(100% - 20px)}.vac-reply-container .vac-reply-box{width:100%;overflow:hidden;background:var(--chat-footer-bg-color-reply);border-radius:4px;padding:8px 10px}.vac-reply-container .vac-reply-info{overflow:hidden}.vac-reply-container .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-container .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content);white-space:pre-line}.vac-reply-container .vac-icon-reply{margin-left:10px}.vac-reply-container .vac-icon-reply svg{height:20px;width:20px}.vac-reply-container .vac-image-reply{max-height:100px;max-width:200px;margin:4px 10px 0 0;border-radius:4px}.vac-reply-container .vac-audio-reply{margin-right:10px}.vac-reply-container .vac-file-container{max-width:80px}@media only screen and (max-width: 768px){.vac-reply-container{padding:5px 8px;width:calc(100% - 16px)}}.vac-room-files-container{display:flex;align-items:center;padding:10px 6px 0;background:var(--chat-footer-bg-color)}.vac-room-files-container .vac-files-box{display:flex;overflow:auto;width:calc(100% - 30px)}.vac-room-files-container video{height:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-files-container .vac-icon-close{margin-left:auto}.vac-room-files-container .vac-icon-close svg{height:20px;width:20px}@media only screen and (max-width: 768px){.vac-files-container{padding:6px 4px 4px 2px}}.vac-room-file-container{display:flex;position:relative;margin:0 4px}.vac-room-file-container .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:100px;width:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-file-container .vac-file-container{height:80px;width:80px}.vac-room-file-container .vac-icon-remove{position:absolute;top:6px;left:6px;z-index:10}.vac-room-file-container .vac-icon-remove svg{height:20px;width:20px;border-radius:50%}.vac-room-file-container .vac-icon-remove:before{content:" ";position:absolute;width:100%;height:100%;background:rgba(0,0,0,.5);border-radius:50%;z-index:-1}.vac-tags-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-tags-container .vac-tags-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-tags-container .vac-tags-box-active{background:var(--chat-footer-bg-color-tag-active)}.vac-tags-container .vac-tags-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-tags-container .vac-tags-avatar{height:34px;width:34px;min-height:34px;min-width:34px}.vac-tags-container .vac-tags-username{font-size:14px}@media only screen and (max-width: 768px){.vac-tags-container .vac-tags-box{height:50px}.vac-tags-container .vac-tags-info{padding:0 12px}}.vac-template-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-template-container .vac-template-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-template-container .vac-template-active{background:var(--chat-footer-bg-color-tag-active)}.vac-template-container .vac-template-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-template-container .vac-template-tag{font-size:14px;font-weight:700;margin-right:10px}.vac-template-container .vac-template-text{font-size:14px}@media only screen and (max-width: 768px){.vac-template-container .vac-template-box{height:50px}.vac-template-container .vac-template-info{padding:0 12px}}.vac-rooms-container{display:flex;flex-flow:column;flex:0 0 25%;min-width:260px;max-width:500px;position:relative;background:var(--chat-sidemenu-bg-color);height:100%;border-top-left-radius:var(--chat-container-border-radius);border-bottom-left-radius:var(--chat-container-border-radius)}.vac-rooms-container.vac-rooms-container-full{flex:0 0 100%;max-width:100%}.vac-rooms-container .vac-rooms-empty{font-size:14px;color:#9ca6af;font-style:italic;text-align:center;margin:40px 0;line-height:20px;white-space:pre-line}.vac-rooms-container .vac-room-list{flex:1;position:relative;max-width:100%;cursor:pointer;padding:0 10px 5px;overflow-y:auto}.vac-rooms-container .vac-room-item{border-radius:8px;align-items:center;display:flex;flex:1 1 100%;margin-bottom:5px;padding:0 14px;position:relative;min-height:71px;transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-rooms-container .vac-room-item:hover{background:var(--chat-sidemenu-bg-color-hover)}.vac-rooms-container .vac-room-selected{color:var(--chat-sidemenu-color-active)!important;background:var(--chat-sidemenu-bg-color-active)!important}.vac-rooms-container .vac-room-selected:hover{background:var(--chat-sidemenu-bg-color-active)!important}@media only screen and (max-width: 768px){.vac-rooms-container .vac-room-list{padding:0 7px 5px}.vac-rooms-container .vac-room-item{min-height:60px;padding:0 8px}}.vac-room-container{display:flex;flex:1;align-items:center;width:100%}.vac-room-container .vac-name-container{flex:1}.vac-room-container .vac-title-container{display:flex;align-items:center;line-height:25px}.vac-room-container .vac-state-circle{width:9px;height:9px;border-radius:50%;background-color:var(--chat-room-color-offline);margin-right:6px;transition:.3s}.vac-room-container .vac-state-online{background-color:var(--chat-room-color-online)}.vac-room-container .vac-room-name{flex:1;color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-text-date{margin-left:5px;font-size:11px;color:var(--chat-room-color-timestamp)}.vac-room-container .vac-text-last{display:flex;align-items:center;font-size:12px;line-height:19px;color:var(--chat-room-color-message)}.vac-room-container .vac-message-new{color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-icon-check{display:flex;vertical-align:middle;height:14px;width:14px;margin-top:-2px;margin-right:2px}.vac-room-container .vac-icon-microphone{height:15px;width:15px;vertical-align:middle;margin:-3px 1px 0 -2px;fill:var(--chat-room-color-message)}.vac-room-container .vac-room-options-container{display:flex;margin-left:auto}.vac-room-container .vac-room-badge{background-color:var(--chat-room-bg-color-badge);color:var(--chat-room-color-badge);margin-left:5px}.vac-room-container .vac-list-room-options{height:19px;width:19px;align-items:center;margin-left:5px}.vac-box-empty{margin-top:10px}@media only screen and (max-width: 768px){.vac-box-empty{margin-top:7px}}.vac-box-search{position:sticky;display:flex;align-items:center;height:64px;padding:0 15px}.vac-box-search .vac-icon-search{display:flex;position:absolute;left:30px}.vac-box-search .vac-icon-search svg{width:18px;height:18px}.vac-box-search .vac-input{height:38px;width:100%;background:var(--chat-bg-color-input);color:var(--chat-color);font-size:15px;outline:0;caret-color:var(--chat-color-caret);padding:10px 10px 10px 40px;border:1px solid var(--chat-sidemenu-border-color-search);border-radius:20px}.vac-box-search .vac-input::placeholder{color:var(--chat-color-placeholder)}.vac-box-search .vac-add-icon{margin-left:auto;padding-left:10px}@media only screen and (max-width: 768px){.vac-box-search{height:58px}}.vac-message-wrapper .vac-card-info{border-radius:4px;text-align:center;margin:10px auto;font-size:12px;padding:4px;display:block;overflow-wrap:break-word;position:relative;white-space:normal;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-card-date{max-width:150px;font-weight:500;text-transform:uppercase;color:var(--chat-message-color-date);background-color:var(--chat-message-bg-color-date)}.vac-message-wrapper .vac-card-system{max-width:250px;padding:8px 4px;color:var(--chat-message-color-system);background-color:var(--chat-message-bg-color-system)}.vac-message-wrapper .vac-line-new{color:var(--chat-message-color-new-messages);position:relative;text-align:center;font-size:13px;padding:10px 0}.vac-message-wrapper .vac-line-new:after,.vac-message-wrapper .vac-line-new:before{border-top:1px solid var(--chat-message-color-new-messages);content:"";left:0;position:absolute;top:50%;width:calc(50% - 60px)}.vac-message-wrapper .vac-line-new:before{left:auto;right:0}.vac-message-wrapper .vac-message-box{display:flex;flex:0 0 50%;max-width:50%;justify-content:flex-start;line-height:1.4}.vac-message-wrapper .vac-avatar{height:28px;width:28px;min-height:28px;min-width:28px;margin:0 0 2px;align-self:flex-end}.vac-message-wrapper .vac-avatar-current-offset{margin-right:28px}.vac-message-wrapper .vac-avatar-offset{margin-left:28px}.vac-message-wrapper .vac-failure-container{position:relative;align-self:flex-end;height:20px;width:20px;margin:0 0 2px -4px;border-radius:50%;background-color:#f44336}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:6px}.vac-message-wrapper .vac-failure-container .vac-failure-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:15px;font-weight:700}.vac-message-wrapper .vac-message-container{position:relative;padding:2px 10px;align-items:end;min-width:100px;box-sizing:content-box}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-offset-current{margin-left:50%;justify-content:flex-end}.vac-message-wrapper .vac-message-card{background-color:var(--chat-message-bg-color);color:var(--chat-message-color);border-radius:8px;font-size:14px;padding:6px 9px 3px;white-space:pre-line;max-width:100%;-webkit-transition-property:box-shadow,opacity;transition-property:box-shadow,opacity;transition:box-shadow .28s cubic-bezier(.4,0,.2,1);will-change:box-shadow;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-message-highlight{box-shadow:0 1px 2px -1px #0000001a,0 1px 2px -1px #0000001c,0 1px 5px -1px #0000001c}.vac-message-wrapper .vac-message-current{background-color:var(--chat-message-bg-color-me)!important}.vac-message-wrapper .vac-message-deleted{color:var(--chat-message-color-deleted)!important;font-size:13px!important;font-style:italic!important;background-color:var(--chat-message-bg-color-deleted)!important}.vac-message-wrapper .vac-message-selected{background-color:var(--chat-message-bg-color-selected)!important;transition:background-color .2s}.vac-message-wrapper .vac-icon-deleted{height:14px;width:14px;vertical-align:middle;margin:-2px 2px 0 0;fill:var(--chat-message-color-deleted)}.vac-message-wrapper .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:250px;width:250px;max-width:100%;border-radius:4px;margin:4px auto 5px;transition:.4s filter linear}.vac-message-wrapper .vac-text-username{font-size:13px;color:var(--chat-message-color-username);margin-bottom:2px}.vac-message-wrapper .vac-username-reply{margin-bottom:5px}.vac-message-wrapper .vac-text-timestamp{font-size:10px;color:var(--chat-message-color-timestamp);text-align:right}.vac-message-wrapper .vac-progress-time{float:left;margin:-2px 0 0 40px;color:var(--chat-color);font-size:12px}.vac-message-wrapper .vac-icon-edited{-webkit-box-align:center;align-items:center;display:-webkit-inline-box;display:inline-flex;justify-content:center;letter-spacing:normal;line-height:1;text-indent:0;vertical-align:middle;margin:0 4px 2px}.vac-message-wrapper .vac-icon-edited svg{height:12px;width:12px}.vac-message-wrapper .vac-icon-check{height:14px;width:14px;vertical-align:middle;margin:-3px -3px 0 3px}@media only screen and (max-width: 768px){.vac-message-wrapper .vac-message-container{padding:2px 3px 1px}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-message-box{flex:0 0 80%;max-width:80%}.vac-message-wrapper .vac-avatar{height:25px;width:25px;min-height:25px;min-width:25px;margin:0 6px 1px 0}.vac-message-wrapper .vac-avatar.vac-avatar-current{margin:0 0 1px 6px}.vac-message-wrapper .vac-avatar-current-offset{margin-right:31px}.vac-message-wrapper .vac-avatar-offset{margin-left:31px}.vac-message-wrapper .vac-failure-container{margin-left:2px}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:0}.vac-message-wrapper .vac-offset-current{margin-left:20%}.vac-message-wrapper .vac-progress-time{margin-left:37px}}.vac-audio-player{display:flex;margin:8px 0 5px}.vac-audio-player .vac-svg-button{max-width:18px;margin-left:7px}@media only screen and (max-width: 768px){.vac-audio-player{margin:4px 0 0}.vac-audio-player .vac-svg-button{max-width:16px;margin-left:5px}}.vac-player-bar{display:flex;align-items:center;max-width:calc(100% - 18px);margin-right:7px;margin-left:20px}.vac-player-bar .vac-player-progress{width:190px}.vac-player-bar .vac-player-progress .vac-line-container{position:relative;height:4px;border-radius:5px;background-color:var(--chat-message-bg-color-audio-line)}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-progress{position:absolute;height:inherit;background-color:var(--chat-message-bg-color-audio-progress);border-radius:inherit}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{position:absolute;top:-5px;margin-left:-7px;height:14px;width:14px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-progress-selector);transition:transform .25s}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot__active{transform:scale(1.2)}@media only screen and (max-width: 768px){.vac-player-bar{margin-right:5px}.vac-player-bar .vac-player-progress .vac-line-container{height:3px}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{height:12px;width:12px;top:-5px;margin-left:-5px}}.vac-message-actions-wrapper .vac-options-container{position:absolute;top:2px;right:10px;height:40px;width:70px;overflow:hidden;border-top-right-radius:8px}.vac-message-actions-wrapper .vac-blur-container{position:absolute;height:100%;width:100%;left:8px;bottom:10px;background:var(--chat-message-bg-color);filter:blur(3px);border-bottom-left-radius:8px}.vac-message-actions-wrapper .vac-options-me{background:var(--chat-message-bg-color-me)}.vac-message-actions-wrapper .vac-message-options{background:var(--chat-icon-bg-dropdown-message);border-radius:50%;position:absolute;top:7px;right:7px}.vac-message-actions-wrapper .vac-message-options svg{height:17px;width:17px;padding:5px;margin:-5px}.vac-message-actions-wrapper .vac-message-emojis{position:absolute;top:6px;right:30px}.vac-message-actions-wrapper .vac-menu-options{right:15px}.vac-message-actions-wrapper .vac-menu-left{right:-118px}@media only screen and (max-width: 768px){.vac-message-actions-wrapper .vac-options-container{right:3px}.vac-message-actions-wrapper .vac-menu-left{right:-50px}}.vac-message-files-container .vac-file-wrapper{position:relative;width:fit-content}.vac-message-files-container .vac-file-wrapper .vac-file-container{height:60px;width:60px;margin:3px 0 5px;cursor:pointer;transition:all .6s}.vac-message-files-container .vac-file-wrapper .vac-file-container:hover{opacity:.85}.vac-message-files-container .vac-file-wrapper .vac-file-container svg{height:30px;width:30px}.vac-message-files-container .vac-file-wrapper .vac-file-container.vac-file-container-progress{background-color:#0000004d}.vac-message-file-container{position:relative;z-index:0}.vac-message-file-container .vac-message-image-container{cursor:pointer}.vac-message-file-container .vac-image-buttons{position:absolute;width:100%;height:100%;border-radius:4px;background:linear-gradient(to bottom,rgba(0,0,0,0) 55%,rgba(0,0,0,.02) 60%,rgba(0,0,0,.05) 65%,rgba(0,0,0,.1) 70%,rgba(0,0,0,.2) 75%,rgba(0,0,0,.3) 80%,rgba(0,0,0,.5) 85%,rgba(0,0,0,.6) 90%,rgba(0,0,0,.7) 95%,rgba(0,0,0,.8) 100%)}.vac-message-file-container .vac-image-buttons svg{height:26px;width:26px}.vac-message-file-container .vac-image-buttons .vac-button-view,.vac-message-file-container .vac-image-buttons .vac-button-download{position:absolute;bottom:6px;left:7px}.vac-message-file-container .vac-image-buttons :first-child{left:40px}.vac-message-file-container .vac-image-buttons .vac-button-view{max-width:18px;bottom:8px}.vac-message-file-container .vac-video-container{width:350px;max-width:100%;margin:4px auto 5px;cursor:pointer}.vac-message-file-container .vac-video-container video{border-radius:4px}.vac-button-reaction{display:inline-flex;align-items:center;border:var(--chat-message-border-style-reaction);outline:none;background:var(--chat-message-bg-color-reaction);border-radius:4px;margin:4px 2px 0;transition:.3s;padding:0 5px;font-size:18px;line-height:23px}.vac-button-reaction span{font-size:11px;font-weight:500;min-width:7px;color:var(--chat-message-color-reaction-counter)}.vac-button-reaction:hover{border:var(--chat-message-border-style-reaction-hover);background:var(--chat-message-bg-color-reaction-hover);cursor:pointer}.vac-button-reaction.vac-reaction-me{border:var(--chat-message-border-style-reaction-me);background:var(--chat-message-bg-color-reaction-me)}.vac-button-reaction.vac-reaction-me span{color:var(--chat-message-color-reaction-counter-me)}.vac-button-reaction.vac-reaction-me:hover{border:var(--chat-message-border-style-reaction-hover-me);background:var(--chat-message-bg-color-reaction-hover-me)}.vac-reply-message{background:var(--chat-message-bg-color-reply);border-radius:4px;margin:-1px -5px 8px;padding:8px 10px}.vac-reply-message .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-message .vac-image-reply-container{width:70px}.vac-reply-message .vac-image-reply-container .vac-message-image-reply{height:70px;width:70px;margin:4px auto 3px}.vac-reply-message .vac-video-reply-container{width:200px;max-width:100%}.vac-reply-message .vac-video-reply-container video{border-radius:4px}.vac-reply-message .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content)}.vac-reply-message .vac-file-container{height:60px;width:60px}.vac-emoji-wrapper{position:relative;display:flex}.vac-emoji-wrapper .vac-emoji-reaction svg{height:19px;width:19px}.vac-emoji-wrapper .vac-emoji-picker{position:absolute;z-index:9999;bottom:32px;right:10px;width:300px;padding-top:4px;overflow:scroll;box-sizing:border-box;border-radius:.5rem;background:var(--chat-emoji-bg-color);box-shadow:0 1px 2px -2px #0000001a,0 1px 2px -1px #0000001a,0 1px 2px 1px #0000001a;scrollbar-width:none}.vac-emoji-wrapper .vac-emoji-picker::-webkit-scrollbar{display:none}.vac-emoji-wrapper .vac-emoji-picker.vac-picker-reaction{position:fixed;top:initial;right:initial}.vac-emoji-wrapper .vac-emoji-picker emoji-picker{height:100%;width:100%;--emoji-size: 1.2rem;--background: var(--chat-emoji-bg-color);--emoji-padding: .4rem;--border-color: var(--chat-sidemenu-border-color-search);--button-hover-background: var(--chat-sidemenu-bg-color-hover);--button-active-background: var(--chat-sidemenu-bg-color-hover)}.vac-format-message-wrapper .vac-format-container{display:inline}.vac-format-message-wrapper .vac-icon-deleted{height:14px;width:14px;vertical-align:middle;margin:-3px 1px 0 0;fill:var(--chat-room-color-message)}.vac-format-message-wrapper .vac-image-link-container{background-color:var(--chat-message-bg-color-media);padding:8px;margin:2px auto;border-radius:4px}.vac-format-message-wrapper .vac-image-link{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:contain;background-position:center center!important;background-repeat:no-repeat!important;height:150px;width:150px;max-width:100%;border-radius:4px;margin:0 auto}.vac-format-message-wrapper .vac-image-link-message{max-width:166px;font-size:12px}.vac-loader-wrapper.vac-container-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-loader-wrapper.vac-container-top{padding:21px}.vac-loader-wrapper.vac-container-top #vac-circle{height:20px;width:20px}.vac-loader-wrapper #vac-circle{margin:auto;height:28px;width:28px;border:3px rgba(0,0,0,.25) solid;border-top:3px var(--chat-color-spinner) solid;border-right:3px var(--chat-color-spinner) solid;border-bottom:3px var(--chat-color-spinner) solid;border-radius:50%;-webkit-animation:vac-spin 1s infinite linear;animation:vac-spin 1s infinite linear}@media only screen and (max-width: 768px){.vac-loader-wrapper #vac-circle{height:24px;width:24px}.vac-loader-wrapper.vac-container-top{padding:18px}.vac-loader-wrapper.vac-container-top #vac-circle{height:16px;width:16px}}@-webkit-keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}@keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}#vac-icon-search{fill:var(--chat-icon-color-search)}#vac-icon-add{fill:var(--chat-icon-color-add)}#vac-icon-toggle{fill:var(--chat-icon-color-toggle)}#vac-icon-menu{fill:var(--chat-icon-color-menu)}#vac-icon-close{fill:var(--chat-icon-color-close)}#vac-icon-close-image{fill:var(--chat-icon-color-close-image)}#vac-icon-file{fill:var(--chat-icon-color-file)}#vac-icon-paperclip{fill:var(--chat-icon-color-paperclip)}#vac-icon-close-outline{fill:var(--chat-icon-color-close-outline)}#vac-icon-close-outline-preview{fill:var(--chat-icon-color-close-preview)}#vac-icon-send{fill:var(--chat-icon-color-send)}#vac-icon-send-disabled{fill:var(--chat-icon-color-send-disabled)}#vac-icon-emoji{fill:var(--chat-icon-color-emoji)}#vac-icon-emoji-reaction{fill:var(--chat-icon-color-emoji-reaction)}#vac-icon-document{fill:var(--chat-icon-color-document)}#vac-icon-pencil{fill:var(--chat-icon-color-pencil)}#vac-icon-checkmark,#vac-icon-double-checkmark{fill:var(--chat-icon-color-checkmark)}#vac-icon-checkmark-seen,#vac-icon-double-checkmark-seen{fill:var(--chat-icon-color-checkmark-seen)}#vac-icon-eye{fill:var(--chat-icon-color-eye)}#vac-icon-dropdown-message{fill:var(--chat-icon-color-dropdown-message)}#vac-icon-dropdown-room{fill:var(--chat-icon-color-dropdown-room)}#vac-icon-dropdown-scroll{fill:var(--chat-icon-color-dropdown-scroll)}#vac-icon-audio-play{fill:var(--chat-icon-color-audio-play)}#vac-icon-audio-pause{fill:var(--chat-icon-color-audio-pause)}.vac-progress-wrapper{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-progress-wrapper circle{transition:stroke-dashoffset .35s;transform:rotate(-90deg);transform-origin:50% 50%}.vac-progress-wrapper .vac-progress-content{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:-1;margin-top:-2px;background-color:#000000b3;border-radius:50%}.vac-progress-wrapper .vac-progress-content .vac-progress-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:700;color:#fff}.vac-progress-wrapper .vac-progress-content .vac-progress-text .vac-progress-pourcent{font-size:9px;font-weight:400}\n';
+var _style_0 = '.vac-fade-spinner-enter-from{opacity:0}.vac-fade-spinner-enter-active{transition:opacity .8s}.vac-fade-spinner-leave-active{transition:opacity .2s;opacity:0}.vac-fade-image-enter-from{opacity:0}.vac-fade-image-enter-active{transition:opacity 1s}.vac-fade-image-leave-active{transition:opacity .5s;opacity:0}.vac-fade-message-enter-from{opacity:0}.vac-fade-message-enter-active{transition:opacity .5s}.vac-fade-message-leave-active{transition:opacity .2s;opacity:0}.vac-slide-left-enter-active,.vac-slide-right-enter-active{transition:all .3s ease;transition-property:transform,opacity}.vac-slide-left-leave-active,.vac-slide-right-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)!important;transition-property:transform,opacity}.vac-slide-left-enter-from,.vac-slide-left-leave-to{transform:translate(10px);opacity:0}.vac-slide-right-enter-from,.vac-slide-right-leave-to{transform:translate(-10px);opacity:0}.vac-slide-up-enter-active{transition:all .3s ease}.vac-slide-up-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)}.vac-slide-up-enter-from,.vac-slide-up-leave-to{transform:translateY(10px);opacity:0}.vac-bounce-enter-active{animation:vac-bounce-in .5s}.vac-bounce-leave-active{animation:vac-bounce-in .3s reverse}@keyframes vac-bounce-in{0%{transform:scale(0)}50%{transform:scale(1.05)}to{transform:scale(1)}}.vac-fade-preview-enter{opacity:0}.vac-fade-preview-enter-active{transition:opacity .1s}.vac-fade-preview-leave-active{transition:opacity .2s;opacity:0}.vac-bounce-preview-enter-active{animation:vac-bounce-image-in .4s}.vac-bounce-preview-leave-active{animation:vac-bounce-image-in .3s reverse}@keyframes vac-bounce-image-in{0%{transform:scale(.6)}to{transform:scale(1)}}.vac-menu-list{border-radius:4px;display:block;cursor:pointer;background:var(--chat-dropdown-bg-color);padding:6px 0}.vac-menu-list :hover{background:var(--chat-dropdown-bg-color-hover);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-list :not(:hover){transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-item{-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-flex:1;-ms-flex:1 1 100%;flex:1 1 100%;min-height:30px;padding:5px 16px;position:relative;white-space:nowrap;line-height:30px}.vac-menu-options{position:absolute;right:10px;top:20px;z-index:9999;min-width:150px;display:inline-block;border-radius:4px;font-size:14px;color:var(--chat-color);overflow-y:auto;overflow-x:hidden;contain:content;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-app-border{border:var(--chat-border-style)}.vac-app-border-t{border-top:var(--chat-border-style)}.vac-app-border-r{border-right:var(--chat-border-style)}.vac-app-border-b{border-bottom:var(--chat-border-style)}.vac-app-box-shadow{transition:all .5s;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-item-clickable{cursor:pointer}.vac-vertical-center{display:flex;align-items:center;height:100%}.vac-vertical-center .vac-vertical-container{width:100%;text-align:center}.vac-svg-button{max-height:30px;display:flex;cursor:pointer;transition:all .2s}.vac-svg-button:hover{transform:scale(1.1);opacity:.7}.vac-avatar{background-size:cover;background-position:center center;background-repeat:no-repeat;background-color:#ddd;height:42px;width:42px;min-height:42px;min-width:42px;margin-right:15px;border-radius:50%}.vac-blur-loading{filter:blur(3px)}.vac-badge-counter{height:13px;width:auto;min-width:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:3px;font-size:11px;font-weight:500}.vac-text-ellipsis{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-text-bold{font-weight:700}.vac-text-italic{font-style:italic}.vac-text-strike{text-decoration:line-through}.vac-text-underline{text-decoration:underline}.vac-text-inline-code{display:inline-block;font-size:12px;color:var(--chat-markdown-color);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:2px 0;padding:2px 3px}.vac-text-multiline-code{display:block;font-size:12px;color:var(--chat-markdown-color-multi);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:4px 0;padding:7px}.vac-text-tag{color:var(--chat-message-color-tag);cursor:pointer}.vac-file-container{display:flex;align-content:center;justify-content:center;flex-wrap:wrap;text-align:center;background:var(--chat-bg-color-input);border:var(--chat-border-style-input);border-radius:4px;padding:10px}.vac-file-container svg{height:28px;width:28px}.vac-file-container .vac-text-extension{font-size:12px;color:var(--chat-message-color-file-extension);margin-top:-2px}.vac-card-window{width:100%;display:block;max-width:100%;background:var(--chat-content-bg-color);color:var(--chat-color);overflow-wrap:break-word;white-space:normal;border:var(--chat-container-border);border-radius:var(--chat-container-border-radius);box-shadow:var(--chat-container-box-shadow);-webkit-tap-highlight-color:transparent}.vac-card-window *{font-family:inherit}.vac-card-window a{color:#0d579c;font-weight:500}.vac-card-window .vac-chat-container{height:100%;display:flex}.vac-card-window .vac-chat-container input{min-width:10px}.vac-card-window .vac-chat-container textarea,.vac-card-window .vac-chat-container input[type=text],.vac-card-window .vac-chat-container input[type=search]{-webkit-appearance:none}.vac-media-preview{position:fixed;top:0;left:0;z-index:99;width:100vw;height:100vh;display:flex;align-items:center;background-color:#000c;outline:none}.vac-media-preview .vac-media-preview-container{height:calc(100% - 140px);width:calc(100% - 80px);padding:70px 40px;margin:0 auto}.vac-media-preview .vac-image-preview{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}.vac-media-preview .vac-svg-button{position:absolute;top:30px;right:30px;transform:scale(1.4)}@media only screen and (max-width: 768px){.vac-media-preview .vac-svg-button{top:20px;right:20px;transform:scale(1.2)}.vac-media-preview .vac-media-preview-container{width:calc(100% - 40px);padding:70px 20px}}.vac-col-messages{position:relative;height:100%;flex:1;overflow:hidden;display:flex;flex-flow:column}.vac-col-messages .vac-container-center{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.vac-col-messages .vac-room-empty{font-size:14px;color:#9ca6af;font-style:italic;line-height:20px;white-space:pre-line}.vac-col-messages .vac-room-empty div{padding:0 10%}.vac-col-messages .vac-container-scroll{background:var(--chat-content-bg-color);flex:1;overflow-y:auto;margin-right:1px;margin-top:60px;-webkit-overflow-scrolling:touch}.vac-col-messages .vac-container-scroll.vac-scroll-smooth{scroll-behavior:smooth}.vac-col-messages .vac-messages-container{padding:0 5px 5px}.vac-col-messages .vac-text-started{font-size:14px;color:var(--chat-message-color-started);font-style:italic;text-align:center;margin-top:30px;margin-bottom:20px}.vac-col-messages .vac-icon-scroll{position:absolute;bottom:80px;right:20px;padding:8px;background:var(--chat-bg-scroll-icon);border-radius:50%;box-shadow:0 1px 1px -1px #0003,0 1px 1px #00000024,0 1px 2px #0000001f;display:flex;cursor:pointer;z-index:10}.vac-col-messages .vac-icon-scroll svg{height:25px;width:25px}.vac-col-messages .vac-messages-count{position:absolute;top:-8px;left:11px;background-color:var(--chat-message-bg-color-scroll-counter);color:var(--chat-message-color-scroll-counter)}.vac-col-messages .vac-messages-hidden{opacity:0}@media only screen and (max-width: 768px){.vac-col-messages .vac-container-scroll{margin-top:50px}.vac-col-messages .vac-text-started{margin-top:20px}.vac-col-messages .vac-icon-scroll{bottom:70px}}.vac-room-header{position:absolute;display:flex;align-items:center;height:64px;width:100%;z-index:10;margin-right:1px;background:var(--chat-header-bg-color);border-top-right-radius:var(--chat-container-border-radius)}.vac-room-header .vac-room-wrapper{display:flex;align-items:center;min-width:0;height:100%;width:100%;padding:0 16px}.vac-room-header .vac-toggle-button{margin-right:15px}.vac-room-header .vac-toggle-button svg{height:26px;width:26px}.vac-room-header .vac-rotate-icon{transform:rotate(180deg)!important}.vac-room-header .vac-rotate-icon-init{transform:rotate(360deg)}.vac-room-header .vac-info-wrapper,.vac-room-header .vac-room-selection{display:flex;align-items:center;min-width:0;width:100%;height:100%}.vac-room-header .vac-room-selection .vac-selection-button{padding:8px 16px;color:var(--chat-color-button);background-color:var(--chat-bg-color-button);border-radius:4px;margin-right:10px;cursor:pointer;transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-button:hover{opacity:.7}.vac-room-header .vac-room-selection .vac-selection-button:active{opacity:.9}.vac-room-header .vac-room-selection .vac-selection-button .vac-selection-button-count{margin-left:6px;opacity:.9}.vac-room-header .vac-room-selection .vac-selection-cancel{display:flex;align-items:center;margin-left:auto;white-space:nowrap;color:var(--chat-color-button-clear);transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-cancel:hover{opacity:.7}.vac-room-header .vac-room-name{font-size:17px;font-weight:500;line-height:22px;color:var(--chat-header-color-name)}.vac-room-header .vac-room-info{font-size:13px;line-height:18px;color:var(--chat-header-color-info)}.vac-room-header .vac-room-options{margin-left:auto}@media only screen and (max-width: 768px){.vac-room-header{height:50px}.vac-room-header .vac-room-wrapper{padding:0 10px}.vac-room-header .vac-room-name{font-size:16px;line-height:22px}.vac-room-header .vac-room-info{font-size:12px;line-height:16px}.vac-room-header .vac-avatar{height:37px;width:37px;min-height:37px;min-width:37px}}.vac-room-footer{width:100%;border-bottom-right-radius:4px;z-index:10}.vac-box-footer{display:flex;position:relative;background:var(--chat-footer-bg-color);padding:10px 8px}.vac-textarea{height:20px;width:100%;line-height:20px;overflow:hidden;outline:0;resize:none;border-radius:20px;padding:12px 16px;box-sizing:content-box;font-size:16px;background:var(--chat-bg-color-input);color:var(--chat-color);caret-color:var(--chat-color-caret);border:var(--chat-border-style-input)}.vac-textarea::placeholder{color:var(--chat-color-placeholder);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-textarea-outline{border:1px solid var(--chat-border-color-input-selected);box-shadow:inset 0 0 0 1px var(--chat-border-color-input-selected)}.vac-icon-textarea,.vac-icon-textarea-left{display:flex;align-items:center}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea{margin-left:5px}.vac-icon-textarea-left{display:flex;align-items:center;margin-right:5px}.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea-left .vac-icon-microphone{fill:var(--chat-icon-color-microphone);margin:0 7px}.vac-icon-textarea-left .vac-dot-audio-record{height:15px;width:15px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-record);animation:vac-scaling .8s ease-in-out infinite alternate}@keyframes vac-scaling{0%{transform:scale(1);opacity:.4}to{transform:scale(1.1);opacity:1}}.vac-icon-textarea-left .vac-dot-audio-record-time{font-size:16px;color:var(--chat-color);margin-left:8px;width:45px}.vac-icon-textarea-left .vac-icon-audio-stop,.vac-icon-textarea-left .vac-icon-audio-confirm{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop svg,.vac-icon-textarea-left .vac-icon-audio-confirm svg{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop{margin-right:20px}.vac-icon-textarea-left .vac-icon-audio-stop #vac-icon-close-outline{fill:var(--chat-icon-color-audio-cancel)}.vac-icon-textarea-left .vac-icon-audio-confirm{margin-right:3px;margin-left:12px}.vac-icon-textarea-left .vac-icon-audio-confirm #vac-icon-checkmark{fill:var(--chat-icon-color-audio-confirm)}.vac-send-disabled,.vac-send-disabled svg{cursor:none!important;pointer-events:none!important;transform:none!important}@media only screen and (max-width: 768px){.vac-room-footer{width:100%}.vac-box-footer{padding:7px 2px 7px 7px}.vac-box-footer.vac-box-footer-border{border-top:var(--chat-border-style-input)}.vac-textarea{padding:7px;line-height:18px}.vac-textarea::placeholder{color:transparent}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 5px!important}}.vac-emojis-container{width:calc(100% - 16px);padding:10px 8px;background:var(--chat-footer-bg-color);display:flex;align-items:center;overflow:auto}.vac-emojis-container .vac-emoji-element{padding:0 8px;font-size:30px;border-radius:4px;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-emojis-container .vac-emoji-element-active{background:var(--chat-footer-bg-color-tag-active)}@media only screen and (max-width: 768px){.vac-emojis-container{width:calc(100% - 10px);padding:7px 5px}.vac-emojis-container .vac-emoji-element{padding:0 7px;font-size:26px}}.vac-reply-container{display:flex;padding:10px 10px 0;background:var(--chat-footer-bg-color);align-items:center;width:calc(100% - 20px)}.vac-reply-container .vac-reply-box{width:100%;overflow:hidden;background:var(--chat-footer-bg-color-reply);border-radius:4px;padding:8px 10px}.vac-reply-container .vac-reply-info{overflow:hidden}.vac-reply-container .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-container .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content);white-space:pre-line}.vac-reply-container .vac-icon-reply{margin-left:10px}.vac-reply-container .vac-icon-reply svg{height:20px;width:20px}.vac-reply-container .vac-image-reply{max-height:100px;max-width:200px;margin:4px 10px 0 0;border-radius:4px}.vac-reply-container .vac-audio-reply{margin-right:10px}.vac-reply-container .vac-file-container{max-width:80px}@media only screen and (max-width: 768px){.vac-reply-container{padding:5px 8px;width:calc(100% - 16px)}}.vac-room-files-container{display:flex;align-items:center;padding:10px 6px 0;background:var(--chat-footer-bg-color)}.vac-room-files-container .vac-files-box{display:flex;overflow:auto;width:calc(100% - 30px)}.vac-room-files-container video{height:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-files-container .vac-icon-close{margin-left:auto}.vac-room-files-container .vac-icon-close svg{height:20px;width:20px}@media only screen and (max-width: 768px){.vac-files-container{padding:6px 4px 4px 2px}}.vac-room-file-container{display:flex;position:relative;margin:0 4px}.vac-room-file-container .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:100px;width:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-file-container .vac-file-container{height:80px;width:80px}.vac-room-file-container .vac-icon-remove{position:absolute;top:6px;left:6px;z-index:10}.vac-room-file-container .vac-icon-remove svg{height:20px;width:20px;border-radius:50%}.vac-room-file-container .vac-icon-remove:before{content:" ";position:absolute;width:100%;height:100%;background:rgba(0,0,0,.5);border-radius:50%;z-index:-1}.vac-tags-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-tags-container .vac-tags-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-tags-container .vac-tags-box-active{background:var(--chat-footer-bg-color-tag-active)}.vac-tags-container .vac-tags-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-tags-container .vac-tags-avatar{height:34px;width:34px;min-height:34px;min-width:34px}.vac-tags-container .vac-tags-username{font-size:14px}@media only screen and (max-width: 768px){.vac-tags-container .vac-tags-box{height:50px}.vac-tags-container .vac-tags-info{padding:0 12px}}.vac-template-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-template-container .vac-template-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-template-container .vac-template-active{background:var(--chat-footer-bg-color-tag-active)}.vac-template-container .vac-template-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-template-container .vac-template-tag{font-size:14px;font-weight:700;margin-right:10px}.vac-template-container .vac-template-text{font-size:14px}@media only screen and (max-width: 768px){.vac-template-container .vac-template-box{height:50px}.vac-template-container .vac-template-info{padding:0 12px}}.vac-rooms-container{display:flex;flex-flow:column;flex:0 0 25%;min-width:260px;max-width:500px;position:relative;background:var(--chat-sidemenu-bg-color);height:100%;border-top-left-radius:var(--chat-container-border-radius);border-bottom-left-radius:var(--chat-container-border-radius)}.vac-rooms-container.vac-rooms-container-full{flex:0 0 100%;max-width:100%}.vac-rooms-container .vac-rooms-empty{font-size:14px;color:#9ca6af;font-style:italic;text-align:center;margin:40px 0;line-height:20px;white-space:pre-line}.vac-rooms-container .vac-room-list{flex:1;position:relative;max-width:100%;cursor:pointer;padding:0 10px 5px;overflow-y:auto}.vac-rooms-container .vac-room-item{border-radius:8px;align-items:center;display:flex;flex:1 1 100%;margin-bottom:5px;padding:0 14px;position:relative;min-height:71px;transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-rooms-container .vac-room-item:hover{background:var(--chat-sidemenu-bg-color-hover)}.vac-rooms-container .vac-room-selected{color:var(--chat-sidemenu-color-active)!important;background:var(--chat-sidemenu-bg-color-active)!important}.vac-rooms-container .vac-room-selected:hover{background:var(--chat-sidemenu-bg-color-active)!important}@media only screen and (max-width: 768px){.vac-rooms-container .vac-room-list{padding:0 7px 5px}.vac-rooms-container .vac-room-item{min-height:60px;padding:0 8px}}.vac-room-container{display:flex;flex:1;align-items:center;width:100%}.vac-room-container .vac-name-container{flex:1}.vac-room-container .vac-title-container{display:flex;align-items:center;line-height:25px}.vac-room-container .vac-state-circle{width:9px;height:9px;border-radius:50%;background-color:var(--chat-room-color-offline);margin-right:6px;transition:.3s}.vac-room-container .vac-state-online{background-color:var(--chat-room-color-online)}.vac-room-container .vac-room-name{flex:1;color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-text-date{margin-left:5px;font-size:11px;color:var(--chat-room-color-timestamp)}.vac-room-container .vac-text-last{display:flex;align-items:center;font-size:12px;line-height:19px;color:var(--chat-room-color-message)}.vac-room-container .vac-message-new{color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-icon-check{display:flex;vertical-align:middle;height:14px;width:14px;margin-top:-2px;margin-right:2px}.vac-room-container .vac-icon-microphone{height:15px;width:15px;vertical-align:middle;margin:-3px 1px 0 -2px;fill:var(--chat-room-color-message)}.vac-room-container .vac-room-options-container{display:flex;margin-left:auto}.vac-room-container .vac-room-badge{background-color:var(--chat-room-bg-color-badge);color:var(--chat-room-color-badge);margin-left:5px}.vac-room-container .vac-list-room-options{height:19px;width:19px;align-items:center;margin-left:5px}.vac-box-empty{margin-top:10px}@media only screen and (max-width: 768px){.vac-box-empty{margin-top:7px}}.vac-box-search{position:sticky;display:flex;align-items:center;height:64px;padding:0 15px}.vac-box-search .vac-icon-search{display:flex;position:absolute;left:30px}.vac-box-search .vac-icon-search svg{width:18px;height:18px}.vac-box-search .vac-input{height:38px;width:100%;background:var(--chat-bg-color-input);color:var(--chat-color);font-size:15px;outline:0;caret-color:var(--chat-color-caret);padding:10px 10px 10px 40px;border:1px solid var(--chat-sidemenu-border-color-search);border-radius:20px}.vac-box-search .vac-input::placeholder{color:var(--chat-color-placeholder)}.vac-box-search .vac-add-icon{margin-left:auto;padding-left:10px}@media only screen and (max-width: 768px){.vac-box-search{height:58px}}.vac-message-wrapper .vac-card-info{border-radius:4px;text-align:center;margin:10px auto;font-size:12px;padding:4px;display:block;overflow-wrap:break-word;position:relative;white-space:normal;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-card-date{max-width:150px;font-weight:500;text-transform:uppercase;color:var(--chat-message-color-date);background-color:var(--chat-message-bg-color-date)}.vac-message-wrapper .vac-card-system{max-width:250px;padding:8px 4px;color:var(--chat-message-color-system);background-color:var(--chat-message-bg-color-system)}.vac-message-wrapper .vac-line-new{color:var(--chat-message-color-new-messages);position:relative;text-align:center;font-size:13px;padding:10px 0}.vac-message-wrapper .vac-line-new:after,.vac-message-wrapper .vac-line-new:before{border-top:1px solid var(--chat-message-color-new-messages);content:"";left:0;position:absolute;top:50%;width:calc(50% - 60px)}.vac-message-wrapper .vac-line-new:before{left:auto;right:0}.vac-message-wrapper .vac-message-box{display:flex;flex:0 0 50%;max-width:50%;justify-content:flex-start;line-height:1.4}.vac-message-wrapper .vac-avatar{height:28px;width:28px;min-height:28px;min-width:28px;margin:0 0 2px;align-self:flex-end}.vac-message-wrapper .vac-avatar-current-offset{margin-right:28px}.vac-message-wrapper .vac-avatar-offset{margin-left:28px}.vac-message-wrapper .vac-failure-container{position:relative;align-self:flex-end;height:20px;width:20px;margin:0 0 2px -4px;border-radius:50%;background-color:#f44336}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:6px}.vac-message-wrapper .vac-failure-container .vac-failure-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:15px;font-weight:700}.vac-message-wrapper .vac-message-container{position:relative;padding:2px 10px;align-items:end;min-width:100px;box-sizing:content-box}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-offset-current{margin-left:50%;justify-content:flex-end}.vac-message-wrapper .vac-message-card{background-color:var(--chat-message-bg-color);color:var(--chat-message-color);border-radius:8px;font-size:14px;padding:6px 9px 3px;white-space:pre-line;max-width:100%;-webkit-transition-property:box-shadow,opacity;transition-property:box-shadow,opacity;transition:box-shadow .28s cubic-bezier(.4,0,.2,1);will-change:box-shadow;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-message-highlight{box-shadow:0 1px 2px -1px #0000001a,0 1px 2px -1px #0000001c,0 1px 5px -1px #0000001c}.vac-message-wrapper .vac-message-current{background-color:var(--chat-message-bg-color-me)!important}.vac-message-wrapper .vac-message-deleted{color:var(--chat-message-color-deleted)!important;font-size:13px!important;font-style:italic!important;background-color:var(--chat-message-bg-color-deleted)!important}.vac-message-wrapper .vac-message-selected{background-color:var(--chat-message-bg-color-selected)!important;transition:background-color .2s}.vac-message-wrapper .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:250px;width:250px;max-width:100%;border-radius:4px;margin:4px auto 5px;transition:.4s filter linear}.vac-message-wrapper .vac-text-username{font-size:13px;color:var(--chat-message-color-username);margin-bottom:2px}.vac-message-wrapper .vac-username-reply{margin-bottom:5px}.vac-message-wrapper .vac-text-timestamp{font-size:10px;color:var(--chat-message-color-timestamp);text-align:right}.vac-message-wrapper .vac-progress-time{float:left;margin:-2px 0 0 40px;color:var(--chat-color);font-size:12px}.vac-message-wrapper .vac-icon-edited{-webkit-box-align:center;align-items:center;display:-webkit-inline-box;display:inline-flex;justify-content:center;letter-spacing:normal;line-height:1;text-indent:0;vertical-align:middle;margin:0 4px 2px}.vac-message-wrapper .vac-icon-edited svg{height:12px;width:12px}.vac-message-wrapper .vac-icon-check{height:14px;width:14px;vertical-align:middle;margin:-3px -3px 0 3px}@media only screen and (max-width: 768px){.vac-message-wrapper .vac-message-container{padding:2px 3px 1px}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-message-box{flex:0 0 80%;max-width:80%}.vac-message-wrapper .vac-avatar{height:25px;width:25px;min-height:25px;min-width:25px;margin:0 6px 1px 0}.vac-message-wrapper .vac-avatar.vac-avatar-current{margin:0 0 1px 6px}.vac-message-wrapper .vac-avatar-current-offset{margin-right:31px}.vac-message-wrapper .vac-avatar-offset{margin-left:31px}.vac-message-wrapper .vac-failure-container{margin-left:2px}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:0}.vac-message-wrapper .vac-offset-current{margin-left:20%}.vac-message-wrapper .vac-progress-time{margin-left:37px}}.vac-audio-player{display:flex;margin:8px 0 5px}.vac-audio-player .vac-svg-button{max-width:18px;margin-left:7px}@media only screen and (max-width: 768px){.vac-audio-player{margin:4px 0 0}.vac-audio-player .vac-svg-button{max-width:16px;margin-left:5px}}.vac-player-bar{display:flex;align-items:center;max-width:calc(100% - 18px);margin-right:7px;margin-left:20px}.vac-player-bar .vac-player-progress{width:190px}.vac-player-bar .vac-player-progress .vac-line-container{position:relative;height:4px;border-radius:5px;background-color:var(--chat-message-bg-color-audio-line)}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-progress{position:absolute;height:inherit;background-color:var(--chat-message-bg-color-audio-progress);border-radius:inherit}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{position:absolute;top:-5px;margin-left:-7px;height:14px;width:14px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-progress-selector);transition:transform .25s}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot__active{transform:scale(1.2)}@media only screen and (max-width: 768px){.vac-player-bar{margin-right:5px}.vac-player-bar .vac-player-progress .vac-line-container{height:3px}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{height:12px;width:12px;top:-5px;margin-left:-5px}}.vac-message-actions-wrapper .vac-options-container{position:absolute;top:2px;right:10px;height:40px;width:70px;overflow:hidden;border-top-right-radius:8px}.vac-message-actions-wrapper .vac-blur-container{position:absolute;height:100%;width:100%;left:8px;bottom:10px;background:var(--chat-message-bg-color);filter:blur(3px);border-bottom-left-radius:8px}.vac-message-actions-wrapper .vac-options-me{background:var(--chat-message-bg-color-me)}.vac-message-actions-wrapper .vac-message-options{background:var(--chat-icon-bg-dropdown-message);border-radius:50%;position:absolute;top:7px;right:7px}.vac-message-actions-wrapper .vac-message-options svg{height:17px;width:17px;padding:5px;margin:-5px}.vac-message-actions-wrapper .vac-message-emojis{position:absolute;top:6px;right:30px}.vac-message-actions-wrapper .vac-menu-options{right:15px}.vac-message-actions-wrapper .vac-menu-left{right:-118px}@media only screen and (max-width: 768px){.vac-message-actions-wrapper .vac-options-container{right:3px}.vac-message-actions-wrapper .vac-menu-left{right:-50px}}.vac-message-files-container .vac-file-wrapper{position:relative;width:fit-content}.vac-message-files-container .vac-file-wrapper .vac-file-container{height:60px;width:60px;margin:3px 0 5px;cursor:pointer;transition:all .6s}.vac-message-files-container .vac-file-wrapper .vac-file-container:hover{opacity:.85}.vac-message-files-container .vac-file-wrapper .vac-file-container svg{height:30px;width:30px}.vac-message-files-container .vac-file-wrapper .vac-file-container.vac-file-container-progress{background-color:#0000004d}.vac-message-file-container{position:relative;z-index:0}.vac-message-file-container .vac-message-image-container{cursor:pointer}.vac-message-file-container .vac-image-buttons{position:absolute;width:100%;height:100%;border-radius:4px;background:linear-gradient(to bottom,rgba(0,0,0,0) 55%,rgba(0,0,0,.02) 60%,rgba(0,0,0,.05) 65%,rgba(0,0,0,.1) 70%,rgba(0,0,0,.2) 75%,rgba(0,0,0,.3) 80%,rgba(0,0,0,.5) 85%,rgba(0,0,0,.6) 90%,rgba(0,0,0,.7) 95%,rgba(0,0,0,.8) 100%)}.vac-message-file-container .vac-image-buttons svg{height:26px;width:26px}.vac-message-file-container .vac-image-buttons .vac-button-view,.vac-message-file-container .vac-image-buttons .vac-button-download{position:absolute;bottom:6px;left:7px}.vac-message-file-container .vac-image-buttons :first-child{left:40px}.vac-message-file-container .vac-image-buttons .vac-button-view{max-width:18px;bottom:8px}.vac-message-file-container .vac-video-container{width:350px;max-width:100%;margin:4px auto 5px;cursor:pointer}.vac-message-file-container .vac-video-container video{border-radius:4px}.vac-button-reaction{display:inline-flex;align-items:center;border:var(--chat-message-border-style-reaction);outline:none;background:var(--chat-message-bg-color-reaction);border-radius:4px;margin:4px 2px 0;transition:.3s;padding:0 5px;font-size:18px;line-height:23px}.vac-button-reaction span{font-size:11px;font-weight:500;min-width:7px;color:var(--chat-message-color-reaction-counter)}.vac-button-reaction:hover{border:var(--chat-message-border-style-reaction-hover);background:var(--chat-message-bg-color-reaction-hover);cursor:pointer}.vac-button-reaction.vac-reaction-me{border:var(--chat-message-border-style-reaction-me);background:var(--chat-message-bg-color-reaction-me)}.vac-button-reaction.vac-reaction-me span{color:var(--chat-message-color-reaction-counter-me)}.vac-button-reaction.vac-reaction-me:hover{border:var(--chat-message-border-style-reaction-hover-me);background:var(--chat-message-bg-color-reaction-hover-me)}.vac-reply-message{background:var(--chat-message-bg-color-reply);border-radius:4px;margin:-1px -5px 8px;padding:8px 10px}.vac-reply-message .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-message .vac-image-reply-container{width:70px}.vac-reply-message .vac-image-reply-container .vac-message-image-reply{height:70px;width:70px;margin:4px auto 3px}.vac-reply-message .vac-video-reply-container{width:200px;max-width:100%}.vac-reply-message .vac-video-reply-container video{border-radius:4px}.vac-reply-message .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content)}.vac-reply-message .vac-file-container{height:60px;width:60px}.vac-emoji-wrapper{position:relative;display:flex}.vac-emoji-wrapper .vac-emoji-reaction svg{height:19px;width:19px}.vac-emoji-wrapper .vac-emoji-picker{position:absolute;z-index:9999;bottom:32px;right:10px;width:300px;padding-top:4px;overflow:scroll;box-sizing:border-box;border-radius:.5rem;background:var(--chat-emoji-bg-color);box-shadow:0 1px 2px -2px #0000001a,0 1px 2px -1px #0000001a,0 1px 2px 1px #0000001a;scrollbar-width:none}.vac-emoji-wrapper .vac-emoji-picker::-webkit-scrollbar{display:none}.vac-emoji-wrapper .vac-emoji-picker.vac-picker-reaction{position:fixed;top:initial;right:initial}.vac-emoji-wrapper .vac-emoji-picker emoji-picker{height:100%;width:100%;--emoji-size: 1.2rem;--background: var(--chat-emoji-bg-color);--emoji-padding: .4rem;--border-color: var(--chat-sidemenu-border-color-search);--button-hover-background: var(--chat-sidemenu-bg-color-hover);--button-active-background: var(--chat-sidemenu-bg-color-hover)}.vac-format-message-wrapper .vac-format-container{display:inline}.vac-format-message-wrapper .vac-icon-deleted{height:14px;width:14px;vertical-align:middle;margin:-2px 2px 0 0;fill:var(--chat-message-color-deleted)}.vac-format-message-wrapper .vac-icon-deleted.vac-icon-deleted-room{margin:-3px 1px 0 0;fill:var(--chat-room-color-message)}.vac-format-message-wrapper .vac-image-link-container{background-color:var(--chat-message-bg-color-media);padding:8px;margin:2px auto;border-radius:4px}.vac-format-message-wrapper .vac-image-link{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:contain;background-position:center center!important;background-repeat:no-repeat!important;height:150px;width:150px;max-width:100%;border-radius:4px;margin:0 auto}.vac-format-message-wrapper .vac-image-link-message{max-width:166px;font-size:12px}.vac-loader-wrapper.vac-container-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-loader-wrapper.vac-container-top{padding:21px}.vac-loader-wrapper.vac-container-top #vac-circle{height:20px;width:20px}.vac-loader-wrapper #vac-circle{margin:auto;height:28px;width:28px;border:3px rgba(0,0,0,.25) solid;border-top:3px var(--chat-color-spinner) solid;border-right:3px var(--chat-color-spinner) solid;border-bottom:3px var(--chat-color-spinner) solid;border-radius:50%;-webkit-animation:vac-spin 1s infinite linear;animation:vac-spin 1s infinite linear}@media only screen and (max-width: 768px){.vac-loader-wrapper #vac-circle{height:24px;width:24px}.vac-loader-wrapper.vac-container-top{padding:18px}.vac-loader-wrapper.vac-container-top #vac-circle{height:16px;width:16px}}@-webkit-keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}@keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}#vac-icon-search{fill:var(--chat-icon-color-search)}#vac-icon-add{fill:var(--chat-icon-color-add)}#vac-icon-toggle{fill:var(--chat-icon-color-toggle)}#vac-icon-menu{fill:var(--chat-icon-color-menu)}#vac-icon-close{fill:var(--chat-icon-color-close)}#vac-icon-close-image{fill:var(--chat-icon-color-close-image)}#vac-icon-file{fill:var(--chat-icon-color-file)}#vac-icon-paperclip{fill:var(--chat-icon-color-paperclip)}#vac-icon-close-outline{fill:var(--chat-icon-color-close-outline)}#vac-icon-close-outline-preview{fill:var(--chat-icon-color-close-preview)}#vac-icon-send{fill:var(--chat-icon-color-send)}#vac-icon-send-disabled{fill:var(--chat-icon-color-send-disabled)}#vac-icon-emoji{fill:var(--chat-icon-color-emoji)}#vac-icon-emoji-reaction{fill:var(--chat-icon-color-emoji-reaction)}#vac-icon-document{fill:var(--chat-icon-color-document)}#vac-icon-pencil{fill:var(--chat-icon-color-pencil)}#vac-icon-checkmark,#vac-icon-double-checkmark{fill:var(--chat-icon-color-checkmark)}#vac-icon-checkmark-seen,#vac-icon-double-checkmark-seen{fill:var(--chat-icon-color-checkmark-seen)}#vac-icon-eye{fill:var(--chat-icon-color-eye)}#vac-icon-dropdown-message{fill:var(--chat-icon-color-dropdown-message)}#vac-icon-dropdown-room{fill:var(--chat-icon-color-dropdown-room)}#vac-icon-dropdown-scroll{fill:var(--chat-icon-color-dropdown-scroll)}#vac-icon-audio-play{fill:var(--chat-icon-color-audio-play)}#vac-icon-audio-pause{fill:var(--chat-icon-color-audio-pause)}.vac-progress-wrapper{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-progress-wrapper circle{transition:stroke-dashoffset .35s;transform:rotate(-90deg);transform-origin:50% 50%}.vac-progress-wrapper .vac-progress-content{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:-1;margin-top:-2px;background-color:#000000b3;border-radius:50%}.vac-progress-wrapper .vac-progress-content .vac-progress-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:700;color:#fff}.vac-progress-wrapper .vac-progress-content .vac-progress-text .vac-progress-pourcent{font-size:9px;font-weight:400}\n';
 const _sfc_main = {
   name: "ChatContainer",
   components: {
@@ -22744,6 +24216,7 @@ const _sfc_main = {
   ],
   data() {
     return {
+      slots: [],
       room: {},
       loadingMoreRooms: false,
       showRoomsList: true,
@@ -22904,6 +24377,12 @@ const _sfc_main = {
         this.updateResponsive();
     });
   },
+  updated() {
+    const slots = document.querySelectorAll("[slot]");
+    if (this.slots.length !== slots.length) {
+      this.slots = slots;
+    }
+  },
   methods: {
     castBooleanToString(val) {
       return val === "true" || val === true;
@@ -23037,11 +24516,11 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         onAddRoom: $options.addRoom,
         onRoomActionHandler: $options.roomActionHandler
       }, createSlots({ _: 2 }, [
-        renderList(_ctx.$slots, (i, name) => {
+        renderList($data.slots, (el) => {
           return {
-            name,
+            name: el.slot,
             fn: withCtx((data) => [
-              renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+              renderSlot(_ctx.$slots, el.slot, normalizeProps(guardReactiveProps(data)))
             ])
           };
         })
@@ -23099,11 +24578,11 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         onTypingMessage: $options.typingMessage,
         onTextareaActionHandler: $options.textareaActionHandler
       }, createSlots({ _: 2 }, [
-        renderList(_ctx.$slots, (i, name) => {
+        renderList($data.slots, (el) => {
           return {
-            name,
+            name: el.slot,
             fn: withCtx((data) => [
-              renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+              renderSlot(_ctx.$slots, el.slot, normalizeProps(guardReactiveProps(data)))
             ])
           };
         })
@@ -23118,9 +24597,18 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
           key: 0,
           file: $data.previewFile,
           onCloseMediaPreview: _cache[1] || (_cache[1] = ($event) => $data.showMediaPreview = false)
-        }, null, 8, ["file"])) : createCommentVNode("", true)
+        }, createSlots({ _: 2 }, [
+          renderList($data.slots, (el) => {
+            return {
+              name: el.slot,
+              fn: withCtx((data) => [
+                renderSlot(_ctx.$slots, el.slot, normalizeProps(guardReactiveProps(data)))
+              ])
+            };
+          })
+        ]), 1032, ["file"])) : createCommentVNode("", true)
       ]),
-      _: 1
+      _: 3
     })
   ], 4);
 }
