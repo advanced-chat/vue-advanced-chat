@@ -27,7 +27,7 @@
 	},
 	"homepage": "https://github.com/antoine92190/vue-advanced-chat#readme",
 	"main": "./dist/vue-advanced-chat.umd.js",
-	"module": "./dist/vue-advanced-chat.umd.js",
+	"module": "./dist/vue-advanced-chat.es.js",
 	"unpkg": "./dist/vue-advanced-chat.umd.js",
 	"jsdelivr": "./dist/vue-advanced-chat.umd.js",
 	"scripts": {
