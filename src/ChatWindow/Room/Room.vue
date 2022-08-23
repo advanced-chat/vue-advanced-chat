@@ -899,6 +899,7 @@ export default {
 
 				if (this.maxFilesSumSize && this.maxFileSize && (totalSize > this.maxFilesSumSize || file.size > this.maxFileSize)) {
 					this.$emit('limit-size-exceeded')
+					this.closeUploadedFiles()
 					return
 				}
 				const fileURL = URL.createObjectURL(file)
