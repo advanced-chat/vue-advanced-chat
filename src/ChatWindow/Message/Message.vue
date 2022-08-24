@@ -164,6 +164,7 @@
 						</div>
 
 						<message-actions
+							v-if="!isUploading"
 							:current-user-id="currentUserId"
 							:message="message"
 							:message-actions="messageActions"
@@ -286,6 +287,9 @@ export default {
 		},
 		isAudio() {
 			return isAudioFile(this.message.file)
+		},
+		isUploading() {
+			return this.message.uploading
 		},
 		isCheckmarkVisible() {
 			return (
