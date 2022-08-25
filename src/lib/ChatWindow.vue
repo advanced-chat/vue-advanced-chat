@@ -8,13 +8,13 @@
 				:loading-rooms="loadingRoomsCasted"
 				:rooms-loaded="roomsLoadedCasted"
 				:room="room"
-				:room-actions="roomActions"
+				:room-actions="roomActionsCasted"
 				:text-messages="t"
 				:show-search="showSearchCasted"
 				:show-add-room="showAddRoomCasted"
 				:show-rooms-list="showRoomsList"
-				:text-formatting="textFormatting"
-				:link-options="linkOptions"
+				:text-formatting="textFormattingCasted"
+				:link-options="linkOptionsCasted"
 				:is-mobile="isMobile"
 				:scroll-distance="scrollDistance"
 				@fetch-room="fetchRoom"
@@ -36,10 +36,10 @@
 				:messages="messagesCasted"
 				:room-message="roomMessage"
 				:messages-loaded="messagesLoadedCasted"
-				:menu-actions="menuActions"
-				:message-actions="messageActions"
-				:message-selection-actions="messageSelectionActions"
-				:auto-scroll="autoScroll"
+				:menu-actions="menuActionsCasted"
+				:message-actions="messageActionsCasted"
+				:message-selection-actions="messageSelectionActionsCasted"
+				:auto-scroll="autoScrollCasted"
 				:show-send-icon="showSendIconCasted"
 				:show-files="showFilesCasted"
 				:show-audio="showAudioCasted"
@@ -52,8 +52,8 @@
 				:text-messages="t"
 				:single-room="singleRoomCasted"
 				:show-rooms-list="showRoomsList"
-				:text-formatting="textFormatting"
-				:link-options="linkOptions"
+				:text-formatting="textFormattingCasted"
+				:link-options="linkOptionsCasted"
 				:is-mobile="isMobile"
 				:loading-rooms="loadingRoomsCasted"
 				:room-info-enabled="roomInfoEnabledCasted"
@@ -63,8 +63,8 @@
 				:emojis-suggestion-enabled="emojisSuggestionEnabledCasted"
 				:scroll-distance="scrollDistance"
 				:accepted-files="acceptedFiles"
-				:templates-text="templatesText"
-				:username-options="usernameOptions"
+				:templates-text="templatesTextCasted"
+				:username-options="usernameOptionsCasted"
 				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
@@ -244,7 +244,7 @@ export default {
 		t() {
 			return {
 				...locales,
-				...this.textMessages
+				...this.textMessagesCasted
 			}
 		},
 		cssVars() {
@@ -254,7 +254,7 @@ export default {
 			Object.keys(defaultStyles).map(key => {
 				customStyles[key] = {
 					...defaultStyles[key],
-					...(this.styles[key] || {})
+					...(this.stylesCasted[key] || {})
 				}
 			})
 
@@ -272,79 +272,112 @@ export default {
 				return aVal > bVal ? -1 : bVal > aVal ? 1 : 0
 			})
 		},
-		roomsCasted() {
-			return this.rooms || []
-		},
-		messagesCasted() {
-			return this.messages || []
-		},
 		singleRoomCasted() {
-			return this.castBooleanToString(this.singleRoom)
+			return this.castBoolean(this.singleRoom)
 		},
 		roomsListOpenedCasted() {
-			return this.castBooleanToString(this.roomsListOpened)
+			return this.castBoolean(this.roomsListOpened)
 		},
 		loadingRoomsCasted() {
-			return this.castBooleanToString(this.loadingRooms)
+			return this.castBoolean(this.loadingRooms)
 		},
 		roomsLoadedCasted() {
-			return this.castBooleanToString(this.roomsLoaded)
+			return this.castBoolean(this.roomsLoaded)
 		},
 		loadFirstRoomCasted() {
-			return this.castBooleanToString(this.loadFirstRoom)
+			return this.castBoolean(this.loadFirstRoom)
 		},
 		messagesLoadedCasted() {
-			return this.castBooleanToString(this.messagesLoaded)
+			return this.castBoolean(this.messagesLoaded)
 		},
 		showSearchCasted() {
-			return this.castBooleanToString(this.showSearch)
+			return this.castBoolean(this.showSearch)
 		},
 		showAddRoomCasted() {
-			return this.castBooleanToString(this.showAddRoom)
+			return this.castBoolean(this.showAddRoom)
 		},
 		showSendIconCasted() {
-			return this.castBooleanToString(this.showSendIcon)
+			return this.castBoolean(this.showSendIcon)
 		},
 		showFilesCasted() {
-			return this.castBooleanToString(this.showFiles)
+			return this.castBoolean(this.showFiles)
 		},
 		showAudioCasted() {
-			return this.castBooleanToString(this.showAudio)
+			return this.castBoolean(this.showAudio)
 		},
 		showEmojisCasted() {
-			return this.castBooleanToString(this.showEmojis)
+			return this.castBoolean(this.showEmojis)
 		},
 		showReactionEmojisCasted() {
-			return this.castBooleanToString(this.showReactionEmojis)
+			return this.castBoolean(this.showReactionEmojis)
 		},
 		showNewMessagesDividerCasted() {
-			return this.castBooleanToString(this.showNewMessagesDivider)
+			return this.castBoolean(this.showNewMessagesDivider)
 		},
 		showFooterCasted() {
-			return this.castBooleanToString(this.showFooter)
+			return this.castBoolean(this.showFooter)
 		},
 		roomInfoEnabledCasted() {
-			return this.castBooleanToString(this.roomInfoEnabled)
+			return this.castBoolean(this.roomInfoEnabled)
 		},
 		textareaActionEnabledCasted() {
-			return this.castBooleanToString(this.textareaActionEnabled)
+			return this.castBoolean(this.textareaActionEnabled)
 		},
 		textareaAutoFocusCasted() {
-			return this.castBooleanToString(this.textareaAutoFocus)
+			return this.castBoolean(this.textareaAutoFocus)
 		},
 		userTagsEnabledCasted() {
-			return this.castBooleanToString(this.userTagsEnabled)
+			return this.castBoolean(this.userTagsEnabled)
 		},
 		emojisSuggestionEnabledCasted() {
-			return this.castBooleanToString(this.emojisSuggestionEnabled)
+			return this.castBoolean(this.emojisSuggestionEnabled)
 		},
 		mediaPreviewEnabledCasted() {
-			return this.castBooleanToString(this.mediaPreviewEnabled)
+			return this.castBoolean(this.mediaPreviewEnabled)
+		},
+		roomsCasted() {
+			return this.castArray(this.rooms)
+		},
+		messagesCasted() {
+			return this.castArray(this.messages)
+		},
+		roomActionsCasted() {
+			return this.castArray(this.roomActions)
+		},
+		menuActionsCasted() {
+			return this.castArray(this.menuActions)
+		},
+		messageActionsCasted() {
+			return this.castArray(this.messageActions)
+		},
+		messageSelectionActionsCasted() {
+			return this.castArray(this.messageSelectionActions)
+		},
+		templatesTextCasted() {
+			return this.castArray(this.templatesText)
+		},
+		stylesCasted() {
+			return this.castObject(this.styles)
+		},
+		textMessagesCasted() {
+			return this.castObject(this.textMessages)
+		},
+		autoScrollCasted() {
+			return this.castObject(this.autoScroll)
+		},
+		textFormattingCasted() {
+			return this.castObject(this.textFormatting)
+		},
+		linkOptionsCasted() {
+			return this.castObject(this.linkOptions)
+		},
+		usernameOptionsCasted() {
+			return this.castObject(this.usernameOptions)
 		}
 	},
 
 	watch: {
-		rooms: {
+		roomsCasted: {
 			immediate: true,
 			deep: true,
 			handler(newVal, oldVal) {
@@ -419,8 +452,18 @@ export default {
 	},
 
 	methods: {
-		castBooleanToString(val) {
+		castBoolean(val) {
 			return val === 'true' || val === true
+		},
+		castArray(val) {
+			return !val ? null : Array.isArray(val) ? val : JSON.parse(val)
+		},
+		castObject(val) {
+			return !val
+				? null
+				: typeof yourVariable === 'object'
+				? val
+				: JSON.parse(val)
 		},
 		updateResponsive() {
 			this.isMobile = window.innerWidth < Number(this.responsiveBreakpoint)
