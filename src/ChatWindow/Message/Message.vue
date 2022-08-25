@@ -8,7 +8,7 @@
 			{{ textMessages.NEW_MESSAGES }}
 		</div>
 
-		<div v-if="isUploading">
+		<div v-if="isUploading" class="vac-card-info vac-card-system">
       <div class="progress-circle">
 				<progress-circle
 					:completed-steps="message.uploadingScore"
