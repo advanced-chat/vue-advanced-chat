@@ -9,6 +9,9 @@
 		</div>
 
 		<div v-if="isUploading">
+			<div class="uploading-file">
+				{{ message.fileId }}
+			</div>
 			<div class="progress-circle">
 				<progress-circle
 					:completed-steps="message.uploadingScore"
@@ -22,9 +25,6 @@
 				>
 					<div>{{ message.uploadingScore }}</div>
 				</progress-circle>
-			</div>
-			<div class="uploading-file">
-				{{ message.fileId }}
 			</div>
 		</div>
 
