@@ -127,20 +127,20 @@ export default {
 		responsiveBreakpoint: { type: Number, default: 900 },
 		singleRoom: { type: [Boolean, String], default: false },
 		roomsListOpened: { type: [Boolean, String], default: true },
-		textMessages: { type: [Object, String], default: null },
+		textMessages: { type: [Object, String], default: () => ({}) },
 		currentUserId: { type: String, default: '' },
-		rooms: { type: [Array, String], default: null },
+		rooms: { type: [Array, String], default: () => [] },
 		roomsOrder: { type: String, default: 'desc' },
 		loadingRooms: { type: [Boolean, String], default: false },
 		roomsLoaded: { type: [Boolean, String], default: false },
 		roomId: { type: String, default: null },
 		loadFirstRoom: { type: [Boolean, String], default: true },
-		messages: { type: [Array, String], default: null },
+		messages: { type: [Array, String], default: () => [] },
 		messagesLoaded: { type: [Boolean, String], default: false },
-		roomActions: { type: Array, default: () => [] },
-		menuActions: { type: Array, default: () => [] },
+		roomActions: { type: [Array, String], default: () => [] },
+		menuActions: { type: [Array, String], default: () => [] },
 		messageActions: {
-			type: Array,
+			type: [Array, String],
 			default: () => [
 				{ name: 'replyMessage', title: 'Reply' },
 				{ name: 'editMessage', title: 'Edit Message', onlyMe: true },
@@ -148,9 +148,9 @@ export default {
 				{ name: 'selectMessages', title: 'Select' }
 			]
 		},
-		messageSelectionActions: { type: Array, default: () => [] },
+		messageSelectionActions: { type: [Array, String], default: () => [] },
 		autoScroll: {
-			type: Object,
+			type: [Object, String],
 			default: () => {
 				return {
 					send: {
@@ -176,7 +176,7 @@ export default {
 		showNewMessagesDivider: { type: [Boolean, String], default: true },
 		showFooter: { type: [Boolean, String], default: true },
 		textFormatting: {
-			type: Object,
+			type: [Object, String],
 			default: () => ({
 				disabled: false,
 				italic: '_',
@@ -188,7 +188,7 @@ export default {
 			})
 		},
 		linkOptions: {
-			type: Object,
+			type: [Object, String],
 			default: () => ({ disabled: false, target: '_blank', rel: null })
 		},
 		roomInfoEnabled: { type: [Boolean, String], default: false },
@@ -199,10 +199,10 @@ export default {
 		roomMessage: { type: String, default: '' },
 		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
-		templatesText: { type: [Array, String], default: null },
+		templatesText: { type: [Array, String], default: () => [] },
 		mediaPreviewEnabled: { type: [Boolean, String], default: true },
 		usernameOptions: {
-			type: Object,
+			type: [Object, String],
 			default: () => ({ minUsers: 3, currentUser: false })
 		}
 	},
@@ -456,14 +456,10 @@ export default {
 			return val === 'true' || val === true
 		},
 		castArray(val) {
-			return !val ? null : Array.isArray(val) ? val : JSON.parse(val)
+			return !val ? [] : Array.isArray(val) ? val : JSON.parse(val)
 		},
 		castObject(val) {
-			return !val
-				? null
-				: typeof yourVariable === 'object'
-				? val
-				: JSON.parse(val)
+			return !val ? {} : typeof val === 'object' ? val : JSON.parse(val)
 		},
 		updateResponsive() {
 			this.isMobile = window.innerWidth < Number(this.responsiveBreakpoint)
