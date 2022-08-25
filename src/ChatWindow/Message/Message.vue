@@ -8,7 +8,7 @@
 			{{ textMessages.NEW_MESSAGES }}
 		</div>
 
-		<div v-if="isUploading">
+		<div v-if="isUploading" class="vac-message-box">
 			<div class="uploading-file">
 				{{ message.fileId }}
 			</div>
@@ -33,7 +33,7 @@
 		</div>
 
 		<div
-			v-else
+			v-else-if="!message.system && !isUploading"
 			class="vac-message-box"
 			:class="{ 'vac-offset-current': message.senderId === currentUserId }"
 		>
