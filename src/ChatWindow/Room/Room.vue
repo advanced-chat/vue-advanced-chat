@@ -342,6 +342,8 @@ export default {
 		showNewMessagesDivider: { type: Boolean, required: true },
 		showFooter: { type: Boolean, required: true },
 		acceptedFiles: { type: String, required: true },
+		maxFileSize: { type: Number, required: true },
+		maxFilesSumSize: { type: Number, required: true },
 		textFormatting: { type: Boolean, required: true },
 		linkOptions: { type: Object, required: true },
 		loadingRooms: { type: Boolean, required: true },
@@ -359,6 +361,7 @@ export default {
 			loadingMoreMessages: false,
 			files: [],
 			file: null,
+			selectedFilesSize: 0,
 			imageFile: null,
 			videoFile: null,
 			mediaDimensions: null,
@@ -791,6 +794,7 @@ export default {
 				}
 			}
 			this.files = []
+			this.selectedFilesSize = 0
 			this.resetMessage(true)
 		},
 		loadMoreMessages(infiniteState) {
@@ -891,6 +895,13 @@ export default {
 			this.fileDialog = true
 			for (let i = 0; i < files.length; i++) {
 				const file = files[i]
+				const totalSize = this.selectedFilesSize + file.size
+
+				if (this.maxFilesSumSize && this.maxFileSize && (totalSize > this.maxFilesSumSize || file.size > this.maxFileSize)) {
+					this.$emit('limit-size-exceeded')
+					this.closeUploadedFiles()
+					return
+				}
 				const fileURL = URL.createObjectURL(file)
 				const blobFile = await fetch(fileURL).then(res => res.blob())
 				const typeIndex = file.name.lastIndexOf('.')
@@ -906,6 +917,7 @@ export default {
 					isNotDoc: isNotDoc
 				}
 				this.files.push(this.file)
+				this.selectedFilesSize = totalSize
 				this.file = null
 			}
 
@@ -973,10 +985,12 @@ export default {
 			this.$emit('textarea-action-handler', this.message)
 		},
 		removeSingleFile(index) {
-			this.files.splice(index, 1)
+			const removed = this.files.splice(index, 1)
+			this.selectedFilesSize -= removed[0].size
 		},
 		closeUploadedFiles() {
 			this.files = []
+			this.selectedFilesSize = 0
 		}
 	}
 }
