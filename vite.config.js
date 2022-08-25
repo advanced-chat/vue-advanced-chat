@@ -10,7 +10,6 @@ export default defineConfig({
 			name: 'vue-advanced-chat'
 		},
 		rollupOptions: {
-			external: ['vue'],
 			output: {
 				globals: {
 					vue: 'Vue'
