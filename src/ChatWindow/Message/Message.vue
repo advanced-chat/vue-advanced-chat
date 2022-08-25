@@ -50,7 +50,7 @@
 								circle-width="5"
 								inner-display="slot"
 							>
-								<div>{{ message.uploadingScore }}</div>
+								<div>{{ message.uploadingScore + "%" }}</div>
 							</progress-circle>
 							<span>{{ message.fileId }}</span>
 						</div>
