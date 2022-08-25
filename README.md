@@ -70,8 +70,6 @@ You will get a fully working chat application for web and mobile:
 
 ## Installation
 
-This component is only compatible with Vue `2.6.14` and above.
-
 ```bash
 # Using npm
 npm install --save vue-advanced-chat
@@ -80,14 +78,7 @@ npm install --save vue-advanced-chat
 yarn add vue-advanced-chat
 
 # Using CDN
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue-advanced-chat@0.8.8/dist/vue-advanced-chat.min.js"></script>
-```
-
-If you want to send mp3 audio messages, you may need to install `lamejs` inside your project:
-
-```bash
-npm install lamejs --save
+<script src="https://cdn.jsdelivr.net/npm/vue-advanced-chat@2.0.0/dist/vue-advanced-chat.es.js"></script>
 ```
 
 [Installation with React & Angular](#use-as-a-web-component-with-react-and-angular)
@@ -101,9 +92,9 @@ npm install lamejs --save
   <vue-advanced-chat
     ref="chatWindow"
     :current-user-id="currentUserId"
-    :rooms="rooms"
-    :messages="messages"
-    .room-actions="roomActions"
+    :rooms="JSON.stringify(rooms)"
+    :messages="JSON.stringify(messages)"
+    :room-actions="JSON.stringify(roomActions)"
   />
 </template>
 
@@ -896,16 +887,6 @@ messages: {
 
 - Follow [Installation](#installation) steps
 
-### Install Vue.js
-
-```bash
-# Using npm
-npm install --save vue
-
-# Using yarn
-yarn add --save vue
-```
-
 ### React Setup
 
 See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/react
@@ -913,59 +894,6 @@ See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/t
 ### Angular Setup
 
 See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/angular
-
-```jsonc
-// angular.json
-
-"build": {
-  "scripts": [
-    "./node_modules/vue/dist/vue.min.js",
-    "./node_modules/vue-advanced-chat/dist/vue-advanced-chat.min.js"
-  ]
-}
-```
-
-```javascript
-// page.module.ts
-
-@NgModule({
-  ...
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-})
-```
-
-```html
-<!-- page.html -->
-
-<vue-advanced-chat
-  height="100vh"
-  [currentUserId]="currentUserId"
-  [roomId]="roomId"
-  [rooms]="rooms"
-  [roomsLoaded]="true"
-  [messages]="messages"
-  [messagesLoaded]="messagesLoaded"
-  [showFiles]="true"
-  [showEmojis]="true"
-  [showReactionEmojis]="true"
-  [showFooter]="true"
-  (fetch-messages)="fetchMessages($event.detail[0])"
-  (send-message)="sendMessage($event.detail[0])"
-  ...
->
-</vue-advanced-chat>
-```
-
-<br>
-
-## Use in a Vue 3 project
-
-### Install vue-advance-chat component (next branch)
-
-```bash
-# Using npm
-npm install --save https://github.com/antoine92190/vue-advanced-chat/tarball/next
-```
 
 <br>
 
