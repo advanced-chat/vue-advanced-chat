@@ -8,11 +8,8 @@
 			{{ textMessages.NEW_MESSAGES }}
 		</div>
 
-		<div v-if="isUploading" class="vac-message-box">
-			<div class="uploading-file">
+		<div v-if="isUploading" class="vac-card-info vac-card-system">
 				{{ message.fileId }}
-			</div>
-			<div class="progress-circle">
 				<progress-circle
 					:completed-steps="message.uploadingScore"
 					total-steps="100"
@@ -25,7 +22,6 @@
 				>
 					<div>{{ message.uploadingScore }}</div>
 				</progress-circle>
-			</div>
 		</div>
 
 		<div v-if="message.system && !isUploading" class="vac-card-info vac-card-system">
@@ -600,17 +596,6 @@ export default {
 		width: 14px;
 		vertical-align: middle;
 		margin: -3px -3px 0 3px;
-	}
-
-	.progress-circle {
-		margin: auto !important;
-		width: auto !important;
-	}
-
-	.uploading-file {
-		width: auto !important;
-		text-align: center !important;
-		margin: auto !important;
 	}
 
 	@media only screen and (max-width: 768px) {
