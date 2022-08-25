@@ -8,27 +8,26 @@
 			{{ textMessages.NEW_MESSAGES }}
 		</div>
 
-		<div v-if="isUploading" class="vac-card-info vac-card-system">
-      <div class="progress-circle">
-				<progress-circle
-					:completed-steps="message.uploadingScore"
-					total-steps="100"
-					diameter="50"
-					circle-color="#f3f3f3"
-					start-color="green"
-					stop-color="green"
-					circle-width="5"
-					inner-display="slot"
-				>
-					<div>{{ message.uploadingScore }}</div>
-				</progress-circle>
-      </div>
-      <div class="uploading-file">
-				{{ message.fileId }}
-			</div>
-    </div>
-
 		<div v-if="message.system" class="vac-card-info vac-card-system">
+			<div v-if="isUploading">
+				<div class="progress-circle">
+					<progress-circle
+						:completed-steps="message.uploadingScore"
+						total-steps="100"
+						diameter="50"
+						circle-color="#f3f3f3"
+						start-color="green"
+						stop-color="green"
+						circle-width="5"
+						inner-display="slot"
+					>
+						<div>{{ message.uploadingScore }}</div>
+					</progress-circle>
+				</div>
+				<div class="uploading-file">
+					{{ message.fileId }}
+				</div>
+			</div>
 			{{ message.content }}
 		</div>
 
@@ -602,6 +601,17 @@ export default {
 		margin: -3px -3px 0 3px;
 	}
 
+	.progress-circle {
+		margin: auto !important;
+		width: auto !important;
+	}
+
+	.uploading-file {
+		width: auto !important;
+		text-align: center !important;
+		margin: auto !important;
+	}
+
 	@media only screen and (max-width: 768px) {
 		.vac-message-container {
 			padding: 2px 3px 1px;
@@ -632,14 +642,5 @@ export default {
 			margin-left: 37px;
 		}
 	}
-}
-.progress-circle {
-	margin: auto !important;
-	width: auto !important;
-}
-.uploading-file {
-	width: auto !important;
-	text-align: center !important;
-	margin: auto !important;
 }
 </style>
