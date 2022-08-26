@@ -1,7 +1,7 @@
 <template>
 	<div class="vac-room-container">
-		<slot name="room-list-item" v-bind="{ room }">
-			<slot name="room-list-avatar" v-bind="{ room }">
+		<slot :name="'room-list-item_' + room.roomId">
+			<slot :name="'room-list-avatar_' + room.roomId">
 				<div
 					v-if="room.avatar"
 					class="vac-avatar"
@@ -30,7 +30,7 @@
 					}"
 				>
 					<span v-if="isMessageCheckmarkVisible">
-						<slot name="checkmark-icon" v-bind="{ message: room.lastMessage }">
+						<slot :name="'checkmark-icon_' + room.roomId">
 							<svg-icon
 								:name="
 									room.lastMessage.distributed
@@ -46,23 +46,27 @@
 						v-if="room.lastMessage && !room.lastMessage.deleted && isAudio"
 						class="vac-text-ellipsis"
 					>
-						<slot name="microphone-icon">
+						<slot :name="'microphone-icon_' + room.roomId">
 							<svg-icon name="microphone" class="vac-icon-microphone" />
 						</slot>
 						{{ formattedDuration }}
 					</div>
 					<format-message
 						v-else-if="room.lastMessage"
+						:message-id="room.lastMessage._id"
+						:room-id="room.roomId"
+						:room-list="true"
 						:content="getLastMessage"
 						:deleted="!!room.lastMessage.deleted && !typingUsers"
 						:users="room.users"
+						:text-messages="textMessages"
 						:linkify="false"
 						:text-formatting="textFormatting"
 						:link-options="linkOptions"
 						:single-line="true"
 					>
-						<template #deleted-icon="data">
-							<slot name="deleted-icon" v-bind="data" />
+						<template v-for="(idx, name) in $slots" #[name]="data">
+							<slot :name="name" v-bind="data" />
 						</template>
 					</format-message>
 					<div
@@ -78,13 +82,13 @@
 						>
 							{{ room.unreadCount }}
 						</div>
-						<slot name="room-list-options" v-bind="{ room }">
+						<slot :name="'room-list-options_' + room.roomId">
 							<div
 								v-if="roomActions.length"
 								class="vac-svg-button vac-list-room-options"
 								@click.stop="roomMenuOpened = room.roomId"
 							>
-								<slot name="room-list-options-icon">
+								<slot :name="'room-list-options-icon_' + room.roomId">
 									<svg-icon name="dropdown" param="room" />
 								</slot>
 							</div>
@@ -115,13 +119,12 @@
 </template>
 
 <script>
-import vClickOutside from 'v-click-outside'
-
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 
+import vClickOutside from '../../../utils/on-click-outside'
 import typingText from '../../../utils/typing-text'
-const { isAudioFile } = require('../../../utils/media-file')
+import { isAudioFile } from '../../../utils/media-file'
 
 export default {
 	name: 'RoomsContent',
@@ -131,7 +134,7 @@ export default {
 	},
 
 	directives: {
-		clickOutside: vClickOutside.directive
+		clickOutside: vClickOutside
 	},
 
 	props: {
@@ -156,9 +159,7 @@ export default {
 			const isTyping = this.typingUsers
 			if (isTyping) return isTyping
 
-			const content = this.room.lastMessage.deleted
-				? this.textMessages.MESSAGE_DELETED
-				: this.room.lastMessage.content
+			const content = this.room.lastMessage.content
 
 			if (this.room.users.length <= 2) {
 				return content
@@ -200,7 +201,6 @@ export default {
 		},
 		formattedDuration() {
 			const file = this.room.lastMessage?.files?.[0]
-
 			if (file) {
 				if (!file.duration) {
 					return `${file.name}.${file.extension}`
@@ -209,7 +209,6 @@ export default {
 				let s = Math.floor(file.duration)
 				return (s - (s %= 60)) / 60 + (s > 9 ? ':' : ':0') + s
 			}
-
 			return ''
 		},
 		isAudio() {

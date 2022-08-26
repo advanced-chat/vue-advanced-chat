@@ -29,7 +29,7 @@
 			@message-selection-action-handler="messageSelectionActionHandler"
 			@cancel-message-selection="messageSelectionEnabled = false"
 		>
-			<template v-for="(i, name) in $scopedSlots" #[name]="data">
+			<template v-for="(i, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</room-header>
@@ -40,8 +40,8 @@
 			class="vac-container-scroll"
 			@scroll="onContainerScroll"
 		>
-			<loader :show="loadingMessages">
-				<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+			<loader :show="loadingMessages" type="messages">
+				<template v-for="(idx, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</loader>
@@ -63,8 +63,8 @@
 						v-if="messages.length && !messagesLoaded"
 						id="infinite-loader-messages"
 					>
-						<loader :show="true" :infinite="true">
-							<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+						<loader :show="true" :infinite="true" type="infinite-messages">
+							<template v-for="(idx, name) in $slots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</loader>
@@ -97,7 +97,7 @@
 								@select-message="selectMessage"
 								@unselect-message="unselectMessage"
 							>
-								<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+								<template v-for="(idx, name) in $slots" #[name]="data">
 									<slot :name="name" v-bind="data" />
 								</template>
 							</room-message>
@@ -152,7 +152,7 @@
 			@typing-message="$emit('typing-message', $event)"
 			@textarea-action-handler="$emit('textarea-action-handler', $event)"
 		>
-			<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+			<template v-for="(idx, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</room-footer>
@@ -168,7 +168,7 @@ import RoomFooter from './RoomFooter/RoomFooter'
 import RoomMessage from './RoomMessage/RoomMessage'
 
 export default {
-	name: 'Room',
+	name: 'ChatRoom',
 	components: {
 		Loader,
 		SvgIcon,
@@ -270,7 +270,7 @@ export default {
 				(!this.roomId && !this.loadFirstRoom)
 
 			if (noRoomSelected) {
-				this.loadingMessages = false /* eslint-disable-line vue/no-side-effects-in-computed-properties */
+				this.updateLoadingMessages(false)
 			}
 			return noRoomSelected
 		},
@@ -280,14 +280,6 @@ export default {
 	},
 
 	watch: {
-		loadingMessages(val) {
-			if (val) {
-				this.infiniteState = null
-			} else {
-				if (this.infiniteState) this.infiniteState.loaded()
-				setTimeout(() => this.initIntersectionObserver())
-			}
-		},
 		roomId() {
 			this.onRoomChanged()
 		},
@@ -316,7 +308,7 @@ export default {
 			}
 		},
 		messagesLoaded(val) {
-			if (val) this.loadingMessages = false
+			if (val) this.updateLoadingMessages(false)
 			if (this.infiniteState) this.infiniteState.complete()
 		}
 	},
@@ -326,17 +318,31 @@ export default {
 	},
 
 	methods: {
+		updateLoadingMessages(val) {
+			this.loadingMessages = val
+
+			if (val) {
+				this.infiniteState = null
+			} else {
+				if (this.infiniteState) this.infiniteState.loaded()
+				setTimeout(() => this.initIntersectionObserver())
+			}
+		},
 		initIntersectionObserver() {
 			if (this.observer) {
 				this.showLoader = true
 				this.observer.disconnect()
 			}
 
-			const loader = document.getElementById('infinite-loader-messages')
+			const loader = document
+				.querySelector('vue-advanced-chat')
+				.shadowRoot.getElementById('infinite-loader-messages')
 
 			if (loader) {
 				const options = {
-					root: document.getElementById('messages-list'),
+					root: document
+						.querySelector('vue-advanced-chat')
+						.shadowRoot.getElementById('messages-list'),
 					rootMargin: `${this.scrollDistance}px`,
 					threshold: 0
 				}
@@ -397,14 +403,10 @@ export default {
 			}
 		},
 		onRoomChanged() {
-			this.loadingMessages = true
+			this.updateLoadingMessages(true)
 			this.scrollIcon = false
 			this.scrollMessagesCount = 0
 			this.resetMessageSelection()
-
-			if (!this.messages.length && this.messagesLoaded) {
-				this.loadingMessages = false
-			}
 
 			const unwatch = this.$watch(
 				() => this.messages,
@@ -418,7 +420,7 @@ export default {
 
 					setTimeout(() => {
 						element.scrollTo({ top: element.scrollHeight })
-						this.loadingMessages = false
+						this.updateLoadingMessages(false)
 					})
 				}
 			)

@@ -1,7 +1,7 @@
 <template>
 	<div class="vac-room-file-container">
-		<loader :show="file.loading">
-			<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+		<loader :show="file.loading" type="room-file">
+			<template v-for="(idx, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</loader>
@@ -56,7 +56,7 @@
 import Loader from '../../../../../components/Loader/Loader'
 import SvgIcon from '../../../../../components/SvgIcon/SvgIcon'
 
-const { isImageFile, isVideoFile } = require('../../../../../utils/media-file')
+import { isImageFile, isVideoFile } from '../../../../../utils/media-file'
 
 export default {
 	name: 'RoomFiles',

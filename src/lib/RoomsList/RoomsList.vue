@@ -2,7 +2,10 @@
 	<div
 		v-show="showRoomsList"
 		class="vac-rooms-container"
-		:class="{ 'vac-rooms-container-full': isMobile, 'vac-app-border-r': !isMobile }"
+		:class="{
+			'vac-rooms-container-full': isMobile,
+			'vac-app-border-r': !isMobile
+		}"
 	>
 		<slot name="rooms-header" />
 
@@ -16,14 +19,14 @@
 				@search-room="searchRoom"
 				@add-room="$emit('add-room')"
 			>
-				<template v-for="(i, name) in $scopedSlots" #[name]="data">
+				<template v-for="(idx, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</rooms-search>
 		</slot>
 
-		<loader :show="loadingRooms">
-			<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+		<loader :show="loadingRooms" type="rooms">
+			<template v-for="(idx, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</loader>
@@ -52,15 +55,15 @@
 					:room-actions="roomActions"
 					@room-action-handler="$emit('room-action-handler', $event)"
 				>
-					<template v-for="(i, name) in $scopedSlots" #[name]="data">
+					<template v-for="(idx, name) in $slots" #[name]="data">
 						<slot :name="name" v-bind="data" />
 					</template>
 				</room-content>
 			</div>
 			<transition name="vac-fade-message">
 				<div v-if="rooms.length && !loadingRooms" id="infinite-loader-rooms">
-					<loader :show="showLoader" :infinite="true">
-						<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+					<loader :show="showLoader" :infinite="true" type="infinite-rooms">
+						<template v-for="(idx, name) in $slots" #[name]="data">
 							<slot :name="name" v-bind="data" />
 						</template>
 					</loader>
@@ -165,11 +168,15 @@ export default {
 				this.observer.disconnect()
 			}
 
-			const loader = document.getElementById('infinite-loader-rooms')
+			const loader = document
+				.querySelector('vue-advanced-chat')
+				.shadowRoot.getElementById('infinite-loader-rooms')
 
 			if (loader) {
 				const options = {
-					root: document.getElementById('rooms-list'),
+					root: document
+						.querySelector('vue-advanced-chat')
+						.shadowRoot.getElementById('rooms-list'),
 					rootMargin: `${this.scrollDistance}px`,
 					threshold: 0
 				}

@@ -38,7 +38,7 @@
 			:link-options="linkOptions"
 			@reset-message="resetMessage"
 		>
-			<template v-for="(i, name) in $scopedSlots" #[name]="data">
+			<template v-for="(i, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</room-message-reply>
@@ -48,7 +48,7 @@
 			@remove-file="removeFile"
 			@reset-message="resetMessage"
 		>
-			<template v-for="(i, name) in $scopedSlots" #[name]="data">
+			<template v-for="(i, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</room-files>
@@ -75,7 +75,7 @@
 						class="vac-svg-button vac-icon-audio-confirm"
 						@click="toggleRecorder(false)"
 					>
-						<slot name="audio-stop-icon">
+						<slot name="audio-check-icon">
 							<svg-icon name="checkmark" />
 						</slot>
 					</div>
@@ -188,7 +188,6 @@
 
 <script>
 import { Database } from 'emoji-picker-element'
-import vClickOutside from 'v-click-outside'
 
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import EmojiPickerContainer from '../../../components/EmojiPickerContainer/EmojiPickerContainer'
@@ -199,10 +198,11 @@ import RoomUsersTag from './RoomUsersTag/RoomUsersTag'
 import RoomEmojis from './RoomEmojis/RoomEmojis'
 import RoomTemplatesText from './RoomTemplatesText/RoomTemplatesText'
 
+import vClickOutside from '../../../utils/on-click-outside'
 import filteredItems from '../../../utils/filter-items'
 import Recorder from '../../../utils/recorder'
 
-const { detectMobile } = require('../../../utils/mobile-detection')
+import { detectMobile } from '../../../utils/mobile-detection'
 
 export default {
 	name: 'RoomFooter',
@@ -218,7 +218,7 @@ export default {
 	},
 
 	directives: {
-		clickOutside: vClickOutside.directive
+		clickOutside: vClickOutside
 	},
 
 	props: {
@@ -369,7 +369,7 @@ export default {
 		})
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.stopRecorder()
 	},
 
@@ -813,8 +813,8 @@ export default {
 			this.isRecording = false
 
 			return new Recorder({
-				bitRate: this.audioBitRate,
-				sampleRate: this.audioSampleRate,
+				bitRate: Number(this.audioBitRate),
+				sampleRate: Number(this.audioSampleRate),
 				beforeRecording: null,
 				afterRecording: null,
 				pauseRecording: null,

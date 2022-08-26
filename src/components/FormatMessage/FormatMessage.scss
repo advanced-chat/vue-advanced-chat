@@ -7,8 +7,13 @@
 		height: 14px;
 		width: 14px;
 		vertical-align: middle;
-		margin: -3px 1px 0 0;
-		fill: var(--chat-room-color-message);
+		margin: -2px 2px 0 0;
+		fill: var(--chat-message-color-deleted);
+
+		&.vac-icon-deleted-room {
+			margin: -3px 1px 0 0;
+			fill: var(--chat-room-color-message);
+		}
 	}
 
 	.vac-image-link-container {

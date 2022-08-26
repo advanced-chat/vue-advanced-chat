@@ -2,10 +2,10 @@
 	<div>
 		<div class="vac-audio-player">
 			<div class="vac-svg-button" @click="playback">
-				<slot v-if="isPlaying" name="audio-pause-icon">
+				<slot v-if="isPlaying" :name="'audio-pause-icon_' + messageId">
 					<svg-icon name="audio-pause" />
 				</slot>
-				<slot v-else name="audio-play-icon">
+				<slot v-else :name="'audio-play-icon_' + messageId">
 					<svg-icon name="audio-play" />
 				</slot>
 			</div>
@@ -62,7 +62,9 @@ export default {
 	},
 
 	mounted() {
-		this.player = document.getElementById(this.playerUniqId)
+		this.player = document
+			.querySelector('vue-advanced-chat')
+			.shadowRoot.getElementById(this.playerUniqId)
 
 		this.player.addEventListener('ended', () => {
 			this.isPlaying = false

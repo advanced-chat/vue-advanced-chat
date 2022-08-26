@@ -1,22 +1,9 @@
 // Credits to https://github.com/grishkovelli/vue-audio-recorder
 
-let lamejs
-try {
-	lamejs = require('lamejs')
-} catch (_) {
-	lamejs = { missing: true }
-}
-
-const { Mp3Encoder } = lamejs
+import { Mp3Encoder } from './lamejs'
 
 export default class {
 	constructor(config) {
-		if (lamejs.missing) {
-			throw new Error(
-				'You must add lamejs in your dependencies to use the audio recorder. Please run "npm install lamejs --save"'
-			)
-		}
-
 		this.bitRate = config.bitRate
 		this.sampleRate = config.sampleRate
 		this.dataBuffer = []

@@ -1,9 +1,10 @@
 module.exports = {
 	root: true,
 	env: {
-		node: true
+		es2021: true
 	},
-	extends: ['standard', 'plugin:vue/recommended', '@vue/typescript'],
+	extends: ['standard', 'plugin:vue/vue3-recommended', '@vue/typescript'],
+	ignorePatterns: ['src/utils/lamejs/*.js'],
 	rules: {
 		'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 		'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -23,6 +24,8 @@ module.exports = {
 		'vue/html-indent': 'off',
 		'space-before-function-paren': 'off',
 		'vue/max-attributes-per-line': 'off',
+		'vue/singleline-html-element-content-newline': 'off',
+		'vue/no-v-html': 'off',
 		'vue/html-self-closing': [
 			'error',
 			{

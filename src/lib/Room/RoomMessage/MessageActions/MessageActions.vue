@@ -25,7 +25,7 @@
 					class="vac-svg-button vac-message-options"
 					@click="openOptions"
 				>
-					<slot name="dropdown-icon">
+					<slot :name="'dropdown-icon_' + message._id">
 						<svg-icon name="dropdown" param="message" />
 					</slot>
 				</div>
@@ -42,11 +42,12 @@
 							:emoji-opened="emojiOpened"
 							:emoji-reaction="true"
 							:position-right="message.senderId === currentUserId"
+							:message-id="message._id"
 							@add-emoji="sendMessageReaction"
 							@open-emoji="openEmoji"
 						>
-							<template #emoji-picker-icon>
-								<slot name="emoji-picker-reaction-icon" />
+							<template v-for="(idx, name) in $slots" #[name]="data">
+								<slot :name="name" v-bind="data" />
 							</template>
 						</emoji-picker-container>
 					</slot>
@@ -85,7 +86,7 @@
 </template>
 
 <script>
-import vClickOutside from 'v-click-outside'
+import vClickOutside from '../../../../utils/on-click-outside'
 
 import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
 import EmojiPickerContainer from '../../../../components/EmojiPickerContainer/EmojiPickerContainer'
@@ -95,7 +96,7 @@ export default {
 	components: { SvgIcon, EmojiPickerContainer },
 
 	directives: {
-		clickOutside: vClickOutside.directive
+		clickOutside: vClickOutside
 	},
 
 	props: {
@@ -169,7 +170,9 @@ export default {
 			if (!this.optionsOpened) return
 
 			setTimeout(() => {
-				const roomFooterRef = document.getElementById('room-footer')
+				const roomFooterRef = document
+					.querySelector('vue-advanced-chat')
+					.shadowRoot.getElementById('room-footer')
 
 				if (
 					!roomFooterRef ||

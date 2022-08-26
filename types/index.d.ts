@@ -8,7 +8,7 @@ export interface UserStatus {
 }
 
 export interface RoomUser {
-	_id: StringNumber
+	_id: String
 	username: string
 	avatar: string
 	status: UserStatus
@@ -29,7 +29,7 @@ export interface MessageFile {
 
 export interface LastMessage {
 	content: string
-	senderId: StringNumber
+	senderId: String
 	username?: string
 	timestamp?: string
 	saved?: boolean
@@ -40,14 +40,14 @@ export interface LastMessage {
 }
 
 export interface Room {
-	roomId: StringNumber
+	roomId: String
 	roomName: string
 	avatar: String
 	users: RoomUsers
-	unreadCount?: StringNumber
+	unreadCount?: Number
 	index?: StringNumber | Date
 	lastMessage?: LastMessage
-	typingUsers?: StringNumber[]
+	typingUsers?: String[]
 }
 
 export type Rooms = Room[]
@@ -60,7 +60,7 @@ export interface Message {
 	_id: StringNumber
 	indexId?: StringNumber
 	content: string
-	senderId: StringNumber
+	senderId: String
 	username?: string
 	avatar?: string
 	date: string
@@ -109,105 +109,83 @@ export type TemplateText = { tag: string; text: string }
 export type TemplatesText = TemplateText[]
 
 export interface AutoScroll {
-	send: {
-		new: boolean
-		newAfterScrollUp: boolean
+	send?: {
+		new?: boolean
+		newAfterScrollUp?: boolean
 	}
-	receive: {
-		new: boolean
-		newAfterScrollUp: boolean
+	receive?: {
+		new?: boolean
+		newAfterScrollUp?: boolean
 	}
 }
 
-export type UsernameOptions = { minUsers: number; currentUser: StringNumber }
+export interface UsernameOptions {
+	minUsers?: number
+	currentUser?: boolean
+}
 
-export interface Slots {
-	'rooms-header': VNode[]
-	'room-list-item': VNode[]
-	'room-list-options': VNode[]
-	'room-header': VNode[]
-	'room-header-avatar': VNode[]
-	'room-header-info': VNode[]
-	'room-options': VNode[]
-	message: VNode[]
-	'messages-empty': VNode[]
-	'rooms-empty': VNode[]
-	'no-room-selected': VNode[]
-	'menu-icon': VNode[]
-	'toggle-icon': VNode[]
-	'scroll-icon': VNode[]
-	'reply-close-icon': VNode[]
-	'image-close-icon': VNode[]
-	'file-icon': VNode[]
-	'file-close-icon': VNode[]
-	'edit-close-icon': VNode[]
-	'emoji-picker-icon': VNode[]
-	'emoji-picker-reaction-icon': VNode[]
-	'paperclip-icon': VNode[]
-	'send-icon': VNode[]
-	'eye-icon': VNode[]
-	'document-icon': VNode[]
-	'pencil-icon': VNode[]
-	'checkmark-icon': VNode[]
-	'deleted-icon': VNode[]
-	'microphone-icon': VNode[]
-	'microphone-off-icon': VNode[]
-	'dropdown-icon': VNode[]
-	'room-list-options-icon': VNode[]
-	'search-icon': VNode[]
-	'add-icon': VNode[]
-	[key: string]: VNode[]
+export interface LinkOptions {
+	disabled?: string
+	target?: string
+	rel?: boolean
 }
 
 export interface Props {
-	'current-user-id': StringNumber
-	rooms: Rooms
-	messages: Messages
 	height?: string
-	theme?: 'light' | 'dark'
-	styles?: Record<string, Record<string, string>>
+	'current-user-id': String
+	rooms: Rooms
 	'rooms-order'?: 'desc' | 'asc'
 	'loading-rooms'?: boolean
 	'rooms-loaded'?: boolean
-	'room-id'?: StringNumber
+	'room-id'?: String
 	'load-first-room'?: boolean
+	'rooms-list-opened'?: boolean
+	messages: Messages
 	'room-message'?: string
+	'username-options'?: UsernameOptions
 	'messages-loaded'?: boolean
 	'room-actions'?: CustomActions
 	'menu-actions'?: CustomActions
 	'message-actions'?: MessageActions
 	'message-selection-actions'?: CustomActions
 	'templates-text'?: TemplatesText
-	'textarea-action-enabled'?: boolean
-	'textarea-auto-focus'?: boolean
 	'auto-scroll'?: AutoScroll
 	'show-search'?: boolean
 	'show-add-room'?: boolean
 	'show-send-icon'?: boolean
 	'show-files'?: boolean
 	'show-audio'?: boolean
+	'audio-bit-rate'?: number
+	'audio-sample-rate'?: number
 	'show-emojis'?: boolean
 	'show-reaction-emojis'?: boolean
 	'show-new-messages-divider'?: boolean
 	'show-footer'?: boolean
 	'text-messages'?: Record<string, StringNumber>
 	'text-formatting'?: TextFormatting
-	'responsive-breakpoint'?: boolean
+	'link-options'?: LinkOptions
+	'room-info-enabled': boolean
+	'textarea-action-enabled'?: boolean
+	'textarea-auto-focus'?: boolean
+	'user-tags-enabled'?: boolean
+	'emojis-suggestion-enabled'?: boolean
+	'media-preview-enabled'?: boolean
+	'responsive-breakpoint'?: number
 	'single-room'?: boolean
+	'scroll-distance'?: number
+	theme?: 'light' | 'dark'
 	'accepted-files'?: string
-	'username-options'?: UsernameOptions
+	styles?: Record<string, Record<string, string>>
 }
 
 export interface AdvancedChatOptions {
 	props: Props
-	slots?: Slots
 }
 
 export default class AdvancedChat extends Vue {
 	rooms: Rooms
 	messages: Messages
 
-	$slots: Slots
 	$props: Props
 
 	static install: PluginFunction<AdvancedChatOptions>

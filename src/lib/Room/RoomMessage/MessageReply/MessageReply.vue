@@ -22,10 +22,11 @@
 		<audio-player
 			v-else-if="isAudio"
 			:src="firstFile.url"
+			:message-selection-enabled="false"
 			@update-progress-time="progressTime = $event"
 			@hover-audio-progress="hoverAudioProgress = $event"
 		>
-			<template v-for="(i, name) in $scopedSlots" #[name]="data">
+			<template v-for="(idx, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</audio-player>
@@ -49,16 +50,13 @@
 
 		<div class="vac-reply-content">
 			<format-message
+				:message-id="message.replyMessage._id"
 				:content="message.replyMessage.content"
 				:users="roomUsers"
 				:text-formatting="textFormatting"
 				:link-options="linkOptions"
 				:reply="true"
-			>
-				<template v-for="(i, name) in $scopedSlots" #[name]="data">
-					<slot :name="name" v-bind="data" />
-				</template>
-			</format-message>
+			/>
 		</div>
 	</div>
 </template>
@@ -69,11 +67,11 @@ import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
 
 import AudioPlayer from '../AudioPlayer/AudioPlayer'
 
-const {
+import {
 	isAudioFile,
 	isImageFile,
 	isVideoFile
-} = require('../../../../utils/media-file')
+} from '../../../../utils/media-file'
 
 export default {
 	name: 'MessageReply',

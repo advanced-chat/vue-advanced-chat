@@ -156,14 +156,6 @@
 		transition: background-color 0.2s;
 	}
 
-	.vac-icon-deleted {
-		height: 14px;
-		width: 14px;
-		vertical-align: middle;
-		margin: -2px 2px 0 0;
-		fill: var(--chat-message-color-deleted);
-	}
-
 	.vac-message-image {
 		position: relative;
 		background-color: var(--chat-message-bg-color-image) !important;

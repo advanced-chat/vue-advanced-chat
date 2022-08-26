@@ -1,9 +1,9 @@
 module.exports = {
 	root: true,
 	env: {
-		node: true
+		es2021: true
 	},
-	extends: ['standard', 'plugin:vue/recommended'],
+	extends: ['standard', 'plugin:vue/vue3-recommended'],
 	rules: {
 		'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 		'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -22,6 +22,8 @@ module.exports = {
 		'vue/html-indent': 'off',
 		'space-before-function-paren': 'off',
 		'vue/max-attributes-per-line': 'off',
+		'vue/singleline-html-element-content-newline': 'off',
+		'vue/no-deprecated-slot-attribute': 'off',
 		'vue/html-self-closing': [
 			'error',
 			{
@@ -32,8 +34,5 @@ module.exports = {
 				}
 			}
 		]
-	},
-	parserOptions: {
-		parser: 'babel-eslint'
 	}
 }
