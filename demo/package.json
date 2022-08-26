@@ -18,7 +18,7 @@
 	"dependencies": {
 		"firebase": "9.4.0",
 		"vue": "3.2.37",
-		"vue-advanced-chat": "lastest"
+		"vue-advanced-chat": "latest"
 	},
 	"devDependencies": {
 		"@babel/core": "7.12.16",
