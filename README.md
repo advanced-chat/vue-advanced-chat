@@ -110,7 +110,7 @@ yarn add vue-advanced-chat
           { name: 'inviteUser', title: 'Invite User' },
           { name: 'removeUser', title: 'Remove User' },
           { name: 'deleteRoom', title: 'Delete Room' }
-			  ]
+        ]
       }
     }
   }
