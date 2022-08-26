@@ -74,9 +74,6 @@ npm install --save vue-advanced-chat
 
 # Using yarn
 yarn add vue-advanced-chat
-
-# Using CDN
-<script src="https://cdn.jsdelivr.net/npm/vue-advanced-chat@2.0.0/dist/vue-advanced-chat.es.js"></script>
 ```
 
 [Installation with Vue, React & Angular](#use-as-a-web-component-with-vue-react-and-angular)
@@ -113,31 +110,6 @@ yarn add vue-advanced-chat
       }
     }
   }
-</script>
-```
-
-#### Or if you used CDN import:
-
-```javascript
-<template>
-  <vue-advanced-chat/>
-</template>
-
-<script>
-export default {
-  data() {
-    return {
-      currentUserId: '1234'
-      rooms: [],
-      messages: [],
-    }
-  },
-  mounted() {
-    document.querySelector('vue-advanced-chat').currentUserId = this.currentUserId
-    document.querySelector('vue-advanced-chat').rooms = this.rooms
-    document.querySelector('vue-advanced-chat').messages = this.messages
-  }
-}
 </script>
 ```
 
