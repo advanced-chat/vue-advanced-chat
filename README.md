@@ -88,7 +88,6 @@ yarn add vue-advanced-chat
 ```javascript
 <template>
   <vue-advanced-chat
-    ref="chatWindow"
     :current-user-id="currentUserId"
     :rooms="JSON.stringify(rooms)"
     :messages="JSON.stringify(messages)"
