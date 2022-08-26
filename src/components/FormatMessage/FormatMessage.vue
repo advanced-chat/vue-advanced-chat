@@ -125,7 +125,6 @@ export default {
 		},
 		formattedContent() {
 			if (this.deleted) {
-				console.log('heuy')
 				return this.textMessages.MESSAGE_DELETED
 			} else {
 				return this.formatTags(this.content)
