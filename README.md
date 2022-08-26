@@ -12,7 +12,7 @@
 
 ## Features
 
-- Vue, Angular & React compatibility
+- Compatible with all Javascript frameworks (Vue, Angular, React, etc.) or no framework at all
 - Customizeable realtime chat messaging
 - Backend agnostic
 - Images, videos, files, voice messages & emojis
@@ -879,11 +879,11 @@ messages: {
 
 <br>
 
-## Use as a Web Component with React and Angular
+## Use as a Web Component with Vue, React and Angular
 
-### Install vue-advance-chat component
+### Vue Setup
 
-- Follow [Installation](#installation) steps
+See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/main
 
 ### React Setup
 
