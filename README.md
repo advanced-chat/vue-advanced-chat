@@ -881,15 +881,15 @@ messages: {
 
 ## Use as a Web Component with Vue, React and Angular
 
-### Vue Setup
+### Vue
 
 See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/main
 
-### React Setup
+### React
 
 See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/react
 
-### Angular Setup
+### Angular
 
 See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/angular
 
