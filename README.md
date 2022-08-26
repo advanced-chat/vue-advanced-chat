@@ -79,7 +79,7 @@ yarn add vue-advanced-chat
 <script src="https://cdn.jsdelivr.net/npm/vue-advanced-chat@2.0.0/dist/vue-advanced-chat.es.js"></script>
 ```
 
-[Installation with React & Angular](#use-as-a-web-component-with-react-and-angular)
+[Installation with Vue, React & Angular](#use-as-a-web-component-with-vue-react-and-angular)
 
 ## Usage
 
