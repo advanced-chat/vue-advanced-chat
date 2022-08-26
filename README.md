@@ -10,8 +10,6 @@
 
 ![Demo Image](demo/src/assets/web_mobile.png)
 
-## [Vue 3 compatibility 🚀](#use-in-a-vue-3-project)
-
 ## Features
 
 - Vue, Angular & React compatibility
