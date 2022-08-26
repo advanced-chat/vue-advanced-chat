@@ -1,6 +1,6 @@
 {
 	"name": "demo",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"license": "MIT",
 	"description": "A beautiful chat rooms component made with Vue.js",
 	"author": "Antoine Dupont <antoindupontdev@gmail.com>",
