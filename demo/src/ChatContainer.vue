@@ -81,10 +81,9 @@ import * as storageService from '@/database/storage'
 import { parseTimestamp, formatTimestamp } from '@/utils/dates'
 import logoAvatar from '@/assets/logo.png'
 
-// import { register } from 'vue-advanced-chat'
+import { register } from 'vue-advanced-chat'
 // import { register } from './../../dist/vue-advanced-chat.es.js'
-import { register } from './../../src/lib/index.js'
-import styles from './../../src/styles/index.scss'
+// import { register } from './../../src/lib/index.js'
 register()
 
 export default {
@@ -137,6 +136,7 @@ export default {
 				{ name: 'deleteRoom', title: 'Delete Room' }
 			],
 			messageSelectionActions: [{ name: 'deleteMessages', title: 'Delete' }],
+			// eslint-disable-next-line vue/no-unused-properties
 			styles: { container: { borderRadius: '4px' } },
 			templatesText: [
 				{
@@ -166,18 +166,20 @@ export default {
 	},
 
 	mounted() {
-		if (import.meta.env.MODE === 'development') {
-			this.addCss()
-		}
+		this.addCss()
+
 		this.fetchRooms()
 		firebaseService.updateUserOnlineStatus(this.currentUserId)
 	},
 
 	methods: {
-		addCss() {
-			const style = document.createElement('style')
-			style.innerHTML = styles
-			this.$refs.chatWindow.shadowRoot.appendChild(style)
+		async addCss() {
+			if (import.meta.env.MODE === 'development') {
+				const styles = await import('./../../src/styles/index.scss')
+				const style = document.createElement('style')
+				style.innerHTML = styles.default
+				this.$refs.chatWindow.shadowRoot.appendChild(style)
+			}
 		},
 		resetRooms() {
 			this.loadingRooms = true
