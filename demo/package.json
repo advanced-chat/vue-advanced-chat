@@ -18,7 +18,7 @@
 	"dependencies": {
 		"firebase": "9.4.0",
 		"vue": "3.2.37",
-		"vue-advanced-chat": "https://github.com/antoine92190/vue-advanced-chat/tarball/vite"
+		"vue-advanced-chat": "lastest"
 	},
 	"devDependencies": {
 		"@babel/core": "7.12.16",
