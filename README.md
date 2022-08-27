@@ -173,27 +173,33 @@ fetchMessages({ room, options }) {
 
 ## Props API
 
+### Important notes
+
+If you are using Vue 3, you can pass Array and Object props normally: [Passing DOM Properties in Vue 3](https://vuejs.org/guide/extras/web-components.html#passing-dom-properties)
+<br>
+Otherwise, you need to pass those props as strings. For example: `[messages]="JSON.stringify(messages)"`
+
 | <div style="width:230px">Prop</div> | Type             | Required | Default                                                                                                           |
 | ----------------------------------- | ---------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
 | `height`                            | String           | -        | `600px`                                                                                                           |
 | `current-user-id`(1)                | String           | `true`   | -                                                                                                                 |
-| `rooms`                             | Array            | -        | `[]`                                                                                                              |
+| `rooms`                             | [String, Array]  | -        | `[]`                                                                                                              |
 | `rooms-order`                       | `desc` / `asc`   | -        | `desc`                                                                                                            |
 | `loading-rooms`(2)                  | Boolean          | -        | `false`                                                                                                           |
 | `rooms-loaded`(3)                   | Boolean          | -        | `false`                                                                                                           |
 | `room-id`(4)                        | String           | -        | `null`                                                                                                            |
 | `load-first-room`(5)                | Boolean          | -        | `true`                                                                                                            |
 | `rooms-list-opened`                 | Boolean          | -        | `true`                                                                                                            |
-| `messages`                          | Array            | -        | `[]`                                                                                                              |
+| `messages`                          | [String, Array]  | -        | `[]`                                                                                                              |
 | `room-message`(6)                   | String           | -        | `null`                                                                                                            |
-| `username-options` (7)              | Object           | -        | `{minUsers: 3, currentUser: false}`                                                                               |
+| `username-options` (7)              | [String, Object] | -        | `{minUsers: 3, currentUser: false}`                                                                               |
 | `messages-loaded`(8)                | Boolean          | -        | `false`                                                                                                           |
-| `room-actions`(9)                   | Array            | -        | `[]`                                                                                                              |
-| `menu-actions`(10)                  | Array            | -        | `[]`                                                                                                              |
-| `message-actions`(11)               | Array            | -        | (11)                                                                                                              |
-| `message-selection-actions`(12)     | Array            | -        | (12)                                                                                                              |
-| `templates-text`(13)                | Array            | -        | `null`                                                                                                            |
-| `auto-scroll`(14)                   | Object           | -        | `{ send: { new: true, newAfterScrollUp: true }, receive: { new: true, newAfterScrollUp: false } }`                |
+| `room-actions`(9)                   | [String, Array]  | -        | `[]`                                                                                                              |
+| `menu-actions`(10)                  | [String, Array]  | -        | `[]`                                                                                                              |
+| `message-actions`(11)               | [String, Array]  | -        | (11)                                                                                                              |
+| `message-selection-actions`(12)     | [String, Array]  | -        | (12)                                                                                                              |
+| `templates-text`(13)                | [String, Array]  | -        | `null`                                                                                                            |
+| `auto-scroll`(14)                   | [String, Object] | -        | `{ send: { new: true, newAfterScrollUp: true }, receive: { new: true, newAfterScrollUp: false } }`                |
 | `show-search`                       | Boolean          | -        | `true`                                                                                                            |
 | `show-add-room`                     | Boolean          | -        | `true`                                                                                                            |
 | `show-send-icon`                    | Boolean          | -        | `true`                                                                                                            |
@@ -205,9 +211,9 @@ fetchMessages({ room, options }) {
 | `show-reaction-emojis`              | Boolean          | -        | `true`                                                                                                            |
 | `show-new-messages-divider`(15)     | Boolean          | -        | `true`                                                                                                            |
 | `show-footer`(16)                   | Boolean          | -        | `true`                                                                                                            |
-| `text-messages`(17)                 | Object           | -        | `null`                                                                                                            |
-| `text-formatting`(18)               | Object           | -        | ` {disabled: false, italic: '_', bold: '*', strike: '~', underline: '°', multilineCode: '```', inlineCode: ' `'}` |
-| `link-options`(19)                  | Object           | -        | `{ disabled: false, target: '_blank', rel: null }`                                                                |
+| `text-messages`(17)                 | [String, Object] | -        | `null`                                                                                                            |
+| `text-formatting`(18)               | [String, Object] | -        | ` {disabled: false, italic: '_', bold: '*', strike: '~', underline: '°', multilineCode: '```', inlineCode: ' `'}` |
+| `link-options`(19)                  | [String, Object] | -        | `{ disabled: false, target: '_blank', rel: null }`                                                                |
 | `room-info-enabled` (20)            | Boolean          | -        | `false`                                                                                                           |
 | `textarea-action-enabled`(21)       | Boolean          | -        | `false`                                                                                                           |
 | `textarea-auto-focus`               | Boolean          | -        | `true`                                                                                                            |
@@ -219,7 +225,7 @@ fetchMessages({ room, options }) {
 | `scroll-distance`(24)               | Number           | -        | `60`                                                                                                              |
 | `theme`(25)                         | `light` / `dark` | -        | `light`                                                                                                           |
 | `accepted-files`(26)                | String           | -        | `*`                                                                                                               |
-| `styles`(27)                        | Object           | -        | (25)                                                                                                              |
+| `styles`(27)                        | [String, Object] | -        | (25)                                                                                                              |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
