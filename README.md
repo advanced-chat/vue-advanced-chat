@@ -93,7 +93,7 @@ Demo: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/main
 
 Demo: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/react
 
-### Angular
+### Angular / Ionic
 
 Demo: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/angular
 
