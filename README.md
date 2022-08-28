@@ -62,7 +62,7 @@ You will get a fully working chat application for web and mobile:
 - [Events API](#events-api)
 - [Named Slots](#named-slots)
 - [Using with Firestore](#using-with-firestore)
-- [Use as a Web Component with React and Angular](#use-as-a-web-component-with-react-and-angular)
+- [Use as a Web Component with Vue, React and Angular](#use-as-a-web-component-with-vue-react-and-angular)
 
 <br>
 
@@ -860,15 +860,23 @@ messages: {
 
 ### Vue
 
-See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/main
+Register `vue-advanced-chat` as a web component in your [config file](https://vuejs.org/guide/extras/web-components.html#example-vite-config):
+
+```javascript
+compilerOptions: {
+  isCustomElement: tagName => tagName === 'vue-advanced-chat'
+}
+```
+
+Demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/main
 
 ### React
 
-See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/react
+Demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/react
 
 ### Angular
 
-See demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/angular
+Demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/angular
 
 <br>
 
