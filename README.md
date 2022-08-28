@@ -53,6 +53,8 @@ You will get a fully working chat application for web and mobile:
 - Google Analytics
 - Support to help you get the chat up and running
 
+<br>
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -62,7 +64,6 @@ You will get a fully working chat application for web and mobile:
 - [Events API](#events-api)
 - [Named Slots](#named-slots)
 - [Using with Firestore](#using-with-firestore)
-- [Use as a Web Component with Vue, React and Angular](#use-as-a-web-component-with-vue-react-and-angular)
 
 <br>
 
@@ -76,7 +77,27 @@ npm install --save vue-advanced-chat
 yarn add vue-advanced-chat
 ```
 
-[Installation with Vue, React & Angular](#use-as-a-web-component-with-vue-react-and-angular)
+### Vue
+
+Register `vue-advanced-chat` as a web component in your [config file](https://vuejs.org/guide/extras/web-components.html#example-vite-config):
+
+```javascript
+compilerOptions: {
+  isCustomElement: tagName => tagName === 'vue-advanced-chat'
+}
+```
+
+Demo: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/main
+
+### React
+
+Demo: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/react
+
+### Angular
+
+Demo: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/angular
+
+<br>
 
 ## Usage
 
@@ -853,30 +874,6 @@ messages: {
 
 - You need to create a composite index to order rooms by last message received.
   The easiest way to do it is to create a room, then click the error message url in the browser debugging console.
-
-<br>
-
-## Use as a Web Component with Vue, React and Angular
-
-### Vue
-
-Register `vue-advanced-chat` as a web component in your [config file](https://vuejs.org/guide/extras/web-components.html#example-vite-config):
-
-```javascript
-compilerOptions: {
-  isCustomElement: tagName => tagName === 'vue-advanced-chat'
-}
-```
-
-Demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/main
-
-### React
-
-Demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/react
-
-### Angular
-
-Demo repository: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/angular
 
 <br>
 
