@@ -14,7 +14,7 @@
 		</div>
 
 		<div v-else-if="isVideo" class="vac-video-reply-container">
-			<video width="100%" height="100%" controls>
+			<video controls>
 				<source :src="firstFile.url" />
 			</video>
 		</div>

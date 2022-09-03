@@ -17,7 +17,7 @@
 			</div>
 
 			<div v-else-if="isVideo" class="vac-media-preview-container">
-				<video width="100%" height="100%" controls autoplay>
+				<video controls autoplay>
 					<source :src="file.url" />
 				</video>
 			</div>

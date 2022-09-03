@@ -29,6 +29,11 @@ $media-preview-width-sm: 20px;
 		background-position: center;
 	}
 
+	video {
+		width: 100%;
+		height: 100%;
+	}
+
 	.vac-svg-button {
 		position: absolute;
 		top: 30px;

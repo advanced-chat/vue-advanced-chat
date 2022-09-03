@@ -66,10 +66,10 @@
 		<div
 			v-else-if="isVideo"
 			class="vac-video-container"
-			@click.prevent="openFile('preview')"
+			@click.prevent="openFile($event, 'preview')"
 		>
 			<progress-bar v-if="file.progress >= 0" :progress="file.progress" />
-			<video width="100%" height="100%" controls>
+			<video controls>
 				<source :src="file.url" />
 			</video>
 		</div>
