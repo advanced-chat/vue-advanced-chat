@@ -12,7 +12,7 @@
 				:text-messages="t"
 				:show-search="showSearchCasted"
 				:show-add-room="showAddRoomCasted"
-				:show-rooms-list="showRoomsList"
+				:show-rooms-list="showRoomsList && roomsListOpenedCasted"
 				:text-formatting="textFormattingCasted"
 				:link-options="linkOptionsCasted"
 				:is-mobile="isMobile"
@@ -51,7 +51,7 @@
 				:show-footer="showFooterCasted"
 				:text-messages="t"
 				:single-room="singleRoomCasted"
-				:show-rooms-list="showRoomsList"
+				:show-rooms-list="showRoomsList && roomsListOpenedCasted"
 				:text-formatting="textFormattingCasted"
 				:link-options="linkOptionsCasted"
 				:is-mobile="isMobile"
@@ -432,8 +432,11 @@ export default {
 			})
 		},
 
-		roomsListOpenedCasted(val) {
-			this.showRoomsList = val
+		roomsListOpenedCasted: {
+			immediate: true,
+			handler(val) {
+				this.showRoomsList = val
+			}
 		}
 	},
 
