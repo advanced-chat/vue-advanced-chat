@@ -42,12 +42,12 @@
 						<div v-if="isUploading" class="vac-file-message">
 							<progress-circle
 								:completed-steps="message.uploadingScore"
-								total-steps="100"
-								diameter="50"
+								:total-steps="100"
+								:diameter="50"
 								circle-color="#f3f3f3"
 								start-color="green"
 								stop-color="green"
-								circle-width="5"
+								:circle-width="5"
 								inner-display="slot"
 							>
 								<div>{{ message.uploadingScore + "%" }}</div>
