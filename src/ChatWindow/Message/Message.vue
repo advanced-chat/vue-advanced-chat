@@ -57,13 +57,13 @@
               :link-options="linkOptions"
             >
               <template v-for="(i, name) in $scopedSlots" #[name]="data">
-                <slot :name="name" v-bind="data"/>
+                <slot :name="name" v-bind="data" />
               </template>
             </message-reply>
 
             <div v-if="message.deleted">
               <slot name="deleted-icon">
-                <svg-icon name="deleted" class="vac-icon-deleted"/>
+                <svg-icon name="deleted" class="vac-icon-deleted" />
               </slot>
               <span>{{ textMessages.MESSAGE_DELETED }}</span>
             </div>
@@ -77,7 +77,7 @@
               @open-user-tag="openUserTag"
             >
               <template v-for="(i, name) in $scopedSlots" #[name]="data">
-                <slot :name="name" v-bind="data"/>
+                <slot :name="name" v-bind="data" />
               </template>
             </format-message>
 
@@ -92,13 +92,13 @@
               @open-file="openFile"
             >
               <template v-for="(i, name) in $scopedSlots" #[name]="data">
-                <slot :name="name" v-bind="data"/>
+                <slot :name="name" v-bind="data" />
               </template>
             </message-image>
 
             <div v-else-if="isVideo" class="vac-video-container">
               <video width="100%" height="100%" controls>
-                <source :src="message.file.url"/>
+                <source :src="message.file.url" />
               </video>
               <format-message
                 :content="message.content"
@@ -108,7 +108,7 @@
                 @open-user-tag="openUserTag"
               >
                 <template v-for="(i, name) in $scopedSlots" #[name]="data">
-                  <slot :name="name" v-bind="data"/>
+                  <slot :name="name" v-bind="data" />
                 </template>
               </format-message>
             </div>
@@ -120,7 +120,7 @@
               @hover-audio-progress="hoverAudioProgress = $event"
             >
               <template v-for="(i, name) in $scopedSlots" #[name]="data">
-                <slot :name="name" v-bind="data"/>
+                <slot :name="name" v-bind="data" />
               </template>
             </audio-player>
 
@@ -130,11 +130,11 @@
                 @click.stop="openFile('download')"
               >
                 <slot name="document-icon">
-                  <svg-icon name="document"/>
+                  <svg-icon name="document" />
                 </slot>
               </div>
               <div class="doc-svg">
-                <svg-icon class="doc-svg-button" name="file"/>
+                <svg-icon class="doc-svg-button" name="file" />
               </div>
               <div class="text-container">
                 <div class="vac-text-ellipsis">
@@ -149,7 +149,6 @@
               </div>
             </div>
 
-
             <div v-if="isAudio && !message.deleted" class="vac-progress-time">
               {{ progressTime }}
             </div>
@@ -160,7 +159,7 @@
                 class="vac-icon-edited"
               >
                 <slot name="pencil-icon">
-                  <svg-icon name="pencil"/>
+                  <svg-icon name="pencil" />
                 </slot>
               </div>
               <span>{{ message.timestamp }}</span>
@@ -195,7 +194,7 @@
               @send-message-reaction="sendMessageReaction($event)"
             >
               <template v-for="(i, name) in $scopedSlots" #[name]="data">
-                <slot :name="name" v-bind="data"/>
+                <slot :name="name" v-bind="data" />
               </template>
             </message-actions>
           </div>
@@ -242,22 +241,22 @@ export default {
   },
 
   props: {
-    currentUserId: {type: [String, Number], required: true},
-    textMessages: {type: Object, required: true},
-    index: {type: Number, required: true},
-    message: {type: Object, required: true},
-    messages: {type: Array, required: true},
-    editedMessage: {type: Object, required: true},
-    roomUsers: {type: Array, default: () => []},
-    messageActions: {type: Array, required: true},
-    roomFooterRef: {type: HTMLDivElement, default: null},
-    newMessages: {type: Array, default: () => []},
-    showReactionEmojis: {type: Boolean, required: true},
-    showNewMessagesDivider: {type: Boolean, required: true},
-    textFormatting: {type: Boolean, required: true},
-    linkOptions: {type: Object, required: true},
-    emojisList: {type: Object, required: true},
-    hideOptions: {type: Boolean, required: true}
+    currentUserId: { type: [String, Number], required: true },
+    textMessages: { type: Object, required: true },
+    index: { type: Number, required: true },
+    message: { type: Object, required: true },
+    messages: { type: Array, required: true },
+    editedMessage: { type: Object, required: true },
+    roomUsers: { type: Array, default: () => [] },
+    messageActions: { type: Array, required: true },
+    roomFooterRef: { type: HTMLDivElement, default: null },
+    newMessages: { type: Array, default: () => [] },
+    showReactionEmojis: { type: Boolean, required: true },
+    showNewMessagesDivider: { type: Boolean, required: true },
+    textFormatting: { type: Boolean, required: true },
+    linkOptions: { type: Object, required: true },
+    emojisList: { type: Object, required: true },
+    hideOptions: { type: Boolean, required: true }
   },
 
   data() {
@@ -350,20 +349,20 @@ export default {
       this.hoverMessageId = null
     },
     openFile(action) {
-      this.$emit('open-file', {message: this.message, action})
+      this.$emit('open-file', { message: this.message, action })
     },
     openUserTag(user) {
-      this.$emit('open-user-tag', {user})
+      this.$emit('open-user-tag', { user })
     },
     messageActionHandler(action) {
       this.messageHover = false
       this.hoverMessageId = null
 
       setTimeout(() => {
-        this.$emit('message-action-handler', {action, message: this.message})
+        this.$emit('message-action-handler', { action, message: this.message })
       }, 300)
     },
-    sendMessageReaction({emoji, reaction}) {
+    sendMessageReaction({ emoji, reaction }) {
       this.$emit('send-message-reaction', {
         messageId: this.message._id,
         reaction: emoji,
