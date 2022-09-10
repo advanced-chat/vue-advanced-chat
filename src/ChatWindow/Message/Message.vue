@@ -39,6 +39,21 @@
 						@mouseover="onHoverMessage"
 						@mouseleave="onLeaveMessage"
 					>
+						<div v-if="isUploading" class="vac-file-message">
+							<progress-circle
+								:completed-steps="message.uploadingScore"
+								:total-steps="100"
+								:diameter="50"
+								circle-color="#f3f3f3"
+								start-color="green"
+								stop-color="green"
+								:circle-width="5"
+								inner-display="slot"
+							>
+								<div>{{ message.uploadingScore + "%" }}</div>
+							</progress-circle>
+							<span>{{ message.fileId }}</span>
+						</div>
 						<div
 							v-if="roomUsers.length > 2 && message.senderId !== currentUserId"
 							class="vac-text-username"
@@ -164,6 +179,7 @@
 						</div>
 
 						<message-actions
+							v-if="!isUploading"
 							:current-user-id="currentUserId"
 							:message="message"
 							:message-actions="messageActions"
@@ -207,6 +223,7 @@ import MessageImage from './MessageImage'
 import MessageActions from './MessageActions'
 import MessageReactions from './MessageReactions'
 import AudioPlayer from './AudioPlayer'
+import { ProgressCircle } from 'vue-progress-circle'
 
 const { messagesValidation } = require('../../utils/data-validation')
 const {
@@ -224,7 +241,8 @@ export default {
 		MessageReply,
 		MessageImage,
 		MessageActions,
-		MessageReactions
+		MessageReactions,
+		ProgressCircle
 	},
 
 	props: {
@@ -286,6 +304,9 @@ export default {
 		},
 		isAudio() {
 			return isAudioFile(this.message.file)
+		},
+		isUploading() {
+			return this.message.uploading
 		},
 		isCheckmarkVisible() {
 			return (
