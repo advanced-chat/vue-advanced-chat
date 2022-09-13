@@ -239,7 +239,6 @@ export default {
 			editedMessageId: null,
 			initReplyMessage: null,
 			initEditMessage: null,
-			infiniteState: null,
 			loadingMessages: false,
 			observer: null,
 			showLoader: true,
@@ -301,15 +300,11 @@ export default {
 				if (oldVal?.length === newVal?.length - 1) {
 					this.newMessages = []
 				}
-				if (this.infiniteState) {
-					this.infiniteState.loaded()
-				}
 				setTimeout(() => (this.loadingMoreMessages = false))
 			}
 		},
 		messagesLoaded(val) {
 			if (val) this.updateLoadingMessages(false)
-			if (this.infiniteState) this.infiniteState.complete()
 		}
 	},
 
@@ -321,10 +316,7 @@ export default {
 		updateLoadingMessages(val) {
 			this.loadingMessages = val
 
-			if (val) {
-				this.infiniteState = null
-			} else {
-				if (this.infiniteState) this.infiniteState.loaded()
+			if (!val) {
 				setTimeout(() => this.initIntersectionObserver())
 			}
 		},
