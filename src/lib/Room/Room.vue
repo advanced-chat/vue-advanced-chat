@@ -279,8 +279,11 @@ export default {
 	},
 
 	watch: {
-		roomId() {
-			this.onRoomChanged()
+		roomId: {
+			immediate: true,
+			handler() {
+				this.onRoomChanged()
+			}
 		},
 		messages: {
 			deep: true,
