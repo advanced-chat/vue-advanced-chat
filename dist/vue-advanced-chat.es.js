@@ -28243,7 +28243,8 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
                   ])
                 };
               })
-            ]), 1032, ["message", "room-users", "text-formatting", "link-options"])) : !!$props.message.deleted || !$props.message.files || !$props.message.files.length ? (openBlock(), createBlock(_component_format_message, {
+            ]), 1032, ["message", "room-users", "text-formatting", "link-options"])) : createCommentVNode("", true),
+            !!$props.message.deleted || !$props.message.files || !$props.message.files.length ? (openBlock(), createBlock(_component_format_message, {
               key: 2,
               "message-id": $props.message._id,
               content: $props.message.content,
