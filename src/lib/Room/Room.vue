@@ -2,7 +2,7 @@
 	<div
 		v-show="(isMobile && !showRoomsList) || !isMobile || singleRoom"
 		class="vac-col-messages"
-		@drop.prevent="onDrop"
+		@drop.prevent="onDropFiles"
 		@dragenter.prevent
 		@dragover.prevent
 		@dragleave.prevent
@@ -550,7 +550,7 @@ export default {
 		openUserTag(user) {
 			this.$emit('open-user-tag', user)
 		},
-		onDrop(event) {
+		onDropFiles(event) {
 			this.droppedFiles = event.dataTransfer.files
 		}
 	}
