@@ -84,7 +84,7 @@
 						</message-reply>
 
 						<format-message
-							v-else-if="
+							v-if="
 								!!message.deleted || !message.files || !message.files.length
 							"
 							:message-id="message._id"
