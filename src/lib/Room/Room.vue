@@ -2,6 +2,10 @@
 	<div
 		v-show="(isMobile && !showRoomsList) || !isMobile || singleRoom"
 		class="vac-col-messages"
+		@drop.prevent="onDrop"
+		@dragenter.prevent
+		@dragover.prevent
+		@dragleave.prevent
 		@touchstart="touchStart"
 	>
 		<slot v-if="showNoRoom" name="no-room-selected">
@@ -146,6 +150,7 @@
 			:audio-sample-rate="audioSampleRate"
 			:init-reply-message="initReplyMessage"
 			:init-edit-message="initEditMessage"
+			:dropped-files="droppedFiles"
 			@update-edited-message-id="editedMessageId = $event"
 			@edit-message="$emit('edit-message', $event)"
 			@send-message="$emit('send-message', $event)"
@@ -247,7 +252,8 @@ export default {
 			scrollMessagesCount: 0,
 			newMessages: [],
 			messageSelectionEnabled: false,
-			selectedMessages: []
+			selectedMessages: [],
+			droppedFiles: []
 		}
 	},
 
@@ -543,6 +549,9 @@ export default {
 		},
 		openUserTag(user) {
 			this.$emit('open-user-tag', user)
+		},
+		onDrop(event) {
+			this.droppedFiles = event.dataTransfer.files
 		}
 	}
 }

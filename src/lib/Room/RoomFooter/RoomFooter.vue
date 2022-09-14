@@ -242,7 +242,8 @@ export default {
 		audioBitRate: { type: Number, required: true },
 		audioSampleRate: { type: Number, required: true },
 		initReplyMessage: { type: Object, default: null },
-		initEditMessage: { type: Object, default: null }
+		initEditMessage: { type: Object, default: null },
+		droppedFiles: { type: Array, default: null }
 	},
 
 	emits: [
@@ -327,6 +328,11 @@ export default {
 		},
 		initEditMessage(val) {
 			this.editMessage(val)
+		},
+		droppedFiles(val) {
+			if (val) {
+				this.onFileChange(val)
+			}
 		}
 	},
 
