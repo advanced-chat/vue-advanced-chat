@@ -36,13 +36,28 @@
 							'vac-message-current': message.senderId === currentUserId,
 							'vac-message-deleted': message.deleted
 						}"
-            @mouseover="onHoverMessage"
-            @mouseleave="onLeaveMessage"
-          >
-            <div
-              v-if="roomUsers.length > 2 && message.senderId !== currentUserId"
-              class="vac-text-username"
-              :class="{
+						@mouseover="onHoverMessage"
+						@mouseleave="onLeaveMessage"
+					>
+						<div v-if="isUploading" class="vac-file-message">
+							<progress-circle
+								:completed-steps="message.uploadingScore"
+								:total-steps="100"
+								:diameter="50"
+								circle-color="#f3f3f3"
+								start-color="green"
+								stop-color="green"
+								:circle-width="5"
+								inner-display="slot"
+							>
+								<div>{{ message.uploadingScore + "%" }}</div>
+							</progress-circle>
+							<span>{{ message.fileId }}</span>
+						</div>
+						<div
+							v-if="roomUsers.length > 2 && message.senderId !== currentUserId"
+							class="vac-text-username"
+							:class="{
 								'vac-username-reply': !message.deleted && message.replyMessage
 							}"
             >
@@ -174,41 +189,42 @@
                   />
 								</slot>
 							</span>
-            </div>
+						</div>
 
-            <message-actions
-              :current-user-id="currentUserId"
-              :message="message"
-              :message-actions="messageActions"
-              :room-footer-ref="roomFooterRef"
-              :show-reaction-emojis="showReactionEmojis"
-              :hide-options="hideOptions"
-              :message-hover="messageHover"
-              :hover-message-id="hoverMessageId"
-              :hover-audio-progress="hoverAudioProgress"
-              @hide-options="$emit('hide-options', false)"
-              @update-message-hover="messageHover = $event"
-              @update-options-opened="optionsOpened = $event"
-              @update-emoji-opened="emojiOpened = $event"
-              @message-action-handler="messageActionHandler"
-              @send-message-reaction="sendMessageReaction($event)"
-            >
-              <template v-for="(i, name) in $scopedSlots" #[name]="data">
-                <slot :name="name" v-bind="data" />
-              </template>
-            </message-actions>
-          </div>
+						<message-actions
+							v-if="!isUploading"
+							:current-user-id="currentUserId"
+							:message="message"
+							:message-actions="messageActions"
+							:room-footer-ref="roomFooterRef"
+							:show-reaction-emojis="showReactionEmojis"
+							:hide-options="hideOptions"
+							:message-hover="messageHover"
+							:hover-message-id="hoverMessageId"
+							:hover-audio-progress="hoverAudioProgress"
+							@hide-options="$emit('hide-options', false)"
+							@update-message-hover="messageHover = $event"
+							@update-options-opened="optionsOpened = $event"
+							@update-emoji-opened="emojiOpened = $event"
+							@message-action-handler="messageActionHandler"
+							@send-message-reaction="sendMessageReaction($event)"
+						>
+							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+								<slot :name="name" v-bind="data" />
+							</template>
+						</message-actions>
+					</div>
 
-          <message-reactions
-            :current-user-id="currentUserId"
-            :message="message"
-            :emojis-list="emojisList"
-            @send-message-reaction="sendMessageReaction($event)"
-          />
-        </div>
-      </slot>
-    </div>
-  </div>
+					<message-reactions
+						:current-user-id="currentUserId"
+						:message="message"
+						:emojis-list="emojisList"
+						@send-message-reaction="sendMessageReaction($event)"
+					/>
+				</div>
+			</slot>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -220,6 +236,7 @@ import MessageImage from './MessageImage'
 import MessageActions from './MessageActions'
 import MessageReactions from './MessageReactions'
 import AudioPlayer from './AudioPlayer'
+import { ProgressCircle } from 'vue-progress-circle'
 
 const { messagesValidation } = require('../../utils/data-validation')
 const {
@@ -229,148 +246,152 @@ const {
 } = require('../../utils/media-file')
 
 export default {
-  name: 'Message',
-  components: {
-    SvgIcon,
-    FormatMessage,
-    AudioPlayer,
-    MessageReply,
-    MessageImage,
-    MessageActions,
-    MessageReactions
-  },
+	name: 'Message',
+	components: {
+		SvgIcon,
+		FormatMessage,
+		AudioPlayer,
+		MessageReply,
+		MessageImage,
+		MessageActions,
+		MessageReactions,
+		ProgressCircle
+	},
 
-  props: {
-    currentUserId: { type: [String, Number], required: true },
-    textMessages: { type: Object, required: true },
-    index: { type: Number, required: true },
-    message: { type: Object, required: true },
-    messages: { type: Array, required: true },
-    editedMessage: { type: Object, required: true },
-    roomUsers: { type: Array, default: () => [] },
-    messageActions: { type: Array, required: true },
-    roomFooterRef: { type: HTMLDivElement, default: null },
-    newMessages: { type: Array, default: () => [] },
-    showReactionEmojis: { type: Boolean, required: true },
-    showNewMessagesDivider: { type: Boolean, required: true },
-    textFormatting: { type: Boolean, required: true },
-    linkOptions: { type: Object, required: true },
-    emojisList: { type: Object, required: true },
-    hideOptions: { type: Boolean, required: true }
-  },
+	props: {
+		currentUserId: { type: [String, Number], required: true },
+		textMessages: { type: Object, required: true },
+		index: { type: Number, required: true },
+		message: { type: Object, required: true },
+		messages: { type: Array, required: true },
+		editedMessage: { type: Object, required: true },
+		roomUsers: { type: Array, default: () => [] },
+		messageActions: { type: Array, required: true },
+		roomFooterRef: { type: HTMLDivElement, default: null },
+		newMessages: { type: Array, default: () => [] },
+		showReactionEmojis: { type: Boolean, required: true },
+		showNewMessagesDivider: { type: Boolean, required: true },
+		textFormatting: { type: Boolean, required: true },
+		linkOptions: { type: Object, required: true },
+		emojisList: { type: Object, required: true },
+		hideOptions: { type: Boolean, required: true }
+	},
 
-  data() {
-    return {
-      hoverMessageId: null,
-      imageHover: false,
-      messageHover: false,
-      optionsOpened: false,
-      emojiOpened: false,
-      newMessage: {},
-      progressTime: '- : -',
-      hoverAudioProgress: false
-    }
-  },
+	data() {
+		return {
+			hoverMessageId: null,
+			imageHover: false,
+			messageHover: false,
+			optionsOpened: false,
+			emojiOpened: false,
+			newMessage: {},
+			progressTime: '- : -',
+			hoverAudioProgress: false
+		}
+	},
 
-  computed: {
-    showDate() {
-      return (
-        this.index > 0 &&
-        this.message.date !== this.messages[this.index - 1].date
-      )
-    },
-    messageOffset() {
-      return (
-        this.index > 0 &&
-        this.message.senderId !== this.messages[this.index - 1].senderId
-      )
-    },
-    isMessageHover() {
-      return (
-        this.editedMessage._id === this.message._id ||
-        this.hoverMessageId === this.message._id
-      )
-    },
-    isImage() {
-      return isImageFile(this.message.file)
-    },
-    isVideo() {
-      return isVideoFile(this.message.file)
-    },
-    isAudio() {
-      return isAudioFile(this.message.file)
-    },
-    isCheckmarkVisible() {
-      return (
-        this.message.senderId === this.currentUserId &&
-        !this.message.deleted &&
-        (this.message.saved || this.message.distributed || this.message.seen)
-      )
-    }
-  },
+	computed: {
+		showDate() {
+			return (
+				this.index > 0 &&
+				this.message.date !== this.messages[this.index - 1].date
+			)
+		},
+		messageOffset() {
+			return (
+				this.index > 0 &&
+				this.message.senderId !== this.messages[this.index - 1].senderId
+			)
+		},
+		isMessageHover() {
+			return (
+				this.editedMessage._id === this.message._id ||
+				this.hoverMessageId === this.message._id
+			)
+		},
+		isImage() {
+			return isImageFile(this.message.file)
+		},
+		isVideo() {
+			return isVideoFile(this.message.file)
+		},
+		isAudio() {
+			return isAudioFile(this.message.file)
+		},
+		isUploading() {
+			return this.message.uploading
+		},
+		isCheckmarkVisible() {
+			return (
+				this.message.senderId === this.currentUserId &&
+				!this.message.deleted &&
+				(this.message.saved || this.message.distributed || this.message.seen)
+			)
+		}
+	},
 
-  watch: {
-    newMessages: {
-      immediate: true,
-      handler(val) {
-        if (!val.length || !this.showNewMessagesDivider) {
-          return (this.newMessage = {})
-        }
+	watch: {
+		newMessages: {
+			immediate: true,
+			handler(val) {
+				if (!val.length || !this.showNewMessagesDivider) {
+					return (this.newMessage = {})
+				}
 
-        this.newMessage = val.reduce((res, obj) =>
-          obj.index < res.index ? obj : res
-        )
-      }
-    }
-  },
+				this.newMessage = val.reduce((res, obj) =>
+					obj.index < res.index ? obj : res
+				)
+			}
+		}
+	},
 
-  mounted() {
-    messagesValidation(this.message)
+	mounted() {
+		messagesValidation(this.message)
 
-    this.$emit('message-added', {
-      message: this.message,
-      index: this.index,
-      ref: this.$refs[this.message._id]
-    })
-  },
+		this.$emit('message-added', {
+			message: this.message,
+			index: this.index,
+			ref: this.$refs[this.message._id]
+		})
+	},
 
-  methods: {
-    onHoverMessage() {
-      this.imageHover = true
-      this.messageHover = true
-      if (this.canEditMessage()) this.hoverMessageId = this.message._id
-    },
-    canEditMessage() {
-      return !this.message.deleted
-    },
-    onLeaveMessage() {
-      this.imageHover = false
-      if (!this.optionsOpened && !this.emojiOpened) this.messageHover = false
-      this.hoverMessageId = null
-    },
-    openFile(action) {
-      this.$emit('open-file', { message: this.message, action })
-    },
-    openUserTag(user) {
-      this.$emit('open-user-tag', { user })
-    },
-    messageActionHandler(action) {
-      this.messageHover = false
-      this.hoverMessageId = null
+	methods: {
+		onHoverMessage() {
+			this.imageHover = true
+			this.messageHover = true
+			if (this.canEditMessage()) this.hoverMessageId = this.message._id
+		},
+		canEditMessage() {
+			return !this.message.deleted
+		},
+		onLeaveMessage() {
+			this.imageHover = false
+			if (!this.optionsOpened && !this.emojiOpened) this.messageHover = false
+			this.hoverMessageId = null
+		},
+		openFile(action) {
+			this.$emit('open-file', { message: this.message, action })
+		},
+		openUserTag(user) {
+			this.$emit('open-user-tag', { user })
+		},
+		messageActionHandler(action) {
+			this.messageHover = false
+			this.hoverMessageId = null
 
-      setTimeout(() => {
-        this.$emit('message-action-handler', { action, message: this.message })
-      }, 300)
-    },
-    sendMessageReaction({ emoji, reaction }) {
-      this.$emit('send-message-reaction', {
-        messageId: this.message._id,
-        reaction: emoji,
-        remove: reaction && reaction.indexOf(this.currentUserId) !== -1
-      })
-      this.messageHover = false
-    }
-  }
+			setTimeout(() => {
+				this.$emit('message-action-handler', { action, message: this.message })
+			}, 300)
+		},
+		sendMessageReaction({ emoji, reaction }) {
+			this.$emit('send-message-reaction', {
+				messageId: this.message._id,
+				reaction: emoji,
+				remove: reaction && reaction.indexOf(this.currentUserId) !== -1
+			})
+			this.messageHover = false
+		}
+	}
 }
 </script>
 
