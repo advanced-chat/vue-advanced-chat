@@ -140,24 +140,27 @@
             </audio-player>
 
             <div v-else>
-              <div
-                class="vac-svg-button vac-icon-file"
-                @click.stop="openFile('download')"
-              >
-                <slot name="document-icon">
-                  <svg-icon name="document" />
-                </slot>
-              </div>
-              <div class="doc-svg">
-                <svg-icon class="doc-svg-button" name="file" />
-              </div>
-              <div class="text-container">
-                <div class="vac-text-ellipsis">
-                  <center>{{ message.file.name }}</center>
+              <div class="vac-non-preview-container">
+                <div
+                  class="vac-svg-button"
+                  @click.stop="openFile('download')"
+                >
+                  <slot name="document-icon">
+                    <svg-icon name="document" />
+                  </slot>
                 </div>
-                <div class="vac-text-extension">
-                  <center>{{ message.file.extension }}</center>
+                <div class="doc-svg-icon">
+                  <svg-icon class="doc-svg-button" name="file" />
                 </div>
+                <div class="text-container">
+                  <div class="vac-text-ellipsis">
+                    <center>{{ message.file.name }}</center>
+                  </div>
+                  <div class="vac-text-extension">
+                    <center>{{ message.file.extension }}</center>
+                  </div>
+                </div>
+                <hr v-if="message.content" />
               </div>
               <div class="vac-file-message">
                 <span>{{ message.content }}</span>
@@ -397,11 +400,9 @@ export default {
 
 <style lang="scss">
 
-.doc-svg {
+.doc-svg-icon {
   width: 32px;
-  height: 32px;
-  margin: auto auto 15px !important;
-  padding-top: 15px;
+  margin: auto;
 }
 
 .doc-svg-button {
@@ -563,6 +564,11 @@ export default {
     video {
       border-radius: 4px;
     }
+  }
+
+  .vac-non-preview-container {
+    width: 90px;
+    font-size: 12px;
   }
 
   .vac-message-image {
