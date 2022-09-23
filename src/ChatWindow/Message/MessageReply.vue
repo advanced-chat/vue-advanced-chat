@@ -33,14 +33,14 @@
 		<div v-else-if="message.replyMessage.file" class="vac-image-reply-container">
 			<div class="vac-reply-content">
 				<div>
-					<div style="text-align: center;">
+					<div class="vac-non-preview-icon">
 						<svg-icon name="file" />
 					</div>
-					<div style="white-space: nowrap; overflow: hidden;">
-						<center>{{ message.replyMessage.file.name }}</center>
+					<div class="vac-non-preview-content">
+						<center>{{ messageReply.file.name }}</center>
 					</div>
 					<div>
-						<center>{{ message.replyMessage.file.extension }}</center>
+						<center>{{ messageReply.file.extension }}</center>
 					</div>
 					<hr v-if="message.replyMessage.content" />
 				</div>
@@ -140,6 +140,15 @@ export default {
 	.vac-reply-content {
 		font-size: 12px;
 		color: var(--chat-message-color-reply-content);
+	}
+
+	.vac-non-preview-icon {
+		text-align: center;
+	}
+
+	.vac-non-preview-content {
+		white-space: nowrap;
+		overflow: hidden;
 	}
 }
 </style>
