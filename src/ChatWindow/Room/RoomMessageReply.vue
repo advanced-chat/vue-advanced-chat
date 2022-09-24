@@ -11,7 +11,7 @@
 					:src="messageReply.file.url"
 					class="vac-image-reply"
 				/>
-				<div>
+				<div class="vac-non-preview-reply">
 					<div class="vac-non-preview-icon">
 						<svg-icon name="file" />
 					</div>
@@ -132,6 +132,10 @@ export default {
 		margin-right: 10px;
 		border-radius: 4px;
 	}
+}
+
+.vac-non-preview-reply {
+	max-width: 100px;
 }
 
 .vac-non-preview-icon {
