@@ -11,6 +11,19 @@
 					:src="messageReply.file.url"
 					class="vac-image-reply"
 				/>
+				<div>
+					<div class="vac-non-preview-icon">
+						<svg-icon name="file" />
+					</div>
+					<div class="vac-non-preview-content">
+					<div>
+						<center>{{ messageReply.file.name }}</center>
+					</div>
+					<div>
+						<center>{{ messageReply.file.extension }}</center>
+					</div>
+					</div>
+				</div>
 				<div class="vac-reply-info">
 					<div class="vac-reply-username">
 						{{ messageReply.username }}
@@ -119,6 +132,18 @@ export default {
 		margin-right: 10px;
 		border-radius: 4px;
 	}
+}
+
+.vac-non-preview-icon {
+	text-align: center;
+}
+
+.vac-non-preview-content {
+	white-space: nowrap;
+	overflow: hidden;
+	font-size: 12px;
+	margin: 0px 5px 0px 5px;
+	color: var(--chat-message-color-reply-content);
 }
 
 @media only screen and (max-width: 768px) {
