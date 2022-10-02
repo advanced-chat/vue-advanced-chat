@@ -11,6 +11,19 @@
 					:src="messageReply.file.url"
 					class="vac-image-reply"
 				/>
+				<div v-else-if="!isImageFile && !isVideoFile && !isAudioFile && messageReply.file" class="vac-non-preview-reply">
+					<div class="vac-non-preview-icon">
+						<svg-icon name="file" />
+					</div>
+					<div class="vac-non-preview-content">
+					<div>
+						<center>{{ messageReply.file.name }}</center>
+					</div>
+					<div>
+						<center>{{ messageReply.file.extension }}</center>
+					</div>
+					</div>
+				</div>
 				<div class="vac-reply-info">
 					<div class="vac-reply-username">
 						{{ messageReply.username }}
@@ -46,7 +59,7 @@
 import SvgIcon from '../../components/SvgIcon'
 import FormatMessage from '../../components/FormatMessage'
 
-const { isImageFile } = require('../../utils/media-file')
+const { isImageFile, isVideoFile, isAudioFile } = require('../../utils/media-file')
 
 export default {
 	name: 'RoomMessageReply',
@@ -65,6 +78,12 @@ export default {
 	computed: {
 		isImageFile() {
 			return isImageFile(this.messageReply.file)
+		},
+		isVideoFile() {
+			return isVideoFile(this.messageReply.file)
+		},
+		isAudioFile() {
+			return isAudioFile(this.messageReply.file)
 		}
 	}
 }
@@ -119,6 +138,22 @@ export default {
 		margin-right: 10px;
 		border-radius: 4px;
 	}
+}
+
+.vac-non-preview-reply {
+	max-width: 100px;
+}
+
+.vac-non-preview-icon {
+	text-align: center;
+}
+
+.vac-non-preview-content {
+	white-space: nowrap;
+	overflow: hidden;
+	font-size: 12px;
+	margin: 0px 5px 0px 5px;
+	color: var(--chat-message-color-reply-content);
 }
 
 @media only screen and (max-width: 768px) {

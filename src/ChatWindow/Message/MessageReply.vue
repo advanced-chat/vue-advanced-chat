@@ -30,6 +30,23 @@
 			</template>
 		</audio-player>
 
+		<div v-else-if="message.replyMessage.file" class="vac-image-reply-container">
+			<div class="vac-reply-content">
+				<div>
+					<div style="text-align: center;">
+						<svg-icon name="file" />
+					</div>
+					<div style="white-space: nowrap; overflow: hidden;">
+						<center>{{ message.replyMessage.file.name }}</center>
+					</div>
+					<div>
+						<center>{{ message.replyMessage.file.extension }}</center>
+					</div>
+					<hr v-if="message.replyMessage.content" />
+				</div>
+			</div>
+		</div>
+
 		<div class="vac-reply-content">
 			<format-message
 				:content="message.replyMessage.content"
@@ -47,6 +64,7 @@
 </template>
 
 <script>
+import SvgIcon from '../../components/SvgIcon'
 import FormatMessage from '../../components/FormatMessage'
 import AudioPlayer from './AudioPlayer'
 
@@ -58,7 +76,7 @@ const {
 
 export default {
 	name: 'MessageReply',
-	components: { AudioPlayer, FormatMessage },
+	components: { SvgIcon, AudioPlayer, FormatMessage },
 
 	props: {
 		message: { type: Object, required: true },
