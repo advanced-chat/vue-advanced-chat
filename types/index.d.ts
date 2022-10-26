@@ -1,4 +1,6 @@
-import Vue, { VNode, PluginFunction } from 'vue'
+import Vue, { PluginFunction } from 'vue'
+
+export function register(): void;
 
 export type StringNumber = string | number
 
