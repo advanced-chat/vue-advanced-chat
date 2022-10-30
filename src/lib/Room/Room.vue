@@ -508,9 +508,15 @@ export default {
 			switch (action.name) {
 				case 'replyMessage':
 					this.initReplyMessage = message
+					setTimeout(() => {
+						this.initReplyMessage = null
+					})
 					return
 				case 'editMessage':
 					this.initEditMessage = message
+					setTimeout(() => {
+						this.initEditMessage = null
+					})
 					return
 				case 'deleteMessage':
 					return this.$emit('delete-message', message)
