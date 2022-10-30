@@ -766,6 +766,7 @@ Example:
 | `room-header-info`                          | Replace the template of the room header text                      |
 | `room-options`                              | Replace the template of the room options                          |
 | `message_{{MESSAGE_ID}}`                    | Replace the template of the message (and system message) box      |
+| `message-avatar_{{MESSAGE_ID}}`             | Replace the template of the message avatar                        |
 | `message-failure_{{MESSAGE_ID}}`            | Replace the message failure icon                                  |
 | `messages-empty`                            | Replace the empty message template                                |
 | `rooms-empty`                               | Replace the empty rooms template                                  |
