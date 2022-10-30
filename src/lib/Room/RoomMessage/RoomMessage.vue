@@ -34,11 +34,15 @@
 			@click="selectMessage"
 		>
 			<slot :name="'message_' + message._id">
-				<div
+				<slot
 					v-if="message.avatar && message.senderId !== currentUserId"
-					class="vac-avatar"
-					:style="{ 'background-image': `url('${message.avatar}')` }"
-				/>
+					:name="'message-avatar_' + message._id"
+				>
+					<div
+						class="vac-avatar"
+						:style="{ 'background-image': `url('${message.avatar}')` }"
+					/>
+				</slot>
 				<div
 					v-if="hasSenderUserAvatar && !message.avatar"
 					class="vac-avatar-offset"
@@ -197,11 +201,15 @@
 						<div class="vac-failure-text">!</div>
 					</div>
 				</slot>
-				<div
+				<slot
 					v-if="message.avatar && message.senderId === currentUserId"
-					class="vac-avatar vac-avatar-current"
-					:style="{ 'background-image': `url('${message.avatar}')` }"
-				/>
+					:name="'message-avatar_' + message._id"
+				>
+					<div
+						class="vac-avatar vac-avatar-current"
+						:style="{ 'background-image': `url('${message.avatar}')` }"
+					/>
+				</slot>
 				<div
 					v-if="hasCurrentUserAvatar && !message.avatar"
 					class="vac-avatar-current-offset"

@@ -448,6 +448,7 @@ export default {
 		},
 
 		formatMessage(room, message) {
+			// const senderUser = room.users.find(user => user._id === message.sender_id)
 			const formattedMessage = {
 				...message,
 				...{

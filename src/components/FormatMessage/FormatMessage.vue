@@ -134,7 +134,7 @@ export default {
 
 	methods: {
 		checkType(message, type) {
-			return message.types.indexOf(type) !== -1
+			return message.types && message.types.indexOf(type) !== -1
 		},
 		checkImageType(message) {
 			let index = message.value.lastIndexOf('.')

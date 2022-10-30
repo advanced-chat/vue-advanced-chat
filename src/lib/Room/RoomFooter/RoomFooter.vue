@@ -324,10 +324,14 @@ export default {
 			this.$emit('update-edited-message-id', val._id)
 		},
 		initReplyMessage(val) {
-			this.replyMessage(val)
+			if (val) {
+				this.replyMessage(val)
+			}
 		},
 		initEditMessage(val) {
-			this.editMessage(val)
+			if (val) {
+				this.editMessage(val)
+			}
 		},
 		droppedFiles(val) {
 			if (val) {
