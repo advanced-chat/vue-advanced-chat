@@ -75,6 +75,9 @@ npm install --save vue-advanced-chat
 
 # Using yarn
 yarn add vue-advanced-chat
+
+# Using CDN
+<script src="https://cdn.jsdelivr.net/npm/vue-advanced-chat@2.0.4/dist/vue-advanced-chat.umd.js"></script>
 ```
 
 ### Vue
@@ -116,6 +119,9 @@ Demo: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/angular
 <script>
   import { register } from 'vue-advanced-chat'
   register()
+
+  // Or if you used CDN import
+  // window['vue-advanced-chat'].register()
 
   export default {
     data() {
