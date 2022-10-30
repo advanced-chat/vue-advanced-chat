@@ -102,12 +102,14 @@ export default {
 		loadingRooms: { type: Boolean, required: true },
 		roomsLoaded: { type: Boolean, required: true },
 		room: { type: Object, required: true },
+		customSearchRoomEnabled: { type: [Boolean, String], default: false },
 		roomActions: { type: Array, required: true },
 		scrollDistance: { type: Number, required: true }
 	},
 
 	emits: [
 		'add-room',
+		'search-room',
 		'room-action-handler',
 		'loading-more-rooms',
 		'fetch-room',
@@ -191,11 +193,15 @@ export default {
 			}
 		},
 		searchRoom(ev) {
-			this.filteredRooms = filteredItems(
-				this.rooms,
-				'roomName',
-				ev.target.value
-			)
+			if (this.customSearchRoomEnabled) {
+				this.$emit('search-room', ev.target.value)
+			} else {
+				this.filteredRooms = filteredItems(
+					this.rooms,
+					'roomName',
+					ev.target.value
+				)
+			}
 		},
 		openRoom(room) {
 			if (room.roomId === this.room.roomId && !this.isMobile) return

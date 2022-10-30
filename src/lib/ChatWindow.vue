@@ -9,6 +9,7 @@
 				:rooms-loaded="roomsLoadedCasted"
 				:room="room"
 				:room-actions="roomActionsCasted"
+				:custom-search-room-enabled="customSearchRoomEnabled"
 				:text-messages="t"
 				:show-search="showSearchCasted"
 				:show-add-room="showAddRoomCasted"
@@ -21,6 +22,7 @@
 				@fetch-more-rooms="fetchMoreRooms"
 				@loading-more-rooms="loadingMoreRooms = $event"
 				@add-room="addRoom"
+				@search-room="searchRoom"
 				@room-action-handler="roomActionHandler"
 			>
 				<template v-for="el in slots" #[el.slot]="data">
@@ -164,6 +166,7 @@ export default {
 				}
 			}
 		},
+		customSearchRoomEnabled: { type: [Boolean, String], default: false },
 		showSearch: { type: [Boolean, String], default: true },
 		showAddRoom: { type: [Boolean, String], default: true },
 		showSendIcon: { type: [Boolean, String], default: true },
@@ -224,6 +227,7 @@ export default {
 		'textarea-action-handler',
 		'fetch-more-rooms',
 		'add-room',
+		'search-room',
 		'room-action-handler',
 		'message-selection-action-handler'
 	],
@@ -485,6 +489,9 @@ export default {
 		},
 		addRoom() {
 			this.$emit('add-room')
+		},
+		searchRoom(val) {
+			this.$emit('search-room', { value: val, roomId: this.room.roomId })
 		},
 		fetchMessages(options) {
 			this.$emit('fetch-messages', { room: this.room, options })
