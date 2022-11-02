@@ -24,7 +24,7 @@ export const defaultThemeStyles = {
 		},
 
 		footer: {
-			background: '#f8f9fa',
+			background: '#eef1fa',
 			borderStyleInput: '1px solid #e1e4e8',
 			borderInputSelected: '#1976d2',
 			backgroundReply: '#e5e5e6',
@@ -32,28 +32,28 @@ export const defaultThemeStyles = {
 		},
 
 		content: {
-			background: '#f8f9fa'
+			background: '#eef1fa'
 		},
 
 		sidemenu: {
 			background: '#fff',
 			backgroundHover: '#f6f6f6',
-			backgroundActive: '#e5effa',
+			backgroundActive: '#c5e5e5',
 			colorActive: '#1976d2',
 			borderColorSearch: '#e1e5e8'
 		},
 
 		dropdown: {
-			background: '#fff',
-			backgroundHover: '#f6f6f6'
+			background: '#eef1fa',
+			backgroundHover: '#eee4fe'
 		},
 
 		message: {
 			background: '#fff',
-			backgroundMe: '#ccf2cf',
+			backgroundMe: '#c5e5e5',
 			color: '#0a0a0a',
 			colorStarted: '#9ca6af',
-			backgroundDeleted: '#dadfe2',
+			backgroundDeleted: '#c5e5e5',
 			colorDeleted: '#757e85',
 			colorUsername: '#9ca6af',
 			colorTimestamp: '#828c94',
@@ -109,19 +109,19 @@ export const defaultThemeStyles = {
 
 		icons: {
 			search: '#9ca6af',
-			add: '#1976d2',
+			add: '#442d65',
 			toggle: '#0a0a0a',
 			menu: '#0a0a0a',
 			close: '#9ca6af',
 			closeImage: '#fff',
-			file: '#1976d2',
-			paperclip: '#1976d2',
+			file: '#442d65',
+			paperclip: '#442d65',
 			closeOutline: '#000',
-			send: '#1976d2',
+			send: '#442d65',
 			sendDisabled: '#9ca6af',
-			emoji: '#1976d2',
+			emoji: '#442d65',
 			emojiReaction: 'rgba(0, 0, 0, 0.3)',
-			document: '#1976d2',
+			document: '#442d65',
 			pencil: '#9e9e9e',
 			checkmark: '#9e9e9e',
 			checkmarkSeen: '#0696c7',
@@ -130,7 +130,7 @@ export const defaultThemeStyles = {
 			dropdownMessageBackground: 'rgba(0, 0, 0, 0.25)',
 			dropdownRoom: '#9e9e9e',
 			dropdownScroll: '#0a0a0a',
-			microphone: '#1976d2',
+			microphone: '#442d65',
 			audioPlay: '#455247',
 			audioPause: '#455247',
 			audioCancel: '#eb4034',
