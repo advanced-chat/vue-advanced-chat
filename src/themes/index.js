@@ -11,7 +11,7 @@ export const defaultThemeStyles = {
 		},
 
 		container: {
-			border: 'none',
+			border: '5px solid #fff',
 			borderRadius: '4px',
 			boxShadow:
 				'0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)'
@@ -53,7 +53,7 @@ export const defaultThemeStyles = {
 			backgroundMe: '#c5e5e5',
 			color: '#0a0a0a',
 			colorStarted: '#9ca6af',
-			backgroundDeleted: '#c5e5e5',
+			backgroundDeleted: '#dadfe2',
 			colorDeleted: '#757e85',
 			colorUsername: '#9ca6af',
 			colorTimestamp: '#828c94',
@@ -67,7 +67,7 @@ export const defaultThemeStyles = {
 			colorReply: '#6e6e6e',
 			colorTag: '#0d579c',
 			backgroundImage: '#ddd',
-			colorNewMessages: '#1976d2',
+			colorNewMessages: '#442d65',
 			backgroundScrollCounter: '#0696c7',
 			colorScrollCounter: '#fff',
 			backgroundReaction: '#eee',
