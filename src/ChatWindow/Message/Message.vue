@@ -45,8 +45,8 @@
 								:total-steps="100"
 								:diameter="50"
 								circle-color="#f3f3f3"
-								start-color="green"
-								stop-color="green"
+								start-color="#442D65"
+								stop-color="#442D65"
 								:circle-width="5"
 								inner-display="slot"
 							>
