@@ -18,5 +18,5 @@ export function isImageVideoFile(file) {
 }
 
 export function isAudioFile(file) {
-	return checkMediaType(AUDIO_TYPES, file)
+	return file.type?.toLowerCase().startsWith('audio/') || checkMediaType(AUDIO_TYPES, file)
 }

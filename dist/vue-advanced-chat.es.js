@@ -6741,7 +6741,8 @@ function isImageVideoFile(file) {
   return checkMediaType(IMAGE_TYPES, file) || checkMediaType(VIDEO_TYPES, file);
 }
 function isAudioFile(file) {
-  return checkMediaType(AUDIO_TYPES, file);
+  var _a;
+  return ((_a = file.type) == null ? void 0 : _a.toLowerCase().startsWith("audio/")) || checkMediaType(AUDIO_TYPES, file);
 }
 const _sfc_main$m = {
   name: "RoomsContent",
@@ -11864,16 +11865,15 @@ const _sfc_main$a = {
       this.files.splice(index, 1);
       this.focusTextarea();
     },
-    toggleRecorder(recording) {
-      console.log("toggle recorder", recording);
+    async toggleRecorder(recording) {
       this.isRecording = recording;
       if (!this.recorder.isRecording) {
         setTimeout(() => this.recorder.start(), 10);
       } else {
         try {
-          console.log("stopping record");
-          this.recorder.stop();
+          await this.recorder.stop();
           const record = this.recorder.records[0];
+          console.log("record is", record);
           this.files.push({
             blob: record.blob,
             name: `audio.${this.format}`,

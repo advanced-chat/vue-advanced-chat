@@ -543,16 +543,17 @@ export default {
       this.files.splice(index, 1)
       this.focusTextarea()
     },
-    toggleRecorder(recording) {
+    async toggleRecorder(recording) {
       this.isRecording = recording
 
       if (!this.recorder.isRecording) {
         setTimeout(() => this.recorder.start(), 10)
       } else {
         try {
-          this.recorder.stop()
+          await this.recorder.stop()
 
           const record = this.recorder.records[0]
+          console.log('record is', record)
 
           this.files.push({
             blob: record.blob,
