@@ -553,7 +553,6 @@ export default {
           await this.recorder.stop()
 
           const record = this.recorder.records[0]
-          console.log('record is', record)
 
           this.files.push({
             blob: record.blob,

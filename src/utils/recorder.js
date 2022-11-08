@@ -87,6 +87,7 @@ export default class {
 
     }
     this.records.push(record)
+    console.log('added to recording')
 
     this._duration = 0
     this.duration = 0
@@ -102,7 +103,7 @@ export default class {
     this.input.disconnect()
     this.processor.disconnect()
 
-    this._duration = this.duration
+    this._duration = this.duration * 1000
     this.isPause = true
 
     this.pauseRecording && this.pauseRecording('pause recording')
@@ -110,7 +111,7 @@ export default class {
 
   _micCaptured(stream) {
     this.context = new (window.AudioContext || window.webkitAudioContext)()
-    this.duration = this._duration
+    this.duration = this._duration * 1000
     this.input = this.context.createMediaStreamSource(stream)
     this.processor = this.context.createScriptProcessor(this.bufferSize, 1, 1)
     this.stream = stream
