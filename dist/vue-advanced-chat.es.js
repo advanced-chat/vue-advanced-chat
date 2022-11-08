@@ -6734,7 +6734,8 @@ function isImageFile(file) {
   return checkMediaType(IMAGE_TYPES, file);
 }
 function isVideoFile(file) {
-  return checkMediaType(VIDEO_TYPES, file);
+  var _a;
+  return !((_a = file.type) == null ? void 0 : _a.toLowerCase().startsWith("audio/")) && checkMediaType(VIDEO_TYPES, file);
 }
 function isImageVideoFile(file) {
   return checkMediaType(IMAGE_TYPES, file) || checkMediaType(VIDEO_TYPES, file);
@@ -11631,7 +11632,7 @@ const _sfc_main$a = {
       selectUsersTagItem: null,
       selectEmojiItem: null,
       selectTemplatesTextItem: null,
-      format: "mp3",
+      format: "wav",
       activeUpOrDownEmojis: null,
       activeUpOrDownUsersTag: null,
       activeUpOrDownTemplatesText: null,
@@ -11768,14 +11769,15 @@ const _sfc_main$a = {
       el.style.height = el.scrollHeight - padding * 2 + "px";
     },
     escapeTextarea() {
-      if (this.filteredEmojis.length)
+      if (this.filteredEmojis.length) {
         this.filteredEmojis = [];
-      else if (this.filteredUsersTag.length)
+      } else if (this.filteredUsersTag.length) {
         this.filteredUsersTag = [];
-      else if (this.filteredTemplatesText.length) {
+      } else if (this.filteredTemplatesText.length) {
         this.filteredTemplatesText = [];
-      } else
+      } else {
         this.resetMessage();
+      }
     },
     onPasteImage(pasteEvent) {
       var _a;
@@ -11863,11 +11865,13 @@ const _sfc_main$a = {
       this.focusTextarea();
     },
     toggleRecorder(recording) {
+      console.log("toggle recorder", recording);
       this.isRecording = recording;
       if (!this.recorder.isRecording) {
-        setTimeout(() => this.recorder.start(), 200);
+        setTimeout(() => this.recorder.start(), 10);
       } else {
         try {
+          console.log("stopping record");
           this.recorder.stop();
           const record = this.recorder.records[0];
           this.files.push({
