@@ -11523,6 +11523,7 @@ class Recorder {
       duration: res.value.msDuration
     };
     this.records.push(record);
+    console.log("added to recording");
     this._duration = 0;
     this.duration = 0;
     this.isPause = false;
@@ -11533,13 +11534,13 @@ class Recorder {
     this.stream.getTracks().forEach((track2) => track2.stop());
     this.input.disconnect();
     this.processor.disconnect();
-    this._duration = this.duration;
+    this._duration = this.duration * 1e3;
     this.isPause = true;
     this.pauseRecording && this.pauseRecording("pause recording");
   }
   _micCaptured(stream) {
     this.context = new (window.AudioContext || window.webkitAudioContext)();
-    this.duration = this._duration;
+    this.duration = this._duration * 1e3;
     this.input = this.context.createMediaStreamSource(stream);
     this.processor = this.context.createScriptProcessor(this.bufferSize, 1, 1);
     this.stream = stream;
@@ -11873,7 +11874,6 @@ const _sfc_main$a = {
         try {
           await this.recorder.stop();
           const record = this.recorder.records[0];
-          console.log("record is", record);
           this.files.push({
             blob: record.blob,
             name: `audio.${this.format}`,

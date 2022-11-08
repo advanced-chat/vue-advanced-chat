@@ -81,7 +81,7 @@ export default {
 
 	methods: {
 		convertTimeMMSS(seconds) {
-			return new Date(seconds * 1000).toISOString().substr(14, 5)
+			return new Date(seconds * 1e3).toISOString().substr(14, 5)
 		},
 		playback() {
 			if (this.messageSelectionEnabled || !this.audioSource) return
