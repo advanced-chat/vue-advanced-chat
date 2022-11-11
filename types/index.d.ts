@@ -184,7 +184,7 @@ export interface AdvancedChatOptions {
 	props: Props
 }
 
-export default class AdvancedChat extends Vue {
+export class VueAdvancedChat extends Vue {
 	rooms: Rooms
 	messages: Messages
 
