@@ -3,7 +3,6 @@
 		<div
 			v-if="filteredUsersTag.length"
 			class="vac-tags-container"
-			:style="{ bottom: `${footerHeight}px` }"
 		>
 			<div
 				v-for="(user, index) in filteredUsersTag"
@@ -47,11 +46,6 @@ export default {
 	},
 
 	computed: {
-		footerHeight() {
-			return document
-				.querySelector('vue-advanced-chat')
-				.shadowRoot.getElementById('room-footer').clientHeight
-		}
 	},
 
 	watch: {

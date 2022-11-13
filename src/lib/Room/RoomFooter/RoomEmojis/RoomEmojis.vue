@@ -3,7 +3,6 @@
 		<div
 			v-if="filteredEmojis.length"
 			class="vac-emojis-container"
-			:style="{ bottom: `${footerHeight}px` }"
 		>
 			<div
 				v-for="(emoji, index) in filteredEmojis"
@@ -38,11 +37,6 @@ export default {
 	},
 
 	computed: {
-		footerHeight() {
-			return document
-				.querySelector('vue-advanced-chat')
-				.shadowRoot.getElementById('room-footer').clientHeight
-		}
 	},
 
 	watch: {

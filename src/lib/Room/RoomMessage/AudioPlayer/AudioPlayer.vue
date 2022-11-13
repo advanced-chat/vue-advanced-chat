@@ -62,9 +62,7 @@ export default {
 	},
 
 	mounted() {
-		this.player = document
-			.querySelector('vue-advanced-chat')
-			.shadowRoot.getElementById(this.playerUniqId)
+		this.player = this.$el.querySelector('#' + this.playerUniqId)
 
 		this.player.addEventListener('ended', () => {
 			this.isPlaying = false
