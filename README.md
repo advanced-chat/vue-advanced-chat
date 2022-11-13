@@ -254,6 +254,7 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `theme`(26)                         | `light` / `dark` | -        | `light`                                                                                                           |
 | `accepted-files`(27)                | String           | -        | `*`                                                                                                               |
 | `styles`(28)                        | [String, Object] | -        | (26)                                                                                                              |
+| `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                              |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 

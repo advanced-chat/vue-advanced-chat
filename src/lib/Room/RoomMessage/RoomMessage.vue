@@ -170,6 +170,7 @@
 							:message-hover="messageHover"
 							:hover-message-id="hoverMessageId"
 							:hover-audio-progress="hoverAudioProgress"
+              :emoji-data-source="emojiDataSource"
 							@update-message-hover="messageHover = $event"
 							@update-options-opened="optionsOpened = $event"
 							@update-emoji-opened="emojiOpened = $event"
@@ -260,7 +261,8 @@ export default {
 		linkOptions: { type: Object, required: true },
 		usernameOptions: { type: Object, required: true },
 		messageSelectionEnabled: { type: Boolean, required: true },
-		selectedMessages: { type: Array, default: () => [] }
+		selectedMessages: { type: Array, default: () => [] },
+    emojiDataSource: { type: String, default: undefined }
 	},
 
 	emits: [
