@@ -722,7 +722,7 @@ When clicking a button from your `message-selection-actions` array, `message-sel
 Then you can do anything you want with it. Ex:
 
 ```javascript
-messageActionHandler({ roomId, action, message }) {
+messageSelectionActionHandler({ roomId, action, message }) {
   switch (action.name) {
     case 'deleteMessages':
       // call a method to delete selected messaged
