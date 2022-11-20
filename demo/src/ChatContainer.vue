@@ -106,7 +106,7 @@ export default {
 			loadingRooms: true,
 			allUsers: [],
 			loadingLastMessageByRoom: 0,
-			roomsLoadedCount: false,
+			roomsLoadedCount: 0,
 			selectedRoom: null,
 			messagesPerPage: 20,
 			messages: [],
