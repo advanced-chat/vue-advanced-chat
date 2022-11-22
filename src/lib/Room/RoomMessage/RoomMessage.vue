@@ -35,10 +35,11 @@
 		>
 			<slot :name="'message_' + message._id">
 				<slot
-					v-if="message.avatar && message.senderId !== currentUserId"
+					v-if="message.senderId !== currentUserId"
 					:name="'message-avatar_' + message._id"
 				>
 					<div
+            v-if="message.avatar"
 						class="vac-avatar"
 						:style="{ 'background-image': `url('${message.avatar}')` }"
 					/>
@@ -202,10 +203,11 @@
 					</div>
 				</slot>
 				<slot
-					v-if="message.avatar && message.senderId === currentUserId"
+					v-if="message.senderId === currentUserId"
 					:name="'message-avatar_' + message._id"
 				>
 					<div
+            v-if="message.avatar"
 						class="vac-avatar vac-avatar-current"
 						:style="{ 'background-image': `url('${message.avatar}')` }"
 					/>
