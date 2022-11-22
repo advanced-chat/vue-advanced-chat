@@ -557,7 +557,9 @@ export default {
 			this.$emit('open-user-tag', user)
 		},
 		onDropFiles(event) {
-			this.droppedFiles = event.dataTransfer.files
+      if (this.showFiles) {
+        this.droppedFiles = event.dataTransfer.files
+      }
 		}
 	}
 }
