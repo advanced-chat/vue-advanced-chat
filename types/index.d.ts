@@ -1,6 +1,6 @@
 import Vue, { PluginFunction } from 'vue'
 
-export function register(): void;
+export function register(): void
 
 export type StringNumber = string | number
 
@@ -10,7 +10,7 @@ export interface UserStatus {
 }
 
 export interface RoomUser {
-	_id: String
+	_id: string
 	username: string
 	avatar: string
 	status: UserStatus
@@ -31,7 +31,7 @@ export interface MessageFile {
 
 export interface LastMessage {
 	content: string
-	senderId: String
+	senderId: string
 	username?: string
 	timestamp?: string
 	saved?: boolean
@@ -42,14 +42,14 @@ export interface LastMessage {
 }
 
 export interface Room {
-	roomId: String
+	roomId: string
 	roomName: string
-	avatar: String
+	avatar: string
 	users: RoomUsers
-	unreadCount?: Number
+	unreadCount?: number
 	index?: StringNumber | Date
 	lastMessage?: LastMessage
-	typingUsers?: String[]
+	typingUsers?: string[]
 }
 
 export type Rooms = Room[]
@@ -62,7 +62,7 @@ export interface Message {
 	_id: StringNumber
 	indexId?: StringNumber
 	content: string
-	senderId: String
+	senderId: string
 	username?: string
 	avatar?: string
 	date: string
@@ -134,12 +134,12 @@ export interface LinkOptions {
 
 export interface Props {
 	height?: string
-	'current-user-id': String
+	'current-user-id': string
 	rooms: Rooms
 	'rooms-order'?: 'desc' | 'asc'
 	'loading-rooms'?: boolean
 	'rooms-loaded'?: boolean
-	'room-id'?: String
+	'room-id'?: string
 	'load-first-room'?: boolean
 	'rooms-list-opened'?: boolean
 	messages: Messages
