@@ -10,7 +10,7 @@ export function isImageFile(file) {
 }
 
 export function isVideoFile(file) {
-	return checkMediaType(VIDEO_TYPES, file)
+	return !file.type?.toLowerCase().startsWith('audio/') && checkMediaType(VIDEO_TYPES, file)
 }
 
 export function isImageVideoFile(file) {
@@ -18,5 +18,5 @@ export function isImageVideoFile(file) {
 }
 
 export function isAudioFile(file) {
-	return checkMediaType(AUDIO_TYPES, file)
+	return file.type?.toLowerCase().startsWith('audio/') || checkMediaType(AUDIO_TYPES, file)
 }
