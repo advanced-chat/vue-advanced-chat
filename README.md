@@ -736,7 +736,7 @@ messageSelectionActionHandler({ roomId, action, message }) {
 
 **(10)** `textarea-action-handler` is the result of the [`textarea-action-enabled`](#props-api) prop.<br>
 
-**(11)** Array of files where each file contain: `{ blob, localURL, name, size, type, extension }`
+**(11)** Array of files where each file contain: `{ blob, localUrl, name, size, type, extension }`
 
 **(12)** `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked.
 
