@@ -21,7 +21,9 @@ export type RoomUsers = RoomUser[]
 export interface MessageFile {
 	name: string
 	type: string
+	extension: string
 	url: string
+	localUrl: string
 	preview: string
 	size?: number
 	audio?: boolean
@@ -59,7 +61,7 @@ export interface MessageReactions {
 }
 
 export interface Message {
-	_id: StringNumber
+	_id: string
 	indexId?: StringNumber
 	content: string
 	senderId: string
