@@ -7328,7 +7328,7 @@ const _sfc_main$k = {
       if (!this.room.users || this.room.users.length !== 2)
         return;
       const user = this.room.users.find((u) => u._id !== this.currentUserId);
-      if (!user.status)
+      if (!(user == null ? void 0 : user.status))
         return;
       let text2 = "";
       if (user.status.state === "online") {
@@ -28214,11 +28214,12 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
       onClick: _cache[8] || (_cache[8] = (...args) => $options.selectMessage && $options.selectMessage(...args))
     }, [
       renderSlot(_ctx.$slots, "message_" + $props.message._id, {}, () => [
-        $props.message.avatar && $props.message.senderId !== $props.currentUserId ? renderSlot(_ctx.$slots, "message-avatar_" + $props.message._id, { key: 0 }, () => [
-          createBaseVNode("div", {
+        $props.message.senderId !== $props.currentUserId ? renderSlot(_ctx.$slots, "message-avatar_" + $props.message._id, { key: 0 }, () => [
+          $props.message.avatar ? (openBlock(), createElementBlock("div", {
+            key: 0,
             class: "vac-avatar",
             style: normalizeStyle({ "background-image": `url('${$props.message.avatar}')` })
-          }, null, 4)
+          }, null, 4)) : createCommentVNode("", true)
         ]) : createCommentVNode("", true),
         $options.hasSenderUserAvatar && !$props.message.avatar ? (openBlock(), createElementBlock("div", _hoisted_5$2)) : createCommentVNode("", true),
         createBaseVNode("div", {
@@ -28374,11 +28375,12 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
             onClick: _cache[7] || (_cache[7] = ($event) => _ctx.$emit("open-failed-message", { message: $props.message }))
           }, _hoisted_11, 2)) : createCommentVNode("", true)
         ]),
-        $props.message.avatar && $props.message.senderId === $props.currentUserId ? renderSlot(_ctx.$slots, "message-avatar_" + $props.message._id, { key: 2 }, () => [
-          createBaseVNode("div", {
+        $props.message.senderId === $props.currentUserId ? renderSlot(_ctx.$slots, "message-avatar_" + $props.message._id, { key: 2 }, () => [
+          $props.message.avatar ? (openBlock(), createElementBlock("div", {
+            key: 0,
             class: "vac-avatar vac-avatar-current",
             style: normalizeStyle({ "background-image": `url('${$props.message.avatar}')` })
-          }, null, 4)
+          }, null, 4)) : createCommentVNode("", true)
         ]) : createCommentVNode("", true),
         $options.hasCurrentUserAvatar && !$props.message.avatar ? (openBlock(), createElementBlock("div", _hoisted_12)) : createCommentVNode("", true)
       ])
@@ -28733,7 +28735,9 @@ const _sfc_main$2 = {
       this.$emit("open-user-tag", user);
     },
     onDropFiles(event) {
-      this.droppedFiles = event.dataTransfer.files;
+      if (this.showFiles) {
+        this.droppedFiles = event.dataTransfer.files;
+      }
     }
   }
 };
