@@ -158,7 +158,7 @@ export default {
 
 			const user = this.room.users.find(u => u._id !== this.currentUserId)
 
-			if (!user.status) return
+			if (!user?.status) return
 
 			let text = ''
 
