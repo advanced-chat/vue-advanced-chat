@@ -29,6 +29,7 @@ export interface MessageFile {
 	audio?: boolean
 	duration?: number
 	progress?: number
+	blob?: Blob
 }
 
 export interface LastMessage {
