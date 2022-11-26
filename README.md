@@ -86,7 +86,9 @@ Register `vue-advanced-chat` as a web component in your [config file](https://vu
 
 ```javascript
 compilerOptions: {
-  isCustomElement: tagName => tagName === 'vue-advanced-chat'
+  isCustomElement: tagName => {
+    return tagName === 'vue-advanced-chat' || tagName === 'emoji-picker'
+  }
 }
 ```
 
