@@ -262,7 +262,7 @@ export default {
 		usernameOptions: { type: Object, required: true },
 		messageSelectionEnabled: { type: Boolean, required: true },
 		selectedMessages: { type: Array, default: () => [] },
-		emojiDataSource: { type: String, default: null }
+		emojiDataSource: { type: String, default: '' }
 	},
 
 	emits: [

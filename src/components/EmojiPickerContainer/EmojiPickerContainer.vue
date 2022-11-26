@@ -54,7 +54,7 @@ export default {
 		positionTop: { type: Boolean, default: false },
 		positionRight: { type: Boolean, default: false },
 		messageId: { type: String, default: '' },
-		emojiDataSource: { type: String, default: null }
+		emojiDataSource: { type: String, default: '' }
 	},
 
 	emits: ['add-emoji', 'open-emoji'],

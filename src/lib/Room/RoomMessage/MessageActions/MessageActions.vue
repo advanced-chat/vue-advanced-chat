@@ -108,7 +108,7 @@ export default {
 		messageHover: { type: Boolean, required: true },
 		hoverMessageId: { type: [String, Number], default: null },
 		hoverAudioProgress: { type: Boolean, required: true },
-		emojiDataSource: { type: String, default: null }
+		emojiDataSource: { type: String, default: '' }
 	},
 
 	emits: [
