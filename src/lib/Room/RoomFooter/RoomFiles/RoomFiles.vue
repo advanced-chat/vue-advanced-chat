@@ -3,7 +3,6 @@
 		<div
 			v-if="files.length"
 			class="vac-room-files-container"
-			:style="{ bottom: `${footerHeight}px` }"
 		>
 			<div class="vac-files-box">
 				<div v-for="(file, i) in files" :key="i">
@@ -49,11 +48,6 @@ export default {
 	emits: ['remove-file', 'reset-message'],
 
 	computed: {
-		footerHeight() {
-			return document
-				.querySelector('vue-advanced-chat')
-				.shadowRoot.getElementById('room-footer').clientHeight
-		}
 	}
 }
 </script>

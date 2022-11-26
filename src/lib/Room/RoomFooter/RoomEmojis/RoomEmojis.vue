@@ -1,10 +1,6 @@
 <template>
 	<transition name="vac-slide-up">
-		<div
-			v-if="filteredEmojis.length"
-			class="vac-emojis-container"
-			:style="{ bottom: `${footerHeight}px` }"
-		>
+		<div v-if="filteredEmojis.length" class="vac-emojis-container">
 			<div
 				v-for="(emoji, index) in filteredEmojis"
 				:key="emoji"
@@ -34,14 +30,6 @@ export default {
 	data() {
 		return {
 			activeItem: null
-		}
-	},
-
-	computed: {
-		footerHeight() {
-			return document
-				.querySelector('vue-advanced-chat')
-				.shadowRoot.getElementById('room-footer').clientHeight
 		}
 	},
 

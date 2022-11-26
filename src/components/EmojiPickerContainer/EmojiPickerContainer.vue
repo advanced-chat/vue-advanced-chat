@@ -37,6 +37,7 @@
 
 <script>
 import SvgIcon from '../SvgIcon/SvgIcon'
+import { findParentBySelector } from '../../utils/element-selector'
 
 export default {
 	name: 'EmojiPickerContainer',
@@ -121,9 +122,7 @@ export default {
 		},
 		setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
 			const mobileSize = innerWidth < 500 || innerHeight < 700
-			const roomFooterRef = document
-				.querySelector('vue-advanced-chat')
-				.shadowRoot.getElementById('room-footer')
+			const roomFooterRef = findParentBySelector(this.$el, '#room-footer')
 
 			if (!roomFooterRef) {
 				if (mobileSize) this.emojiPickerRight = '-50px'

@@ -1,10 +1,6 @@
 <template>
 	<transition name="vac-slide-up">
-		<div
-			v-if="filteredUsersTag.length"
-			class="vac-tags-container"
-			:style="{ bottom: `${footerHeight}px` }"
-		>
+		<div v-if="filteredUsersTag.length" class="vac-tags-container">
 			<div
 				v-for="(user, index) in filteredUsersTag"
 				:key="user._id"
@@ -43,14 +39,6 @@ export default {
 	data() {
 		return {
 			activeItem: null
-		}
-	},
-
-	computed: {
-		footerHeight() {
-			return document
-				.querySelector('vue-advanced-chat')
-				.shadowRoot.getElementById('room-footer').clientHeight
 		}
 	},
 
