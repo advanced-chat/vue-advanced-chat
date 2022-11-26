@@ -12,10 +12,11 @@
 }
 
 .vac-textarea {
+	max-height: 100px;
+	overflow-y: auto;
 	height: 20px;
 	width: 100%;
 	line-height: 20px;
-	overflow: hidden;
 	outline: 0;
 	resize: none;
 	border-radius: 20px;
