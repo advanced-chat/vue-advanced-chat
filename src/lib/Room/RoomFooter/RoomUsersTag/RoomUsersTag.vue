@@ -1,9 +1,6 @@
 <template>
 	<transition name="vac-slide-up">
-		<div
-			v-if="filteredUsersTag.length"
-			class="vac-tags-container"
-		>
+		<div v-if="filteredUsersTag.length" class="vac-tags-container">
 			<div
 				v-for="(user, index) in filteredUsersTag"
 				:key="user._id"
@@ -43,9 +40,6 @@ export default {
 		return {
 			activeItem: null
 		}
-	},
-
-	computed: {
 	},
 
 	watch: {

@@ -1,9 +1,6 @@
 <template>
 	<transition name="vac-slide-up">
-		<div
-			v-if="filteredEmojis.length"
-			class="vac-emojis-container"
-		>
+		<div v-if="filteredEmojis.length" class="vac-emojis-container">
 			<div
 				v-for="(emoji, index) in filteredEmojis"
 				:key="emoji"
@@ -34,9 +31,6 @@ export default {
 		return {
 			activeItem: null
 		}
-	},
-
-	computed: {
 	},
 
 	watch: {

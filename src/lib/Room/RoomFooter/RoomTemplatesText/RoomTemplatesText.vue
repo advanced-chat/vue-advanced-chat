@@ -43,9 +43,6 @@ export default {
 		}
 	},
 
-	computed: {
-	},
-
 	watch: {
 		filteredTemplatesText(val, oldVal) {
 			if (!oldVal.length || val.length !== oldVal.length) {
