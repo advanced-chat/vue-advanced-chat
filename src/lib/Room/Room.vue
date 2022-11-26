@@ -92,7 +92,7 @@
 								:username-options="usernameOptions"
 								:message-selection-enabled="messageSelectionEnabled"
 								:selected-messages="selectedMessages"
-                :emoji-data-source="emojiDataSource"
+								:emoji-data-source="emojiDataSource"
 								@message-added="onMessageAdded"
 								@message-action-handler="messageActionHandler"
 								@open-file="openFile"
@@ -152,7 +152,7 @@
 			:init-reply-message="initReplyMessage"
 			:init-edit-message="initEditMessage"
 			:dropped-files="droppedFiles"
-      :emoji-data-source="emojiDataSource"
+			:emoji-data-source="emojiDataSource"
 			@update-edited-message-id="editedMessageId = $event"
 			@edit-message="$emit('edit-message', $event)"
 			@send-message="$emit('send-message', $event)"
@@ -221,7 +221,7 @@ export default {
 		scrollDistance: { type: Number, required: true },
 		templatesText: { type: Array, default: null },
 		usernameOptions: { type: Object, required: true },
-    emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: null }
 	},
 
 	emits: [

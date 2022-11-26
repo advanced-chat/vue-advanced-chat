@@ -132,7 +132,7 @@
 						<emoji-picker-container
 							:emoji-opened="emojiOpened"
 							:position-top="true"
-              :emoji-data-source="emojiDataSource"
+							:emoji-data-source="emojiDataSource"
 							@add-emoji="addEmoji"
 							@open-emoji="emojiOpened = $event"
 						>
@@ -245,7 +245,7 @@ export default {
 		initReplyMessage: { type: Object, default: null },
 		initEditMessage: { type: Object, default: null },
 		droppedFiles: { type: Array, default: null },
-    emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: null }
 	},
 
 	emits: [
