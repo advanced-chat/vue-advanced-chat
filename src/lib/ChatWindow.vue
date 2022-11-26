@@ -209,7 +209,7 @@ export default {
 			type: [Object, String],
 			default: () => ({ minUsers: 3, currentUser: false })
 		},
-		emojiDataSource: { type: String, default: '' }
+		emojiDataSource: { type: String, default: undefined }
 	},
 
 	emits: [

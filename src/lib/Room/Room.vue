@@ -221,7 +221,7 @@ export default {
 		scrollDistance: { type: Number, required: true },
 		templatesText: { type: Array, default: null },
 		usernameOptions: { type: Object, required: true },
-		emojiDataSource: { type: String, default: '' }
+		emojiDataSource: { type: String, default: undefined }
 	},
 
 	emits: [

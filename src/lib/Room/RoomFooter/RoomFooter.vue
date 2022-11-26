@@ -245,7 +245,7 @@ export default {
 		initReplyMessage: { type: Object, default: null },
 		initEditMessage: { type: Object, default: null },
 		droppedFiles: { type: Array, default: null },
-		emojiDataSource: { type: String, default: '' }
+		emojiDataSource: { type: String, default: undefined }
 	},
 
 	emits: [
