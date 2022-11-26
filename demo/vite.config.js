@@ -7,7 +7,9 @@ export default defineConfig({
 		vue({
 			template: {
 				compilerOptions: {
-					isCustomElement: tagName => tagName === 'vue-advanced-chat'
+					isCustomElement: tagName => {
+						return tagName === 'vue-advanced-chat' || tagName === 'emoji-picker'
+					}
 				}
 			}
 		})

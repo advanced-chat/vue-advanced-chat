@@ -43,6 +43,7 @@
 							:emoji-reaction="true"
 							:position-right="message.senderId === currentUserId"
 							:message-id="message._id"
+							:emoji-data-source="emojiDataSource"
 							@add-emoji="sendMessageReaction"
 							@open-emoji="openEmoji"
 						>
@@ -107,7 +108,8 @@ export default {
 		showReactionEmojis: { type: Boolean, required: true },
 		messageHover: { type: Boolean, required: true },
 		hoverMessageId: { type: [String, Number], default: null },
-		hoverAudioProgress: { type: Boolean, required: true }
+		hoverAudioProgress: { type: Boolean, required: true },
+		emojiDataSource: { type: String, default: undefined }
 	},
 
 	emits: [

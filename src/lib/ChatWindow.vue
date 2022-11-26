@@ -67,6 +67,7 @@
 				:accepted-files="acceptedFiles"
 				:templates-text="templatesTextCasted"
 				:username-options="usernameOptionsCasted"
+				:emoji-data-source="emojiDataSource"
 				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
@@ -207,7 +208,8 @@ export default {
 		usernameOptions: {
 			type: [Object, String],
 			default: () => ({ minUsers: 3, currentUser: false })
-		}
+		},
+		emojiDataSource: { type: String, default: undefined }
 	},
 
 	emits: [

@@ -28,7 +28,11 @@
 						display: emojiPickerTop || !emojiReaction ? 'initial' : 'none'
 					}"
 				>
-					<emoji-picker v-pre ref="emojiPicker" v-if="emojiOpened" />
+					<emoji-picker
+						v-if="emojiOpened"
+						ref="emojiPicker"
+						:data-source="emojiDataSource"
+					/>
 				</div>
 			</transition>
 		</template>
@@ -50,7 +54,8 @@ export default {
 		emojiReaction: { type: Boolean, default: false },
 		positionTop: { type: Boolean, default: false },
 		positionRight: { type: Boolean, default: false },
-		messageId: { type: String, default: '' }
+		messageId: { type: String, default: '' },
+		emojiDataSource: { type: String, default: undefined }
 	},
 
 	emits: ['add-emoji', 'open-emoji'],
