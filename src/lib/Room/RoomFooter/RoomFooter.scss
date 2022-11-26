@@ -12,10 +12,11 @@
 }
 
 .vac-textarea {
+	max-height: 300px;
+	overflow-y: auto;
 	height: 20px;
 	width: 100%;
 	line-height: 20px;
-	overflow: hidden;
 	outline: 0;
 	resize: none;
 	border-radius: 20px;
@@ -162,5 +163,11 @@
 		.vac-wrapper {
 			margin: 0 5px !important;
 		}
+	}
+}
+
+@media only screen and (max-height: 768px) {
+	.vac-textarea {
+		max-height: 120px;
 	}
 }
