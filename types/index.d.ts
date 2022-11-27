@@ -16,15 +16,13 @@ export interface RoomUser {
 	status: UserStatus
 }
 
-export type RoomUsers = RoomUser[]
-
 export interface MessageFile {
 	name: string
 	type: string
 	extension: string
 	url: string
-	localUrl: string
-	preview: string
+	localUrl?: string
+	preview?: string
 	size?: number
 	audio?: boolean
 	duration?: number
@@ -48,14 +46,12 @@ export interface Room {
 	roomId: string
 	roomName: string
 	avatar: string
-	users: RoomUsers
+	users: RoomUser[]
 	unreadCount?: number
 	index?: StringNumber | Date
 	lastMessage?: LastMessage
 	typingUsers?: string[]
 }
-
-export type Rooms = Room[]
 
 export interface MessageReactions {
 	[key: string]: StringNumber[]
@@ -63,13 +59,13 @@ export interface MessageReactions {
 
 export interface Message {
 	_id: string
-	indexId?: StringNumber
-	content: string
 	senderId: string
+	indexId?: StringNumber
+	content?: string
 	username?: string
 	avatar?: string
-	date: string
-	timestamp: string
+	date?: string
+	timestamp?: string
 	system?: boolean
 	saved?: boolean
 	distributed?: boolean
@@ -83,22 +79,16 @@ export interface Message {
 	replyMessage?: Message
 }
 
-export type Messages = Message[]
-
 export interface CustomAction {
 	name: string
 	title: string
 }
-
-export type CustomActions = CustomAction[]
 
 export interface MessageAction {
 	name: string
 	title: string
 	onlyMe?: boolean
 }
-
-export type MessageActions = MessageAction[]
 
 export interface TextFormatting {
 	disabled?: boolean
@@ -110,8 +100,6 @@ export interface TextFormatting {
 	inlineCode?: string
 }
 export type TemplateText = { tag: string; text: string }
-
-export type TemplatesText = TemplateText[]
 
 export interface AutoScroll {
 	send?: {
@@ -138,21 +126,21 @@ export interface LinkOptions {
 export interface Props {
 	height?: string
 	'current-user-id': string
-	rooms: Rooms
+	rooms: Room[]
 	'rooms-order'?: 'desc' | 'asc'
 	'loading-rooms'?: boolean
 	'rooms-loaded'?: boolean
 	'room-id'?: string
 	'load-first-room'?: boolean
 	'rooms-list-opened'?: boolean
-	messages: Messages
+	messages: Message[]
 	'room-message'?: string
 	'username-options'?: UsernameOptions
 	'messages-loaded'?: boolean
-	'room-actions'?: CustomActions
-	'menu-actions'?: CustomActions
+	'room-actions'?: CustomAction[]
+	'menu-actions'?: CustomAction[]
 	'message-actions'?: MessageActions
-	'message-selection-actions'?: CustomActions
+	'message-selection-actions'?: CustomAction[]
 	'templates-text'?: TemplatesText
 	'auto-scroll'?: AutoScroll
 	'show-search'?: boolean
@@ -188,8 +176,8 @@ export interface AdvancedChatOptions {
 }
 
 export class VueAdvancedChat extends Vue {
-	rooms: Rooms
-	messages: Messages
+	rooms: Room[]
+	messages: Message[]
 
 	$props: Props
 

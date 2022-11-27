@@ -21,7 +21,7 @@ export function roomsValidation(obj) {
 
 	if (!validate(obj, roomsValidate)) {
 		throw new Error(
-			'Rooms object is not valid! Must contain roomId[String, Number], roomName[String] and users[Array]'
+			'Rooms object is not valid! Must contain at least roomId[String, Number], roomName[String] and users[Array]'
 		)
 	}
 }
@@ -41,7 +41,7 @@ export function partcipantsValidation(obj) {
 
 	if (!validate(obj, participantsValidate)) {
 		throw new Error(
-			'Participants object is not valid! Must contain _id[String, Number] and username[String]'
+			'Participants object is not valid! Must contain at least _id[String, Number] and username[String]'
 		)
 	}
 }
@@ -49,7 +49,6 @@ export function partcipantsValidation(obj) {
 export function messagesValidation(obj) {
 	const messagesValidate = [
 		{ key: '_id', type: ['string', 'number'] },
-		{ key: 'content', type: ['string', 'number'] },
 		{ key: 'senderId', type: ['string', 'number'] }
 	]
 
@@ -62,7 +61,7 @@ export function messagesValidation(obj) {
 
 	if (!validate(obj, messagesValidate)) {
 		throw new Error(
-			'Messages object is not valid! Must contain _id[String, Number], content[String, Number] and senderId[String, Number]'
+			'Messages object is not valid! Must contain at least _id[String, Number] and senderId[String, Number]'
 		)
 	}
 }
