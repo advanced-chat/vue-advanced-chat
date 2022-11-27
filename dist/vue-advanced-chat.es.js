@@ -5362,9 +5362,9 @@ const _sfc_main$q = {
 };
 const _hoisted_1$q = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
 const _hoisted_2$n = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
-const _hoisted_3$i = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
-const _hoisted_4$g = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
-const _hoisted_5$a = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_3$j = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_4$h = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_5$b = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
 const _hoisted_6$7 = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
 function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock(Transition, {
@@ -5386,13 +5386,13 @@ function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
           _hoisted_2$n
         ]) : createCommentVNode("", true),
         $props.type === "message-file" ? renderSlot(_ctx.$slots, "spinner-icon-message-file_" + $props.messageId, { key: 2 }, () => [
-          _hoisted_3$i
+          _hoisted_3$j
         ]) : createCommentVNode("", true),
         $props.type === "room-file" ? renderSlot(_ctx.$slots, "spinner-icon-room-file", { key: 3 }, () => [
-          _hoisted_4$g
+          _hoisted_4$h
         ]) : createCommentVNode("", true),
         $props.type === "messages" ? renderSlot(_ctx.$slots, "spinner-icon-messages", { key: 4 }, () => [
-          _hoisted_5$a
+          _hoisted_5$b
         ]) : createCommentVNode("", true),
         $props.type === "infinite-messages" ? renderSlot(_ctx.$slots, "spinner-icon-infinite-messages", { key: 5 }, () => [
           _hoisted_6$7
@@ -5497,7 +5497,7 @@ const _sfc_main$p = {
 };
 const _hoisted_1$p = ["viewBox"];
 const _hoisted_2$m = ["id", "d"];
-const _hoisted_3$h = ["id", "d"];
+const _hoisted_3$i = ["id", "d"];
 function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("svg", {
     xmlns: "http://www.w3.org/2000/svg",
@@ -5515,7 +5515,7 @@ function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
       key: 0,
       id: $options.svgId,
       d: $data.svgItem[$props.name].path2
-    }, null, 8, _hoisted_3$h)) : createCommentVNode("", true)
+    }, null, 8, _hoisted_3$i)) : createCommentVNode("", true)
   ], 8, _hoisted_1$p);
 }
 var SvgIcon = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$p]]);
@@ -6591,8 +6591,8 @@ const _sfc_main$n = {
 };
 const _hoisted_1$n = { class: "vac-image-link-container" };
 const _hoisted_2$k = { class: "vac-image-link-message" };
-const _hoisted_3$g = ["innerHTML"];
-const _hoisted_4$f = ["innerHTML"];
+const _hoisted_3$h = ["innerHTML"];
+const _hoisted_4$g = ["innerHTML"];
 function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createElementBlock("div", {
@@ -6653,7 +6653,7 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
               ], 64)) : (openBlock(), createElementBlock("span", {
                 key: 2,
                 innerHTML: message.value
-              }, null, 8, _hoisted_3$g))
+              }, null, 8, _hoisted_3$h))
             ]),
             _: 2
           }, 1032, ["class", "href", "target", "rel", "onClick"]))
@@ -6662,7 +6662,7 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
     ], 2)) : (openBlock(), createElementBlock("div", {
       key: 1,
       innerHTML: $options.formattedContent
-    }, null, 8, _hoisted_4$f))
+    }, null, 8, _hoisted_4$g))
   ], 2);
 }
 var FormatMessage = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$n]]);
@@ -6885,9 +6885,9 @@ const _sfc_main$m = {
 };
 const _hoisted_1$m = { class: "vac-room-container" };
 const _hoisted_2$j = { class: "vac-name-container vac-text-ellipsis" };
-const _hoisted_3$f = { class: "vac-title-container" };
-const _hoisted_4$e = { class: "vac-room-name vac-text-ellipsis" };
-const _hoisted_5$9 = {
+const _hoisted_3$g = { class: "vac-title-container" };
+const _hoisted_4$f = { class: "vac-room-name vac-text-ellipsis" };
+const _hoisted_5$a = {
   key: 1,
   class: "vac-text-date"
 };
@@ -6909,7 +6909,7 @@ const _hoisted_11$3 = {
   key: 0,
   class: "vac-menu-options"
 };
-const _hoisted_12$2 = { class: "vac-menu-list" };
+const _hoisted_12$3 = { class: "vac-menu-list" };
 const _hoisted_13$1 = ["onClick"];
 function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
@@ -6925,13 +6925,13 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
         }, null, 4)) : createCommentVNode("", true)
       ]),
       createBaseVNode("div", _hoisted_2$j, [
-        createBaseVNode("div", _hoisted_3$f, [
+        createBaseVNode("div", _hoisted_3$g, [
           $options.userStatus ? (openBlock(), createElementBlock("div", {
             key: 0,
             class: normalizeClass(["vac-state-circle", { "vac-state-online": $options.userStatus === "online" }])
           }, null, 2)) : createCommentVNode("", true),
-          createBaseVNode("div", _hoisted_4$e, toDisplayString($props.room.roomName), 1),
-          $props.room.lastMessage ? (openBlock(), createElementBlock("div", _hoisted_5$9, toDisplayString($props.room.lastMessage.timestamp), 1)) : createCommentVNode("", true)
+          createBaseVNode("div", _hoisted_4$f, toDisplayString($props.room.roomName), 1),
+          $props.room.lastMessage ? (openBlock(), createElementBlock("div", _hoisted_5$a, toDisplayString($props.room.lastMessage.timestamp), 1)) : createCommentVNode("", true)
         ]),
         createBaseVNode("div", {
           class: normalizeClass(["vac-text-last", {
@@ -7000,7 +7000,7 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
               }, {
                 default: withCtx(() => [
                   $data.roomMenuOpened === $props.room.roomId ? withDirectives((openBlock(), createElementBlock("div", _hoisted_11$3, [
-                    createBaseVNode("div", _hoisted_12$2, [
+                    createBaseVNode("div", _hoisted_12$3, [
                       (openBlock(true), createElementBlock(Fragment, null, renderList($props.roomActions, (action) => {
                         return openBlock(), createElementBlock("div", {
                           key: action.name
@@ -7122,10 +7122,10 @@ const _sfc_main$l = {
         this.showLoader = true;
         this.observer.disconnect();
       }
-      const loader = document.querySelector("vue-advanced-chat").shadowRoot.getElementById("infinite-loader-rooms");
+      const loader = this.$el.querySelector("#infinite-loader-rooms");
       if (loader) {
         const options2 = {
-          root: document.querySelector("vue-advanced-chat").shadowRoot.getElementById("rooms-list"),
+          root: this.$el.querySelector("#rooms-list"),
           rootMargin: `${this.scrollDistance}px`,
           threshold: 0
         };
@@ -7177,8 +7177,8 @@ const _hoisted_2$i = {
   id: "rooms-list",
   class: "vac-room-list"
 };
-const _hoisted_3$e = ["id", "onClick"];
-const _hoisted_4$d = {
+const _hoisted_3$f = ["id", "onClick"];
+const _hoisted_4$e = {
   key: 0,
   id: "infinite-loader-rooms"
 };
@@ -7257,11 +7257,11 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
               };
             })
           ]), 1032, ["current-user-id", "room", "text-formatting", "link-options", "text-messages", "room-actions"])
-        ], 10, _hoisted_3$e);
+        ], 10, _hoisted_3$f);
       }), 128)),
       createVNode(Transition, { name: "vac-fade-message" }, {
         default: withCtx(() => [
-          $props.rooms.length && !$props.loadingRooms ? (openBlock(), createElementBlock("div", _hoisted_4$d, [
+          $props.rooms.length && !$props.loadingRooms ? (openBlock(), createElementBlock("div", _hoisted_4$e, [
             createVNode(_component_loader, {
               show: $data.showLoader,
               infinite: true,
@@ -7365,12 +7365,12 @@ const _sfc_main$k = {
 };
 const _hoisted_1$k = { class: "vac-room-header vac-app-border-b" };
 const _hoisted_2$h = { class: "vac-room-wrapper" };
-const _hoisted_3$d = {
+const _hoisted_3$e = {
   key: 0,
   class: "vac-room-selection"
 };
-const _hoisted_4$c = ["id"];
-const _hoisted_5$8 = ["onClick"];
+const _hoisted_4$d = ["id"];
+const _hoisted_5$9 = ["onClick"];
 const _hoisted_6$5 = { class: "vac-selection-button-count" };
 const _hoisted_7$5 = { class: "vac-text-ellipsis" };
 const _hoisted_8$3 = { class: "vac-room-name vac-text-ellipsis" };
@@ -7386,7 +7386,7 @@ const _hoisted_11$2 = {
   key: 0,
   class: "vac-menu-options"
 };
-const _hoisted_12$1 = { class: "vac-menu-list" };
+const _hoisted_12$2 = { class: "vac-menu-list" };
 const _hoisted_13 = ["onClick"];
 function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
@@ -7396,7 +7396,7 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
       createBaseVNode("div", _hoisted_2$h, [
         createVNode(Transition, { name: "vac-slide-up" }, {
           default: withCtx(() => [
-            $props.messageSelectionEnabled ? (openBlock(), createElementBlock("div", _hoisted_3$d, [
+            $props.messageSelectionEnabled ? (openBlock(), createElementBlock("div", _hoisted_3$e, [
               (openBlock(true), createElementBlock(Fragment, null, renderList($props.messageSelectionActions, (action) => {
                 return openBlock(), createElementBlock("div", {
                   id: action.name,
@@ -7408,8 +7408,8 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
                   }, [
                     createTextVNode(toDisplayString(action.title) + " ", 1),
                     createBaseVNode("span", _hoisted_6$5, toDisplayString($props.selectedMessagesTotal), 1)
-                  ], 8, _hoisted_5$8)
-                ], 8, _hoisted_4$c);
+                  ], 8, _hoisted_5$9)
+                ], 8, _hoisted_4$d);
               }), 128)),
               createBaseVNode("div", {
                 class: "vac-selection-cancel vac-item-clickable",
@@ -7466,7 +7466,7 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
             }, {
               default: withCtx(() => [
                 $data.menuOpened ? withDirectives((openBlock(), createElementBlock("div", _hoisted_11$2, [
-                  createBaseVNode("div", _hoisted_12$1, [
+                  createBaseVNode("div", _hoisted_12$2, [
                     (openBlock(true), createElementBlock(Fragment, null, renderList($props.menuActions, (action) => {
                       return openBlock(), createElementBlock("div", {
                         key: action.name
@@ -10235,6 +10235,15 @@ Object.defineProperties(PickerElement.prototype, definitions);
 if (!customElements.get("emoji-picker")) {
   customElements.define("emoji-picker", PickerElement);
 }
+function findParentBySelector(node, selector) {
+  while (node && !node.querySelector(selector)) {
+    node = node.parentNode;
+    const element2 = node.querySelector(selector);
+    if (element2)
+      return element2;
+  }
+  return null;
+}
 const _sfc_main$j = {
   name: "EmojiPickerContainer",
   components: {
@@ -10245,7 +10254,8 @@ const _sfc_main$j = {
     emojiReaction: { type: Boolean, default: false },
     positionTop: { type: Boolean, default: false },
     positionRight: { type: Boolean, default: false },
-    messageId: { type: String, default: "" }
+    messageId: { type: String, default: "" },
+    emojiDataSource: { type: String, default: void 0 }
   },
   emits: ["add-emoji", "open-emoji"],
   data() {
@@ -10308,7 +10318,7 @@ const _sfc_main$j = {
     },
     setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
       const mobileSize = innerWidth < 500 || innerHeight < 700;
-      const roomFooterRef = document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer");
+      const roomFooterRef = findParentBySelector(this.$el, "#room-footer");
       if (!roomFooterRef) {
         if (mobileSize)
           this.emojiPickerRight = "-50px";
@@ -10331,12 +10341,9 @@ const _sfc_main$j = {
   }
 };
 const _hoisted_1$j = { class: "vac-emoji-wrapper" };
-const _hoisted_2$g = {
-  ref: "emojiPicker",
-  "v-if": "emojiOpened"
-};
 function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
+  const _component_emoji_picker = resolveComponent("emoji-picker");
   return openBlock(), createElementBlock("div", _hoisted_1$j, [
     createBaseVNode("div", {
       class: normalizeClass(["vac-svg-button", { "vac-emoji-reaction": $props.emojiReaction }]),
@@ -10369,7 +10376,11 @@ function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
             display: $data.emojiPickerTop || !$props.emojiReaction ? "initial" : "none"
           })
         }, [
-          createBaseVNode("emoji-picker", _hoisted_2$g, null, 512)
+          $props.emojiOpened ? (openBlock(), createBlock(_component_emoji_picker, {
+            key: 0,
+            ref: "emojiPicker",
+            "data-source": $props.emojiDataSource
+          }, null, 8, ["data-source"])) : createCommentVNode("", true)
         ], 6)
       ]),
       _: 1
@@ -10398,9 +10409,9 @@ const _sfc_main$i = {
   }
 };
 const _hoisted_1$i = { class: "vac-room-file-container" };
-const _hoisted_2$f = ["src"];
-const _hoisted_3$c = { class: "vac-text-ellipsis" };
-const _hoisted_4$b = {
+const _hoisted_2$g = ["src"];
+const _hoisted_3$d = { class: "vac-text-ellipsis" };
+const _hoisted_4$c = {
   key: 0,
   class: "vac-text-ellipsis vac-text-extension"
 };
@@ -10445,7 +10456,7 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
     }, [
       createBaseVNode("source", {
         src: $props.file.localUrl || $props.file.url
-      }, null, 8, _hoisted_2$f)
+      }, null, 8, _hoisted_2$g)
     ], 2)) : (openBlock(), createElementBlock("div", {
       key: 2,
       class: normalizeClass(["vac-file-container", { "vac-blur-loading": $props.file.loading }])
@@ -10455,8 +10466,8 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
           createVNode(_component_svg_icon, { name: "file" })
         ])
       ]),
-      createBaseVNode("div", _hoisted_3$c, toDisplayString($props.file.name), 1),
-      $props.file.extension ? (openBlock(), createElementBlock("div", _hoisted_4$b, toDisplayString($props.file.extension), 1)) : createCommentVNode("", true)
+      createBaseVNode("div", _hoisted_3$d, toDisplayString($props.file.name), 1),
+      $props.file.extension ? (openBlock(), createElementBlock("div", _hoisted_4$c, toDisplayString($props.file.extension), 1)) : createCommentVNode("", true)
     ], 2))
   ]);
 }
@@ -10471,25 +10482,21 @@ const _sfc_main$h = {
     files: { type: Array, required: true }
   },
   emits: ["remove-file", "reset-message"],
-  computed: {
-    footerHeight() {
-      return document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer").clientHeight;
-    }
-  }
+  computed: {}
 };
-const _hoisted_1$h = { class: "vac-files-box" };
-const _hoisted_2$e = { class: "vac-icon-close" };
+const _hoisted_1$h = {
+  key: 0,
+  class: "vac-room-files-container"
+};
+const _hoisted_2$f = { class: "vac-files-box" };
+const _hoisted_3$c = { class: "vac-icon-close" };
 function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_room_file = resolveComponent("room-file");
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createBlock(Transition, { name: "vac-slide-up" }, {
     default: withCtx(() => [
-      $props.files.length ? (openBlock(), createElementBlock("div", {
-        key: 0,
-        class: "vac-room-files-container",
-        style: normalizeStyle({ bottom: `${$options.footerHeight}px` })
-      }, [
-        createBaseVNode("div", _hoisted_1$h, [
+      $props.files.length ? (openBlock(), createElementBlock("div", _hoisted_1$h, [
+        createBaseVNode("div", _hoisted_2$f, [
           (openBlock(true), createElementBlock(Fragment, null, renderList($props.files, (file, i) => {
             return openBlock(), createElementBlock("div", { key: i }, [
               createVNode(_component_room_file, {
@@ -10509,7 +10516,7 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
             ]);
           }), 128))
         ]),
-        createBaseVNode("div", _hoisted_2$e, [
+        createBaseVNode("div", _hoisted_3$c, [
           createBaseVNode("div", {
             class: "vac-svg-button",
             onClick: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("reset-message"))
@@ -10519,7 +10526,7 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
             ])
           ])
         ])
-      ], 4)) : createCommentVNode("", true)
+      ])) : createCommentVNode("", true)
     ]),
     _: 3
   });
@@ -10572,7 +10579,7 @@ const _sfc_main$g = {
   }
 };
 const _hoisted_1$g = { class: "vac-player-progress" };
-const _hoisted_2$d = { class: "vac-line-container" };
+const _hoisted_2$e = { class: "vac-line-container" };
 function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("div", {
     ref: "progress",
@@ -10582,7 +10589,7 @@ function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
     onMouseout: _cache[2] || (_cache[2] = ($event) => _ctx.$emit("hover-audio-progress", false))
   }, [
     createBaseVNode("div", _hoisted_1$g, [
-      createBaseVNode("div", _hoisted_2$d, [
+      createBaseVNode("div", _hoisted_2$e, [
         createBaseVNode("div", {
           class: "vac-line-progress",
           style: normalizeStyle({ width: `${$props.percentage}%` })
@@ -10628,7 +10635,7 @@ const _sfc_main$f = {
     }
   },
   mounted() {
-    this.player = document.querySelector("vue-advanced-chat").shadowRoot.getElementById(this.playerUniqId);
+    this.player = this.$el.querySelector("#" + this.playerUniqId);
     this.player.addEventListener("ended", () => {
       this.isPlaying = false;
     });
@@ -10679,7 +10686,7 @@ const _sfc_main$f = {
   }
 };
 const _hoisted_1$f = { class: "vac-audio-player" };
-const _hoisted_2$c = ["id", "src"];
+const _hoisted_2$d = ["id", "src"];
 function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   const _component_audio_control = resolveComponent("audio-control");
@@ -10704,7 +10711,7 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
       createBaseVNode("audio", {
         id: $options.playerUniqId,
         src: $options.audioSource
-      }, null, 8, _hoisted_2$c)
+      }, null, 8, _hoisted_2$d)
     ])
   ]);
 }
@@ -10724,9 +10731,6 @@ const _sfc_main$e = {
   },
   emits: ["reset-message"],
   computed: {
-    footerHeight() {
-      return document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer").clientHeight;
-    },
     firstFile() {
       var _a, _b;
       return ((_b = (_a = this.messageReply) == null ? void 0 : _a.files) == null ? void 0 : _b.length) ? this.messageReply.files[0] : {};
@@ -10746,42 +10750,42 @@ const _sfc_main$e = {
     }
   }
 };
-const _hoisted_1$e = { class: "vac-reply-box" };
-const _hoisted_2$b = { class: "vac-reply-info" };
-const _hoisted_3$b = { class: "vac-reply-username" };
-const _hoisted_4$a = { class: "vac-reply-content" };
-const _hoisted_5$7 = ["src"];
-const _hoisted_6$4 = {
+const _hoisted_1$e = {
+  key: 0,
+  class: "vac-reply-container"
+};
+const _hoisted_2$c = { class: "vac-reply-box" };
+const _hoisted_3$b = { class: "vac-reply-info" };
+const _hoisted_4$b = { class: "vac-reply-username" };
+const _hoisted_5$8 = { class: "vac-reply-content" };
+const _hoisted_6$4 = ["src"];
+const _hoisted_7$4 = {
   key: 1,
   controls: "",
   class: "vac-image-reply"
 };
-const _hoisted_7$4 = ["src"];
-const _hoisted_8$2 = {
+const _hoisted_8$2 = ["src"];
+const _hoisted_9$2 = {
   key: 3,
   class: "vac-image-reply vac-file-container"
 };
-const _hoisted_9$2 = { class: "vac-text-ellipsis" };
-const _hoisted_10$2 = {
+const _hoisted_10$2 = { class: "vac-text-ellipsis" };
+const _hoisted_11$1 = {
   key: 0,
   class: "vac-text-ellipsis vac-text-extension"
 };
-const _hoisted_11$1 = { class: "vac-icon-reply" };
+const _hoisted_12$1 = { class: "vac-icon-reply" };
 function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_format_message = resolveComponent("format-message");
   const _component_audio_player = resolveComponent("audio-player");
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createBlock(Transition, { name: "vac-slide-up" }, {
     default: withCtx(() => [
-      $props.messageReply ? (openBlock(), createElementBlock("div", {
-        key: 0,
-        class: "vac-reply-container",
-        style: normalizeStyle({ bottom: `${$options.footerHeight}px` })
-      }, [
-        createBaseVNode("div", _hoisted_1$e, [
-          createBaseVNode("div", _hoisted_2$b, [
-            createBaseVNode("div", _hoisted_3$b, toDisplayString($props.messageReply.username), 1),
-            createBaseVNode("div", _hoisted_4$a, [
+      $props.messageReply ? (openBlock(), createElementBlock("div", _hoisted_1$e, [
+        createBaseVNode("div", _hoisted_2$c, [
+          createBaseVNode("div", _hoisted_3$b, [
+            createBaseVNode("div", _hoisted_4$b, toDisplayString($props.messageReply.username), 1),
+            createBaseVNode("div", _hoisted_5$8, [
               createVNode(_component_format_message, {
                 "message-id": $props.messageReply._id,
                 content: $props.messageReply.content,
@@ -10796,10 +10800,10 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
             key: 0,
             src: $options.firstFile.url,
             class: "vac-image-reply"
-          }, null, 8, _hoisted_5$7)) : $options.isVideo ? (openBlock(), createElementBlock("video", _hoisted_6$4, [
+          }, null, 8, _hoisted_6$4)) : $options.isVideo ? (openBlock(), createElementBlock("video", _hoisted_7$4, [
             createBaseVNode("source", {
               src: $options.firstFile.url
-            }, null, 8, _hoisted_7$4)
+            }, null, 8, _hoisted_8$2)
           ])) : $options.isAudio ? (openBlock(), createBlock(_component_audio_player, {
             key: 2,
             src: $options.firstFile.url,
@@ -10814,17 +10818,17 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
                 ])
               };
             })
-          ]), 1032, ["src"])) : $options.isOtherFile ? (openBlock(), createElementBlock("div", _hoisted_8$2, [
+          ]), 1032, ["src"])) : $options.isOtherFile ? (openBlock(), createElementBlock("div", _hoisted_9$2, [
             createBaseVNode("div", null, [
               renderSlot(_ctx.$slots, "file-icon", {}, () => [
                 createVNode(_component_svg_icon, { name: "file" })
               ])
             ]),
-            createBaseVNode("div", _hoisted_9$2, toDisplayString($options.firstFile.name), 1),
-            $options.firstFile.extension ? (openBlock(), createElementBlock("div", _hoisted_10$2, toDisplayString($options.firstFile.extension), 1)) : createCommentVNode("", true)
+            createBaseVNode("div", _hoisted_10$2, toDisplayString($options.firstFile.name), 1),
+            $options.firstFile.extension ? (openBlock(), createElementBlock("div", _hoisted_11$1, toDisplayString($options.firstFile.extension), 1)) : createCommentVNode("", true)
           ])) : createCommentVNode("", true)
         ]),
-        createBaseVNode("div", _hoisted_11$1, [
+        createBaseVNode("div", _hoisted_12$1, [
           createBaseVNode("div", {
             class: "vac-svg-button",
             onClick: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("reset-message"))
@@ -10834,7 +10838,7 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
             ])
           ])
         ])
-      ], 4)) : createCommentVNode("", true)
+      ])) : createCommentVNode("", true)
     ]),
     _: 3
   });
@@ -10852,11 +10856,6 @@ const _sfc_main$d = {
     return {
       activeItem: null
     };
-  },
-  computed: {
-    footerHeight() {
-      return document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer").clientHeight;
-    }
   },
   watch: {
     filteredUsersTag(val, oldVal) {
@@ -10879,17 +10878,17 @@ const _sfc_main$d = {
     }
   }
 };
-const _hoisted_1$d = ["onMouseover", "onClick"];
-const _hoisted_2$a = { class: "vac-tags-info" };
-const _hoisted_3$a = { class: "vac-tags-username" };
+const _hoisted_1$d = {
+  key: 0,
+  class: "vac-tags-container"
+};
+const _hoisted_2$b = ["onMouseover", "onClick"];
+const _hoisted_3$a = { class: "vac-tags-info" };
+const _hoisted_4$a = { class: "vac-tags-username" };
 function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock(Transition, { name: "vac-slide-up" }, {
     default: withCtx(() => [
-      $props.filteredUsersTag.length ? (openBlock(), createElementBlock("div", {
-        key: 0,
-        class: "vac-tags-container",
-        style: normalizeStyle({ bottom: `${$options.footerHeight}px` })
-      }, [
+      $props.filteredUsersTag.length ? (openBlock(), createElementBlock("div", _hoisted_1$d, [
         (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredUsersTag, (user, index) => {
           return openBlock(), createElementBlock("div", {
             key: user._id,
@@ -10897,17 +10896,17 @@ function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
             onMouseover: ($event) => $data.activeItem = index,
             onClick: ($event) => _ctx.$emit("select-user-tag", user)
           }, [
-            createBaseVNode("div", _hoisted_2$a, [
+            createBaseVNode("div", _hoisted_3$a, [
               user.avatar ? (openBlock(), createElementBlock("div", {
                 key: 0,
                 class: "vac-avatar vac-tags-avatar",
                 style: normalizeStyle({ "background-image": `url('${user.avatar}')` })
               }, null, 4)) : createCommentVNode("", true),
-              createBaseVNode("div", _hoisted_3$a, toDisplayString(user.username), 1)
+              createBaseVNode("div", _hoisted_4$a, toDisplayString(user.username), 1)
             ])
-          ], 42, _hoisted_1$d);
+          ], 42, _hoisted_2$b);
         }), 128))
-      ], 4)) : createCommentVNode("", true)
+      ])) : createCommentVNode("", true)
     ]),
     _: 1
   });
@@ -10925,11 +10924,6 @@ const _sfc_main$c = {
     return {
       activeItem: null
     };
-  },
-  computed: {
-    footerHeight() {
-      return document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer").clientHeight;
-    }
   },
   watch: {
     filteredEmojis(val, oldVal) {
@@ -10952,24 +10946,24 @@ const _sfc_main$c = {
     }
   }
 };
-const _hoisted_1$c = ["onMouseover", "onClick"];
+const _hoisted_1$c = {
+  key: 0,
+  class: "vac-emojis-container"
+};
+const _hoisted_2$a = ["onMouseover", "onClick"];
 function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock(Transition, { name: "vac-slide-up" }, {
     default: withCtx(() => [
-      $props.filteredEmojis.length ? (openBlock(), createElementBlock("div", {
-        key: 0,
-        class: "vac-emojis-container",
-        style: normalizeStyle({ bottom: `${$options.footerHeight}px` })
-      }, [
+      $props.filteredEmojis.length ? (openBlock(), createElementBlock("div", _hoisted_1$c, [
         (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredEmojis, (emoji, index) => {
           return openBlock(), createElementBlock("div", {
             key: emoji,
             class: normalizeClass(["vac-emoji-element", { "vac-emoji-element-active": index === $data.activeItem }]),
             onMouseover: ($event) => $data.activeItem = index,
             onClick: ($event) => _ctx.$emit("select-emoji", emoji)
-          }, toDisplayString(emoji), 43, _hoisted_1$c);
+          }, toDisplayString(emoji), 43, _hoisted_2$a);
         }), 128))
-      ], 4)) : createCommentVNode("", true)
+      ])) : createCommentVNode("", true)
     ]),
     _: 1
   });
@@ -10987,11 +10981,6 @@ const _sfc_main$b = {
     return {
       activeItem: null
     };
-  },
-  computed: {
-    footerHeight() {
-      return document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer").clientHeight;
-    }
   },
   watch: {
     filteredTemplatesText(val, oldVal) {
@@ -11017,18 +11006,18 @@ const _sfc_main$b = {
     }
   }
 };
-const _hoisted_1$b = ["onMouseover", "onClick"];
-const _hoisted_2$9 = { class: "vac-template-info" };
-const _hoisted_3$9 = { class: "vac-template-tag" };
-const _hoisted_4$9 = { class: "vac-template-text" };
+const _hoisted_1$b = {
+  key: 0,
+  class: "vac-template-container vac-app-box-shadow"
+};
+const _hoisted_2$9 = ["onMouseover", "onClick"];
+const _hoisted_3$9 = { class: "vac-template-info" };
+const _hoisted_4$9 = { class: "vac-template-tag" };
+const _hoisted_5$7 = { class: "vac-template-text" };
 function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock(Transition, { name: "vac-slide-up" }, {
     default: withCtx(() => [
-      $props.filteredTemplatesText.length ? (openBlock(), createElementBlock("div", {
-        key: 0,
-        class: "vac-template-container vac-app-box-shadow",
-        style: normalizeStyle({ bottom: `${$options.footerHeight}px` })
-      }, [
+      $props.filteredTemplatesText.length ? (openBlock(), createElementBlock("div", _hoisted_1$b, [
         (openBlock(true), createElementBlock(Fragment, null, renderList($props.filteredTemplatesText, (template, index) => {
           return openBlock(), createElementBlock("div", {
             key: index,
@@ -11036,13 +11025,13 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
             onMouseover: ($event) => $data.activeItem = index,
             onClick: ($event) => _ctx.$emit("select-template-text", template)
           }, [
-            createBaseVNode("div", _hoisted_2$9, [
-              createBaseVNode("div", _hoisted_3$9, " /" + toDisplayString(template.tag), 1),
-              createBaseVNode("div", _hoisted_4$9, toDisplayString(template.text), 1)
+            createBaseVNode("div", _hoisted_3$9, [
+              createBaseVNode("div", _hoisted_4$9, " /" + toDisplayString(template.tag), 1),
+              createBaseVNode("div", _hoisted_5$7, toDisplayString(template.text), 1)
             ])
-          ], 42, _hoisted_1$b);
+          ], 42, _hoisted_2$9);
         }), 128))
-      ], 4)) : createCommentVNode("", true)
+      ])) : createCommentVNode("", true)
     ]),
     _: 1
   });
@@ -26514,7 +26503,8 @@ const _sfc_main$a = {
     audioSampleRate: { type: Number, required: true },
     initReplyMessage: { type: Object, default: null },
     initEditMessage: { type: Object, default: null },
-    droppedFiles: { type: Array, default: null }
+    droppedFiles: { type: Array, default: null },
+    emojiDataSource: { type: String, default: void 0 }
   },
   emits: [
     "edit-message",
@@ -26538,7 +26528,7 @@ const _sfc_main$a = {
       activeUpOrDownEmojis: null,
       activeUpOrDownUsersTag: null,
       activeUpOrDownTemplatesText: null,
-      emojisDB: new Database(),
+      emojisDB: new Database({ dataSource: this.emojiDataSource }),
       emojiOpened: false,
       keepKeyboardOpen: false,
       filteredEmojis: [],
@@ -26692,13 +26682,16 @@ const _sfc_main$a = {
         });
       }
     },
-    updateActiveUpOrDown(direction) {
+    updateActiveUpOrDown(event, direction) {
       if (this.filteredEmojis.length) {
         this.activeUpOrDownEmojis = direction;
+        event.preventDefault();
       } else if (this.filteredUsersTag.length) {
         this.activeUpOrDownUsersTag = direction;
+        event.preventDefault();
       } else if (this.filteredTemplatesText.length) {
         this.activeUpOrDownTemplatesText = direction;
+        event.preventDefault();
       }
     },
     selectItem() {
@@ -27136,12 +27129,8 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
           _cache[13] || (_cache[13] = withKeys(withModifiers(() => {
           }, ["exact", "prevent"]), ["tab"])),
           _cache[14] || (_cache[14] = withKeys((...args) => $options.selectItem && $options.selectItem(...args), ["tab"])),
-          _cache[15] || (_cache[15] = withKeys(withModifiers(() => {
-          }, ["exact", "prevent"]), ["up"])),
-          _cache[16] || (_cache[16] = withKeys(($event) => $options.updateActiveUpOrDown(-1), ["up"])),
-          _cache[17] || (_cache[17] = withKeys(withModifiers(() => {
-          }, ["exact", "prevent"]), ["down"])),
-          _cache[18] || (_cache[18] = withKeys(($event) => $options.updateActiveUpOrDown(1), ["down"]))
+          _cache[15] || (_cache[15] = withKeys(($event) => $options.updateActiveUpOrDown($event, -1), ["up"])),
+          _cache[16] || (_cache[16] = withKeys(($event) => $options.updateActiveUpOrDown($event, 1), ["down"]))
         ],
         onPaste: _cache[12] || (_cache[12] = (...args) => $options.onPasteImage && $options.onPasteImage(...args))
       }, null, 42, _hoisted_4$8),
@@ -27149,7 +27138,7 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
         $data.editedMessage._id ? (openBlock(), createElementBlock("div", {
           key: 0,
           class: "vac-svg-button",
-          onClick: _cache[19] || (_cache[19] = (...args) => $options.resetMessage && $options.resetMessage(...args))
+          onClick: _cache[17] || (_cache[17] = (...args) => $options.resetMessage && $options.resetMessage(...args))
         }, [
           renderSlot(_ctx.$slots, "edit-close-icon", {}, () => [
             createVNode(_component_svg_icon, { name: "close-outline" })
@@ -27160,14 +27149,15 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
             createVNode(_component_emoji_picker_container, {
               "emoji-opened": $data.emojiOpened,
               "position-top": true,
+              "emoji-data-source": $props.emojiDataSource,
               onAddEmoji: $options.addEmoji,
-              onOpenEmoji: _cache[20] || (_cache[20] = ($event) => $data.emojiOpened = $event)
+              onOpenEmoji: _cache[18] || (_cache[18] = ($event) => $data.emojiOpened = $event)
             }, {
               "emoji-picker-icon": withCtx(() => [
                 renderSlot(_ctx.$slots, "emoji-picker-icon")
               ]),
               _: 3
-            }, 8, ["emoji-opened", "onAddEmoji"])
+            }, 8, ["emoji-opened", "emoji-data-source", "onAddEmoji"])
           ])
         ])), [
           [_directive_click_outside, () => $data.emojiOpened = false]
@@ -27175,7 +27165,7 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
         $props.showFiles ? (openBlock(), createElementBlock("div", {
           key: 2,
           class: "vac-svg-button",
-          onClick: _cache[21] || (_cache[21] = (...args) => $options.launchFilePicker && $options.launchFilePicker(...args))
+          onClick: _cache[19] || (_cache[19] = (...args) => $options.launchFilePicker && $options.launchFilePicker(...args))
         }, [
           renderSlot(_ctx.$slots, "paperclip-icon", {}, () => [
             createVNode(_component_svg_icon, { name: "paperclip" })
@@ -27184,7 +27174,7 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
         $props.textareaActionEnabled ? (openBlock(), createElementBlock("div", {
           key: 3,
           class: "vac-svg-button",
-          onClick: _cache[22] || (_cache[22] = (...args) => $options.textareaActionHandler && $options.textareaActionHandler(...args))
+          onClick: _cache[20] || (_cache[20] = (...args) => $options.textareaActionHandler && $options.textareaActionHandler(...args))
         }, [
           renderSlot(_ctx.$slots, "custom-action-icon", {}, () => [
             createVNode(_component_svg_icon, { name: "deleted" })
@@ -27197,12 +27187,12 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
           multiple: "",
           accept: $props.acceptedFiles,
           style: { "display": "none" },
-          onChange: _cache[23] || (_cache[23] = ($event) => $options.onFileChange($event.target.files))
+          onChange: _cache[21] || (_cache[21] = ($event) => $options.onFileChange($event.target.files))
         }, null, 40, _hoisted_7$3)) : createCommentVNode("", true),
         $props.showSendIcon ? (openBlock(), createElementBlock("div", {
           key: 5,
           class: normalizeClass(["vac-svg-button", { "vac-send-disabled": $options.isMessageEmpty }]),
-          onClick: _cache[24] || (_cache[24] = (...args) => $options.sendMessage && $options.sendMessage(...args))
+          onClick: _cache[22] || (_cache[22] = (...args) => $options.sendMessage && $options.sendMessage(...args))
         }, [
           renderSlot(_ctx.$slots, "send-icon", {}, () => [
             createVNode(_component_svg_icon, {
@@ -27672,7 +27662,8 @@ const _sfc_main$5 = {
     showReactionEmojis: { type: Boolean, required: true },
     messageHover: { type: Boolean, required: true },
     hoverMessageId: { type: [String, Number], default: null },
-    hoverAudioProgress: { type: Boolean, required: true }
+    hoverAudioProgress: { type: Boolean, required: true },
+    emojiDataSource: { type: String, default: void 0 }
   },
   emits: [
     "update-emoji-opened",
@@ -27718,7 +27709,7 @@ const _sfc_main$5 = {
       if (!this.optionsOpened)
         return;
       setTimeout(() => {
-        const roomFooterRef = document.querySelector("vue-advanced-chat").shadowRoot.getElementById("room-footer");
+        const roomFooterRef = findParentBySelector(this.$el, "#room-footer");
         if (!roomFooterRef || !this.$refs.menuOptions || !this.$refs.actionIcon) {
           return;
         }
@@ -27809,6 +27800,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
                 "emoji-reaction": true,
                 "position-right": $props.message.senderId === $props.currentUserId,
                 "message-id": $props.message._id,
+                "emoji-data-source": $props.emojiDataSource,
                 onAddEmoji: $options.sendMessageReaction,
                 onOpenEmoji: $options.openEmoji
               }, createSlots({ _: 2 }, [
@@ -27820,7 +27812,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
                     ])
                   };
                 })
-              ]), 1032, ["style", "emoji-opened", "position-right", "message-id", "onAddEmoji", "onOpenEmoji"])
+              ]), 1032, ["style", "emoji-opened", "position-right", "message-id", "emoji-data-source", "onAddEmoji", "onOpenEmoji"])
             ])
           ])), [
             [_directive_click_outside, $options.closeEmoji]
@@ -27925,7 +27917,7 @@ function roomsValidation(obj) {
   };
   if (!validate(obj, roomsValidate)) {
     throw new Error(
-      "Rooms object is not valid! Must contain roomId[String, Number], roomName[String] and users[Array]"
+      "Rooms object is not valid! Must contain at least roomId[String, Number], roomName[String] and users[Array]"
     );
   }
 }
@@ -27942,14 +27934,13 @@ function partcipantsValidation(obj) {
   };
   if (!validate(obj, participantsValidate)) {
     throw new Error(
-      "Participants object is not valid! Must contain _id[String, Number] and username[String]"
+      "Participants object is not valid! Must contain at least _id[String, Number] and username[String]"
     );
   }
 }
 function messagesValidation(obj) {
   const messagesValidate = [
     { key: "_id", type: ["string", "number"] },
-    { key: "content", type: ["string", "number"] },
     { key: "senderId", type: ["string", "number"] }
   ];
   const validate = (obj2, props) => {
@@ -27960,7 +27951,7 @@ function messagesValidation(obj) {
   };
   if (!validate(obj, messagesValidate)) {
     throw new Error(
-      "Messages object is not valid! Must contain _id[String, Number], content[String, Number] and senderId[String, Number]"
+      "Messages object is not valid! Must contain at least _id[String, Number] and senderId[String, Number]"
     );
   }
 }
@@ -27994,7 +27985,8 @@ const _sfc_main$3 = {
     linkOptions: { type: Object, required: true },
     usernameOptions: { type: Object, required: true },
     messageSelectionEnabled: { type: Boolean, required: true },
-    selectedMessages: { type: Array, default: () => [] }
+    selectedMessages: { type: Array, default: () => [] },
+    emojiDataSource: { type: String, default: void 0 }
   },
   emits: [
     "message-added",
@@ -28344,6 +28336,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
               "message-hover": $data.messageHover,
               "hover-message-id": $data.hoverMessageId,
               "hover-audio-progress": $data.hoverAudioProgress,
+              "emoji-data-source": $props.emojiDataSource,
               onUpdateMessageHover: _cache[2] || (_cache[2] = ($event) => $data.messageHover = $event),
               onUpdateOptionsOpened: _cache[3] || (_cache[3] = ($event) => $data.optionsOpened = $event),
               onUpdateEmojiOpened: _cache[4] || (_cache[4] = ($event) => $data.emojiOpened = $event),
@@ -28358,7 +28351,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
                   ])
                 };
               })
-            ]), 1032, ["current-user-id", "message", "message-actions", "show-reaction-emojis", "message-hover", "hover-message-id", "hover-audio-progress", "onMessageActionHandler", "onSendMessageReaction"])
+            ]), 1032, ["current-user-id", "message", "message-actions", "show-reaction-emojis", "message-hover", "hover-message-id", "hover-audio-progress", "emoji-data-source", "onMessageActionHandler", "onSendMessageReaction"])
           ], 34),
           createVNode(_component_message_reactions, {
             "current-user-id": $props.currentUserId,
@@ -28433,7 +28426,8 @@ const _sfc_main$2 = {
     emojisSuggestionEnabled: { type: Boolean, required: true },
     scrollDistance: { type: Number, required: true },
     templatesText: { type: Array, default: null },
-    usernameOptions: { type: Object, required: true }
+    usernameOptions: { type: Object, required: true },
+    emojiDataSource: { type: String, default: void 0 }
   },
   emits: [
     "toggle-rooms-list",
@@ -28531,10 +28525,10 @@ const _sfc_main$2 = {
         this.showLoader = true;
         this.observer.disconnect();
       }
-      const loader = document.querySelector("vue-advanced-chat").shadowRoot.getElementById("infinite-loader-messages");
+      const loader = this.$el.querySelector("#infinite-loader-messages");
       if (loader) {
         const options2 = {
-          root: document.querySelector("vue-advanced-chat").shadowRoot.getElementById("messages-list"),
+          root: this.$el.querySelector("#messages-list"),
           rootMargin: `${this.scrollDistance}px`,
           threshold: 0
         };
@@ -28888,6 +28882,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
                     "username-options": $props.usernameOptions,
                     "message-selection-enabled": $data.messageSelectionEnabled,
                     "selected-messages": $data.selectedMessages,
+                    "emoji-data-source": $props.emojiDataSource,
                     onMessageAdded: $options.onMessageAdded,
                     onMessageActionHandler: $options.messageActionHandler,
                     onOpenFile: $options.openFile,
@@ -28905,7 +28900,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
                         ])
                       };
                     })
-                  ]), 1032, ["current-user-id", "message", "index", "messages", "edited-message-id", "message-actions", "room-users", "text-messages", "new-messages", "show-reaction-emojis", "show-new-messages-divider", "text-formatting", "link-options", "username-options", "message-selection-enabled", "selected-messages", "onMessageAdded", "onMessageActionHandler", "onOpenFile", "onOpenUserTag", "onSendMessageReaction", "onSelectMessage", "onUnselectMessage"])
+                  ]), 1032, ["current-user-id", "message", "index", "messages", "edited-message-id", "message-actions", "room-users", "text-messages", "new-messages", "show-reaction-emojis", "show-new-messages-divider", "text-formatting", "link-options", "username-options", "message-selection-enabled", "selected-messages", "emoji-data-source", "onMessageAdded", "onMessageActionHandler", "onOpenFile", "onOpenUserTag", "onSendMessageReaction", "onSelectMessage", "onUnselectMessage"])
                 ]);
               }), 128))
             ]),
@@ -28962,6 +28957,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
       "init-reply-message": $data.initReplyMessage,
       "init-edit-message": $data.initEditMessage,
       "dropped-files": $data.droppedFiles,
+      "emoji-data-source": $props.emojiDataSource,
       onUpdateEditedMessageId: _cache[7] || (_cache[7] = ($event) => $data.editedMessageId = $event),
       onEditMessage: _cache[8] || (_cache[8] = ($event) => _ctx.$emit("edit-message", $event)),
       onSendMessage: _cache[9] || (_cache[9] = ($event) => _ctx.$emit("send-message", $event)),
@@ -28976,7 +28972,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
           ])
         };
       })
-    ]), 1032, ["room", "room-id", "room-message", "text-messages", "show-send-icon", "show-files", "show-audio", "show-emojis", "show-footer", "accepted-files", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "templates-text", "text-formatting", "link-options", "audio-bit-rate", "audio-sample-rate", "init-reply-message", "init-edit-message", "dropped-files"])
+    ]), 1032, ["room", "room-id", "room-message", "text-messages", "show-send-icon", "show-files", "show-audio", "show-emojis", "show-footer", "accepted-files", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "templates-text", "text-formatting", "link-options", "audio-bit-rate", "audio-sample-rate", "init-reply-message", "init-edit-message", "dropped-files", "emoji-data-source"])
   ], 544)), [
     [vShow, $props.isMobile && !$props.showRoomsList || !$props.isMobile || $props.singleRoom]
   ]);
@@ -29470,7 +29466,7 @@ const cssThemeVars = ({
     "--chat-icon-color-audio-confirm": icons.audioConfirm
   };
 };
-var _style_0 = '.vac-fade-spinner-enter-from{opacity:0}.vac-fade-spinner-enter-active{transition:opacity .8s}.vac-fade-spinner-leave-active{transition:opacity .2s;opacity:0}.vac-fade-image-enter-from{opacity:0}.vac-fade-image-enter-active{transition:opacity 1s}.vac-fade-image-leave-active{transition:opacity .5s;opacity:0}.vac-fade-message-enter-from{opacity:0}.vac-fade-message-enter-active{transition:opacity .5s}.vac-fade-message-leave-active{transition:opacity .2s;opacity:0}.vac-slide-left-enter-active,.vac-slide-right-enter-active{transition:all .3s ease;transition-property:transform,opacity}.vac-slide-left-leave-active,.vac-slide-right-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)!important;transition-property:transform,opacity}.vac-slide-left-enter-from,.vac-slide-left-leave-to{transform:translate(10px);opacity:0}.vac-slide-right-enter-from,.vac-slide-right-leave-to{transform:translate(-10px);opacity:0}.vac-slide-up-enter-active{transition:all .3s ease}.vac-slide-up-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)}.vac-slide-up-enter-from,.vac-slide-up-leave-to{transform:translateY(10px);opacity:0}.vac-bounce-enter-active{animation:vac-bounce-in .5s}.vac-bounce-leave-active{animation:vac-bounce-in .3s reverse}@keyframes vac-bounce-in{0%{transform:scale(0)}50%{transform:scale(1.05)}to{transform:scale(1)}}.vac-fade-preview-enter{opacity:0}.vac-fade-preview-enter-active{transition:opacity .1s}.vac-fade-preview-leave-active{transition:opacity .2s;opacity:0}.vac-bounce-preview-enter-active{animation:vac-bounce-image-in .4s}.vac-bounce-preview-leave-active{animation:vac-bounce-image-in .3s reverse}@keyframes vac-bounce-image-in{0%{transform:scale(.6)}to{transform:scale(1)}}.vac-menu-list{border-radius:4px;display:block;cursor:pointer;background:var(--chat-dropdown-bg-color);padding:6px 0}.vac-menu-list :hover{background:var(--chat-dropdown-bg-color-hover);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-list :not(:hover){transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-item{-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-flex:1;-ms-flex:1 1 100%;flex:1 1 100%;min-height:30px;padding:5px 16px;position:relative;white-space:nowrap;line-height:30px}.vac-menu-options{position:absolute;right:10px;top:20px;z-index:9999;min-width:150px;display:inline-block;border-radius:4px;font-size:14px;color:var(--chat-color);overflow-y:auto;overflow-x:hidden;contain:content;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-app-border{border:var(--chat-border-style)}.vac-app-border-t{border-top:var(--chat-border-style)}.vac-app-border-r{border-right:var(--chat-border-style)}.vac-app-border-b{border-bottom:var(--chat-border-style)}.vac-app-box-shadow{transition:all .5s;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-item-clickable{cursor:pointer}.vac-vertical-center{display:flex;align-items:center;height:100%}.vac-vertical-center .vac-vertical-container{width:100%;text-align:center}.vac-svg-button{max-height:30px;display:flex;cursor:pointer;transition:all .2s}.vac-svg-button:hover{transform:scale(1.1);opacity:.7}.vac-avatar{background-size:cover;background-position:center center;background-repeat:no-repeat;background-color:#ddd;height:42px;width:42px;min-height:42px;min-width:42px;margin-right:15px;border-radius:50%}.vac-blur-loading{filter:blur(3px)}.vac-badge-counter{height:13px;width:auto;min-width:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:3px;font-size:11px;font-weight:500}.vac-text-ellipsis{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-text-bold{font-weight:700}.vac-text-italic{font-style:italic}.vac-text-strike{text-decoration:line-through}.vac-text-underline{text-decoration:underline}.vac-text-inline-code{display:inline-block;font-size:12px;color:var(--chat-markdown-color);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:2px 0;padding:2px 3px}.vac-text-multiline-code{display:block;font-size:12px;color:var(--chat-markdown-color-multi);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:4px 0;padding:7px}.vac-text-tag{color:var(--chat-message-color-tag);cursor:pointer}.vac-file-container{display:flex;align-content:center;justify-content:center;flex-wrap:wrap;text-align:center;background:var(--chat-bg-color-input);border:var(--chat-border-style-input);border-radius:4px;padding:10px}.vac-file-container svg{height:28px;width:28px}.vac-file-container .vac-text-extension{font-size:12px;color:var(--chat-message-color-file-extension);margin-top:-2px}.vac-card-window{width:100%;display:block;max-width:100%;background:var(--chat-content-bg-color);color:var(--chat-color);overflow-wrap:break-word;white-space:normal;border:var(--chat-container-border);border-radius:var(--chat-container-border-radius);box-shadow:var(--chat-container-box-shadow);-webkit-tap-highlight-color:transparent}.vac-card-window *{font-family:inherit}.vac-card-window a{color:#0d579c;font-weight:500}.vac-card-window .vac-chat-container{height:100%;display:flex}.vac-card-window .vac-chat-container input{min-width:10px}.vac-card-window .vac-chat-container textarea,.vac-card-window .vac-chat-container input[type=text],.vac-card-window .vac-chat-container input[type=search]{-webkit-appearance:none}.vac-media-preview{position:fixed;top:0;left:0;z-index:99;width:100vw;height:100vh;display:flex;align-items:center;background-color:#000c;outline:none}.vac-media-preview .vac-media-preview-container{height:calc(100% - 140px);width:calc(100% - 80px);padding:70px 40px;margin:0 auto}.vac-media-preview .vac-image-preview{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}.vac-media-preview video{width:100%;height:100%}.vac-media-preview .vac-svg-button{position:absolute;top:30px;right:30px;transform:scale(1.4)}@media only screen and (max-width: 768px){.vac-media-preview .vac-svg-button{top:20px;right:20px;transform:scale(1.2)}.vac-media-preview .vac-media-preview-container{width:calc(100% - 40px);padding:70px 20px}}.vac-col-messages{position:relative;height:100%;flex:1;overflow:hidden;display:flex;flex-flow:column}.vac-col-messages .vac-container-center{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.vac-col-messages .vac-room-empty{font-size:14px;color:#9ca6af;font-style:italic;line-height:20px;white-space:pre-line}.vac-col-messages .vac-room-empty div{padding:0 10%}.vac-col-messages .vac-container-scroll{background:var(--chat-content-bg-color);flex:1;overflow-y:auto;margin-right:1px;margin-top:65px;-webkit-overflow-scrolling:touch}.vac-col-messages .vac-container-scroll.vac-scroll-smooth{scroll-behavior:smooth}.vac-col-messages .vac-messages-container{padding:0 5px 5px}.vac-col-messages .vac-text-started{font-size:14px;color:var(--chat-message-color-started);font-style:italic;text-align:center;margin-top:25px;margin-bottom:20px}.vac-col-messages .vac-icon-scroll{position:absolute;bottom:80px;right:20px;padding:8px;background:var(--chat-bg-scroll-icon);border-radius:50%;box-shadow:0 1px 1px -1px #0003,0 1px 1px #00000024,0 1px 2px #0000001f;display:flex;cursor:pointer;z-index:10}.vac-col-messages .vac-icon-scroll svg{height:25px;width:25px}.vac-col-messages .vac-messages-count{position:absolute;top:-8px;left:11px;background-color:var(--chat-message-bg-color-scroll-counter);color:var(--chat-message-color-scroll-counter)}.vac-col-messages .vac-messages-hidden{opacity:0}@media only screen and (max-width: 768px){.vac-col-messages .vac-container-scroll{margin-top:50px}.vac-col-messages .vac-text-started{margin-top:20px}.vac-col-messages .vac-icon-scroll{bottom:70px}}.vac-room-header{position:absolute;display:flex;align-items:center;height:64px;width:100%;z-index:10;margin-right:1px;background:var(--chat-header-bg-color);border-top-right-radius:var(--chat-container-border-radius)}.vac-room-header .vac-room-wrapper{display:flex;align-items:center;min-width:0;height:100%;width:100%;padding:0 16px}.vac-room-header .vac-toggle-button{margin-right:15px}.vac-room-header .vac-toggle-button svg{height:26px;width:26px}.vac-room-header .vac-rotate-icon{transform:rotate(180deg)!important}.vac-room-header .vac-rotate-icon-init{transform:rotate(360deg)}.vac-room-header .vac-info-wrapper,.vac-room-header .vac-room-selection{display:flex;align-items:center;min-width:0;width:100%;height:100%}.vac-room-header .vac-room-selection .vac-selection-button{padding:8px 16px;color:var(--chat-color-button);background-color:var(--chat-bg-color-button);border-radius:4px;margin-right:10px;cursor:pointer;transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-button:hover{opacity:.7}.vac-room-header .vac-room-selection .vac-selection-button:active{opacity:.9}.vac-room-header .vac-room-selection .vac-selection-button .vac-selection-button-count{margin-left:6px;opacity:.9}.vac-room-header .vac-room-selection .vac-selection-cancel{display:flex;align-items:center;margin-left:auto;white-space:nowrap;color:var(--chat-color-button-clear);transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-cancel:hover{opacity:.7}.vac-room-header .vac-room-name{font-size:17px;font-weight:500;line-height:22px;color:var(--chat-header-color-name)}.vac-room-header .vac-room-info{font-size:13px;line-height:18px;color:var(--chat-header-color-info)}.vac-room-header .vac-room-options{margin-left:auto}@media only screen and (max-width: 768px){.vac-room-header{height:50px}.vac-room-header .vac-room-wrapper{padding:0 10px}.vac-room-header .vac-room-name{font-size:16px;line-height:22px}.vac-room-header .vac-room-info{font-size:12px;line-height:16px}.vac-room-header .vac-avatar{height:37px;width:37px;min-height:37px;min-width:37px}}.vac-room-footer{width:100%;border-bottom-right-radius:4px;z-index:10}.vac-box-footer{display:flex;position:relative;background:var(--chat-footer-bg-color);padding:10px 8px}.vac-textarea{height:20px;width:100%;line-height:20px;overflow:hidden;outline:0;resize:none;border-radius:20px;padding:12px 16px;box-sizing:content-box;font-size:16px;background:var(--chat-bg-color-input);color:var(--chat-color);caret-color:var(--chat-color-caret);border:var(--chat-border-style-input)}.vac-textarea::placeholder{color:var(--chat-color-placeholder);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-textarea-outline{border:1px solid var(--chat-border-color-input-selected);box-shadow:inset 0 0 0 1px var(--chat-border-color-input-selected)}.vac-icon-textarea,.vac-icon-textarea-left{display:flex;align-items:center}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea{margin-left:5px}.vac-icon-textarea-left{display:flex;align-items:center;margin-right:5px}.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea-left .vac-icon-microphone{fill:var(--chat-icon-color-microphone);margin:0 7px}.vac-icon-textarea-left .vac-dot-audio-record{height:15px;width:15px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-record);animation:vac-scaling .8s ease-in-out infinite alternate}@keyframes vac-scaling{0%{transform:scale(1);opacity:.4}to{transform:scale(1.1);opacity:1}}.vac-icon-textarea-left .vac-dot-audio-record-time{font-size:16px;color:var(--chat-color);margin-left:8px;width:45px}.vac-icon-textarea-left .vac-icon-audio-stop,.vac-icon-textarea-left .vac-icon-audio-confirm{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop svg,.vac-icon-textarea-left .vac-icon-audio-confirm svg{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop{margin-right:20px}.vac-icon-textarea-left .vac-icon-audio-stop #vac-icon-close-outline{fill:var(--chat-icon-color-audio-cancel)}.vac-icon-textarea-left .vac-icon-audio-confirm{margin-right:3px;margin-left:12px}.vac-icon-textarea-left .vac-icon-audio-confirm #vac-icon-checkmark{fill:var(--chat-icon-color-audio-confirm)}.vac-send-disabled,.vac-send-disabled svg{cursor:none!important;pointer-events:none!important;transform:none!important}@media only screen and (max-width: 768px){.vac-room-footer{width:100%}.vac-box-footer{padding:7px 2px 7px 7px}.vac-box-footer.vac-box-footer-border{border-top:var(--chat-border-style-input)}.vac-textarea{padding:7px;line-height:18px}.vac-textarea::placeholder{color:transparent}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 5px!important}}.vac-emojis-container{width:calc(100% - 16px);padding:10px 8px;background:var(--chat-footer-bg-color);display:flex;align-items:center;overflow:auto}.vac-emojis-container .vac-emoji-element{padding:0 8px;font-size:30px;border-radius:4px;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-emojis-container .vac-emoji-element-active{background:var(--chat-footer-bg-color-tag-active)}@media only screen and (max-width: 768px){.vac-emojis-container{width:calc(100% - 10px);padding:7px 5px}.vac-emojis-container .vac-emoji-element{padding:0 7px;font-size:26px}}.vac-reply-container{display:flex;padding:10px 10px 0;background:var(--chat-footer-bg-color);align-items:center;width:calc(100% - 20px)}.vac-reply-container .vac-reply-box{width:100%;overflow:hidden;background:var(--chat-footer-bg-color-reply);border-radius:4px;padding:8px 10px}.vac-reply-container .vac-reply-info{overflow:hidden}.vac-reply-container .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-container .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content);white-space:pre-line}.vac-reply-container .vac-icon-reply{margin-left:10px}.vac-reply-container .vac-icon-reply svg{height:20px;width:20px}.vac-reply-container .vac-image-reply{max-height:100px;max-width:200px;margin:4px 10px 0 0;border-radius:4px}.vac-reply-container .vac-audio-reply{margin-right:10px}.vac-reply-container .vac-file-container{max-width:80px}@media only screen and (max-width: 768px){.vac-reply-container{padding:5px 8px;width:calc(100% - 16px)}}.vac-room-files-container{display:flex;align-items:center;padding:10px 6px 0;background:var(--chat-footer-bg-color)}.vac-room-files-container .vac-files-box{display:flex;overflow:auto;width:calc(100% - 30px)}.vac-room-files-container video{height:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-files-container .vac-icon-close{margin-left:auto}.vac-room-files-container .vac-icon-close svg{height:20px;width:20px}@media only screen and (max-width: 768px){.vac-files-container{padding:6px 4px 4px 2px}}.vac-room-file-container{display:flex;position:relative;margin:0 4px}.vac-room-file-container .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:100px;width:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-file-container .vac-file-container{height:80px;width:80px}.vac-room-file-container .vac-icon-remove{position:absolute;top:6px;left:6px;z-index:10}.vac-room-file-container .vac-icon-remove svg{height:20px;width:20px;border-radius:50%}.vac-room-file-container .vac-icon-remove:before{content:" ";position:absolute;width:100%;height:100%;background:rgba(0,0,0,.5);border-radius:50%;z-index:-1}.vac-tags-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-tags-container .vac-tags-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-tags-container .vac-tags-box-active{background:var(--chat-footer-bg-color-tag-active)}.vac-tags-container .vac-tags-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-tags-container .vac-tags-avatar{height:34px;width:34px;min-height:34px;min-width:34px}.vac-tags-container .vac-tags-username{font-size:14px}@media only screen and (max-width: 768px){.vac-tags-container .vac-tags-box{height:50px}.vac-tags-container .vac-tags-info{padding:0 12px}}.vac-template-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-template-container .vac-template-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-template-container .vac-template-active{background:var(--chat-footer-bg-color-tag-active)}.vac-template-container .vac-template-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-template-container .vac-template-tag{font-size:14px;font-weight:700;margin-right:10px}.vac-template-container .vac-template-text{font-size:14px}@media only screen and (max-width: 768px){.vac-template-container .vac-template-box{height:50px}.vac-template-container .vac-template-info{padding:0 12px}}.vac-rooms-container{display:flex;flex-flow:column;flex:0 0 25%;min-width:260px;max-width:500px;position:relative;background:var(--chat-sidemenu-bg-color);height:100%;border-top-left-radius:var(--chat-container-border-radius);border-bottom-left-radius:var(--chat-container-border-radius)}.vac-rooms-container.vac-rooms-container-full{flex:0 0 100%;max-width:100%}.vac-rooms-container .vac-rooms-empty{font-size:14px;color:#9ca6af;font-style:italic;text-align:center;margin:40px 0;line-height:20px;white-space:pre-line}.vac-rooms-container .vac-room-list{flex:1;position:relative;max-width:100%;cursor:pointer;padding:0 10px 5px;overflow-y:auto}.vac-rooms-container .vac-room-item{border-radius:8px;align-items:center;display:flex;flex:1 1 100%;margin-bottom:5px;padding:0 14px;position:relative;min-height:71px;transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-rooms-container .vac-room-item:hover{background:var(--chat-sidemenu-bg-color-hover)}.vac-rooms-container .vac-room-selected{color:var(--chat-sidemenu-color-active)!important;background:var(--chat-sidemenu-bg-color-active)!important}.vac-rooms-container .vac-room-selected:hover{background:var(--chat-sidemenu-bg-color-active)!important}@media only screen and (max-width: 768px){.vac-rooms-container .vac-room-list{padding:0 7px 5px}.vac-rooms-container .vac-room-item{min-height:60px;padding:0 8px}}.vac-room-container{display:flex;flex:1;align-items:center;width:100%}.vac-room-container .vac-name-container{flex:1}.vac-room-container .vac-title-container{display:flex;align-items:center;line-height:25px}.vac-room-container .vac-state-circle{width:9px;height:9px;border-radius:50%;background-color:var(--chat-room-color-offline);margin-right:6px;transition:.3s}.vac-room-container .vac-state-online{background-color:var(--chat-room-color-online)}.vac-room-container .vac-room-name{flex:1;color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-text-date{margin-left:5px;font-size:11px;color:var(--chat-room-color-timestamp)}.vac-room-container .vac-text-last{display:flex;align-items:center;font-size:12px;line-height:19px;color:var(--chat-room-color-message)}.vac-room-container .vac-message-new{color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-icon-check{display:flex;vertical-align:middle;height:14px;width:14px;margin-top:-2px;margin-right:2px}.vac-room-container .vac-icon-microphone{height:15px;width:15px;vertical-align:middle;margin:-3px 1px 0 -2px;fill:var(--chat-room-color-message)}.vac-room-container .vac-room-options-container{display:flex;margin-left:auto}.vac-room-container .vac-room-badge{background-color:var(--chat-room-bg-color-badge);color:var(--chat-room-color-badge);margin-left:5px}.vac-room-container .vac-list-room-options{height:19px;width:19px;align-items:center;margin-left:5px}.vac-box-empty{margin-top:10px}@media only screen and (max-width: 768px){.vac-box-empty{margin-top:7px}}.vac-box-search{position:sticky;display:flex;align-items:center;height:64px;padding:0 15px}.vac-box-search .vac-icon-search{display:flex;position:absolute;left:30px}.vac-box-search .vac-icon-search svg{width:18px;height:18px}.vac-box-search .vac-input{height:38px;width:100%;background:var(--chat-bg-color-input);color:var(--chat-color);font-size:15px;outline:0;caret-color:var(--chat-color-caret);padding:10px 10px 10px 40px;border:1px solid var(--chat-sidemenu-border-color-search);border-radius:20px}.vac-box-search .vac-input::placeholder{color:var(--chat-color-placeholder)}.vac-box-search .vac-add-icon{margin-left:auto;padding-left:10px}@media only screen and (max-width: 768px){.vac-box-search{height:58px}}.vac-message-wrapper .vac-card-info{border-radius:4px;text-align:center;margin:10px auto;font-size:12px;padding:4px;display:block;overflow-wrap:break-word;position:relative;white-space:normal;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-card-date{max-width:150px;font-weight:500;text-transform:uppercase;color:var(--chat-message-color-date);background-color:var(--chat-message-bg-color-date)}.vac-message-wrapper .vac-card-system{max-width:250px;padding:8px 4px;color:var(--chat-message-color-system);background-color:var(--chat-message-bg-color-system)}.vac-message-wrapper .vac-line-new{color:var(--chat-message-color-new-messages);position:relative;text-align:center;font-size:13px;padding:10px 0}.vac-message-wrapper .vac-line-new:after,.vac-message-wrapper .vac-line-new:before{border-top:1px solid var(--chat-message-color-new-messages);content:"";left:0;position:absolute;top:50%;width:calc(50% - 60px)}.vac-message-wrapper .vac-line-new:before{left:auto;right:0}.vac-message-wrapper .vac-message-box{display:flex;flex:0 0 50%;max-width:50%;justify-content:flex-start;line-height:1.4}.vac-message-wrapper .vac-avatar{height:28px;width:28px;min-height:28px;min-width:28px;margin:0 0 2px;align-self:flex-end}.vac-message-wrapper .vac-avatar-current-offset{margin-right:28px}.vac-message-wrapper .vac-avatar-offset{margin-left:28px}.vac-message-wrapper .vac-failure-container{position:relative;align-self:flex-end;height:20px;width:20px;margin:0 0 2px -4px;border-radius:50%;background-color:#f44336}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:6px}.vac-message-wrapper .vac-failure-container .vac-failure-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:15px;font-weight:700}.vac-message-wrapper .vac-message-container{position:relative;padding:2px 10px;align-items:end;min-width:100px;box-sizing:content-box}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-offset-current{margin-left:50%;justify-content:flex-end}.vac-message-wrapper .vac-message-card{background-color:var(--chat-message-bg-color);color:var(--chat-message-color);border-radius:8px;font-size:14px;padding:6px 9px 3px;white-space:pre-line;max-width:100%;-webkit-transition-property:box-shadow,opacity;transition-property:box-shadow,opacity;transition:box-shadow .28s cubic-bezier(.4,0,.2,1);will-change:box-shadow;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-message-highlight{box-shadow:0 1px 2px -1px #0000001a,0 1px 2px -1px #0000001c,0 1px 5px -1px #0000001c}.vac-message-wrapper .vac-message-current{background-color:var(--chat-message-bg-color-me)!important}.vac-message-wrapper .vac-message-deleted{color:var(--chat-message-color-deleted)!important;font-size:13px!important;font-style:italic!important;background-color:var(--chat-message-bg-color-deleted)!important}.vac-message-wrapper .vac-message-selected{background-color:var(--chat-message-bg-color-selected)!important;transition:background-color .2s}.vac-message-wrapper .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:250px;width:250px;max-width:100%;border-radius:4px;margin:4px auto 5px;transition:.4s filter linear}.vac-message-wrapper .vac-text-username{font-size:13px;color:var(--chat-message-color-username);margin-bottom:2px}.vac-message-wrapper .vac-username-reply{margin-bottom:5px}.vac-message-wrapper .vac-text-timestamp{font-size:10px;color:var(--chat-message-color-timestamp);text-align:right}.vac-message-wrapper .vac-progress-time{float:left;margin:-2px 0 0 40px;color:var(--chat-color);font-size:12px}.vac-message-wrapper .vac-icon-edited{-webkit-box-align:center;align-items:center;display:-webkit-inline-box;display:inline-flex;justify-content:center;letter-spacing:normal;line-height:1;text-indent:0;vertical-align:middle;margin:0 4px 2px}.vac-message-wrapper .vac-icon-edited svg{height:12px;width:12px}.vac-message-wrapper .vac-icon-check{height:14px;width:14px;vertical-align:middle;margin:-3px -3px 0 3px}@media only screen and (max-width: 768px){.vac-message-wrapper .vac-message-container{padding:2px 3px 1px}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-message-box{flex:0 0 80%;max-width:80%}.vac-message-wrapper .vac-avatar{height:25px;width:25px;min-height:25px;min-width:25px;margin:0 6px 1px 0}.vac-message-wrapper .vac-avatar.vac-avatar-current{margin:0 0 1px 6px}.vac-message-wrapper .vac-avatar-current-offset{margin-right:31px}.vac-message-wrapper .vac-avatar-offset{margin-left:31px}.vac-message-wrapper .vac-failure-container{margin-left:2px}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:0}.vac-message-wrapper .vac-offset-current{margin-left:20%}.vac-message-wrapper .vac-progress-time{margin-left:37px}}.vac-audio-player{display:flex;margin:8px 0 5px}.vac-audio-player .vac-svg-button{max-width:18px;margin-left:7px}@media only screen and (max-width: 768px){.vac-audio-player{margin:4px 0 0}.vac-audio-player .vac-svg-button{max-width:16px;margin-left:5px}}.vac-player-bar{display:flex;align-items:center;max-width:calc(100% - 18px);margin-right:7px;margin-left:20px}.vac-player-bar .vac-player-progress{width:190px}.vac-player-bar .vac-player-progress .vac-line-container{position:relative;height:4px;border-radius:5px;background-color:var(--chat-message-bg-color-audio-line)}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-progress{position:absolute;height:inherit;background-color:var(--chat-message-bg-color-audio-progress);border-radius:inherit}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{position:absolute;top:-5px;margin-left:-7px;height:14px;width:14px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-progress-selector);transition:transform .25s}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot__active{transform:scale(1.2)}@media only screen and (max-width: 768px){.vac-player-bar{margin-right:5px}.vac-player-bar .vac-player-progress .vac-line-container{height:3px}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{height:12px;width:12px;top:-5px;margin-left:-5px}}.vac-message-actions-wrapper .vac-options-container{position:absolute;top:2px;right:10px;height:40px;width:70px;overflow:hidden;border-top-right-radius:8px}.vac-message-actions-wrapper .vac-blur-container{position:absolute;height:100%;width:100%;left:8px;bottom:10px;background:var(--chat-message-bg-color);filter:blur(3px);border-bottom-left-radius:8px}.vac-message-actions-wrapper .vac-options-me{background:var(--chat-message-bg-color-me)}.vac-message-actions-wrapper .vac-message-options{background:var(--chat-icon-bg-dropdown-message);border-radius:50%;position:absolute;top:7px;right:7px}.vac-message-actions-wrapper .vac-message-options svg{height:17px;width:17px;padding:5px;margin:-5px}.vac-message-actions-wrapper .vac-message-emojis{position:absolute;top:6px;right:30px}.vac-message-actions-wrapper .vac-menu-options{right:15px}.vac-message-actions-wrapper .vac-menu-left{right:-118px}@media only screen and (max-width: 768px){.vac-message-actions-wrapper .vac-options-container{right:3px}.vac-message-actions-wrapper .vac-menu-left{right:-50px}}.vac-message-files-container .vac-file-wrapper{position:relative;width:fit-content}.vac-message-files-container .vac-file-wrapper .vac-file-container{height:60px;width:60px;margin:3px 0 5px;cursor:pointer;transition:all .6s}.vac-message-files-container .vac-file-wrapper .vac-file-container:hover{opacity:.85}.vac-message-files-container .vac-file-wrapper .vac-file-container svg{height:30px;width:30px}.vac-message-files-container .vac-file-wrapper .vac-file-container.vac-file-container-progress{background-color:#0000004d}.vac-message-file-container{position:relative;z-index:0}.vac-message-file-container .vac-message-image-container{cursor:pointer}.vac-message-file-container .vac-image-buttons{position:absolute;width:100%;height:100%;border-radius:4px;background:linear-gradient(to bottom,rgba(0,0,0,0) 55%,rgba(0,0,0,.02) 60%,rgba(0,0,0,.05) 65%,rgba(0,0,0,.1) 70%,rgba(0,0,0,.2) 75%,rgba(0,0,0,.3) 80%,rgba(0,0,0,.5) 85%,rgba(0,0,0,.6) 90%,rgba(0,0,0,.7) 95%,rgba(0,0,0,.8) 100%)}.vac-message-file-container .vac-image-buttons svg{height:26px;width:26px}.vac-message-file-container .vac-image-buttons .vac-button-view,.vac-message-file-container .vac-image-buttons .vac-button-download{position:absolute;bottom:6px;left:7px}.vac-message-file-container .vac-image-buttons :first-child{left:40px}.vac-message-file-container .vac-image-buttons .vac-button-view{max-width:18px;bottom:8px}.vac-message-file-container .vac-video-container{width:350px;max-width:100%;margin:4px auto 5px;cursor:pointer}.vac-message-file-container .vac-video-container video{width:100%;height:100%;border-radius:4px}.vac-button-reaction{display:inline-flex;align-items:center;border:var(--chat-message-border-style-reaction);outline:none;background:var(--chat-message-bg-color-reaction);border-radius:4px;margin:4px 2px 0;transition:.3s;padding:0 5px;font-size:18px;line-height:23px}.vac-button-reaction span{font-size:11px;font-weight:500;min-width:7px;color:var(--chat-message-color-reaction-counter)}.vac-button-reaction:hover{border:var(--chat-message-border-style-reaction-hover);background:var(--chat-message-bg-color-reaction-hover);cursor:pointer}.vac-button-reaction.vac-reaction-me{border:var(--chat-message-border-style-reaction-me);background:var(--chat-message-bg-color-reaction-me)}.vac-button-reaction.vac-reaction-me span{color:var(--chat-message-color-reaction-counter-me)}.vac-button-reaction.vac-reaction-me:hover{border:var(--chat-message-border-style-reaction-hover-me);background:var(--chat-message-bg-color-reaction-hover-me)}.vac-reply-message{background:var(--chat-message-bg-color-reply);border-radius:4px;margin:-1px -5px 8px;padding:8px 10px}.vac-reply-message .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-message .vac-image-reply-container{width:70px}.vac-reply-message .vac-image-reply-container .vac-message-image-reply{height:70px;width:70px;margin:4px auto 3px}.vac-reply-message .vac-video-reply-container{width:200px;max-width:100%}.vac-reply-message .vac-video-reply-container video{width:100%;height:100%;border-radius:4px}.vac-reply-message .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content)}.vac-reply-message .vac-file-container{height:60px;width:60px}.vac-emoji-wrapper{position:relative;display:flex}.vac-emoji-wrapper .vac-emoji-reaction svg{height:19px;width:19px}.vac-emoji-wrapper .vac-emoji-picker{position:absolute;z-index:9999;bottom:32px;right:10px;width:300px;padding-top:4px;overflow:scroll;box-sizing:border-box;border-radius:.5rem;background:var(--chat-emoji-bg-color);box-shadow:0 1px 2px -2px #0000001a,0 1px 2px -1px #0000001a,0 1px 2px 1px #0000001a;scrollbar-width:none}.vac-emoji-wrapper .vac-emoji-picker::-webkit-scrollbar{display:none}.vac-emoji-wrapper .vac-emoji-picker.vac-picker-reaction{position:fixed;top:initial;right:initial}.vac-emoji-wrapper .vac-emoji-picker emoji-picker{height:100%;width:100%;--emoji-size: 1.2rem;--background: var(--chat-emoji-bg-color);--emoji-padding: .4rem;--border-color: var(--chat-sidemenu-border-color-search);--button-hover-background: var(--chat-sidemenu-bg-color-hover);--button-active-background: var(--chat-sidemenu-bg-color-hover)}.vac-format-message-wrapper .vac-format-container{display:inline}.vac-format-message-wrapper .vac-icon-deleted{height:14px;width:14px;vertical-align:middle;margin:-2px 2px 0 0;fill:var(--chat-message-color-deleted)}.vac-format-message-wrapper .vac-icon-deleted.vac-icon-deleted-room{margin:-3px 1px 0 0;fill:var(--chat-room-color-message)}.vac-format-message-wrapper .vac-image-link-container{background-color:var(--chat-message-bg-color-media);padding:8px;margin:2px auto;border-radius:4px}.vac-format-message-wrapper .vac-image-link{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:contain;background-position:center center!important;background-repeat:no-repeat!important;height:150px;width:150px;max-width:100%;border-radius:4px;margin:0 auto}.vac-format-message-wrapper .vac-image-link-message{max-width:166px;font-size:12px}.vac-loader-wrapper.vac-container-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-loader-wrapper.vac-container-top{padding:21px}.vac-loader-wrapper.vac-container-top #vac-circle{height:20px;width:20px}.vac-loader-wrapper #vac-circle{margin:auto;height:28px;width:28px;border:3px rgba(0,0,0,.25) solid;border-top:3px var(--chat-color-spinner) solid;border-right:3px var(--chat-color-spinner) solid;border-bottom:3px var(--chat-color-spinner) solid;border-radius:50%;-webkit-animation:vac-spin 1s infinite linear;animation:vac-spin 1s infinite linear}@media only screen and (max-width: 768px){.vac-loader-wrapper #vac-circle{height:24px;width:24px}.vac-loader-wrapper.vac-container-top{padding:18px}.vac-loader-wrapper.vac-container-top #vac-circle{height:16px;width:16px}}@-webkit-keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}@keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}#vac-icon-search{fill:var(--chat-icon-color-search)}#vac-icon-add{fill:var(--chat-icon-color-add)}#vac-icon-toggle{fill:var(--chat-icon-color-toggle)}#vac-icon-menu{fill:var(--chat-icon-color-menu)}#vac-icon-close{fill:var(--chat-icon-color-close)}#vac-icon-close-image{fill:var(--chat-icon-color-close-image)}#vac-icon-file{fill:var(--chat-icon-color-file)}#vac-icon-paperclip{fill:var(--chat-icon-color-paperclip)}#vac-icon-close-outline{fill:var(--chat-icon-color-close-outline)}#vac-icon-close-outline-preview{fill:var(--chat-icon-color-close-preview)}#vac-icon-send{fill:var(--chat-icon-color-send)}#vac-icon-send-disabled{fill:var(--chat-icon-color-send-disabled)}#vac-icon-emoji{fill:var(--chat-icon-color-emoji)}#vac-icon-emoji-reaction{fill:var(--chat-icon-color-emoji-reaction)}#vac-icon-document{fill:var(--chat-icon-color-document)}#vac-icon-pencil{fill:var(--chat-icon-color-pencil)}#vac-icon-checkmark,#vac-icon-double-checkmark{fill:var(--chat-icon-color-checkmark)}#vac-icon-checkmark-seen,#vac-icon-double-checkmark-seen{fill:var(--chat-icon-color-checkmark-seen)}#vac-icon-eye{fill:var(--chat-icon-color-eye)}#vac-icon-dropdown-message{fill:var(--chat-icon-color-dropdown-message)}#vac-icon-dropdown-room{fill:var(--chat-icon-color-dropdown-room)}#vac-icon-dropdown-scroll{fill:var(--chat-icon-color-dropdown-scroll)}#vac-icon-audio-play{fill:var(--chat-icon-color-audio-play)}#vac-icon-audio-pause{fill:var(--chat-icon-color-audio-pause)}.vac-progress-wrapper{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-progress-wrapper circle{transition:stroke-dashoffset .35s;transform:rotate(-90deg);transform-origin:50% 50%}.vac-progress-wrapper .vac-progress-content{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:-1;margin-top:-2px;background-color:#000000b3;border-radius:50%}.vac-progress-wrapper .vac-progress-content .vac-progress-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:700;color:#fff}.vac-progress-wrapper .vac-progress-content .vac-progress-text .vac-progress-pourcent{font-size:9px;font-weight:400}\n';
+var _style_0 = '.vac-fade-spinner-enter-from{opacity:0}.vac-fade-spinner-enter-active{transition:opacity .8s}.vac-fade-spinner-leave-active{transition:opacity .2s;opacity:0}.vac-fade-image-enter-from{opacity:0}.vac-fade-image-enter-active{transition:opacity 1s}.vac-fade-image-leave-active{transition:opacity .5s;opacity:0}.vac-fade-message-enter-from{opacity:0}.vac-fade-message-enter-active{transition:opacity .5s}.vac-fade-message-leave-active{transition:opacity .2s;opacity:0}.vac-slide-left-enter-active,.vac-slide-right-enter-active{transition:all .3s ease;transition-property:transform,opacity}.vac-slide-left-leave-active,.vac-slide-right-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)!important;transition-property:transform,opacity}.vac-slide-left-enter-from,.vac-slide-left-leave-to{transform:translate(10px);opacity:0}.vac-slide-right-enter-from,.vac-slide-right-leave-to{transform:translate(-10px);opacity:0}.vac-slide-up-enter-active{transition:all .3s ease}.vac-slide-up-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)}.vac-slide-up-enter-from,.vac-slide-up-leave-to{transform:translateY(10px);opacity:0}.vac-bounce-enter-active{animation:vac-bounce-in .5s}.vac-bounce-leave-active{animation:vac-bounce-in .3s reverse}@keyframes vac-bounce-in{0%{transform:scale(0)}50%{transform:scale(1.05)}to{transform:scale(1)}}.vac-fade-preview-enter{opacity:0}.vac-fade-preview-enter-active{transition:opacity .1s}.vac-fade-preview-leave-active{transition:opacity .2s;opacity:0}.vac-bounce-preview-enter-active{animation:vac-bounce-image-in .4s}.vac-bounce-preview-leave-active{animation:vac-bounce-image-in .3s reverse}@keyframes vac-bounce-image-in{0%{transform:scale(.6)}to{transform:scale(1)}}.vac-menu-list{border-radius:4px;display:block;cursor:pointer;background:var(--chat-dropdown-bg-color);padding:6px 0}.vac-menu-list :hover{background:var(--chat-dropdown-bg-color-hover);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-list :not(:hover){transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-item{-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-flex:1;-ms-flex:1 1 100%;flex:1 1 100%;min-height:30px;padding:5px 16px;position:relative;white-space:nowrap;line-height:30px}.vac-menu-options{position:absolute;right:10px;top:20px;z-index:9999;min-width:150px;display:inline-block;border-radius:4px;font-size:14px;color:var(--chat-color);overflow-y:auto;overflow-x:hidden;contain:content;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-app-border{border:var(--chat-border-style)}.vac-app-border-t{border-top:var(--chat-border-style)}.vac-app-border-r{border-right:var(--chat-border-style)}.vac-app-border-b{border-bottom:var(--chat-border-style)}.vac-app-box-shadow{transition:all .5s;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-item-clickable{cursor:pointer}.vac-vertical-center{display:flex;align-items:center;height:100%}.vac-vertical-center .vac-vertical-container{width:100%;text-align:center}.vac-svg-button{max-height:30px;display:flex;cursor:pointer;transition:all .2s}.vac-svg-button:hover{transform:scale(1.1);opacity:.7}.vac-avatar{background-size:cover;background-position:center center;background-repeat:no-repeat;background-color:#ddd;height:42px;width:42px;min-height:42px;min-width:42px;margin-right:15px;border-radius:50%}.vac-blur-loading{filter:blur(3px)}.vac-badge-counter{height:13px;width:auto;min-width:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:3px;font-size:11px;font-weight:500}.vac-text-ellipsis{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-text-bold{font-weight:700}.vac-text-italic{font-style:italic}.vac-text-strike{text-decoration:line-through}.vac-text-underline{text-decoration:underline}.vac-text-inline-code{display:inline-block;font-size:12px;color:var(--chat-markdown-color);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:2px 0;padding:2px 3px}.vac-text-multiline-code{display:block;font-size:12px;color:var(--chat-markdown-color-multi);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:4px 0;padding:7px}.vac-text-tag{color:var(--chat-message-color-tag);cursor:pointer}.vac-file-container{display:flex;align-content:center;justify-content:center;flex-wrap:wrap;text-align:center;background:var(--chat-bg-color-input);border:var(--chat-border-style-input);border-radius:4px;padding:10px}.vac-file-container svg{height:28px;width:28px}.vac-file-container .vac-text-extension{font-size:12px;color:var(--chat-message-color-file-extension);margin-top:-2px}.vac-card-window{width:100%;display:block;max-width:100%;background:var(--chat-content-bg-color);color:var(--chat-color);overflow-wrap:break-word;white-space:normal;border:var(--chat-container-border);border-radius:var(--chat-container-border-radius);box-shadow:var(--chat-container-box-shadow);-webkit-tap-highlight-color:transparent}.vac-card-window *{font-family:inherit}.vac-card-window a{color:#0d579c;font-weight:500}.vac-card-window .vac-chat-container{height:100%;display:flex}.vac-card-window .vac-chat-container input{min-width:10px}.vac-card-window .vac-chat-container textarea,.vac-card-window .vac-chat-container input[type=text],.vac-card-window .vac-chat-container input[type=search]{-webkit-appearance:none}.vac-media-preview{position:fixed;top:0;left:0;z-index:99;width:100vw;height:100vh;display:flex;align-items:center;background-color:#000c;outline:none}.vac-media-preview .vac-media-preview-container{height:calc(100% - 140px);width:calc(100% - 80px);padding:70px 40px;margin:0 auto}.vac-media-preview .vac-image-preview{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}.vac-media-preview video{width:100%;height:100%}.vac-media-preview .vac-svg-button{position:absolute;top:30px;right:30px;transform:scale(1.4)}@media only screen and (max-width: 768px){.vac-media-preview .vac-svg-button{top:20px;right:20px;transform:scale(1.2)}.vac-media-preview .vac-media-preview-container{width:calc(100% - 40px);padding:70px 20px}}.vac-col-messages{position:relative;height:100%;flex:1;overflow:hidden;display:flex;flex-flow:column}.vac-col-messages .vac-container-center{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.vac-col-messages .vac-room-empty{font-size:14px;color:#9ca6af;font-style:italic;line-height:20px;white-space:pre-line}.vac-col-messages .vac-room-empty div{padding:0 10%}.vac-col-messages .vac-container-scroll{background:var(--chat-content-bg-color);flex:1;overflow-y:auto;margin-right:1px;margin-top:65px;-webkit-overflow-scrolling:touch}.vac-col-messages .vac-container-scroll.vac-scroll-smooth{scroll-behavior:smooth}.vac-col-messages .vac-messages-container{padding:0 5px 5px}.vac-col-messages .vac-text-started{font-size:14px;color:var(--chat-message-color-started);font-style:italic;text-align:center;margin-top:25px;margin-bottom:20px}.vac-col-messages .vac-icon-scroll{position:absolute;bottom:80px;right:20px;padding:8px;background:var(--chat-bg-scroll-icon);border-radius:50%;box-shadow:0 1px 1px -1px #0003,0 1px 1px #00000024,0 1px 2px #0000001f;display:flex;cursor:pointer;z-index:10}.vac-col-messages .vac-icon-scroll svg{height:25px;width:25px}.vac-col-messages .vac-messages-count{position:absolute;top:-8px;left:11px;background-color:var(--chat-message-bg-color-scroll-counter);color:var(--chat-message-color-scroll-counter)}.vac-col-messages .vac-messages-hidden{opacity:0}@media only screen and (max-width: 768px){.vac-col-messages .vac-container-scroll{margin-top:50px}.vac-col-messages .vac-text-started{margin-top:20px}.vac-col-messages .vac-icon-scroll{bottom:70px}}.vac-room-header{position:absolute;display:flex;align-items:center;height:64px;width:100%;z-index:10;margin-right:1px;background:var(--chat-header-bg-color);border-top-right-radius:var(--chat-container-border-radius)}.vac-room-header .vac-room-wrapper{display:flex;align-items:center;min-width:0;height:100%;width:100%;padding:0 16px}.vac-room-header .vac-toggle-button{margin-right:15px}.vac-room-header .vac-toggle-button svg{height:26px;width:26px}.vac-room-header .vac-rotate-icon{transform:rotate(180deg)!important}.vac-room-header .vac-rotate-icon-init{transform:rotate(360deg)}.vac-room-header .vac-info-wrapper,.vac-room-header .vac-room-selection{display:flex;align-items:center;min-width:0;width:100%;height:100%}.vac-room-header .vac-room-selection .vac-selection-button{padding:8px 16px;color:var(--chat-color-button);background-color:var(--chat-bg-color-button);border-radius:4px;margin-right:10px;cursor:pointer;transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-button:hover{opacity:.7}.vac-room-header .vac-room-selection .vac-selection-button:active{opacity:.9}.vac-room-header .vac-room-selection .vac-selection-button .vac-selection-button-count{margin-left:6px;opacity:.9}.vac-room-header .vac-room-selection .vac-selection-cancel{display:flex;align-items:center;margin-left:auto;white-space:nowrap;color:var(--chat-color-button-clear);transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-cancel:hover{opacity:.7}.vac-room-header .vac-room-name{font-size:17px;font-weight:500;line-height:22px;color:var(--chat-header-color-name)}.vac-room-header .vac-room-info{font-size:13px;line-height:18px;color:var(--chat-header-color-info)}.vac-room-header .vac-room-options{margin-left:auto}@media only screen and (max-width: 768px){.vac-room-header{height:50px}.vac-room-header .vac-room-wrapper{padding:0 10px}.vac-room-header .vac-room-name{font-size:16px;line-height:22px}.vac-room-header .vac-room-info{font-size:12px;line-height:16px}.vac-room-header .vac-avatar{height:37px;width:37px;min-height:37px;min-width:37px}}.vac-room-footer{width:100%;border-bottom-right-radius:4px;z-index:10}.vac-box-footer{display:flex;position:relative;background:var(--chat-footer-bg-color);padding:10px 8px}.vac-textarea{max-height:300px;overflow-y:auto;height:20px;width:100%;line-height:20px;outline:0;resize:none;border-radius:20px;padding:12px 16px;box-sizing:content-box;font-size:16px;background:var(--chat-bg-color-input);color:var(--chat-color);caret-color:var(--chat-color-caret);border:var(--chat-border-style-input)}.vac-textarea::placeholder{color:var(--chat-color-placeholder);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-textarea-outline{border:1px solid var(--chat-border-color-input-selected);box-shadow:inset 0 0 0 1px var(--chat-border-color-input-selected)}.vac-icon-textarea,.vac-icon-textarea-left{display:flex;align-items:center}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea{margin-left:5px}.vac-icon-textarea-left{display:flex;align-items:center;margin-right:5px}.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea-left .vac-icon-microphone{fill:var(--chat-icon-color-microphone);margin:0 7px}.vac-icon-textarea-left .vac-dot-audio-record{height:15px;width:15px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-record);animation:vac-scaling .8s ease-in-out infinite alternate}@keyframes vac-scaling{0%{transform:scale(1);opacity:.4}to{transform:scale(1.1);opacity:1}}.vac-icon-textarea-left .vac-dot-audio-record-time{font-size:16px;color:var(--chat-color);margin-left:8px;width:45px}.vac-icon-textarea-left .vac-icon-audio-stop,.vac-icon-textarea-left .vac-icon-audio-confirm{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop svg,.vac-icon-textarea-left .vac-icon-audio-confirm svg{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop{margin-right:20px}.vac-icon-textarea-left .vac-icon-audio-stop #vac-icon-close-outline{fill:var(--chat-icon-color-audio-cancel)}.vac-icon-textarea-left .vac-icon-audio-confirm{margin-right:3px;margin-left:12px}.vac-icon-textarea-left .vac-icon-audio-confirm #vac-icon-checkmark{fill:var(--chat-icon-color-audio-confirm)}.vac-send-disabled,.vac-send-disabled svg{cursor:none!important;pointer-events:none!important;transform:none!important}@media only screen and (max-width: 768px){.vac-room-footer{width:100%}.vac-box-footer{padding:7px 2px 7px 7px}.vac-box-footer.vac-box-footer-border{border-top:var(--chat-border-style-input)}.vac-textarea{padding:7px;line-height:18px}.vac-textarea::placeholder{color:transparent}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 5px!important}}@media only screen and (max-height: 768px){.vac-textarea{max-height:120px}}.vac-emojis-container{width:calc(100% - 16px);padding:10px 8px;background:var(--chat-footer-bg-color);display:flex;align-items:center;overflow:auto}.vac-emojis-container .vac-emoji-element{padding:0 8px;font-size:30px;border-radius:4px;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-emojis-container .vac-emoji-element-active{background:var(--chat-footer-bg-color-tag-active)}@media only screen and (max-width: 768px){.vac-emojis-container{width:calc(100% - 10px);padding:7px 5px}.vac-emojis-container .vac-emoji-element{padding:0 7px;font-size:26px}}.vac-reply-container{display:flex;padding:10px 10px 0;background:var(--chat-footer-bg-color);align-items:center;width:calc(100% - 20px)}.vac-reply-container .vac-reply-box{width:100%;overflow:hidden;background:var(--chat-footer-bg-color-reply);border-radius:4px;padding:8px 10px}.vac-reply-container .vac-reply-info{overflow:hidden}.vac-reply-container .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-container .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content);white-space:pre-line}.vac-reply-container .vac-icon-reply{margin-left:10px}.vac-reply-container .vac-icon-reply svg{height:20px;width:20px}.vac-reply-container .vac-image-reply{max-height:100px;max-width:200px;margin:4px 10px 0 0;border-radius:4px}.vac-reply-container .vac-audio-reply{margin-right:10px}.vac-reply-container .vac-file-container{max-width:80px}@media only screen and (max-width: 768px){.vac-reply-container{padding:5px 8px;width:calc(100% - 16px)}}.vac-room-files-container{display:flex;align-items:center;padding:10px 6px 0;background:var(--chat-footer-bg-color)}.vac-room-files-container .vac-files-box{display:flex;overflow:auto;width:calc(100% - 30px)}.vac-room-files-container video{height:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-files-container .vac-icon-close{margin-left:auto}.vac-room-files-container .vac-icon-close svg{height:20px;width:20px}@media only screen and (max-width: 768px){.vac-files-container{padding:6px 4px 4px 2px}}.vac-room-file-container{display:flex;position:relative;margin:0 4px}.vac-room-file-container .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:100px;width:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-file-container .vac-file-container{height:80px;width:80px}.vac-room-file-container .vac-icon-remove{position:absolute;top:6px;left:6px;z-index:10}.vac-room-file-container .vac-icon-remove svg{height:20px;width:20px;border-radius:50%}.vac-room-file-container .vac-icon-remove:before{content:" ";position:absolute;width:100%;height:100%;background:rgba(0,0,0,.5);border-radius:50%;z-index:-1}.vac-tags-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-tags-container .vac-tags-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-tags-container .vac-tags-box-active{background:var(--chat-footer-bg-color-tag-active)}.vac-tags-container .vac-tags-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-tags-container .vac-tags-avatar{height:34px;width:34px;min-height:34px;min-width:34px}.vac-tags-container .vac-tags-username{font-size:14px}@media only screen and (max-width: 768px){.vac-tags-container .vac-tags-box{height:50px}.vac-tags-container .vac-tags-info{padding:0 12px}}.vac-template-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-template-container .vac-template-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-template-container .vac-template-active{background:var(--chat-footer-bg-color-tag-active)}.vac-template-container .vac-template-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-template-container .vac-template-tag{font-size:14px;font-weight:700;margin-right:10px}.vac-template-container .vac-template-text{font-size:14px}@media only screen and (max-width: 768px){.vac-template-container .vac-template-box{height:50px}.vac-template-container .vac-template-info{padding:0 12px}}.vac-rooms-container{display:flex;flex-flow:column;flex:0 0 25%;min-width:260px;max-width:500px;position:relative;background:var(--chat-sidemenu-bg-color);height:100%;border-top-left-radius:var(--chat-container-border-radius);border-bottom-left-radius:var(--chat-container-border-radius)}.vac-rooms-container.vac-rooms-container-full{flex:0 0 100%;max-width:100%}.vac-rooms-container .vac-rooms-empty{font-size:14px;color:#9ca6af;font-style:italic;text-align:center;margin:40px 0;line-height:20px;white-space:pre-line}.vac-rooms-container .vac-room-list{flex:1;position:relative;max-width:100%;cursor:pointer;padding:0 10px 5px;overflow-y:auto}.vac-rooms-container .vac-room-item{border-radius:8px;align-items:center;display:flex;flex:1 1 100%;margin-bottom:5px;padding:0 14px;position:relative;min-height:71px;transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-rooms-container .vac-room-item:hover{background:var(--chat-sidemenu-bg-color-hover)}.vac-rooms-container .vac-room-selected{color:var(--chat-sidemenu-color-active)!important;background:var(--chat-sidemenu-bg-color-active)!important}.vac-rooms-container .vac-room-selected:hover{background:var(--chat-sidemenu-bg-color-active)!important}@media only screen and (max-width: 768px){.vac-rooms-container .vac-room-list{padding:0 7px 5px}.vac-rooms-container .vac-room-item{min-height:60px;padding:0 8px}}.vac-room-container{display:flex;flex:1;align-items:center;width:100%}.vac-room-container .vac-name-container{flex:1}.vac-room-container .vac-title-container{display:flex;align-items:center;line-height:25px}.vac-room-container .vac-state-circle{width:9px;height:9px;border-radius:50%;background-color:var(--chat-room-color-offline);margin-right:6px;transition:.3s}.vac-room-container .vac-state-online{background-color:var(--chat-room-color-online)}.vac-room-container .vac-room-name{flex:1;color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-text-date{margin-left:5px;font-size:11px;color:var(--chat-room-color-timestamp)}.vac-room-container .vac-text-last{display:flex;align-items:center;font-size:12px;line-height:19px;color:var(--chat-room-color-message)}.vac-room-container .vac-message-new{color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-icon-check{display:flex;vertical-align:middle;height:14px;width:14px;margin-top:-2px;margin-right:2px}.vac-room-container .vac-icon-microphone{height:15px;width:15px;vertical-align:middle;margin:-3px 1px 0 -2px;fill:var(--chat-room-color-message)}.vac-room-container .vac-room-options-container{display:flex;margin-left:auto}.vac-room-container .vac-room-badge{background-color:var(--chat-room-bg-color-badge);color:var(--chat-room-color-badge);margin-left:5px}.vac-room-container .vac-list-room-options{height:19px;width:19px;align-items:center;margin-left:5px}.vac-box-empty{margin-top:10px}@media only screen and (max-width: 768px){.vac-box-empty{margin-top:7px}}.vac-box-search{position:sticky;display:flex;align-items:center;height:64px;padding:0 15px}.vac-box-search .vac-icon-search{display:flex;position:absolute;left:30px}.vac-box-search .vac-icon-search svg{width:18px;height:18px}.vac-box-search .vac-input{height:38px;width:100%;background:var(--chat-bg-color-input);color:var(--chat-color);font-size:15px;outline:0;caret-color:var(--chat-color-caret);padding:10px 10px 10px 40px;border:1px solid var(--chat-sidemenu-border-color-search);border-radius:20px}.vac-box-search .vac-input::placeholder{color:var(--chat-color-placeholder)}.vac-box-search .vac-add-icon{margin-left:auto;padding-left:10px}@media only screen and (max-width: 768px){.vac-box-search{height:58px}}.vac-message-wrapper .vac-card-info{border-radius:4px;text-align:center;margin:10px auto;font-size:12px;padding:4px;display:block;overflow-wrap:break-word;position:relative;white-space:normal;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-card-date{max-width:150px;font-weight:500;text-transform:uppercase;color:var(--chat-message-color-date);background-color:var(--chat-message-bg-color-date)}.vac-message-wrapper .vac-card-system{max-width:250px;padding:8px 4px;color:var(--chat-message-color-system);background-color:var(--chat-message-bg-color-system)}.vac-message-wrapper .vac-line-new{color:var(--chat-message-color-new-messages);position:relative;text-align:center;font-size:13px;padding:10px 0}.vac-message-wrapper .vac-line-new:after,.vac-message-wrapper .vac-line-new:before{border-top:1px solid var(--chat-message-color-new-messages);content:"";left:0;position:absolute;top:50%;width:calc(50% - 60px)}.vac-message-wrapper .vac-line-new:before{left:auto;right:0}.vac-message-wrapper .vac-message-box{display:flex;flex:0 0 50%;max-width:50%;justify-content:flex-start;line-height:1.4}.vac-message-wrapper .vac-avatar{height:28px;width:28px;min-height:28px;min-width:28px;margin:0 0 2px;align-self:flex-end}.vac-message-wrapper .vac-avatar-current-offset{margin-right:28px}.vac-message-wrapper .vac-avatar-offset{margin-left:28px}.vac-message-wrapper .vac-failure-container{position:relative;align-self:flex-end;height:20px;width:20px;margin:0 0 2px -4px;border-radius:50%;background-color:#f44336}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:6px}.vac-message-wrapper .vac-failure-container .vac-failure-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:15px;font-weight:700}.vac-message-wrapper .vac-message-container{position:relative;padding:2px 10px;align-items:end;min-width:100px;box-sizing:content-box}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-offset-current{margin-left:50%;justify-content:flex-end}.vac-message-wrapper .vac-message-card{background-color:var(--chat-message-bg-color);color:var(--chat-message-color);border-radius:8px;font-size:14px;padding:6px 9px 3px;white-space:pre-line;max-width:100%;-webkit-transition-property:box-shadow,opacity;transition-property:box-shadow,opacity;transition:box-shadow .28s cubic-bezier(.4,0,.2,1);will-change:box-shadow;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-message-highlight{box-shadow:0 1px 2px -1px #0000001a,0 1px 2px -1px #0000001c,0 1px 5px -1px #0000001c}.vac-message-wrapper .vac-message-current{background-color:var(--chat-message-bg-color-me)!important}.vac-message-wrapper .vac-message-deleted{color:var(--chat-message-color-deleted)!important;font-size:13px!important;font-style:italic!important;background-color:var(--chat-message-bg-color-deleted)!important}.vac-message-wrapper .vac-message-selected{background-color:var(--chat-message-bg-color-selected)!important;transition:background-color .2s}.vac-message-wrapper .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:250px;width:250px;max-width:100%;border-radius:4px;margin:4px auto 5px;transition:.4s filter linear}.vac-message-wrapper .vac-text-username{font-size:13px;color:var(--chat-message-color-username);margin-bottom:2px}.vac-message-wrapper .vac-username-reply{margin-bottom:5px}.vac-message-wrapper .vac-text-timestamp{font-size:10px;color:var(--chat-message-color-timestamp);text-align:right}.vac-message-wrapper .vac-progress-time{float:left;margin:-2px 0 0 40px;color:var(--chat-color);font-size:12px}.vac-message-wrapper .vac-icon-edited{-webkit-box-align:center;align-items:center;display:-webkit-inline-box;display:inline-flex;justify-content:center;letter-spacing:normal;line-height:1;text-indent:0;vertical-align:middle;margin:0 4px 2px}.vac-message-wrapper .vac-icon-edited svg{height:12px;width:12px}.vac-message-wrapper .vac-icon-check{height:14px;width:14px;vertical-align:middle;margin:-3px -3px 0 3px}@media only screen and (max-width: 768px){.vac-message-wrapper .vac-message-container{padding:2px 3px 1px}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-message-box{flex:0 0 80%;max-width:80%}.vac-message-wrapper .vac-avatar{height:25px;width:25px;min-height:25px;min-width:25px;margin:0 6px 1px 0}.vac-message-wrapper .vac-avatar.vac-avatar-current{margin:0 0 1px 6px}.vac-message-wrapper .vac-avatar-current-offset{margin-right:31px}.vac-message-wrapper .vac-avatar-offset{margin-left:31px}.vac-message-wrapper .vac-failure-container{margin-left:2px}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:0}.vac-message-wrapper .vac-offset-current{margin-left:20%}.vac-message-wrapper .vac-progress-time{margin-left:37px}}.vac-audio-player{display:flex;margin:8px 0 5px}.vac-audio-player .vac-svg-button{max-width:18px;margin-left:7px}@media only screen and (max-width: 768px){.vac-audio-player{margin:4px 0 0}.vac-audio-player .vac-svg-button{max-width:16px;margin-left:5px}}.vac-player-bar{display:flex;align-items:center;max-width:calc(100% - 18px);margin-right:7px;margin-left:20px}.vac-player-bar .vac-player-progress{width:190px}.vac-player-bar .vac-player-progress .vac-line-container{position:relative;height:4px;border-radius:5px;background-color:var(--chat-message-bg-color-audio-line)}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-progress{position:absolute;height:inherit;background-color:var(--chat-message-bg-color-audio-progress);border-radius:inherit}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{position:absolute;top:-5px;margin-left:-7px;height:14px;width:14px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-progress-selector);transition:transform .25s}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot__active{transform:scale(1.2)}@media only screen and (max-width: 768px){.vac-player-bar{margin-right:5px}.vac-player-bar .vac-player-progress .vac-line-container{height:3px}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{height:12px;width:12px;top:-5px;margin-left:-5px}}.vac-message-actions-wrapper .vac-options-container{position:absolute;top:2px;right:10px;height:40px;width:70px;overflow:hidden;border-top-right-radius:8px}.vac-message-actions-wrapper .vac-blur-container{position:absolute;height:100%;width:100%;left:8px;bottom:10px;background:var(--chat-message-bg-color);filter:blur(3px);border-bottom-left-radius:8px}.vac-message-actions-wrapper .vac-options-me{background:var(--chat-message-bg-color-me)}.vac-message-actions-wrapper .vac-message-options{background:var(--chat-icon-bg-dropdown-message);border-radius:50%;position:absolute;top:7px;right:7px}.vac-message-actions-wrapper .vac-message-options svg{height:17px;width:17px;padding:5px;margin:-5px}.vac-message-actions-wrapper .vac-message-emojis{position:absolute;top:6px;right:30px}.vac-message-actions-wrapper .vac-menu-options{right:15px}.vac-message-actions-wrapper .vac-menu-left{right:-118px}@media only screen and (max-width: 768px){.vac-message-actions-wrapper .vac-options-container{right:3px}.vac-message-actions-wrapper .vac-menu-left{right:-50px}}.vac-message-files-container .vac-file-wrapper{position:relative;width:fit-content}.vac-message-files-container .vac-file-wrapper .vac-file-container{height:60px;width:60px;margin:3px 0 5px;cursor:pointer;transition:all .6s}.vac-message-files-container .vac-file-wrapper .vac-file-container:hover{opacity:.85}.vac-message-files-container .vac-file-wrapper .vac-file-container svg{height:30px;width:30px}.vac-message-files-container .vac-file-wrapper .vac-file-container.vac-file-container-progress{background-color:#0000004d}.vac-message-file-container{position:relative;z-index:0}.vac-message-file-container .vac-message-image-container{cursor:pointer}.vac-message-file-container .vac-image-buttons{position:absolute;width:100%;height:100%;border-radius:4px;background:linear-gradient(to bottom,rgba(0,0,0,0) 55%,rgba(0,0,0,.02) 60%,rgba(0,0,0,.05) 65%,rgba(0,0,0,.1) 70%,rgba(0,0,0,.2) 75%,rgba(0,0,0,.3) 80%,rgba(0,0,0,.5) 85%,rgba(0,0,0,.6) 90%,rgba(0,0,0,.7) 95%,rgba(0,0,0,.8) 100%)}.vac-message-file-container .vac-image-buttons svg{height:26px;width:26px}.vac-message-file-container .vac-image-buttons .vac-button-view,.vac-message-file-container .vac-image-buttons .vac-button-download{position:absolute;bottom:6px;left:7px}.vac-message-file-container .vac-image-buttons :first-child{left:40px}.vac-message-file-container .vac-image-buttons .vac-button-view{max-width:18px;bottom:8px}.vac-message-file-container .vac-video-container{width:350px;max-width:100%;margin:4px auto 5px;cursor:pointer}.vac-message-file-container .vac-video-container video{width:100%;height:100%;border-radius:4px}.vac-button-reaction{display:inline-flex;align-items:center;border:var(--chat-message-border-style-reaction);outline:none;background:var(--chat-message-bg-color-reaction);border-radius:4px;margin:4px 2px 0;transition:.3s;padding:0 5px;font-size:18px;line-height:23px}.vac-button-reaction span{font-size:11px;font-weight:500;min-width:7px;color:var(--chat-message-color-reaction-counter)}.vac-button-reaction:hover{border:var(--chat-message-border-style-reaction-hover);background:var(--chat-message-bg-color-reaction-hover);cursor:pointer}.vac-button-reaction.vac-reaction-me{border:var(--chat-message-border-style-reaction-me);background:var(--chat-message-bg-color-reaction-me)}.vac-button-reaction.vac-reaction-me span{color:var(--chat-message-color-reaction-counter-me)}.vac-button-reaction.vac-reaction-me:hover{border:var(--chat-message-border-style-reaction-hover-me);background:var(--chat-message-bg-color-reaction-hover-me)}.vac-reply-message{background:var(--chat-message-bg-color-reply);border-radius:4px;margin:-1px -5px 8px;padding:8px 10px}.vac-reply-message .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-message .vac-image-reply-container{width:70px}.vac-reply-message .vac-image-reply-container .vac-message-image-reply{height:70px;width:70px;margin:4px auto 3px}.vac-reply-message .vac-video-reply-container{width:200px;max-width:100%}.vac-reply-message .vac-video-reply-container video{width:100%;height:100%;border-radius:4px}.vac-reply-message .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content)}.vac-reply-message .vac-file-container{height:60px;width:60px}.vac-emoji-wrapper{position:relative;display:flex}.vac-emoji-wrapper .vac-emoji-reaction svg{height:19px;width:19px}.vac-emoji-wrapper .vac-emoji-picker{position:absolute;z-index:9999;bottom:32px;right:10px;width:300px;padding-top:4px;overflow:scroll;box-sizing:border-box;border-radius:.5rem;background:var(--chat-emoji-bg-color);box-shadow:0 1px 2px -2px #0000001a,0 1px 2px -1px #0000001a,0 1px 2px 1px #0000001a;scrollbar-width:none}.vac-emoji-wrapper .vac-emoji-picker::-webkit-scrollbar{display:none}.vac-emoji-wrapper .vac-emoji-picker.vac-picker-reaction{position:fixed;top:initial;right:initial}.vac-emoji-wrapper .vac-emoji-picker emoji-picker{height:100%;width:100%;--emoji-size: 1.2rem;--background: var(--chat-emoji-bg-color);--emoji-padding: .4rem;--border-color: var(--chat-sidemenu-border-color-search);--button-hover-background: var(--chat-sidemenu-bg-color-hover);--button-active-background: var(--chat-sidemenu-bg-color-hover)}.vac-format-message-wrapper .vac-format-container{display:inline}.vac-format-message-wrapper .vac-icon-deleted{height:14px;width:14px;vertical-align:middle;margin:-2px 2px 0 0;fill:var(--chat-message-color-deleted)}.vac-format-message-wrapper .vac-icon-deleted.vac-icon-deleted-room{margin:-3px 1px 0 0;fill:var(--chat-room-color-message)}.vac-format-message-wrapper .vac-image-link-container{background-color:var(--chat-message-bg-color-media);padding:8px;margin:2px auto;border-radius:4px}.vac-format-message-wrapper .vac-image-link{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:contain;background-position:center center!important;background-repeat:no-repeat!important;height:150px;width:150px;max-width:100%;border-radius:4px;margin:0 auto}.vac-format-message-wrapper .vac-image-link-message{max-width:166px;font-size:12px}.vac-loader-wrapper.vac-container-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-loader-wrapper.vac-container-top{padding:21px}.vac-loader-wrapper.vac-container-top #vac-circle{height:20px;width:20px}.vac-loader-wrapper #vac-circle{margin:auto;height:28px;width:28px;border:3px rgba(0,0,0,.25) solid;border-top:3px var(--chat-color-spinner) solid;border-right:3px var(--chat-color-spinner) solid;border-bottom:3px var(--chat-color-spinner) solid;border-radius:50%;-webkit-animation:vac-spin 1s infinite linear;animation:vac-spin 1s infinite linear}@media only screen and (max-width: 768px){.vac-loader-wrapper #vac-circle{height:24px;width:24px}.vac-loader-wrapper.vac-container-top{padding:18px}.vac-loader-wrapper.vac-container-top #vac-circle{height:16px;width:16px}}@-webkit-keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}@keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}#vac-icon-search{fill:var(--chat-icon-color-search)}#vac-icon-add{fill:var(--chat-icon-color-add)}#vac-icon-toggle{fill:var(--chat-icon-color-toggle)}#vac-icon-menu{fill:var(--chat-icon-color-menu)}#vac-icon-close{fill:var(--chat-icon-color-close)}#vac-icon-close-image{fill:var(--chat-icon-color-close-image)}#vac-icon-file{fill:var(--chat-icon-color-file)}#vac-icon-paperclip{fill:var(--chat-icon-color-paperclip)}#vac-icon-close-outline{fill:var(--chat-icon-color-close-outline)}#vac-icon-close-outline-preview{fill:var(--chat-icon-color-close-preview)}#vac-icon-send{fill:var(--chat-icon-color-send)}#vac-icon-send-disabled{fill:var(--chat-icon-color-send-disabled)}#vac-icon-emoji{fill:var(--chat-icon-color-emoji)}#vac-icon-emoji-reaction{fill:var(--chat-icon-color-emoji-reaction)}#vac-icon-document{fill:var(--chat-icon-color-document)}#vac-icon-pencil{fill:var(--chat-icon-color-pencil)}#vac-icon-checkmark,#vac-icon-double-checkmark{fill:var(--chat-icon-color-checkmark)}#vac-icon-checkmark-seen,#vac-icon-double-checkmark-seen{fill:var(--chat-icon-color-checkmark-seen)}#vac-icon-eye{fill:var(--chat-icon-color-eye)}#vac-icon-dropdown-message{fill:var(--chat-icon-color-dropdown-message)}#vac-icon-dropdown-room{fill:var(--chat-icon-color-dropdown-room)}#vac-icon-dropdown-scroll{fill:var(--chat-icon-color-dropdown-scroll)}#vac-icon-audio-play{fill:var(--chat-icon-color-audio-play)}#vac-icon-audio-pause{fill:var(--chat-icon-color-audio-pause)}.vac-progress-wrapper{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-progress-wrapper circle{transition:stroke-dashoffset .35s;transform:rotate(-90deg);transform-origin:50% 50%}.vac-progress-wrapper .vac-progress-content{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:-1;margin-top:-2px;background-color:#000000b3;border-radius:50%}.vac-progress-wrapper .vac-progress-content .vac-progress-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:700;color:#fff}.vac-progress-wrapper .vac-progress-content .vac-progress-text .vac-progress-pourcent{font-size:9px;font-weight:400}\n';
 const _sfc_main = {
   name: "ChatContainer",
   components: {
@@ -29563,7 +29559,8 @@ const _sfc_main = {
     usernameOptions: {
       type: [Object, String],
       default: () => ({ minUsers: 3, currentUser: false })
-    }
+    },
+    emojiDataSource: { type: String, default: void 0 }
   },
   emits: [
     "toggle-rooms-list",
@@ -29981,6 +29978,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         "accepted-files": $props.acceptedFiles,
         "templates-text": $options.templatesTextCasted,
         "username-options": $options.usernameOptionsCasted,
+        "emoji-data-source": $props.emojiDataSource,
         onToggleRoomsList: $options.toggleRoomsList,
         onRoomInfo: $options.roomInfo,
         onFetchMessages: $options.fetchMessages,
@@ -30005,7 +30003,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             ])
           };
         })
-      ]), 1032, ["current-user-id", "rooms", "room-id", "load-first-room", "messages", "room-message", "messages-loaded", "menu-actions", "message-actions", "message-selection-actions", "auto-scroll", "show-send-icon", "show-files", "show-audio", "audio-bit-rate", "audio-sample-rate", "show-emojis", "show-reaction-emojis", "show-new-messages-divider", "show-footer", "text-messages", "single-room", "show-rooms-list", "text-formatting", "link-options", "is-mobile", "loading-rooms", "room-info-enabled", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "scroll-distance", "accepted-files", "templates-text", "username-options", "onToggleRoomsList", "onRoomInfo", "onFetchMessages", "onSendMessage", "onEditMessage", "onDeleteMessage", "onOpenFile", "onOpenUserTag", "onOpenFailedMessage", "onMenuActionHandler", "onMessageActionHandler", "onMessageSelectionActionHandler", "onSendMessageReaction", "onTypingMessage", "onTextareaActionHandler"])
+      ]), 1032, ["current-user-id", "rooms", "room-id", "load-first-room", "messages", "room-message", "messages-loaded", "menu-actions", "message-actions", "message-selection-actions", "auto-scroll", "show-send-icon", "show-files", "show-audio", "audio-bit-rate", "audio-sample-rate", "show-emojis", "show-reaction-emojis", "show-new-messages-divider", "show-footer", "text-messages", "single-room", "show-rooms-list", "text-formatting", "link-options", "is-mobile", "loading-rooms", "room-info-enabled", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "scroll-distance", "accepted-files", "templates-text", "username-options", "emoji-data-source", "onToggleRoomsList", "onRoomInfo", "onFetchMessages", "onSendMessage", "onEditMessage", "onDeleteMessage", "onOpenFile", "onOpenUserTag", "onOpenFailedMessage", "onMenuActionHandler", "onMessageActionHandler", "onMessageSelectionActionHandler", "onSendMessageReaction", "onTypingMessage", "onTextareaActionHandler"])
     ]),
     createVNode(Transition, {
       name: "vac-fade-preview",
