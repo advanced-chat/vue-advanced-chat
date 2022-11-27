@@ -358,12 +358,7 @@ export default {
 					seen: message.sender_id === this.currentUserId ? message.seen : null,
 					new:
 						message.sender_id !== this.currentUserId &&
-						(!message.seen || !message.seen[this.currentUserId]),
-					lastMessage: {
-						...message.lastMessage,
-						_id: message.id,
-						senderId: message.sender_id
-					}
+						(!message.seen || !message.seen[this.currentUserId])
 				}
 			}
 		},
@@ -460,8 +455,7 @@ export default {
 					username: room.users.find(user => message.sender_id === user._id)
 						?.username,
 					// avatar: senderUser ? senderUser.avatar : null,
-					distributed: true,
-					lastMessage: { ...message.lastMessage, senderId: message.sender_id }
+					distributed: true
 				}
 			}
 
