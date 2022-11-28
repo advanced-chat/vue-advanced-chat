@@ -30,7 +30,7 @@
 
 Enjoy :smile:
 
-## [Real World Example](https://vue-advanced-chat.herokuapp.com/)
+## [Real World Example](https://vue-advanced-chat-app.netlify.app/)
 
 A Progressive Web Application showcasing all the features of `vue-advanced-chat` component.<br>
 Built with Firestore, Vuetify, and Push Notifications.
