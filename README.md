@@ -82,7 +82,7 @@ yarn add vue-advanced-chat
 
 ### Vue
 
-Register `vue-advanced-chat` and `emoji-picker` as a web component in your [config file](https://vuejs.org/guide/extras/web-components.html#example-vite-config):
+Register `vue-advanced-chat` and `emoji-picker` as web components in your [config file](https://vuejs.org/guide/extras/web-components.html#example-vite-config):
 
 ```javascript
 compilerOptions: {
