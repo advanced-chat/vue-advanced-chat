@@ -478,10 +478,7 @@ export default {
 		const isMobile = detectMobile()
 
 		window.addEventListener('keyup', e => {
-			if (e.key === 'Enter' && !e.ctrlKey && !this.fileDialog) {
-				this.message = this.message + '\n'
-				setTimeout(() => this.onChangeInput())
-			} else if (e.key === 'Enter' && e.ctrlKey && !this.fileDialog) {
+			if (e.key === 'Enter' && e.ctrlKey && !this.fileDialog) {
 				this.sendMessage()
 			}
 
