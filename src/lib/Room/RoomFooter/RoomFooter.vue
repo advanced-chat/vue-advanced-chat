@@ -201,6 +201,7 @@ import vClickOutside from '../../../utils/on-click-outside'
 import filteredItems from '../../../utils/filter-items'
 import Recorder from '../../../utils/recorder'
 
+import { detectChrome } from '../../../utils/browser-detection'
 import { detectMobile } from '../../../utils/mobile-detection'
 
 export default {
@@ -394,9 +395,10 @@ export default {
 
 			if (this.cursorRangePosition) {
 				setTimeout(() => {
+					const offset = detectChrome() ? 0 : 1
 					this.getTextareaRef().setSelectionRange(
-						this.cursorRangePosition,
-						this.cursorRangePosition
+						this.cursorRangePosition + offset,
+						this.cursorRangePosition + offset
 					)
 					this.cursorRangePosition = null
 				})
@@ -445,13 +447,13 @@ export default {
 		updateActiveUpOrDown(event, direction) {
 			if (this.filteredEmojis.length) {
 				this.activeUpOrDownEmojis = direction
-        event.preventDefault()
+				event.preventDefault()
 			} else if (this.filteredUsersTag.length) {
 				this.activeUpOrDownUsersTag = direction
-        event.preventDefault()
+				event.preventDefault()
 			} else if (this.filteredTemplatesText.length) {
 				this.activeUpOrDownTemplatesText = direction
-        event.preventDefault()
+				event.preventDefault()
 			}
 		},
 		selectItem() {
