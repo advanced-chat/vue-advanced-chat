@@ -624,7 +624,6 @@ export default {
 
 			this.resetMessage(true)
 		},
-		// eslint-disable-next-line vue/no-unused-properties
 		editMessage(message) {
 			this.resetMessage()
 
@@ -664,7 +663,6 @@ export default {
 
 			setTimeout(() => this.resizeTextarea())
 		},
-		// eslint-disable-next-line vue/no-unused-properties
 		replyMessage(message) {
 			this.editedMessage = {}
 			this.messageReply = message
