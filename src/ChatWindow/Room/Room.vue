@@ -206,7 +206,7 @@
 					:style="{
 						'min-height': '20px',
 						'padding-left': '12px',
-						'max-height': '346px',
+						'max-height': files.length || messageReply ? 'calc(40vh - 100px)' : '40vh',
 						'overflow': 'auto'
 					}"
 					@input="onChangeInput"
