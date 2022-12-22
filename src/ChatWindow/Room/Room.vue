@@ -205,7 +205,9 @@
 					}"
 					:style="{
 						'min-height': '20px',
-						'padding-left': '12px'
+						'padding-left': '12px',
+						'max-height': '346px',
+						'overflow': 'auto'
 					}"
 					@input="onChangeInput"
 					@keydown.esc="escapeTextarea"
@@ -1136,12 +1138,15 @@ export default {
 
 	.vac-icon-textarea {
 		margin-left: 5px;
+		align-items: flex-end;
+		padding-bottom: 10px;
 	}
 
 	.vac-icon-textarea-left {
 		display: flex;
-		align-items: center;
+		align-items: flex-end;
 		margin-right: 5px;
+		padding-bottom: 10px;
 
 		svg,
 		.vac-wrapper {
