@@ -105,6 +105,7 @@ export default {
 		border-radius: 4px;
 		padding: 8px 10px;
 		display: flex;
+		max-height: 100px;
 	}
 
 	.vac-reply-info {
