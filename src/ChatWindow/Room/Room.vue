@@ -1138,8 +1138,9 @@ export default {
 
 	.vac-icon-textarea {
 		margin-left: 5px;
-		align-items: flex-end;
-		padding-bottom: 10px;
+		align-items: center;
+		padding-bottom: 5px;
+		margin-right: 15px;
 	}
 
 	.vac-icon-textarea-left {
