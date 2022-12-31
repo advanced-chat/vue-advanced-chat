@@ -1094,6 +1094,7 @@ export default {
 		position: relative;
 		background: var(--chat-footer-bg-color);
 		padding: 10px 8px 10px;
+		align-items: flex-end;
 	}
 
 	.vac-textarea {

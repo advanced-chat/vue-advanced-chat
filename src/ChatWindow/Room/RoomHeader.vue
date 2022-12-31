@@ -184,7 +184,7 @@ export default {
 		min-width: 0;
 		width: 100%;
 		height: 100%;
-		margin-bottom: 5px;
+		margin-bottom: 3px;
 	}
 
 	.vac-room-name {

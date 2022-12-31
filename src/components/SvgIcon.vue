@@ -198,6 +198,8 @@ export default {
 	padding: 5px;
 	margin-left: 12px !important;
 	border: 1px solid var(--chat-icon-color-add);
+	width: 28px;
+	height: 28px;
 }
 
 #vac-icon-send-disabled {
@@ -211,6 +213,8 @@ export default {
 	padding: 5px;
 	margin-left: 12px !important;
 	border: 1px solid var(--chat-icon-color-send-disabled);
+	width: 28px;
+	height: 28px;
 }
 
 #vac-icon-emoji {
