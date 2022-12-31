@@ -1144,6 +1144,7 @@ export default {
 		margin-right: 15px;
 		background-color: #fff;
 		border-radius: 0px 20px 20px 0px;
+		height: 44px;
 	}
 
 	.vac-icon-textarea-left {
