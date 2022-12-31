@@ -1,20 +1,21 @@
 export const defaultThemeStyles = {
 	light: {
 		general: {
-			color: '#0a0a0a',
+			color: '#442D65',
 			backgroundInput: '#fff',
 			colorPlaceholder: '#9ca6af',
 			colorCaret: '#1976d2',
 			colorSpinner: '#333',
-			borderStyle: '1px solid #e1e4e8',
-			backgroundScrollIcon: '#fff'
+			borderStyle: '1px solid #F8F9FA',
+			backgroundScrollIcon: '#fff',
+			searchBgColor: '#FAF7FF'
 		},
 
 		container: {
 			border: '5px solid #fff',
-			borderRadius: '4px',
+			borderRadius: '7px',
 			boxShadow:
-				'0px 1px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)'
+				'0px 3px 6px rgba(71, 48, 104, 0.06), 0px 3px 6px rgba(71, 48, 104, 0.06)'
 		},
 
 		header: {
@@ -24,7 +25,7 @@ export const defaultThemeStyles = {
 		},
 
 		footer: {
-			background: '#eef1fa',
+			background: 'none',
 			borderStyleInput: '1px solid #e1e4e8',
 			borderInputSelected: '#1976d2',
 			backgroundReply: '#e5e5e6',
@@ -32,30 +33,31 @@ export const defaultThemeStyles = {
 		},
 
 		content: {
-			background: '#eef1fa'
+			background: '#F8F9FA'
 		},
 
 		sidemenu: {
 			background: '#fff',
 			backgroundHover: '#f6f6f6',
-			backgroundActive: '#c5e5e5',
+			backgroundActive: '#F6F1FE',
 			colorActive: '#1976d2',
-			borderColorSearch: '#e1e5e8'
+			borderColorSearch: '#442D65',
+			leftBorderColor: '#9176BA'
 		},
 
 		dropdown: {
-			background: '#eef1fa',
-			backgroundHover: '#eee4fe'
+			background: '#fff',
+			backgroundHover: '#F6F1FE'
 		},
 
 		message: {
 			background: '#fff',
-			backgroundMe: '#c5e5e5',
-			color: '#0a0a0a',
+			backgroundMe: '#FFFFFF',
+			color: '#442D65',
 			colorStarted: '#9ca6af',
 			backgroundDeleted: '#dadfe2',
 			colorDeleted: '#757e85',
-			colorUsername: '#9ca6af',
+			colorUsername: '#442D65',
 			colorTimestamp: '#828c94',
 			backgroundDate: '#e5effa',
 			colorDate: '#505a62',
@@ -94,7 +96,7 @@ export const defaultThemeStyles = {
 		},
 
 		room: {
-			colorUsername: '#0a0a0a',
+			colorUsername: '#442D65',
 			colorMessage: '#67717a',
 			colorTimestamp: '#a2aeb8',
 			colorStateOnline: '#4caf50',
@@ -109,15 +111,15 @@ export const defaultThemeStyles = {
 
 		icons: {
 			search: '#9ca6af',
-			add: '#442d65',
-			toggle: '#0a0a0a',
+			add: '#70D0CE',
+			toggle: '#5D3F89',
 			menu: '#0a0a0a',
 			close: '#9ca6af',
 			closeImage: '#fff',
 			file: '#442d65',
 			paperclip: '#442d65',
 			closeOutline: '#000',
-			send: '#442d65',
+			send: '#FFFFFF',
 			sendDisabled: '#9ca6af',
 			emoji: '#442d65',
 			emojiReaction: 'rgba(0, 0, 0, 0.3)',
@@ -193,7 +195,7 @@ export const defaultThemeStyles = {
 			colorStarted: '#9ca6af',
 			backgroundDeleted: '#1b1c21',
 			colorDeleted: '#a2a5a8',
-			colorUsername: '#b3bac9',
+			colorUsername: '#442D65',
 			colorTimestamp: '#ebedf2',
 			backgroundDate: 'rgba(0, 0, 0, 0.3)',
 			colorDate: '#bec5cc',
@@ -294,6 +296,7 @@ export const cssThemeVars = ({
 	return {
 		// general
 		'--chat-color': general.color,
+		'--chat-search-color': general.searchBgColor,
 		'--chat-bg-color-input': general.backgroundInput,
 		'--chat-color-spinner': general.colorSpinner,
 		'--chat-color-placeholder': general.colorPlaceholder,
@@ -324,6 +327,7 @@ export const cssThemeVars = ({
 		// sidemenu
 		'--chat-sidemenu-bg-color': sidemenu.background,
 		'--chat-sidemenu-bg-color-hover': sidemenu.backgroundHover,
+		'--chat-sidemenu-border-color-selected': sidemenu.leftBorderColor,
 		'--chat-sidemenu-bg-color-active': sidemenu.backgroundActive,
 		'--chat-sidemenu-color-active': sidemenu.colorActive,
 		'--chat-sidemenu-border-color-search': sidemenu.borderColorSearch,

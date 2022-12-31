@@ -152,6 +152,7 @@ export default {
 	margin-right: 1px;
 	background: var(--chat-header-bg-color);
 	border-top-right-radius: var(--chat-container-border-radius);
+	box-shadow: 0px 3px 6px rgba(71, 48, 104, 0.06);
 
 	.vac-room-wrapper {
 		display: flex;
@@ -164,6 +165,7 @@ export default {
 
 	.vac-toggle-button {
 		margin-right: 15px;
+		margin-top: 22px;
 
 		svg {
 			height: 26px;
@@ -173,6 +175,7 @@ export default {
 
 	.vac-rotate-icon {
 		transform: rotate(180deg) !important;
+		margin-bottom: 27px;
 	}
 
 	.vac-info-wrapper {
@@ -181,6 +184,7 @@ export default {
 		min-width: 0;
 		width: 100%;
 		height: 100%;
+		margin-bottom: 5px;
 	}
 
 	.vac-room-name {
@@ -198,6 +202,7 @@ export default {
 
 	.vac-room-options {
 		margin-left: auto;
+		margin-bottom: 18px;
 	}
 
 	@media only screen and (max-width: 768px) {

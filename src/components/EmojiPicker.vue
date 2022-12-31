@@ -8,6 +8,7 @@
 				:class="{ 'vac-emoji-reaction': emojiReaction }"
 				@click.stop="clickEvent"
 				@click="openEmoji"
+				style="margin-right: -3px;"
 			>
 				<slot name="emoji-picker-icon">
 					<svg-icon name="emoji" :param="emojiReaction ? 'reaction' : ''" />
