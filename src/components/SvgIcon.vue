@@ -1,5 +1,11 @@
 <template>
 	<svg
+		:class="
+			name == 'send'
+			? 'send-btn'
+			: name == 'menu'
+			? 'option-btn'
+			: 'none'"
 		xmlns="http://www.w3.org/2000/svg"
 		xmlns:xlink="http://www.w3.org/1999/xlink"
 		version="1.1"
@@ -33,8 +39,9 @@ export default {
 						'M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z'
 				},
 				toggle: {
+					size: 'custom',
 					path:
-						'M5,13L9,17L7.6,18.42L1.18,12L7.6,5.58L9,7L5,11H21V13H5M21,6V8H11V6H21M21,16V18H11V16H21Z'
+						'M8.32026 16.4795L1.01296 9.31186C0.613297 8.91984 0.613295 8.2761 1.01296 7.88407L8.32026 0.716373'
 				},
 
 				menu: {
@@ -50,15 +57,18 @@ export default {
 						'M14,17H7V15H14M17,13H7V11H17M17,9H7V7H17M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z'
 				},
 				paperclip: {
+					size: 'custom',
 					path:
-						'M16.5,6V17.5A4,4 0 0,1 12.5,21.5A4,4 0 0,1 8.5,17.5V5A2.5,2.5 0 0,1 11,2.5A2.5,2.5 0 0,1 13.5,5V15.5A1,1 0 0,1 12.5,16.5A1,1 0 0,1 11.5,15.5V6H10V15.5A2.5,2.5 0 0,0 12.5,18A2.5,2.5 0 0,0 15,15.5V5A4,4 0 0,0 11,1A4,4 0 0,0 7,5V17.5A5.5,5.5 0 0,0 12.5,23A5.5,5.5 0 0,0 18,17.5V6H16.5Z'
+						'M12.9926 5.11493L5.56802 12.5395C3.81066 14.2969 3.81066 17.1461 5.56802 18.9035C7.32537 20.6608 10.1746 20.6608 11.932 18.9035L20.7708 10.0647C21.9424 8.8931 21.9424 6.9936 20.7708 5.82205C19.5992 4.65046 17.6997 4.65046 16.5282 5.82205L7.68932 14.6608C7.10357 15.2466 7.10357 16.1964 7.68932 16.7822C8.27512 17.368 9.22488 17.368 9.81068 16.7822L17.2353 9.35755'
 				},
 				'close-outline': {
 					path:
 						'M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z'
 				},
 				send: {
-					path: 'M2,21L23,12L2,3V10L17,12L2,14V21Z'
+					size: 'custom',
+					path: 'M15.9883 2.94824L2.00238 10.5406L9.59473 11.3398L13.5928 18.1329L15.9883 2.94824Z',
+					path2: 'M9.67969 11.5647L15.4464 3.70117'
 				},
 				emoji: {
 					path:
@@ -120,6 +130,7 @@ export default {
 
 			if (item.size === 'large') return 512
 			else if (item.size === 'medium') return 48
+			else if (item.size === 'custom') return 22
 			else return 24
 		},
 		stroke() {
@@ -130,6 +141,14 @@ export default {
 </script>
 
 <style lang="scss">
+
+.option-btn{
+	background: #FFFFFF;
+	box-shadow: 0px 9px 10px rgba(39, 32, 48, 0.06);
+	border-radius: 50px;
+	padding: 5px;
+}
+
 #vac-icon-search {
 	fill: var(--chat-icon-color-search);
 }
@@ -139,7 +158,8 @@ export default {
 }
 
 #vac-icon-toggle {
-	fill: var(--chat-icon-color-toggle);
+	stroke: var(--chat-icon-color-toggle);
+	fill: var(--chat-message-bg-color-me);
 }
 
 #vac-icon-menu {
@@ -159,7 +179,8 @@ export default {
 }
 
 #vac-icon-paperclip {
-	fill: var(--chat-icon-color-paperclip);
+	stroke:#473068;
+	fill: none;
 }
 
 #vac-icon-close-outline {
@@ -167,11 +188,33 @@ export default {
 }
 
 #vac-icon-send {
-	fill: var(--chat-icon-color-send);
+	stroke: var(--chat-icon-color-send);
+	fill: none;
+}
+
+.send-btn:has(#vac-icon-send){
+	background-color: var(--chat-icon-color-add);
+	border-radius:50px;
+	padding: 5px;
+	margin-left: 12px !important;
+	border: 1px solid var(--chat-icon-color-add);
+	width: 28px;
+	height: 28px;
 }
 
 #vac-icon-send-disabled {
-	fill: var(--chat-icon-color-send-disabled);
+	stroke: var(--chat-icon-color-send-disabled);
+    fill: var(--chat-message-bg-color-me);
+}
+
+.send-btn:has(#vac-icon-send-disabled) {
+	background-color: var(--chat-message-bg-color-me);
+	border-radius:50px;
+	padding: 5px;
+	margin-left: 12px !important;
+	border: 1px solid var(--chat-icon-color-send-disabled);
+	width: 28px;
+	height: 28px;
 }
 
 #vac-icon-emoji {

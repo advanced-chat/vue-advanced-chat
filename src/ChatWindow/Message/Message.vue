@@ -413,7 +413,7 @@ export default {
 
 .vac-text-ellipsis {
   width: 100%;
-  text-align: center;
+  text-align: left;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -519,8 +519,8 @@ export default {
   .vac-message-card {
     background: var(--chat-message-bg-color);
     color: var(--chat-message-color);
-    border-radius: 8px;
-    font-size: 14px;
+    border-radius: 5px;
+    font-size: 15px;
     padding: 6px 9px 3px;
     white-space: pre-line;
     max-width: 100%;
@@ -530,6 +530,7 @@ export default {
     will-change: box-shadow;
     box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.1),
     0 1px 1px -1px rgba(0, 0, 0, 0.11), 0 1px 2px -1px rgba(0, 0, 0, 0.11);
+    font-weight: 500;
   }
 
   .vac-message-highlight {
@@ -589,6 +590,7 @@ export default {
     font-size: 13px;
     color: var(--chat-message-color-username);
     margin-bottom: 2px;
+    font-weight: 600;
   }
 
   .vac-username-reply {

@@ -227,6 +227,7 @@ export default {
 	flex: 1;
 	align-items: center;
 	width: 100%;
+	margin-left: 12px;
 
 	.vac-name-container {
 		flex: 1;
@@ -254,7 +255,7 @@ export default {
 	.vac-room-name {
 		flex: 1;
 		color: var(--chat-room-color-username);
-		font-weight: 500;
+		font-weight: 600;
 	}
 
 	.vac-text-date {

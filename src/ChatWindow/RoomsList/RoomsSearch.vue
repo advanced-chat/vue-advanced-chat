@@ -48,6 +48,9 @@ export default {
 	align-items: center;
 	height: 64px;
 	padding: 0 15px;
+	border-bottom: var(--chat-border-style);
+	margin-bottom: 25px;
+	box-shadow: 1px 3px 6px #4730680f;
 
 	.vac-icon-search {
 		display: flex;
@@ -61,16 +64,16 @@ export default {
 	}
 
 	.vac-input {
-		height: 38px;
+		height: 30px;
 		width: 100%;
-		background: var(--chat-bg-color-input);
+		background: var(--chat-search-color);
 		color: var(--chat-color);
 		border-radius: 4px;
 		font-size: 15px;
 		outline: 0;
 		caret-color: var(--chat-color-caret);
 		padding: 10px 10px 10px 40px;
-		border: 1px solid var(--chat-sidemenu-border-color-search);
+		border: 0.5px solid var(--chat-sidemenu-border-color-search);
 		border-radius: 20px;
 
 		&::placeholder {

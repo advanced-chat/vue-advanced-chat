@@ -1094,6 +1094,7 @@ export default {
 		position: relative;
 		background: var(--chat-footer-bg-color);
 		padding: 10px 8px 10px;
+		align-items: flex-end;
 	}
 
 	.vac-textarea {
@@ -1103,14 +1104,14 @@ export default {
 		overflow: hidden;
 		outline: 0;
 		resize: none;
-		border-radius: 20px;
+		border-radius: 20px 0px 0px 20px;
 		padding: 12px 16px;
 		box-sizing: content-box;
 		font-size: 16px;
 		background: var(--chat-bg-color-input);
 		color: var(--chat-color);
 		caret-color: var(--chat-color-caret);
-		border: var(--chat-border-style-input);
+		border: #fff;
 
 		&::placeholder {
 			color: var(--chat-color-placeholder);
@@ -1137,9 +1138,13 @@ export default {
 	}
 
 	.vac-icon-textarea {
-		margin-left: 5px;
-		align-items: flex-end;
-		padding-bottom: 10px;
+		margin-left: -1px;
+		align-items: center;
+		// padding-bottom: 5px;
+		margin-right: 15px;
+		background-color: #fff;
+		border-radius: 0px 20px 20px 0px;
+		height: 44px;
 	}
 
 	.vac-icon-textarea-left {

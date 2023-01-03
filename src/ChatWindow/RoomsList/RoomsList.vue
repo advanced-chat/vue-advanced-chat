@@ -185,6 +185,8 @@ export default {
 	height: 100%;
 	border-top-left-radius: var(--chat-container-border-radius);
 	border-bottom-left-radius: var(--chat-container-border-radius);
+	box-shadow: 5px 3px 6px rgba(71, 48, 104, 0.06);
+	z-index: 1;
 
 	&.vac-rooms-container-full {
 		flex: 0 0 100%;
@@ -206,19 +208,19 @@ export default {
 		position: relative;
 		max-width: 100%;
 		cursor: pointer;
-		padding: 0 10px 5px;
+		// padding: 0 10px 5px;
 		overflow-y: auto;
 	}
 
 	.vac-room-item {
-		border-radius: 8px;
+		// border-radius: 8px;
 		align-items: center;
 		display: flex;
 		flex: 1 1 100%;
 		margin-bottom: 5px;
 		padding: 0 14px;
 		position: relative;
-		min-height: 71px;
+		min-height: 65px;
 
 		&:hover {
 			background: var(--chat-sidemenu-bg-color-hover);
@@ -231,6 +233,7 @@ export default {
 	}
 
 	.vac-room-selected {
+		border-left: 5px solid var(--chat-sidemenu-border-color-selected);
 		color: var(--chat-sidemenu-color-active) !important;
 		background: var(--chat-sidemenu-bg-color-active) !important;
 
