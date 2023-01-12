@@ -763,6 +763,10 @@ Example:
       Normal message: {{ message.content }}
     </div>
   </div>
+
+  <div v-for="message in messages" :slot="'message-avatar_' + message._id">
+    New Avatar
+  </div>
 </vue-advanced-chat>
 ```
 
