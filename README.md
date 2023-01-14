@@ -209,7 +209,7 @@ If you are using Vue 3, you can pass Array and Object props normally: [Passing D
 Otherwise, you need to pass those props as strings. For example: `[messages]="JSON.stringify(messages)"`
 
 | <div style="width:230px">Prop</div> | Type             | Required | Default                                                                                                           |
-| ----------------------------------- | ---------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
+|-------------------------------------| ---------------- | -------- |-------------------------------------------------------------------------------------------------------------------|
 | `height`                            | String           | -        | `600px`                                                                                                           |
 | `current-user-id`(1)                | String           | `true`   | -                                                                                                                 |
 | `rooms`                             | [String, Array]  | -        | `[]`                                                                                                              |
@@ -255,7 +255,8 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `scroll-distance`(25)               | Number           | -        | `60`                                                                                                              |
 | `theme`(26)                         | `light` / `dark` | -        | `light`                                                                                                           |
 | `accepted-files`(27)                | String           | -        | `*`                                                                                                               |
-| `styles`(28)                        | [String, Object] | -        | (26)                                                                                                              |
+| `capture-files`(28)                 | String           | -        | `undefined`                                                                                                       |
+| `styles`(29)                        | [String, Object] | -        | (26)                                                                                                              |
 | `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                              |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
@@ -473,9 +474,11 @@ You can then use the [textarea-action-handler](#events-api) event to call your o
 
 **(27)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
 
-Example: set `"accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files only
+Example: set `accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files only
 
-**(28)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
+**(28)** `capture-files` can be used to enable direct capturing of photos and videos on mobile browsers, as opposed to just uploading existing photos and videos which are already on the device. See [here](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/capture) for more information and recognized values. By default, the attribute is omitted and mobile browsers will only offer the gallery to choose photos and videos. Note: this only affects file attachments. Audio messages are always recorded using the device's microphone.
+
+**(29)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
 
 ```javascript
 styles="{

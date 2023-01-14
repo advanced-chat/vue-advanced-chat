@@ -168,6 +168,7 @@ export interface Props {
 	'scroll-distance'?: number
 	theme?: 'light' | 'dark'
 	'accepted-files'?: string
+	'capture-files'?: string
 	styles?: Record<string, Record<string, string>>
 }
 

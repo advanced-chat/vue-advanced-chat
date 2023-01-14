@@ -140,6 +140,7 @@
 			:show-emojis="showEmojis"
 			:show-footer="showFooter"
 			:accepted-files="acceptedFiles"
+			:capture-files="captureFiles"
 			:textarea-action-enabled="textareaActionEnabled"
 			:textarea-auto-focus="textareaAutoFocus"
 			:user-tags-enabled="userTagsEnabled"
@@ -210,6 +211,7 @@ export default {
 		showNewMessagesDivider: { type: Boolean, required: true },
 		showFooter: { type: Boolean, required: true },
 		acceptedFiles: { type: String, required: true },
+		captureFiles: { type: String, required: true },
 		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true },
 		loadingRooms: { type: Boolean, required: true },

@@ -65,6 +65,7 @@
 				:emojis-suggestion-enabled="emojisSuggestionEnabledCasted"
 				:scroll-distance="scrollDistance"
 				:accepted-files="acceptedFiles"
+				:capture-files="captureFiles"
 				:templates-text="templatesTextCasted"
 				:username-options="usernameOptionsCasted"
 				:emoji-data-source="emojiDataSource"
@@ -203,6 +204,7 @@ export default {
 		roomMessage: { type: String, default: '' },
 		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
+		captureFiles: { type: String, default: undefined },
 		templatesText: { type: [Array, String], default: () => [] },
 		mediaPreviewEnabled: { type: [Boolean, String], default: true },
 		usernameOptions: {
