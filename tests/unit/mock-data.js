@@ -34,6 +34,7 @@ const responsiveBreakpoint = 10
 const singleRoom = false
 const theme = 'dark'
 const acceptedFiles = '*'
+const captureFiles = undefined
 const linkOptions = { disabled: false, target: '_blank' }
 const styles = { general: { color: '#0a0a0a' } }
 
@@ -66,6 +67,7 @@ export default {
 	singleRoom,
 	theme,
 	acceptedFiles,
+	captureFiles,
 	linkOptions,
 	styles
 }

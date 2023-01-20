@@ -163,6 +163,7 @@
 					type="file"
 					multiple
 					:accept="acceptedFiles"
+					:capture="captureFiles"
 					style="display: none"
 					@change="onFileChange($event.target.files)"
 				/>
@@ -234,6 +235,7 @@ export default {
 		showEmojis: { type: Boolean, required: true },
 		showFooter: { type: Boolean, required: true },
 		acceptedFiles: { type: String, required: true },
+		captureFiles: { type: String, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
 		textareaAutoFocus: { type: Boolean, required: true },
 		userTagsEnabled: { type: Boolean, required: true },
