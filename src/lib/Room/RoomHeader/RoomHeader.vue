@@ -58,7 +58,7 @@
 						<slot name="room-header-info">
 							<div class="vac-text-ellipsis">
 								<div class="vac-room-name vac-text-ellipsis">
-									{{ room.roomName }}
+									{{ room.roomName }} <Icon v-if="room.verified || room.official" :inline="true" :style="{color: `${room.official ? 'gold' : '#2689d6'}`}" width="14" :icon="icons.verifiedIcon" />
 								</div>
 								<div v-if="typingUsers" class="vac-room-info vac-text-ellipsis">
 									{{ typingUsers }}
@@ -109,11 +109,14 @@ import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 
 import vClickOutside from '../../../utils/on-click-outside'
 import typingText from '../../../utils/typing-text'
+import { Icon } from '@iconify/vue';
+import verifiedIcon from '@iconify-icons/material-symbols/verified';
 
 export default {
 	name: 'RoomHeader',
 	components: {
-		SvgIcon
+		SvgIcon,
+    Icon
 	},
 
 	directives: {
@@ -145,7 +148,10 @@ export default {
 	data() {
 		return {
 			menuOpened: false,
-			messageSelectionAnimationEnded: true
+			messageSelectionAnimationEnded: true,
+      icons: {
+				verifiedIcon
+			}
 		}
 	},
 

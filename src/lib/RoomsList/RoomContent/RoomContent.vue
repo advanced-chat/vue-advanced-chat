@@ -16,7 +16,7 @@
 						:class="{ 'vac-state-online': userStatus === 'online' }"
 					/>
 					<div class="vac-room-name vac-text-ellipsis">
-						{{ room.roomName }}
+            {{ room.roomName }} <Icon v-if="room.verified || room.official" :inline="true" :style="{color: `${room.official ? 'gold' : '#2689d6'}`}" width="14" :icon="icons.verifiedIcon" />
 					</div>
 					<div v-if="room.lastMessage" class="vac-text-date">
 						{{ room.lastMessage.timestamp }}
@@ -125,12 +125,15 @@ import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 import vClickOutside from '../../../utils/on-click-outside'
 import typingText from '../../../utils/typing-text'
 import { isAudioFile } from '../../../utils/media-file'
+import { Icon } from '@iconify/vue'
+import verifiedIcon from '@iconify-icons/material-symbols/verified'
 
 export default {
 	name: 'RoomsContent',
 	components: {
 		SvgIcon,
-		FormatMessage
+		FormatMessage,
+    Icon
 	},
 
 	directives: {
@@ -150,7 +153,10 @@ export default {
 
 	data() {
 		return {
-			roomMenuOpened: null
+			roomMenuOpened: null,
+      icons: {
+				verifiedIcon
+			}
 		}
 	},
 

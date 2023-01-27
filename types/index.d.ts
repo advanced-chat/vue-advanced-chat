@@ -44,6 +44,8 @@ export interface LastMessage {
 export interface Room {
 	roomId: String
 	roomName: string
+	verified: boolean
+	official: boolean
 	avatar: String
 	users: RoomUsers
 	unreadCount?: Number
