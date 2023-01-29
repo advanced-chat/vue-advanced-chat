@@ -1,10 +1,16 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+
 import { resolve } from 'path'
 
 export default defineConfig({
   optimizeDeps: { exclude: ['capacitor-voice-recorder'] },
-  plugins: [vue({ customElement: true })],
+  plugins: [vue(
+    {
+      refTransform: true,
+      customElement: true,
+      reactivityTransform: resolve(__dirname, 'src'),
+    })],
   build: {
     lib: {
       entry: resolve(__dirname, 'src/lib/index.js'),

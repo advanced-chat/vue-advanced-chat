@@ -900,27 +900,57 @@ function markRaw(value) {
 }
 const toReactive = (value) => isObject(value) ? reactive(value) : value;
 const toReadonly = (value) => isObject(value) ? readonly(value) : value;
-function trackRefValue(ref) {
+function trackRefValue(ref2) {
   if (shouldTrack && activeEffect) {
-    ref = toRaw(ref);
+    ref2 = toRaw(ref2);
     {
-      trackEffects(ref.dep || (ref.dep = createDep()));
+      trackEffects(ref2.dep || (ref2.dep = createDep()));
     }
   }
 }
-function triggerRefValue(ref, newVal) {
-  ref = toRaw(ref);
-  if (ref.dep) {
+function triggerRefValue(ref2, newVal) {
+  ref2 = toRaw(ref2);
+  if (ref2.dep) {
     {
-      triggerEffects(ref.dep);
+      triggerEffects(ref2.dep);
     }
   }
 }
 function isRef(r) {
   return !!(r && r.__v_isRef === true);
 }
-function unref(ref) {
-  return isRef(ref) ? ref.value : ref;
+function ref(value) {
+  return createRef(value, false);
+}
+function createRef(rawValue, shallow) {
+  if (isRef(rawValue)) {
+    return rawValue;
+  }
+  return new RefImpl(rawValue, shallow);
+}
+class RefImpl {
+  constructor(value, __v_isShallow) {
+    this.__v_isShallow = __v_isShallow;
+    this.dep = void 0;
+    this.__v_isRef = true;
+    this._rawValue = __v_isShallow ? value : toRaw(value);
+    this._value = __v_isShallow ? value : toReactive(value);
+  }
+  get value() {
+    trackRefValue(this);
+    return this._value;
+  }
+  set value(newVal) {
+    newVal = this.__v_isShallow ? newVal : toRaw(newVal);
+    if (hasChanged(newVal, this._rawValue)) {
+      this._rawValue = newVal;
+      this._value = this.__v_isShallow ? newVal : toReactive(newVal);
+      triggerRefValue(this);
+    }
+  }
+}
+function unref(ref2) {
+  return isRef(ref2) ? ref2.value : ref2;
 }
 const shallowUnwrapHandlers = {
   get: (target, key, receiver) => unref(Reflect.get(target, key, receiver)),
@@ -1445,6 +1475,9 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
     } else
       ;
   }
+}
+function watchPostEffect(effect, options2) {
+  return doWatch(effect, null, { flush: "post" });
 }
 const INITIAL_WATCHER_VALUE = {};
 function watch(source, cb, options2) {
@@ -2954,11 +2987,11 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
   }
   const refValue = vnode.shapeFlag & 4 ? getExposeProxy(vnode.component) || vnode.component.proxy : vnode.el;
   const value = isUnmount ? null : refValue;
-  const { i: owner, r: ref } = rawRef;
+  const { i: owner, r: ref2 } = rawRef;
   const oldRef = oldRawRef && oldRawRef.r;
   const refs = owner.refs === EMPTY_OBJ ? owner.refs = {} : owner.refs;
   const setupState = owner.setupState;
-  if (oldRef != null && oldRef !== ref) {
+  if (oldRef != null && oldRef !== ref2) {
     if (isString(oldRef)) {
       refs[oldRef] = null;
       if (hasOwn(setupState, oldRef)) {
@@ -2968,40 +3001,40 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
       oldRef.value = null;
     }
   }
-  if (isFunction(ref)) {
-    callWithErrorHandling(ref, owner, 12, [value, refs]);
+  if (isFunction(ref2)) {
+    callWithErrorHandling(ref2, owner, 12, [value, refs]);
   } else {
-    const _isString = isString(ref);
-    const _isRef = isRef(ref);
+    const _isString = isString(ref2);
+    const _isRef = isRef(ref2);
     if (_isString || _isRef) {
       const doSet = () => {
         if (rawRef.f) {
-          const existing = _isString ? refs[ref] : ref.value;
+          const existing = _isString ? refs[ref2] : ref2.value;
           if (isUnmount) {
             isArray(existing) && remove(existing, refValue);
           } else {
             if (!isArray(existing)) {
               if (_isString) {
-                refs[ref] = [refValue];
-                if (hasOwn(setupState, ref)) {
-                  setupState[ref] = refs[ref];
+                refs[ref2] = [refValue];
+                if (hasOwn(setupState, ref2)) {
+                  setupState[ref2] = refs[ref2];
                 }
               } else {
-                ref.value = [refValue];
+                ref2.value = [refValue];
                 if (rawRef.k)
-                  refs[rawRef.k] = ref.value;
+                  refs[rawRef.k] = ref2.value;
               }
             } else if (!existing.includes(refValue)) {
               existing.push(refValue);
             }
           }
         } else if (_isString) {
-          refs[ref] = value;
-          if (hasOwn(setupState, ref)) {
-            setupState[ref] = value;
+          refs[ref2] = value;
+          if (hasOwn(setupState, ref2)) {
+            setupState[ref2] = value;
           }
         } else if (_isRef) {
-          ref.value = value;
+          ref2.value = value;
           if (rawRef.k)
             refs[rawRef.k] = value;
         } else
@@ -3037,7 +3070,7 @@ function baseCreateRenderer(options2, createHydrationFns) {
       optimized = false;
       n2.dynamicChildren = null;
     }
-    const { type, ref, shapeFlag } = n2;
+    const { type, ref: ref2, shapeFlag } = n2;
     switch (type) {
       case Text:
         processText(n1, n2, container, anchor);
@@ -3065,8 +3098,8 @@ function baseCreateRenderer(options2, createHydrationFns) {
         } else
           ;
     }
-    if (ref != null && parentComponent) {
-      setRef(ref, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
+    if (ref2 != null && parentComponent) {
+      setRef(ref2, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
     }
   };
   const processText = (n1, n2, container, anchor) => {
@@ -3664,9 +3697,9 @@ function baseCreateRenderer(options2, createHydrationFns) {
     }
   };
   const unmount = (vnode, parentComponent, parentSuspense, doRemove = false, optimized = false) => {
-    const { type, props, ref, children, dynamicChildren, shapeFlag, patchFlag, dirs } = vnode;
-    if (ref != null) {
-      setRef(ref, null, parentSuspense, vnode, true);
+    const { type, props, ref: ref2, children, dynamicChildren, shapeFlag, patchFlag, dirs } = vnode;
+    if (ref2 != null) {
+      setRef(ref2, null, parentSuspense, vnode, true);
     }
     if (shapeFlag & 256) {
       parentComponent.ctx.deactivate(vnode);
@@ -3917,8 +3950,8 @@ function isSameVNodeType(n1, n2) {
 }
 const InternalObjectKey = `__vInternal`;
 const normalizeKey = ({ key }) => key != null ? key : null;
-const normalizeRef = ({ ref, ref_key, ref_for }) => {
-  return ref != null ? isString(ref) || isRef(ref) || isFunction(ref) ? { i: currentRenderingInstance, r: ref, k: ref_key, f: !!ref_for } : ref : null;
+const normalizeRef = ({ ref: ref2, ref_key, ref_for }) => {
+  return ref2 != null ? isString(ref2) || isRef(ref2) || isFunction(ref2) ? { i: currentRenderingInstance, r: ref2, k: ref_key, f: !!ref_for } : ref2 : null;
 };
 function createBaseVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, shapeFlag = type === Fragment ? 0 : 1, isBlockNode = false, needFullChildrenNormalization = false) {
   const vnode = {
@@ -4006,7 +4039,7 @@ function guardReactiveProps(props) {
   return isProxy(props) || InternalObjectKey in props ? extend({}, props) : props;
 }
 function cloneVNode(vnode, extraProps, mergeRef = false) {
-  const { props, ref, patchFlag, children } = vnode;
+  const { props, ref: ref2, patchFlag, children } = vnode;
   const mergedProps = extraProps ? mergeProps(props || {}, extraProps) : props;
   const cloned = {
     __v_isVNode: true,
@@ -4014,7 +4047,7 @@ function cloneVNode(vnode, extraProps, mergeRef = false) {
     type: vnode.type,
     props: mergedProps,
     key: mergedProps && normalizeKey(mergedProps),
-    ref: extraProps && extraProps.ref ? mergeRef && ref ? isArray(ref) ? ref.concat(normalizeRef(extraProps)) : [ref, normalizeRef(extraProps)] : normalizeRef(extraProps) : ref,
+    ref: extraProps && extraProps.ref ? mergeRef && ref2 ? isArray(ref2) ? ref2.concat(normalizeRef(extraProps)) : [ref2, normalizeRef(extraProps)] : normalizeRef(extraProps) : ref2,
     scopeId: vnode.scopeId,
     slotScopeIds: vnode.slotScopeIds,
     children,
@@ -4852,6 +4885,54 @@ class VueElement extends BaseClass {
     }
   }
 }
+function useCssVars(getter) {
+  const instance2 = getCurrentInstance();
+  if (!instance2) {
+    return;
+  }
+  const setVars = () => setVarsOnVNode(instance2.subTree, getter(instance2.proxy));
+  watchPostEffect(setVars);
+  onMounted(() => {
+    const ob = new MutationObserver(setVars);
+    ob.observe(instance2.subTree.el.parentNode, { childList: true });
+    onUnmounted(() => ob.disconnect());
+  });
+}
+function setVarsOnVNode(vnode, vars) {
+  if (vnode.shapeFlag & 128) {
+    const suspense = vnode.suspense;
+    vnode = suspense.activeBranch;
+    if (suspense.pendingBranch && !suspense.isHydrating) {
+      suspense.effects.push(() => {
+        setVarsOnVNode(suspense.activeBranch, vars);
+      });
+    }
+  }
+  while (vnode.component) {
+    vnode = vnode.component.subTree;
+  }
+  if (vnode.shapeFlag & 1 && vnode.el) {
+    setVarsOnNode(vnode.el, vars);
+  } else if (vnode.type === Fragment) {
+    vnode.children.forEach((c) => setVarsOnVNode(c, vars));
+  } else if (vnode.type === Static) {
+    let { el, anchor } = vnode;
+    while (el) {
+      setVarsOnNode(el, vars);
+      if (el === anchor)
+        break;
+      el = el.nextSibling;
+    }
+  }
+}
+function setVarsOnNode(el, vars) {
+  if (el.nodeType === 1) {
+    const style = el.style;
+    for (const key in vars) {
+      style.setProperty(`--${key}`, vars[key]);
+    }
+  }
+}
 const TRANSITION = "transition";
 const ANIMATION = "animation";
 const Transition = (props, { slots }) => h(BaseTransition, resolveTransitionProps(props), slots);
@@ -5299,12 +5380,12 @@ const _sfc_main$q = {
   }
 };
 const _hoisted_1$q = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
-const _hoisted_2$n = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
-const _hoisted_3$i = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
-const _hoisted_4$g = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_2$m = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_3$j = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_4$h = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
 const _hoisted_5$a = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
 const _hoisted_6$7 = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
-function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock(Transition, {
     name: "vac-fade-spinner",
     appear: ""
@@ -5321,13 +5402,13 @@ function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
           _hoisted_1$q
         ]) : createCommentVNode("", true),
         $props.type === "infinite-rooms" ? renderSlot(_ctx.$slots, "spinner-icon-infinite-rooms", { key: 1 }, () => [
-          _hoisted_2$n
+          _hoisted_2$m
         ]) : createCommentVNode("", true),
         $props.type === "message-file" ? renderSlot(_ctx.$slots, "spinner-icon-message-file_" + $props.messageId, { key: 2 }, () => [
-          _hoisted_3$i
+          _hoisted_3$j
         ]) : createCommentVNode("", true),
         $props.type === "room-file" ? renderSlot(_ctx.$slots, "spinner-icon-room-file", { key: 3 }, () => [
-          _hoisted_4$g
+          _hoisted_4$h
         ]) : createCommentVNode("", true),
         $props.type === "messages" ? renderSlot(_ctx.$slots, "spinner-icon-messages", { key: 4 }, () => [
           _hoisted_5$a
@@ -5340,7 +5421,7 @@ function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
     _: 3
   });
 }
-var Loader = /* @__PURE__ */ _export_sfc(_sfc_main$q, [["render", _sfc_render$q]]);
+var Loader = /* @__PURE__ */ _export_sfc(_sfc_main$q, [["render", _sfc_render$p]]);
 const _sfc_main$p = {
   name: "SvgIcon",
   props: {
@@ -5434,9 +5515,9 @@ const _sfc_main$p = {
   }
 };
 const _hoisted_1$p = ["viewBox"];
-const _hoisted_2$m = ["id", "d"];
-const _hoisted_3$h = ["id", "d"];
-function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$l = ["id", "d"];
+const _hoisted_3$i = ["id", "d"];
+function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("svg", {
     xmlns: "http://www.w3.org/2000/svg",
     "xmlns:xlink": "http://www.w3.org/1999/xlink",
@@ -5448,15 +5529,15 @@ function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
     createBaseVNode("path", {
       id: $options.svgId,
       d: $data.svgItem[$props.name].path
-    }, null, 8, _hoisted_2$m),
+    }, null, 8, _hoisted_2$l),
     $data.svgItem[$props.name].path2 ? (openBlock(), createElementBlock("path", {
       key: 0,
       id: $options.svgId,
       d: $data.svgItem[$props.name].path2
-    }, null, 8, _hoisted_3$h)) : createCommentVNode("", true)
+    }, null, 8, _hoisted_3$i)) : createCommentVNode("", true)
   ], 8, _hoisted_1$p);
 }
-var SvgIcon = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$p]]);
+var SvgIcon = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$o]]);
 const _sfc_main$o = {
   name: "RoomsSearch",
   components: { SvgIcon },
@@ -5478,8 +5559,8 @@ const _hoisted_1$o = {
   key: 0,
   class: "vac-icon-search"
 };
-const _hoisted_2$l = ["placeholder"];
-function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$k = ["placeholder"];
+function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createElementBlock("div", {
     class: normalizeClass({
@@ -5500,7 +5581,7 @@ function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
         autocomplete: "off",
         class: "vac-input",
         onInput: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("search-room", $event))
-      }, null, 40, _hoisted_2$l)) : createCommentVNode("", true)
+      }, null, 40, _hoisted_2$k)) : createCommentVNode("", true)
     ], 64)) : createCommentVNode("", true),
     $props.showAddRoom ? (openBlock(), createElementBlock("div", {
       key: 1,
@@ -5513,7 +5594,7 @@ function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
     ])) : createCommentVNode("", true)
   ], 2);
 }
-var RoomsSearch = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$o]]);
+var RoomsSearch = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$n]]);
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
 }
@@ -6531,10 +6612,10 @@ const _sfc_main$n = {
   }
 };
 const _hoisted_1$n = { class: "vac-image-link-container" };
-const _hoisted_2$k = { class: "vac-image-link-message" };
-const _hoisted_3$g = ["innerHTML"];
-const _hoisted_4$f = ["innerHTML"];
-function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$j = { class: "vac-image-link-message" };
+const _hoisted_3$h = ["innerHTML"];
+const _hoisted_4$g = ["innerHTML"];
+function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createElementBlock("div", {
     class: normalizeClass(["vac-format-message-wrapper", { "vac-text-ellipsis": $props.singleLine }])
@@ -6588,13 +6669,13 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
                     })
                   }, null, 4)
                 ]),
-                createBaseVNode("div", _hoisted_2$k, [
+                createBaseVNode("div", _hoisted_2$j, [
                   createBaseVNode("span", null, toDisplayString(message.value), 1)
                 ])
               ], 64)) : (openBlock(), createElementBlock("span", {
                 key: 2,
                 innerHTML: message.value
-              }, null, 8, _hoisted_3$g))
+              }, null, 8, _hoisted_3$h))
             ]),
             _: 2
           }, 1032, ["class", "href", "target", "rel", "onClick"]))
@@ -6603,10 +6684,10 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
     ], 2)) : (openBlock(), createElementBlock("div", {
       key: 1,
       innerHTML: $options.formattedContent
-    }, null, 8, _hoisted_4$f))
+    }, null, 8, _hoisted_4$g))
   ], 2);
 }
-var FormatMessage = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$n]]);
+var FormatMessage = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$m]]);
 const HANDLERS_PROPERTY = "__v-click-outside";
 const HAS_WINDOWS = typeof window !== "undefined";
 const HAS_NAVIGATOR = typeof navigator !== "undefined";
@@ -8432,7 +8513,7 @@ const Icon = defineComponent({
     }, newProps);
   }
 });
-const data = {
+const data$2 = {
   "width": 24,
   "height": 24,
   "body": '<path fill="currentColor" d="m8.6 22.5l-1.9-3.2l-3.6-.8l.35-3.7L1 12l2.45-2.8l-.35-3.7l3.6-.8l1.9-3.2L12 2.95l3.4-1.45l1.9 3.2l3.6.8l-.35 3.7L23 12l-2.45 2.8l.35 3.7l-3.6.8l-1.9 3.2l-3.4-1.45Zm2.35-6.95L16.6 9.9l-1.4-1.45l-4.25 4.25l-2.15-2.1L7.4 12Z"/>'
@@ -8460,7 +8541,7 @@ const _sfc_main$m = {
     return {
       roomMenuOpened: null,
       icons: {
-        verifiedIcon: data
+        verifiedIcon: data$2
       }
     };
   },
@@ -8524,9 +8605,9 @@ const _sfc_main$m = {
   }
 };
 const _hoisted_1$m = { class: "vac-room-container" };
-const _hoisted_2$j = { class: "vac-name-container vac-text-ellipsis" };
-const _hoisted_3$f = { class: "vac-title-container" };
-const _hoisted_4$e = { class: "vac-room-name vac-text-ellipsis" };
+const _hoisted_2$i = { class: "vac-name-container vac-text-ellipsis" };
+const _hoisted_3$g = { class: "vac-title-container" };
+const _hoisted_4$f = { class: "vac-room-name vac-text-ellipsis" };
 const _hoisted_5$9 = {
   key: 1,
   class: "vac-text-date"
@@ -8551,7 +8632,7 @@ const _hoisted_11$3 = {
 };
 const _hoisted_12$2 = { class: "vac-menu-list" };
 const _hoisted_13$1 = ["onClick"];
-function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_Icon = resolveComponent("Icon");
   const _component_svg_icon = resolveComponent("svg-icon");
   const _component_format_message = resolveComponent("format-message");
@@ -8565,13 +8646,13 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
           style: normalizeStyle({ "background-image": `url('${$props.room.avatar}')` })
         }, null, 4)) : createCommentVNode("", true)
       ]),
-      createBaseVNode("div", _hoisted_2$j, [
-        createBaseVNode("div", _hoisted_3$f, [
+      createBaseVNode("div", _hoisted_2$i, [
+        createBaseVNode("div", _hoisted_3$g, [
           $options.userStatus ? (openBlock(), createElementBlock("div", {
             key: 0,
             class: normalizeClass(["vac-state-circle", { "vac-state-online": $options.userStatus === "online" }])
           }, null, 2)) : createCommentVNode("", true),
-          createBaseVNode("div", _hoisted_4$e, [
+          createBaseVNode("div", _hoisted_4$f, [
             createTextVNode(toDisplayString($props.room.roomName) + " ", 1),
             $props.room.verified || $props.room.official ? (openBlock(), createBlock(_component_Icon, {
               key: 0,
@@ -8675,7 +8756,7 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ]);
 }
-var RoomContent = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$m]]);
+var RoomContent = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$l]]);
 var filteredItems = (items, prop, val, startsWith = false) => {
   if (!val || val === "")
     return items;
@@ -8822,17 +8903,17 @@ const _hoisted_1$l = {
   key: 0,
   class: "vac-rooms-empty"
 };
-const _hoisted_2$i = {
+const _hoisted_2$h = {
   key: 1,
   id: "rooms-list",
   class: "vac-room-list"
 };
-const _hoisted_3$e = ["id", "onClick"];
-const _hoisted_4$d = {
+const _hoisted_3$f = ["id", "onClick"];
+const _hoisted_4$e = {
   key: 0,
   id: "infinite-loader-rooms"
 };
-function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_rooms_search = resolveComponent("rooms-search");
   const _component_loader = resolveComponent("loader");
   const _component_room_content = resolveComponent("room-content");
@@ -8881,7 +8962,7 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
         createTextVNode(toDisplayString($props.textMessages.ROOMS_EMPTY), 1)
       ])
     ])) : createCommentVNode("", true),
-    !$props.loadingRooms ? (openBlock(), createElementBlock("div", _hoisted_2$i, [
+    !$props.loadingRooms ? (openBlock(), createElementBlock("div", _hoisted_2$h, [
       (openBlock(true), createElementBlock(Fragment, null, renderList($data.filteredRooms, (fRoom) => {
         return openBlock(), createElementBlock("div", {
           id: fRoom.roomId,
@@ -8907,11 +8988,11 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
               };
             })
           ]), 1032, ["current-user-id", "room", "text-formatting", "link-options", "text-messages", "room-actions"])
-        ], 10, _hoisted_3$e);
+        ], 10, _hoisted_3$f);
       }), 128)),
       createVNode(Transition, { name: "vac-fade-message" }, {
         default: withCtx(() => [
-          $props.rooms.length && !$props.loadingRooms ? (openBlock(), createElementBlock("div", _hoisted_4$d, [
+          $props.rooms.length && !$props.loadingRooms ? (openBlock(), createElementBlock("div", _hoisted_4$e, [
             createVNode(_component_loader, {
               show: $data.showLoader,
               infinite: true,
@@ -8935,7 +9016,7 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
     [vShow, $props.showRoomsList]
   ]);
 }
-var RoomsList = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$l]]);
+var RoomsList = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$k]]);
 const _sfc_main$k = {
   name: "RoomHeader",
   components: {
@@ -8970,7 +9051,7 @@ const _sfc_main$k = {
       menuOpened: false,
       messageSelectionAnimationEnded: true,
       icons: {
-        verifiedIcon: data
+        verifiedIcon: data$2
       }
     };
   },
@@ -9018,12 +9099,12 @@ const _sfc_main$k = {
   }
 };
 const _hoisted_1$k = { class: "vac-room-header vac-app-border-b" };
-const _hoisted_2$h = { class: "vac-room-wrapper" };
-const _hoisted_3$d = {
+const _hoisted_2$g = { class: "vac-room-wrapper" };
+const _hoisted_3$e = {
   key: 0,
   class: "vac-room-selection"
 };
-const _hoisted_4$c = ["id"];
+const _hoisted_4$d = ["id"];
 const _hoisted_5$8 = ["onClick"];
 const _hoisted_6$5 = { class: "vac-selection-button-count" };
 const _hoisted_7$5 = { class: "vac-text-ellipsis" };
@@ -9042,16 +9123,16 @@ const _hoisted_11$2 = {
 };
 const _hoisted_12$1 = { class: "vac-menu-list" };
 const _hoisted_13 = ["onClick"];
-function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   const _component_Icon = resolveComponent("Icon");
   const _directive_click_outside = resolveDirective("click-outside");
   return openBlock(), createElementBlock("div", _hoisted_1$k, [
     renderSlot(_ctx.$slots, "room-header", {}, () => [
-      createBaseVNode("div", _hoisted_2$h, [
+      createBaseVNode("div", _hoisted_2$g, [
         createVNode(Transition, { name: "vac-slide-up" }, {
           default: withCtx(() => [
-            $props.messageSelectionEnabled ? (openBlock(), createElementBlock("div", _hoisted_3$d, [
+            $props.messageSelectionEnabled ? (openBlock(), createElementBlock("div", _hoisted_3$e, [
               (openBlock(true), createElementBlock(Fragment, null, renderList($props.messageSelectionActions, (action) => {
                 return openBlock(), createElementBlock("div", {
                   id: action.name,
@@ -9064,7 +9145,7 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
                     createTextVNode(toDisplayString(action.title) + " ", 1),
                     createBaseVNode("span", _hoisted_6$5, toDisplayString($props.selectedMessagesTotal), 1)
                   ], 8, _hoisted_5$8)
-                ], 8, _hoisted_4$c);
+                ], 8, _hoisted_4$d);
               }), 128)),
               createBaseVNode("div", {
                 class: "vac-selection-cancel vac-item-clickable",
@@ -9154,7 +9235,7 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ]);
 }
-var RoomHeader = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$k]]);
+var RoomHeader = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$j]]);
 function assertNonEmptyString(str) {
   if (typeof str !== "string" || !str) {
     throw new Error("expected a non-empty string, got: " + str);
@@ -11995,11 +12076,11 @@ const _sfc_main$j = {
   }
 };
 const _hoisted_1$j = { class: "vac-emoji-wrapper" };
-const _hoisted_2$g = {
+const _hoisted_2$f = {
   ref: "emojiPicker",
   "v-if": "emojiOpened"
 };
-function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createElementBlock("div", _hoisted_1$j, [
     createBaseVNode("div", {
@@ -12033,14 +12114,14 @@ function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
             display: $data.emojiPickerTop || !$props.emojiReaction ? "initial" : "none"
           })
         }, [
-          createBaseVNode("emoji-picker", _hoisted_2$g, null, 512)
+          createBaseVNode("emoji-picker", _hoisted_2$f, null, 512)
         ], 6)
       ]),
       _: 1
     })) : createCommentVNode("", true)
   ]);
 }
-var EmojiPickerContainer = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$j]]);
+var EmojiPickerContainer = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$i]]);
 const _sfc_main$i = {
   name: "RoomFiles",
   components: {
@@ -12062,13 +12143,13 @@ const _sfc_main$i = {
   }
 };
 const _hoisted_1$i = { class: "vac-room-file-container" };
-const _hoisted_2$f = ["src"];
-const _hoisted_3$c = { class: "vac-text-ellipsis" };
-const _hoisted_4$b = {
+const _hoisted_2$e = ["src"];
+const _hoisted_3$d = { class: "vac-text-ellipsis" };
+const _hoisted_4$c = {
   key: 0,
   class: "vac-text-ellipsis vac-text-extension"
 };
-function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_loader = resolveComponent("loader");
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createElementBlock("div", _hoisted_1$i, [
@@ -12109,7 +12190,7 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
     }, [
       createBaseVNode("source", {
         src: $props.file.localUrl || $props.file.url
-      }, null, 8, _hoisted_2$f)
+      }, null, 8, _hoisted_2$e)
     ], 2)) : (openBlock(), createElementBlock("div", {
       key: 2,
       class: normalizeClass(["vac-file-container", { "vac-blur-loading": $props.file.loading }])
@@ -12119,12 +12200,12 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
           createVNode(_component_svg_icon, { name: "file" })
         ])
       ]),
-      createBaseVNode("div", _hoisted_3$c, toDisplayString($props.file.name), 1),
-      $props.file.extension ? (openBlock(), createElementBlock("div", _hoisted_4$b, toDisplayString($props.file.extension), 1)) : createCommentVNode("", true)
+      createBaseVNode("div", _hoisted_3$d, toDisplayString($props.file.name), 1),
+      $props.file.extension ? (openBlock(), createElementBlock("div", _hoisted_4$c, toDisplayString($props.file.extension), 1)) : createCommentVNode("", true)
     ], 2))
   ]);
 }
-var RoomFile = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$i]]);
+var RoomFile = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$h]]);
 const _sfc_main$h = {
   name: "RoomFiles",
   components: {
@@ -12142,8 +12223,8 @@ const _sfc_main$h = {
   }
 };
 const _hoisted_1$h = { class: "vac-files-box" };
-const _hoisted_2$e = { class: "vac-icon-close" };
-function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$d = { class: "vac-icon-close" };
+function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_room_file = resolveComponent("room-file");
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createBlock(Transition, { name: "vac-slide-up" }, {
@@ -12173,7 +12254,7 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
             ]);
           }), 128))
         ]),
-        createBaseVNode("div", _hoisted_2$e, [
+        createBaseVNode("div", _hoisted_2$d, [
           createBaseVNode("div", {
             class: "vac-svg-button",
             onClick: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("reset-message"))
@@ -12188,83 +12269,4355 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
     _: 3
   });
 }
-var RoomFiles = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$h]]);
-const _sfc_main$g = {
-  props: {
-    percentage: { type: Number, default: 0 },
-    messageSelectionEnabled: { type: Boolean, required: true }
-  },
-  emits: ["hover-audio-progress", "change-linehead"],
-  data() {
-    return {
-      isMouseDown: false
-    };
-  },
-  methods: {
-    onMouseDown(ev) {
-      if (this.messageSelectionEnabled)
-        return;
-      this.isMouseDown = true;
-      const seekPos = this.calculateLineHeadPosition(ev, this.$refs.progress);
-      this.$emit("change-linehead", seekPos);
-      document.addEventListener("mousemove", this.onMouseMove);
-      document.addEventListener("mouseup", this.onMouseUp);
-    },
-    onMouseUp(ev) {
-      if (this.messageSelectionEnabled)
-        return;
-      this.isMouseDown = false;
-      document.removeEventListener("mouseup", this.onMouseUp);
-      document.removeEventListener("mousemove", this.onMouseMove);
-      const seekPos = this.calculateLineHeadPosition(ev, this.$refs.progress);
-      this.$emit("change-linehead", seekPos);
-    },
-    onMouseMove(ev) {
-      if (this.messageSelectionEnabled)
-        return;
-      const seekPos = this.calculateLineHeadPosition(ev, this.$refs.progress);
-      this.$emit("change-linehead", seekPos);
-    },
-    calculateLineHeadPosition(ev, element2) {
-      const progressWidth = element2.getBoundingClientRect().width;
-      const leftPosition = element2.getBoundingClientRect().left;
-      let pos = (ev.clientX - leftPosition) / progressWidth;
-      pos = pos < 0 ? 0 : pos;
-      pos = pos > 1 ? 1 : pos;
-      return pos;
-    }
-  }
+var RoomFiles = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$g]]);
+const data$1 = {
+  "width": 24,
+  "height": 24,
+  "body": '<path fill="currentColor" d="M9.525 18.025q-.5.325-1.013.037Q8 17.775 8 17.175V6.825q0-.6.512-.888q.513-.287 1.013.038l8.15 5.175q.45.3.45.85t-.45.85Z"/>'
 };
-const _hoisted_1$g = { class: "vac-player-progress" };
-const _hoisted_2$d = { class: "vac-line-container" };
-function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("div", {
-    ref: "progress",
-    class: "vac-player-bar",
-    onMousedown: _cache[0] || (_cache[0] = (...args) => $options.onMouseDown && $options.onMouseDown(...args)),
-    onMouseover: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("hover-audio-progress", true)),
-    onMouseout: _cache[2] || (_cache[2] = ($event) => _ctx.$emit("hover-audio-progress", false))
-  }, [
-    createBaseVNode("div", _hoisted_1$g, [
-      createBaseVNode("div", _hoisted_2$d, [
-        createBaseVNode("div", {
-          class: "vac-line-progress",
-          style: normalizeStyle({ width: `${$props.percentage}%` })
-        }, null, 4),
-        createBaseVNode("div", {
-          class: normalizeClass(["vac-line-dot", { "vac-line-dot__active": $data.isMouseDown }]),
-          style: normalizeStyle({ left: `${$props.percentage}%` })
-        }, null, 6)
-      ])
-    ])
-  ], 544);
-}
-var AudioControl = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["render", _sfc_render$g]]);
+const data = {
+  "width": 24,
+  "height": 24,
+  "body": '<path fill="currentColor" d="M15 19q-.825 0-1.412-.587Q13 17.825 13 17V7q0-.825.588-1.412Q14.175 5 15 5h2q.825 0 1.413.588Q19 6.175 19 7v10q0 .825-.587 1.413Q17.825 19 17 19Zm-8 0q-.825 0-1.412-.587Q5 17.825 5 17V7q0-.825.588-1.412Q6.175 5 7 5h2q.825 0 1.413.588Q11 6.175 11 7v10q0 .825-.587 1.413Q9.825 19 9 19Z"/>'
+};
+var wavesurfer = { exports: {} };
+/*!
+ * wavesurfer.js 6.4.0 (2022-11-05)
+ * https://wavesurfer-js.org
+ * @license BSD-3-Clause
+ */
+(function(module, exports) {
+  (function webpackUniversalModuleDefinition(root, factory) {
+    module.exports = factory();
+  })(self, () => {
+    return (() => {
+      var __webpack_modules__ = {
+        "./src/drawer.canvasentry.js": (module2, exports2, __webpack_require__2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var _style = _interopRequireDefault2(__webpack_require__2("./src/util/style.js"));
+          var _getId = _interopRequireDefault2(__webpack_require__2("./src/util/get-id.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, descriptor.key, descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          var CanvasEntry = /* @__PURE__ */ function() {
+            function CanvasEntry2() {
+              _classCallCheck(this, CanvasEntry2);
+              this.wave = null;
+              this.waveCtx = null;
+              this.progress = null;
+              this.progressCtx = null;
+              this.start = 0;
+              this.end = 1;
+              this.id = (0, _getId.default)(typeof this.constructor.name !== "undefined" ? this.constructor.name.toLowerCase() + "_" : "canvasentry_");
+              this.canvasContextAttributes = {};
+            }
+            _createClass(CanvasEntry2, [{
+              key: "initWave",
+              value: function initWave(element2) {
+                this.wave = element2;
+                this.waveCtx = this.wave.getContext("2d", this.canvasContextAttributes);
+              }
+            }, {
+              key: "initProgress",
+              value: function initProgress(element2) {
+                this.progress = element2;
+                this.progressCtx = this.progress.getContext("2d", this.canvasContextAttributes);
+              }
+            }, {
+              key: "updateDimensions",
+              value: function updateDimensions(elementWidth, totalWidth, width, height) {
+                this.start = this.wave.offsetLeft / totalWidth || 0;
+                this.end = this.start + elementWidth / totalWidth;
+                this.wave.width = width;
+                this.wave.height = height;
+                var elementSize = {
+                  width: elementWidth + "px"
+                };
+                (0, _style.default)(this.wave, elementSize);
+                if (this.hasProgressCanvas) {
+                  this.progress.width = width;
+                  this.progress.height = height;
+                  (0, _style.default)(this.progress, elementSize);
+                }
+              }
+            }, {
+              key: "clearWave",
+              value: function clearWave() {
+                this.waveCtx.clearRect(0, 0, this.waveCtx.canvas.width, this.waveCtx.canvas.height);
+                if (this.hasProgressCanvas) {
+                  this.progressCtx.clearRect(0, 0, this.progressCtx.canvas.width, this.progressCtx.canvas.height);
+                }
+              }
+            }, {
+              key: "setFillStyles",
+              value: function setFillStyles(waveColor, progressColor) {
+                this.waveCtx.fillStyle = this.getFillStyle(this.waveCtx, waveColor);
+                if (this.hasProgressCanvas) {
+                  this.progressCtx.fillStyle = this.getFillStyle(this.progressCtx, progressColor);
+                }
+              }
+            }, {
+              key: "getFillStyle",
+              value: function getFillStyle(ctx, color) {
+                if (typeof color == "string" || color instanceof CanvasGradient) {
+                  return color;
+                }
+                var waveGradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+                color.forEach(function(value, index) {
+                  return waveGradient.addColorStop(index / color.length, value);
+                });
+                return waveGradient;
+              }
+            }, {
+              key: "applyCanvasTransforms",
+              value: function applyCanvasTransforms(vertical) {
+                if (vertical) {
+                  this.waveCtx.setTransform(0, 1, 1, 0, 0, 0);
+                  if (this.hasProgressCanvas) {
+                    this.progressCtx.setTransform(0, 1, 1, 0, 0, 0);
+                  }
+                }
+              }
+            }, {
+              key: "fillRects",
+              value: function fillRects(x, y, width, height, radius) {
+                this.fillRectToContext(this.waveCtx, x, y, width, height, radius);
+                if (this.hasProgressCanvas) {
+                  this.fillRectToContext(this.progressCtx, x, y, width, height, radius);
+                }
+              }
+            }, {
+              key: "fillRectToContext",
+              value: function fillRectToContext(ctx, x, y, width, height, radius) {
+                if (!ctx) {
+                  return;
+                }
+                if (radius) {
+                  this.drawRoundedRect(ctx, x, y, width, height, radius);
+                } else {
+                  ctx.fillRect(x, y, width, height);
+                }
+              }
+            }, {
+              key: "drawRoundedRect",
+              value: function drawRoundedRect(ctx, x, y, width, height, radius) {
+                if (height === 0) {
+                  return;
+                }
+                if (height < 0) {
+                  height *= -1;
+                  y -= height;
+                }
+                ctx.beginPath();
+                ctx.moveTo(x + radius, y);
+                ctx.lineTo(x + width - radius, y);
+                ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+                ctx.lineTo(x + width, y + height - radius);
+                ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                ctx.lineTo(x + radius, y + height);
+                ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+                ctx.lineTo(x, y + radius);
+                ctx.quadraticCurveTo(x, y, x + radius, y);
+                ctx.closePath();
+                ctx.fill();
+              }
+            }, {
+              key: "drawLines",
+              value: function drawLines(peaks, absmax, halfH, offsetY, start2, end) {
+                this.drawLineToContext(this.waveCtx, peaks, absmax, halfH, offsetY, start2, end);
+                if (this.hasProgressCanvas) {
+                  this.drawLineToContext(this.progressCtx, peaks, absmax, halfH, offsetY, start2, end);
+                }
+              }
+            }, {
+              key: "drawLineToContext",
+              value: function drawLineToContext(ctx, peaks, absmax, halfH, offsetY, start2, end) {
+                if (!ctx) {
+                  return;
+                }
+                var length = peaks.length / 2;
+                var first = Math.round(length * this.start);
+                var last = Math.round(length * this.end) + 1;
+                var canvasStart = first;
+                var canvasEnd = last;
+                var scale = this.wave.width / (canvasEnd - canvasStart - 1);
+                var halfOffset = halfH + offsetY;
+                var absmaxHalf = absmax / halfH;
+                ctx.beginPath();
+                ctx.moveTo((canvasStart - first) * scale, halfOffset);
+                ctx.lineTo((canvasStart - first) * scale, halfOffset - Math.round((peaks[2 * canvasStart] || 0) / absmaxHalf));
+                var i, peak, h2;
+                for (i = canvasStart; i < canvasEnd; i++) {
+                  peak = peaks[2 * i] || 0;
+                  h2 = Math.round(peak / absmaxHalf);
+                  ctx.lineTo((i - first) * scale + this.halfPixel, halfOffset - h2);
+                }
+                var j = canvasEnd - 1;
+                for (j; j >= canvasStart; j--) {
+                  peak = peaks[2 * j + 1] || 0;
+                  h2 = Math.round(peak / absmaxHalf);
+                  ctx.lineTo((j - first) * scale + this.halfPixel, halfOffset - h2);
+                }
+                ctx.lineTo((canvasStart - first) * scale, halfOffset - Math.round((peaks[2 * canvasStart + 1] || 0) / absmaxHalf));
+                ctx.closePath();
+                ctx.fill();
+              }
+            }, {
+              key: "destroy",
+              value: function destroy() {
+                this.waveCtx = null;
+                this.wave = null;
+                this.progressCtx = null;
+                this.progress = null;
+              }
+            }, {
+              key: "getImage",
+              value: function getImage(format, quality, type) {
+                var _this = this;
+                if (type === "blob") {
+                  return new Promise(function(resolve3) {
+                    _this.wave.toBlob(resolve3, format, quality);
+                  });
+                } else if (type === "dataURL") {
+                  return this.wave.toDataURL(format, quality);
+                }
+              }
+            }]);
+            return CanvasEntry2;
+          }();
+          exports2["default"] = CanvasEntry;
+          module2.exports = exports2.default;
+        },
+        "./src/drawer.js": (module2, exports2, __webpack_require__2) => {
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var util = _interopRequireWildcard2(__webpack_require__2("./src/util/index.js"));
+          function _getRequireWildcardCache(nodeInterop) {
+            if (typeof WeakMap !== "function")
+              return null;
+            var cacheBabelInterop = /* @__PURE__ */ new WeakMap();
+            var cacheNodeInterop = /* @__PURE__ */ new WeakMap();
+            return (_getRequireWildcardCache = function _getRequireWildcardCache2(nodeInterop2) {
+              return nodeInterop2 ? cacheNodeInterop : cacheBabelInterop;
+            })(nodeInterop);
+          }
+          function _interopRequireWildcard2(obj, nodeInterop) {
+            if (!nodeInterop && obj && obj.__esModule) {
+              return obj;
+            }
+            if (obj === null || _typeof2(obj) !== "object" && typeof obj !== "function") {
+              return { default: obj };
+            }
+            var cache = _getRequireWildcardCache(nodeInterop);
+            if (cache && cache.has(obj)) {
+              return cache.get(obj);
+            }
+            var newObj = {};
+            var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+            for (var key in obj) {
+              if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
+                var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+                if (desc && (desc.get || desc.set)) {
+                  Object.defineProperty(newObj, key, desc);
+                } else {
+                  newObj[key] = obj[key];
+                }
+              }
+            }
+            newObj.default = obj;
+            if (cache) {
+              cache.set(obj, newObj);
+            }
+            return newObj;
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, descriptor.key, descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _inherits(subClass, superClass) {
+            if (typeof superClass !== "function" && superClass !== null) {
+              throw new TypeError("Super expression must either be null or a function");
+            }
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });
+            Object.defineProperty(subClass, "prototype", { writable: false });
+            if (superClass)
+              _setPrototypeOf(subClass, superClass);
+          }
+          function _setPrototypeOf(o, p2) {
+            _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p3) {
+              o2.__proto__ = p3;
+              return o2;
+            };
+            return _setPrototypeOf(o, p2);
+          }
+          function _createSuper(Derived) {
+            var hasNativeReflectConstruct = _isNativeReflectConstruct();
+            return function _createSuperInternal() {
+              var Super = _getPrototypeOf(Derived), result;
+              if (hasNativeReflectConstruct) {
+                var NewTarget = _getPrototypeOf(this).constructor;
+                result = Reflect.construct(Super, arguments, NewTarget);
+              } else {
+                result = Super.apply(this, arguments);
+              }
+              return _possibleConstructorReturn(this, result);
+            };
+          }
+          function _possibleConstructorReturn(self2, call) {
+            if (call && (_typeof2(call) === "object" || typeof call === "function")) {
+              return call;
+            } else if (call !== void 0) {
+              throw new TypeError("Derived constructors may only return object or undefined");
+            }
+            return _assertThisInitialized(self2);
+          }
+          function _assertThisInitialized(self2) {
+            if (self2 === void 0) {
+              throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+            }
+            return self2;
+          }
+          function _isNativeReflectConstruct() {
+            if (typeof Reflect === "undefined" || !Reflect.construct)
+              return false;
+            if (Reflect.construct.sham)
+              return false;
+            if (typeof Proxy === "function")
+              return true;
+            try {
+              Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+              }));
+              return true;
+            } catch (e) {
+              return false;
+            }
+          }
+          function _getPrototypeOf(o) {
+            _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf2(o2) {
+              return o2.__proto__ || Object.getPrototypeOf(o2);
+            };
+            return _getPrototypeOf(o);
+          }
+          var Drawer = /* @__PURE__ */ function(_util$Observer) {
+            _inherits(Drawer2, _util$Observer);
+            var _super = _createSuper(Drawer2);
+            function Drawer2(container, params) {
+              var _this;
+              _classCallCheck(this, Drawer2);
+              _this = _super.call(this);
+              _this.container = util.withOrientation(container, params.vertical);
+              _this.params = params;
+              _this.width = 0;
+              _this.height = params.height * _this.params.pixelRatio;
+              _this.lastPos = 0;
+              _this.wrapper = null;
+              return _this;
+            }
+            _createClass(Drawer2, [{
+              key: "style",
+              value: function style(el, styles) {
+                return util.style(el, styles);
+              }
+            }, {
+              key: "createWrapper",
+              value: function createWrapper() {
+                this.wrapper = util.withOrientation(this.container.appendChild(document.createElement("wave")), this.params.vertical);
+                this.style(this.wrapper, {
+                  display: "block",
+                  position: "relative",
+                  userSelect: "none",
+                  webkitUserSelect: "none",
+                  height: this.params.height + "px"
+                });
+                if (this.params.fillParent || this.params.scrollParent) {
+                  this.style(this.wrapper, {
+                    width: "100%",
+                    cursor: this.params.hideCursor ? "none" : "auto",
+                    overflowX: this.params.hideScrollbar ? "hidden" : "auto",
+                    overflowY: "hidden"
+                  });
+                }
+                this.setupWrapperEvents();
+              }
+            }, {
+              key: "handleEvent",
+              value: function handleEvent(e, noPrevent) {
+                !noPrevent && e.preventDefault();
+                var clientX = util.withOrientation(e.targetTouches ? e.targetTouches[0] : e, this.params.vertical).clientX;
+                var bbox = this.wrapper.getBoundingClientRect();
+                var nominalWidth = this.width;
+                var parentWidth = this.getWidth();
+                var progressPixels = this.getProgressPixels(bbox, clientX);
+                var progress;
+                if (!this.params.fillParent && nominalWidth < parentWidth) {
+                  progress = progressPixels * (this.params.pixelRatio / nominalWidth) || 0;
+                } else {
+                  progress = (progressPixels + this.wrapper.scrollLeft) / this.wrapper.scrollWidth || 0;
+                }
+                return util.clamp(progress, 0, 1);
+              }
+            }, {
+              key: "getProgressPixels",
+              value: function getProgressPixels(wrapperBbox, clientX) {
+                if (this.params.rtl) {
+                  return wrapperBbox.right - clientX;
+                } else {
+                  return clientX - wrapperBbox.left;
+                }
+              }
+            }, {
+              key: "setupWrapperEvents",
+              value: function setupWrapperEvents() {
+                var _this2 = this;
+                this.wrapper.addEventListener("click", function(e) {
+                  var orientedEvent = util.withOrientation(e, _this2.params.vertical);
+                  var scrollbarHeight = _this2.wrapper.offsetHeight - _this2.wrapper.clientHeight;
+                  if (scrollbarHeight !== 0) {
+                    var bbox = _this2.wrapper.getBoundingClientRect();
+                    if (orientedEvent.clientY >= bbox.bottom - scrollbarHeight) {
+                      return;
+                    }
+                  }
+                  if (_this2.params.interact) {
+                    _this2.fireEvent("click", e, _this2.handleEvent(e));
+                  }
+                });
+                this.wrapper.addEventListener("dblclick", function(e) {
+                  if (_this2.params.interact) {
+                    _this2.fireEvent("dblclick", e, _this2.handleEvent(e));
+                  }
+                });
+                this.wrapper.addEventListener("scroll", function(e) {
+                  return _this2.fireEvent("scroll", e);
+                });
+              }
+            }, {
+              key: "drawPeaks",
+              value: function drawPeaks(peaks, length, start2, end) {
+                if (!this.setWidth(length)) {
+                  this.clearWave();
+                }
+                this.params.barWidth ? this.drawBars(peaks, 0, start2, end) : this.drawWave(peaks, 0, start2, end);
+              }
+            }, {
+              key: "resetScroll",
+              value: function resetScroll() {
+                if (this.wrapper !== null) {
+                  this.wrapper.scrollLeft = 0;
+                }
+              }
+            }, {
+              key: "recenter",
+              value: function recenter(percent) {
+                var position = this.wrapper.scrollWidth * percent;
+                this.recenterOnPosition(position, true);
+              }
+            }, {
+              key: "recenterOnPosition",
+              value: function recenterOnPosition(position, immediate) {
+                var scrollLeft = this.wrapper.scrollLeft;
+                var half = ~~(this.wrapper.clientWidth / 2);
+                var maxScroll = this.wrapper.scrollWidth - this.wrapper.clientWidth;
+                var target = position - half;
+                var offset = target - scrollLeft;
+                if (maxScroll == 0) {
+                  return;
+                }
+                if (!immediate && -half <= offset && offset < half) {
+                  var rate = this.params.autoCenterRate;
+                  rate /= half;
+                  rate *= maxScroll;
+                  offset = Math.max(-rate, Math.min(rate, offset));
+                  target = scrollLeft + offset;
+                }
+                target = Math.max(0, Math.min(maxScroll, target));
+                if (target != scrollLeft) {
+                  this.wrapper.scrollLeft = target;
+                }
+              }
+            }, {
+              key: "getScrollX",
+              value: function getScrollX() {
+                var x = 0;
+                if (this.wrapper) {
+                  var pixelRatio = this.params.pixelRatio;
+                  x = Math.round(this.wrapper.scrollLeft * pixelRatio);
+                  if (this.params.scrollParent) {
+                    var maxScroll = ~~(this.wrapper.scrollWidth * pixelRatio - this.getWidth());
+                    x = Math.min(maxScroll, Math.max(0, x));
+                  }
+                }
+                return x;
+              }
+            }, {
+              key: "getWidth",
+              value: function getWidth() {
+                return Math.round(this.container.clientWidth * this.params.pixelRatio);
+              }
+            }, {
+              key: "setWidth",
+              value: function setWidth(width) {
+                if (this.width == width) {
+                  return false;
+                }
+                this.width = width;
+                if (this.params.fillParent || this.params.scrollParent) {
+                  this.style(this.wrapper, {
+                    width: ""
+                  });
+                } else {
+                  var newWidth = ~~(this.width / this.params.pixelRatio) + "px";
+                  this.style(this.wrapper, {
+                    width: newWidth
+                  });
+                }
+                this.updateSize();
+                return true;
+              }
+            }, {
+              key: "setHeight",
+              value: function setHeight(height) {
+                if (height == this.height) {
+                  return false;
+                }
+                this.height = height;
+                this.style(this.wrapper, {
+                  height: ~~(this.height / this.params.pixelRatio) + "px"
+                });
+                this.updateSize();
+                return true;
+              }
+            }, {
+              key: "progress",
+              value: function progress(_progress) {
+                var minPxDelta = 1 / this.params.pixelRatio;
+                var pos = Math.round(_progress * this.width) * minPxDelta;
+                if (pos < this.lastPos || pos - this.lastPos >= minPxDelta) {
+                  this.lastPos = pos;
+                  if (this.params.scrollParent && this.params.autoCenter) {
+                    var newPos = ~~(this.wrapper.scrollWidth * _progress);
+                    this.recenterOnPosition(newPos, this.params.autoCenterImmediately);
+                  }
+                  this.updateProgress(pos);
+                }
+              }
+            }, {
+              key: "destroy",
+              value: function destroy() {
+                this.unAll();
+                if (this.wrapper) {
+                  if (this.wrapper.parentNode == this.container.domElement) {
+                    this.container.removeChild(this.wrapper.domElement);
+                  }
+                  this.wrapper = null;
+                }
+              }
+            }, {
+              key: "updateCursor",
+              value: function updateCursor() {
+              }
+            }, {
+              key: "updateSize",
+              value: function updateSize() {
+              }
+            }, {
+              key: "drawBars",
+              value: function drawBars(peaks, channelIndex, start2, end) {
+              }
+            }, {
+              key: "drawWave",
+              value: function drawWave(peaks, channelIndex, start2, end) {
+              }
+            }, {
+              key: "clearWave",
+              value: function clearWave() {
+              }
+            }, {
+              key: "updateProgress",
+              value: function updateProgress(position) {
+              }
+            }]);
+            return Drawer2;
+          }(util.Observer);
+          exports2["default"] = Drawer;
+          module2.exports = exports2.default;
+        },
+        "./src/drawer.multicanvas.js": (module2, exports2, __webpack_require__2) => {
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var _drawer = _interopRequireDefault2(__webpack_require__2("./src/drawer.js"));
+          var util = _interopRequireWildcard2(__webpack_require__2("./src/util/index.js"));
+          var _drawer2 = _interopRequireDefault2(__webpack_require__2("./src/drawer.canvasentry.js"));
+          function _getRequireWildcardCache(nodeInterop) {
+            if (typeof WeakMap !== "function")
+              return null;
+            var cacheBabelInterop = /* @__PURE__ */ new WeakMap();
+            var cacheNodeInterop = /* @__PURE__ */ new WeakMap();
+            return (_getRequireWildcardCache = function _getRequireWildcardCache2(nodeInterop2) {
+              return nodeInterop2 ? cacheNodeInterop : cacheBabelInterop;
+            })(nodeInterop);
+          }
+          function _interopRequireWildcard2(obj, nodeInterop) {
+            if (!nodeInterop && obj && obj.__esModule) {
+              return obj;
+            }
+            if (obj === null || _typeof2(obj) !== "object" && typeof obj !== "function") {
+              return { default: obj };
+            }
+            var cache = _getRequireWildcardCache(nodeInterop);
+            if (cache && cache.has(obj)) {
+              return cache.get(obj);
+            }
+            var newObj = {};
+            var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+            for (var key in obj) {
+              if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
+                var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+                if (desc && (desc.get || desc.set)) {
+                  Object.defineProperty(newObj, key, desc);
+                } else {
+                  newObj[key] = obj[key];
+                }
+              }
+            }
+            newObj.default = obj;
+            if (cache) {
+              cache.set(obj, newObj);
+            }
+            return newObj;
+          }
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, descriptor.key, descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _inherits(subClass, superClass) {
+            if (typeof superClass !== "function" && superClass !== null) {
+              throw new TypeError("Super expression must either be null or a function");
+            }
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });
+            Object.defineProperty(subClass, "prototype", { writable: false });
+            if (superClass)
+              _setPrototypeOf(subClass, superClass);
+          }
+          function _setPrototypeOf(o, p2) {
+            _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p3) {
+              o2.__proto__ = p3;
+              return o2;
+            };
+            return _setPrototypeOf(o, p2);
+          }
+          function _createSuper(Derived) {
+            var hasNativeReflectConstruct = _isNativeReflectConstruct();
+            return function _createSuperInternal() {
+              var Super = _getPrototypeOf(Derived), result;
+              if (hasNativeReflectConstruct) {
+                var NewTarget = _getPrototypeOf(this).constructor;
+                result = Reflect.construct(Super, arguments, NewTarget);
+              } else {
+                result = Super.apply(this, arguments);
+              }
+              return _possibleConstructorReturn(this, result);
+            };
+          }
+          function _possibleConstructorReturn(self2, call) {
+            if (call && (_typeof2(call) === "object" || typeof call === "function")) {
+              return call;
+            } else if (call !== void 0) {
+              throw new TypeError("Derived constructors may only return object or undefined");
+            }
+            return _assertThisInitialized(self2);
+          }
+          function _assertThisInitialized(self2) {
+            if (self2 === void 0) {
+              throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+            }
+            return self2;
+          }
+          function _isNativeReflectConstruct() {
+            if (typeof Reflect === "undefined" || !Reflect.construct)
+              return false;
+            if (Reflect.construct.sham)
+              return false;
+            if (typeof Proxy === "function")
+              return true;
+            try {
+              Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+              }));
+              return true;
+            } catch (e) {
+              return false;
+            }
+          }
+          function _getPrototypeOf(o) {
+            _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf2(o2) {
+              return o2.__proto__ || Object.getPrototypeOf(o2);
+            };
+            return _getPrototypeOf(o);
+          }
+          var MultiCanvas = /* @__PURE__ */ function(_Drawer) {
+            _inherits(MultiCanvas2, _Drawer);
+            var _super = _createSuper(MultiCanvas2);
+            function MultiCanvas2(container, params) {
+              var _this;
+              _classCallCheck(this, MultiCanvas2);
+              _this = _super.call(this, container, params);
+              _this.maxCanvasWidth = params.maxCanvasWidth;
+              _this.maxCanvasElementWidth = Math.round(params.maxCanvasWidth / params.pixelRatio);
+              _this.hasProgressCanvas = params.waveColor != params.progressColor;
+              _this.halfPixel = 0.5 / params.pixelRatio;
+              _this.canvases = [];
+              _this.progressWave = null;
+              _this.EntryClass = _drawer2.default;
+              _this.canvasContextAttributes = params.drawingContextAttributes;
+              _this.overlap = 2 * Math.ceil(params.pixelRatio / 2);
+              _this.barRadius = params.barRadius || 0;
+              _this.vertical = params.vertical;
+              return _this;
+            }
+            _createClass(MultiCanvas2, [{
+              key: "init",
+              value: function init2() {
+                this.createWrapper();
+                this.createElements();
+              }
+            }, {
+              key: "createElements",
+              value: function createElements() {
+                this.progressWave = util.withOrientation(this.wrapper.appendChild(document.createElement("wave")), this.params.vertical);
+                this.style(this.progressWave, {
+                  position: "absolute",
+                  zIndex: 3,
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  overflow: "hidden",
+                  width: "0",
+                  display: "none",
+                  boxSizing: "border-box",
+                  borderRightStyle: "solid",
+                  pointerEvents: "none"
+                });
+                this.addCanvas();
+                this.updateCursor();
+              }
+            }, {
+              key: "updateCursor",
+              value: function updateCursor() {
+                this.style(this.progressWave, {
+                  borderRightWidth: this.params.cursorWidth + "px",
+                  borderRightColor: this.params.cursorColor
+                });
+              }
+            }, {
+              key: "updateSize",
+              value: function updateSize() {
+                var _this2 = this;
+                var totalWidth = Math.round(this.width / this.params.pixelRatio);
+                var requiredCanvases = Math.ceil(totalWidth / (this.maxCanvasElementWidth + this.overlap));
+                while (this.canvases.length < requiredCanvases) {
+                  this.addCanvas();
+                }
+                while (this.canvases.length > requiredCanvases) {
+                  this.removeCanvas();
+                }
+                var canvasWidth = this.maxCanvasWidth + this.overlap;
+                var lastCanvas = this.canvases.length - 1;
+                this.canvases.forEach(function(entry, i) {
+                  if (i == lastCanvas) {
+                    canvasWidth = _this2.width - _this2.maxCanvasWidth * lastCanvas;
+                  }
+                  _this2.updateDimensions(entry, canvasWidth, _this2.height);
+                  entry.clearWave();
+                });
+              }
+            }, {
+              key: "addCanvas",
+              value: function addCanvas() {
+                var entry = new this.EntryClass();
+                entry.canvasContextAttributes = this.canvasContextAttributes;
+                entry.hasProgressCanvas = this.hasProgressCanvas;
+                entry.halfPixel = this.halfPixel;
+                var leftOffset = this.maxCanvasElementWidth * this.canvases.length;
+                var wave = util.withOrientation(this.wrapper.appendChild(document.createElement("canvas")), this.params.vertical);
+                this.style(wave, {
+                  position: "absolute",
+                  zIndex: 2,
+                  left: leftOffset + "px",
+                  top: 0,
+                  bottom: 0,
+                  height: "100%",
+                  pointerEvents: "none"
+                });
+                entry.initWave(wave);
+                if (this.hasProgressCanvas) {
+                  var progress = util.withOrientation(this.progressWave.appendChild(document.createElement("canvas")), this.params.vertical);
+                  this.style(progress, {
+                    position: "absolute",
+                    left: leftOffset + "px",
+                    top: 0,
+                    bottom: 0,
+                    height: "100%"
+                  });
+                  entry.initProgress(progress);
+                }
+                this.canvases.push(entry);
+              }
+            }, {
+              key: "removeCanvas",
+              value: function removeCanvas() {
+                var lastEntry = this.canvases[this.canvases.length - 1];
+                lastEntry.wave.parentElement.removeChild(lastEntry.wave.domElement);
+                if (this.hasProgressCanvas) {
+                  lastEntry.progress.parentElement.removeChild(lastEntry.progress.domElement);
+                }
+                if (lastEntry) {
+                  lastEntry.destroy();
+                  lastEntry = null;
+                }
+                this.canvases.pop();
+              }
+            }, {
+              key: "updateDimensions",
+              value: function updateDimensions(entry, width, height) {
+                var elementWidth = Math.round(width / this.params.pixelRatio);
+                var totalWidth = Math.round(this.width / this.params.pixelRatio);
+                entry.updateDimensions(elementWidth, totalWidth, width, height);
+                this.style(this.progressWave, {
+                  display: "block"
+                });
+              }
+            }, {
+              key: "clearWave",
+              value: function clearWave() {
+                var _this3 = this;
+                util.frame(function() {
+                  _this3.canvases.forEach(function(entry) {
+                    return entry.clearWave();
+                  });
+                })();
+              }
+            }, {
+              key: "drawBars",
+              value: function drawBars(peaks, channelIndex, start2, end) {
+                var _this4 = this;
+                return this.prepareDraw(peaks, channelIndex, start2, end, function(_ref) {
+                  var absmax = _ref.absmax, hasMinVals = _ref.hasMinVals;
+                  _ref.height;
+                  var offsetY = _ref.offsetY, halfH = _ref.halfH, peaks2 = _ref.peaks, ch = _ref.channelIndex;
+                  if (start2 === void 0) {
+                    return;
+                  }
+                  var peakIndexScale = hasMinVals ? 2 : 1;
+                  var length = peaks2.length / peakIndexScale;
+                  var bar = _this4.params.barWidth * _this4.params.pixelRatio;
+                  var gap = _this4.params.barGap === null ? Math.max(_this4.params.pixelRatio, ~~(bar / 2)) : Math.max(_this4.params.pixelRatio, _this4.params.barGap * _this4.params.pixelRatio);
+                  var step = bar + gap;
+                  var scale = length / _this4.width;
+                  var first = start2;
+                  var last = end;
+                  var peakIndex = first;
+                  for (peakIndex; peakIndex < last; peakIndex += step) {
+                    var peak = 0;
+                    var peakIndexRange = Math.floor(peakIndex * scale) * peakIndexScale;
+                    var peakIndexEnd = Math.floor((peakIndex + step) * scale) * peakIndexScale;
+                    do {
+                      var newPeak = Math.abs(peaks2[peakIndexRange]);
+                      if (newPeak > peak) {
+                        peak = newPeak;
+                      }
+                      peakIndexRange += peakIndexScale;
+                    } while (peakIndexRange < peakIndexEnd);
+                    var h2 = Math.round(peak / absmax * halfH);
+                    if (_this4.params.barMinHeight) {
+                      h2 = Math.max(h2, _this4.params.barMinHeight);
+                    }
+                    _this4.fillRect(peakIndex + _this4.halfPixel, halfH - h2 + offsetY, bar + _this4.halfPixel, h2 * 2, _this4.barRadius, ch);
+                  }
+                });
+              }
+            }, {
+              key: "drawWave",
+              value: function drawWave(peaks, channelIndex, start2, end) {
+                var _this5 = this;
+                return this.prepareDraw(peaks, channelIndex, start2, end, function(_ref2) {
+                  var absmax = _ref2.absmax, hasMinVals = _ref2.hasMinVals;
+                  _ref2.height;
+                  var offsetY = _ref2.offsetY, halfH = _ref2.halfH, peaks2 = _ref2.peaks, channelIndex2 = _ref2.channelIndex;
+                  if (!hasMinVals) {
+                    var reflectedPeaks = [];
+                    var len = peaks2.length;
+                    var i = 0;
+                    for (i; i < len; i++) {
+                      reflectedPeaks[2 * i] = peaks2[i];
+                      reflectedPeaks[2 * i + 1] = -peaks2[i];
+                    }
+                    peaks2 = reflectedPeaks;
+                  }
+                  if (start2 !== void 0) {
+                    _this5.drawLine(peaks2, absmax, halfH, offsetY, start2, end, channelIndex2);
+                  }
+                  _this5.fillRect(0, halfH + offsetY - _this5.halfPixel, _this5.width, _this5.halfPixel, _this5.barRadius, channelIndex2);
+                });
+              }
+            }, {
+              key: "drawLine",
+              value: function drawLine(peaks, absmax, halfH, offsetY, start2, end, channelIndex) {
+                var _this6 = this;
+                var _ref3 = this.params.splitChannelsOptions.channelColors[channelIndex] || {}, waveColor = _ref3.waveColor, progressColor = _ref3.progressColor;
+                this.canvases.forEach(function(entry, i) {
+                  _this6.setFillStyles(entry, waveColor, progressColor);
+                  _this6.applyCanvasTransforms(entry, _this6.params.vertical);
+                  entry.drawLines(peaks, absmax, halfH, offsetY, start2, end);
+                });
+              }
+            }, {
+              key: "fillRect",
+              value: function fillRect(x, y, width, height, radius, channelIndex) {
+                var startCanvas = Math.floor(x / this.maxCanvasWidth);
+                var endCanvas = Math.min(Math.ceil((x + width) / this.maxCanvasWidth) + 1, this.canvases.length);
+                var i = startCanvas;
+                for (i; i < endCanvas; i++) {
+                  var entry = this.canvases[i];
+                  var leftOffset = i * this.maxCanvasWidth;
+                  var intersection = {
+                    x1: Math.max(x, i * this.maxCanvasWidth),
+                    y1: y,
+                    x2: Math.min(x + width, i * this.maxCanvasWidth + entry.wave.width),
+                    y2: y + height
+                  };
+                  if (intersection.x1 < intersection.x2) {
+                    var _ref4 = this.params.splitChannelsOptions.channelColors[channelIndex] || {}, waveColor = _ref4.waveColor, progressColor = _ref4.progressColor;
+                    this.setFillStyles(entry, waveColor, progressColor);
+                    this.applyCanvasTransforms(entry, this.params.vertical);
+                    entry.fillRects(intersection.x1 - leftOffset, intersection.y1, intersection.x2 - intersection.x1, intersection.y2 - intersection.y1, radius);
+                  }
+                }
+              }
+            }, {
+              key: "hideChannel",
+              value: function hideChannel(channelIndex) {
+                return this.params.splitChannels && this.params.splitChannelsOptions.filterChannels.includes(channelIndex);
+              }
+            }, {
+              key: "prepareDraw",
+              value: function prepareDraw(peaks, channelIndex, start2, end, fn, drawIndex, normalizedMax) {
+                var _this7 = this;
+                return util.frame(function() {
+                  if (peaks[0] instanceof Array) {
+                    var channels = peaks;
+                    if (_this7.params.splitChannels) {
+                      var filteredChannels = channels.filter(function(c, i) {
+                        return !_this7.hideChannel(i);
+                      });
+                      if (!_this7.params.splitChannelsOptions.overlay) {
+                        _this7.setHeight(Math.max(filteredChannels.length, 1) * _this7.params.height * _this7.params.pixelRatio);
+                      }
+                      var overallAbsMax;
+                      if (_this7.params.splitChannelsOptions && _this7.params.splitChannelsOptions.relativeNormalization) {
+                        overallAbsMax = util.max(channels.map(function(channelPeaks) {
+                          return util.absMax(channelPeaks);
+                        }));
+                      }
+                      return channels.forEach(function(channelPeaks, i) {
+                        return _this7.prepareDraw(channelPeaks, i, start2, end, fn, filteredChannels.indexOf(channelPeaks), overallAbsMax);
+                      });
+                    }
+                    peaks = channels[0];
+                  }
+                  if (_this7.hideChannel(channelIndex)) {
+                    return;
+                  }
+                  var absmax = 1 / _this7.params.barHeight;
+                  if (_this7.params.normalize) {
+                    absmax = normalizedMax === void 0 ? util.absMax(peaks) : normalizedMax;
+                  }
+                  var hasMinVals = [].some.call(peaks, function(val) {
+                    return val < 0;
+                  });
+                  var height = _this7.params.height * _this7.params.pixelRatio;
+                  var halfH = height / 2;
+                  var offsetY = height * drawIndex || 0;
+                  if (_this7.params.splitChannelsOptions && _this7.params.splitChannelsOptions.overlay) {
+                    offsetY = 0;
+                  }
+                  return fn({
+                    absmax,
+                    hasMinVals,
+                    height,
+                    offsetY,
+                    halfH,
+                    peaks,
+                    channelIndex
+                  });
+                })();
+              }
+            }, {
+              key: "setFillStyles",
+              value: function setFillStyles(entry) {
+                var waveColor = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : this.params.waveColor;
+                var progressColor = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : this.params.progressColor;
+                entry.setFillStyles(waveColor, progressColor);
+              }
+            }, {
+              key: "applyCanvasTransforms",
+              value: function applyCanvasTransforms(entry) {
+                var vertical = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
+                entry.applyCanvasTransforms(vertical);
+              }
+            }, {
+              key: "getImage",
+              value: function getImage(format, quality, type) {
+                if (type === "blob") {
+                  return Promise.all(this.canvases.map(function(entry) {
+                    return entry.getImage(format, quality, type);
+                  }));
+                } else if (type === "dataURL") {
+                  var images = this.canvases.map(function(entry) {
+                    return entry.getImage(format, quality, type);
+                  });
+                  return images.length > 1 ? images : images[0];
+                }
+              }
+            }, {
+              key: "updateProgress",
+              value: function updateProgress(position) {
+                this.style(this.progressWave, {
+                  width: position + "px"
+                });
+              }
+            }]);
+            return MultiCanvas2;
+          }(_drawer.default);
+          exports2["default"] = MultiCanvas;
+          module2.exports = exports2.default;
+        },
+        "./src/mediaelement-webaudio.js": (module2, exports2, __webpack_require__2) => {
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var _mediaelement = _interopRequireDefault2(__webpack_require__2("./src/mediaelement.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, descriptor.key, descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _get() {
+            if (typeof Reflect !== "undefined" && Reflect.get) {
+              _get = Reflect.get.bind();
+            } else {
+              _get = function _get2(target, property, receiver) {
+                var base = _superPropBase(target, property);
+                if (!base)
+                  return;
+                var desc = Object.getOwnPropertyDescriptor(base, property);
+                if (desc.get) {
+                  return desc.get.call(arguments.length < 3 ? target : receiver);
+                }
+                return desc.value;
+              };
+            }
+            return _get.apply(this, arguments);
+          }
+          function _superPropBase(object, property) {
+            while (!Object.prototype.hasOwnProperty.call(object, property)) {
+              object = _getPrototypeOf(object);
+              if (object === null)
+                break;
+            }
+            return object;
+          }
+          function _inherits(subClass, superClass) {
+            if (typeof superClass !== "function" && superClass !== null) {
+              throw new TypeError("Super expression must either be null or a function");
+            }
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });
+            Object.defineProperty(subClass, "prototype", { writable: false });
+            if (superClass)
+              _setPrototypeOf(subClass, superClass);
+          }
+          function _setPrototypeOf(o, p2) {
+            _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p3) {
+              o2.__proto__ = p3;
+              return o2;
+            };
+            return _setPrototypeOf(o, p2);
+          }
+          function _createSuper(Derived) {
+            var hasNativeReflectConstruct = _isNativeReflectConstruct();
+            return function _createSuperInternal() {
+              var Super = _getPrototypeOf(Derived), result;
+              if (hasNativeReflectConstruct) {
+                var NewTarget = _getPrototypeOf(this).constructor;
+                result = Reflect.construct(Super, arguments, NewTarget);
+              } else {
+                result = Super.apply(this, arguments);
+              }
+              return _possibleConstructorReturn(this, result);
+            };
+          }
+          function _possibleConstructorReturn(self2, call) {
+            if (call && (_typeof2(call) === "object" || typeof call === "function")) {
+              return call;
+            } else if (call !== void 0) {
+              throw new TypeError("Derived constructors may only return object or undefined");
+            }
+            return _assertThisInitialized(self2);
+          }
+          function _assertThisInitialized(self2) {
+            if (self2 === void 0) {
+              throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+            }
+            return self2;
+          }
+          function _isNativeReflectConstruct() {
+            if (typeof Reflect === "undefined" || !Reflect.construct)
+              return false;
+            if (Reflect.construct.sham)
+              return false;
+            if (typeof Proxy === "function")
+              return true;
+            try {
+              Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+              }));
+              return true;
+            } catch (e) {
+              return false;
+            }
+          }
+          function _getPrototypeOf(o) {
+            _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf2(o2) {
+              return o2.__proto__ || Object.getPrototypeOf(o2);
+            };
+            return _getPrototypeOf(o);
+          }
+          var MediaElementWebAudio = /* @__PURE__ */ function(_MediaElement) {
+            _inherits(MediaElementWebAudio2, _MediaElement);
+            var _super = _createSuper(MediaElementWebAudio2);
+            function MediaElementWebAudio2(params) {
+              var _this;
+              _classCallCheck(this, MediaElementWebAudio2);
+              _this = _super.call(this, params);
+              _this.params = params;
+              _this.sourceMediaElement = null;
+              return _this;
+            }
+            _createClass(MediaElementWebAudio2, [{
+              key: "init",
+              value: function init2() {
+                this.setPlaybackRate(this.params.audioRate);
+                this.createTimer();
+                this.createVolumeNode();
+                this.createScriptNode();
+                this.createAnalyserNode();
+              }
+            }, {
+              key: "_load",
+              value: function _load(media, peaks, preload) {
+                _get(_getPrototypeOf(MediaElementWebAudio2.prototype), "_load", this).call(this, media, peaks, preload);
+                this.createMediaElementSource(media);
+              }
+            }, {
+              key: "createMediaElementSource",
+              value: function createMediaElementSource(mediaElement) {
+                this.sourceMediaElement = this.ac.createMediaElementSource(mediaElement);
+                this.sourceMediaElement.connect(this.analyser);
+              }
+            }, {
+              key: "play",
+              value: function play(start2, end) {
+                this.resumeAudioContext();
+                return _get(_getPrototypeOf(MediaElementWebAudio2.prototype), "play", this).call(this, start2, end);
+              }
+            }, {
+              key: "destroy",
+              value: function destroy() {
+                _get(_getPrototypeOf(MediaElementWebAudio2.prototype), "destroy", this).call(this);
+                this.destroyWebAudio();
+              }
+            }]);
+            return MediaElementWebAudio2;
+          }(_mediaelement.default);
+          exports2["default"] = MediaElementWebAudio;
+          module2.exports = exports2.default;
+        },
+        "./src/mediaelement.js": (module2, exports2, __webpack_require__2) => {
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var _webaudio = _interopRequireDefault2(__webpack_require__2("./src/webaudio.js"));
+          var util = _interopRequireWildcard2(__webpack_require__2("./src/util/index.js"));
+          function _getRequireWildcardCache(nodeInterop) {
+            if (typeof WeakMap !== "function")
+              return null;
+            var cacheBabelInterop = /* @__PURE__ */ new WeakMap();
+            var cacheNodeInterop = /* @__PURE__ */ new WeakMap();
+            return (_getRequireWildcardCache = function _getRequireWildcardCache2(nodeInterop2) {
+              return nodeInterop2 ? cacheNodeInterop : cacheBabelInterop;
+            })(nodeInterop);
+          }
+          function _interopRequireWildcard2(obj, nodeInterop) {
+            if (!nodeInterop && obj && obj.__esModule) {
+              return obj;
+            }
+            if (obj === null || _typeof2(obj) !== "object" && typeof obj !== "function") {
+              return { default: obj };
+            }
+            var cache = _getRequireWildcardCache(nodeInterop);
+            if (cache && cache.has(obj)) {
+              return cache.get(obj);
+            }
+            var newObj = {};
+            var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+            for (var key in obj) {
+              if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
+                var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+                if (desc && (desc.get || desc.set)) {
+                  Object.defineProperty(newObj, key, desc);
+                } else {
+                  newObj[key] = obj[key];
+                }
+              }
+            }
+            newObj.default = obj;
+            if (cache) {
+              cache.set(obj, newObj);
+            }
+            return newObj;
+          }
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, descriptor.key, descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _get() {
+            if (typeof Reflect !== "undefined" && Reflect.get) {
+              _get = Reflect.get.bind();
+            } else {
+              _get = function _get2(target, property, receiver) {
+                var base = _superPropBase(target, property);
+                if (!base)
+                  return;
+                var desc = Object.getOwnPropertyDescriptor(base, property);
+                if (desc.get) {
+                  return desc.get.call(arguments.length < 3 ? target : receiver);
+                }
+                return desc.value;
+              };
+            }
+            return _get.apply(this, arguments);
+          }
+          function _superPropBase(object, property) {
+            while (!Object.prototype.hasOwnProperty.call(object, property)) {
+              object = _getPrototypeOf(object);
+              if (object === null)
+                break;
+            }
+            return object;
+          }
+          function _inherits(subClass, superClass) {
+            if (typeof superClass !== "function" && superClass !== null) {
+              throw new TypeError("Super expression must either be null or a function");
+            }
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });
+            Object.defineProperty(subClass, "prototype", { writable: false });
+            if (superClass)
+              _setPrototypeOf(subClass, superClass);
+          }
+          function _setPrototypeOf(o, p2) {
+            _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p3) {
+              o2.__proto__ = p3;
+              return o2;
+            };
+            return _setPrototypeOf(o, p2);
+          }
+          function _createSuper(Derived) {
+            var hasNativeReflectConstruct = _isNativeReflectConstruct();
+            return function _createSuperInternal() {
+              var Super = _getPrototypeOf(Derived), result;
+              if (hasNativeReflectConstruct) {
+                var NewTarget = _getPrototypeOf(this).constructor;
+                result = Reflect.construct(Super, arguments, NewTarget);
+              } else {
+                result = Super.apply(this, arguments);
+              }
+              return _possibleConstructorReturn(this, result);
+            };
+          }
+          function _possibleConstructorReturn(self2, call) {
+            if (call && (_typeof2(call) === "object" || typeof call === "function")) {
+              return call;
+            } else if (call !== void 0) {
+              throw new TypeError("Derived constructors may only return object or undefined");
+            }
+            return _assertThisInitialized(self2);
+          }
+          function _assertThisInitialized(self2) {
+            if (self2 === void 0) {
+              throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+            }
+            return self2;
+          }
+          function _isNativeReflectConstruct() {
+            if (typeof Reflect === "undefined" || !Reflect.construct)
+              return false;
+            if (Reflect.construct.sham)
+              return false;
+            if (typeof Proxy === "function")
+              return true;
+            try {
+              Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+              }));
+              return true;
+            } catch (e) {
+              return false;
+            }
+          }
+          function _getPrototypeOf(o) {
+            _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf2(o2) {
+              return o2.__proto__ || Object.getPrototypeOf(o2);
+            };
+            return _getPrototypeOf(o);
+          }
+          var MediaElement = /* @__PURE__ */ function(_WebAudio) {
+            _inherits(MediaElement2, _WebAudio);
+            var _super = _createSuper(MediaElement2);
+            function MediaElement2(params) {
+              var _this;
+              _classCallCheck(this, MediaElement2);
+              _this = _super.call(this, params);
+              _this.params = params;
+              _this.media = {
+                currentTime: 0,
+                duration: 0,
+                paused: true,
+                playbackRate: 1,
+                play: function play() {
+                },
+                pause: function pause() {
+                },
+                volume: 0
+              };
+              _this.mediaType = params.mediaType.toLowerCase();
+              _this.elementPosition = params.elementPosition;
+              _this.peaks = null;
+              _this.playbackRate = 1;
+              _this.volume = 1;
+              _this.isMuted = false;
+              _this.buffer = null;
+              _this.onPlayEnd = null;
+              _this.mediaListeners = {};
+              return _this;
+            }
+            _createClass(MediaElement2, [{
+              key: "init",
+              value: function init2() {
+                this.setPlaybackRate(this.params.audioRate);
+                this.createTimer();
+              }
+            }, {
+              key: "_setupMediaListeners",
+              value: function _setupMediaListeners() {
+                var _this2 = this;
+                this.mediaListeners.error = function() {
+                  _this2.fireEvent("error", "Error loading media element");
+                };
+                this.mediaListeners.canplay = function() {
+                  _this2.fireEvent("canplay");
+                };
+                this.mediaListeners.ended = function() {
+                  _this2.fireEvent("finish");
+                };
+                this.mediaListeners.play = function() {
+                  _this2.fireEvent("play");
+                };
+                this.mediaListeners.pause = function() {
+                  _this2.fireEvent("pause");
+                };
+                this.mediaListeners.seeked = function(event) {
+                  _this2.fireEvent("seek");
+                };
+                this.mediaListeners.volumechange = function(event) {
+                  _this2.isMuted = _this2.media.muted;
+                  if (_this2.isMuted) {
+                    _this2.volume = 0;
+                  } else {
+                    _this2.volume = _this2.media.volume;
+                  }
+                  _this2.fireEvent("volume");
+                };
+                Object.keys(this.mediaListeners).forEach(function(id) {
+                  _this2.media.removeEventListener(id, _this2.mediaListeners[id]);
+                  _this2.media.addEventListener(id, _this2.mediaListeners[id]);
+                });
+              }
+            }, {
+              key: "createTimer",
+              value: function createTimer() {
+                var _this3 = this;
+                var onAudioProcess = function onAudioProcess2() {
+                  if (_this3.isPaused()) {
+                    return;
+                  }
+                  _this3.fireEvent("audioprocess", _this3.getCurrentTime());
+                  util.frame(onAudioProcess2)();
+                };
+                this.on("play", onAudioProcess);
+                this.on("pause", function() {
+                  _this3.fireEvent("audioprocess", _this3.getCurrentTime());
+                });
+              }
+            }, {
+              key: "load",
+              value: function load(url, container, peaks, preload) {
+                var media = document.createElement(this.mediaType);
+                media.controls = this.params.mediaControls;
+                media.autoplay = this.params.autoplay || false;
+                media.preload = preload == null ? "auto" : preload;
+                media.src = url;
+                media.style.width = "100%";
+                var prevMedia = container.querySelector(this.mediaType);
+                if (prevMedia) {
+                  container.removeChild(prevMedia);
+                }
+                container.appendChild(media);
+                this._load(media, peaks, preload);
+              }
+            }, {
+              key: "loadElt",
+              value: function loadElt(elt, peaks) {
+                elt.controls = this.params.mediaControls;
+                elt.autoplay = this.params.autoplay || false;
+                this._load(elt, peaks, elt.preload);
+              }
+            }, {
+              key: "_load",
+              value: function _load(media, peaks, preload) {
+                if (!(media instanceof HTMLMediaElement) || typeof media.addEventListener === "undefined") {
+                  throw new Error("media parameter is not a valid media element");
+                }
+                if (typeof media.load == "function" && !(peaks && preload == "none")) {
+                  media.load();
+                }
+                this.media = media;
+                this._setupMediaListeners();
+                this.peaks = peaks;
+                this.onPlayEnd = null;
+                this.buffer = null;
+                this.isMuted = media.muted;
+                this.setPlaybackRate(this.playbackRate);
+                this.setVolume(this.volume);
+              }
+            }, {
+              key: "isPaused",
+              value: function isPaused() {
+                return !this.media || this.media.paused;
+              }
+            }, {
+              key: "getDuration",
+              value: function getDuration() {
+                if (this.explicitDuration) {
+                  return this.explicitDuration;
+                }
+                var duration = (this.buffer || this.media).duration;
+                if (duration >= Infinity) {
+                  duration = this.media.seekable.end(0);
+                }
+                return duration;
+              }
+            }, {
+              key: "getCurrentTime",
+              value: function getCurrentTime() {
+                return this.media && this.media.currentTime;
+              }
+            }, {
+              key: "getPlayedPercents",
+              value: function getPlayedPercents() {
+                return this.getCurrentTime() / this.getDuration() || 0;
+              }
+            }, {
+              key: "getPlaybackRate",
+              value: function getPlaybackRate() {
+                return this.playbackRate || this.media.playbackRate;
+              }
+            }, {
+              key: "setPlaybackRate",
+              value: function setPlaybackRate(value) {
+                this.playbackRate = value || 1;
+                this.media.playbackRate = this.playbackRate;
+              }
+            }, {
+              key: "seekTo",
+              value: function seekTo(start2) {
+                if (start2 != null && !isNaN(start2)) {
+                  this.media.currentTime = start2;
+                }
+                this.clearPlayEnd();
+              }
+            }, {
+              key: "play",
+              value: function play(start2, end) {
+                this.seekTo(start2);
+                var promise = this.media.play();
+                end && this.setPlayEnd(end);
+                return promise;
+              }
+            }, {
+              key: "pause",
+              value: function pause() {
+                var promise;
+                if (this.media) {
+                  promise = this.media.pause();
+                }
+                this.clearPlayEnd();
+                return promise;
+              }
+            }, {
+              key: "setPlayEnd",
+              value: function setPlayEnd(end) {
+                var _this4 = this;
+                this.clearPlayEnd();
+                this._onPlayEnd = function(time) {
+                  if (time >= end) {
+                    _this4.pause();
+                    _this4.seekTo(end);
+                  }
+                };
+                this.on("audioprocess", this._onPlayEnd);
+              }
+            }, {
+              key: "clearPlayEnd",
+              value: function clearPlayEnd() {
+                if (this._onPlayEnd) {
+                  this.un("audioprocess", this._onPlayEnd);
+                  this._onPlayEnd = null;
+                }
+              }
+            }, {
+              key: "getPeaks",
+              value: function getPeaks(length, first, last) {
+                if (this.buffer) {
+                  return _get(_getPrototypeOf(MediaElement2.prototype), "getPeaks", this).call(this, length, first, last);
+                }
+                return this.peaks || [];
+              }
+            }, {
+              key: "setSinkId",
+              value: function setSinkId(deviceId) {
+                if (deviceId) {
+                  if (!this.media.setSinkId) {
+                    return Promise.reject(new Error("setSinkId is not supported in your browser"));
+                  }
+                  return this.media.setSinkId(deviceId);
+                }
+                return Promise.reject(new Error("Invalid deviceId: " + deviceId));
+              }
+            }, {
+              key: "getVolume",
+              value: function getVolume() {
+                return this.volume;
+              }
+            }, {
+              key: "setVolume",
+              value: function setVolume(value) {
+                this.volume = value;
+                if (this.media.volume !== this.volume) {
+                  this.media.volume = this.volume;
+                }
+              }
+            }, {
+              key: "setMute",
+              value: function setMute(muted) {
+                this.isMuted = this.media.muted = muted;
+              }
+            }, {
+              key: "destroy",
+              value: function destroy() {
+                var _this5 = this;
+                this.pause();
+                this.unAll();
+                this.destroyed = true;
+                Object.keys(this.mediaListeners).forEach(function(id) {
+                  if (_this5.media) {
+                    _this5.media.removeEventListener(id, _this5.mediaListeners[id]);
+                  }
+                });
+                if (this.params.removeMediaElementOnDestroy && this.media && this.media.parentNode) {
+                  this.media.parentNode.removeChild(this.media);
+                }
+                this.media = null;
+              }
+            }]);
+            return MediaElement2;
+          }(_webaudio.default);
+          exports2["default"] = MediaElement;
+          module2.exports = exports2.default;
+        },
+        "./src/peakcache.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, descriptor.key, descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          var PeakCache = /* @__PURE__ */ function() {
+            function PeakCache2() {
+              _classCallCheck(this, PeakCache2);
+              this.clearPeakCache();
+            }
+            _createClass(PeakCache2, [{
+              key: "clearPeakCache",
+              value: function clearPeakCache() {
+                this.peakCacheRanges = [];
+                this.peakCacheLength = -1;
+              }
+            }, {
+              key: "addRangeToPeakCache",
+              value: function addRangeToPeakCache(length, start2, end) {
+                if (length != this.peakCacheLength) {
+                  this.clearPeakCache();
+                  this.peakCacheLength = length;
+                }
+                var uncachedRanges = [];
+                var i = 0;
+                while (i < this.peakCacheRanges.length && this.peakCacheRanges[i] < start2) {
+                  i++;
+                }
+                if (i % 2 == 0) {
+                  uncachedRanges.push(start2);
+                }
+                while (i < this.peakCacheRanges.length && this.peakCacheRanges[i] <= end) {
+                  uncachedRanges.push(this.peakCacheRanges[i]);
+                  i++;
+                }
+                if (i % 2 == 0) {
+                  uncachedRanges.push(end);
+                }
+                uncachedRanges = uncachedRanges.filter(function(item, pos, arr) {
+                  if (pos == 0) {
+                    return item != arr[pos + 1];
+                  } else if (pos == arr.length - 1) {
+                    return item != arr[pos - 1];
+                  }
+                  return item != arr[pos - 1] && item != arr[pos + 1];
+                });
+                this.peakCacheRanges = this.peakCacheRanges.concat(uncachedRanges);
+                this.peakCacheRanges = this.peakCacheRanges.sort(function(a, b) {
+                  return a - b;
+                }).filter(function(item, pos, arr) {
+                  if (pos == 0) {
+                    return item != arr[pos + 1];
+                  } else if (pos == arr.length - 1) {
+                    return item != arr[pos - 1];
+                  }
+                  return item != arr[pos - 1] && item != arr[pos + 1];
+                });
+                var uncachedRangePairs = [];
+                for (i = 0; i < uncachedRanges.length; i += 2) {
+                  uncachedRangePairs.push([uncachedRanges[i], uncachedRanges[i + 1]]);
+                }
+                return uncachedRangePairs;
+              }
+            }, {
+              key: "getCacheRanges",
+              value: function getCacheRanges() {
+                var peakCacheRangePairs = [];
+                var i;
+                for (i = 0; i < this.peakCacheRanges.length; i += 2) {
+                  peakCacheRangePairs.push([this.peakCacheRanges[i], this.peakCacheRanges[i + 1]]);
+                }
+                return peakCacheRangePairs;
+              }
+            }]);
+            return PeakCache2;
+          }();
+          exports2["default"] = PeakCache;
+          module2.exports = exports2.default;
+        },
+        "./src/util/absMax.js": (module2, exports2, __webpack_require__2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = absMax;
+          var _max = _interopRequireDefault2(__webpack_require__2("./src/util/max.js"));
+          var _min = _interopRequireDefault2(__webpack_require__2("./src/util/min.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function absMax(values) {
+            var max = (0, _max.default)(values);
+            var min = (0, _min.default)(values);
+            return -min > max ? -min : max;
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/clamp.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = clamp;
+          function clamp(val, min, max) {
+            return Math.min(Math.max(min, val), max);
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/fetch.js": (module2, exports2, __webpack_require__2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = fetchFile;
+          var _observer = _interopRequireDefault2(__webpack_require__2("./src/util/observer.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, descriptor.key, descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          var ProgressHandler = /* @__PURE__ */ function() {
+            function ProgressHandler2(instance2, contentLength, response) {
+              _classCallCheck(this, ProgressHandler2);
+              this.instance = instance2;
+              this.instance._reader = response.body.getReader();
+              this.total = parseInt(contentLength, 10);
+              this.loaded = 0;
+            }
+            _createClass(ProgressHandler2, [{
+              key: "start",
+              value: function start2(controller) {
+                var _this = this;
+                var read = function read2() {
+                  _this.instance._reader.read().then(function(_ref) {
+                    var done = _ref.done, value = _ref.value;
+                    if (done) {
+                      if (_this.total === 0) {
+                        _this.instance.onProgress.call(_this.instance, {
+                          loaded: _this.loaded,
+                          total: _this.total,
+                          lengthComputable: false
+                        });
+                      }
+                      controller.close();
+                      return;
+                    }
+                    _this.loaded += value.byteLength;
+                    _this.instance.onProgress.call(_this.instance, {
+                      loaded: _this.loaded,
+                      total: _this.total,
+                      lengthComputable: !(_this.total === 0)
+                    });
+                    controller.enqueue(value);
+                    read2();
+                  }).catch(function(error) {
+                    controller.error(error);
+                  });
+                };
+                read();
+              }
+            }]);
+            return ProgressHandler2;
+          }();
+          function fetchFile(options2) {
+            if (!options2) {
+              throw new Error("fetch options missing");
+            } else if (!options2.url) {
+              throw new Error("fetch url missing");
+            }
+            var instance2 = new _observer.default();
+            var fetchHeaders = new Headers();
+            var fetchRequest = new Request(options2.url);
+            instance2.controller = new AbortController();
+            if (options2 && options2.requestHeaders) {
+              options2.requestHeaders.forEach(function(header) {
+                fetchHeaders.append(header.key, header.value);
+              });
+            }
+            var responseType = options2.responseType || "json";
+            var fetchOptions = {
+              method: options2.method || "GET",
+              headers: fetchHeaders,
+              mode: options2.mode || "cors",
+              credentials: options2.credentials || "same-origin",
+              cache: options2.cache || "default",
+              redirect: options2.redirect || "follow",
+              referrer: options2.referrer || "client",
+              signal: instance2.controller.signal
+            };
+            fetch(fetchRequest, fetchOptions).then(function(response) {
+              instance2.response = response;
+              var progressAvailable = true;
+              if (!response.body) {
+                progressAvailable = false;
+              }
+              var contentLength = response.headers.get("content-length");
+              if (contentLength === null) {
+                progressAvailable = false;
+              }
+              if (!progressAvailable) {
+                return response;
+              }
+              instance2.onProgress = function(e) {
+                instance2.fireEvent("progress", e);
+              };
+              return new Response(new ReadableStream(new ProgressHandler(instance2, contentLength, response)), fetchOptions);
+            }).then(function(response) {
+              var errMsg;
+              if (response.ok) {
+                switch (responseType) {
+                  case "arraybuffer":
+                    return response.arrayBuffer();
+                  case "json":
+                    return response.json();
+                  case "blob":
+                    return response.blob();
+                  case "text":
+                    return response.text();
+                  default:
+                    errMsg = "Unknown responseType: " + responseType;
+                    break;
+                }
+              }
+              if (!errMsg) {
+                errMsg = "HTTP error status: " + response.status;
+              }
+              throw new Error(errMsg);
+            }).then(function(response) {
+              instance2.fireEvent("success", response);
+            }).catch(function(error) {
+              instance2.fireEvent("error", error);
+            });
+            instance2.fetchRequest = fetchRequest;
+            return instance2;
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/frame.js": (module2, exports2, __webpack_require__2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = frame;
+          var _requestAnimationFrame = _interopRequireDefault2(__webpack_require__2("./src/util/request-animation-frame.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function frame(func) {
+            return function() {
+              for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
+              }
+              return (0, _requestAnimationFrame.default)(function() {
+                return func.apply(void 0, args);
+              });
+            };
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/get-id.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = getId2;
+          function getId2(prefix) {
+            if (prefix === void 0) {
+              prefix = "wavesurfer_";
+            }
+            return prefix + Math.random().toString(32).substring(2);
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/index.js": (__unused_webpack_module, exports2, __webpack_require__2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          Object.defineProperty(exports2, "Observer", {
+            enumerable: true,
+            get: function get3() {
+              return _observer.default;
+            }
+          });
+          Object.defineProperty(exports2, "absMax", {
+            enumerable: true,
+            get: function get3() {
+              return _absMax.default;
+            }
+          });
+          Object.defineProperty(exports2, "clamp", {
+            enumerable: true,
+            get: function get3() {
+              return _clamp.default;
+            }
+          });
+          Object.defineProperty(exports2, "debounce", {
+            enumerable: true,
+            get: function get3() {
+              return _debounce.default;
+            }
+          });
+          Object.defineProperty(exports2, "fetchFile", {
+            enumerable: true,
+            get: function get3() {
+              return _fetch.default;
+            }
+          });
+          Object.defineProperty(exports2, "frame", {
+            enumerable: true,
+            get: function get3() {
+              return _frame.default;
+            }
+          });
+          Object.defineProperty(exports2, "getId", {
+            enumerable: true,
+            get: function get3() {
+              return _getId.default;
+            }
+          });
+          Object.defineProperty(exports2, "ignoreSilenceMode", {
+            enumerable: true,
+            get: function get3() {
+              return _silenceMode.default;
+            }
+          });
+          Object.defineProperty(exports2, "max", {
+            enumerable: true,
+            get: function get3() {
+              return _max.default;
+            }
+          });
+          Object.defineProperty(exports2, "min", {
+            enumerable: true,
+            get: function get3() {
+              return _min.default;
+            }
+          });
+          Object.defineProperty(exports2, "preventClick", {
+            enumerable: true,
+            get: function get3() {
+              return _preventClick.default;
+            }
+          });
+          Object.defineProperty(exports2, "requestAnimationFrame", {
+            enumerable: true,
+            get: function get3() {
+              return _requestAnimationFrame.default;
+            }
+          });
+          Object.defineProperty(exports2, "style", {
+            enumerable: true,
+            get: function get3() {
+              return _style.default;
+            }
+          });
+          Object.defineProperty(exports2, "withOrientation", {
+            enumerable: true,
+            get: function get3() {
+              return _orientation.default;
+            }
+          });
+          var _getId = _interopRequireDefault2(__webpack_require__2("./src/util/get-id.js"));
+          var _max = _interopRequireDefault2(__webpack_require__2("./src/util/max.js"));
+          var _min = _interopRequireDefault2(__webpack_require__2("./src/util/min.js"));
+          var _absMax = _interopRequireDefault2(__webpack_require__2("./src/util/absMax.js"));
+          var _observer = _interopRequireDefault2(__webpack_require__2("./src/util/observer.js"));
+          var _style = _interopRequireDefault2(__webpack_require__2("./src/util/style.js"));
+          var _requestAnimationFrame = _interopRequireDefault2(__webpack_require__2("./src/util/request-animation-frame.js"));
+          var _frame = _interopRequireDefault2(__webpack_require__2("./src/util/frame.js"));
+          var _debounce = _interopRequireDefault2(__webpack_require__2("./node_modules/debounce/index.js"));
+          var _preventClick = _interopRequireDefault2(__webpack_require__2("./src/util/prevent-click.js"));
+          var _fetch = _interopRequireDefault2(__webpack_require__2("./src/util/fetch.js"));
+          var _clamp = _interopRequireDefault2(__webpack_require__2("./src/util/clamp.js"));
+          var _orientation = _interopRequireDefault2(__webpack_require__2("./src/util/orientation.js"));
+          var _silenceMode = _interopRequireDefault2(__webpack_require__2("./src/util/silence-mode.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+        },
+        "./src/util/max.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = max;
+          function max(values) {
+            var largest = -Infinity;
+            Object.keys(values).forEach(function(i) {
+              if (values[i] > largest) {
+                largest = values[i];
+              }
+            });
+            return largest;
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/min.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = min;
+          function min(values) {
+            var smallest = Number(Infinity);
+            Object.keys(values).forEach(function(i) {
+              if (values[i] < smallest) {
+                smallest = values[i];
+              }
+            });
+            return smallest;
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/observer.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, descriptor.key, descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          var Observer = /* @__PURE__ */ function() {
+            function Observer2() {
+              _classCallCheck(this, Observer2);
+              this._disabledEventEmissions = [];
+              this.handlers = null;
+            }
+            _createClass(Observer2, [{
+              key: "on",
+              value: function on2(event, fn) {
+                var _this = this;
+                if (!this.handlers) {
+                  this.handlers = {};
+                }
+                var handlers = this.handlers[event];
+                if (!handlers) {
+                  handlers = this.handlers[event] = [];
+                }
+                handlers.push(fn);
+                return {
+                  name: event,
+                  callback: fn,
+                  un: function un(e, fn2) {
+                    return _this.un(e, fn2);
+                  }
+                };
+              }
+            }, {
+              key: "un",
+              value: function un(event, fn) {
+                if (!this.handlers) {
+                  return;
+                }
+                var handlers = this.handlers[event];
+                var i;
+                if (handlers) {
+                  if (fn) {
+                    for (i = handlers.length - 1; i >= 0; i--) {
+                      if (handlers[i] == fn) {
+                        handlers.splice(i, 1);
+                      }
+                    }
+                  } else {
+                    handlers.length = 0;
+                  }
+                }
+              }
+            }, {
+              key: "unAll",
+              value: function unAll() {
+                this.handlers = null;
+              }
+            }, {
+              key: "once",
+              value: function once(event, handler) {
+                var _this2 = this;
+                var fn = function fn2() {
+                  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                    args[_key] = arguments[_key];
+                  }
+                  handler.apply(_this2, args);
+                  setTimeout(function() {
+                    _this2.un(event, fn2);
+                  }, 0);
+                };
+                return this.on(event, fn);
+              }
+            }, {
+              key: "setDisabledEventEmissions",
+              value: function setDisabledEventEmissions(eventNames) {
+                this._disabledEventEmissions = eventNames;
+              }
+            }, {
+              key: "_isDisabledEventEmission",
+              value: function _isDisabledEventEmission(event) {
+                return this._disabledEventEmissions && this._disabledEventEmissions.includes(event);
+              }
+            }, {
+              key: "fireEvent",
+              value: function fireEvent(event) {
+                for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+                  args[_key2 - 1] = arguments[_key2];
+                }
+                if (!this.handlers || this._isDisabledEventEmission(event)) {
+                  return;
+                }
+                var handlers = this.handlers[event];
+                handlers && handlers.forEach(function(fn) {
+                  fn.apply(void 0, args);
+                });
+              }
+            }]);
+            return Observer2;
+          }();
+          exports2["default"] = Observer;
+          module2.exports = exports2.default;
+        },
+        "./src/util/orientation.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = withOrientation;
+          var verticalPropMap = {
+            width: "height",
+            height: "width",
+            overflowX: "overflowY",
+            overflowY: "overflowX",
+            clientWidth: "clientHeight",
+            clientHeight: "clientWidth",
+            clientX: "clientY",
+            clientY: "clientX",
+            scrollWidth: "scrollHeight",
+            scrollLeft: "scrollTop",
+            offsetLeft: "offsetTop",
+            offsetTop: "offsetLeft",
+            offsetHeight: "offsetWidth",
+            offsetWidth: "offsetHeight",
+            left: "top",
+            right: "bottom",
+            top: "left",
+            bottom: "right",
+            borderRightStyle: "borderBottomStyle",
+            borderRightWidth: "borderBottomWidth",
+            borderRightColor: "borderBottomColor"
+          };
+          function mapProp(prop, vertical) {
+            if (Object.prototype.hasOwnProperty.call(verticalPropMap, prop)) {
+              return vertical ? verticalPropMap[prop] : prop;
+            } else {
+              return prop;
+            }
+          }
+          var isProxy2 = Symbol("isProxy");
+          function withOrientation(target, vertical) {
+            if (target[isProxy2]) {
+              return target;
+            } else {
+              return new Proxy(target, {
+                get: function get3(obj, prop, receiver) {
+                  if (prop === isProxy2) {
+                    return true;
+                  } else if (prop === "domElement") {
+                    return obj;
+                  } else if (prop === "style") {
+                    return withOrientation(obj.style, vertical);
+                  } else if (prop === "canvas") {
+                    return withOrientation(obj.canvas, vertical);
+                  } else if (prop === "getBoundingClientRect") {
+                    return function() {
+                      return withOrientation(obj.getBoundingClientRect.apply(obj, arguments), vertical);
+                    };
+                  } else if (prop === "getContext") {
+                    return function() {
+                      return withOrientation(obj.getContext.apply(obj, arguments), vertical);
+                    };
+                  } else {
+                    var value = obj[mapProp(prop, vertical)];
+                    return typeof value == "function" ? value.bind(obj) : value;
+                  }
+                },
+                set: function set2(obj, prop, value) {
+                  obj[mapProp(prop, vertical)] = value;
+                  return true;
+                }
+              });
+            }
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/prevent-click.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = preventClick;
+          function preventClickHandler(event) {
+            event.stopPropagation();
+            document.body.removeEventListener("click", preventClickHandler, true);
+          }
+          function preventClick(values) {
+            document.body.addEventListener("click", preventClickHandler, true);
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/request-animation-frame.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var _default = (window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element2) {
+            return setTimeout(callback, 1e3 / 60);
+          }).bind(window);
+          exports2["default"] = _default;
+          module2.exports = exports2.default;
+        },
+        "./src/util/silence-mode.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = ignoreSilenceMode;
+          function ignoreSilenceMode() {
+            var audioData = "data:audio/mpeg;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA//////////////////////////////////////////////////////////////////8AAABhTEFNRTMuMTAwA8MAAAAAAAAAABQgJAUHQQAB9AAAAnGMHkkIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//sQxAADgnABGiAAQBCqgCRMAAgEAH///////////////7+n/9FTuQsQH//////2NG0jWUGlio5gLQTOtIoeR2WX////X4s9Atb/JRVCbBUpeRUq//////////////////9RUi0f2jn/+xDECgPCjAEQAABN4AAANIAAAAQVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==";
+            var tmp = document.createElement("div");
+            tmp.innerHTML = '<audio x-webkit-airplay="deny"></audio>';
+            var audioSilentMode = tmp.children.item(0);
+            audioSilentMode.src = audioData;
+            audioSilentMode.preload = "auto";
+            audioSilentMode.type = "audio/mpeg";
+            audioSilentMode.disableRemotePlayback = true;
+            audioSilentMode.play();
+            audioSilentMode.remove();
+            tmp.remove();
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/style.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = style;
+          function style(el, styles) {
+            Object.keys(styles).forEach(function(prop) {
+              if (el.style[prop] !== styles[prop]) {
+                el.style[prop] = styles[prop];
+              }
+            });
+            return el;
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/wavesurfer.js": (module2, exports2, __webpack_require__2) => {
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var util = _interopRequireWildcard2(__webpack_require__2("./src/util/index.js"));
+          var _drawer = _interopRequireDefault2(__webpack_require__2("./src/drawer.multicanvas.js"));
+          var _webaudio = _interopRequireDefault2(__webpack_require__2("./src/webaudio.js"));
+          var _mediaelement = _interopRequireDefault2(__webpack_require__2("./src/mediaelement.js"));
+          var _peakcache = _interopRequireDefault2(__webpack_require__2("./src/peakcache.js"));
+          var _mediaelementWebaudio = _interopRequireDefault2(__webpack_require__2("./src/mediaelement-webaudio.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _getRequireWildcardCache(nodeInterop) {
+            if (typeof WeakMap !== "function")
+              return null;
+            var cacheBabelInterop = /* @__PURE__ */ new WeakMap();
+            var cacheNodeInterop = /* @__PURE__ */ new WeakMap();
+            return (_getRequireWildcardCache = function _getRequireWildcardCache2(nodeInterop2) {
+              return nodeInterop2 ? cacheNodeInterop : cacheBabelInterop;
+            })(nodeInterop);
+          }
+          function _interopRequireWildcard2(obj, nodeInterop) {
+            if (!nodeInterop && obj && obj.__esModule) {
+              return obj;
+            }
+            if (obj === null || _typeof2(obj) !== "object" && typeof obj !== "function") {
+              return { default: obj };
+            }
+            var cache = _getRequireWildcardCache(nodeInterop);
+            if (cache && cache.has(obj)) {
+              return cache.get(obj);
+            }
+            var newObj = {};
+            var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+            for (var key in obj) {
+              if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
+                var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+                if (desc && (desc.get || desc.set)) {
+                  Object.defineProperty(newObj, key, desc);
+                } else {
+                  newObj[key] = obj[key];
+                }
+              }
+            }
+            newObj.default = obj;
+            if (cache) {
+              cache.set(obj, newObj);
+            }
+            return newObj;
+          }
+          function _inherits(subClass, superClass) {
+            if (typeof superClass !== "function" && superClass !== null) {
+              throw new TypeError("Super expression must either be null or a function");
+            }
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });
+            Object.defineProperty(subClass, "prototype", { writable: false });
+            if (superClass)
+              _setPrototypeOf(subClass, superClass);
+          }
+          function _setPrototypeOf(o, p2) {
+            _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p3) {
+              o2.__proto__ = p3;
+              return o2;
+            };
+            return _setPrototypeOf(o, p2);
+          }
+          function _createSuper(Derived) {
+            var hasNativeReflectConstruct = _isNativeReflectConstruct();
+            return function _createSuperInternal() {
+              var Super = _getPrototypeOf(Derived), result;
+              if (hasNativeReflectConstruct) {
+                var NewTarget = _getPrototypeOf(this).constructor;
+                result = Reflect.construct(Super, arguments, NewTarget);
+              } else {
+                result = Super.apply(this, arguments);
+              }
+              return _possibleConstructorReturn(this, result);
+            };
+          }
+          function _possibleConstructorReturn(self2, call) {
+            if (call && (_typeof2(call) === "object" || typeof call === "function")) {
+              return call;
+            } else if (call !== void 0) {
+              throw new TypeError("Derived constructors may only return object or undefined");
+            }
+            return _assertThisInitialized(self2);
+          }
+          function _assertThisInitialized(self2) {
+            if (self2 === void 0) {
+              throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+            }
+            return self2;
+          }
+          function _isNativeReflectConstruct() {
+            if (typeof Reflect === "undefined" || !Reflect.construct)
+              return false;
+            if (Reflect.construct.sham)
+              return false;
+            if (typeof Proxy === "function")
+              return true;
+            try {
+              Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+              }));
+              return true;
+            } catch (e) {
+              return false;
+            }
+          }
+          function _getPrototypeOf(o) {
+            _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf2(o2) {
+              return o2.__proto__ || Object.getPrototypeOf(o2);
+            };
+            return _getPrototypeOf(o);
+          }
+          function _defineProperty(obj, key, value) {
+            if (key in obj) {
+              Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
+            } else {
+              obj[key] = value;
+            }
+            return obj;
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, descriptor.key, descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          var WaveSurfer2 = /* @__PURE__ */ function(_util$Observer) {
+            _inherits(WaveSurfer3, _util$Observer);
+            var _super = _createSuper(WaveSurfer3);
+            function WaveSurfer3(params) {
+              var _this;
+              _classCallCheck(this, WaveSurfer3);
+              _this = _super.call(this);
+              _defineProperty(_assertThisInitialized(_this), "defaultParams", {
+                audioContext: null,
+                audioScriptProcessor: null,
+                audioRate: 1,
+                autoCenter: true,
+                autoCenterRate: 5,
+                autoCenterImmediately: false,
+                backend: "WebAudio",
+                backgroundColor: null,
+                barHeight: 1,
+                barRadius: 0,
+                barGap: null,
+                barMinHeight: null,
+                container: null,
+                cursorColor: "#333",
+                cursorWidth: 1,
+                dragSelection: true,
+                drawingContextAttributes: {
+                  desynchronized: false
+                },
+                duration: null,
+                fillParent: true,
+                forceDecode: false,
+                height: 128,
+                hideScrollbar: false,
+                hideCursor: false,
+                ignoreSilenceMode: false,
+                interact: true,
+                loopSelection: true,
+                maxCanvasWidth: 4e3,
+                mediaContainer: null,
+                mediaControls: false,
+                mediaType: "audio",
+                minPxPerSec: 20,
+                normalize: false,
+                partialRender: false,
+                pixelRatio: window.devicePixelRatio || screen.deviceXDPI / screen.logicalXDPI,
+                plugins: [],
+                progressColor: "#555",
+                removeMediaElementOnDestroy: true,
+                renderer: _drawer.default,
+                responsive: false,
+                rtl: false,
+                scrollParent: false,
+                skipLength: 2,
+                splitChannels: false,
+                splitChannelsOptions: {
+                  overlay: false,
+                  channelColors: {},
+                  filterChannels: [],
+                  relativeNormalization: false,
+                  splitDragSelection: false
+                },
+                vertical: false,
+                waveColor: "#999",
+                xhr: {}
+              });
+              _defineProperty(_assertThisInitialized(_this), "backends", {
+                MediaElement: _mediaelement.default,
+                WebAudio: _webaudio.default,
+                MediaElementWebAudio: _mediaelementWebaudio.default
+              });
+              _defineProperty(_assertThisInitialized(_this), "util", util);
+              _this.params = Object.assign({}, _this.defaultParams, params);
+              _this.params.splitChannelsOptions = Object.assign({}, _this.defaultParams.splitChannelsOptions, params.splitChannelsOptions);
+              _this.container = "string" == typeof params.container ? document.querySelector(_this.params.container) : _this.params.container;
+              if (!_this.container) {
+                throw new Error("Container element not found");
+              }
+              if (_this.params.mediaContainer == null) {
+                _this.mediaContainer = _this.container;
+              } else if (typeof _this.params.mediaContainer == "string") {
+                _this.mediaContainer = document.querySelector(_this.params.mediaContainer);
+              } else {
+                _this.mediaContainer = _this.params.mediaContainer;
+              }
+              if (!_this.mediaContainer) {
+                throw new Error("Media Container element not found");
+              }
+              if (_this.params.maxCanvasWidth <= 1) {
+                throw new Error("maxCanvasWidth must be greater than 1");
+              } else if (_this.params.maxCanvasWidth % 2 == 1) {
+                throw new Error("maxCanvasWidth must be an even number");
+              }
+              if (_this.params.rtl === true) {
+                if (_this.params.vertical === true) {
+                  util.style(_this.container, {
+                    transform: "rotateX(180deg)"
+                  });
+                } else {
+                  util.style(_this.container, {
+                    transform: "rotateY(180deg)"
+                  });
+                }
+              }
+              if (_this.params.backgroundColor) {
+                _this.setBackgroundColor(_this.params.backgroundColor);
+              }
+              _this.savedVolume = 0;
+              _this.isMuted = false;
+              _this.tmpEvents = [];
+              _this.currentRequest = null;
+              _this.arraybuffer = null;
+              _this.drawer = null;
+              _this.backend = null;
+              _this.peakCache = null;
+              if (typeof _this.params.renderer !== "function") {
+                throw new Error("Renderer parameter is invalid");
+              }
+              _this.Drawer = _this.params.renderer;
+              if (_this.params.backend == "AudioElement") {
+                _this.params.backend = "MediaElement";
+              }
+              if ((_this.params.backend == "WebAudio" || _this.params.backend === "MediaElementWebAudio") && !_webaudio.default.prototype.supportsWebAudio.call(null)) {
+                _this.params.backend = "MediaElement";
+              }
+              _this.Backend = _this.backends[_this.params.backend];
+              _this.initialisedPluginList = {};
+              _this.isDestroyed = false;
+              _this.isReady = false;
+              var prevWidth = 0;
+              _this._onResize = util.debounce(function() {
+                if (_this.drawer.wrapper && prevWidth != _this.drawer.wrapper.clientWidth && !_this.params.scrollParent) {
+                  prevWidth = _this.drawer.wrapper.clientWidth;
+                  if (prevWidth) {
+                    _this.drawer.fireEvent("redraw");
+                  }
+                }
+              }, typeof _this.params.responsive === "number" ? _this.params.responsive : 100);
+              return _possibleConstructorReturn(_this, _assertThisInitialized(_this));
+            }
+            _createClass(WaveSurfer3, [{
+              key: "init",
+              value: function init2() {
+                this.registerPlugins(this.params.plugins);
+                this.createDrawer();
+                this.createBackend();
+                this.createPeakCache();
+                return this;
+              }
+            }, {
+              key: "registerPlugins",
+              value: function registerPlugins(plugins) {
+                var _this2 = this;
+                plugins.forEach(function(plugin) {
+                  return _this2.addPlugin(plugin);
+                });
+                plugins.forEach(function(plugin) {
+                  if (!plugin.deferInit) {
+                    _this2.initPlugin(plugin.name);
+                  }
+                });
+                this.fireEvent("plugins-registered", plugins);
+                return this;
+              }
+            }, {
+              key: "getActivePlugins",
+              value: function getActivePlugins() {
+                return this.initialisedPluginList;
+              }
+            }, {
+              key: "addPlugin",
+              value: function addPlugin(plugin) {
+                var _this3 = this;
+                if (!plugin.name) {
+                  throw new Error("Plugin does not have a name!");
+                }
+                if (!plugin.instance) {
+                  throw new Error("Plugin ".concat(plugin.name, " does not have an instance property!"));
+                }
+                if (plugin.staticProps) {
+                  Object.keys(plugin.staticProps).forEach(function(pluginStaticProp) {
+                    _this3[pluginStaticProp] = plugin.staticProps[pluginStaticProp];
+                  });
+                }
+                var Instance = plugin.instance;
+                var observerPrototypeKeys = Object.getOwnPropertyNames(util.Observer.prototype);
+                observerPrototypeKeys.forEach(function(key) {
+                  Instance.prototype[key] = util.Observer.prototype[key];
+                });
+                this[plugin.name] = new Instance(plugin.params || {}, this);
+                this.fireEvent("plugin-added", plugin.name);
+                return this;
+              }
+            }, {
+              key: "initPlugin",
+              value: function initPlugin(name) {
+                if (!this[name]) {
+                  throw new Error("Plugin ".concat(name, " has not been added yet!"));
+                }
+                if (this.initialisedPluginList[name]) {
+                  this.destroyPlugin(name);
+                }
+                this[name].init();
+                this.initialisedPluginList[name] = true;
+                this.fireEvent("plugin-initialised", name);
+                return this;
+              }
+            }, {
+              key: "destroyPlugin",
+              value: function destroyPlugin(name) {
+                if (!this[name]) {
+                  throw new Error("Plugin ".concat(name, " has not been added yet and cannot be destroyed!"));
+                }
+                if (!this.initialisedPluginList[name]) {
+                  throw new Error("Plugin ".concat(name, " is not active and cannot be destroyed!"));
+                }
+                if (typeof this[name].destroy !== "function") {
+                  throw new Error("Plugin ".concat(name, " does not have a destroy function!"));
+                }
+                this[name].destroy();
+                delete this.initialisedPluginList[name];
+                this.fireEvent("plugin-destroyed", name);
+                return this;
+              }
+            }, {
+              key: "destroyAllPlugins",
+              value: function destroyAllPlugins() {
+                var _this4 = this;
+                Object.keys(this.initialisedPluginList).forEach(function(name) {
+                  return _this4.destroyPlugin(name);
+                });
+              }
+            }, {
+              key: "createDrawer",
+              value: function createDrawer() {
+                var _this5 = this;
+                this.drawer = new this.Drawer(this.container, this.params);
+                this.drawer.init();
+                this.fireEvent("drawer-created", this.drawer);
+                if (this.params.responsive !== false) {
+                  window.addEventListener("resize", this._onResize, true);
+                  window.addEventListener("orientationchange", this._onResize, true);
+                }
+                this.drawer.on("redraw", function() {
+                  _this5.drawBuffer();
+                  _this5.drawer.progress(_this5.backend.getPlayedPercents());
+                });
+                this.drawer.on("click", function(e, progress) {
+                  setTimeout(function() {
+                    return _this5.seekTo(progress);
+                  }, 0);
+                });
+                this.drawer.on("scroll", function(e) {
+                  if (_this5.params.partialRender) {
+                    _this5.drawBuffer();
+                  }
+                  _this5.fireEvent("scroll", e);
+                });
+              }
+            }, {
+              key: "createBackend",
+              value: function createBackend() {
+                var _this6 = this;
+                if (this.backend) {
+                  this.backend.destroy();
+                }
+                this.backend = new this.Backend(this.params);
+                this.backend.init();
+                this.fireEvent("backend-created", this.backend);
+                this.backend.on("finish", function() {
+                  _this6.drawer.progress(_this6.backend.getPlayedPercents());
+                  _this6.fireEvent("finish");
+                });
+                this.backend.on("play", function() {
+                  return _this6.fireEvent("play");
+                });
+                this.backend.on("pause", function() {
+                  return _this6.fireEvent("pause");
+                });
+                this.backend.on("audioprocess", function(time) {
+                  _this6.drawer.progress(_this6.backend.getPlayedPercents());
+                  _this6.fireEvent("audioprocess", time);
+                });
+                if (this.params.backend === "MediaElement" || this.params.backend === "MediaElementWebAudio") {
+                  this.backend.on("seek", function() {
+                    _this6.drawer.progress(_this6.backend.getPlayedPercents());
+                  });
+                  this.backend.on("volume", function() {
+                    var newVolume = _this6.getVolume();
+                    _this6.fireEvent("volume", newVolume);
+                    if (_this6.backend.isMuted !== _this6.isMuted) {
+                      _this6.isMuted = _this6.backend.isMuted;
+                      _this6.fireEvent("mute", _this6.isMuted);
+                    }
+                  });
+                }
+              }
+            }, {
+              key: "createPeakCache",
+              value: function createPeakCache() {
+                if (this.params.partialRender) {
+                  this.peakCache = new _peakcache.default();
+                }
+              }
+            }, {
+              key: "getDuration",
+              value: function getDuration() {
+                return this.backend.getDuration();
+              }
+            }, {
+              key: "getCurrentTime",
+              value: function getCurrentTime() {
+                return this.backend.getCurrentTime();
+              }
+            }, {
+              key: "setCurrentTime",
+              value: function setCurrentTime(seconds) {
+                if (seconds >= this.getDuration()) {
+                  this.seekTo(1);
+                } else {
+                  this.seekTo(seconds / this.getDuration());
+                }
+              }
+            }, {
+              key: "play",
+              value: function play(start2, end) {
+                var _this7 = this;
+                if (this.params.ignoreSilenceMode) {
+                  util.ignoreSilenceMode();
+                }
+                this.fireEvent("interaction", function() {
+                  return _this7.play(start2, end);
+                });
+                return this.backend.play(start2, end);
+              }
+            }, {
+              key: "setPlayEnd",
+              value: function setPlayEnd(position) {
+                this.backend.setPlayEnd(position);
+              }
+            }, {
+              key: "pause",
+              value: function pause() {
+                if (!this.backend.isPaused()) {
+                  return this.backend.pause();
+                }
+              }
+            }, {
+              key: "playPause",
+              value: function playPause() {
+                return this.backend.isPaused() ? this.play() : this.pause();
+              }
+            }, {
+              key: "isPlaying",
+              value: function isPlaying() {
+                return !this.backend.isPaused();
+              }
+            }, {
+              key: "skipBackward",
+              value: function skipBackward(seconds) {
+                this.skip(-seconds || -this.params.skipLength);
+              }
+            }, {
+              key: "skipForward",
+              value: function skipForward(seconds) {
+                this.skip(seconds || this.params.skipLength);
+              }
+            }, {
+              key: "skip",
+              value: function skip(offset) {
+                var duration = this.getDuration() || 1;
+                var position = this.getCurrentTime() || 0;
+                position = Math.max(0, Math.min(duration, position + (offset || 0)));
+                this.seekAndCenter(position / duration);
+              }
+            }, {
+              key: "seekAndCenter",
+              value: function seekAndCenter(progress) {
+                this.seekTo(progress);
+                this.drawer.recenter(progress);
+              }
+            }, {
+              key: "seekTo",
+              value: function seekTo(progress) {
+                var _this8 = this;
+                if (typeof progress !== "number" || !isFinite(progress) || progress < 0 || progress > 1) {
+                  throw new Error("Error calling wavesurfer.seekTo, parameter must be a number between 0 and 1!");
+                }
+                this.fireEvent("interaction", function() {
+                  return _this8.seekTo(progress);
+                });
+                var isWebAudioBackend = this.params.backend === "WebAudio";
+                var paused = this.backend.isPaused();
+                if (isWebAudioBackend && !paused) {
+                  this.backend.pause();
+                }
+                var oldScrollParent = this.params.scrollParent;
+                this.params.scrollParent = false;
+                this.backend.seekTo(progress * this.getDuration());
+                this.drawer.progress(progress);
+                if (isWebAudioBackend && !paused) {
+                  this.backend.play();
+                }
+                this.params.scrollParent = oldScrollParent;
+                this.fireEvent("seek", progress);
+              }
+            }, {
+              key: "stop",
+              value: function stop() {
+                this.pause();
+                this.seekTo(0);
+                this.drawer.progress(0);
+              }
+            }, {
+              key: "setSinkId",
+              value: function setSinkId(deviceId) {
+                return this.backend.setSinkId(deviceId);
+              }
+            }, {
+              key: "setVolume",
+              value: function setVolume(newVolume) {
+                this.backend.setVolume(newVolume);
+                this.fireEvent("volume", newVolume);
+              }
+            }, {
+              key: "getVolume",
+              value: function getVolume() {
+                return this.backend.getVolume();
+              }
+            }, {
+              key: "setPlaybackRate",
+              value: function setPlaybackRate(rate) {
+                this.backend.setPlaybackRate(rate);
+              }
+            }, {
+              key: "getPlaybackRate",
+              value: function getPlaybackRate() {
+                return this.backend.getPlaybackRate();
+              }
+            }, {
+              key: "toggleMute",
+              value: function toggleMute() {
+                this.setMute(!this.isMuted);
+              }
+            }, {
+              key: "setMute",
+              value: function setMute(mute) {
+                if (mute === this.isMuted) {
+                  this.fireEvent("mute", this.isMuted);
+                  return;
+                }
+                if (this.backend.setMute) {
+                  this.backend.setMute(mute);
+                  this.isMuted = mute;
+                } else {
+                  if (mute) {
+                    this.savedVolume = this.backend.getVolume();
+                    this.backend.setVolume(0);
+                    this.isMuted = true;
+                    this.fireEvent("volume", 0);
+                  } else {
+                    this.backend.setVolume(this.savedVolume);
+                    this.isMuted = false;
+                    this.fireEvent("volume", this.savedVolume);
+                  }
+                }
+                this.fireEvent("mute", this.isMuted);
+              }
+            }, {
+              key: "getMute",
+              value: function getMute() {
+                return this.isMuted;
+              }
+            }, {
+              key: "getFilters",
+              value: function getFilters() {
+                return this.backend.filters || [];
+              }
+            }, {
+              key: "toggleScroll",
+              value: function toggleScroll() {
+                this.params.scrollParent = !this.params.scrollParent;
+                this.drawBuffer();
+              }
+            }, {
+              key: "toggleInteraction",
+              value: function toggleInteraction() {
+                this.params.interact = !this.params.interact;
+              }
+            }, {
+              key: "getWaveColor",
+              value: function getWaveColor() {
+                var channelIdx = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : null;
+                if (this.params.splitChannelsOptions.channelColors[channelIdx]) {
+                  return this.params.splitChannelsOptions.channelColors[channelIdx].waveColor;
+                }
+                return this.params.waveColor;
+              }
+            }, {
+              key: "setWaveColor",
+              value: function setWaveColor(color) {
+                var channelIdx = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : null;
+                if (this.params.splitChannelsOptions.channelColors[channelIdx]) {
+                  this.params.splitChannelsOptions.channelColors[channelIdx].waveColor = color;
+                } else {
+                  this.params.waveColor = color;
+                }
+                this.drawBuffer();
+              }
+            }, {
+              key: "getProgressColor",
+              value: function getProgressColor() {
+                var channelIdx = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : null;
+                if (this.params.splitChannelsOptions.channelColors[channelIdx]) {
+                  return this.params.splitChannelsOptions.channelColors[channelIdx].progressColor;
+                }
+                return this.params.progressColor;
+              }
+            }, {
+              key: "setProgressColor",
+              value: function setProgressColor(color, channelIdx) {
+                if (this.params.splitChannelsOptions.channelColors[channelIdx]) {
+                  this.params.splitChannelsOptions.channelColors[channelIdx].progressColor = color;
+                } else {
+                  this.params.progressColor = color;
+                }
+                this.drawBuffer();
+              }
+            }, {
+              key: "getBackgroundColor",
+              value: function getBackgroundColor() {
+                return this.params.backgroundColor;
+              }
+            }, {
+              key: "setBackgroundColor",
+              value: function setBackgroundColor(color) {
+                this.params.backgroundColor = color;
+                util.style(this.container, {
+                  background: this.params.backgroundColor
+                });
+              }
+            }, {
+              key: "getCursorColor",
+              value: function getCursorColor() {
+                return this.params.cursorColor;
+              }
+            }, {
+              key: "setCursorColor",
+              value: function setCursorColor(color) {
+                this.params.cursorColor = color;
+                this.drawer.updateCursor();
+              }
+            }, {
+              key: "getHeight",
+              value: function getHeight() {
+                return this.params.height;
+              }
+            }, {
+              key: "setHeight",
+              value: function setHeight(height) {
+                this.params.height = height;
+                this.drawer.setHeight(height * this.params.pixelRatio);
+                this.drawBuffer();
+              }
+            }, {
+              key: "setFilteredChannels",
+              value: function setFilteredChannels(channelIndices) {
+                this.params.splitChannelsOptions.filterChannels = channelIndices;
+                this.drawBuffer();
+              }
+            }, {
+              key: "drawBuffer",
+              value: function drawBuffer() {
+                var nominalWidth = Math.round(this.getDuration() * this.params.minPxPerSec * this.params.pixelRatio);
+                var parentWidth = this.drawer.getWidth();
+                var width = nominalWidth;
+                var start2 = 0;
+                var end = Math.max(start2 + parentWidth, width);
+                if (this.params.fillParent && (!this.params.scrollParent || nominalWidth < parentWidth)) {
+                  width = parentWidth;
+                  start2 = 0;
+                  end = width;
+                }
+                var peaks;
+                if (this.params.partialRender) {
+                  var newRanges = this.peakCache.addRangeToPeakCache(width, start2, end);
+                  var i;
+                  for (i = 0; i < newRanges.length; i++) {
+                    peaks = this.backend.getPeaks(width, newRanges[i][0], newRanges[i][1]);
+                    this.drawer.drawPeaks(peaks, width, newRanges[i][0], newRanges[i][1]);
+                  }
+                } else {
+                  peaks = this.backend.getPeaks(width, start2, end);
+                  this.drawer.drawPeaks(peaks, width, start2, end);
+                }
+                this.fireEvent("redraw", peaks, width);
+              }
+            }, {
+              key: "zoom",
+              value: function zoom(pxPerSec) {
+                if (!pxPerSec) {
+                  this.params.minPxPerSec = this.defaultParams.minPxPerSec;
+                  this.params.scrollParent = false;
+                } else {
+                  this.params.minPxPerSec = pxPerSec;
+                  this.params.scrollParent = true;
+                }
+                this.drawBuffer();
+                this.drawer.progress(this.backend.getPlayedPercents());
+                this.drawer.recenter(this.getCurrentTime() / this.getDuration());
+                this.fireEvent("zoom", pxPerSec);
+              }
+            }, {
+              key: "loadArrayBuffer",
+              value: function loadArrayBuffer(arraybuffer) {
+                var _this9 = this;
+                this.decodeArrayBuffer(arraybuffer, function(data2) {
+                  if (!_this9.isDestroyed) {
+                    _this9.loadDecodedBuffer(data2);
+                  }
+                });
+              }
+            }, {
+              key: "loadDecodedBuffer",
+              value: function loadDecodedBuffer(buffer) {
+                this.backend.load(buffer);
+                this.drawBuffer();
+                this.isReady = true;
+                this.fireEvent("ready");
+              }
+            }, {
+              key: "loadBlob",
+              value: function loadBlob(blob) {
+                var _this10 = this;
+                var reader = new FileReader();
+                reader.addEventListener("progress", function(e) {
+                  return _this10.onProgress(e);
+                });
+                reader.addEventListener("load", function(e) {
+                  return _this10.loadArrayBuffer(e.target.result);
+                });
+                reader.addEventListener("error", function() {
+                  return _this10.fireEvent("error", "Error reading file");
+                });
+                reader.readAsArrayBuffer(blob);
+                this.empty();
+              }
+            }, {
+              key: "load",
+              value: function load(url, peaks, preload, duration) {
+                if (!url) {
+                  throw new Error("url parameter cannot be empty");
+                }
+                this.empty();
+                if (preload) {
+                  var preloadIgnoreReasons = {
+                    "Preload is not 'auto', 'none' or 'metadata'": ["auto", "metadata", "none"].indexOf(preload) === -1,
+                    "Peaks are not provided": !peaks,
+                    "Backend is not of type 'MediaElement' or 'MediaElementWebAudio'": ["MediaElement", "MediaElementWebAudio"].indexOf(this.params.backend) === -1,
+                    "Url is not of type string": typeof url !== "string"
+                  };
+                  var activeReasons = Object.keys(preloadIgnoreReasons).filter(function(reason) {
+                    return preloadIgnoreReasons[reason];
+                  });
+                  if (activeReasons.length) {
+                    console.warn("Preload parameter of wavesurfer.load will be ignored because:\n	- " + activeReasons.join("\n	- "));
+                    preload = null;
+                  }
+                }
+                if (this.params.backend === "WebAudio" && url instanceof HTMLMediaElement) {
+                  url = url.src;
+                }
+                switch (this.params.backend) {
+                  case "WebAudio":
+                    return this.loadBuffer(url, peaks, duration);
+                  case "MediaElement":
+                  case "MediaElementWebAudio":
+                    return this.loadMediaElement(url, peaks, preload, duration);
+                }
+              }
+            }, {
+              key: "loadBuffer",
+              value: function loadBuffer(url, peaks, duration) {
+                var _this11 = this;
+                var load = function load2(action) {
+                  if (action) {
+                    _this11.tmpEvents.push(_this11.once("ready", action));
+                  }
+                  return _this11.getArrayBuffer(url, function(data2) {
+                    return _this11.loadArrayBuffer(data2);
+                  });
+                };
+                if (peaks) {
+                  this.backend.setPeaks(peaks, duration);
+                  this.drawBuffer();
+                  this.fireEvent("waveform-ready");
+                  this.tmpEvents.push(this.once("interaction", load));
+                } else {
+                  return load();
+                }
+              }
+            }, {
+              key: "loadMediaElement",
+              value: function loadMediaElement(urlOrElt, peaks, preload, duration) {
+                var _this12 = this;
+                var url = urlOrElt;
+                if (typeof urlOrElt === "string") {
+                  this.backend.load(url, this.mediaContainer, peaks, preload);
+                } else {
+                  var elt = urlOrElt;
+                  this.backend.loadElt(elt, peaks);
+                  url = elt.src;
+                }
+                this.tmpEvents.push(this.backend.once("canplay", function() {
+                  if (!_this12.backend.destroyed) {
+                    _this12.drawBuffer();
+                    _this12.isReady = true;
+                    _this12.fireEvent("ready");
+                  }
+                }), this.backend.once("error", function(err) {
+                  return _this12.fireEvent("error", err);
+                }));
+                if (peaks) {
+                  this.backend.setPeaks(peaks, duration);
+                  this.drawBuffer();
+                  this.fireEvent("waveform-ready");
+                }
+                if ((!peaks || this.params.forceDecode) && this.backend.supportsWebAudio()) {
+                  this.getArrayBuffer(url, function(arraybuffer) {
+                    _this12.decodeArrayBuffer(arraybuffer, function(buffer) {
+                      _this12.backend.buffer = buffer;
+                      _this12.backend.setPeaks(null);
+                      _this12.drawBuffer();
+                      _this12.fireEvent("waveform-ready");
+                    });
+                  });
+                }
+              }
+            }, {
+              key: "decodeArrayBuffer",
+              value: function decodeArrayBuffer(arraybuffer, callback) {
+                var _this13 = this;
+                if (!this.isDestroyed) {
+                  this.arraybuffer = arraybuffer;
+                  this.backend.decodeArrayBuffer(arraybuffer, function(data2) {
+                    if (!_this13.isDestroyed && _this13.arraybuffer == arraybuffer) {
+                      callback(data2);
+                      _this13.arraybuffer = null;
+                    }
+                  }, function() {
+                    return _this13.fireEvent("error", "Error decoding audiobuffer");
+                  });
+                }
+              }
+            }, {
+              key: "getArrayBuffer",
+              value: function getArrayBuffer(url, callback) {
+                var _this14 = this;
+                var options2 = Object.assign({
+                  url,
+                  responseType: "arraybuffer"
+                }, this.params.xhr);
+                var request = util.fetchFile(options2);
+                this.currentRequest = request;
+                this.tmpEvents.push(request.on("progress", function(e) {
+                  _this14.onProgress(e);
+                }), request.on("success", function(data2) {
+                  callback(data2);
+                  _this14.currentRequest = null;
+                }), request.on("error", function(e) {
+                  _this14.fireEvent("error", e);
+                  _this14.currentRequest = null;
+                }));
+                return request;
+              }
+            }, {
+              key: "onProgress",
+              value: function onProgress(e) {
+                var percentComplete;
+                if (e.lengthComputable) {
+                  percentComplete = e.loaded / e.total;
+                } else {
+                  percentComplete = e.loaded / (e.loaded + 1e6);
+                }
+                this.fireEvent("loading", Math.round(percentComplete * 100), e.target);
+              }
+            }, {
+              key: "exportPCM",
+              value: function exportPCM(length, accuracy, noWindow, start2, end) {
+                length = length || 1024;
+                start2 = start2 || 0;
+                accuracy = accuracy || 1e4;
+                noWindow = noWindow || false;
+                var peaks = this.backend.getPeaks(length, start2, end);
+                var arr = [].map.call(peaks, function(val) {
+                  return Math.round(val * accuracy) / accuracy;
+                });
+                return new Promise(function(resolve3, reject) {
+                  if (!noWindow) {
+                    var blobJSON = new Blob([JSON.stringify(arr)], {
+                      type: "application/json;charset=utf-8"
+                    });
+                    var objURL = URL.createObjectURL(blobJSON);
+                    window.open(objURL);
+                    URL.revokeObjectURL(objURL);
+                  }
+                  resolve3(arr);
+                });
+              }
+            }, {
+              key: "exportImage",
+              value: function exportImage(format, quality, type) {
+                if (!format) {
+                  format = "image/png";
+                }
+                if (!quality) {
+                  quality = 1;
+                }
+                if (!type) {
+                  type = "dataURL";
+                }
+                return this.drawer.getImage(format, quality, type);
+              }
+            }, {
+              key: "cancelAjax",
+              value: function cancelAjax() {
+                if (this.currentRequest && this.currentRequest.controller) {
+                  if (this.currentRequest._reader) {
+                    this.currentRequest._reader.cancel().catch(function(err) {
+                    });
+                  }
+                  this.currentRequest.controller.abort();
+                  this.currentRequest = null;
+                }
+              }
+            }, {
+              key: "clearTmpEvents",
+              value: function clearTmpEvents() {
+                this.tmpEvents.forEach(function(e) {
+                  return e.un();
+                });
+              }
+            }, {
+              key: "empty",
+              value: function empty() {
+                if (!this.backend.isPaused()) {
+                  this.stop();
+                  this.backend.disconnectSource();
+                }
+                this.isReady = false;
+                this.cancelAjax();
+                this.clearTmpEvents();
+                this.drawer.progress(0);
+                this.drawer.setWidth(0);
+                this.drawer.drawPeaks({
+                  length: this.drawer.getWidth()
+                }, 0);
+              }
+            }, {
+              key: "destroy",
+              value: function destroy() {
+                this.destroyAllPlugins();
+                this.fireEvent("destroy");
+                this.cancelAjax();
+                this.clearTmpEvents();
+                this.unAll();
+                if (this.params.responsive !== false) {
+                  window.removeEventListener("resize", this._onResize, true);
+                  window.removeEventListener("orientationchange", this._onResize, true);
+                }
+                if (this.backend) {
+                  this.backend.destroy();
+                  this.backend = null;
+                }
+                if (this.drawer) {
+                  this.drawer.destroy();
+                }
+                this.isDestroyed = true;
+                this.isReady = false;
+                this.arraybuffer = null;
+              }
+            }], [{
+              key: "create",
+              value: function create(params) {
+                var wavesurfer2 = new WaveSurfer3(params);
+                return wavesurfer2.init();
+              }
+            }]);
+            return WaveSurfer3;
+          }(util.Observer);
+          exports2["default"] = WaveSurfer2;
+          _defineProperty(WaveSurfer2, "VERSION", "6.4.0");
+          _defineProperty(WaveSurfer2, "util", util);
+          module2.exports = exports2.default;
+        },
+        "./src/webaudio.js": (module2, exports2, __webpack_require__2) => {
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var util = _interopRequireWildcard2(__webpack_require__2("./src/util/index.js"));
+          function _getRequireWildcardCache(nodeInterop) {
+            if (typeof WeakMap !== "function")
+              return null;
+            var cacheBabelInterop = /* @__PURE__ */ new WeakMap();
+            var cacheNodeInterop = /* @__PURE__ */ new WeakMap();
+            return (_getRequireWildcardCache = function _getRequireWildcardCache2(nodeInterop2) {
+              return nodeInterop2 ? cacheNodeInterop : cacheBabelInterop;
+            })(nodeInterop);
+          }
+          function _interopRequireWildcard2(obj, nodeInterop) {
+            if (!nodeInterop && obj && obj.__esModule) {
+              return obj;
+            }
+            if (obj === null || _typeof2(obj) !== "object" && typeof obj !== "function") {
+              return { default: obj };
+            }
+            var cache = _getRequireWildcardCache(nodeInterop);
+            if (cache && cache.has(obj)) {
+              return cache.get(obj);
+            }
+            var newObj = {};
+            var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+            for (var key in obj) {
+              if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
+                var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+                if (desc && (desc.get || desc.set)) {
+                  Object.defineProperty(newObj, key, desc);
+                } else {
+                  newObj[key] = obj[key];
+                }
+              }
+            }
+            newObj.default = obj;
+            if (cache) {
+              cache.set(obj, newObj);
+            }
+            return newObj;
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, descriptor.key, descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _inherits(subClass, superClass) {
+            if (typeof superClass !== "function" && superClass !== null) {
+              throw new TypeError("Super expression must either be null or a function");
+            }
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });
+            Object.defineProperty(subClass, "prototype", { writable: false });
+            if (superClass)
+              _setPrototypeOf(subClass, superClass);
+          }
+          function _setPrototypeOf(o, p2) {
+            _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p3) {
+              o2.__proto__ = p3;
+              return o2;
+            };
+            return _setPrototypeOf(o, p2);
+          }
+          function _createSuper(Derived) {
+            var hasNativeReflectConstruct = _isNativeReflectConstruct();
+            return function _createSuperInternal() {
+              var Super = _getPrototypeOf(Derived), result;
+              if (hasNativeReflectConstruct) {
+                var NewTarget = _getPrototypeOf(this).constructor;
+                result = Reflect.construct(Super, arguments, NewTarget);
+              } else {
+                result = Super.apply(this, arguments);
+              }
+              return _possibleConstructorReturn(this, result);
+            };
+          }
+          function _possibleConstructorReturn(self2, call) {
+            if (call && (_typeof2(call) === "object" || typeof call === "function")) {
+              return call;
+            } else if (call !== void 0) {
+              throw new TypeError("Derived constructors may only return object or undefined");
+            }
+            return _assertThisInitialized(self2);
+          }
+          function _assertThisInitialized(self2) {
+            if (self2 === void 0) {
+              throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+            }
+            return self2;
+          }
+          function _isNativeReflectConstruct() {
+            if (typeof Reflect === "undefined" || !Reflect.construct)
+              return false;
+            if (Reflect.construct.sham)
+              return false;
+            if (typeof Proxy === "function")
+              return true;
+            try {
+              Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+              }));
+              return true;
+            } catch (e) {
+              return false;
+            }
+          }
+          function _getPrototypeOf(o) {
+            _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf2(o2) {
+              return o2.__proto__ || Object.getPrototypeOf(o2);
+            };
+            return _getPrototypeOf(o);
+          }
+          function _defineProperty(obj, key, value) {
+            if (key in obj) {
+              Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
+            } else {
+              obj[key] = value;
+            }
+            return obj;
+          }
+          var PLAYING = "playing";
+          var PAUSED = "paused";
+          var FINISHED = "finished";
+          var WebAudio = /* @__PURE__ */ function(_util$Observer) {
+            _inherits(WebAudio2, _util$Observer);
+            var _super = _createSuper(WebAudio2);
+            function WebAudio2(params) {
+              var _defineProperty2, _this$states;
+              var _this;
+              _classCallCheck(this, WebAudio2);
+              _this = _super.call(this);
+              _defineProperty(_assertThisInitialized(_this), "audioContext", null);
+              _defineProperty(_assertThisInitialized(_this), "offlineAudioContext", null);
+              _defineProperty(_assertThisInitialized(_this), "stateBehaviors", (_defineProperty2 = {}, _defineProperty(_defineProperty2, PLAYING, {
+                init: function init2() {
+                  this.addOnAudioProcess();
+                },
+                getPlayedPercents: function getPlayedPercents() {
+                  var duration = this.getDuration();
+                  return this.getCurrentTime() / duration || 0;
+                },
+                getCurrentTime: function getCurrentTime() {
+                  return this.startPosition + this.getPlayedTime();
+                }
+              }), _defineProperty(_defineProperty2, PAUSED, {
+                init: function init2() {
+                  this.removeOnAudioProcess();
+                },
+                getPlayedPercents: function getPlayedPercents() {
+                  var duration = this.getDuration();
+                  return this.getCurrentTime() / duration || 0;
+                },
+                getCurrentTime: function getCurrentTime() {
+                  return this.startPosition;
+                }
+              }), _defineProperty(_defineProperty2, FINISHED, {
+                init: function init2() {
+                  this.removeOnAudioProcess();
+                  this.fireEvent("finish");
+                },
+                getPlayedPercents: function getPlayedPercents() {
+                  return 1;
+                },
+                getCurrentTime: function getCurrentTime() {
+                  return this.getDuration();
+                }
+              }), _defineProperty2));
+              _this.params = params;
+              _this.ac = params.audioContext || (_this.supportsWebAudio() ? _this.getAudioContext() : {});
+              _this.lastPlay = _this.ac.currentTime;
+              _this.startPosition = 0;
+              _this.scheduledPause = null;
+              _this.states = (_this$states = {}, _defineProperty(_this$states, PLAYING, Object.create(_this.stateBehaviors[PLAYING])), _defineProperty(_this$states, PAUSED, Object.create(_this.stateBehaviors[PAUSED])), _defineProperty(_this$states, FINISHED, Object.create(_this.stateBehaviors[FINISHED])), _this$states);
+              _this.buffer = null;
+              _this.filters = [];
+              _this.gainNode = null;
+              _this.mergedPeaks = null;
+              _this.offlineAc = null;
+              _this.peaks = null;
+              _this.playbackRate = 1;
+              _this.analyser = null;
+              _this.scriptNode = null;
+              _this.source = null;
+              _this.splitPeaks = [];
+              _this.state = null;
+              _this.explicitDuration = params.duration;
+              _this.sinkStreamDestination = null;
+              _this.sinkAudioElement = null;
+              _this.destroyed = false;
+              return _this;
+            }
+            _createClass(WebAudio2, [{
+              key: "supportsWebAudio",
+              value: function supportsWebAudio() {
+                return !!(window.AudioContext || window.webkitAudioContext);
+              }
+            }, {
+              key: "getAudioContext",
+              value: function getAudioContext() {
+                if (!window.WaveSurferAudioContext) {
+                  window.WaveSurferAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                return window.WaveSurferAudioContext;
+              }
+            }, {
+              key: "getOfflineAudioContext",
+              value: function getOfflineAudioContext(sampleRate) {
+                if (!window.WaveSurferOfflineAudioContext) {
+                  window.WaveSurferOfflineAudioContext = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, 2, sampleRate);
+                }
+                return window.WaveSurferOfflineAudioContext;
+              }
+            }, {
+              key: "init",
+              value: function init2() {
+                this.createVolumeNode();
+                this.createScriptNode();
+                this.createAnalyserNode();
+                this.setState(PAUSED);
+                this.setPlaybackRate(this.params.audioRate);
+                this.setLength(0);
+              }
+            }, {
+              key: "disconnectFilters",
+              value: function disconnectFilters() {
+                if (this.filters) {
+                  this.filters.forEach(function(filter) {
+                    filter && filter.disconnect();
+                  });
+                  this.filters = null;
+                  this.analyser.connect(this.gainNode);
+                }
+              }
+            }, {
+              key: "setState",
+              value: function setState(state2) {
+                if (this.state !== this.states[state2]) {
+                  this.state = this.states[state2];
+                  this.state.init.call(this);
+                }
+              }
+            }, {
+              key: "setFilter",
+              value: function setFilter() {
+                for (var _len = arguments.length, filters = new Array(_len), _key = 0; _key < _len; _key++) {
+                  filters[_key] = arguments[_key];
+                }
+                this.setFilters(filters);
+              }
+            }, {
+              key: "setFilters",
+              value: function setFilters(filters) {
+                this.disconnectFilters();
+                if (filters && filters.length) {
+                  this.filters = filters;
+                  this.analyser.disconnect();
+                  filters.reduce(function(prev, curr) {
+                    prev.connect(curr);
+                    return curr;
+                  }, this.analyser).connect(this.gainNode);
+                }
+              }
+            }, {
+              key: "createScriptNode",
+              value: function createScriptNode() {
+                if (this.params.audioScriptProcessor) {
+                  this.scriptNode = this.params.audioScriptProcessor;
+                } else {
+                  if (this.ac.createScriptProcessor) {
+                    this.scriptNode = this.ac.createScriptProcessor(WebAudio2.scriptBufferSize);
+                  } else {
+                    this.scriptNode = this.ac.createJavaScriptNode(WebAudio2.scriptBufferSize);
+                  }
+                }
+                this.scriptNode.connect(this.ac.destination);
+              }
+            }, {
+              key: "addOnAudioProcess",
+              value: function addOnAudioProcess() {
+                var _this2 = this;
+                this.scriptNode.onaudioprocess = function() {
+                  var time = _this2.getCurrentTime();
+                  if (time >= _this2.getDuration()) {
+                    _this2.setState(FINISHED);
+                    _this2.fireEvent("pause");
+                  } else if (time >= _this2.scheduledPause) {
+                    _this2.pause();
+                  } else if (_this2.state === _this2.states[PLAYING]) {
+                    _this2.fireEvent("audioprocess", time);
+                  }
+                };
+              }
+            }, {
+              key: "removeOnAudioProcess",
+              value: function removeOnAudioProcess() {
+                this.scriptNode.onaudioprocess = null;
+              }
+            }, {
+              key: "createAnalyserNode",
+              value: function createAnalyserNode() {
+                this.analyser = this.ac.createAnalyser();
+                this.analyser.connect(this.gainNode);
+              }
+            }, {
+              key: "createVolumeNode",
+              value: function createVolumeNode() {
+                if (this.ac.createGain) {
+                  this.gainNode = this.ac.createGain();
+                } else {
+                  this.gainNode = this.ac.createGainNode();
+                }
+                this.gainNode.connect(this.ac.destination);
+              }
+            }, {
+              key: "setSinkId",
+              value: function setSinkId(deviceId) {
+                if (deviceId) {
+                  if (!this.sinkAudioElement) {
+                    this.sinkAudioElement = new window.Audio();
+                    this.sinkAudioElement.autoplay = true;
+                  }
+                  if (!this.sinkAudioElement.setSinkId) {
+                    return Promise.reject(new Error("setSinkId is not supported in your browser"));
+                  }
+                  if (!this.sinkStreamDestination) {
+                    this.sinkStreamDestination = this.ac.createMediaStreamDestination();
+                  }
+                  this.gainNode.disconnect();
+                  this.gainNode.connect(this.sinkStreamDestination);
+                  this.sinkAudioElement.srcObject = this.sinkStreamDestination.stream;
+                  return this.sinkAudioElement.setSinkId(deviceId);
+                } else {
+                  return Promise.reject(new Error("Invalid deviceId: " + deviceId));
+                }
+              }
+            }, {
+              key: "setVolume",
+              value: function setVolume(value) {
+                this.gainNode.gain.setValueAtTime(value, this.ac.currentTime);
+              }
+            }, {
+              key: "getVolume",
+              value: function getVolume() {
+                return this.gainNode.gain.value;
+              }
+            }, {
+              key: "decodeArrayBuffer",
+              value: function decodeArrayBuffer(arraybuffer, callback, errback) {
+                if (!this.offlineAc) {
+                  this.offlineAc = this.getOfflineAudioContext(this.ac && this.ac.sampleRate ? this.ac.sampleRate : 44100);
+                }
+                if ("webkitAudioContext" in window) {
+                  this.offlineAc.decodeAudioData(arraybuffer, function(data2) {
+                    return callback(data2);
+                  }, errback);
+                } else {
+                  this.offlineAc.decodeAudioData(arraybuffer).then(function(data2) {
+                    return callback(data2);
+                  }).catch(function(err) {
+                    return errback(err);
+                  });
+                }
+              }
+            }, {
+              key: "setPeaks",
+              value: function setPeaks(peaks, duration) {
+                if (duration != null) {
+                  this.explicitDuration = duration;
+                }
+                this.peaks = peaks;
+              }
+            }, {
+              key: "setLength",
+              value: function setLength(length) {
+                if (this.mergedPeaks && length == 2 * this.mergedPeaks.length - 1 + 2) {
+                  return;
+                }
+                this.splitPeaks = [];
+                this.mergedPeaks = [];
+                var channels = this.buffer ? this.buffer.numberOfChannels : 1;
+                var c;
+                for (c = 0; c < channels; c++) {
+                  this.splitPeaks[c] = [];
+                  this.splitPeaks[c][2 * (length - 1)] = 0;
+                  this.splitPeaks[c][2 * (length - 1) + 1] = 0;
+                }
+                this.mergedPeaks[2 * (length - 1)] = 0;
+                this.mergedPeaks[2 * (length - 1) + 1] = 0;
+              }
+            }, {
+              key: "getPeaks",
+              value: function getPeaks(length, first, last) {
+                if (this.peaks) {
+                  return this.peaks;
+                }
+                if (!this.buffer) {
+                  return [];
+                }
+                first = first || 0;
+                last = last || length - 1;
+                this.setLength(length);
+                if (!this.buffer) {
+                  return this.params.splitChannels ? this.splitPeaks : this.mergedPeaks;
+                }
+                if (!this.buffer.length) {
+                  var newBuffer = this.createBuffer(1, 4096, this.sampleRate);
+                  this.buffer = newBuffer.buffer;
+                }
+                var sampleSize = this.buffer.length / length;
+                var sampleStep = ~~(sampleSize / 10) || 1;
+                var channels = this.buffer.numberOfChannels;
+                var c;
+                for (c = 0; c < channels; c++) {
+                  var peaks = this.splitPeaks[c];
+                  var chan = this.buffer.getChannelData(c);
+                  var i = void 0;
+                  for (i = first; i <= last; i++) {
+                    var start2 = ~~(i * sampleSize);
+                    var end = ~~(start2 + sampleSize);
+                    var min = chan[start2];
+                    var max = min;
+                    var j = void 0;
+                    for (j = start2; j < end; j += sampleStep) {
+                      var value = chan[j];
+                      if (value > max) {
+                        max = value;
+                      }
+                      if (value < min) {
+                        min = value;
+                      }
+                    }
+                    peaks[2 * i] = max;
+                    peaks[2 * i + 1] = min;
+                    if (c == 0 || max > this.mergedPeaks[2 * i]) {
+                      this.mergedPeaks[2 * i] = max;
+                    }
+                    if (c == 0 || min < this.mergedPeaks[2 * i + 1]) {
+                      this.mergedPeaks[2 * i + 1] = min;
+                    }
+                  }
+                }
+                return this.params.splitChannels ? this.splitPeaks : this.mergedPeaks;
+              }
+            }, {
+              key: "getPlayedPercents",
+              value: function getPlayedPercents() {
+                return this.state.getPlayedPercents.call(this);
+              }
+            }, {
+              key: "disconnectSource",
+              value: function disconnectSource() {
+                if (this.source) {
+                  this.source.disconnect();
+                }
+              }
+            }, {
+              key: "destroyWebAudio",
+              value: function destroyWebAudio() {
+                this.disconnectFilters();
+                this.disconnectSource();
+                this.gainNode.disconnect();
+                this.scriptNode.disconnect();
+                this.analyser.disconnect();
+                if (this.params.closeAudioContext) {
+                  if (typeof this.ac.close === "function" && this.ac.state != "closed") {
+                    this.ac.close();
+                  }
+                  this.ac = null;
+                  if (!this.params.audioContext) {
+                    window.WaveSurferAudioContext = null;
+                  } else {
+                    this.params.audioContext = null;
+                  }
+                  window.WaveSurferOfflineAudioContext = null;
+                }
+                if (this.sinkStreamDestination) {
+                  this.sinkAudioElement.pause();
+                  this.sinkAudioElement.srcObject = null;
+                  this.sinkStreamDestination.disconnect();
+                  this.sinkStreamDestination = null;
+                }
+              }
+            }, {
+              key: "destroy",
+              value: function destroy() {
+                if (!this.isPaused()) {
+                  this.pause();
+                }
+                this.unAll();
+                this.buffer = null;
+                this.destroyed = true;
+                this.destroyWebAudio();
+              }
+            }, {
+              key: "load",
+              value: function load(buffer) {
+                this.startPosition = 0;
+                this.lastPlay = this.ac.currentTime;
+                this.buffer = buffer;
+                this.createSource();
+              }
+            }, {
+              key: "createSource",
+              value: function createSource() {
+                this.disconnectSource();
+                this.source = this.ac.createBufferSource();
+                this.source.start = this.source.start || this.source.noteGrainOn;
+                this.source.stop = this.source.stop || this.source.noteOff;
+                this.setPlaybackRate(this.playbackRate);
+                this.source.buffer = this.buffer;
+                this.source.connect(this.analyser);
+              }
+            }, {
+              key: "resumeAudioContext",
+              value: function resumeAudioContext() {
+                if (this.ac.state == "suspended") {
+                  this.ac.resume && this.ac.resume();
+                }
+              }
+            }, {
+              key: "isPaused",
+              value: function isPaused() {
+                return this.state !== this.states[PLAYING];
+              }
+            }, {
+              key: "getDuration",
+              value: function getDuration() {
+                if (this.explicitDuration) {
+                  return this.explicitDuration;
+                }
+                if (!this.buffer) {
+                  return 0;
+                }
+                return this.buffer.duration;
+              }
+            }, {
+              key: "seekTo",
+              value: function seekTo(start2, end) {
+                if (!this.buffer) {
+                  return;
+                }
+                this.scheduledPause = null;
+                if (start2 == null) {
+                  start2 = this.getCurrentTime();
+                  if (start2 >= this.getDuration()) {
+                    start2 = 0;
+                  }
+                }
+                if (end == null) {
+                  end = this.getDuration();
+                }
+                this.startPosition = start2;
+                this.lastPlay = this.ac.currentTime;
+                if (this.state === this.states[FINISHED]) {
+                  this.setState(PAUSED);
+                }
+                return {
+                  start: start2,
+                  end
+                };
+              }
+            }, {
+              key: "getPlayedTime",
+              value: function getPlayedTime() {
+                return (this.ac.currentTime - this.lastPlay) * this.playbackRate;
+              }
+            }, {
+              key: "play",
+              value: function play(start2, end) {
+                if (!this.buffer) {
+                  return;
+                }
+                this.createSource();
+                var adjustedTime = this.seekTo(start2, end);
+                start2 = adjustedTime.start;
+                end = adjustedTime.end;
+                this.scheduledPause = end;
+                this.source.start(0, start2);
+                this.resumeAudioContext();
+                this.setState(PLAYING);
+                this.fireEvent("play");
+              }
+            }, {
+              key: "pause",
+              value: function pause() {
+                this.scheduledPause = null;
+                this.startPosition += this.getPlayedTime();
+                try {
+                  this.source && this.source.stop(0);
+                } catch (err) {
+                }
+                this.setState(PAUSED);
+                this.fireEvent("pause");
+              }
+            }, {
+              key: "getCurrentTime",
+              value: function getCurrentTime() {
+                return this.state.getCurrentTime.call(this);
+              }
+            }, {
+              key: "getPlaybackRate",
+              value: function getPlaybackRate() {
+                return this.playbackRate;
+              }
+            }, {
+              key: "setPlaybackRate",
+              value: function setPlaybackRate(value) {
+                this.playbackRate = value || 1;
+                this.source && this.source.playbackRate.setValueAtTime(this.playbackRate, this.ac.currentTime);
+              }
+            }, {
+              key: "setPlayEnd",
+              value: function setPlayEnd(end) {
+                this.scheduledPause = end;
+              }
+            }]);
+            return WebAudio2;
+          }(util.Observer);
+          exports2["default"] = WebAudio;
+          _defineProperty(WebAudio, "scriptBufferSize", 256);
+          module2.exports = exports2.default;
+        },
+        "./node_modules/debounce/index.js": (module2) => {
+          function debounce(func, wait, immediate) {
+            var timeout, args, context, timestamp, result;
+            if (null == wait)
+              wait = 100;
+            function later() {
+              var last = Date.now() - timestamp;
+              if (last < wait && last >= 0) {
+                timeout = setTimeout(later, wait - last);
+              } else {
+                timeout = null;
+                if (!immediate) {
+                  result = func.apply(context, args);
+                  context = args = null;
+                }
+              }
+            }
+            var debounced = function() {
+              context = this;
+              args = arguments;
+              timestamp = Date.now();
+              var callNow = immediate && !timeout;
+              if (!timeout)
+                timeout = setTimeout(later, wait);
+              if (callNow) {
+                result = func.apply(context, args);
+                context = args = null;
+              }
+              return result;
+            };
+            debounced.clear = function() {
+              if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+              }
+            };
+            debounced.flush = function() {
+              if (timeout) {
+                result = func.apply(context, args);
+                context = args = null;
+                clearTimeout(timeout);
+                timeout = null;
+              }
+            };
+            return debounced;
+          }
+          debounce.debounce = debounce;
+          module2.exports = debounce;
+        }
+      };
+      var __webpack_module_cache__ = {};
+      function __webpack_require__(moduleId) {
+        var cachedModule = __webpack_module_cache__[moduleId];
+        if (cachedModule !== void 0) {
+          return cachedModule.exports;
+        }
+        var module2 = __webpack_module_cache__[moduleId] = {
+          exports: {}
+        };
+        __webpack_modules__[moduleId](module2, module2.exports, __webpack_require__);
+        return module2.exports;
+      }
+      var __webpack_exports__ = __webpack_require__("./src/wavesurfer.js");
+      return __webpack_exports__;
+    })();
+  });
+})(wavesurfer);
+var WaveSurfer = /* @__PURE__ */ getDefaultExportFromCjs(wavesurfer.exports);
+var _style_0$1 = ".animate[data-v-eda23100]{animation-name:expand-eda23100;animation-duration:.75s;animation-fill-mode:forwards;transform-origin:50% 50%}.btn[data-v-eda23100]{background-color:var(--08ab5a8d);margin:5px;height:var(--4bafedcb);border-top-left-radius:20%;border-bottom-left-radius:20%;color:red}.progress[data-v-eda23100]{width:50px;height:var(--4bafedcb);display:flex;position:relative;align-items:center;margin-left:10px;min-width:50px;background-color:var(--08ab5a8d);border-top-right-radius:5px;border-bottom-right-radius:5px}.play-pause-btn[data-v-eda23100]{animation-name:expand-eda23100;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:100% 0%}.play-pause-btn .icon[data-v-eda23100]{animation-name:rotate-eda23100;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:center}@keyframes rotate-eda23100{0%{transform:rotate(0);opacity:0}to{transform:rotate(360deg);opacity:1}}@keyframes expand-eda23100{0%{transform:scaleX(0%)}33%{transform:scaleX(1.1)}66%{transform:scaleX(.9)}to{transform:scaleX(1)}}\n";
+const _hoisted_1$g = { style: { "width": "40px", "height": "50px", "text-align": "center" } };
+const _hoisted_2$c = { style: { "width": "200px" } };
+const _hoisted_3$c = {
+  class: "progress",
+  style: { "display": "none" }
+};
+const _hoisted_4$b = { style: { "justify-content": "center", "display": "flex" } };
+const _sfc_main$g = /* @__PURE__ */ defineComponent({
+  __name: "WavePlayer",
+  props: {
+    "url": { type: String, required: true },
+    "duration": { type: Number, required: false, default: 0 },
+    "backgroundColor": { type: String, default: "#3f87f7" },
+    "waveColor": { type: String, default: "#a2c4ff" },
+    "progressColor": { type: String, default: "white" },
+    "height": { type: Number, required: false, default: 25 },
+    "animate": { type: Boolean, required: false, default: false },
+    "autoLoad": { type: Boolean, default: true, required: false }
+  },
+  emits: ["hover-audio-progress", "update-progress-time"],
+  setup(__props, { emit: emits }) {
+    const props = __props;
+    useCssVars((_ctx) => ({
+      "08ab5a8d": unref(bg_color),
+      "4bafedcb": __props.height
+    }));
+    const bg_color = props.backgroundColor;
+    let vue_waveplayer_container = ref();
+    let is_playing = ref(false);
+    let finished = ref(false);
+    ref(false);
+    let duration = ref(props.duration);
+    let pos = ref(0);
+    let wavesurfer2 = null;
+    ref(`width: ${document.documentElement.clientWidth - 100 - 20}px`);
+    const progress = computed(() => {
+      const totalSeconds = Math.floor(pos.value);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds - minutes * 60;
+      const ret = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+      emits("update-progress-time", ret);
+      return ret;
+    });
+    async function play() {
+      if (!props.autoLoad)
+        wavesurfer2 == null ? void 0 : wavesurfer2.load(props.url);
+      await until(() => wavesurfer2 != null && wavesurfer2.isReady);
+      if (!wavesurfer2)
+        return;
+      is_playing.value = true;
+      wavesurfer2.play();
+    }
+    async function pause() {
+      if (!wavesurfer2 && is_playing.value)
+        return;
+      is_playing.value = false;
+      wavesurfer2.pause();
+    }
+    function on_seek(progress2) {
+      if (!is_playing.value) {
+        play();
+      }
+    }
+    function on_finish() {
+      is_playing.value = false;
+      finished.value = true;
+    }
+    async function until(predicate, interval = 100) {
+      const poll = (done) => predicate() ? done() : setTimeout(() => poll(done), interval);
+      return new Promise(poll);
+    }
+    onMounted(async () => {
+      wavesurfer2 = WaveSurfer.create({
+        container: vue_waveplayer_container.value,
+        barRadius: 10,
+        barWidth: 4,
+        mediaControls: false,
+        normalize: false,
+        barHeight: 7,
+        responsive: true,
+        cursorColor: "transparent",
+        fillParent: true,
+        hideScrollbar: true,
+        minPxPerSec: 10,
+        height: props.height,
+        waveColor: props.waveColor,
+        progressColor: props.progressColor,
+        backgroundColor: bg_color
+      });
+      wavesurfer2.on("seek", on_seek);
+      wavesurfer2.on("finish", on_finish);
+      wavesurfer2.on("audioprocess", (time) => pos.value = time);
+      if (props.autoLoad)
+        wavesurfer2.load(props.url);
+      wavesurfer2.on("ready", () => {
+        duration.value = wavesurfer2.getDuration();
+      });
+    });
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", {
+        style: { "display": "flex", "width": "250px", "background-color": "v-bind(bg_color)" },
+        class: normalizeClass({ animate: __props.animate })
+      }, [
+        createBaseVNode("div", _hoisted_1$g, [
+          !is_playing.value ? (openBlock(), createElementBlock("div", {
+            key: 0,
+            class: "btn play-pause-btn",
+            onClick: play
+          }, [
+            createVNode(unref(Icon), {
+              class: "icon",
+              width: "26",
+              icon: unref(data$1),
+              inline: true
+            }, null, 8, ["icon"])
+          ])) : (openBlock(), createElementBlock("div", {
+            key: 1,
+            class: "btn play-pause-btn",
+            onClick: pause
+          }, [
+            createVNode(unref(Icon), {
+              class: "icon",
+              width: "22",
+              icon: unref(data),
+              inline: true
+            }, null, 8, ["icon"])
+          ]))
+        ]),
+        createBaseVNode("div", _hoisted_2$c, [
+          createBaseVNode("div", {
+            id: "vue_waveplayer_container",
+            ref_key: "vue_waveplayer_container",
+            ref: vue_waveplayer_container
+          }, null, 512)
+        ]),
+        createBaseVNode("div", _hoisted_3$c, [
+          createBaseVNode("div", _hoisted_4$b, toDisplayString(unref(progress)), 1)
+        ])
+      ], 2);
+    };
+  }
+});
+var WavePlayer = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["styles", [_style_0$1]], ["__scopeId", "data-v-eda23100"]]);
 const _sfc_main$f = {
   name: "AudioPlayer",
   components: {
-    SvgIcon,
-    AudioControl
+    WavePlayer
   },
   props: {
     messageId: { type: [String, Number], default: null },
@@ -12273,12 +16626,6 @@ const _sfc_main$f = {
   },
   emits: ["hover-audio-progress", "update-progress-time"],
   data() {
-    return {
-      isPlaying: false,
-      duration: this.convertTimeMMSS(0),
-      playedTime: this.convertTimeMMSS(0),
-      progress: 0
-    };
   },
   computed: {
     playerUniqId() {
@@ -12287,88 +16634,33 @@ const _sfc_main$f = {
     audioSource() {
       if (this.src)
         return this.src;
-      this.resetProgress();
       return null;
     }
   },
   mounted() {
-    this.player = document.querySelector("vue-advanced-chat").shadowRoot.getElementById(this.playerUniqId);
-    this.player.addEventListener("ended", () => {
-      this.isPlaying = false;
-    });
-    this.player.addEventListener("loadeddata", () => {
-      this.resetProgress();
-      this.duration = this.convertTimeMMSS(this.player.duration);
-      this.updateProgressTime();
-    });
-    this.player.addEventListener("timeupdate", this.onTimeUpdate);
   },
-  methods: {
-    convertTimeMMSS(seconds) {
-      return new Date(seconds * 1e3).toISOString().substr(14, 5);
-    },
-    playback() {
-      if (this.messageSelectionEnabled || !this.audioSource)
-        return;
-      if (this.isPlaying)
-        this.player.pause();
-      else
-        setTimeout(() => this.player.play());
-      this.isPlaying = !this.isPlaying;
-    },
-    resetProgress() {
-      if (this.isPlaying)
-        this.player.pause();
-      this.duration = this.convertTimeMMSS(0);
-      this.playedTime = this.convertTimeMMSS(0);
-      this.progress = 0;
-      this.isPlaying = false;
-      this.updateProgressTime();
-    },
-    onTimeUpdate() {
-      this.playedTime = this.convertTimeMMSS(this.player.currentTime);
-      this.progress = this.player.currentTime / this.player.duration * 100;
-      this.updateProgressTime();
-    },
-    onUpdateProgress(pos) {
-      if (pos)
-        this.player.currentTime = pos * this.player.duration;
-    },
-    updateProgressTime() {
-      this.$emit(
-        "update-progress-time",
-        this.progress > 1 ? this.playedTime : this.duration
-      );
-    }
-  }
+  methods: {}
 };
 const _hoisted_1$f = { class: "vac-audio-player" };
-const _hoisted_2$c = ["id", "src"];
 function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_svg_icon = resolveComponent("svg-icon");
-  const _component_audio_control = resolveComponent("audio-control");
+  const _component_wave_player = resolveComponent("wave-player");
   return openBlock(), createElementBlock("div", null, [
     createBaseVNode("div", _hoisted_1$f, [
-      createBaseVNode("div", {
-        class: "vac-svg-button",
-        onClick: _cache[0] || (_cache[0] = (...args) => $options.playback && $options.playback(...args))
-      }, [
-        $data.isPlaying ? renderSlot(_ctx.$slots, "audio-pause-icon_" + $props.messageId, { key: 0 }, () => [
-          createVNode(_component_svg_icon, { name: "audio-pause" })
-        ]) : renderSlot(_ctx.$slots, "audio-play-icon_" + $props.messageId, { key: 1 }, () => [
-          createVNode(_component_svg_icon, { name: "audio-play" })
-        ])
-      ]),
-      createVNode(_component_audio_control, {
-        percentage: $data.progress,
-        "message-selection-enabled": $props.messageSelectionEnabled,
-        onChangeLinehead: $options.onUpdateProgress,
-        onHoverAudioProgress: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("hover-audio-progress", $event))
-      }, null, 8, ["percentage", "message-selection-enabled", "onChangeLinehead"]),
-      createBaseVNode("audio", {
+      createVNode(_component_wave_player, {
         id: $options.playerUniqId,
-        src: $options.audioSource
-      }, null, 8, _hoisted_2$c)
+        duration: _ctx.duration,
+        "onUpdate:duration": _cache[0] || (_cache[0] = ($event) => _ctx.duration = $event),
+        "played-time": _ctx.playedTime,
+        "onUpdate:played-time": _cache[1] || (_cache[1] = ($event) => _ctx.playedTime = $event),
+        style: { "padding-right": "25px", "margin-bottom": "-20px" },
+        onUpdateProgressTime: _cache[2] || (_cache[2] = ($event) => _ctx.$emit("update-progress-time", $event)),
+        "background-color": "transparent",
+        "wave-color": "skyblue",
+        "progress-color": "white",
+        height: 25,
+        animate: false,
+        url: $options.audioSource
+      }, null, 8, ["id", "duration", "played-time", "url"])
     ])
   ]);
 }
@@ -14264,11 +18556,11 @@ const _sfc_main$7 = {
     }
   },
   mounted() {
-    const ref = this.$refs["imageRef" + this.index];
-    if (ref) {
+    const ref2 = this.$refs["imageRef" + this.index];
+    if (ref2) {
       this.imageResponsive = {
-        maxHeight: ref.clientWidth - 18,
-        loaderTop: ref.clientHeight / 2 - 9
+        maxHeight: ref2.clientWidth - 18,
+        loaderTop: ref2.clientHeight / 2 - 9
       };
     }
   },
@@ -15440,10 +19732,10 @@ const _sfc_main$2 = {
         (message) => message._id !== messageId
       );
     },
-    onMessageAdded({ message, index, ref }) {
+    onMessageAdded({ message, index, ref: ref2 }) {
       if (index !== this.messages.length - 1)
         return;
-      const autoScrollOffset = ref.offsetHeight + 60;
+      const autoScrollOffset = ref2.offsetHeight + 60;
       setTimeout(() => {
         const scrolledUp = this.getBottomScroll(this.$refs.scrollContainer) > autoScrollOffset;
         if (message.senderId === this.currentUserId) {
