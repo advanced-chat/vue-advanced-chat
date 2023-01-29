@@ -145,7 +145,7 @@ const progress = computed(() => {
   const ret = `${minutes}:${seconds.toString().padStart(2, '0')}`
 
   // TODO by j4hangir: Probably best to optimize this
-  emits('update-progress-time', ret)
+  emits('update-progress-time', format_seconds(totalSeconds))
   return ret
 })
 
@@ -179,6 +179,10 @@ function on_seek(progress: number) {
 function on_finish() {
   is_playing = false
   finished = true
+}
+
+function format_seconds(seconds: number) {
+  return new Date(seconds * 1e3).toISOString().substr(14, 5)
 }
 
 async function until(predicate: () => boolean, interval = 100) {
@@ -216,6 +220,7 @@ onMounted(async () => {
   if (props.autoLoad) wavesurfer.load(props.url)
   wavesurfer.on('ready', () => {
     duration = wavesurfer.getDuration()
+    emits('update-progress-time', format_seconds(duration))
   })
 })
 

@@ -16470,7 +16470,7 @@ var wavesurfer = { exports: {} };
   });
 })(wavesurfer);
 var WaveSurfer = /* @__PURE__ */ getDefaultExportFromCjs(wavesurfer.exports);
-var _style_0$1 = ".animate[data-v-350f057a]{animation-name:expand-350f057a;animation-duration:.75s;animation-fill-mode:forwards;transform-origin:50% 50%}.btn[data-v-350f057a]{background-color:var(--04af2074);margin:5px;height:var(--d59a0578);border-top-left-radius:20%;border-bottom-left-radius:20%;color:red}.progress[data-v-350f057a]{width:50px;height:var(--d59a0578);display:flex;position:relative;align-items:center;margin-left:10px;min-width:50px;background-color:var(--04af2074);border-top-right-radius:5px;border-bottom-right-radius:5px}.play-pause-btn[data-v-350f057a]{animation-name:expand-350f057a;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:100% 0%}.play-pause-btn .icon[data-v-350f057a]{animation-name:rotate-350f057a;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:center}@keyframes rotate-350f057a{0%{transform:rotate(0);opacity:0}to{transform:rotate(360deg);opacity:1}}@keyframes expand-350f057a{0%{transform:scaleX(0%)}33%{transform:scaleX(1.1)}66%{transform:scaleX(.9)}to{transform:scaleX(1)}}\n";
+var _style_0$1 = ".animate[data-v-6614b610]{animation-name:expand-6614b610;animation-duration:.75s;animation-fill-mode:forwards;transform-origin:50% 50%}.btn[data-v-6614b610]{background-color:var(--43451175);margin:5px;height:var(--50cb829a);border-top-left-radius:20%;border-bottom-left-radius:20%;color:red}.progress[data-v-6614b610]{width:50px;height:var(--50cb829a);display:flex;position:relative;align-items:center;margin-left:10px;min-width:50px;background-color:var(--43451175);border-top-right-radius:5px;border-bottom-right-radius:5px}.play-pause-btn[data-v-6614b610]{animation-name:expand-6614b610;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:100% 0%}.play-pause-btn .icon[data-v-6614b610]{animation-name:rotate-6614b610;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:center}@keyframes rotate-6614b610{0%{transform:rotate(0);opacity:0}to{transform:rotate(360deg);opacity:1}}@keyframes expand-6614b610{0%{transform:scaleX(0%)}33%{transform:scaleX(1.1)}66%{transform:scaleX(.9)}to{transform:scaleX(1)}}\n";
 const _hoisted_1$g = { style: { "width": "40px", "height": "50px", "text-align": "center" } };
 const _hoisted_2$c = { style: { "width": "200px" } };
 const _hoisted_3$c = {
@@ -16494,8 +16494,8 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
   setup(__props, { emit: emits }) {
     const props = __props;
     useCssVars((_ctx) => ({
-      "04af2074": unref(bg_color),
-      "d59a0578": __props.height
+      "43451175": unref(bg_color),
+      "50cb829a": __props.height
     }));
     const bg_color = props.backgroundColor;
     let vue_waveplayer_container = ref();
@@ -16511,7 +16511,7 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
       const minutes = Math.floor(totalSeconds / 60);
       const seconds = totalSeconds - minutes * 60;
       const ret = `${minutes}:${seconds.toString().padStart(2, "0")}`;
-      emits("update-progress-time", ret);
+      emits("update-progress-time", format_seconds(totalSeconds));
       return ret;
     });
     async function play() {
@@ -16537,6 +16537,9 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
     function on_finish() {
       is_playing.value = false;
       finished.value = true;
+    }
+    function format_seconds(seconds) {
+      return new Date(seconds * 1e3).toISOString().substr(14, 5);
     }
     async function until(predicate, interval = 100) {
       const poll = (done) => predicate() ? done() : setTimeout(() => poll(done), interval);
@@ -16568,6 +16571,7 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
         wavesurfer2.load(props.url);
       wavesurfer2.on("ready", () => {
         duration.value = wavesurfer2.getDuration();
+        emits("update-progress-time", format_seconds(duration.value));
       });
     });
     return (_ctx, _cache) => {
@@ -16614,7 +16618,7 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var WavePlayer = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["styles", [_style_0$1]], ["__scopeId", "data-v-350f057a"]]);
+var WavePlayer = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["styles", [_style_0$1]], ["__scopeId", "data-v-6614b610"]]);
 const _sfc_main$f = {
   name: "AudioPlayer",
   components: {
