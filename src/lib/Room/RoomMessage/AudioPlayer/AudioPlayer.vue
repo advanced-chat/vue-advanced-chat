@@ -10,17 +10,15 @@
       <!--        </slot>-->
       <!--      </div>-->
       <wave-player
-        :id="playerUniqId"
-        v-model:duration="duration"
-        v-model:played-time="playedTime"
+        :id="messageId"
+        :key="playerUniqId"
         style="padding-right: 25px; margin-bottom: -20px"
-
-        @update-progress-time="$emit('update-progress-time', $event)"
         background-color="transparent"
         wave-color="skyblue"
         progress-color="white"
-        :height="25" :animate="false"
-        :url="audioSource"
+        :height="25"
+        :animate="false" :url="audioSource"
+        @update-progress-time="$emit('update-progress-time', $event)"
       />
 
       <!--            <audio-control-->
@@ -40,7 +38,7 @@ import WavePlayer from '@/lib/Room/RoomMessage/AudioPlayer/WavePlayer.vue'
 export default {
   name: 'AudioPlayer',
   components: {
-    WavePlayer,
+    WavePlayer
   },
 
   props: {

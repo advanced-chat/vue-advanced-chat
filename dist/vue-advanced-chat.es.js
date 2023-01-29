@@ -16470,7 +16470,25 @@ var wavesurfer = { exports: {} };
   });
 })(wavesurfer);
 var WaveSurfer = /* @__PURE__ */ getDefaultExportFromCjs(wavesurfer.exports);
-var _style_0$1 = ".animate[data-v-6614b610]{animation-name:expand-6614b610;animation-duration:.75s;animation-fill-mode:forwards;transform-origin:50% 50%}.btn[data-v-6614b610]{background-color:var(--43451175);margin:5px;height:var(--50cb829a);border-top-left-radius:20%;border-bottom-left-radius:20%;color:red}.progress[data-v-6614b610]{width:50px;height:var(--50cb829a);display:flex;position:relative;align-items:center;margin-left:10px;min-width:50px;background-color:var(--43451175);border-top-right-radius:5px;border-bottom-right-radius:5px}.play-pause-btn[data-v-6614b610]{animation-name:expand-6614b610;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:100% 0%}.play-pause-btn .icon[data-v-6614b610]{animation-name:rotate-6614b610;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:center}@keyframes rotate-6614b610{0%{transform:rotate(0);opacity:0}to{transform:rotate(360deg);opacity:1}}@keyframes expand-6614b610{0%{transform:scaleX(0%)}33%{transform:scaleX(1.1)}66%{transform:scaleX(.9)}to{transform:scaleX(1)}}\n";
+function mitt(n) {
+  return { all: n = n || /* @__PURE__ */ new Map(), on: function(t, e) {
+    var i = n.get(t);
+    i ? i.push(e) : n.set(t, [e]);
+  }, off: function(t, e) {
+    var i = n.get(t);
+    i && (e ? i.splice(i.indexOf(e) >>> 0, 1) : n.set(t, []));
+  }, emit: function(t, e) {
+    var i = n.get(t);
+    i && i.slice().map(function(n2) {
+      n2(e);
+    }), (i = n.get("*")) && i.slice().map(function(n2) {
+      n2(t, e);
+    });
+  } };
+}
+const emitter = mitt();
+const provide_emitter = () => ({ emitter });
+var _style_0$1 = ".animate[data-v-26b035f6]{animation-name:expand-26b035f6;animation-duration:.75s;animation-fill-mode:forwards;transform-origin:50% 50%}.btn[data-v-26b035f6]{background-color:var(--4cb20da3);margin:5px;height:var(--7257233e);border-top-left-radius:20%;border-bottom-left-radius:20%;color:red}.progress[data-v-26b035f6]{width:50px;height:var(--7257233e);display:flex;position:relative;align-items:center;margin-left:10px;min-width:50px;background-color:var(--4cb20da3);border-top-right-radius:5px;border-bottom-right-radius:5px}.play-pause-btn[data-v-26b035f6]{animation-name:expand-26b035f6;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:100% 0%}.play-pause-btn .icon[data-v-26b035f6]{animation-name:rotate-26b035f6;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:center}@keyframes rotate-26b035f6{0%{transform:rotate(0);opacity:0}to{transform:rotate(360deg);opacity:1}}@keyframes expand-26b035f6{0%{transform:scaleX(0%)}33%{transform:scaleX(1.1)}66%{transform:scaleX(.9)}to{transform:scaleX(1)}}\n";
 const _hoisted_1$g = { style: { "width": "40px", "height": "50px", "text-align": "center" } };
 const _hoisted_2$c = { style: { "width": "200px" } };
 const _hoisted_3$c = {
@@ -16481,6 +16499,7 @@ const _hoisted_4$b = { style: { "justify-content": "center", "display": "flex" }
 const _sfc_main$g = /* @__PURE__ */ defineComponent({
   __name: "WavePlayer",
   props: {
+    "id": { type: Number, required: true },
     "url": { type: String, required: true },
     "duration": { type: Number, required: false, default: 0 },
     "backgroundColor": { type: String, default: "#3f87f7" },
@@ -16494,9 +16513,10 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
   setup(__props, { emit: emits }) {
     const props = __props;
     useCssVars((_ctx) => ({
-      "43451175": unref(bg_color),
-      "50cb829a": __props.height
+      "4cb20da3": unref(bg_color),
+      "7257233e": __props.height
     }));
+    const { emitter: emitter2 } = provide_emitter();
     const bg_color = props.backgroundColor;
     let vue_waveplayer_container = ref();
     let is_playing = ref(false);
@@ -16506,6 +16526,11 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
     let pos = ref(0);
     let wavesurfer2 = null;
     ref(`width: ${document.documentElement.clientWidth - 100 - 20}px`);
+    emitter2.on("waveplayer:play", (id) => {
+      if (id != props.id) {
+        pause();
+      }
+    });
     const progress = computed(() => {
       const totalSeconds = Math.floor(pos.value);
       const minutes = Math.floor(totalSeconds / 60);
@@ -16520,12 +16545,14 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
       await until(() => wavesurfer2 != null && wavesurfer2.isReady);
       if (!wavesurfer2)
         return;
+      emitter2.emit("waveplayer:play", props.id);
       is_playing.value = true;
       wavesurfer2.play();
     }
     async function pause() {
       if (!wavesurfer2 && is_playing.value)
         return;
+      emitter2.emit("waveplayer:pause", props.id);
       is_playing.value = false;
       wavesurfer2.pause();
     }
@@ -16535,6 +16562,7 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
       }
     }
     function on_finish() {
+      emitter2.emit("waveplayer:finish", props.id);
       is_playing.value = false;
       finished.value = true;
     }
@@ -16618,7 +16646,7 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var WavePlayer = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["styles", [_style_0$1]], ["__scopeId", "data-v-6614b610"]]);
+var WavePlayer = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["styles", [_style_0$1]], ["__scopeId", "data-v-26b035f6"]]);
 const _sfc_main$f = {
   name: "AudioPlayer",
   components: {
@@ -16651,21 +16679,18 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_wave_player = resolveComponent("wave-player");
   return openBlock(), createElementBlock("div", null, [
     createBaseVNode("div", _hoisted_1$f, [
-      createVNode(_component_wave_player, {
-        id: $options.playerUniqId,
-        duration: _ctx.duration,
-        "onUpdate:duration": _cache[0] || (_cache[0] = ($event) => _ctx.duration = $event),
-        "played-time": _ctx.playedTime,
-        "onUpdate:played-time": _cache[1] || (_cache[1] = ($event) => _ctx.playedTime = $event),
+      (openBlock(), createBlock(_component_wave_player, {
+        id: $props.messageId,
+        key: $options.playerUniqId,
         style: { "padding-right": "25px", "margin-bottom": "-20px" },
-        onUpdateProgressTime: _cache[2] || (_cache[2] = ($event) => _ctx.$emit("update-progress-time", $event)),
         "background-color": "transparent",
         "wave-color": "skyblue",
         "progress-color": "white",
         height: 25,
         animate: false,
-        url: $options.audioSource
-      }, null, 8, ["id", "duration", "played-time", "url"])
+        url: $options.audioSource,
+        onUpdateProgressTime: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("update-progress-time", $event))
+      }, null, 8, ["id", "url"]))
     ])
   ]);
 }

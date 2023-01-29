@@ -101,6 +101,7 @@
 <!--</script>-->
 
 <script lang="ts" setup>
+/* eslint-disable eqeqeq */
 import { toRefs, defineProps, onMounted, computed, defineEmits } from 'vue'
 import { Icon } from '@iconify/vue'
 import playArrowRounded from '@iconify-icons/material-symbols/play-arrow-rounded'
@@ -108,10 +109,12 @@ import pauseIcon from '@iconify-icons/material-symbols/pause-rounded'
 /* eslint-disable camelcase,vue/no-setup-props-destructure */
 // noinspection TypeScriptCheckImport
 import WaveSurfer from 'wavesurfer.js'
+import { provide_emitter } from '../../../../utils/emitter'
 
 // import {$ref} from "vue/macros";
 
 const props = defineProps({
+  'id': { type: Number, required: true },
   'url': { type: String, required: true },
   'duration': { type: Number, required: false, default: 0 },
   'backgroundColor': { type: String, default: '#3f87f7' },
@@ -122,6 +125,7 @@ const props = defineProps({
   'autoLoad': { type: Boolean, default: true, required: false }
 })
 
+const { emitter } = provide_emitter()
 const bg_color = props.backgroundColor
 
 let vue_waveplayer_container = $ref()
@@ -135,6 +139,11 @@ let pos: number = $ref(0)
 let wavesurfer: WaveSurfer | null = null
 let style = $ref(`width: ${document.documentElement.clientWidth - 100 - 20}px`)
 
+emitter.on('waveplayer:play', id => {
+  if (id != props.id) {
+    pause()
+  }
+})
 const emits = defineEmits(['hover-audio-progress', 'update-progress-time'])
 
 const progress = computed(() => {
@@ -156,6 +165,7 @@ async function play() {
   if (!wavesurfer) return
   // console.log(wavesurfer)
   // console.log(wavesurfer.playhead)
+  emitter.emit('waveplayer:play', props.id)
   is_playing = true
   // if (finished) {
   wavesurfer.play()
@@ -166,6 +176,7 @@ async function play() {
 
 async function pause() {
   if (!wavesurfer && is_playing) return
+  emitter.emit('waveplayer:pause', props.id)
   is_playing = false
   wavesurfer!.pause()
 }
@@ -177,6 +188,7 @@ function on_seek(progress: number) {
 }
 
 function on_finish() {
+  emitter.emit('waveplayer:finish', props.id)
   is_playing = false
   finished = true
 }
