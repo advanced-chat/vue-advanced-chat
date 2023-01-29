@@ -205,8 +205,8 @@ onMounted(async () => {
     height: props.height,
     waveColor: props.waveColor,
     progressColor: props.progressColor,
-    backgroundColor: bg_color
-
+    backgroundColor: bg_color,
+    barMinHeight: 1
   })
   // console.log(wavesurfer)
 

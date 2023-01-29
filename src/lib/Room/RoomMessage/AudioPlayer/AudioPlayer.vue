@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import AudioControl from './AudioControl/AudioControl'
 import WavePlayer from '@/lib/Room/RoomMessage/AudioPlayer/WavePlayer.vue'
 
 export default {

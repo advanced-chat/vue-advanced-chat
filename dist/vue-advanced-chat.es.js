@@ -16470,7 +16470,7 @@ var wavesurfer = { exports: {} };
   });
 })(wavesurfer);
 var WaveSurfer = /* @__PURE__ */ getDefaultExportFromCjs(wavesurfer.exports);
-var _style_0$1 = ".animate[data-v-eda23100]{animation-name:expand-eda23100;animation-duration:.75s;animation-fill-mode:forwards;transform-origin:50% 50%}.btn[data-v-eda23100]{background-color:var(--08ab5a8d);margin:5px;height:var(--4bafedcb);border-top-left-radius:20%;border-bottom-left-radius:20%;color:red}.progress[data-v-eda23100]{width:50px;height:var(--4bafedcb);display:flex;position:relative;align-items:center;margin-left:10px;min-width:50px;background-color:var(--08ab5a8d);border-top-right-radius:5px;border-bottom-right-radius:5px}.play-pause-btn[data-v-eda23100]{animation-name:expand-eda23100;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:100% 0%}.play-pause-btn .icon[data-v-eda23100]{animation-name:rotate-eda23100;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:center}@keyframes rotate-eda23100{0%{transform:rotate(0);opacity:0}to{transform:rotate(360deg);opacity:1}}@keyframes expand-eda23100{0%{transform:scaleX(0%)}33%{transform:scaleX(1.1)}66%{transform:scaleX(.9)}to{transform:scaleX(1)}}\n";
+var _style_0$1 = ".animate[data-v-350f057a]{animation-name:expand-350f057a;animation-duration:.75s;animation-fill-mode:forwards;transform-origin:50% 50%}.btn[data-v-350f057a]{background-color:var(--04af2074);margin:5px;height:var(--d59a0578);border-top-left-radius:20%;border-bottom-left-radius:20%;color:red}.progress[data-v-350f057a]{width:50px;height:var(--d59a0578);display:flex;position:relative;align-items:center;margin-left:10px;min-width:50px;background-color:var(--04af2074);border-top-right-radius:5px;border-bottom-right-radius:5px}.play-pause-btn[data-v-350f057a]{animation-name:expand-350f057a;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:100% 0%}.play-pause-btn .icon[data-v-350f057a]{animation-name:rotate-350f057a;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:center}@keyframes rotate-350f057a{0%{transform:rotate(0);opacity:0}to{transform:rotate(360deg);opacity:1}}@keyframes expand-350f057a{0%{transform:scaleX(0%)}33%{transform:scaleX(1.1)}66%{transform:scaleX(.9)}to{transform:scaleX(1)}}\n";
 const _hoisted_1$g = { style: { "width": "40px", "height": "50px", "text-align": "center" } };
 const _hoisted_2$c = { style: { "width": "200px" } };
 const _hoisted_3$c = {
@@ -16494,8 +16494,8 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
   setup(__props, { emit: emits }) {
     const props = __props;
     useCssVars((_ctx) => ({
-      "08ab5a8d": unref(bg_color),
-      "4bafedcb": __props.height
+      "04af2074": unref(bg_color),
+      "d59a0578": __props.height
     }));
     const bg_color = props.backgroundColor;
     let vue_waveplayer_container = ref();
@@ -16558,7 +16558,8 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
         height: props.height,
         waveColor: props.waveColor,
         progressColor: props.progressColor,
-        backgroundColor: bg_color
+        backgroundColor: bg_color,
+        barMinHeight: 1
       });
       wavesurfer2.on("seek", on_seek);
       wavesurfer2.on("finish", on_finish);
@@ -16613,7 +16614,7 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var WavePlayer = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["styles", [_style_0$1]], ["__scopeId", "data-v-eda23100"]]);
+var WavePlayer = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["styles", [_style_0$1]], ["__scopeId", "data-v-350f057a"]]);
 const _sfc_main$f = {
   name: "AudioPlayer",
   components: {
