@@ -206,6 +206,10 @@ onMounted(async () => {
   // console.log(vue_waveplayer_container)
   // await until(() => document.querySelector('#vue_waveplayer_container'))
   // console.log('here we go')
+  if (duration) {
+    emits('update-progress-time', format_seconds(duration))
+  }
+
   wavesurfer = WaveSurfer.create({
     container: vue_waveplayer_container,
     barRadius: 10,

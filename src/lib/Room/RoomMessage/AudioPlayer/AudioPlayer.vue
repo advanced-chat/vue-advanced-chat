@@ -12,6 +12,7 @@
       <wave-player
         :id="messageId"
         :key="playerUniqId"
+        :duration="duration"
         style="padding-right: 25px; margin-bottom: -20px"
         background-color="transparent"
         wave-color="skyblue"
@@ -43,6 +44,7 @@ export default {
 
   props: {
     messageId: { type: [String, Number], default: null },
+    duration: { type: Number, default: 0, required: false },
     src: { type: String, default: null },
     messageSelectionEnabled: { type: Boolean, required: true }
   },

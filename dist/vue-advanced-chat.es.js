@@ -16488,7 +16488,7 @@ function mitt(n) {
 }
 const emitter = mitt();
 const provide_emitter = () => ({ emitter });
-var _style_0$1 = ".animate[data-v-26b035f6]{animation-name:expand-26b035f6;animation-duration:.75s;animation-fill-mode:forwards;transform-origin:50% 50%}.btn[data-v-26b035f6]{background-color:var(--4cb20da3);margin:5px;height:var(--7257233e);border-top-left-radius:20%;border-bottom-left-radius:20%;color:red}.progress[data-v-26b035f6]{width:50px;height:var(--7257233e);display:flex;position:relative;align-items:center;margin-left:10px;min-width:50px;background-color:var(--4cb20da3);border-top-right-radius:5px;border-bottom-right-radius:5px}.play-pause-btn[data-v-26b035f6]{animation-name:expand-26b035f6;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:100% 0%}.play-pause-btn .icon[data-v-26b035f6]{animation-name:rotate-26b035f6;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:center}@keyframes rotate-26b035f6{0%{transform:rotate(0);opacity:0}to{transform:rotate(360deg);opacity:1}}@keyframes expand-26b035f6{0%{transform:scaleX(0%)}33%{transform:scaleX(1.1)}66%{transform:scaleX(.9)}to{transform:scaleX(1)}}\n";
+var _style_0$1 = ".animate[data-v-677263a8]{animation-name:expand-677263a8;animation-duration:.75s;animation-fill-mode:forwards;transform-origin:50% 50%}.btn[data-v-677263a8]{background-color:var(--69ff51af);margin:5px;height:var(--327b456d);border-top-left-radius:20%;border-bottom-left-radius:20%;color:red}.progress[data-v-677263a8]{width:50px;height:var(--327b456d);display:flex;position:relative;align-items:center;margin-left:10px;min-width:50px;background-color:var(--69ff51af);border-top-right-radius:5px;border-bottom-right-radius:5px}.play-pause-btn[data-v-677263a8]{animation-name:expand-677263a8;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:100% 0%}.play-pause-btn .icon[data-v-677263a8]{animation-name:rotate-677263a8;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:center}@keyframes rotate-677263a8{0%{transform:rotate(0);opacity:0}to{transform:rotate(360deg);opacity:1}}@keyframes expand-677263a8{0%{transform:scaleX(0%)}33%{transform:scaleX(1.1)}66%{transform:scaleX(.9)}to{transform:scaleX(1)}}\n";
 const _hoisted_1$g = { style: { "width": "40px", "height": "50px", "text-align": "center" } };
 const _hoisted_2$c = { style: { "width": "200px" } };
 const _hoisted_3$c = {
@@ -16513,8 +16513,8 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
   setup(__props, { emit: emits }) {
     const props = __props;
     useCssVars((_ctx) => ({
-      "4cb20da3": unref(bg_color),
-      "7257233e": __props.height
+      "69ff51af": unref(bg_color),
+      "327b456d": __props.height
     }));
     const { emitter: emitter2 } = provide_emitter();
     const bg_color = props.backgroundColor;
@@ -16574,6 +16574,9 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
       return new Promise(poll);
     }
     onMounted(async () => {
+      if (duration.value) {
+        emits("update-progress-time", format_seconds(duration.value));
+      }
       wavesurfer2 = WaveSurfer.create({
         container: vue_waveplayer_container.value,
         barRadius: 10,
@@ -16646,7 +16649,7 @@ const _sfc_main$g = /* @__PURE__ */ defineComponent({
     };
   }
 });
-var WavePlayer = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["styles", [_style_0$1]], ["__scopeId", "data-v-26b035f6"]]);
+var WavePlayer = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["styles", [_style_0$1]], ["__scopeId", "data-v-677263a8"]]);
 const _sfc_main$f = {
   name: "AudioPlayer",
   components: {
@@ -16654,6 +16657,7 @@ const _sfc_main$f = {
   },
   props: {
     messageId: { type: [String, Number], default: null },
+    duration: { type: Number, default: 0, required: false },
     src: { type: String, default: null },
     messageSelectionEnabled: { type: Boolean, required: true }
   },
@@ -16682,6 +16686,7 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
       (openBlock(), createBlock(_component_wave_player, {
         id: $props.messageId,
         key: $options.playerUniqId,
+        duration: $props.duration,
         style: { "padding-right": "25px", "margin-bottom": "-20px" },
         "background-color": "transparent",
         "wave-color": "skyblue",
@@ -16690,7 +16695,7 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
         animate: false,
         url: $options.audioSource,
         onUpdateProgressTime: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("update-progress-time", $event))
-      }, null, 8, ["id", "url"]))
+      }, null, 8, ["id", "duration", "url"]))
     ])
   ]);
 }
