@@ -6,9 +6,9 @@
 				slot-scope="{ events: { click: clickEvent } }"
 				class="vac-svg-button"
 				:class="{ 'vac-emoji-reaction': emojiReaction }"
+				style="margin-right: -3px;"
 				@click.stop="clickEvent"
 				@click="openEmoji"
-				style="margin-right: -3px;"
 			>
 				<slot name="emoji-picker-icon">
 					<svg-icon name="emoji" :param="emojiReaction ? 'reaction' : ''" />
