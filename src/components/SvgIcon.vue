@@ -1,11 +1,6 @@
 <template>
 	<svg
-		:class="
-			name == 'send'
-			? 'send-btn'
-			: name == 'menu'
-			? 'option-btn'
-			: 'none'"
+		:class="svgClass"
 		xmlns="http://www.w3.org/2000/svg"
 		xmlns:xlink="http://www.w3.org/1999/xlink"
 		version="1.1"
@@ -125,6 +120,10 @@ export default {
 			const param = this.param ? '-' + this.param : ''
 			return `vac-icon-${this.name}${param}`
 		},
+		svgClass() {
+			const param = this.param ? '-' + this.param : ''
+			return `${this.name}${param}-styles`
+		},
 		size() {
 			const item = this.svgItem[this.name]
 
@@ -142,7 +141,7 @@ export default {
 
 <style lang="scss">
 
-.option-btn{
+.menu-styles {
 	background: #FFFFFF;
 	box-shadow: 0px 9px 10px rgba(39, 32, 48, 0.06);
 	border-radius: 50px;
@@ -192,7 +191,7 @@ export default {
 	fill: none;
 }
 
-.send-btn:has(#vac-icon-send){
+.send-styles {
 	background-color: var(--chat-icon-color-add);
 	border-radius:50px;
 	padding: 5px;
@@ -207,7 +206,7 @@ export default {
     fill: var(--chat-message-bg-color-me);
 }
 
-.send-btn:has(#vac-icon-send-disabled) {
+.send-disabled-styles {
 	background-color: var(--chat-message-bg-color-me);
 	border-radius:50px;
 	padding: 5px;
