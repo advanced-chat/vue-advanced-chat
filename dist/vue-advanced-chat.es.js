@@ -26452,6 +26452,21 @@ class Recorder {
     this.micFailed && this.micFailed(error);
   }
 }
+var isChromium = window.chrome;
+var winNav = window.navigator;
+var vendorName = winNav.vendor;
+var isOpera = typeof window.opr !== "undefined";
+var isIEedge = winNav.userAgent.indexOf("Edg") > -1;
+var isIOSChrome = winNav.userAgent.match("CriOS");
+function detectChrome() {
+  if (isIOSChrome) {
+    return true;
+  } else if (isChromium !== null && typeof isChromium !== "undefined" && vendorName === "Google Inc." && isOpera === false && isIEedge === false) {
+    return true;
+  } else {
+    return false;
+  }
+}
 function detectMobile() {
   var userAgent = getUserAgent();
   var userAgentPart = userAgent.substr(0, 4);
@@ -26635,9 +26650,10 @@ const _sfc_main$a = {
       this.getTextareaRef().focus();
       if (this.cursorRangePosition) {
         setTimeout(() => {
+          const offset = detectChrome() ? 0 : 1;
           this.getTextareaRef().setSelectionRange(
-            this.cursorRangePosition,
-            this.cursorRangePosition
+            this.cursorRangePosition + offset,
+            this.cursorRangePosition + offset
           );
           this.cursorRangePosition = null;
         });
