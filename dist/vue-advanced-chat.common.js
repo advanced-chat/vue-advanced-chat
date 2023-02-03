@@ -1130,6 +1130,13 @@ module.exports = getBuiltIn('navigator', 'userAgent') || '';
 
 /***/ }),
 
+/***/ "3a58":
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
 /***/ "3a9b":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2482,17 +2489,6 @@ module.exports = store.inspectSource;
 
 /***/ }),
 
-/***/ "8a2b":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_9_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_9_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_9_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_9_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SvgIcon_vue_vue_type_style_index_0_id_be595018_prod_lang_scss___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("946e");
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_9_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_9_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_9_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_9_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SvgIcon_vue_vue_type_style_index_0_id_be595018_prod_lang_scss___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_9_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_9_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_9_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_9_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SvgIcon_vue_vue_type_style_index_0_id_be595018_prod_lang_scss___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
-
-
-/***/ }),
-
 /***/ "907a":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2548,13 +2544,6 @@ module.exports = DESCRIPTORS ? function (object, key, value) {
   return object;
 };
 
-
-/***/ }),
-
-/***/ "946e":
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
 
 /***/ }),
 
@@ -3823,6 +3812,17 @@ module.exports = {
 
 /***/ }),
 
+/***/ "d8fc":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_9_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_9_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_9_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_9_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SvgIcon_vue_vue_type_style_index_0_id_6f309756_prod_lang_scss___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("3a58");
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_9_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_9_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_9_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_9_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SvgIcon_vue_vue_type_style_index_0_id_6f309756_prod_lang_scss___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_9_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_9_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_9_oneOf_1_2_node_modules_sass_loader_dist_cjs_js_ref_9_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_1_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SvgIcon_vue_vue_type_style_index_0_id_6f309756_prod_lang_scss___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+
+
+/***/ }),
+
 /***/ "d9b5":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4958,13 +4958,13 @@ var RoomsSearchvue_type_template_id_4b7b89e0_staticRenderFns = [];
 
 // CONCATENATED MODULE: ./src/ChatWindow/RoomsList/RoomsSearch.vue?vue&type=template&id=4b7b89e0&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"2346ed2a-vue-loader-template"}!./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/SvgIcon.vue?vue&type=template&id=be595018&
-var SvgIconvue_type_template_id_be595018_render = function render() {
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"2346ed2a-vue-loader-template"}!./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/SvgIcon.vue?vue&type=template&id=6f309756&
+var SvgIconvue_type_template_id_6f309756_render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
   return _c('svg', {
-    "class": _vm.name == 'send' ? 'send-btn' : _vm.name == 'menu' ? 'option-btn' : 'none',
+    "class": _vm.svgClass,
     attrs: {
       "xmlns": "http://www.w3.org/2000/svg",
       "xmlns:xlink": "http://www.w3.org/1999/xlink",
@@ -4988,9 +4988,9 @@ var SvgIconvue_type_template_id_be595018_render = function render() {
   }) : _vm._e()]);
 };
 
-var SvgIconvue_type_template_id_be595018_staticRenderFns = [];
+var SvgIconvue_type_template_id_6f309756_staticRenderFns = [];
 
-// CONCATENATED MODULE: ./src/components/SvgIcon.vue?vue&type=template&id=be595018&
+// CONCATENATED MODULE: ./src/components/SvgIcon.vue?vue&type=template&id=6f309756&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/SvgIcon.vue?vue&type=script&lang=js&
 /* harmony default export */ var SvgIconvue_type_script_lang_js_ = ({
@@ -5084,6 +5084,10 @@ var SvgIconvue_type_template_id_be595018_staticRenderFns = [];
       var param = this.param ? '-' + this.param : '';
       return "vac-icon-".concat(this.name).concat(param);
     },
+    svgClass: function svgClass() {
+      var param = this.param ? '-' + this.param : '';
+      return "".concat(this.name).concat(param, "-styles");
+    },
     size: function size() {
       var item = this.svgItem[this.name];
       if (item.size === 'large') return 512;else if (item.size === 'medium') return 48;else if (item.size === 'custom') return 22;else return 24;
@@ -5095,8 +5099,8 @@ var SvgIconvue_type_template_id_be595018_staticRenderFns = [];
 });
 // CONCATENATED MODULE: ./src/components/SvgIcon.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_SvgIconvue_type_script_lang_js_ = (SvgIconvue_type_script_lang_js_); 
-// EXTERNAL MODULE: ./src/components/SvgIcon.vue?vue&type=style&index=0&id=be595018&prod&lang=scss&
-var SvgIconvue_type_style_index_0_id_be595018_prod_lang_scss_ = __webpack_require__("8a2b");
+// EXTERNAL MODULE: ./src/components/SvgIcon.vue?vue&type=style&index=0&id=6f309756&prod&lang=scss&
+var SvgIconvue_type_style_index_0_id_6f309756_prod_lang_scss_ = __webpack_require__("d8fc");
 
 // CONCATENATED MODULE: ./src/components/SvgIcon.vue
 
@@ -5109,8 +5113,8 @@ var SvgIconvue_type_style_index_0_id_be595018_prod_lang_scss_ = __webpack_requir
 
 var SvgIcon_component = normalizeComponent(
   components_SvgIconvue_type_script_lang_js_,
-  SvgIconvue_type_template_id_be595018_render,
-  SvgIconvue_type_template_id_be595018_staticRenderFns,
+  SvgIconvue_type_template_id_6f309756_render,
+  SvgIconvue_type_template_id_6f309756_staticRenderFns,
   false,
   null,
   null,
