@@ -51,6 +51,7 @@
 				:show-reaction-emojis="showReactionEmojisCasted"
 				:show-new-messages-divider="showNewMessagesDividerCasted"
 				:show-footer="showFooterCasted"
+				:show-room-header="showRoomHeader"
 				:text-messages="t"
 				:single-room="singleRoomCasted"
 				:show-rooms-list="showRoomsList && roomsListOpenedCasted"
@@ -180,6 +181,7 @@ export default {
 		showReactionEmojis: { type: [Boolean, String], default: true },
 		showNewMessagesDivider: { type: [Boolean, String], default: true },
 		showFooter: { type: [Boolean, String], default: true },
+		showRoomHeader: { type: Boolean, default: true },
 		textFormatting: {
 			type: [Object, String],
 			default: () => ({

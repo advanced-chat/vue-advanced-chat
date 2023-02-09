@@ -28370,6 +28370,7 @@ const _sfc_main$2 = {
     showSendIcon: { type: Boolean, required: true },
     showFiles: { type: Boolean, required: true },
     showAudio: { type: Boolean, required: true },
+    showRoomHeader: { type: Boolean, default: true },
     audioBitRate: { type: Number, required: true },
     audioSampleRate: { type: Number, required: true },
     showEmojis: { type: Boolean, required: true },
@@ -28737,7 +28738,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
       createBaseVNode("div", _hoisted_1$2, [
         createBaseVNode("div", null, toDisplayString($props.textMessages.ROOM_EMPTY), 1)
       ])
-    ]) : (openBlock(), createBlock(_component_room_header, {
+    ]) : $props.showRoomHeader ? (openBlock(), createBlock(_component_room_header, {
       key: 1,
       "current-user-id": $props.currentUserId,
       "text-messages": $props.textMessages,
@@ -28764,7 +28765,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
           ])
         };
       })
-    ]), 1032, ["current-user-id", "text-messages", "single-room", "show-rooms-list", "is-mobile", "room-info-enabled", "menu-actions", "room", "message-selection-enabled", "message-selection-actions", "selected-messages-total", "onMessageSelectionActionHandler"])),
+    ]), 1032, ["current-user-id", "text-messages", "single-room", "show-rooms-list", "is-mobile", "room-info-enabled", "menu-actions", "room", "message-selection-enabled", "message-selection-actions", "selected-messages-total", "onMessageSelectionActionHandler"])) : createCommentVNode("", true),
     createBaseVNode("div", {
       id: "messages-list",
       ref: "scrollContainer",
@@ -29493,6 +29494,7 @@ const _sfc_main = {
     showReactionEmojis: { type: [Boolean, String], default: true },
     showNewMessagesDivider: { type: [Boolean, String], default: true },
     showFooter: { type: [Boolean, String], default: true },
+    showRoomHeader: { type: Boolean, default: true },
     textFormatting: {
       type: [Object, String],
       default: () => ({
@@ -29926,6 +29928,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         "show-reaction-emojis": $options.showReactionEmojisCasted,
         "show-new-messages-divider": $options.showNewMessagesDividerCasted,
         "show-footer": $options.showFooterCasted,
+        "show-room-header": $props.showRoomHeader,
         "text-messages": $options.t,
         "single-room": $options.singleRoomCasted,
         "show-rooms-list": $data.showRoomsList && $options.roomsListOpenedCasted,
@@ -29968,7 +29971,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             ])
           };
         })
-      ]), 1032, ["current-user-id", "rooms", "room-id", "load-first-room", "messages", "room-message", "messages-loaded", "menu-actions", "message-actions", "message-selection-actions", "auto-scroll", "show-send-icon", "show-files", "show-audio", "audio-bit-rate", "audio-sample-rate", "show-emojis", "show-reaction-emojis", "show-new-messages-divider", "show-footer", "text-messages", "single-room", "show-rooms-list", "text-formatting", "link-options", "is-mobile", "loading-rooms", "room-info-enabled", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "scroll-distance", "accepted-files", "capture-files", "templates-text", "username-options", "emoji-data-source", "onToggleRoomsList", "onRoomInfo", "onFetchMessages", "onSendMessage", "onEditMessage", "onDeleteMessage", "onOpenFile", "onOpenUserTag", "onOpenFailedMessage", "onMenuActionHandler", "onMessageActionHandler", "onMessageSelectionActionHandler", "onSendMessageReaction", "onTypingMessage", "onTextareaActionHandler"])
+      ]), 1032, ["current-user-id", "rooms", "room-id", "load-first-room", "messages", "room-message", "messages-loaded", "menu-actions", "message-actions", "message-selection-actions", "auto-scroll", "show-send-icon", "show-files", "show-audio", "audio-bit-rate", "audio-sample-rate", "show-emojis", "show-reaction-emojis", "show-new-messages-divider", "show-footer", "show-room-header", "text-messages", "single-room", "show-rooms-list", "text-formatting", "link-options", "is-mobile", "loading-rooms", "room-info-enabled", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "scroll-distance", "accepted-files", "capture-files", "templates-text", "username-options", "emoji-data-source", "onToggleRoomsList", "onRoomInfo", "onFetchMessages", "onSendMessage", "onEditMessage", "onDeleteMessage", "onOpenFile", "onOpenUserTag", "onOpenFailedMessage", "onMenuActionHandler", "onMessageActionHandler", "onMessageSelectionActionHandler", "onSendMessageReaction", "onTypingMessage", "onTextareaActionHandler"])
     ]),
     createVNode(Transition, {
       name: "vac-fade-preview",

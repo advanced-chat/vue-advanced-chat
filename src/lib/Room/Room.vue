@@ -15,7 +15,7 @@
 		</slot>
 
 		<room-header
-			v-else
+			v-else-if="showRoomHeader"
 			:current-user-id="currentUserId"
 			:text-messages="textMessages"
 			:single-room="singleRoom"
@@ -204,6 +204,7 @@ export default {
 		showSendIcon: { type: Boolean, required: true },
 		showFiles: { type: Boolean, required: true },
 		showAudio: { type: Boolean, required: true },
+		showRoomHeader: { type: Boolean, default: true },
 		audioBitRate: { type: Number, required: true },
 		audioSampleRate: { type: Number, required: true },
 		showEmojis: { type: Boolean, required: true },
@@ -558,9 +559,9 @@ export default {
 			this.$emit('open-user-tag', user)
 		},
 		onDropFiles(event) {
-      if (this.showFiles) {
-        this.droppedFiles = event.dataTransfer.files
-      }
+			if (this.showFiles) {
+				this.droppedFiles = event.dataTransfer.files
+			}
 		}
 	}
 }
