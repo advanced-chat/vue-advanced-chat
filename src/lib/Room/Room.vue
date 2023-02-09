@@ -42,6 +42,7 @@
 			id="messages-list"
 			ref="scrollContainer"
 			class="vac-container-scroll"
+			:class="{ 'vac-no-room-header': !showRoomHeader }"
 			@scroll="onContainerScroll"
 		>
 			<loader :show="loadingMessages" type="messages">
