@@ -54,7 +54,6 @@
 	.vac-message-box {
 		display: flex;
 		flex: 0 0 50%;
-		max-width: 50%;
 		justify-content: flex-start;
 		line-height: 1.4;
 	}
@@ -106,8 +105,11 @@
 		position: relative;
 		padding: 2px 10px;
 		align-items: end;
-		min-width: 100px;
+		min-width: 116px;
 		box-sizing: content-box;
+		width: 80%;
+		max-width: 260px;
+		flex-grow: 1;
 	}
 
 	.vac-message-container-offset {
@@ -115,7 +117,6 @@
 	}
 
 	.vac-offset-current {
-		margin-left: 50%;
 		justify-content: flex-end;
 	}
 
@@ -229,7 +230,6 @@
 
 		.vac-message-box {
 			flex: 0 0 80%;
-			max-width: 80%;
 		}
 
 		$avatar-size-small: 25px;
@@ -260,10 +260,6 @@
 			&.vac-failure-container-avatar {
 				margin-right: 0;
 			}
-		}
-
-		.vac-offset-current {
-			margin-left: 20%;
 		}
 
 		.vac-progress-time {

@@ -45,6 +45,7 @@ importers:
 
   demo:
     specifiers:
+      '@artesa/vue-advanced-chat': workspace:*
       '@babel/core': 7.12.16
       '@vitejs/plugin-vue': 1.10.2
       '@vue/compiler-sfc': 3.2.22
@@ -57,12 +58,11 @@ importers:
       sass: 1.56.1
       vite: 2.9.14
       vue: 3.2.37
-      vue-advanced-chat: workspace:*
       vue-loader: 16.8.3
     dependencies:
+      '@artesa/vue-advanced-chat': link:..
       firebase: 9.4.0
       vue: 3.2.37
-      vue-advanced-chat: link:..
     devDependencies:
       '@babel/core': 7.12.16
       '@vitejs/plugin-vue': 1.10.2_vite@2.9.14

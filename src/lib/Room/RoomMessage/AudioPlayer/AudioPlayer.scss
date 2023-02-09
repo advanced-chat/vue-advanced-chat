@@ -15,6 +15,13 @@
 		.vac-svg-button {
 			max-width: 16px;
 			margin-left: 5px;
+			flex-grow: 0;
+			flex-shrink: 0;
+		}
+
+		.vac-audio-progress-container {
+			flex-grow: 1;
+			flex-shrink: 0;
 		}
 	}
 }

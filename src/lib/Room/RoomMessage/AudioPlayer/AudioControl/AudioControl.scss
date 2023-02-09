@@ -4,15 +4,19 @@
 	max-width: calc(100% - 18px);
 	margin-right: 7px;
 	margin-left: 20px;
+	width: 100%;
 
 	.vac-player-progress {
-		width: 190px;
+		width: 100%;
 
 		.vac-line-container {
 			position: relative;
 			height: 4px;
 			border-radius: 5px;
 			background-color: var(--chat-message-bg-color-audio-line);
+			width: 100%;
+			display: flex;
+			max-width: 190px;
 
 			.vac-line-progress {
 				position: absolute;
