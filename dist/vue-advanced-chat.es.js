@@ -3878,143 +3878,6 @@ function getSequence(arr) {
   return result;
 }
 const isTeleport = (type) => type.__isTeleport;
-const isTeleportDisabled = (props) => props && (props.disabled || props.disabled === "");
-const isTargetSVG = (target) => typeof SVGElement !== "undefined" && target instanceof SVGElement;
-const resolveTarget = (props, select) => {
-  const targetSelector = props && props.to;
-  if (isString(targetSelector)) {
-    if (!select) {
-      return null;
-    } else {
-      const target = select(targetSelector);
-      return target;
-    }
-  } else {
-    return targetSelector;
-  }
-};
-const TeleportImpl = {
-  __isTeleport: true,
-  process(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, internals) {
-    const { mc: mountChildren, pc: patchChildren, pbc: patchBlockChildren, o: { insert: insert2, querySelector, createText, createComment } } = internals;
-    const disabled = isTeleportDisabled(n2.props);
-    let { shapeFlag, children, dynamicChildren } = n2;
-    if (n1 == null) {
-      const placeholder = n2.el = createText("");
-      const mainAnchor = n2.anchor = createText("");
-      insert2(placeholder, container, anchor);
-      insert2(mainAnchor, container, anchor);
-      const target = n2.target = resolveTarget(n2.props, querySelector);
-      const targetAnchor = n2.targetAnchor = createText("");
-      if (target) {
-        insert2(targetAnchor, target);
-        isSVG = isSVG || isTargetSVG(target);
-      }
-      const mount = (container2, anchor2) => {
-        if (shapeFlag & 16) {
-          mountChildren(children, container2, anchor2, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
-        }
-      };
-      if (disabled) {
-        mount(container, mainAnchor);
-      } else if (target) {
-        mount(target, targetAnchor);
-      }
-    } else {
-      n2.el = n1.el;
-      const mainAnchor = n2.anchor = n1.anchor;
-      const target = n2.target = n1.target;
-      const targetAnchor = n2.targetAnchor = n1.targetAnchor;
-      const wasDisabled = isTeleportDisabled(n1.props);
-      const currentContainer = wasDisabled ? container : target;
-      const currentAnchor = wasDisabled ? mainAnchor : targetAnchor;
-      isSVG = isSVG || isTargetSVG(target);
-      if (dynamicChildren) {
-        patchBlockChildren(n1.dynamicChildren, dynamicChildren, currentContainer, parentComponent, parentSuspense, isSVG, slotScopeIds);
-        traverseStaticChildren(n1, n2, true);
-      } else if (!optimized) {
-        patchChildren(n1, n2, currentContainer, currentAnchor, parentComponent, parentSuspense, isSVG, slotScopeIds, false);
-      }
-      if (disabled) {
-        if (!wasDisabled) {
-          moveTeleport(n2, container, mainAnchor, internals, 1);
-        }
-      } else {
-        if ((n2.props && n2.props.to) !== (n1.props && n1.props.to)) {
-          const nextTarget = n2.target = resolveTarget(n2.props, querySelector);
-          if (nextTarget) {
-            moveTeleport(n2, nextTarget, null, internals, 0);
-          }
-        } else if (wasDisabled) {
-          moveTeleport(n2, target, targetAnchor, internals, 1);
-        }
-      }
-    }
-  },
-  remove(vnode, parentComponent, parentSuspense, optimized, { um: unmount, o: { remove: hostRemove } }, doRemove) {
-    const { shapeFlag, children, anchor, targetAnchor, target, props } = vnode;
-    if (target) {
-      hostRemove(targetAnchor);
-    }
-    if (doRemove || !isTeleportDisabled(props)) {
-      hostRemove(anchor);
-      if (shapeFlag & 16) {
-        for (let i = 0; i < children.length; i++) {
-          const child = children[i];
-          unmount(child, parentComponent, parentSuspense, true, !!child.dynamicChildren);
-        }
-      }
-    }
-  },
-  move: moveTeleport,
-  hydrate: hydrateTeleport
-};
-function moveTeleport(vnode, container, parentAnchor, { o: { insert: insert2 }, m: move }, moveType = 2) {
-  if (moveType === 0) {
-    insert2(vnode.targetAnchor, container, parentAnchor);
-  }
-  const { el, anchor, shapeFlag, children, props } = vnode;
-  const isReorder = moveType === 2;
-  if (isReorder) {
-    insert2(el, container, parentAnchor);
-  }
-  if (!isReorder || isTeleportDisabled(props)) {
-    if (shapeFlag & 16) {
-      for (let i = 0; i < children.length; i++) {
-        move(children[i], container, parentAnchor, 2);
-      }
-    }
-  }
-  if (isReorder) {
-    insert2(anchor, container, parentAnchor);
-  }
-}
-function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, { o: { nextSibling, parentNode, querySelector } }, hydrateChildren) {
-  const target = vnode.target = resolveTarget(vnode.props, querySelector);
-  if (target) {
-    const targetNode = target._lpa || target.firstChild;
-    if (vnode.shapeFlag & 16) {
-      if (isTeleportDisabled(vnode.props)) {
-        vnode.anchor = hydrateChildren(nextSibling(node), vnode, parentNode(node), parentComponent, parentSuspense, slotScopeIds, optimized);
-        vnode.targetAnchor = targetNode;
-      } else {
-        vnode.anchor = nextSibling(node);
-        let targetAnchor = targetNode;
-        while (targetAnchor) {
-          targetAnchor = nextSibling(targetAnchor);
-          if (targetAnchor && targetAnchor.nodeType === 8 && targetAnchor.data === "teleport anchor") {
-            vnode.targetAnchor = targetAnchor;
-            target._lpa = vnode.targetAnchor && nextSibling(vnode.targetAnchor);
-            break;
-          }
-        }
-        hydrateChildren(targetNode, vnode, target, parentComponent, parentSuspense, slotScopeIds, optimized);
-      }
-    }
-  }
-  return vnode.anchor && nextSibling(vnode.anchor);
-}
-const Teleport = TeleportImpl;
 const Fragment = Symbol(void 0);
 const Text = Symbol(void 0);
 const Comment = Symbol(void 0);
@@ -29664,7 +29527,7 @@ const _sfc_main = {
       default: () => ({ minUsers: 3, currentUser: false })
     },
     emojiDataSource: { type: String, default: void 0 },
-    teleportMediaPreviewTo: { type: [String, Object], default: void 0 }
+    handleCustomOpenFiles: { type: Boolean, default: false }
   },
   emits: [
     "toggle-rooms-list",
@@ -29827,6 +29690,9 @@ const _sfc_main = {
     },
     usernameOptionsCasted() {
       return this.castObject(this.usernameOptions);
+    },
+    handleCustomOpenFilesCasted() {
+      return this.castBoolean(this.handleCustomOpenFiles);
     }
   },
   watch: {
@@ -29942,6 +29808,19 @@ const _sfc_main = {
       this.$emit("delete-message", { message, roomId: this.room.roomId });
     },
     openFile({ message, file }) {
+      if (this.handleCustomOpenFilesCasted) {
+        this.$emit("open-file", {
+          message,
+          file,
+          defaultHandle: () => {
+            this._openFile({ message, file });
+          }
+        });
+      } else {
+        this._openFile({ message, file });
+      }
+    },
+    _openFile({ message, file }) {
       if (this.mediaPreviewEnabledCasted && file.action === "preview") {
         this.previewFile = file.file;
         this.showMediaPreview = true;
@@ -30111,34 +29990,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         })
       ]), 1032, ["current-user-id", "rooms", "room-id", "load-first-room", "messages", "room-message", "messages-loaded", "menu-actions", "message-actions", "message-selection-actions", "auto-scroll", "show-send-icon", "show-files", "show-audio", "audio-bit-rate", "audio-sample-rate", "show-emojis", "show-reaction-emojis", "show-new-messages-divider", "show-footer", "show-room-header", "text-messages", "single-room", "show-rooms-list", "text-formatting", "link-options", "is-mobile", "loading-rooms", "room-info-enabled", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "scroll-distance", "accepted-files", "capture-files", "templates-text", "username-options", "emoji-data-source", "onToggleRoomsList", "onRoomInfo", "onFetchMessages", "onSendMessage", "onEditMessage", "onDeleteMessage", "onOpenFile", "onOpenUserTag", "onOpenFailedMessage", "onMenuActionHandler", "onMessageActionHandler", "onMessageSelectionActionHandler", "onSendMessageReaction", "onTypingMessage", "onTextareaActionHandler"])
     ]),
-    $props.teleportMediaPreviewTo ? (openBlock(), createBlock(Teleport, {
-      key: 0,
-      to: $props.teleportMediaPreviewTo
-    }, [
-      createVNode(Transition, {
-        name: "vac-fade-preview",
-        appear: ""
-      }, {
-        default: withCtx(() => [
-          $data.showMediaPreview ? (openBlock(), createBlock(_component_media_preview, {
-            key: 0,
-            file: $data.previewFile,
-            onCloseMediaPreview: _cache[1] || (_cache[1] = ($event) => $data.showMediaPreview = false)
-          }, createSlots({ _: 2 }, [
-            renderList($data.slots, (el) => {
-              return {
-                name: el.slot,
-                fn: withCtx((data) => [
-                  renderSlot(_ctx.$slots, el.slot, normalizeProps(guardReactiveProps(data)))
-                ])
-              };
-            })
-          ]), 1032, ["file"])) : createCommentVNode("", true)
-        ]),
-        _: 3
-      })
-    ], 8, ["to"])) : (openBlock(), createBlock(Transition, {
-      key: 1,
+    createVNode(Transition, {
       name: "vac-fade-preview",
       appear: ""
     }, {
@@ -30146,7 +29998,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         $data.showMediaPreview ? (openBlock(), createBlock(_component_media_preview, {
           key: 0,
           file: $data.previewFile,
-          onCloseMediaPreview: _cache[2] || (_cache[2] = ($event) => $data.showMediaPreview = false)
+          onCloseMediaPreview: _cache[1] || (_cache[1] = ($event) => $data.showMediaPreview = false)
         }, createSlots({ _: 2 }, [
           renderList($data.slots, (el) => {
             return {
@@ -30159,7 +30011,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         ]), 1032, ["file"])) : createCommentVNode("", true)
       ]),
       _: 3
-    }))
+    })
   ], 4);
 }
 var ChatWindow = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);

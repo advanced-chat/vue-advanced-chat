@@ -91,20 +91,7 @@
 				</template>
 			</room>
 		</div>
-		<Teleport v-if="teleportMediaPreviewTo" :to="teleportMediaPreviewTo">
-			<transition name="vac-fade-preview" appear>
-				<media-preview
-					v-if="showMediaPreview"
-					:file="previewFile"
-					@close-media-preview="showMediaPreview = false"
-				>
-					<template v-for="el in slots" #[el.slot]="data">
-						<slot :name="el.slot" v-bind="data" />
-					</template>
-				</media-preview>
-			</transition>
-		</Teleport>
-		<transition v-else name="vac-fade-preview" appear>
+		<transition name="vac-fade-preview" appear>
 			<media-preview
 				v-if="showMediaPreview"
 				:file="previewFile"
@@ -227,7 +214,7 @@ export default {
 			default: () => ({ minUsers: 3, currentUser: false })
 		},
 		emojiDataSource: { type: String, default: undefined },
-		teleportMediaPreviewTo: { type: [String, Object], default: undefined }
+		handleCustomOpenFiles: { type: Boolean, default: false }
 	},
 
 	emits: [
@@ -397,6 +384,9 @@ export default {
 		},
 		usernameOptionsCasted() {
 			return this.castObject(this.usernameOptions)
+		},
+		handleCustomOpenFilesCasted() {
+			return this.castBoolean(this.handleCustomOpenFiles)
 		}
 	},
 
@@ -526,6 +516,18 @@ export default {
 			this.$emit('delete-message', { message, roomId: this.room.roomId })
 		},
 		openFile({ message, file }) {
+			if (this.handleCustomOpenFilesCasted) {
+				this.$emit('open-file', { message,
+					file,
+					defaultHandle: () => {
+						this._openFile({ message, file })
+					}
+				})
+			} else {
+				this._openFile({ message, file })
+			}
+		},
+		_openFile({ message, file }) {
 			if (this.mediaPreviewEnabledCasted && file.action === 'preview') {
 				this.previewFile = file.file
 				this.showMediaPreview = true
