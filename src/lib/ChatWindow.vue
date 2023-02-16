@@ -91,7 +91,20 @@
 				</template>
 			</room>
 		</div>
-		<transition name="vac-fade-preview" appear>
+		<Teleport v-if="teleportMediaPreviewTo" :to="teleportMediaPreviewTo">
+			<transition name="vac-fade-preview" appear>
+				<media-preview
+					v-if="showMediaPreview"
+					:file="previewFile"
+					@close-media-preview="showMediaPreview = false"
+				>
+					<template v-for="el in slots" #[el.slot]="data">
+						<slot :name="el.slot" v-bind="data" />
+					</template>
+				</media-preview>
+			</transition>
+		</Teleport>
+		<transition v-else name="vac-fade-preview" appear>
 			<media-preview
 				v-if="showMediaPreview"
 				:file="previewFile"
@@ -213,7 +226,8 @@ export default {
 			type: [Object, String],
 			default: () => ({ minUsers: 3, currentUser: false })
 		},
-		emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: undefined },
+		teleportMediaPreviewTo: { type: [String, Object], default: undefined }
 	},
 
 	emits: [
