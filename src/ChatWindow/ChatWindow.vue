@@ -329,7 +329,7 @@ export default {
 			})
 		},
 		showReplyMessage(message) {
-			this.$emit('delete-message', { message, roomId: this.room.roomId })
+			this.$emit('show-reply-message', message)
 		}
 	}
 }
