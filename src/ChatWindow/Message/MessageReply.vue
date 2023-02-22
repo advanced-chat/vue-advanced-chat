@@ -116,6 +116,7 @@ export default {
 	border-radius: 4px;
 	margin: -1px -5px 8px;
 	padding: 8px 10px;
+	cursor: pointer;
 
 	.vac-reply-username {
 		color: var(--chat-message-color-reply-username);
@@ -146,7 +147,6 @@ export default {
 	.vac-reply-content {
 		font-size: 12px;
 		color: var(--chat-message-color-reply-content);
-		cursor: pointer;
 	}
 }
 </style>
