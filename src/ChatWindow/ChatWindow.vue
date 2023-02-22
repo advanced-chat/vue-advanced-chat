@@ -329,7 +329,7 @@ export default {
 			})
 		},
 		showReplyMessage(message) {
-			this.$emit('show-reply-message', message)
+			this.$emit('show-reply-message', { message })
 		}
 	}
 }
