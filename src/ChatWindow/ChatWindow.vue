@@ -329,8 +329,7 @@ export default {
 			})
 		},
 		showReplyMessage(message) {
-			const replyMessage = Object.keys(message)
-			this.$emit('show-reply-message', replyMessage)
+			this.$emit('delete-message', { message, roomId: this.room.roomId })
 		}
 	}
 }
