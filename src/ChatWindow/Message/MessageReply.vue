@@ -111,6 +111,7 @@ export default {
 </script>
 
 <style lang="scss">
+
 .vac-reply-message {
 	background: var(--chat-message-bg-color-reply);
 	border-radius: 4px;
