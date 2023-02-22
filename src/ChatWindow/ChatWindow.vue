@@ -281,6 +281,7 @@ export default {
 			this.$emit('edit-message', { ...message, roomId: this.room.roomId })
 		},
 		deleteMessage(message) {
+			console.log('deletd', message)
 			this.$emit('delete-message', { message, roomId: this.room.roomId })
 		},
 		openFile({ message, action }) {
@@ -329,7 +330,7 @@ export default {
 			})
 		},
 		showReplyMessage(message) {
-			this.$emit('show-reply-message', { ...message, id: message._id })
+			this.$emit('show-reply-message', message._id)
 		}
 	}
 }
