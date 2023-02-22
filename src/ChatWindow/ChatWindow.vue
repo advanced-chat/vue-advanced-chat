@@ -329,7 +329,8 @@ export default {
 			})
 		},
 		showReplyMessage(message) {
-			this.$emit('show-reply-message', message._id)
+			const replyMessage = Object.keys(message)
+			this.$emit('show-reply-message', replyMessage)
 		}
 	}
 }
