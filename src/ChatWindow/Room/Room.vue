@@ -89,6 +89,7 @@
 								@open-user-tag="openUserTag"
 								@send-message-reaction="sendMessageReaction"
 								@hide-options="hideOptions = $event"
+								@show-reply-message="showReplyMessage"
 							>
 								<template v-for="(idx, name) in $scopedSlots" #[name]="data">
 									<slot :name="name" v-bind="data" />
@@ -990,6 +991,9 @@ export default {
 		closeUploadedFiles() {
 			this.files = []
 			this.selectedFilesSize = 0
+		},
+		showReplyMessage(message) {
+			this.$emit('show-reply-message', message)
 		}
 	}
 }

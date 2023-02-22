@@ -1,5 +1,5 @@
 <template>
-	<div class="vac-reply-message">
+	<div class="vac-reply-message" @click="showReplyMessage(message.replyMessage)">
 		<div class="vac-reply-username">
 			{{ replyUsername }}
 		</div>
@@ -100,6 +100,12 @@ export default {
 		isVideo() {
 			return isVideoFile(this.message.replyMessage.file)
 		}
+	},
+
+	methods: {
+		showReplyMessage(message) {
+			this.$emit('show-reply-message', message)
+		}
 	}
 }
 </script>
@@ -140,6 +146,7 @@ export default {
 	.vac-reply-content {
 		font-size: 12px;
 		color: var(--chat-message-color-reply-content);
+		cursor: pointer;
 	}
 }
 </style>
