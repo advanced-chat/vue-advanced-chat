@@ -281,7 +281,6 @@ export default {
 			this.$emit('edit-message', { ...message, roomId: this.room.roomId })
 		},
 		deleteMessage(message) {
-			console.log('deletd', message)
 			this.$emit('delete-message', { message, roomId: this.room.roomId })
 		},
 		openFile({ message, action }) {
