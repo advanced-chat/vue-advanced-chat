@@ -66,6 +66,8 @@
 						@mouseover="onHoverMessage"
 						@mouseleave="onLeaveMessage"
 					>
+						<div ref="emojiTarget" class="vac-emoji-wrapper vac-emoji-teleported" />
+
 						<div
 							v-if="showUsername"
 							class="vac-text-username"
@@ -172,6 +174,7 @@
 							:hover-message-id="hoverMessageId"
 							:hover-audio-progress="hoverAudioProgress"
 							:emoji-data-source="emojiDataSource"
+							:teleport-target="$refs.emojiTarget"
 							@update-message-hover="messageHover = $event"
 							@update-options-opened="optionsOpened = $event"
 							@update-emoji-opened="emojiOpened = $event"

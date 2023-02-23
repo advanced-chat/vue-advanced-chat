@@ -65,6 +65,8 @@
 		"vue-loader": "^16.8.3"
 	},
 	"dependencies": {
+		"@vueuse/components": "^9.13.0",
+		"@vueuse/core": "^9.13.0",
 		"emoji-picker-element": "1.12.1",
 		"linkifyjs": "2.1.9"
 	}

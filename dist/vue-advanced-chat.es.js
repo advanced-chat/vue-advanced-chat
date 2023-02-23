@@ -16,7 +16,7 @@ function normalizeStyle(value) {
     const res = {};
     for (let i = 0; i < value.length; i++) {
       const item = value[i];
-      const normalized = isString(item) ? parseStringStyle(item) : normalizeStyle(item);
+      const normalized = isString$1(item) ? parseStringStyle(item) : normalizeStyle(item);
       if (normalized) {
         for (const key in normalized) {
           res[key] = normalized[key];
@@ -24,7 +24,7 @@ function normalizeStyle(value) {
       }
     }
     return res;
-  } else if (isString(value)) {
+  } else if (isString$1(value)) {
     return value;
   } else if (isObject(value)) {
     return value;
@@ -44,7 +44,7 @@ function parseStringStyle(cssText) {
 }
 function normalizeClass(value) {
   let res = "";
-  if (isString(value)) {
+  if (isString$1(value)) {
     res = value;
   } else if (isArray(value)) {
     for (let i = 0; i < value.length; i++) {
@@ -66,7 +66,7 @@ function normalizeProps(props) {
   if (!props)
     return null;
   let { class: klass, style } = props;
-  if (klass && !isString(klass)) {
+  if (klass && !isString$1(klass)) {
     props.class = normalizeClass(klass);
   }
   if (style) {
@@ -75,7 +75,7 @@ function normalizeProps(props) {
   return props;
 }
 const toDisplayString = (val) => {
-  return isString(val) ? val : val == null ? "" : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
+  return isString$1(val) ? val : val == null ? "" : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
 };
 const replacer = (_key, val) => {
   if (val && val.__v_isRef) {
@@ -117,7 +117,7 @@ const isArray = Array.isArray;
 const isMap = (val) => toTypeString(val) === "[object Map]";
 const isSet = (val) => toTypeString(val) === "[object Set]";
 const isFunction = (val) => typeof val === "function";
-const isString = (val) => typeof val === "string";
+const isString$1 = (val) => typeof val === "string";
 const isSymbol = (val) => typeof val === "symbol";
 const isObject = (val) => val !== null && typeof val === "object";
 const isPromise = (val) => {
@@ -129,7 +129,7 @@ const toRawType = (value) => {
   return toTypeString(value).slice(8, -1);
 };
 const isPlainObject = (val) => toTypeString(val) === "[object Object]";
-const isIntegerKey = (key) => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
+const isIntegerKey = (key) => isString$1(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
 const isReservedProp = /* @__PURE__ */ makeMap(
   ",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
 );
@@ -225,6 +225,14 @@ class EffectScope {
 function recordEffectScope(effect, scope = activeEffectScope) {
   if (scope && scope.active) {
     scope.effects.push(effect);
+  }
+}
+function getCurrentScope() {
+  return activeEffectScope;
+}
+function onScopeDispose(fn) {
+  if (activeEffectScope) {
+    activeEffectScope.cleanups.push(fn);
   }
 }
 const createDep = (effects) => {
@@ -900,27 +908,57 @@ function markRaw(value) {
 }
 const toReactive = (value) => isObject(value) ? reactive(value) : value;
 const toReadonly = (value) => isObject(value) ? readonly(value) : value;
-function trackRefValue(ref) {
+function trackRefValue(ref2) {
   if (shouldTrack && activeEffect) {
-    ref = toRaw(ref);
+    ref2 = toRaw(ref2);
     {
-      trackEffects(ref.dep || (ref.dep = createDep()));
+      trackEffects(ref2.dep || (ref2.dep = createDep()));
     }
   }
 }
-function triggerRefValue(ref, newVal) {
-  ref = toRaw(ref);
-  if (ref.dep) {
+function triggerRefValue(ref2, newVal) {
+  ref2 = toRaw(ref2);
+  if (ref2.dep) {
     {
-      triggerEffects(ref.dep);
+      triggerEffects(ref2.dep);
     }
   }
 }
 function isRef(r) {
   return !!(r && r.__v_isRef === true);
 }
-function unref(ref) {
-  return isRef(ref) ? ref.value : ref;
+function ref(value) {
+  return createRef(value, false);
+}
+function createRef(rawValue, shallow) {
+  if (isRef(rawValue)) {
+    return rawValue;
+  }
+  return new RefImpl(rawValue, shallow);
+}
+class RefImpl {
+  constructor(value, __v_isShallow) {
+    this.__v_isShallow = __v_isShallow;
+    this.dep = void 0;
+    this.__v_isRef = true;
+    this._rawValue = __v_isShallow ? value : toRaw(value);
+    this._value = __v_isShallow ? value : toReactive(value);
+  }
+  get value() {
+    trackRefValue(this);
+    return this._value;
+  }
+  set value(newVal) {
+    newVal = this.__v_isShallow ? newVal : toRaw(newVal);
+    if (hasChanged(newVal, this._rawValue)) {
+      this._rawValue = newVal;
+      this._value = this.__v_isShallow ? newVal : toReactive(newVal);
+      triggerRefValue(this);
+    }
+  }
+}
+function unref(ref2) {
+  return isRef(ref2) ? ref2.value : ref2;
 }
 const shallowUnwrapHandlers = {
   get: (target, key, receiver) => unref(Reflect.get(target, key, receiver)),
@@ -1566,7 +1604,7 @@ function doWatch(source, cb, { immediate, deep, flush: flush2, onTrack, onTrigge
 }
 function instanceWatch(source, value, options2) {
   const publicThis = this.proxy;
-  const getter = isString(source) ? source.includes(".") ? createPathGetter(publicThis, source) : () => publicThis[source] : source.bind(publicThis, publicThis);
+  const getter = isString$1(source) ? source.includes(".") ? createPathGetter(publicThis, source) : () => publicThis[source] : source.bind(publicThis, publicThis);
   let cb;
   if (isFunction(value)) {
     cb = value;
@@ -2016,7 +2054,7 @@ function resolveComponent(name, maybeSelfReference) {
 }
 const NULL_DYNAMIC_COMPONENT = Symbol();
 function resolveDynamicComponent(component) {
-  if (isString(component)) {
+  if (isString$1(component)) {
     return resolveAsset(COMPONENTS, component, false) || component;
   } else {
     return component || NULL_DYNAMIC_COMPONENT;
@@ -2048,7 +2086,7 @@ function resolve(registry, name) {
 function renderList(source, renderItem, cache, index) {
   let ret;
   const cached = cache && cache[index];
-  if (isArray(source) || isString(source)) {
+  if (isArray(source) || isString$1(source)) {
     ret = new Array(source.length);
     for (let i = 0, l = source.length; i < l; i++) {
       ret[i] = renderItem(source[i], i, void 0, cached && cached[i]);
@@ -2400,7 +2438,7 @@ function callHook$1(hook, instance2, type) {
 }
 function createWatcher(raw, ctx, publicThis, key) {
   const getter = key.includes(".") ? createPathGetter(publicThis, key) : () => publicThis[key];
-  if (isString(raw)) {
+  if (isString$1(raw)) {
     const handler = ctx[raw];
     if (isFunction(handler)) {
       watch(getter, handler);
@@ -2954,12 +2992,12 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
   }
   const refValue = vnode.shapeFlag & 4 ? getExposeProxy(vnode.component) || vnode.component.proxy : vnode.el;
   const value = isUnmount ? null : refValue;
-  const { i: owner, r: ref } = rawRef;
+  const { i: owner, r: ref2 } = rawRef;
   const oldRef = oldRawRef && oldRawRef.r;
   const refs = owner.refs === EMPTY_OBJ ? owner.refs = {} : owner.refs;
   const setupState = owner.setupState;
-  if (oldRef != null && oldRef !== ref) {
-    if (isString(oldRef)) {
+  if (oldRef != null && oldRef !== ref2) {
+    if (isString$1(oldRef)) {
       refs[oldRef] = null;
       if (hasOwn(setupState, oldRef)) {
         setupState[oldRef] = null;
@@ -2968,40 +3006,40 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
       oldRef.value = null;
     }
   }
-  if (isFunction(ref)) {
-    callWithErrorHandling(ref, owner, 12, [value, refs]);
+  if (isFunction(ref2)) {
+    callWithErrorHandling(ref2, owner, 12, [value, refs]);
   } else {
-    const _isString = isString(ref);
-    const _isRef = isRef(ref);
+    const _isString = isString$1(ref2);
+    const _isRef = isRef(ref2);
     if (_isString || _isRef) {
       const doSet = () => {
         if (rawRef.f) {
-          const existing = _isString ? refs[ref] : ref.value;
+          const existing = _isString ? refs[ref2] : ref2.value;
           if (isUnmount) {
             isArray(existing) && remove(existing, refValue);
           } else {
             if (!isArray(existing)) {
               if (_isString) {
-                refs[ref] = [refValue];
-                if (hasOwn(setupState, ref)) {
-                  setupState[ref] = refs[ref];
+                refs[ref2] = [refValue];
+                if (hasOwn(setupState, ref2)) {
+                  setupState[ref2] = refs[ref2];
                 }
               } else {
-                ref.value = [refValue];
+                ref2.value = [refValue];
                 if (rawRef.k)
-                  refs[rawRef.k] = ref.value;
+                  refs[rawRef.k] = ref2.value;
               }
             } else if (!existing.includes(refValue)) {
               existing.push(refValue);
             }
           }
         } else if (_isString) {
-          refs[ref] = value;
-          if (hasOwn(setupState, ref)) {
-            setupState[ref] = value;
+          refs[ref2] = value;
+          if (hasOwn(setupState, ref2)) {
+            setupState[ref2] = value;
           }
         } else if (_isRef) {
-          ref.value = value;
+          ref2.value = value;
           if (rawRef.k)
             refs[rawRef.k] = value;
         } else
@@ -3037,7 +3075,7 @@ function baseCreateRenderer(options2, createHydrationFns) {
       optimized = false;
       n2.dynamicChildren = null;
     }
-    const { type, ref, shapeFlag } = n2;
+    const { type, ref: ref2, shapeFlag } = n2;
     switch (type) {
       case Text:
         processText(n1, n2, container, anchor);
@@ -3065,8 +3103,8 @@ function baseCreateRenderer(options2, createHydrationFns) {
         } else
           ;
     }
-    if (ref != null && parentComponent) {
-      setRef(ref, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
+    if (ref2 != null && parentComponent) {
+      setRef(ref2, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
     }
   };
   const processText = (n1, n2, container, anchor) => {
@@ -3664,9 +3702,9 @@ function baseCreateRenderer(options2, createHydrationFns) {
     }
   };
   const unmount = (vnode, parentComponent, parentSuspense, doRemove = false, optimized = false) => {
-    const { type, props, ref, children, dynamicChildren, shapeFlag, patchFlag, dirs } = vnode;
-    if (ref != null) {
-      setRef(ref, null, parentSuspense, vnode, true);
+    const { type, props, ref: ref2, children, dynamicChildren, shapeFlag, patchFlag, dirs } = vnode;
+    if (ref2 != null) {
+      setRef(ref2, null, parentSuspense, vnode, true);
     }
     if (shapeFlag & 256) {
       parentComponent.ctx.deactivate(vnode);
@@ -3878,6 +3916,143 @@ function getSequence(arr) {
   return result;
 }
 const isTeleport = (type) => type.__isTeleport;
+const isTeleportDisabled = (props) => props && (props.disabled || props.disabled === "");
+const isTargetSVG = (target) => typeof SVGElement !== "undefined" && target instanceof SVGElement;
+const resolveTarget = (props, select) => {
+  const targetSelector = props && props.to;
+  if (isString$1(targetSelector)) {
+    if (!select) {
+      return null;
+    } else {
+      const target = select(targetSelector);
+      return target;
+    }
+  } else {
+    return targetSelector;
+  }
+};
+const TeleportImpl = {
+  __isTeleport: true,
+  process(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, internals) {
+    const { mc: mountChildren, pc: patchChildren, pbc: patchBlockChildren, o: { insert: insert2, querySelector, createText, createComment } } = internals;
+    const disabled = isTeleportDisabled(n2.props);
+    let { shapeFlag, children, dynamicChildren } = n2;
+    if (n1 == null) {
+      const placeholder = n2.el = createText("");
+      const mainAnchor = n2.anchor = createText("");
+      insert2(placeholder, container, anchor);
+      insert2(mainAnchor, container, anchor);
+      const target = n2.target = resolveTarget(n2.props, querySelector);
+      const targetAnchor = n2.targetAnchor = createText("");
+      if (target) {
+        insert2(targetAnchor, target);
+        isSVG = isSVG || isTargetSVG(target);
+      }
+      const mount = (container2, anchor2) => {
+        if (shapeFlag & 16) {
+          mountChildren(children, container2, anchor2, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
+        }
+      };
+      if (disabled) {
+        mount(container, mainAnchor);
+      } else if (target) {
+        mount(target, targetAnchor);
+      }
+    } else {
+      n2.el = n1.el;
+      const mainAnchor = n2.anchor = n1.anchor;
+      const target = n2.target = n1.target;
+      const targetAnchor = n2.targetAnchor = n1.targetAnchor;
+      const wasDisabled = isTeleportDisabled(n1.props);
+      const currentContainer = wasDisabled ? container : target;
+      const currentAnchor = wasDisabled ? mainAnchor : targetAnchor;
+      isSVG = isSVG || isTargetSVG(target);
+      if (dynamicChildren) {
+        patchBlockChildren(n1.dynamicChildren, dynamicChildren, currentContainer, parentComponent, parentSuspense, isSVG, slotScopeIds);
+        traverseStaticChildren(n1, n2, true);
+      } else if (!optimized) {
+        patchChildren(n1, n2, currentContainer, currentAnchor, parentComponent, parentSuspense, isSVG, slotScopeIds, false);
+      }
+      if (disabled) {
+        if (!wasDisabled) {
+          moveTeleport(n2, container, mainAnchor, internals, 1);
+        }
+      } else {
+        if ((n2.props && n2.props.to) !== (n1.props && n1.props.to)) {
+          const nextTarget = n2.target = resolveTarget(n2.props, querySelector);
+          if (nextTarget) {
+            moveTeleport(n2, nextTarget, null, internals, 0);
+          }
+        } else if (wasDisabled) {
+          moveTeleport(n2, target, targetAnchor, internals, 1);
+        }
+      }
+    }
+  },
+  remove(vnode, parentComponent, parentSuspense, optimized, { um: unmount, o: { remove: hostRemove } }, doRemove) {
+    const { shapeFlag, children, anchor, targetAnchor, target, props } = vnode;
+    if (target) {
+      hostRemove(targetAnchor);
+    }
+    if (doRemove || !isTeleportDisabled(props)) {
+      hostRemove(anchor);
+      if (shapeFlag & 16) {
+        for (let i = 0; i < children.length; i++) {
+          const child = children[i];
+          unmount(child, parentComponent, parentSuspense, true, !!child.dynamicChildren);
+        }
+      }
+    }
+  },
+  move: moveTeleport,
+  hydrate: hydrateTeleport
+};
+function moveTeleport(vnode, container, parentAnchor, { o: { insert: insert2 }, m: move }, moveType = 2) {
+  if (moveType === 0) {
+    insert2(vnode.targetAnchor, container, parentAnchor);
+  }
+  const { el, anchor, shapeFlag, children, props } = vnode;
+  const isReorder = moveType === 2;
+  if (isReorder) {
+    insert2(el, container, parentAnchor);
+  }
+  if (!isReorder || isTeleportDisabled(props)) {
+    if (shapeFlag & 16) {
+      for (let i = 0; i < children.length; i++) {
+        move(children[i], container, parentAnchor, 2);
+      }
+    }
+  }
+  if (isReorder) {
+    insert2(anchor, container, parentAnchor);
+  }
+}
+function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, { o: { nextSibling, parentNode, querySelector } }, hydrateChildren) {
+  const target = vnode.target = resolveTarget(vnode.props, querySelector);
+  if (target) {
+    const targetNode = target._lpa || target.firstChild;
+    if (vnode.shapeFlag & 16) {
+      if (isTeleportDisabled(vnode.props)) {
+        vnode.anchor = hydrateChildren(nextSibling(node), vnode, parentNode(node), parentComponent, parentSuspense, slotScopeIds, optimized);
+        vnode.targetAnchor = targetNode;
+      } else {
+        vnode.anchor = nextSibling(node);
+        let targetAnchor = targetNode;
+        while (targetAnchor) {
+          targetAnchor = nextSibling(targetAnchor);
+          if (targetAnchor && targetAnchor.nodeType === 8 && targetAnchor.data === "teleport anchor") {
+            vnode.targetAnchor = targetAnchor;
+            target._lpa = vnode.targetAnchor && nextSibling(vnode.targetAnchor);
+            break;
+          }
+        }
+        hydrateChildren(targetNode, vnode, target, parentComponent, parentSuspense, slotScopeIds, optimized);
+      }
+    }
+  }
+  return vnode.anchor && nextSibling(vnode.anchor);
+}
+const Teleport = TeleportImpl;
 const Fragment = Symbol(void 0);
 const Text = Symbol(void 0);
 const Comment = Symbol(void 0);
@@ -3917,8 +4092,8 @@ function isSameVNodeType(n1, n2) {
 }
 const InternalObjectKey = `__vInternal`;
 const normalizeKey = ({ key }) => key != null ? key : null;
-const normalizeRef = ({ ref, ref_key, ref_for }) => {
-  return ref != null ? isString(ref) || isRef(ref) || isFunction(ref) ? { i: currentRenderingInstance, r: ref, k: ref_key, f: !!ref_for } : ref : null;
+const normalizeRef = ({ ref: ref2, ref_key, ref_for }) => {
+  return ref2 != null ? isString$1(ref2) || isRef(ref2) || isFunction(ref2) ? { i: currentRenderingInstance, r: ref2, k: ref_key, f: !!ref_for } : ref2 : null;
 };
 function createBaseVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, shapeFlag = type === Fragment ? 0 : 1, isBlockNode = false, needFullChildrenNormalization = false) {
   const vnode = {
@@ -3954,7 +4129,7 @@ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dyn
       type.normalize(vnode);
     }
   } else if (children) {
-    vnode.shapeFlag |= isString(children) ? 8 : 16;
+    vnode.shapeFlag |= isString$1(children) ? 8 : 16;
   }
   if (isBlockTreeEnabled > 0 && !isBlockNode && currentBlock && (vnode.patchFlag > 0 || shapeFlag & 6) && vnode.patchFlag !== 32) {
     currentBlock.push(vnode);
@@ -3987,7 +4162,7 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
   if (props) {
     props = guardReactiveProps(props);
     let { class: klass, style } = props;
-    if (klass && !isString(klass)) {
+    if (klass && !isString$1(klass)) {
       props.class = normalizeClass(klass);
     }
     if (isObject(style)) {
@@ -3997,7 +4172,7 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
       props.style = normalizeStyle(style);
     }
   }
-  const shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject(type) ? 4 : isFunction(type) ? 2 : 0;
+  const shapeFlag = isString$1(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject(type) ? 4 : isFunction(type) ? 2 : 0;
   return createBaseVNode(type, props, children, patchFlag, dynamicProps, shapeFlag, isBlockNode, true);
 }
 function guardReactiveProps(props) {
@@ -4006,7 +4181,7 @@ function guardReactiveProps(props) {
   return isProxy(props) || InternalObjectKey in props ? extend({}, props) : props;
 }
 function cloneVNode(vnode, extraProps, mergeRef = false) {
-  const { props, ref, patchFlag, children } = vnode;
+  const { props, ref: ref2, patchFlag, children } = vnode;
   const mergedProps = extraProps ? mergeProps(props || {}, extraProps) : props;
   const cloned = {
     __v_isVNode: true,
@@ -4014,7 +4189,7 @@ function cloneVNode(vnode, extraProps, mergeRef = false) {
     type: vnode.type,
     props: mergedProps,
     key: mergedProps && normalizeKey(mergedProps),
-    ref: extraProps && extraProps.ref ? mergeRef && ref ? isArray(ref) ? ref.concat(normalizeRef(extraProps)) : [ref, normalizeRef(extraProps)] : normalizeRef(extraProps) : ref,
+    ref: extraProps && extraProps.ref ? mergeRef && ref2 ? isArray(ref2) ? ref2.concat(normalizeRef(extraProps)) : [ref2, normalizeRef(extraProps)] : normalizeRef(extraProps) : ref2,
     scopeId: vnode.scopeId,
     slotScopeIds: vnode.slotScopeIds,
     children,
@@ -4451,12 +4626,12 @@ function patchClass(el, value, isSVG) {
 }
 function patchStyle(el, prev, next2) {
   const style = el.style;
-  const isCssString = isString(next2);
+  const isCssString = isString$1(next2);
   if (next2 && !isCssString) {
     for (const key in next2) {
       setStyle(style, key, next2[key]);
     }
-    if (prev && !isString(prev)) {
+    if (prev && !isString$1(prev)) {
       for (const key in prev) {
         if (next2[key] == null) {
           setStyle(style, key, "");
@@ -4690,7 +4865,7 @@ function shouldSetAsProp(el, key, value, isSVG) {
   if (key === "type" && el.tagName === "TEXTAREA") {
     return false;
   }
-  if (nativeOnRE.test(key) && isString(value)) {
+  if (nativeOnRE.test(key) && isString$1(value)) {
     return false;
   }
   return key in el;
@@ -5538,8 +5713,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var defaults = {
   defaultProtocol: "http",
   events: null,
-  format: noop$1,
-  formatHref: noop$1,
+  format: noop$2,
+  formatHref: noop$2,
   nl2br: false,
   tagName: "a",
   target: typeToTarget,
@@ -5612,7 +5787,7 @@ function contains(arr, value) {
   }
   return false;
 }
-function noop$1(val) {
+function noop$2(val) {
   return val;
 }
 function typeToTarget(href, type) {
@@ -6796,8 +6971,8 @@ const _sfc_main$m = {
       return !this.typingUsers && this.room.lastMessage && !this.room.lastMessage.deleted && this.room.lastMessage.senderId === this.currentUserId && (this.room.lastMessage.saved || this.room.lastMessage.distributed || this.room.lastMessage.seen);
     },
     formattedDuration() {
-      var _a, _b;
-      const file = (_b = (_a = this.room.lastMessage) == null ? void 0 : _a.files) == null ? void 0 : _b[0];
+      var _a2, _b;
+      const file = (_b = (_a2 = this.room.lastMessage) == null ? void 0 : _a2.files) == null ? void 0 : _b[0];
       if (file) {
         if (!file.duration) {
           return `${file.name}.${file.extension}`;
@@ -6848,7 +7023,7 @@ const _hoisted_11$3 = {
   class: "vac-menu-options"
 };
 const _hoisted_12$3 = { class: "vac-menu-list" };
-const _hoisted_13$1 = ["onClick"];
+const _hoisted_13$2 = ["onClick"];
 function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   const _component_format_message = resolveComponent("format-message");
@@ -6946,7 +7121,7 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
                           createBaseVNode("div", {
                             class: "vac-menu-item",
                             onClick: withModifiers(($event) => $options.roomActionHandler(action), ["stop"])
-                          }, toDisplayString(action.title), 9, _hoisted_13$1)
+                          }, toDisplayString(action.title), 9, _hoisted_13$2)
                         ]);
                       }), 128))
                     ])
@@ -7325,7 +7500,7 @@ const _hoisted_11$2 = {
   class: "vac-menu-options"
 };
 const _hoisted_12$2 = { class: "vac-menu-list" };
-const _hoisted_13 = ["onClick"];
+const _hoisted_13$1 = ["onClick"];
 function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   const _directive_click_outside = resolveDirective("click-outside");
@@ -7412,7 +7587,7 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
                         createBaseVNode("div", {
                           class: "vac-menu-item",
                           onClick: ($event) => $options.menuActionHandler(action)
-                        }, toDisplayString(action.title), 9, _hoisted_13)
+                        }, toDisplayString(action.title), 9, _hoisted_13$1)
                       ]);
                     }), 128))
                   ])
@@ -8168,7 +8343,7 @@ class Database {
     await deleteDatabase(this._dbName);
   }
 }
-function noop() {
+function noop$1() {
 }
 function run3(fn) {
   return fn();
@@ -8197,7 +8372,7 @@ function is_empty(obj) {
   return Object.keys(obj).length === 0;
 }
 function action_destroyer(action_result) {
-  return action_result && is_function(action_result.destroy) ? action_result.destroy : noop;
+  return action_result && is_function(action_result.destroy) ? action_result.destroy : noop$1;
 }
 function append(target, node) {
   target.appendChild(node);
@@ -8423,7 +8598,7 @@ function init(component, options2, instance2, create_fragment2, not_equal, props
     fragment: null,
     ctx: null,
     props,
-    update: noop,
+    update: noop$1,
     not_equal,
     bound: blank_object(),
     on_mount: [],
@@ -8465,7 +8640,7 @@ function init(component, options2, instance2, create_fragment2, not_equal, props
 class SvelteComponent {
   $destroy() {
     destroy_component(this, 1);
-    this.$destroy = noop;
+    this.$destroy = noop$1;
   }
   $on(type, callback) {
     const callbacks = this.$$.callbacks[type] || (this.$$.callbacks[type] = []);
@@ -9484,8 +9659,8 @@ function create_fragment(ctx) {
         attr(section, "style", ctx2[22]);
       }
     },
-    i: noop,
-    o: noop,
+    i: noop$1,
+    o: noop$1,
     d(detaching) {
       if (detaching)
         detach(section);
@@ -10182,10 +10357,1030 @@ function findParentBySelector(node, selector) {
   }
   return null;
 }
+var _a;
+const isClient = typeof window !== "undefined";
+const isString = (val) => typeof val === "string";
+const noop = () => {
+};
+const isIOS = isClient && ((_a = window == null ? void 0 : window.navigator) == null ? void 0 : _a.userAgent) && /iP(ad|hone|od)/.test(window.navigator.userAgent);
+function resolveUnref(r) {
+  return typeof r === "function" ? r() : unref(r);
+}
+function createFilterWrapper(filter, fn) {
+  function wrapper(...args) {
+    return new Promise((resolve3, reject) => {
+      Promise.resolve(filter(() => fn.apply(this, args), { fn, thisArg: this, args })).then(resolve3).catch(reject);
+    });
+  }
+  return wrapper;
+}
+function debounceFilter(ms, options2 = {}) {
+  let timer;
+  let maxTimer;
+  let lastRejector = noop;
+  const _clearTimeout = (timer2) => {
+    clearTimeout(timer2);
+    lastRejector();
+    lastRejector = noop;
+  };
+  const filter = (invoke) => {
+    const duration = resolveUnref(ms);
+    const maxDuration = resolveUnref(options2.maxWait);
+    if (timer)
+      _clearTimeout(timer);
+    if (duration <= 0 || maxDuration !== void 0 && maxDuration <= 0) {
+      if (maxTimer) {
+        _clearTimeout(maxTimer);
+        maxTimer = null;
+      }
+      return Promise.resolve(invoke());
+    }
+    return new Promise((resolve3, reject) => {
+      lastRejector = options2.rejectOnCancel ? reject : resolve3;
+      if (maxDuration && !maxTimer) {
+        maxTimer = setTimeout(() => {
+          if (timer)
+            _clearTimeout(timer);
+          maxTimer = null;
+          resolve3(invoke());
+        }, maxDuration);
+      }
+      timer = setTimeout(() => {
+        if (maxTimer)
+          _clearTimeout(maxTimer);
+        maxTimer = null;
+        resolve3(invoke());
+      }, duration);
+    });
+  };
+  return filter;
+}
+function throttleFilter(ms, trailing = true, leading = true, rejectOnCancel = false) {
+  let lastExec = 0;
+  let timer;
+  let isLeading = true;
+  let lastRejector = noop;
+  let lastValue;
+  const clear2 = () => {
+    if (timer) {
+      clearTimeout(timer);
+      timer = void 0;
+      lastRejector();
+      lastRejector = noop;
+    }
+  };
+  const filter = (_invoke) => {
+    const duration = resolveUnref(ms);
+    const elapsed = Date.now() - lastExec;
+    const invoke = () => {
+      return lastValue = _invoke();
+    };
+    clear2();
+    if (duration <= 0) {
+      lastExec = Date.now();
+      return invoke();
+    }
+    if (elapsed > duration && (leading || !isLeading)) {
+      lastExec = Date.now();
+      invoke();
+    } else if (trailing) {
+      lastValue = new Promise((resolve3, reject) => {
+        lastRejector = rejectOnCancel ? reject : resolve3;
+        timer = setTimeout(() => {
+          lastExec = Date.now();
+          isLeading = true;
+          resolve3(invoke());
+          clear2();
+        }, Math.max(0, duration - elapsed));
+      });
+    }
+    if (!leading && !timer)
+      timer = setTimeout(() => isLeading = true, duration);
+    isLeading = false;
+    return lastValue;
+  };
+  return filter;
+}
+const directiveHooks = {
+  mounted: "mounted",
+  updated: "updated",
+  unmounted: "unmounted"
+};
+function identity(arg) {
+  return arg;
+}
+function tryOnScopeDispose(fn) {
+  if (getCurrentScope()) {
+    onScopeDispose(fn);
+    return true;
+  }
+  return false;
+}
+function useDebounceFn(fn, ms = 200, options2 = {}) {
+  return createFilterWrapper(debounceFilter(ms, options2), fn);
+}
+function useThrottleFn(fn, ms = 200, trailing = false, leading = true, rejectOnCancel = false) {
+  return createFilterWrapper(throttleFilter(ms, trailing, leading, rejectOnCancel), fn);
+}
+function resolveRef(r) {
+  return typeof r === "function" ? computed(r) : ref(r);
+}
+function tryOnMounted(fn, sync = true) {
+  if (getCurrentInstance())
+    onMounted(fn);
+  else if (sync)
+    fn();
+  else
+    nextTick(fn);
+}
+function unrefElement$1(elRef) {
+  var _a2;
+  const plain = resolveUnref(elRef);
+  return (_a2 = plain == null ? void 0 : plain.$el) != null ? _a2 : plain;
+}
+const defaultWindow$1 = isClient ? window : void 0;
+function useEventListener$1(...args) {
+  let target;
+  let events;
+  let listeners;
+  let options2;
+  if (isString(args[0]) || Array.isArray(args[0])) {
+    [events, listeners, options2] = args;
+    target = defaultWindow$1;
+  } else {
+    [target, events, listeners, options2] = args;
+  }
+  if (!target)
+    return noop;
+  if (!Array.isArray(events))
+    events = [events];
+  if (!Array.isArray(listeners))
+    listeners = [listeners];
+  const cleanups = [];
+  const cleanup = () => {
+    cleanups.forEach((fn) => fn());
+    cleanups.length = 0;
+  };
+  const register2 = (el, event, listener, options22) => {
+    el.addEventListener(event, listener, options22);
+    return () => el.removeEventListener(event, listener, options22);
+  };
+  const stopWatch = watch(() => [unrefElement$1(target), resolveUnref(options2)], ([el, options22]) => {
+    cleanup();
+    if (!el)
+      return;
+    cleanups.push(...events.flatMap((event) => {
+      return listeners.map((listener) => register2(el, event, listener, options22));
+    }));
+  }, { immediate: true, flush: "post" });
+  const stop = () => {
+    stopWatch();
+    cleanup();
+  };
+  tryOnScopeDispose(stop);
+  return stop;
+}
+let _iOSWorkaround$1 = false;
+function onClickOutside$1(target, handler, options2 = {}) {
+  const { window: window2 = defaultWindow$1, ignore = [], capture = true, detectIframe = false } = options2;
+  if (!window2)
+    return;
+  if (isIOS && !_iOSWorkaround$1) {
+    _iOSWorkaround$1 = true;
+    Array.from(window2.document.body.children).forEach((el) => el.addEventListener("click", noop));
+  }
+  let shouldListen = true;
+  const shouldIgnore = (event) => {
+    return ignore.some((target2) => {
+      if (typeof target2 === "string") {
+        return Array.from(window2.document.querySelectorAll(target2)).some((el) => el === event.target || event.composedPath().includes(el));
+      } else {
+        const el = unrefElement$1(target2);
+        return el && (event.target === el || event.composedPath().includes(el));
+      }
+    });
+  };
+  const listener = (event) => {
+    const el = unrefElement$1(target);
+    if (!el || el === event.target || event.composedPath().includes(el))
+      return;
+    if (event.detail === 0)
+      shouldListen = !shouldIgnore(event);
+    if (!shouldListen) {
+      shouldListen = true;
+      return;
+    }
+    handler(event);
+  };
+  const cleanup = [
+    useEventListener$1(window2, "click", listener, { passive: true, capture }),
+    useEventListener$1(window2, "pointerdown", (e) => {
+      const el = unrefElement$1(target);
+      if (el)
+        shouldListen = !e.composedPath().includes(el) && !shouldIgnore(e);
+    }, { passive: true }),
+    detectIframe && useEventListener$1(window2, "blur", (event) => {
+      var _a2;
+      const el = unrefElement$1(target);
+      if (((_a2 = window2.document.activeElement) == null ? void 0 : _a2.tagName) === "IFRAME" && !(el == null ? void 0 : el.contains(window2.document.activeElement)))
+        handler(event);
+    })
+  ].filter(Boolean);
+  const stop = () => cleanup.forEach((fn) => fn());
+  return stop;
+}
+const _global$1 = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
+const globalKey$1 = "__vueuse_ssr_handlers__";
+_global$1[globalKey$1] = _global$1[globalKey$1] || {};
+_global$1[globalKey$1];
+var SwipeDirection;
+(function(SwipeDirection2) {
+  SwipeDirection2["UP"] = "UP";
+  SwipeDirection2["RIGHT"] = "RIGHT";
+  SwipeDirection2["DOWN"] = "DOWN";
+  SwipeDirection2["LEFT"] = "LEFT";
+  SwipeDirection2["NONE"] = "NONE";
+})(SwipeDirection || (SwipeDirection = {}));
+var __defProp = Object.defineProperty;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+const _TransitionPresets = {
+  easeInSine: [0.12, 0, 0.39, 0],
+  easeOutSine: [0.61, 1, 0.88, 1],
+  easeInOutSine: [0.37, 0, 0.63, 1],
+  easeInQuad: [0.11, 0, 0.5, 0],
+  easeOutQuad: [0.5, 1, 0.89, 1],
+  easeInOutQuad: [0.45, 0, 0.55, 1],
+  easeInCubic: [0.32, 0, 0.67, 0],
+  easeOutCubic: [0.33, 1, 0.68, 1],
+  easeInOutCubic: [0.65, 0, 0.35, 1],
+  easeInQuart: [0.5, 0, 0.75, 0],
+  easeOutQuart: [0.25, 1, 0.5, 1],
+  easeInOutQuart: [0.76, 0, 0.24, 1],
+  easeInQuint: [0.64, 0, 0.78, 0],
+  easeOutQuint: [0.22, 1, 0.36, 1],
+  easeInOutQuint: [0.83, 0, 0.17, 1],
+  easeInExpo: [0.7, 0, 0.84, 0],
+  easeOutExpo: [0.16, 1, 0.3, 1],
+  easeInOutExpo: [0.87, 0, 0.13, 1],
+  easeInCirc: [0.55, 0, 1, 0.45],
+  easeOutCirc: [0, 0.55, 0.45, 1],
+  easeInOutCirc: [0.85, 0, 0.15, 1],
+  easeInBack: [0.36, 0, 0.66, -0.56],
+  easeOutBack: [0.34, 1.56, 0.64, 1],
+  easeInOutBack: [0.68, -0.6, 0.32, 1.6]
+};
+__spreadValues({
+  linear: identity
+}, _TransitionPresets);
+const OnClickOutside = /* @__PURE__ */ defineComponent({
+  name: "OnClickOutside",
+  props: ["as", "options"],
+  emits: ["trigger"],
+  setup(props, { slots, emit: emit2 }) {
+    const target = ref();
+    onClickOutside$1(target, (e) => {
+      emit2("trigger", e);
+    }, props.options);
+    return () => {
+      if (slots.default)
+        return h(props.as || "div", { ref: target }, slots.default());
+    };
+  }
+});
+function unrefElement(elRef) {
+  var _a2;
+  const plain = resolveUnref(elRef);
+  return (_a2 = plain == null ? void 0 : plain.$el) != null ? _a2 : plain;
+}
+const defaultWindow = isClient ? window : void 0;
+function useEventListener(...args) {
+  let target;
+  let events;
+  let listeners;
+  let options2;
+  if (isString(args[0]) || Array.isArray(args[0])) {
+    [events, listeners, options2] = args;
+    target = defaultWindow;
+  } else {
+    [target, events, listeners, options2] = args;
+  }
+  if (!target)
+    return noop;
+  if (!Array.isArray(events))
+    events = [events];
+  if (!Array.isArray(listeners))
+    listeners = [listeners];
+  const cleanups = [];
+  const cleanup = () => {
+    cleanups.forEach((fn) => fn());
+    cleanups.length = 0;
+  };
+  const register2 = (el, event, listener, options22) => {
+    el.addEventListener(event, listener, options22);
+    return () => el.removeEventListener(event, listener, options22);
+  };
+  const stopWatch = watch(() => [unrefElement(target), resolveUnref(options2)], ([el, options22]) => {
+    cleanup();
+    if (!el)
+      return;
+    cleanups.push(...events.flatMap((event) => {
+      return listeners.map((listener) => register2(el, event, listener, options22));
+    }));
+  }, { immediate: true, flush: "post" });
+  const stop = () => {
+    stopWatch();
+    cleanup();
+  };
+  tryOnScopeDispose(stop);
+  return stop;
+}
+let _iOSWorkaround = false;
+function onClickOutside(target, handler, options2 = {}) {
+  const { window: window2 = defaultWindow, ignore = [], capture = true, detectIframe = false } = options2;
+  if (!window2)
+    return;
+  if (isIOS && !_iOSWorkaround) {
+    _iOSWorkaround = true;
+    Array.from(window2.document.body.children).forEach((el) => el.addEventListener("click", noop));
+  }
+  let shouldListen = true;
+  const shouldIgnore = (event) => {
+    return ignore.some((target2) => {
+      if (typeof target2 === "string") {
+        return Array.from(window2.document.querySelectorAll(target2)).some((el) => el === event.target || event.composedPath().includes(el));
+      } else {
+        const el = unrefElement(target2);
+        return el && (event.target === el || event.composedPath().includes(el));
+      }
+    });
+  };
+  const listener = (event) => {
+    const el = unrefElement(target);
+    if (!el || el === event.target || event.composedPath().includes(el))
+      return;
+    if (event.detail === 0)
+      shouldListen = !shouldIgnore(event);
+    if (!shouldListen) {
+      shouldListen = true;
+      return;
+    }
+    handler(event);
+  };
+  const cleanup = [
+    useEventListener(window2, "click", listener, { passive: true, capture }),
+    useEventListener(window2, "pointerdown", (e) => {
+      const el = unrefElement(target);
+      if (el)
+        shouldListen = !e.composedPath().includes(el) && !shouldIgnore(e);
+    }, { passive: true }),
+    detectIframe && useEventListener(window2, "blur", (event) => {
+      var _a2;
+      const el = unrefElement(target);
+      if (((_a2 = window2.document.activeElement) == null ? void 0 : _a2.tagName) === "IFRAME" && !(el == null ? void 0 : el.contains(window2.document.activeElement)))
+        handler(event);
+    })
+  ].filter(Boolean);
+  const stop = () => cleanup.forEach((fn) => fn());
+  return stop;
+}
+({
+  [directiveHooks.mounted](el, binding) {
+    const capture = !binding.modifiers.bubble;
+    if (typeof binding.value === "function") {
+      el.__onClickOutside_stop = onClickOutside(el, binding.value, { capture });
+    } else {
+      const [handler, options2] = binding.value;
+      el.__onClickOutside_stop = onClickOutside(el, handler, Object.assign({ capture }, options2));
+    }
+  },
+  [directiveHooks.unmounted](el) {
+    el.__onClickOutside_stop();
+  }
+});
+const createKeyPredicate = (keyFilter) => {
+  if (typeof keyFilter === "function")
+    return keyFilter;
+  else if (typeof keyFilter === "string")
+    return (event) => event.key === keyFilter;
+  else if (Array.isArray(keyFilter))
+    return (event) => keyFilter.includes(event.key);
+  return () => true;
+};
+function onKeyStroke(...args) {
+  let key;
+  let handler;
+  let options2 = {};
+  if (args.length === 3) {
+    key = args[0];
+    handler = args[1];
+    options2 = args[2];
+  } else if (args.length === 2) {
+    if (typeof args[1] === "object") {
+      key = true;
+      handler = args[0];
+      options2 = args[1];
+    } else {
+      key = args[0];
+      handler = args[1];
+    }
+  } else {
+    key = true;
+    handler = args[0];
+  }
+  const { target = defaultWindow, eventName = "keydown", passive = false } = options2;
+  const predicate = createKeyPredicate(key);
+  const listener = (e) => {
+    if (predicate(e))
+      handler(e);
+  };
+  return useEventListener(target, eventName, listener, passive);
+}
+var __defProp$d = Object.defineProperty;
+var __getOwnPropSymbols$e = Object.getOwnPropertySymbols;
+var __hasOwnProp$e = Object.prototype.hasOwnProperty;
+var __propIsEnum$e = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$d = (obj, key, value) => key in obj ? __defProp$d(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$d = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$e.call(b, prop))
+      __defNormalProp$d(a, prop, b[prop]);
+  if (__getOwnPropSymbols$e)
+    for (var prop of __getOwnPropSymbols$e(b)) {
+      if (__propIsEnum$e.call(b, prop))
+        __defNormalProp$d(a, prop, b[prop]);
+    }
+  return a;
+};
+({
+  [directiveHooks.mounted](el, binding) {
+    var _a2, _b;
+    const keys = (_b = (_a2 = binding.arg) == null ? void 0 : _a2.split(",")) != null ? _b : true;
+    if (typeof binding.value === "function") {
+      onKeyStroke(keys, binding.value, {
+        target: el
+      });
+    } else {
+      const [handler, options2] = binding.value;
+      onKeyStroke(keys, handler, __spreadValues$d({
+        target: el
+      }, options2));
+    }
+  }
+});
+const DEFAULT_DELAY = 500;
+function onLongPress(target, handler, options2) {
+  var _a2, _b;
+  const elementRef = computed(() => unrefElement(target));
+  let timeout;
+  function clear2() {
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = void 0;
+    }
+  }
+  function onDown(ev) {
+    var _a22, _b2, _c, _d;
+    if (((_a22 = options2 == null ? void 0 : options2.modifiers) == null ? void 0 : _a22.self) && ev.target !== elementRef.value)
+      return;
+    clear2();
+    if ((_b2 = options2 == null ? void 0 : options2.modifiers) == null ? void 0 : _b2.prevent)
+      ev.preventDefault();
+    if ((_c = options2 == null ? void 0 : options2.modifiers) == null ? void 0 : _c.stop)
+      ev.stopPropagation();
+    timeout = setTimeout(() => handler(ev), (_d = options2 == null ? void 0 : options2.delay) != null ? _d : DEFAULT_DELAY);
+  }
+  const listenerOptions = {
+    capture: (_a2 = options2 == null ? void 0 : options2.modifiers) == null ? void 0 : _a2.capture,
+    once: (_b = options2 == null ? void 0 : options2.modifiers) == null ? void 0 : _b.once
+  };
+  useEventListener(elementRef, "pointerdown", onDown, listenerOptions);
+  useEventListener(elementRef, "pointerup", clear2, listenerOptions);
+  useEventListener(elementRef, "pointerleave", clear2, listenerOptions);
+}
+({
+  [directiveHooks.mounted](el, binding) {
+    if (typeof binding.value === "function")
+      onLongPress(el, binding.value, { modifiers: binding.modifiers });
+    else
+      onLongPress(el, ...binding.value);
+  }
+});
+const _global = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
+const globalKey = "__vueuse_ssr_handlers__";
+_global[globalKey] = _global[globalKey] || {};
+_global[globalKey];
+function useSupported(callback, sync = false) {
+  const isSupported = ref();
+  const update2 = () => isSupported.value = Boolean(callback());
+  update2();
+  tryOnMounted(update2, sync);
+  return isSupported;
+}
+function useElementHover(el, options2 = {}) {
+  const delayEnter = options2 ? options2.delayEnter : 0;
+  const delayLeave = options2 ? options2.delayLeave : 0;
+  const isHovered = ref(false);
+  let timer;
+  const toggle = (entering) => {
+    const delay = entering ? delayEnter : delayLeave;
+    if (timer) {
+      clearTimeout(timer);
+      timer = void 0;
+    }
+    if (delay)
+      timer = setTimeout(() => isHovered.value = entering, delay);
+    else
+      isHovered.value = entering;
+  };
+  if (!window)
+    return isHovered;
+  useEventListener(el, "mouseenter", () => toggle(true), { passive: true });
+  useEventListener(el, "mouseleave", () => toggle(false), { passive: true });
+  return isHovered;
+}
+({
+  [directiveHooks.mounted](el, binding) {
+    if (typeof binding.value === "function") {
+      const isHovered = useElementHover(el);
+      watch(isHovered, (v) => binding.value(v));
+    }
+  }
+});
+var __getOwnPropSymbols$a = Object.getOwnPropertySymbols;
+var __hasOwnProp$a = Object.prototype.hasOwnProperty;
+var __propIsEnum$a = Object.prototype.propertyIsEnumerable;
+var __objRest = (source, exclude) => {
+  var target = {};
+  for (var prop in source)
+    if (__hasOwnProp$a.call(source, prop) && exclude.indexOf(prop) < 0)
+      target[prop] = source[prop];
+  if (source != null && __getOwnPropSymbols$a)
+    for (var prop of __getOwnPropSymbols$a(source)) {
+      if (exclude.indexOf(prop) < 0 && __propIsEnum$a.call(source, prop))
+        target[prop] = source[prop];
+    }
+  return target;
+};
+function useResizeObserver(target, callback, options2 = {}) {
+  const _a2 = options2, { window: window2 = defaultWindow } = _a2, observerOptions = __objRest(_a2, ["window"]);
+  let observer;
+  const isSupported = useSupported(() => window2 && "ResizeObserver" in window2);
+  const cleanup = () => {
+    if (observer) {
+      observer.disconnect();
+      observer = void 0;
+    }
+  };
+  const stopWatch = watch(() => unrefElement(target), (el) => {
+    cleanup();
+    if (isSupported.value && window2 && el) {
+      observer = new ResizeObserver(callback);
+      observer.observe(el, observerOptions);
+    }
+  }, { immediate: true, flush: "post" });
+  const stop = () => {
+    cleanup();
+    stopWatch();
+  };
+  tryOnScopeDispose(stop);
+  return {
+    isSupported,
+    stop
+  };
+}
+function useElementSize(target, initialSize = { width: 0, height: 0 }, options2 = {}) {
+  const { window: window2 = defaultWindow, box = "content-box" } = options2;
+  const isSVG = computed(() => {
+    var _a2, _b;
+    return (_b = (_a2 = unrefElement(target)) == null ? void 0 : _a2.namespaceURI) == null ? void 0 : _b.includes("svg");
+  });
+  const width = ref(initialSize.width);
+  const height = ref(initialSize.height);
+  useResizeObserver(target, ([entry]) => {
+    const boxSize = box === "border-box" ? entry.borderBoxSize : box === "content-box" ? entry.contentBoxSize : entry.devicePixelContentBoxSize;
+    if (window2 && isSVG.value) {
+      const $elem = unrefElement(target);
+      if ($elem) {
+        const styles = window2.getComputedStyle($elem);
+        width.value = parseFloat(styles.width);
+        height.value = parseFloat(styles.height);
+      }
+    } else {
+      if (boxSize) {
+        const formatBoxSize = Array.isArray(boxSize) ? boxSize : [boxSize];
+        width.value = formatBoxSize.reduce((acc, { inlineSize }) => acc + inlineSize, 0);
+        height.value = formatBoxSize.reduce((acc, { blockSize }) => acc + blockSize, 0);
+      } else {
+        width.value = entry.contentRect.width;
+        height.value = entry.contentRect.height;
+      }
+    }
+  }, options2);
+  watch(() => unrefElement(target), (ele) => {
+    width.value = ele ? initialSize.width : 0;
+    height.value = ele ? initialSize.height : 0;
+  });
+  return {
+    width,
+    height
+  };
+}
+({
+  [directiveHooks.mounted](el, binding) {
+    var _a2;
+    const handler = typeof binding.value === "function" ? binding.value : (_a2 = binding.value) == null ? void 0 : _a2[0];
+    const options2 = typeof binding.value === "function" ? [] : binding.value.slice(1);
+    const { width, height } = useElementSize(el, ...options2);
+    watch([width, height], ([width2, height2]) => handler({ width: width2, height: height2 }));
+  }
+});
+function useElementVisibility(element2, { window: window2 = defaultWindow, scrollTarget } = {}) {
+  const elementIsVisible = ref(false);
+  const testBounding = () => {
+    if (!window2)
+      return;
+    const document2 = window2.document;
+    const el = unrefElement(element2);
+    if (!el) {
+      elementIsVisible.value = false;
+    } else {
+      const rect = el.getBoundingClientRect();
+      elementIsVisible.value = rect.top <= (window2.innerHeight || document2.documentElement.clientHeight) && rect.left <= (window2.innerWidth || document2.documentElement.clientWidth) && rect.bottom >= 0 && rect.right >= 0;
+    }
+  };
+  watch(() => unrefElement(element2), () => testBounding(), { immediate: true, flush: "post" });
+  if (window2) {
+    useEventListener(scrollTarget || window2, "scroll", testBounding, {
+      capture: false,
+      passive: true
+    });
+  }
+  return elementIsVisible;
+}
+({
+  [directiveHooks.mounted](el, binding) {
+    if (typeof binding.value === "function") {
+      const handler = binding.value;
+      const isVisible = useElementVisibility(el);
+      watch(isVisible, (v) => handler(v), { immediate: true });
+    } else {
+      const [handler, options2] = binding.value;
+      const isVisible = useElementVisibility(el, options2);
+      watch(isVisible, (v) => handler(v), { immediate: true });
+    }
+  }
+});
+const ARRIVED_STATE_THRESHOLD_PIXELS = 1;
+function useScroll(element2, options2 = {}) {
+  const {
+    throttle = 0,
+    idle = 200,
+    onStop = noop,
+    onScroll = noop,
+    offset = {
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0
+    },
+    eventListenerOptions = {
+      capture: false,
+      passive: true
+    },
+    behavior = "auto"
+  } = options2;
+  const internalX = ref(0);
+  const internalY = ref(0);
+  const x = computed({
+    get() {
+      return internalX.value;
+    },
+    set(x2) {
+      scrollTo(x2, void 0);
+    }
+  });
+  const y = computed({
+    get() {
+      return internalY.value;
+    },
+    set(y2) {
+      scrollTo(void 0, y2);
+    }
+  });
+  function scrollTo(_x, _y) {
+    var _a2, _b, _c;
+    const _element = resolveUnref(element2);
+    if (!_element)
+      return;
+    (_c = _element instanceof Document ? document.body : _element) == null ? void 0 : _c.scrollTo({
+      top: (_a2 = resolveUnref(_y)) != null ? _a2 : y.value,
+      left: (_b = resolveUnref(_x)) != null ? _b : x.value,
+      behavior: resolveUnref(behavior)
+    });
+  }
+  const isScrolling = ref(false);
+  const arrivedState = reactive({
+    left: true,
+    right: false,
+    top: true,
+    bottom: false
+  });
+  const directions = reactive({
+    left: false,
+    right: false,
+    top: false,
+    bottom: false
+  });
+  const onScrollEnd = (e) => {
+    if (!isScrolling.value)
+      return;
+    isScrolling.value = false;
+    directions.left = false;
+    directions.right = false;
+    directions.top = false;
+    directions.bottom = false;
+    onStop(e);
+  };
+  const onScrollEndDebounced = useDebounceFn(onScrollEnd, throttle + idle);
+  const onScrollHandler = (e) => {
+    const eventTarget = e.target === document ? e.target.documentElement : e.target;
+    const scrollLeft = eventTarget.scrollLeft;
+    directions.left = scrollLeft < internalX.value;
+    directions.right = scrollLeft > internalY.value;
+    arrivedState.left = scrollLeft <= 0 + (offset.left || 0);
+    arrivedState.right = scrollLeft + eventTarget.clientWidth >= eventTarget.scrollWidth - (offset.right || 0) - ARRIVED_STATE_THRESHOLD_PIXELS;
+    internalX.value = scrollLeft;
+    let scrollTop = eventTarget.scrollTop;
+    if (e.target === document && !scrollTop)
+      scrollTop = document.body.scrollTop;
+    directions.top = scrollTop < internalY.value;
+    directions.bottom = scrollTop > internalY.value;
+    arrivedState.top = scrollTop <= 0 + (offset.top || 0);
+    arrivedState.bottom = scrollTop + eventTarget.clientHeight >= eventTarget.scrollHeight - (offset.bottom || 0) - ARRIVED_STATE_THRESHOLD_PIXELS;
+    internalY.value = scrollTop;
+    isScrolling.value = true;
+    onScrollEndDebounced(e);
+    onScroll(e);
+  };
+  useEventListener(element2, "scroll", throttle ? useThrottleFn(onScrollHandler, throttle, true, false) : onScrollHandler, eventListenerOptions);
+  useEventListener(element2, "scrollend", onScrollEnd, eventListenerOptions);
+  return {
+    x,
+    y,
+    isScrolling,
+    arrivedState,
+    directions
+  };
+}
+var __defProp$8 = Object.defineProperty;
+var __defProps$7 = Object.defineProperties;
+var __getOwnPropDescs$7 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$8 = Object.getOwnPropertySymbols;
+var __hasOwnProp$8 = Object.prototype.hasOwnProperty;
+var __propIsEnum$8 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$8 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$8.call(b, prop))
+      __defNormalProp$8(a, prop, b[prop]);
+  if (__getOwnPropSymbols$8)
+    for (var prop of __getOwnPropSymbols$8(b)) {
+      if (__propIsEnum$8.call(b, prop))
+        __defNormalProp$8(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$7 = (a, b) => __defProps$7(a, __getOwnPropDescs$7(b));
+function useInfiniteScroll(element2, onLoadMore, options2 = {}) {
+  var _a2, _b;
+  const direction = (_a2 = options2.direction) != null ? _a2 : "bottom";
+  const state2 = reactive(useScroll(element2, __spreadProps$7(__spreadValues$8({}, options2), {
+    offset: __spreadValues$8({
+      [direction]: (_b = options2.distance) != null ? _b : 0
+    }, options2.offset)
+  })));
+  watch(() => state2.arrivedState[direction], async (v) => {
+    var _a22, _b2;
+    if (v) {
+      const elem = resolveUnref(element2);
+      const previous = {
+        height: (_a22 = elem == null ? void 0 : elem.scrollHeight) != null ? _a22 : 0,
+        width: (_b2 = elem == null ? void 0 : elem.scrollWidth) != null ? _b2 : 0
+      };
+      await onLoadMore(state2);
+      if (options2.preserveScrollPosition && elem) {
+        nextTick(() => {
+          elem.scrollTo({
+            top: elem.scrollHeight - previous.height,
+            left: elem.scrollWidth - previous.width
+          });
+        });
+      }
+    }
+  });
+}
+({
+  [directiveHooks.mounted](el, binding) {
+    if (typeof binding.value === "function")
+      useInfiniteScroll(el, binding.value);
+    else
+      useInfiniteScroll(el, ...binding.value);
+  }
+});
+function useIntersectionObserver(target, callback, options2 = {}) {
+  const {
+    root,
+    rootMargin = "0px",
+    threshold = 0.1,
+    window: window2 = defaultWindow
+  } = options2;
+  const isSupported = useSupported(() => window2 && "IntersectionObserver" in window2);
+  let cleanup = noop;
+  const stopWatch = isSupported.value ? watch(() => ({
+    el: unrefElement(target),
+    root: unrefElement(root)
+  }), ({ el, root: root2 }) => {
+    cleanup();
+    if (!el)
+      return;
+    const observer = new IntersectionObserver(callback, {
+      root: root2,
+      rootMargin,
+      threshold
+    });
+    observer.observe(el);
+    cleanup = () => {
+      observer.disconnect();
+      cleanup = noop;
+    };
+  }, { immediate: true, flush: "post" }) : noop;
+  const stop = () => {
+    cleanup();
+    stopWatch();
+  };
+  tryOnScopeDispose(stop);
+  return {
+    isSupported,
+    stop
+  };
+}
+({
+  [directiveHooks.mounted](el, binding) {
+    if (typeof binding.value === "function")
+      useIntersectionObserver(el, binding.value);
+    else
+      useIntersectionObserver(el, ...binding.value);
+  }
+});
+var __defProp$3 = Object.defineProperty;
+var __defProps$2 = Object.defineProperties;
+var __getOwnPropDescs$2 = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols$3 = Object.getOwnPropertySymbols;
+var __hasOwnProp$3 = Object.prototype.hasOwnProperty;
+var __propIsEnum$3 = Object.prototype.propertyIsEnumerable;
+var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues$3 = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp$3.call(b, prop))
+      __defNormalProp$3(a, prop, b[prop]);
+  if (__getOwnPropSymbols$3)
+    for (var prop of __getOwnPropSymbols$3(b)) {
+      if (__propIsEnum$3.call(b, prop))
+        __defNormalProp$3(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps$2 = (a, b) => __defProps$2(a, __getOwnPropDescs$2(b));
+({
+  [directiveHooks.mounted](el, binding) {
+    if (typeof binding.value === "function") {
+      const handler = binding.value;
+      const state2 = useScroll(el, {
+        onScroll() {
+          handler(state2);
+        },
+        onStop() {
+          handler(state2);
+        }
+      });
+    } else {
+      const [handler, options2] = binding.value;
+      const state2 = useScroll(el, __spreadProps$2(__spreadValues$3({}, options2), {
+        onScroll(e) {
+          var _a2;
+          (_a2 = options2.onScroll) == null ? void 0 : _a2.call(options2, e);
+          handler(state2);
+        },
+        onStop(e) {
+          var _a2;
+          (_a2 = options2.onStop) == null ? void 0 : _a2.call(options2, e);
+          handler(state2);
+        }
+      }));
+    }
+  }
+});
+function checkOverflowScroll(ele) {
+  const style = window.getComputedStyle(ele);
+  if (style.overflowX === "scroll" || style.overflowY === "scroll" || style.overflowX === "auto" && ele.clientHeight < ele.scrollHeight || style.overflowY === "auto" && ele.clientWidth < ele.scrollWidth) {
+    return true;
+  } else {
+    const parent = ele.parentNode;
+    if (!parent || parent.tagName === "BODY")
+      return false;
+    return checkOverflowScroll(parent);
+  }
+}
+function preventDefault(rawEvent) {
+  const e = rawEvent || window.event;
+  const _target = e.target;
+  if (checkOverflowScroll(_target))
+    return false;
+  if (e.touches.length > 1)
+    return true;
+  if (e.preventDefault)
+    e.preventDefault();
+  return false;
+}
+function useScrollLock(element2, initialState = false) {
+  const isLocked = ref(initialState);
+  let stopTouchMoveListener = null;
+  let initialOverflow;
+  watch(resolveRef(element2), (el) => {
+    if (el) {
+      const ele = el;
+      initialOverflow = ele.style.overflow;
+      if (isLocked.value)
+        ele.style.overflow = "hidden";
+    }
+  }, {
+    immediate: true
+  });
+  const lock = () => {
+    const ele = resolveUnref(element2);
+    if (!ele || isLocked.value)
+      return;
+    if (isIOS) {
+      stopTouchMoveListener = useEventListener(ele, "touchmove", (e) => {
+        preventDefault(e);
+      }, { passive: false });
+    }
+    ele.style.overflow = "hidden";
+    isLocked.value = true;
+  };
+  const unlock = () => {
+    const ele = resolveUnref(element2);
+    if (!ele || !isLocked.value)
+      return;
+    isIOS && (stopTouchMoveListener == null ? void 0 : stopTouchMoveListener());
+    ele.style.overflow = initialOverflow;
+    isLocked.value = false;
+  };
+  tryOnScopeDispose(unlock);
+  return computed({
+    get() {
+      return isLocked.value;
+    },
+    set(v) {
+      if (v)
+        lock();
+      else
+        unlock();
+    }
+  });
+}
+const onScrollLock = () => {
+  let isMounted = false;
+  const state2 = ref(false);
+  return (el, binding) => {
+    state2.value = binding.value;
+    if (isMounted)
+      return;
+    isMounted = true;
+    const isLocked = useScrollLock(el, binding.value);
+    watch(state2, (v) => isLocked.value = v);
+  };
+};
+onScrollLock();
 const _sfc_main$j = {
   name: "EmojiPickerContainer",
   components: {
-    SvgIcon
+    SvgIcon,
+    OnClickOutside
   },
   props: {
     emojiOpened: { type: Boolean, default: false },
@@ -10193,9 +11388,10 @@ const _sfc_main$j = {
     positionTop: { type: Boolean, default: false },
     positionRight: { type: Boolean, default: false },
     messageId: { type: String, default: "" },
-    emojiDataSource: { type: String, default: void 0 }
+    emojiDataSource: { type: String, default: void 0 },
+    teleportTarget: { type: Object, default: void 0 }
   },
-  emits: ["add-emoji", "open-emoji"],
+  emits: ["add-emoji", "open-emoji", "close-emoji"],
   data() {
     return {
       emojiPickerHeight: 320,
@@ -10254,6 +11450,9 @@ const _sfc_main$j = {
         ev.view.innerHeight
       );
     },
+    closeEmoji() {
+      this.$emit("open-emoji", false);
+    },
     setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
       const mobileSize = innerWidth < 500 || innerHeight < 700;
       const roomFooterRef = findParentBySelector(this.$el, "#room-footer");
@@ -10282,6 +11481,7 @@ const _hoisted_1$j = { class: "vac-emoji-wrapper" };
 function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   const _component_emoji_picker = resolveComponent("emoji-picker");
+  const _component_OnClickOutside = resolveComponent("OnClickOutside");
   return openBlock(), createElementBlock("div", _hoisted_1$j, [
     createBaseVNode("div", {
       class: normalizeClass(["vac-svg-button", { "vac-emoji-reaction": $props.emojiReaction }]),
@@ -10299,30 +11499,69 @@ function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
         ]
       )
     ], 2),
-    $props.emojiOpened ? (openBlock(), createBlock(Transition, {
-      key: 0,
-      name: "vac-slide-up",
-      appear: ""
-    }, {
-      default: withCtx(() => [
-        createBaseVNode("div", {
-          class: normalizeClass(["vac-emoji-picker", { "vac-picker-reaction": $props.emojiReaction }]),
-          style: normalizeStyle({
-            height: `${$data.emojiPickerHeight}px`,
-            top: $props.positionTop ? $data.emojiPickerHeight : `${$data.emojiPickerTop}px`,
-            right: $data.emojiPickerRight,
-            display: $data.emojiPickerTop || !$props.emojiReaction ? "initial" : "none"
-          })
-        }, [
-          $props.emojiOpened ? (openBlock(), createBlock(_component_emoji_picker, {
-            key: 0,
-            ref: "emojiPicker",
-            "data-source": $props.emojiDataSource
-          }, null, 8, ["data-source"])) : createCommentVNode("", true)
-        ], 6)
-      ]),
-      _: 1
-    })) : createCommentVNode("", true)
+    $props.emojiOpened ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
+      $props.teleportTarget ? (openBlock(), createBlock(Teleport, {
+        key: 0,
+        to: $props.teleportTarget
+      }, [
+        createVNode(Transition, {
+          name: "vac-slide-up",
+          appear: ""
+        }, {
+          default: withCtx(() => [
+            createVNode(_component_OnClickOutside, { onTrigger: $options.closeEmoji }, {
+              default: withCtx(() => [
+                createBaseVNode("div", {
+                  class: normalizeClass(["vac-emoji-picker", { "vac-picker-reaction": $props.emojiReaction }]),
+                  style: normalizeStyle({
+                    height: `${$data.emojiPickerHeight}px`,
+                    top: $props.positionTop ? $data.emojiPickerHeight : `${$data.emojiPickerTop}px`,
+                    right: $data.emojiPickerRight,
+                    display: $data.emojiPickerTop || !$props.emojiReaction ? "initial" : "none"
+                  })
+                }, [
+                  $props.emojiOpened ? (openBlock(), createBlock(_component_emoji_picker, {
+                    key: 0,
+                    ref: "emojiPicker",
+                    "data-source": $props.emojiDataSource
+                  }, null, 8, ["data-source"])) : createCommentVNode("", true)
+                ], 6)
+              ]),
+              _: 1
+            }, 8, ["onTrigger"])
+          ]),
+          _: 1
+        })
+      ], 8, ["to"])) : (openBlock(), createBlock(Transition, {
+        key: 1,
+        name: "vac-slide-up",
+        appear: ""
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_OnClickOutside, { onTrigger: $options.closeEmoji }, {
+            default: withCtx(() => [
+              createBaseVNode("div", {
+                class: normalizeClass(["vac-emoji-picker", { "vac-picker-reaction": $props.emojiReaction }]),
+                style: normalizeStyle({
+                  height: `${$data.emojiPickerHeight}px`,
+                  top: $props.positionTop ? $data.emojiPickerHeight : `${$data.emojiPickerTop}px`,
+                  right: $data.emojiPickerRight,
+                  display: $data.emojiPickerTop || !$props.emojiReaction ? "initial" : "none"
+                })
+              }, [
+                $props.emojiOpened ? (openBlock(), createBlock(_component_emoji_picker, {
+                  key: 0,
+                  ref: "emojiPicker",
+                  "data-source": $props.emojiDataSource
+                }, null, 8, ["data-source"])) : createCommentVNode("", true)
+              ], 6)
+            ]),
+            _: 1
+          }, 8, ["onTrigger"])
+        ]),
+        _: 1
+      }))
+    ], 64)) : createCommentVNode("", true)
   ]);
 }
 var EmojiPickerContainer = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$j]]);
@@ -10670,8 +11909,8 @@ const _sfc_main$e = {
   emits: ["reset-message"],
   computed: {
     firstFile() {
-      var _a, _b;
-      return ((_b = (_a = this.messageReply) == null ? void 0 : _a.files) == null ? void 0 : _b.length) ? this.messageReply.files[0] : {};
+      var _a2, _b;
+      return ((_b = (_a2 = this.messageReply) == null ? void 0 : _a2.files) == null ? void 0 : _b.length) ? this.messageReply.files[0] : {};
     },
     isImage() {
       return isImageFile(this.firstFile);
@@ -10683,8 +11922,8 @@ const _sfc_main$e = {
       return isAudioFile(this.firstFile);
     },
     isOtherFile() {
-      var _a, _b;
-      return ((_b = (_a = this.messageReply) == null ? void 0 : _a.files) == null ? void 0 : _b.length) && !this.isAudio && !this.isVideo && !this.isImage;
+      var _a2, _b;
+      return ((_b = (_a2 = this.messageReply) == null ? void 0 : _a2.files) == null ? void 0 : _b.length) && !this.isAudio && !this.isVideo && !this.isImage;
     }
   }
 };
@@ -26604,8 +27843,8 @@ const _sfc_main$a = {
       }
     },
     onChangeInput() {
-      var _a, _b, _c;
-      if (((_a = this.getTextareaRef()) == null ? void 0 : _a.value) || ((_b = this.getTextareaRef()) == null ? void 0 : _b.value) === "") {
+      var _a2, _b, _c;
+      if (((_a2 = this.getTextareaRef()) == null ? void 0 : _a2.value) || ((_b = this.getTextareaRef()) == null ? void 0 : _b.value) === "") {
         this.message = (_c = this.getTextareaRef()) == null ? void 0 : _c.value;
       }
       this.keepKeyboardOpen = true;
@@ -26631,8 +27870,8 @@ const _sfc_main$a = {
         this.resetMessage();
     },
     onPasteImage(pasteEvent) {
-      var _a;
-      const items = (_a = pasteEvent.clipboardData) == null ? void 0 : _a.items;
+      var _a2;
+      const items = (_a2 = pasteEvent.clipboardData) == null ? void 0 : _a2.items;
       if (items) {
         Array.from(items).forEach((item) => {
           if (item.type.includes("image")) {
@@ -26756,7 +27995,7 @@ const _sfc_main$a = {
       this.$emit("textarea-action-handler", this.message);
     },
     sendMessage() {
-      var _a;
+      var _a2;
       let message = this.message.trim();
       if (!this.files.length && !message)
         return;
@@ -26770,7 +28009,7 @@ const _sfc_main$a = {
       });
       const files = this.files.length ? this.files : null;
       if (this.editedMessage._id) {
-        if (this.editedMessage.content !== message || ((_a = this.editedMessage.files) == null ? void 0 : _a.length) || this.files.length) {
+        if (this.editedMessage.content !== message || ((_a2 = this.editedMessage.files) == null ? void 0 : _a2.length) || this.files.length) {
           this.$emit("edit-message", {
             messageId: this.editedMessage._id,
             newContent: message,
@@ -27185,8 +28424,8 @@ const _sfc_main$9 = {
       return replyUser ? replyUser.username : "";
     },
     firstFile() {
-      var _a, _b;
-      return ((_b = (_a = this.message.replyMessage) == null ? void 0 : _a.files) == null ? void 0 : _b.length) ? this.message.replyMessage.files[0] : {};
+      var _a2, _b;
+      return ((_b = (_a2 = this.message.replyMessage) == null ? void 0 : _a2.files) == null ? void 0 : _b.length) ? this.message.replyMessage.files[0] : {};
     },
     isAudio() {
       return isAudioFile(this.firstFile);
@@ -27198,8 +28437,8 @@ const _sfc_main$9 = {
       return isVideoFile(this.firstFile);
     },
     isOtherFile() {
-      var _a;
-      return ((_a = this.message.replyMessage.files) == null ? void 0 : _a.length) && !this.isAudio && !this.isVideo && !this.isImage;
+      var _a2;
+      return ((_a2 = this.message.replyMessage.files) == null ? void 0 : _a2.length) && !this.isAudio && !this.isVideo && !this.isImage;
     }
   }
 };
@@ -27393,11 +28632,11 @@ const _sfc_main$7 = {
     }
   },
   mounted() {
-    const ref = this.$refs["imageRef" + this.index];
-    if (ref) {
+    const ref2 = this.$refs["imageRef" + this.index];
+    if (ref2) {
       this.imageResponsive = {
-        maxHeight: ref.clientWidth - 18,
-        loaderTop: ref.clientHeight / 2 - 9
+        maxHeight: ref2.clientWidth - 18,
+        loaderTop: ref2.clientHeight / 2 - 9
       };
     }
   },
@@ -27624,7 +28863,8 @@ const _sfc_main$5 = {
     messageHover: { type: Boolean, required: true },
     hoverMessageId: { type: [String, Number], default: null },
     hoverAudioProgress: { type: Boolean, required: true },
-    emojiDataSource: { type: String, default: void 0 }
+    emojiDataSource: { type: String, default: void 0 },
+    teleportTarget: { type: Object, default: void 0 }
   },
   emits: [
     "update-emoji-opened",
@@ -27752,16 +28992,17 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
               })
             ])
           ], 512)) : createCommentVNode("", true),
-          $options.isMessageReactions ? withDirectives((openBlock(), createElementBlock("div", _hoisted_2$3, [
+          $options.isMessageReactions ? (openBlock(), createElementBlock("div", _hoisted_2$3, [
             renderSlot(_ctx.$slots, "emoji-picker", mergeProps({ emojiOpened: $data.emojiOpened }, { addEmoji: $options.sendMessageReaction }), () => [
               createVNode(_component_emoji_picker_container, {
                 class: "vac-message-emojis",
-                style: normalizeStyle({ right: $options.isMessageActions ? "30px" : "5px" }),
                 "emoji-opened": $data.emojiOpened,
+                style: normalizeStyle({ right: $options.isMessageActions ? "30px" : "5px" }),
                 "emoji-reaction": true,
                 "position-right": $props.message.senderId === $props.currentUserId,
                 "message-id": $props.message._id,
                 "emoji-data-source": $props.emojiDataSource,
+                "teleport-target": $props.teleportTarget,
                 onAddEmoji: $options.sendMessageReaction,
                 onOpenEmoji: $options.openEmoji
               }, createSlots({ _: 2 }, [
@@ -27773,11 +29014,9 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
                     ])
                   };
                 })
-              ]), 1032, ["style", "emoji-opened", "position-right", "message-id", "emoji-data-source", "onAddEmoji", "onOpenEmoji"])
+              ]), 1032, ["emoji-opened", "style", "position-right", "message-id", "emoji-data-source", "teleport-target", "onAddEmoji", "onOpenEmoji"])
             ])
-          ])), [
-            [_directive_click_outside, $options.closeEmoji]
-          ]) : createCommentVNode("", true)
+          ])) : createCommentVNode("", true)
         ]),
         _: 3
       })
@@ -27988,8 +29227,8 @@ const _sfc_main$3 = {
       return this.editedMessageId === this.message._id || this.hoverMessageId === this.message._id;
     },
     isAudio() {
-      var _a;
-      return (_a = this.message.files) == null ? void 0 : _a.some((file) => isAudioFile(file));
+      var _a2;
+      return (_a2 = this.message.files) == null ? void 0 : _a2.some((file) => isAudioFile(file));
     },
     isCheckmarkVisible() {
       return this.message.senderId === this.currentUserId && !this.message.deleted && (this.message.saved || this.message.distributed || this.message.seen);
@@ -28107,20 +29346,24 @@ const _hoisted_5$2 = {
   class: "vac-avatar-offset"
 };
 const _hoisted_6$1 = {
+  ref: "emojiTarget",
+  class: "vac-emoji-wrapper vac-emoji-teleported"
+};
+const _hoisted_7$1 = {
   key: 0,
   class: "vac-progress-time"
 };
-const _hoisted_7$1 = { class: "vac-text-timestamp" };
-const _hoisted_8 = {
+const _hoisted_8 = { class: "vac-text-timestamp" };
+const _hoisted_9 = {
   key: 0,
   class: "vac-icon-edited"
 };
-const _hoisted_9 = { key: 1 };
-const _hoisted_10 = /* @__PURE__ */ createBaseVNode("div", { class: "vac-failure-text" }, "!", -1);
-const _hoisted_11 = [
-  _hoisted_10
+const _hoisted_10 = { key: 1 };
+const _hoisted_11 = /* @__PURE__ */ createBaseVNode("div", { class: "vac-failure-text" }, "!", -1);
+const _hoisted_12 = [
+  _hoisted_11
 ];
-const _hoisted_12 = {
+const _hoisted_13 = {
   key: 3,
   class: "vac-avatar-current-offset"
 };
@@ -28191,6 +29434,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
             onMouseover: _cache[5] || (_cache[5] = (...args) => $options.onHoverMessage && $options.onHoverMessage(...args)),
             onMouseleave: _cache[6] || (_cache[6] = (...args) => $options.onLeaveMessage && $options.onLeaveMessage(...args))
           }, [
+            createBaseVNode("div", _hoisted_6$1, null, 512),
             $options.showUsername ? (openBlock(), createElementBlock("div", {
               key: 0,
               class: normalizeClass(["vac-text-username", {
@@ -28270,16 +29514,16 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
                   };
                 })
               ]), 1032, ["message-id", "src", "message-selection-enabled"]),
-              !$props.message.deleted ? (openBlock(), createElementBlock("div", _hoisted_6$1, toDisplayString($data.progressTime), 1)) : createCommentVNode("", true)
+              !$props.message.deleted ? (openBlock(), createElementBlock("div", _hoisted_7$1, toDisplayString($data.progressTime), 1)) : createCommentVNode("", true)
             ], 64)),
-            createBaseVNode("div", _hoisted_7$1, [
-              $props.message.edited && !$props.message.deleted ? (openBlock(), createElementBlock("div", _hoisted_8, [
+            createBaseVNode("div", _hoisted_8, [
+              $props.message.edited && !$props.message.deleted ? (openBlock(), createElementBlock("div", _hoisted_9, [
                 renderSlot(_ctx.$slots, "pencil-icon_" + $props.message._id, {}, () => [
                   createVNode(_component_svg_icon, { name: "pencil" })
                 ])
               ])) : createCommentVNode("", true),
               createBaseVNode("span", null, toDisplayString($props.message.timestamp), 1),
-              $options.isCheckmarkVisible ? (openBlock(), createElementBlock("span", _hoisted_9, [
+              $options.isCheckmarkVisible ? (openBlock(), createElementBlock("span", _hoisted_10, [
                 renderSlot(_ctx.$slots, "checkmark-icon_" + $props.message._id, {}, () => [
                   createVNode(_component_svg_icon, {
                     name: $props.message.distributed ? "double-checkmark" : "checkmark",
@@ -28298,6 +29542,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
               "hover-message-id": $data.hoverMessageId,
               "hover-audio-progress": $data.hoverAudioProgress,
               "emoji-data-source": $props.emojiDataSource,
+              "teleport-target": _ctx.$refs.emojiTarget,
               onUpdateMessageHover: _cache[2] || (_cache[2] = ($event) => $data.messageHover = $event),
               onUpdateOptionsOpened: _cache[3] || (_cache[3] = ($event) => $data.optionsOpened = $event),
               onUpdateEmojiOpened: _cache[4] || (_cache[4] = ($event) => $data.emojiOpened = $event),
@@ -28312,7 +29557,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
                   ])
                 };
               })
-            ]), 1032, ["current-user-id", "message", "message-actions", "show-reaction-emojis", "message-hover", "hover-message-id", "hover-audio-progress", "emoji-data-source", "onMessageActionHandler", "onSendMessageReaction"])
+            ]), 1032, ["current-user-id", "message", "message-actions", "show-reaction-emojis", "message-hover", "hover-message-id", "hover-audio-progress", "emoji-data-source", "teleport-target", "onMessageActionHandler", "onSendMessageReaction"])
           ], 34),
           createVNode(_component_message_reactions, {
             "current-user-id": $props.currentUserId,
@@ -28327,7 +29572,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
               "vac-failure-container-avatar": $props.message.avatar && $props.message.senderId === $props.currentUserId
             }]),
             onClick: _cache[7] || (_cache[7] = ($event) => _ctx.$emit("open-failed-message", { message: $props.message }))
-          }, _hoisted_11, 2)) : createCommentVNode("", true)
+          }, _hoisted_12, 2)) : createCommentVNode("", true)
         ]),
         $props.message.senderId === $props.currentUserId ? renderSlot(_ctx.$slots, "message-avatar_" + $props.message._id, { key: 2 }, () => [
           $props.message.avatar ? (openBlock(), createElementBlock("div", {
@@ -28336,7 +29581,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
             style: normalizeStyle({ "background-image": `url('${$props.message.avatar}')` })
           }, null, 4)) : createCommentVNode("", true)
         ]) : createCommentVNode("", true),
-        $options.hasCurrentUserAvatar && !$props.message.avatar ? (openBlock(), createElementBlock("div", _hoisted_12)) : createCommentVNode("", true)
+        $options.hasCurrentUserAvatar && !$props.message.avatar ? (openBlock(), createElementBlock("div", _hoisted_13)) : createCommentVNode("", true)
       ])
     ], 2))
   ], 8, _hoisted_1$3);
@@ -28578,10 +29823,10 @@ const _sfc_main$2 = {
         (message) => message._id !== messageId
       );
     },
-    onMessageAdded({ message, index, ref }) {
+    onMessageAdded({ message, index, ref: ref2 }) {
       if (index !== this.messages.length - 1)
         return;
-      const autoScrollOffset = ref.offsetHeight + 60;
+      const autoScrollOffset = ref2.offsetHeight + 60;
       setTimeout(() => {
         const scrolledUp = this.getBottomScroll(this.$refs.scrollContainer) > autoScrollOffset;
         if (message.senderId === this.currentUserId) {
@@ -29431,7 +30676,7 @@ const cssThemeVars = ({
     "--chat-icon-color-audio-confirm": icons.audioConfirm
   };
 };
-var _style_0 = '.vac-fade-spinner-enter-from{opacity:0}.vac-fade-spinner-enter-active{transition:opacity .8s}.vac-fade-spinner-leave-active{transition:opacity .2s;opacity:0}.vac-fade-image-enter-from{opacity:0}.vac-fade-image-enter-active{transition:opacity 1s}.vac-fade-image-leave-active{transition:opacity .5s;opacity:0}.vac-fade-message-enter-from{opacity:0}.vac-fade-message-enter-active{transition:opacity .5s}.vac-fade-message-leave-active{transition:opacity .2s;opacity:0}.vac-slide-left-enter-active,.vac-slide-right-enter-active{transition:all .3s ease;transition-property:transform,opacity}.vac-slide-left-leave-active,.vac-slide-right-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)!important;transition-property:transform,opacity}.vac-slide-left-enter-from,.vac-slide-left-leave-to{transform:translate(10px);opacity:0}.vac-slide-right-enter-from,.vac-slide-right-leave-to{transform:translate(-10px);opacity:0}.vac-slide-up-enter-active{transition:all .3s ease}.vac-slide-up-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)}.vac-slide-up-enter-from,.vac-slide-up-leave-to{transform:translateY(10px);opacity:0}.vac-bounce-enter-active{animation:vac-bounce-in .5s}.vac-bounce-leave-active{animation:vac-bounce-in .3s reverse}@keyframes vac-bounce-in{0%{transform:scale(0)}50%{transform:scale(1.05)}to{transform:scale(1)}}.vac-fade-preview-enter{opacity:0}.vac-fade-preview-enter-active{transition:opacity .1s}.vac-fade-preview-leave-active{transition:opacity .2s;opacity:0}.vac-bounce-preview-enter-active{animation:vac-bounce-image-in .4s}.vac-bounce-preview-leave-active{animation:vac-bounce-image-in .3s reverse}@keyframes vac-bounce-image-in{0%{transform:scale(.6)}to{transform:scale(1)}}.vac-menu-list{border-radius:4px;display:block;cursor:pointer;background:var(--chat-dropdown-bg-color);padding:6px 0}.vac-menu-list :hover{background:var(--chat-dropdown-bg-color-hover);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-list :not(:hover){transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-item{-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-flex:1;-ms-flex:1 1 100%;flex:1 1 100%;min-height:30px;padding:5px 16px;position:relative;white-space:nowrap;line-height:30px}.vac-menu-options{position:absolute;right:10px;top:20px;z-index:9999;min-width:150px;display:inline-block;border-radius:4px;font-size:14px;color:var(--chat-color);overflow-y:auto;overflow-x:hidden;contain:content;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-app-border{border:var(--chat-border-style)}.vac-app-border-t{border-top:var(--chat-border-style)}.vac-app-border-r{border-right:var(--chat-border-style)}.vac-app-border-b{border-bottom:var(--chat-border-style)}.vac-app-box-shadow{transition:all .5s;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-item-clickable{cursor:pointer}.vac-vertical-center{display:flex;align-items:center;height:100%}.vac-vertical-center .vac-vertical-container{width:100%;text-align:center}.vac-svg-button{max-height:30px;display:flex;cursor:pointer;transition:all .2s}.vac-svg-button:hover{transform:scale(1.1);opacity:.7}.vac-avatar{background-size:cover;background-position:center center;background-repeat:no-repeat;background-color:#ddd;height:42px;width:42px;min-height:42px;min-width:42px;margin-right:15px;border-radius:50%}.vac-blur-loading{filter:blur(3px)}.vac-badge-counter{height:13px;width:auto;min-width:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:3px;font-size:11px;font-weight:500}.vac-text-ellipsis{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-text-bold{font-weight:700}.vac-text-italic{font-style:italic}.vac-text-strike{text-decoration:line-through}.vac-text-underline{text-decoration:underline}.vac-text-inline-code{display:inline-block;font-size:12px;color:var(--chat-markdown-color);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:2px 0;padding:2px 3px}.vac-text-multiline-code{display:block;font-size:12px;color:var(--chat-markdown-color-multi);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:4px 0;padding:7px}.vac-text-tag{color:var(--chat-message-color-tag);cursor:pointer}.vac-file-container{display:flex;align-content:center;justify-content:center;flex-wrap:wrap;text-align:center;background:var(--chat-bg-color-input);border:var(--chat-border-style-input);border-radius:4px;padding:10px}.vac-file-container svg{height:28px;width:28px}.vac-file-container .vac-text-extension{font-size:12px;color:var(--chat-message-color-file-extension);margin-top:-2px}.vac-card-window{width:100%;display:block;max-width:100%;background:var(--chat-content-bg-color);color:var(--chat-color);overflow-wrap:break-word;white-space:normal;border:var(--chat-container-border);border-radius:var(--chat-container-border-radius);box-shadow:var(--chat-container-box-shadow);-webkit-tap-highlight-color:transparent}.vac-card-window *{font-family:inherit}.vac-card-window a{color:#0d579c;font-weight:500}.vac-card-window .vac-chat-container{height:100%;display:flex}.vac-card-window .vac-chat-container input{min-width:10px}.vac-card-window .vac-chat-container textarea,.vac-card-window .vac-chat-container input[type=text],.vac-card-window .vac-chat-container input[type=search]{-webkit-appearance:none}.vac-media-preview{position:fixed;top:0;left:0;z-index:10000000;width:100vw;height:100vh;display:flex;align-items:center;background-color:#000c;outline:none}.vac-media-preview .vac-media-preview-container{height:calc(100% - 140px);width:calc(100% - 80px);padding:70px 40px;margin:0 auto}.vac-media-preview .vac-image-preview{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}.vac-media-preview video{width:100%;height:100%}.vac-media-preview .vac-svg-button{position:absolute;top:30px;right:30px;transform:scale(1.4)}@media only screen and (max-width: 768px){.vac-media-preview .vac-svg-button{top:20px;right:20px;transform:scale(1.2)}.vac-media-preview .vac-media-preview-container{width:calc(100% - 40px);padding:70px 20px}}.vac-col-messages{position:relative;height:100%;flex:1;overflow:hidden;display:flex;flex-flow:column}.vac-col-messages .vac-container-center{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.vac-col-messages .vac-room-empty{font-size:14px;color:#9ca6af;font-style:italic;line-height:20px;white-space:pre-line}.vac-col-messages .vac-room-empty div{padding:0 10%}.vac-col-messages .vac-container-scroll{background:var(--chat-content-bg-color);flex:1;overflow-y:auto;margin-right:1px;margin-top:65px;-webkit-overflow-scrolling:touch}.vac-col-messages .vac-container-scroll.vac-scroll-smooth{scroll-behavior:smooth}.vac-col-messages .vac-container-scroll.vac-no-room-header{margin-top:0}.vac-col-messages .vac-messages-container{padding:0 5px 5px}.vac-col-messages .vac-text-started{font-size:14px;color:var(--chat-message-color-started);font-style:italic;text-align:center;margin-top:25px;margin-bottom:20px}.vac-col-messages .vac-icon-scroll{position:absolute;bottom:80px;right:20px;padding:8px;background:var(--chat-bg-scroll-icon);border-radius:50%;box-shadow:0 1px 1px -1px #0003,0 1px 1px #00000024,0 1px 2px #0000001f;display:flex;cursor:pointer;z-index:10}.vac-col-messages .vac-icon-scroll svg{height:25px;width:25px}.vac-col-messages .vac-messages-count{position:absolute;top:-8px;left:11px;background-color:var(--chat-message-bg-color-scroll-counter);color:var(--chat-message-color-scroll-counter)}.vac-col-messages .vac-messages-hidden{opacity:0}@media only screen and (max-width: 768px){.vac-col-messages .vac-container-scroll{margin-top:50px}.vac-col-messages .vac-text-started{margin-top:20px}.vac-col-messages .vac-icon-scroll{bottom:70px}}.vac-room-header{position:absolute;display:flex;align-items:center;height:64px;width:100%;z-index:10;margin-right:1px;background:var(--chat-header-bg-color);border-top-right-radius:var(--chat-container-border-radius)}.vac-room-header .vac-room-wrapper{display:flex;align-items:center;min-width:0;height:100%;width:100%;padding:0 16px}.vac-room-header .vac-toggle-button{margin-right:15px}.vac-room-header .vac-toggle-button svg{height:26px;width:26px}.vac-room-header .vac-rotate-icon{transform:rotate(180deg)!important}.vac-room-header .vac-rotate-icon-init{transform:rotate(360deg)}.vac-room-header .vac-info-wrapper,.vac-room-header .vac-room-selection{display:flex;align-items:center;min-width:0;width:100%;height:100%}.vac-room-header .vac-room-selection .vac-selection-button{padding:8px 16px;color:var(--chat-color-button);background-color:var(--chat-bg-color-button);border-radius:4px;margin-right:10px;cursor:pointer;transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-button:hover{opacity:.7}.vac-room-header .vac-room-selection .vac-selection-button:active{opacity:.9}.vac-room-header .vac-room-selection .vac-selection-button .vac-selection-button-count{margin-left:6px;opacity:.9}.vac-room-header .vac-room-selection .vac-selection-cancel{display:flex;align-items:center;margin-left:auto;white-space:nowrap;color:var(--chat-color-button-clear);transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-cancel:hover{opacity:.7}.vac-room-header .vac-room-name{font-size:17px;font-weight:500;line-height:22px;color:var(--chat-header-color-name)}.vac-room-header .vac-room-info{font-size:13px;line-height:18px;color:var(--chat-header-color-info)}.vac-room-header .vac-room-options{margin-left:auto}@media only screen and (max-width: 768px){.vac-room-header{height:50px}.vac-room-header .vac-room-wrapper{padding:0 10px}.vac-room-header .vac-room-name{font-size:16px;line-height:22px}.vac-room-header .vac-room-info{font-size:12px;line-height:16px}.vac-room-header .vac-avatar{height:37px;width:37px;min-height:37px;min-width:37px}}.vac-room-footer{width:100%;border-bottom-right-radius:4px;z-index:10}.vac-box-footer{display:flex;position:relative;background:var(--chat-footer-bg-color);padding:10px 8px}.vac-textarea{max-height:300px;overflow-y:auto;height:20px;width:100%;line-height:20px;outline:0;resize:none;border-radius:20px;padding:12px 16px;box-sizing:content-box;font-size:16px;background:var(--chat-bg-color-input);color:var(--chat-color);caret-color:var(--chat-color-caret);border:var(--chat-border-style-input)}.vac-textarea::placeholder{color:var(--chat-color-placeholder);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-textarea-outline{border:1px solid var(--chat-border-color-input-selected);box-shadow:inset 0 0 0 1px var(--chat-border-color-input-selected)}.vac-icon-textarea,.vac-icon-textarea-left{display:flex;align-items:center}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea{margin-left:5px}.vac-icon-textarea-left{display:flex;align-items:center;margin-right:5px}.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea-left .vac-icon-microphone{fill:var(--chat-icon-color-microphone);margin:0 7px}.vac-icon-textarea-left .vac-dot-audio-record{height:15px;width:15px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-record);animation:vac-scaling .8s ease-in-out infinite alternate}@keyframes vac-scaling{0%{transform:scale(1);opacity:.4}to{transform:scale(1.1);opacity:1}}.vac-icon-textarea-left .vac-dot-audio-record-time{font-size:16px;color:var(--chat-color);margin-left:8px;width:45px}.vac-icon-textarea-left .vac-icon-audio-stop,.vac-icon-textarea-left .vac-icon-audio-confirm{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop svg,.vac-icon-textarea-left .vac-icon-audio-confirm svg{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop{margin-right:20px}.vac-icon-textarea-left .vac-icon-audio-stop #vac-icon-close-outline{fill:var(--chat-icon-color-audio-cancel)}.vac-icon-textarea-left .vac-icon-audio-confirm{margin-right:3px;margin-left:12px}.vac-icon-textarea-left .vac-icon-audio-confirm #vac-icon-checkmark{fill:var(--chat-icon-color-audio-confirm)}.vac-send-disabled,.vac-send-disabled svg{cursor:none!important;pointer-events:none!important;transform:none!important}@media only screen and (max-width: 768px){.vac-room-footer{width:100%}.vac-box-footer{padding:7px 2px 7px 7px}.vac-box-footer.vac-box-footer-border{border-top:var(--chat-border-style-input)}.vac-textarea{padding:7px;line-height:18px}.vac-textarea::placeholder{color:transparent}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 5px!important}}@media only screen and (max-height: 768px){.vac-textarea{max-height:120px}}.vac-emojis-container{width:calc(100% - 16px);padding:10px 8px;background:var(--chat-footer-bg-color);display:flex;align-items:center;overflow:auto}.vac-emojis-container .vac-emoji-element{padding:0 8px;font-size:30px;border-radius:4px;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-emojis-container .vac-emoji-element-active{background:var(--chat-footer-bg-color-tag-active)}@media only screen and (max-width: 768px){.vac-emojis-container{width:calc(100% - 10px);padding:7px 5px}.vac-emojis-container .vac-emoji-element{padding:0 7px;font-size:26px}}.vac-reply-container{display:flex;padding:10px 10px 0;background:var(--chat-footer-bg-color);align-items:center;width:calc(100% - 20px)}.vac-reply-container .vac-reply-box{width:100%;overflow:hidden;background:var(--chat-footer-bg-color-reply);border-radius:4px;padding:8px 10px}.vac-reply-container .vac-reply-info{overflow:hidden}.vac-reply-container .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-container .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content);white-space:pre-line}.vac-reply-container .vac-icon-reply{margin-left:10px}.vac-reply-container .vac-icon-reply svg{height:20px;width:20px}.vac-reply-container .vac-image-reply{max-height:100px;max-width:200px;margin:4px 10px 0 0;border-radius:4px}.vac-reply-container .vac-audio-reply{margin-right:10px}.vac-reply-container .vac-file-container{max-width:80px}@media only screen and (max-width: 768px){.vac-reply-container{padding:5px 8px;width:calc(100% - 16px)}}.vac-room-files-container{display:flex;align-items:center;padding:10px 6px 0;background:var(--chat-footer-bg-color)}.vac-room-files-container .vac-files-box{display:flex;overflow:auto;width:calc(100% - 30px)}.vac-room-files-container video{height:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-files-container .vac-icon-close{margin-left:auto}.vac-room-files-container .vac-icon-close svg{height:20px;width:20px}@media only screen and (max-width: 768px){.vac-files-container{padding:6px 4px 4px 2px}}.vac-room-file-container{display:flex;position:relative;margin:0 4px}.vac-room-file-container .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:100px;width:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-file-container .vac-file-container{height:80px;width:80px}.vac-room-file-container .vac-icon-remove{position:absolute;top:6px;left:6px;z-index:10}.vac-room-file-container .vac-icon-remove svg{height:20px;width:20px;border-radius:50%}.vac-room-file-container .vac-icon-remove:before{content:" ";position:absolute;width:100%;height:100%;background:rgba(0,0,0,.5);border-radius:50%;z-index:-1}.vac-tags-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-tags-container .vac-tags-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-tags-container .vac-tags-box-active{background:var(--chat-footer-bg-color-tag-active)}.vac-tags-container .vac-tags-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-tags-container .vac-tags-avatar{height:34px;width:34px;min-height:34px;min-width:34px}.vac-tags-container .vac-tags-username{font-size:14px}@media only screen and (max-width: 768px){.vac-tags-container .vac-tags-box{height:50px}.vac-tags-container .vac-tags-info{padding:0 12px}}.vac-template-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-template-container .vac-template-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-template-container .vac-template-active{background:var(--chat-footer-bg-color-tag-active)}.vac-template-container .vac-template-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-template-container .vac-template-tag{font-size:14px;font-weight:700;margin-right:10px}.vac-template-container .vac-template-text{font-size:14px}@media only screen and (max-width: 768px){.vac-template-container .vac-template-box{height:50px}.vac-template-container .vac-template-info{padding:0 12px}}.vac-rooms-container{display:flex;flex-flow:column;flex:0 0 25%;min-width:260px;max-width:500px;position:relative;background:var(--chat-sidemenu-bg-color);height:100%;border-top-left-radius:var(--chat-container-border-radius);border-bottom-left-radius:var(--chat-container-border-radius)}.vac-rooms-container.vac-rooms-container-full{flex:0 0 100%;max-width:100%}.vac-rooms-container .vac-rooms-empty{font-size:14px;color:#9ca6af;font-style:italic;text-align:center;margin:40px 0;line-height:20px;white-space:pre-line}.vac-rooms-container .vac-room-list{flex:1;position:relative;max-width:100%;cursor:pointer;padding:0 10px 5px;overflow-y:auto}.vac-rooms-container .vac-room-item{border-radius:8px;align-items:center;display:flex;flex:1 1 100%;margin-bottom:5px;padding:0 14px;position:relative;min-height:71px;transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-rooms-container .vac-room-item:hover{background:var(--chat-sidemenu-bg-color-hover)}.vac-rooms-container .vac-room-selected{color:var(--chat-sidemenu-color-active)!important;background:var(--chat-sidemenu-bg-color-active)!important}.vac-rooms-container .vac-room-selected:hover{background:var(--chat-sidemenu-bg-color-active)!important}@media only screen and (max-width: 768px){.vac-rooms-container .vac-room-list{padding:0 7px 5px}.vac-rooms-container .vac-room-item{min-height:60px;padding:0 8px}}.vac-room-container{display:flex;flex:1;align-items:center;width:100%}.vac-room-container .vac-name-container{flex:1}.vac-room-container .vac-title-container{display:flex;align-items:center;line-height:25px}.vac-room-container .vac-state-circle{width:9px;height:9px;border-radius:50%;background-color:var(--chat-room-color-offline);margin-right:6px;transition:.3s}.vac-room-container .vac-state-online{background-color:var(--chat-room-color-online)}.vac-room-container .vac-room-name{flex:1;color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-text-date{margin-left:5px;font-size:11px;color:var(--chat-room-color-timestamp)}.vac-room-container .vac-text-last{display:flex;align-items:center;font-size:12px;line-height:19px;color:var(--chat-room-color-message)}.vac-room-container .vac-message-new{color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-icon-check{display:flex;vertical-align:middle;height:14px;width:14px;margin-top:-2px;margin-right:2px}.vac-room-container .vac-icon-microphone{height:15px;width:15px;vertical-align:middle;margin:-3px 1px 0 -2px;fill:var(--chat-room-color-message)}.vac-room-container .vac-room-options-container{display:flex;margin-left:auto}.vac-room-container .vac-room-badge{background-color:var(--chat-room-bg-color-badge);color:var(--chat-room-color-badge);margin-left:5px}.vac-room-container .vac-list-room-options{height:19px;width:19px;align-items:center;margin-left:5px}.vac-box-empty{margin-top:10px}@media only screen and (max-width: 768px){.vac-box-empty{margin-top:7px}}.vac-box-search{position:sticky;display:flex;align-items:center;height:64px;padding:0 15px}.vac-box-search .vac-icon-search{display:flex;position:absolute;left:30px}.vac-box-search .vac-icon-search svg{width:18px;height:18px}.vac-box-search .vac-input{height:38px;width:100%;background:var(--chat-bg-color-input);color:var(--chat-color);font-size:15px;outline:0;caret-color:var(--chat-color-caret);padding:10px 10px 10px 40px;border:1px solid var(--chat-sidemenu-border-color-search);border-radius:20px}.vac-box-search .vac-input::placeholder{color:var(--chat-color-placeholder)}.vac-box-search .vac-add-icon{margin-left:auto;padding-left:10px}@media only screen and (max-width: 768px){.vac-box-search{height:58px}}.vac-message-wrapper .vac-card-info{border-radius:4px;text-align:center;margin:10px auto;font-size:12px;padding:4px;display:block;overflow-wrap:break-word;position:relative;white-space:normal;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-card-date{max-width:150px;font-weight:500;text-transform:uppercase;color:var(--chat-message-color-date);background-color:var(--chat-message-bg-color-date)}.vac-message-wrapper .vac-card-system{max-width:250px;padding:8px 4px;color:var(--chat-message-color-system);background-color:var(--chat-message-bg-color-system)}.vac-message-wrapper .vac-line-new{color:var(--chat-message-color-new-messages);position:relative;text-align:center;font-size:13px;padding:10px 0}.vac-message-wrapper .vac-line-new:after,.vac-message-wrapper .vac-line-new:before{border-top:1px solid var(--chat-message-color-new-messages);content:"";left:0;position:absolute;top:50%;width:calc(50% - 60px)}.vac-message-wrapper .vac-line-new:before{left:auto;right:0}.vac-message-wrapper .vac-message-box{display:flex;flex:0 0 50%;justify-content:flex-start;line-height:1.4}.vac-message-wrapper .vac-avatar{height:28px;width:28px;min-height:28px;min-width:28px;margin:0 0 2px;align-self:flex-end}.vac-message-wrapper .vac-avatar-current-offset{margin-right:28px}.vac-message-wrapper .vac-avatar-offset{margin-left:28px}.vac-message-wrapper .vac-failure-container{position:relative;align-self:flex-end;height:20px;width:20px;margin:0 0 2px -4px;border-radius:50%;background-color:#f44336}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:6px}.vac-message-wrapper .vac-failure-container .vac-failure-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:15px;font-weight:700}.vac-message-wrapper .vac-message-container{position:relative;padding:2px 10px;align-items:end;min-width:116px;box-sizing:content-box;width:80%;max-width:260px;flex-grow:1}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-offset-current{justify-content:flex-end}.vac-message-wrapper .vac-message-card{background-color:var(--chat-message-bg-color);color:var(--chat-message-color);border-radius:8px;font-size:14px;padding:6px 9px 3px;white-space:pre-line;max-width:100%;-webkit-transition-property:box-shadow,opacity;transition-property:box-shadow,opacity;transition:box-shadow .28s cubic-bezier(.4,0,.2,1);will-change:box-shadow;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-message-highlight{box-shadow:0 1px 2px -1px #0000001a,0 1px 2px -1px #0000001c,0 1px 5px -1px #0000001c}.vac-message-wrapper .vac-message-current{background-color:var(--chat-message-bg-color-me)!important}.vac-message-wrapper .vac-message-deleted{color:var(--chat-message-color-deleted)!important;font-size:13px!important;font-style:italic!important;background-color:var(--chat-message-bg-color-deleted)!important}.vac-message-wrapper .vac-message-selected{background-color:var(--chat-message-bg-color-selected)!important;transition:background-color .2s}.vac-message-wrapper .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:250px;width:250px;max-width:100%;border-radius:4px;margin:4px auto 5px;transition:.4s filter linear}.vac-message-wrapper .vac-text-username{font-size:13px;color:var(--chat-message-color-username);margin-bottom:2px}.vac-message-wrapper .vac-username-reply{margin-bottom:5px}.vac-message-wrapper .vac-text-timestamp{font-size:10px;color:var(--chat-message-color-timestamp);text-align:right}.vac-message-wrapper .vac-progress-time{float:left;margin:-2px 0 0 40px;color:var(--chat-color);font-size:12px}.vac-message-wrapper .vac-icon-edited{-webkit-box-align:center;align-items:center;display:-webkit-inline-box;display:inline-flex;justify-content:center;letter-spacing:normal;line-height:1;text-indent:0;vertical-align:middle;margin:0 4px 2px}.vac-message-wrapper .vac-icon-edited svg{height:12px;width:12px}.vac-message-wrapper .vac-icon-check{height:14px;width:14px;vertical-align:middle;margin:-3px -3px 0 3px}@media only screen and (max-width: 768px){.vac-message-wrapper .vac-message-container{padding:2px 3px 1px}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-message-box{flex:0 0 80%}.vac-message-wrapper .vac-avatar{height:25px;width:25px;min-height:25px;min-width:25px;margin:0 6px 1px 0}.vac-message-wrapper .vac-avatar.vac-avatar-current{margin:0 0 1px 6px}.vac-message-wrapper .vac-avatar-current-offset{margin-right:31px}.vac-message-wrapper .vac-avatar-offset{margin-left:31px}.vac-message-wrapper .vac-failure-container{margin-left:2px}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:0}.vac-message-wrapper .vac-progress-time{margin-left:37px}}.vac-audio-player{display:flex;margin:8px 0 5px}.vac-audio-player .vac-svg-button{max-width:18px;margin-left:7px}@media only screen and (max-width: 768px){.vac-audio-player{margin:4px 0 0}.vac-audio-player .vac-svg-button{max-width:16px;margin-left:5px;flex-grow:0;flex-shrink:0}.vac-audio-player .vac-audio-progress-container{flex-grow:1;flex-shrink:0}}.vac-player-bar{display:flex;align-items:center;max-width:calc(100% - 18px);margin-right:7px;margin-left:20px;width:100%}.vac-player-bar .vac-player-progress{width:100%}.vac-player-bar .vac-player-progress .vac-line-container{position:relative;height:4px;border-radius:5px;background-color:var(--chat-message-bg-color-audio-line);width:100%;display:flex;max-width:190px}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-progress{position:absolute;height:inherit;background-color:var(--chat-message-bg-color-audio-progress);border-radius:inherit}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{position:absolute;top:-5px;margin-left:-7px;height:14px;width:14px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-progress-selector);transition:transform .25s}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot__active{transform:scale(1.2)}@media only screen and (max-width: 768px){.vac-player-bar{margin-right:5px}.vac-player-bar .vac-player-progress .vac-line-container{height:3px}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{height:12px;width:12px;top:-5px;margin-left:-5px}}.vac-message-actions-wrapper .vac-options-container{position:absolute;top:2px;right:10px;height:40px;width:70px;overflow:hidden;border-top-right-radius:8px}.vac-message-actions-wrapper .vac-blur-container{position:absolute;height:100%;width:100%;left:8px;bottom:10px;background:var(--chat-message-bg-color);filter:blur(3px);border-bottom-left-radius:8px}.vac-message-actions-wrapper .vac-options-me{background:var(--chat-message-bg-color-me)}.vac-message-actions-wrapper .vac-message-options{background:var(--chat-icon-bg-dropdown-message);border-radius:50%;position:absolute;top:7px;right:7px}.vac-message-actions-wrapper .vac-message-options svg{height:17px;width:17px;padding:5px;margin:-5px}.vac-message-actions-wrapper .vac-message-emojis{position:absolute;top:6px;right:30px}.vac-message-actions-wrapper .vac-menu-options{right:15px}.vac-message-actions-wrapper .vac-menu-left{right:-118px}@media only screen and (max-width: 768px){.vac-message-actions-wrapper .vac-options-container{right:3px}.vac-message-actions-wrapper .vac-menu-left{right:-50px}}.vac-message-files-container .vac-file-wrapper{position:relative;width:fit-content}.vac-message-files-container .vac-file-wrapper .vac-file-container{height:60px;width:60px;margin:3px 0 5px;cursor:pointer;transition:all .6s}.vac-message-files-container .vac-file-wrapper .vac-file-container:hover{opacity:.85}.vac-message-files-container .vac-file-wrapper .vac-file-container svg{height:30px;width:30px}.vac-message-files-container .vac-file-wrapper .vac-file-container.vac-file-container-progress{background-color:#0000004d}.vac-message-file-container{position:relative;z-index:0}.vac-message-file-container .vac-message-image-container{cursor:pointer}.vac-message-file-container .vac-image-buttons{position:absolute;width:100%;height:100%;border-radius:4px;background:linear-gradient(to bottom,rgba(0,0,0,0) 55%,rgba(0,0,0,.02) 60%,rgba(0,0,0,.05) 65%,rgba(0,0,0,.1) 70%,rgba(0,0,0,.2) 75%,rgba(0,0,0,.3) 80%,rgba(0,0,0,.5) 85%,rgba(0,0,0,.6) 90%,rgba(0,0,0,.7) 95%,rgba(0,0,0,.8) 100%)}.vac-message-file-container .vac-image-buttons svg{height:26px;width:26px}.vac-message-file-container .vac-image-buttons .vac-button-view,.vac-message-file-container .vac-image-buttons .vac-button-download{position:absolute;bottom:6px;left:7px}.vac-message-file-container .vac-image-buttons :first-child{left:40px}.vac-message-file-container .vac-image-buttons .vac-button-view{max-width:18px;bottom:8px}.vac-message-file-container .vac-video-container{width:350px;max-width:100%;margin:4px auto 5px;cursor:pointer}.vac-message-file-container .vac-video-container video{width:100%;height:100%;border-radius:4px}.vac-button-reaction{display:inline-flex;align-items:center;border:var(--chat-message-border-style-reaction);outline:none;background:var(--chat-message-bg-color-reaction);border-radius:4px;margin:4px 2px 0;transition:.3s;padding:0 5px;font-size:18px;line-height:23px}.vac-button-reaction span{font-size:11px;font-weight:500;min-width:7px;color:var(--chat-message-color-reaction-counter)}.vac-button-reaction:hover{border:var(--chat-message-border-style-reaction-hover);background:var(--chat-message-bg-color-reaction-hover);cursor:pointer}.vac-button-reaction.vac-reaction-me{border:var(--chat-message-border-style-reaction-me);background:var(--chat-message-bg-color-reaction-me)}.vac-button-reaction.vac-reaction-me span{color:var(--chat-message-color-reaction-counter-me)}.vac-button-reaction.vac-reaction-me:hover{border:var(--chat-message-border-style-reaction-hover-me);background:var(--chat-message-bg-color-reaction-hover-me)}.vac-reply-message{background:var(--chat-message-bg-color-reply);border-radius:4px;margin:-1px -5px 8px;padding:8px 10px}.vac-reply-message .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-message .vac-image-reply-container{width:70px}.vac-reply-message .vac-image-reply-container .vac-message-image-reply{height:70px;width:70px;margin:4px auto 3px}.vac-reply-message .vac-video-reply-container{width:200px;max-width:100%}.vac-reply-message .vac-video-reply-container video{width:100%;height:100%;border-radius:4px}.vac-reply-message .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content)}.vac-reply-message .vac-file-container{height:60px;width:60px}.vac-emoji-wrapper{position:relative;display:flex}.vac-emoji-wrapper .vac-emoji-reaction svg{height:19px;width:19px}.vac-emoji-wrapper .vac-emoji-picker{position:absolute;z-index:9999;bottom:32px;right:10px;width:300px;padding-top:4px;overflow:scroll;box-sizing:border-box;border-radius:.5rem;background:var(--chat-emoji-bg-color);box-shadow:0 1px 2px -2px #0000001a,0 1px 2px -1px #0000001a,0 1px 2px 1px #0000001a;scrollbar-width:none}.vac-emoji-wrapper .vac-emoji-picker::-webkit-scrollbar{display:none}.vac-emoji-wrapper .vac-emoji-picker.vac-picker-reaction{position:fixed;top:initial;right:initial}.vac-emoji-wrapper .vac-emoji-picker emoji-picker{height:100%;width:100%;--emoji-size: 1.2rem;--background: var(--chat-emoji-bg-color);--emoji-padding: .4rem;--border-color: var(--chat-sidemenu-border-color-search);--button-hover-background: var(--chat-sidemenu-bg-color-hover);--button-active-background: var(--chat-sidemenu-bg-color-hover)}.vac-format-message-wrapper .vac-format-container{display:inline}.vac-format-message-wrapper .vac-icon-deleted{height:14px;width:14px;vertical-align:middle;margin:-2px 2px 0 0;fill:var(--chat-message-color-deleted)}.vac-format-message-wrapper .vac-icon-deleted.vac-icon-deleted-room{margin:-3px 1px 0 0;fill:var(--chat-room-color-message)}.vac-format-message-wrapper .vac-image-link-container{background-color:var(--chat-message-bg-color-media);padding:8px;margin:2px auto;border-radius:4px}.vac-format-message-wrapper .vac-image-link{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:contain;background-position:center center!important;background-repeat:no-repeat!important;height:150px;width:150px;max-width:100%;border-radius:4px;margin:0 auto}.vac-format-message-wrapper .vac-image-link-message{max-width:166px;font-size:12px}.vac-loader-wrapper.vac-container-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-loader-wrapper.vac-container-top{padding:21px}.vac-loader-wrapper.vac-container-top #vac-circle{height:20px;width:20px}.vac-loader-wrapper #vac-circle{margin:auto;height:28px;width:28px;border:3px rgba(0,0,0,.25) solid;border-top:3px var(--chat-color-spinner) solid;border-right:3px var(--chat-color-spinner) solid;border-bottom:3px var(--chat-color-spinner) solid;border-radius:50%;-webkit-animation:vac-spin 1s infinite linear;animation:vac-spin 1s infinite linear}@media only screen and (max-width: 768px){.vac-loader-wrapper #vac-circle{height:24px;width:24px}.vac-loader-wrapper.vac-container-top{padding:18px}.vac-loader-wrapper.vac-container-top #vac-circle{height:16px;width:16px}}@-webkit-keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}@keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}#vac-icon-search{fill:var(--chat-icon-color-search)}#vac-icon-add{fill:var(--chat-icon-color-add)}#vac-icon-toggle{fill:var(--chat-icon-color-toggle)}#vac-icon-menu{fill:var(--chat-icon-color-menu)}#vac-icon-close{fill:var(--chat-icon-color-close)}#vac-icon-close-image{fill:var(--chat-icon-color-close-image)}#vac-icon-file{fill:var(--chat-icon-color-file)}#vac-icon-paperclip{fill:var(--chat-icon-color-paperclip)}#vac-icon-close-outline{fill:var(--chat-icon-color-close-outline)}#vac-icon-close-outline-preview{fill:var(--chat-icon-color-close-preview)}#vac-icon-send{fill:var(--chat-icon-color-send)}#vac-icon-send-disabled{fill:var(--chat-icon-color-send-disabled)}#vac-icon-emoji{fill:var(--chat-icon-color-emoji)}#vac-icon-emoji-reaction{fill:var(--chat-icon-color-emoji-reaction)}#vac-icon-document{fill:var(--chat-icon-color-document)}#vac-icon-pencil{fill:var(--chat-icon-color-pencil)}#vac-icon-checkmark,#vac-icon-double-checkmark{fill:var(--chat-icon-color-checkmark)}#vac-icon-checkmark-seen,#vac-icon-double-checkmark-seen{fill:var(--chat-icon-color-checkmark-seen)}#vac-icon-eye{fill:var(--chat-icon-color-eye)}#vac-icon-dropdown-message{fill:var(--chat-icon-color-dropdown-message)}#vac-icon-dropdown-room{fill:var(--chat-icon-color-dropdown-room)}#vac-icon-dropdown-scroll{fill:var(--chat-icon-color-dropdown-scroll)}#vac-icon-audio-play{fill:var(--chat-icon-color-audio-play)}#vac-icon-audio-pause{fill:var(--chat-icon-color-audio-pause)}.vac-progress-wrapper{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-progress-wrapper circle{transition:stroke-dashoffset .35s;transform:rotate(-90deg);transform-origin:50% 50%}.vac-progress-wrapper .vac-progress-content{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:-1;margin-top:-2px;background-color:#000000b3;border-radius:50%}.vac-progress-wrapper .vac-progress-content .vac-progress-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:700;color:#fff}.vac-progress-wrapper .vac-progress-content .vac-progress-text .vac-progress-pourcent{font-size:9px;font-weight:400}\n';
+var _style_0 = '.vac-fade-spinner-enter-from{opacity:0}.vac-fade-spinner-enter-active{transition:opacity .8s}.vac-fade-spinner-leave-active{transition:opacity .2s;opacity:0}.vac-fade-image-enter-from{opacity:0}.vac-fade-image-enter-active{transition:opacity 1s}.vac-fade-image-leave-active{transition:opacity .5s;opacity:0}.vac-fade-message-enter-from{opacity:0}.vac-fade-message-enter-active{transition:opacity .5s}.vac-fade-message-leave-active{transition:opacity .2s;opacity:0}.vac-slide-left-enter-active,.vac-slide-right-enter-active{transition:all .3s ease;transition-property:transform,opacity}.vac-slide-left-leave-active,.vac-slide-right-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)!important;transition-property:transform,opacity}.vac-slide-left-enter-from,.vac-slide-left-leave-to{transform:translate(10px);opacity:0}.vac-slide-right-enter-from,.vac-slide-right-leave-to{transform:translate(-10px);opacity:0}.vac-slide-up-enter-active{transition:all .3s ease}.vac-slide-up-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)}.vac-slide-up-enter-from,.vac-slide-up-leave-to{transform:translateY(10px);opacity:0}.vac-bounce-enter-active{animation:vac-bounce-in .5s}.vac-bounce-leave-active{animation:vac-bounce-in .3s reverse}@keyframes vac-bounce-in{0%{transform:scale(0)}50%{transform:scale(1.05)}to{transform:scale(1)}}.vac-fade-preview-enter{opacity:0}.vac-fade-preview-enter-active{transition:opacity .1s}.vac-fade-preview-leave-active{transition:opacity .2s;opacity:0}.vac-bounce-preview-enter-active{animation:vac-bounce-image-in .4s}.vac-bounce-preview-leave-active{animation:vac-bounce-image-in .3s reverse}@keyframes vac-bounce-image-in{0%{transform:scale(.6)}to{transform:scale(1)}}.vac-menu-list{border-radius:4px;display:block;cursor:pointer;background:var(--chat-dropdown-bg-color);padding:6px 0}.vac-menu-list :hover{background:var(--chat-dropdown-bg-color-hover);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-list :not(:hover){transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-item{-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-flex:1;-ms-flex:1 1 100%;flex:1 1 100%;min-height:30px;padding:5px 16px;position:relative;white-space:nowrap;line-height:30px}.vac-menu-options{position:absolute;right:10px;top:20px;z-index:9999;min-width:150px;display:inline-block;border-radius:4px;font-size:14px;color:var(--chat-color);overflow-y:auto;overflow-x:hidden;contain:content;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-app-border{border:var(--chat-border-style)}.vac-app-border-t{border-top:var(--chat-border-style)}.vac-app-border-r{border-right:var(--chat-border-style)}.vac-app-border-b{border-bottom:var(--chat-border-style)}.vac-app-box-shadow{transition:all .5s;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-item-clickable{cursor:pointer}.vac-vertical-center{display:flex;align-items:center;height:100%}.vac-vertical-center .vac-vertical-container{width:100%;text-align:center}.vac-svg-button{max-height:30px;display:flex;cursor:pointer;transition:all .2s}.vac-svg-button:hover{transform:scale(1.1);opacity:.7}.vac-avatar{background-size:cover;background-position:center center;background-repeat:no-repeat;background-color:#ddd;height:42px;width:42px;min-height:42px;min-width:42px;margin-right:15px;border-radius:50%}.vac-blur-loading{filter:blur(3px)}.vac-badge-counter{height:13px;width:auto;min-width:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:3px;font-size:11px;font-weight:500}.vac-text-ellipsis{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-text-bold{font-weight:700}.vac-text-italic{font-style:italic}.vac-text-strike{text-decoration:line-through}.vac-text-underline{text-decoration:underline}.vac-text-inline-code{display:inline-block;font-size:12px;color:var(--chat-markdown-color);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:2px 0;padding:2px 3px}.vac-text-multiline-code{display:block;font-size:12px;color:var(--chat-markdown-color-multi);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:4px 0;padding:7px}.vac-text-tag{color:var(--chat-message-color-tag);cursor:pointer}.vac-file-container{display:flex;align-content:center;justify-content:center;flex-wrap:wrap;text-align:center;background:var(--chat-bg-color-input);border:var(--chat-border-style-input);border-radius:4px;padding:10px}.vac-file-container svg{height:28px;width:28px}.vac-file-container .vac-text-extension{font-size:12px;color:var(--chat-message-color-file-extension);margin-top:-2px}.vac-card-window{width:100%;display:block;max-width:100%;background:var(--chat-content-bg-color);color:var(--chat-color);overflow-wrap:break-word;white-space:normal;border:var(--chat-container-border);border-radius:var(--chat-container-border-radius);box-shadow:var(--chat-container-box-shadow);-webkit-tap-highlight-color:transparent}.vac-card-window *{font-family:inherit}.vac-card-window a{color:#0d579c;font-weight:500}.vac-card-window .vac-chat-container{height:100%;display:flex}.vac-card-window .vac-chat-container input{min-width:10px}.vac-card-window .vac-chat-container textarea,.vac-card-window .vac-chat-container input[type=text],.vac-card-window .vac-chat-container input[type=search]{-webkit-appearance:none}.vac-media-preview{position:fixed;top:0;left:0;z-index:10000000;width:100vw;height:100vh;display:flex;align-items:center;background-color:#000c;outline:none}.vac-media-preview .vac-media-preview-container{height:calc(100% - 140px);width:calc(100% - 80px);padding:70px 40px;margin:0 auto}.vac-media-preview .vac-image-preview{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}.vac-media-preview video{width:100%;height:100%}.vac-media-preview .vac-svg-button{position:absolute;top:30px;right:30px;transform:scale(1.4)}@media only screen and (max-width: 768px){.vac-media-preview .vac-svg-button{top:20px;right:20px;transform:scale(1.2)}.vac-media-preview .vac-media-preview-container{width:calc(100% - 40px);padding:70px 20px}}.vac-col-messages{position:relative;height:100%;flex:1;overflow:hidden;display:flex;flex-flow:column}.vac-col-messages .vac-container-center{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.vac-col-messages .vac-room-empty{font-size:14px;color:#9ca6af;font-style:italic;line-height:20px;white-space:pre-line}.vac-col-messages .vac-room-empty div{padding:0 10%}.vac-col-messages .vac-container-scroll{background:var(--chat-content-bg-color);flex:1;overflow-y:auto;margin-right:1px;margin-top:65px;-webkit-overflow-scrolling:touch}.vac-col-messages .vac-container-scroll.vac-scroll-smooth{scroll-behavior:smooth}.vac-col-messages .vac-container-scroll.vac-no-room-header{margin-top:0}.vac-col-messages .vac-messages-container{padding:0 5px 5px}.vac-col-messages .vac-text-started{font-size:14px;color:var(--chat-message-color-started);font-style:italic;text-align:center;margin-top:25px;margin-bottom:20px}.vac-col-messages .vac-icon-scroll{position:absolute;bottom:80px;right:20px;padding:8px;background:var(--chat-bg-scroll-icon);border-radius:50%;box-shadow:0 1px 1px -1px #0003,0 1px 1px #00000024,0 1px 2px #0000001f;display:flex;cursor:pointer;z-index:10}.vac-col-messages .vac-icon-scroll svg{height:25px;width:25px}.vac-col-messages .vac-messages-count{position:absolute;top:-8px;left:11px;background-color:var(--chat-message-bg-color-scroll-counter);color:var(--chat-message-color-scroll-counter)}.vac-col-messages .vac-messages-hidden{opacity:0}@media only screen and (max-width: 768px){.vac-col-messages .vac-container-scroll{margin-top:50px}.vac-col-messages .vac-text-started{margin-top:20px}.vac-col-messages .vac-icon-scroll{bottom:70px}}.vac-room-header{position:absolute;display:flex;align-items:center;height:64px;width:100%;z-index:10;margin-right:1px;background:var(--chat-header-bg-color);border-top-right-radius:var(--chat-container-border-radius)}.vac-room-header .vac-room-wrapper{display:flex;align-items:center;min-width:0;height:100%;width:100%;padding:0 16px}.vac-room-header .vac-toggle-button{margin-right:15px}.vac-room-header .vac-toggle-button svg{height:26px;width:26px}.vac-room-header .vac-rotate-icon{transform:rotate(180deg)!important}.vac-room-header .vac-rotate-icon-init{transform:rotate(360deg)}.vac-room-header .vac-info-wrapper,.vac-room-header .vac-room-selection{display:flex;align-items:center;min-width:0;width:100%;height:100%}.vac-room-header .vac-room-selection .vac-selection-button{padding:8px 16px;color:var(--chat-color-button);background-color:var(--chat-bg-color-button);border-radius:4px;margin-right:10px;cursor:pointer;transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-button:hover{opacity:.7}.vac-room-header .vac-room-selection .vac-selection-button:active{opacity:.9}.vac-room-header .vac-room-selection .vac-selection-button .vac-selection-button-count{margin-left:6px;opacity:.9}.vac-room-header .vac-room-selection .vac-selection-cancel{display:flex;align-items:center;margin-left:auto;white-space:nowrap;color:var(--chat-color-button-clear);transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-cancel:hover{opacity:.7}.vac-room-header .vac-room-name{font-size:17px;font-weight:500;line-height:22px;color:var(--chat-header-color-name)}.vac-room-header .vac-room-info{font-size:13px;line-height:18px;color:var(--chat-header-color-info)}.vac-room-header .vac-room-options{margin-left:auto}@media only screen and (max-width: 768px){.vac-room-header{height:50px}.vac-room-header .vac-room-wrapper{padding:0 10px}.vac-room-header .vac-room-name{font-size:16px;line-height:22px}.vac-room-header .vac-room-info{font-size:12px;line-height:16px}.vac-room-header .vac-avatar{height:37px;width:37px;min-height:37px;min-width:37px}}.vac-room-footer{width:100%;border-bottom-right-radius:4px;z-index:10}.vac-box-footer{display:flex;position:relative;background:var(--chat-footer-bg-color);padding:10px 8px}.vac-textarea{max-height:300px;overflow-y:auto;height:20px;width:100%;line-height:20px;outline:0;resize:none;border-radius:20px;padding:12px 16px;box-sizing:content-box;font-size:16px;background:var(--chat-bg-color-input);color:var(--chat-color);caret-color:var(--chat-color-caret);border:var(--chat-border-style-input)}.vac-textarea::placeholder{color:var(--chat-color-placeholder);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-textarea-outline{border:1px solid var(--chat-border-color-input-selected);box-shadow:inset 0 0 0 1px var(--chat-border-color-input-selected)}.vac-icon-textarea,.vac-icon-textarea-left{display:flex;align-items:center}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea{margin-left:5px}.vac-icon-textarea-left{display:flex;align-items:center;margin-right:5px}.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea-left .vac-icon-microphone{fill:var(--chat-icon-color-microphone);margin:0 7px}.vac-icon-textarea-left .vac-dot-audio-record{height:15px;width:15px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-record);animation:vac-scaling .8s ease-in-out infinite alternate}@keyframes vac-scaling{0%{transform:scale(1);opacity:.4}to{transform:scale(1.1);opacity:1}}.vac-icon-textarea-left .vac-dot-audio-record-time{font-size:16px;color:var(--chat-color);margin-left:8px;width:45px}.vac-icon-textarea-left .vac-icon-audio-stop,.vac-icon-textarea-left .vac-icon-audio-confirm{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop svg,.vac-icon-textarea-left .vac-icon-audio-confirm svg{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop{margin-right:20px}.vac-icon-textarea-left .vac-icon-audio-stop #vac-icon-close-outline{fill:var(--chat-icon-color-audio-cancel)}.vac-icon-textarea-left .vac-icon-audio-confirm{margin-right:3px;margin-left:12px}.vac-icon-textarea-left .vac-icon-audio-confirm #vac-icon-checkmark{fill:var(--chat-icon-color-audio-confirm)}.vac-send-disabled,.vac-send-disabled svg{cursor:none!important;pointer-events:none!important;transform:none!important}@media only screen and (max-width: 768px){.vac-room-footer{width:100%}.vac-box-footer{padding:7px 2px 7px 7px}.vac-box-footer.vac-box-footer-border{border-top:var(--chat-border-style-input)}.vac-textarea{padding:7px;line-height:18px}.vac-textarea::placeholder{color:transparent}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 5px!important}}@media only screen and (max-height: 768px){.vac-textarea{max-height:120px}}.vac-emojis-container{width:calc(100% - 16px);padding:10px 8px;background:var(--chat-footer-bg-color);display:flex;align-items:center;overflow:auto}.vac-emojis-container .vac-emoji-element{padding:0 8px;font-size:30px;border-radius:4px;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-emojis-container .vac-emoji-element-active{background:var(--chat-footer-bg-color-tag-active)}@media only screen and (max-width: 768px){.vac-emojis-container{width:calc(100% - 10px);padding:7px 5px}.vac-emojis-container .vac-emoji-element{padding:0 7px;font-size:26px}}.vac-reply-container{display:flex;padding:10px 10px 0;background:var(--chat-footer-bg-color);align-items:center;width:calc(100% - 20px)}.vac-reply-container .vac-reply-box{width:100%;overflow:hidden;background:var(--chat-footer-bg-color-reply);border-radius:4px;padding:8px 10px}.vac-reply-container .vac-reply-info{overflow:hidden}.vac-reply-container .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-container .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content);white-space:pre-line}.vac-reply-container .vac-icon-reply{margin-left:10px}.vac-reply-container .vac-icon-reply svg{height:20px;width:20px}.vac-reply-container .vac-image-reply{max-height:100px;max-width:200px;margin:4px 10px 0 0;border-radius:4px}.vac-reply-container .vac-audio-reply{margin-right:10px}.vac-reply-container .vac-file-container{max-width:80px}@media only screen and (max-width: 768px){.vac-reply-container{padding:5px 8px;width:calc(100% - 16px)}}.vac-room-files-container{display:flex;align-items:center;padding:10px 6px 0;background:var(--chat-footer-bg-color)}.vac-room-files-container .vac-files-box{display:flex;overflow:auto;width:calc(100% - 30px)}.vac-room-files-container video{height:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-files-container .vac-icon-close{margin-left:auto}.vac-room-files-container .vac-icon-close svg{height:20px;width:20px}@media only screen and (max-width: 768px){.vac-files-container{padding:6px 4px 4px 2px}}.vac-room-file-container{display:flex;position:relative;margin:0 4px}.vac-room-file-container .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:100px;width:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-file-container .vac-file-container{height:80px;width:80px}.vac-room-file-container .vac-icon-remove{position:absolute;top:6px;left:6px;z-index:10}.vac-room-file-container .vac-icon-remove svg{height:20px;width:20px;border-radius:50%}.vac-room-file-container .vac-icon-remove:before{content:" ";position:absolute;width:100%;height:100%;background:rgba(0,0,0,.5);border-radius:50%;z-index:-1}.vac-tags-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-tags-container .vac-tags-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-tags-container .vac-tags-box-active{background:var(--chat-footer-bg-color-tag-active)}.vac-tags-container .vac-tags-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-tags-container .vac-tags-avatar{height:34px;width:34px;min-height:34px;min-width:34px}.vac-tags-container .vac-tags-username{font-size:14px}@media only screen and (max-width: 768px){.vac-tags-container .vac-tags-box{height:50px}.vac-tags-container .vac-tags-info{padding:0 12px}}.vac-template-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-template-container .vac-template-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-template-container .vac-template-active{background:var(--chat-footer-bg-color-tag-active)}.vac-template-container .vac-template-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-template-container .vac-template-tag{font-size:14px;font-weight:700;margin-right:10px}.vac-template-container .vac-template-text{font-size:14px}@media only screen and (max-width: 768px){.vac-template-container .vac-template-box{height:50px}.vac-template-container .vac-template-info{padding:0 12px}}.vac-rooms-container{display:flex;flex-flow:column;flex:0 0 25%;min-width:260px;max-width:500px;position:relative;background:var(--chat-sidemenu-bg-color);height:100%;border-top-left-radius:var(--chat-container-border-radius);border-bottom-left-radius:var(--chat-container-border-radius)}.vac-rooms-container.vac-rooms-container-full{flex:0 0 100%;max-width:100%}.vac-rooms-container .vac-rooms-empty{font-size:14px;color:#9ca6af;font-style:italic;text-align:center;margin:40px 0;line-height:20px;white-space:pre-line}.vac-rooms-container .vac-room-list{flex:1;position:relative;max-width:100%;cursor:pointer;padding:0 10px 5px;overflow-y:auto}.vac-rooms-container .vac-room-item{border-radius:8px;align-items:center;display:flex;flex:1 1 100%;margin-bottom:5px;padding:0 14px;position:relative;min-height:71px;transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-rooms-container .vac-room-item:hover{background:var(--chat-sidemenu-bg-color-hover)}.vac-rooms-container .vac-room-selected{color:var(--chat-sidemenu-color-active)!important;background:var(--chat-sidemenu-bg-color-active)!important}.vac-rooms-container .vac-room-selected:hover{background:var(--chat-sidemenu-bg-color-active)!important}@media only screen and (max-width: 768px){.vac-rooms-container .vac-room-list{padding:0 7px 5px}.vac-rooms-container .vac-room-item{min-height:60px;padding:0 8px}}.vac-room-container{display:flex;flex:1;align-items:center;width:100%}.vac-room-container .vac-name-container{flex:1}.vac-room-container .vac-title-container{display:flex;align-items:center;line-height:25px}.vac-room-container .vac-state-circle{width:9px;height:9px;border-radius:50%;background-color:var(--chat-room-color-offline);margin-right:6px;transition:.3s}.vac-room-container .vac-state-online{background-color:var(--chat-room-color-online)}.vac-room-container .vac-room-name{flex:1;color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-text-date{margin-left:5px;font-size:11px;color:var(--chat-room-color-timestamp)}.vac-room-container .vac-text-last{display:flex;align-items:center;font-size:12px;line-height:19px;color:var(--chat-room-color-message)}.vac-room-container .vac-message-new{color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-icon-check{display:flex;vertical-align:middle;height:14px;width:14px;margin-top:-2px;margin-right:2px}.vac-room-container .vac-icon-microphone{height:15px;width:15px;vertical-align:middle;margin:-3px 1px 0 -2px;fill:var(--chat-room-color-message)}.vac-room-container .vac-room-options-container{display:flex;margin-left:auto}.vac-room-container .vac-room-badge{background-color:var(--chat-room-bg-color-badge);color:var(--chat-room-color-badge);margin-left:5px}.vac-room-container .vac-list-room-options{height:19px;width:19px;align-items:center;margin-left:5px}.vac-box-empty{margin-top:10px}@media only screen and (max-width: 768px){.vac-box-empty{margin-top:7px}}.vac-box-search{position:sticky;display:flex;align-items:center;height:64px;padding:0 15px}.vac-box-search .vac-icon-search{display:flex;position:absolute;left:30px}.vac-box-search .vac-icon-search svg{width:18px;height:18px}.vac-box-search .vac-input{height:38px;width:100%;background:var(--chat-bg-color-input);color:var(--chat-color);font-size:15px;outline:0;caret-color:var(--chat-color-caret);padding:10px 10px 10px 40px;border:1px solid var(--chat-sidemenu-border-color-search);border-radius:20px}.vac-box-search .vac-input::placeholder{color:var(--chat-color-placeholder)}.vac-box-search .vac-add-icon{margin-left:auto;padding-left:10px}@media only screen and (max-width: 768px){.vac-box-search{height:58px}}.vac-message-wrapper .vac-card-info{border-radius:4px;text-align:center;margin:10px auto;font-size:12px;padding:4px;display:block;overflow-wrap:break-word;position:relative;white-space:normal;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-card-date{max-width:150px;font-weight:500;text-transform:uppercase;color:var(--chat-message-color-date);background-color:var(--chat-message-bg-color-date)}.vac-message-wrapper .vac-card-system{max-width:250px;padding:8px 4px;color:var(--chat-message-color-system);background-color:var(--chat-message-bg-color-system)}.vac-message-wrapper .vac-line-new{color:var(--chat-message-color-new-messages);position:relative;text-align:center;font-size:13px;padding:10px 0}.vac-message-wrapper .vac-line-new:after,.vac-message-wrapper .vac-line-new:before{border-top:1px solid var(--chat-message-color-new-messages);content:"";left:0;position:absolute;top:50%;width:calc(50% - 60px)}.vac-message-wrapper .vac-line-new:before{left:auto;right:0}.vac-message-wrapper .vac-message-box{display:flex;flex:0 0 50%;justify-content:flex-start;line-height:1.4}.vac-message-wrapper .vac-avatar{height:28px;width:28px;min-height:28px;min-width:28px;margin:0 0 2px;align-self:flex-end}.vac-message-wrapper .vac-avatar-current-offset{margin-right:28px}.vac-message-wrapper .vac-avatar-offset{margin-left:28px}.vac-message-wrapper .vac-failure-container{position:relative;align-self:flex-end;height:20px;width:20px;margin:0 0 2px -4px;border-radius:50%;background-color:#f44336}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:6px}.vac-message-wrapper .vac-failure-container .vac-failure-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:15px;font-weight:700}.vac-message-wrapper .vac-message-container{position:relative;padding:2px 10px;align-items:end;min-width:116px;box-sizing:content-box;width:80%;max-width:260px;flex-grow:1}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-offset-current{justify-content:flex-end}.vac-message-wrapper .vac-message-card{background-color:var(--chat-message-bg-color);color:var(--chat-message-color);border-radius:8px;font-size:14px;padding:6px 9px 3px;white-space:pre-line;max-width:100%;-webkit-transition-property:box-shadow,opacity;transition-property:box-shadow,opacity;transition:box-shadow .28s cubic-bezier(.4,0,.2,1);will-change:box-shadow;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-message-highlight{box-shadow:0 1px 2px -1px #0000001a,0 1px 2px -1px #0000001c,0 1px 5px -1px #0000001c}.vac-message-wrapper .vac-message-current{background-color:var(--chat-message-bg-color-me)!important}.vac-message-wrapper .vac-message-deleted{color:var(--chat-message-color-deleted)!important;font-size:13px!important;font-style:italic!important;background-color:var(--chat-message-bg-color-deleted)!important}.vac-message-wrapper .vac-message-selected{background-color:var(--chat-message-bg-color-selected)!important;transition:background-color .2s}.vac-message-wrapper .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:250px;width:250px;max-width:100%;border-radius:4px;margin:4px auto 5px;transition:.4s filter linear}.vac-message-wrapper .vac-text-username{font-size:13px;color:var(--chat-message-color-username);margin-bottom:2px}.vac-message-wrapper .vac-username-reply{margin-bottom:5px}.vac-message-wrapper .vac-text-timestamp{font-size:10px;color:var(--chat-message-color-timestamp);text-align:right}.vac-message-wrapper .vac-progress-time{float:left;margin:-2px 0 0 40px;color:var(--chat-color);font-size:12px}.vac-message-wrapper .vac-icon-edited{-webkit-box-align:center;align-items:center;display:-webkit-inline-box;display:inline-flex;justify-content:center;letter-spacing:normal;line-height:1;text-indent:0;vertical-align:middle;margin:0 4px 2px}.vac-message-wrapper .vac-icon-edited svg{height:12px;width:12px}.vac-message-wrapper .vac-icon-check{height:14px;width:14px;vertical-align:middle;margin:-3px -3px 0 3px}@media only screen and (max-width: 768px){.vac-message-wrapper .vac-message-container{padding:2px 3px 1px}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-message-box{flex:0 0 80%}.vac-message-wrapper .vac-avatar{height:25px;width:25px;min-height:25px;min-width:25px;margin:0 6px 1px 0}.vac-message-wrapper .vac-avatar.vac-avatar-current{margin:0 0 1px 6px}.vac-message-wrapper .vac-avatar-current-offset{margin-right:31px}.vac-message-wrapper .vac-avatar-offset{margin-left:31px}.vac-message-wrapper .vac-failure-container{margin-left:2px}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:0}.vac-message-wrapper .vac-progress-time{margin-left:37px}}.vac-audio-player{display:flex;margin:8px 0 5px}.vac-audio-player .vac-svg-button{max-width:18px;margin-left:7px}@media only screen and (max-width: 768px){.vac-audio-player{margin:4px 0 0}.vac-audio-player .vac-svg-button{max-width:16px;margin-left:5px;flex-grow:0;flex-shrink:0}.vac-audio-player .vac-audio-progress-container{flex-grow:1;flex-shrink:0}}.vac-player-bar{display:flex;align-items:center;max-width:calc(100% - 18px);margin-right:7px;margin-left:20px;width:100%}.vac-player-bar .vac-player-progress{width:100%}.vac-player-bar .vac-player-progress .vac-line-container{position:relative;height:4px;border-radius:5px;background-color:var(--chat-message-bg-color-audio-line);width:100%;display:flex;max-width:190px}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-progress{position:absolute;height:inherit;background-color:var(--chat-message-bg-color-audio-progress);border-radius:inherit}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{position:absolute;top:-5px;margin-left:-7px;height:14px;width:14px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-progress-selector);transition:transform .25s}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot__active{transform:scale(1.2)}@media only screen and (max-width: 768px){.vac-player-bar{margin-right:5px}.vac-player-bar .vac-player-progress .vac-line-container{height:3px}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{height:12px;width:12px;top:-5px;margin-left:-5px}}.vac-message-actions-wrapper .vac-options-container{position:absolute;top:2px;right:10px;height:40px;width:70px;overflow:hidden;border-top-right-radius:8px}.vac-message-actions-wrapper .vac-blur-container{position:absolute;height:100%;width:100%;left:8px;bottom:10px;background:var(--chat-message-bg-color);filter:blur(3px);border-bottom-left-radius:8px}.vac-message-actions-wrapper .vac-options-me{background:var(--chat-message-bg-color-me)}.vac-message-actions-wrapper .vac-message-options{background:var(--chat-icon-bg-dropdown-message);border-radius:50%;position:absolute;top:7px;right:7px}.vac-message-actions-wrapper .vac-message-options svg{height:17px;width:17px;padding:5px;margin:-5px}.vac-message-actions-wrapper .vac-message-emojis{position:absolute;top:6px;right:30px}.vac-message-actions-wrapper .vac-menu-options{right:15px}.vac-message-actions-wrapper .vac-menu-left{right:-118px}@media only screen and (max-width: 768px){.vac-message-actions-wrapper .vac-options-container{right:3px}.vac-message-actions-wrapper .vac-menu-left{right:-50px}}.vac-message-files-container .vac-file-wrapper{position:relative;width:fit-content}.vac-message-files-container .vac-file-wrapper .vac-file-container{height:60px;width:60px;margin:3px 0 5px;cursor:pointer;transition:all .6s}.vac-message-files-container .vac-file-wrapper .vac-file-container:hover{opacity:.85}.vac-message-files-container .vac-file-wrapper .vac-file-container svg{height:30px;width:30px}.vac-message-files-container .vac-file-wrapper .vac-file-container.vac-file-container-progress{background-color:#0000004d}.vac-message-file-container{position:relative;z-index:0}.vac-message-file-container .vac-message-image-container{cursor:pointer}.vac-message-file-container .vac-image-buttons{position:absolute;width:100%;height:100%;border-radius:4px;background:linear-gradient(to bottom,rgba(0,0,0,0) 55%,rgba(0,0,0,.02) 60%,rgba(0,0,0,.05) 65%,rgba(0,0,0,.1) 70%,rgba(0,0,0,.2) 75%,rgba(0,0,0,.3) 80%,rgba(0,0,0,.5) 85%,rgba(0,0,0,.6) 90%,rgba(0,0,0,.7) 95%,rgba(0,0,0,.8) 100%)}.vac-message-file-container .vac-image-buttons svg{height:26px;width:26px}.vac-message-file-container .vac-image-buttons .vac-button-view,.vac-message-file-container .vac-image-buttons .vac-button-download{position:absolute;bottom:6px;left:7px}.vac-message-file-container .vac-image-buttons :first-child{left:40px}.vac-message-file-container .vac-image-buttons .vac-button-view{max-width:18px;bottom:8px}.vac-message-file-container .vac-video-container{width:350px;max-width:100%;margin:4px auto 5px;cursor:pointer}.vac-message-file-container .vac-video-container video{width:100%;height:100%;border-radius:4px}.vac-button-reaction{display:inline-flex;align-items:center;border:var(--chat-message-border-style-reaction);outline:none;background:var(--chat-message-bg-color-reaction);border-radius:4px;margin:4px 2px 0;transition:.3s;padding:0 5px;font-size:18px;line-height:23px}.vac-button-reaction span{font-size:11px;font-weight:500;min-width:7px;color:var(--chat-message-color-reaction-counter)}.vac-button-reaction:hover{border:var(--chat-message-border-style-reaction-hover);background:var(--chat-message-bg-color-reaction-hover);cursor:pointer}.vac-button-reaction.vac-reaction-me{border:var(--chat-message-border-style-reaction-me);background:var(--chat-message-bg-color-reaction-me)}.vac-button-reaction.vac-reaction-me span{color:var(--chat-message-color-reaction-counter-me)}.vac-button-reaction.vac-reaction-me:hover{border:var(--chat-message-border-style-reaction-hover-me);background:var(--chat-message-bg-color-reaction-hover-me)}.vac-reply-message{background:var(--chat-message-bg-color-reply);border-radius:4px;margin:-1px -5px 8px;padding:8px 10px}.vac-reply-message .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-message .vac-image-reply-container{width:70px}.vac-reply-message .vac-image-reply-container .vac-message-image-reply{height:70px;width:70px;margin:4px auto 3px}.vac-reply-message .vac-video-reply-container{width:200px;max-width:100%}.vac-reply-message .vac-video-reply-container video{width:100%;height:100%;border-radius:4px}.vac-reply-message .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content)}.vac-reply-message .vac-file-container{height:60px;width:60px}.vac-emoji-wrapper{position:relative;display:flex}.vac-emoji-wrapper .vac-emoji-reaction svg{height:19px;width:19px}.vac-emoji-wrapper .vac-emoji-picker{position:absolute;z-index:9999;bottom:32px;right:10px;width:300px;padding-top:4px;overflow:scroll;box-sizing:border-box;border-radius:.5rem;background:var(--chat-emoji-bg-color);box-shadow:0 1px 2px -2px #0000001a,0 1px 2px -1px #0000001a,0 1px 2px 1px #0000001a;scrollbar-width:none}.vac-emoji-wrapper .vac-emoji-picker::-webkit-scrollbar{display:none}.vac-emoji-wrapper .vac-emoji-picker.vac-picker-reaction{position:fixed;top:initial;right:initial}.vac-emoji-wrapper .vac-emoji-picker emoji-picker{height:100%;width:100%;--emoji-size: 1.2rem;--background: var(--chat-emoji-bg-color);--emoji-padding: .4rem;--border-color: var(--chat-sidemenu-border-color-search);--button-hover-background: var(--chat-sidemenu-bg-color-hover);--button-active-background: var(--chat-sidemenu-bg-color-hover)}.vac-emoji-teleported .vac-emoji-picker{top:0!important;right:0!important;position:absolute!important;max-height:320px!important}.vac-format-message-wrapper .vac-format-container{display:inline}.vac-format-message-wrapper .vac-icon-deleted{height:14px;width:14px;vertical-align:middle;margin:-2px 2px 0 0;fill:var(--chat-message-color-deleted)}.vac-format-message-wrapper .vac-icon-deleted.vac-icon-deleted-room{margin:-3px 1px 0 0;fill:var(--chat-room-color-message)}.vac-format-message-wrapper .vac-image-link-container{background-color:var(--chat-message-bg-color-media);padding:8px;margin:2px auto;border-radius:4px}.vac-format-message-wrapper .vac-image-link{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:contain;background-position:center center!important;background-repeat:no-repeat!important;height:150px;width:150px;max-width:100%;border-radius:4px;margin:0 auto}.vac-format-message-wrapper .vac-image-link-message{max-width:166px;font-size:12px}.vac-loader-wrapper.vac-container-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-loader-wrapper.vac-container-top{padding:21px}.vac-loader-wrapper.vac-container-top #vac-circle{height:20px;width:20px}.vac-loader-wrapper #vac-circle{margin:auto;height:28px;width:28px;border:3px rgba(0,0,0,.25) solid;border-top:3px var(--chat-color-spinner) solid;border-right:3px var(--chat-color-spinner) solid;border-bottom:3px var(--chat-color-spinner) solid;border-radius:50%;-webkit-animation:vac-spin 1s infinite linear;animation:vac-spin 1s infinite linear}@media only screen and (max-width: 768px){.vac-loader-wrapper #vac-circle{height:24px;width:24px}.vac-loader-wrapper.vac-container-top{padding:18px}.vac-loader-wrapper.vac-container-top #vac-circle{height:16px;width:16px}}@-webkit-keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}@keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}#vac-icon-search{fill:var(--chat-icon-color-search)}#vac-icon-add{fill:var(--chat-icon-color-add)}#vac-icon-toggle{fill:var(--chat-icon-color-toggle)}#vac-icon-menu{fill:var(--chat-icon-color-menu)}#vac-icon-close{fill:var(--chat-icon-color-close)}#vac-icon-close-image{fill:var(--chat-icon-color-close-image)}#vac-icon-file{fill:var(--chat-icon-color-file)}#vac-icon-paperclip{fill:var(--chat-icon-color-paperclip)}#vac-icon-close-outline{fill:var(--chat-icon-color-close-outline)}#vac-icon-close-outline-preview{fill:var(--chat-icon-color-close-preview)}#vac-icon-send{fill:var(--chat-icon-color-send)}#vac-icon-send-disabled{fill:var(--chat-icon-color-send-disabled)}#vac-icon-emoji{fill:var(--chat-icon-color-emoji)}#vac-icon-emoji-reaction{fill:var(--chat-icon-color-emoji-reaction)}#vac-icon-document{fill:var(--chat-icon-color-document)}#vac-icon-pencil{fill:var(--chat-icon-color-pencil)}#vac-icon-checkmark,#vac-icon-double-checkmark{fill:var(--chat-icon-color-checkmark)}#vac-icon-checkmark-seen,#vac-icon-double-checkmark-seen{fill:var(--chat-icon-color-checkmark-seen)}#vac-icon-eye{fill:var(--chat-icon-color-eye)}#vac-icon-dropdown-message{fill:var(--chat-icon-color-dropdown-message)}#vac-icon-dropdown-room{fill:var(--chat-icon-color-dropdown-room)}#vac-icon-dropdown-scroll{fill:var(--chat-icon-color-dropdown-scroll)}#vac-icon-audio-play{fill:var(--chat-icon-color-audio-play)}#vac-icon-audio-pause{fill:var(--chat-icon-color-audio-pause)}.vac-progress-wrapper{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-progress-wrapper circle{transition:stroke-dashoffset .35s;transform:rotate(-90deg);transform-origin:50% 50%}.vac-progress-wrapper .vac-progress-content{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:-1;margin-top:-2px;background-color:#000000b3;border-radius:50%}.vac-progress-wrapper .vac-progress-content .vac-progress-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:700;color:#fff}.vac-progress-wrapper .vac-progress-content .vac-progress-text .vac-progress-pourcent{font-size:9px;font-weight:400}\n';
 const _sfc_main = {
   name: "ChatContainer",
   components: {

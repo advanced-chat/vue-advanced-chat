@@ -877,6 +877,7 @@ export default {
 <style lang="scss" scoped>
 .window-container {
 	width: 100%;
+	max-width: 500px;
 }
 
 .window-mobile {

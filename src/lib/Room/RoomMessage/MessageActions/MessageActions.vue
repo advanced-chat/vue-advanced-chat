@@ -30,7 +30,7 @@
 					</slot>
 				</div>
 
-				<div v-if="isMessageReactions" key="3" v-click-outside="closeEmoji">
+				<div v-if="isMessageReactions" key="3">
 					<slot
 						name="emoji-picker"
 						v-bind="{ emojiOpened }"
@@ -38,12 +38,13 @@
 					>
 						<emoji-picker-container
 							class="vac-message-emojis"
-							:style="{ right: isMessageActions ? '30px' : '5px' }"
 							:emoji-opened="emojiOpened"
+							:style="{ right: isMessageActions ? '30px' : '5px' }"
 							:emoji-reaction="true"
 							:position-right="message.senderId === currentUserId"
 							:message-id="message._id"
 							:emoji-data-source="emojiDataSource"
+							:teleport-target="teleportTarget"
 							@add-emoji="sendMessageReaction"
 							@open-emoji="openEmoji"
 						>
@@ -109,7 +110,8 @@ export default {
 		messageHover: { type: Boolean, required: true },
 		hoverMessageId: { type: [String, Number], default: null },
 		hoverAudioProgress: { type: Boolean, required: true },
-		emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: undefined },
+		teleportTarget: { type: Object, default: undefined }
 	},
 
 	emits: [
