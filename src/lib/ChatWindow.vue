@@ -70,6 +70,7 @@
 				:templates-text="templatesTextCasted"
 				:username-options="usernameOptionsCasted"
 				:emoji-data-source="emojiDataSource"
+				:show-messages-started-text="showMessagesStarted"
 				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
@@ -214,7 +215,8 @@ export default {
 			default: () => ({ minUsers: 3, currentUser: false })
 		},
 		emojiDataSource: { type: String, default: undefined },
-		handleCustomOpenFiles: { type: Boolean, default: false }
+		handleCustomOpenFiles: { type: Boolean, default: false },
+		showMessagesStarted: { type: Boolean, default: true }
 	},
 
 	emits: [

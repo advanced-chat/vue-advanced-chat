@@ -225,7 +225,8 @@ export default {
 		scrollDistance: { type: Number, required: true },
 		templatesText: { type: Array, default: null },
 		usernameOptions: { type: Object, required: true },
-		emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: undefined },
+		showMessagesStartedText: { type: Boolean, default: true }
 	},
 
 	emits: [
@@ -287,7 +288,7 @@ export default {
 			return noRoomSelected
 		},
 		showMessagesStarted() {
-			return this.messages.length && this.messagesLoaded
+			return this.messages.length && this.messagesLoaded && this.showMessagesStartedText
 		}
 	},
 
