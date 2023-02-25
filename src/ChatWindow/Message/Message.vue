@@ -70,6 +70,7 @@
               :room-users="roomUsers"
               :text-formatting="textFormatting"
               :link-options="linkOptions"
+              @show-reply-message="showReplyMessage"
             >
               <template v-for="(i, name) in $scopedSlots" #[name]="data">
                 <slot :name="name" v-bind="data" />
@@ -393,7 +394,10 @@ export default {
 				remove: reaction && reaction.indexOf(this.currentUserId) !== -1
 			})
 			this.messageHover = false
-		}
+		},
+    showReplyMessage(message) {
+      this.$emit('show-reply-message', message)
+    }
 	}
 }
 </script>

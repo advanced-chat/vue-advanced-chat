@@ -69,6 +69,7 @@
 				@send-message-reaction="sendMessageReaction"
 				@typing-message="typingMessage"
 				@textarea-action-handler="textareaActionHandler"
+				@show-reply-message="showReplyMessage"
 			>
 				<template v-for="(i, name) in $scopedSlots" #[name]="data">
 					<slot :name="name" v-bind="data" />
@@ -326,6 +327,9 @@ export default {
 				message,
 				roomId: this.room.roomId
 			})
+		},
+		showReplyMessage(message) {
+			this.$emit('show-reply-message', message)
 		}
 	}
 }
