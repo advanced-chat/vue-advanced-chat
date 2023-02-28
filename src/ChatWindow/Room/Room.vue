@@ -127,6 +127,7 @@
 		</div>
 		<div
 			v-show="Object.keys(room).length && showFooter"
+			v-if="showSendMessage"
 			ref="roomFooter"
 			class="vac-room-footer"
 		>
@@ -351,7 +352,8 @@ export default {
 		linkOptions: { type: Object, required: true },
 		loadingRooms: { type: Boolean, required: true },
 		roomInfo: { type: Function, default: null },
-		textareaAction: { type: Function, default: null }
+		textareaAction: { type: Function, default: null },
+		showSendMessage: { type: Boolean, default: true }
 	},
 
 	data() {

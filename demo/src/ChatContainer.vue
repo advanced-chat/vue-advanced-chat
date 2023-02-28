@@ -51,6 +51,7 @@
       :room-actions="roomActions"
       :menu-actions="menuActions"
       :room-message="roomMessage"
+      :show-send-message="showSendMessage"
       @fetch-more-rooms="fetchMoreRooms"
       @fetch-messages="fetchMessages"
       @send-message="sendMessage"

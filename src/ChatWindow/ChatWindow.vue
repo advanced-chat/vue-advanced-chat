@@ -55,6 +55,7 @@
 				:accepted-files="acceptedFiles"
 				:max-file-size="maxFileSize"
 				:max-files-sum-size="maxFilesSumSize"
+				:show-send-message="showSendMessage"
 				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
@@ -139,7 +140,8 @@ export default {
 		roomMessage: { type: String, default: '' },
 		acceptedFiles: { type: String, default: '*' },
 		maxFileSize: { type: Number, default: null },
-		maxFilesSumSize: { type: Number, default: null }
+		maxFilesSumSize: { type: Number, default: null },
+		showSendMessage: { type: Boolean, default: true }
 	},
 
 	data() {
