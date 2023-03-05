@@ -553,7 +553,7 @@ export default {
 				if (element) {
 					element.classList.add('vac-scroll-smooth')
 					element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
-					setTimeout(() => { if (element) element.classList.remove('vac-scroll-smooth') })
+					setTimeout(() => element.classList.remove('vac-scroll-smooth'))
 				}
 			}, 50)
 		},
