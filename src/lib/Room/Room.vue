@@ -445,8 +445,12 @@ export default {
 			const autoScrollOffset = ref.offsetHeight + 60
 
 			setTimeout(() => {
-				const scrolledUp =
-					this.getBottomScroll(this.$refs.scrollContainer) > autoScrollOffset
+				const scrollContainer = this.$refs.scrollContainer
+				let scrolledUp = false
+
+				if (scrollContainer) {
+					scrolledUp = this.getBottomScroll(scrollContainer) > autoScrollOffset
+				}
 
 				if (message.senderId === this.currentUserId) {
 					if (scrolledUp) {
@@ -546,9 +550,11 @@ export default {
 		scrollToBottom() {
 			setTimeout(() => {
 				const element = this.$refs.scrollContainer
-				element.classList.add('vac-scroll-smooth')
-				element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
-				setTimeout(() => element.classList.remove('vac-scroll-smooth'))
+				if (element) {
+					element.classList.add('vac-scroll-smooth')
+					element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
+					setTimeout(() => element.classList.remove('vac-scroll-smooth'))
+				}
 			}, 50)
 		},
 		openFile({ message, file }) {
@@ -558,9 +564,9 @@ export default {
 			this.$emit('open-user-tag', user)
 		},
 		onDropFiles(event) {
-      if (this.showFiles) {
-        this.droppedFiles = event.dataTransfer.files
-      }
+			if (this.showFiles) {
+				this.droppedFiles = event.dataTransfer.files
+			}
 		}
 	}
 }
