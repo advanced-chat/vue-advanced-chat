@@ -126,8 +126,6 @@
 				<svg-icon name="close-outline" />
 			</div>
 		</div>
-
-		<div>.removedRoomStatus {{ room.removedRoomStatus }}</div>
 		<div
 			v-show="Object.keys(room).length && showFooter"
 			v-if="!room.removedRoomStatus"
