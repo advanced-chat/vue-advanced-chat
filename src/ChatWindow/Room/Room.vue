@@ -83,7 +83,7 @@
 								:link-options="linkOptions"
 								:emojis-list="emojisList"
 								:hide-options="hideOptions"
-								:show-message-option="room.chatRoomStatus"
+								:show-message-option="!room.removedRoomStatus"
 								@message-added="onMessageAdded"
 								@message-action-handler="messageActionHandler"
 								@open-file="openFile"
@@ -126,9 +126,11 @@
 				<svg-icon name="close-outline" />
 			</div>
 		</div>
+
+		<div>.removedRoomStatus {{ room.removedRoomStatus }}</div>
 		<div
 			v-show="Object.keys(room).length && showFooter"
-			v-if="room.chatRoomStatus"
+			v-if="!room.removedRoomStatus"
 			ref="roomFooter"
 			class="vac-room-footer"
 		>
