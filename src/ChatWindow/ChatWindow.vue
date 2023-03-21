@@ -327,6 +327,9 @@ export default {
 				message,
 				roomId: this.room.roomId
 			})
+		},
+		showReplyMessage(message) {
+			this.$emit('show-reply-message', message)
 		}
 	}
 }
