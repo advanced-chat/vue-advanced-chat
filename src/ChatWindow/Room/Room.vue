@@ -83,6 +83,7 @@
 								:link-options="linkOptions"
 								:emojis-list="emojisList"
 								:hide-options="hideOptions"
+								:show-message-option="room.chatRoomStatus"
 								@message-added="onMessageAdded"
 								@message-action-handler="messageActionHandler"
 								@open-file="openFile"
@@ -127,7 +128,7 @@
 		</div>
 		<div
 			v-show="Object.keys(room).length && showFooter"
-			v-if="showSendMessage"
+			v-if="room.chatRoomStatus"
 			ref="roomFooter"
 			class="vac-room-footer"
 		>
@@ -352,8 +353,7 @@ export default {
 		linkOptions: { type: Object, required: true },
 		loadingRooms: { type: Boolean, required: true },
 		roomInfo: { type: Function, default: null },
-		textareaAction: { type: Function, default: null },
-		showSendMessage: { type: Boolean, default: true }
+		textareaAction: { type: Function, default: null }
 	},
 
 	data() {
