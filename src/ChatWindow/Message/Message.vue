@@ -196,7 +196,7 @@
 						</div>
 
 						<message-actions
-							v-if="!isUploading"
+							v-if="!isUploading && showMessageOption"
 							:current-user-id="currentUserId"
 							:message="message"
 							:message-actions="messageActions"
@@ -278,7 +278,8 @@ export default {
 		textFormatting: { type: Boolean, required: true },
 		linkOptions: { type: Object, required: true },
 		emojisList: { type: Object, required: true },
-		hideOptions: { type: Boolean, required: true }
+		hideOptions: { type: Boolean, required: true },
+    showMessageOption: { type: Boolean, default: true }
 	},
 
 	data() {

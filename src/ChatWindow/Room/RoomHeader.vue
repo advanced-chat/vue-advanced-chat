@@ -43,7 +43,7 @@
 				</div>
 				<slot v-if="room.roomId" name="room-options">
 					<div
-						v-if="menuActions.length"
+						v-if="menuActions.length && !room.removedRoomStatus"
 						class="vac-svg-button vac-room-options"
 						@click="menuOpened = !menuOpened"
 					>

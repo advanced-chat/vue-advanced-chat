@@ -83,6 +83,7 @@
 								:link-options="linkOptions"
 								:emojis-list="emojisList"
 								:hide-options="hideOptions"
+								:show-message-option="!room.removedRoomStatus"
 								@message-added="onMessageAdded"
 								@message-action-handler="messageActionHandler"
 								@open-file="openFile"
@@ -127,6 +128,7 @@
 		</div>
 		<div
 			v-show="Object.keys(room).length && showFooter"
+			v-if="!room.removedRoomStatus"
 			ref="roomFooter"
 			class="vac-room-footer"
 		>
