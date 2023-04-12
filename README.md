@@ -10,6 +10,13 @@
 
 ![Demo Image](demo/src/assets/web_mobile.png)
 
+## Sponsors
+
+<div align="center">
+  <img alt="ChatKitty sponsor" src="demo/src/assets/sponsors/chatkitty.png" width="220">
+  <div>Easy to use <a target="_blank" href="https://chatkitty.com">chat API/Server</a> with scalable infrastructure</div> 
+</div>
+
 ## Features
 
 - Compatible with all Javascript frameworks (Vue, Angular, React, etc.) or no framework at all
