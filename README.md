@@ -1,9 +1,9 @@
 <p align="center">
-<a href="https://github.com/antoine92190/vue-advanced-chat/actions/workflows/build.yml"><img src="https://img.shields.io/github/actions/workflow/status/antoine92190/vue-advanced-chat/build.yml?branch=master"></a>
-<a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/dm/vue-advanced-chat.svg"></a>
-<a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/bundlephobia/minzip/vue-advanced-chat"></a>
-<a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/v/vue-advanced-chat.svg"></a>
-<a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/l/vue-advanced-chat.svg"></a>
+  <a href="https://github.com/antoine92190/vue-advanced-chat/actions/workflows/build.yml"><img src="https://img.shields.io/github/actions/workflow/status/antoine92190/vue-advanced-chat/build.yml?branch=master"></a>
+  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/dm/vue-advanced-chat.svg"></a>
+  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/bundlephobia/minzip/vue-advanced-chat"></a>
+  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/v/vue-advanced-chat.svg"></a>
+  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/l/vue-advanced-chat.svg"></a>
 </p>
 
 # vue-advanced-chat
@@ -13,8 +13,10 @@
 ## Sponsors
 
 <div align="center">
-  <img alt="ChatKitty sponsor" src="demo/src/assets/sponsors/chatkitty.png" width="220">
-  <div>Easy to use <a target="_blank" href="https://chatkitty.com">chat API/Server</a> with scalable infrastructure</div> 
+  <a target="_blank" href="https://chatkitty.com">
+    <img alt="ChatKitty sponsor" src="demo/src/assets/sponsors/chatkitty.png" width="220">
+  </a>
+  <div>Easy to use <a target="_blank" href="https://chatkitty.com">chat API/Server</a> with scalable infrastructure</div>
 </div>
 
 ## Features
@@ -216,7 +218,7 @@ If you are using Vue 3, you can pass Array and Object props normally: [Passing D
 Otherwise, you need to pass those props as strings. For example: `[messages]="JSON.stringify(messages)"`
 
 | <div style="width:230px">Prop</div> | Type             | Required | Default                                                                                                           |
-|-------------------------------------| ---------------- | -------- |-------------------------------------------------------------------------------------------------------------------|
+| ----------------------------------- | ---------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
 | `height`                            | String           | -        | `600px`                                                                                                           |
 | `current-user-id`(1)                | String           | `true`   | -                                                                                                                 |
 | `rooms`                             | [String, Array]  | -        | `[]`                                                                                                              |
