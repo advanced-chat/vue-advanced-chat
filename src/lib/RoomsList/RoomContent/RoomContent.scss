@@ -4,6 +4,10 @@
 	align-items: center;
 	width: 100%;
 
+	.vac-format-message-wrapper {
+		max-height: 45px;
+	}
+
 	.vac-name-container {
 		flex: 1;
 	}

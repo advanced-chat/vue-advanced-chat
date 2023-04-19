@@ -3,14 +3,15 @@
 		class="vac-format-message-wrapper"
 		:class="{ 'vac-text-ellipsis': singleLine }"
 	>
-		<div
-			v-if="!textFormatting.disabled"
-			:class="{ 'vac-text-ellipsis': singleLine }"
+		<template
+      v-for="(message, i) in parsedMessage"
+      :key="i"
 		>
+      <div v-if="message.html" v-html="message.value" />
 			<div
-				v-for="(message, i) in linkifiedMessage"
-				:key="i"
+        v-else
 				class="vac-format-container"
+        :class="{ 'vac-text-ellipsis': singleLine }"
 			>
 				<component
 					:is="message.url ? 'a' : 'span'"
@@ -60,19 +61,18 @@
 						</div>
 					</template>
 					<template v-else>
-						<span v-html="message.value" />
+            <span>{{ message.value }}</span>
 					</template>
 				</component>
 			</div>
-		</div>
-		<div v-else v-html="formattedContent" />
+		</template>
 	</div>
 </template>
 
 <script>
 import SvgIcon from '../SvgIcon/SvgIcon'
 
-import formatString from '../../utils/format-string'
+import parseMessage from '../../utils/parse-message'
 import { IMAGE_TYPES } from '../../utils/constants'
 
 export default {
@@ -97,38 +97,47 @@ export default {
 	emits: ['open-user-tag'],
 
 	computed: {
-		linkifiedMessage() {
+		parsedMessage() {
 			if (this.deleted) {
 				return [{ value: this.textMessages.MESSAGE_DELETED }]
 			}
 
-			const message = formatString(
-				this.formatTags(this.content),
-				this.linkify && !this.linkOptions.disabled,
-				this.textFormatting
-			)
+      let options
+      if (this.textFormatting.markdown) {
+        options = { markdown: true }
+      } else if (this.textFormatting.html) {
+        options = { html: true }
+      } else if (!this.textFormatting.disabled) {
+        options = {
+          textFormatting: {
+            linkify: this.linkify,
+            linkOptions: this.linkOptions,
+            singleLine: this.singleLine,
+            users: this.users,
+            ...this.textFormatting
+          }
+        }
+      } else {
+        options = {}
+      }
 
-			message.forEach(m => {
-				m.url = this.checkType(m, 'url')
-				m.bold = this.checkType(m, 'bold')
-				m.italic = this.checkType(m, 'italic')
-				m.strike = this.checkType(m, 'strike')
-				m.underline = this.checkType(m, 'underline')
-				m.inline = this.checkType(m, 'inline-code')
-				m.multiline = this.checkType(m, 'multiline-code')
-				m.tag = this.checkType(m, 'tag')
-				m.image = this.checkImageType(m)
-				m.value = this.replaceEmojiByElement(m.value)
-			})
+      const message = parseMessage(this.content, options)
+
+      message.forEach(m => {
+        m.html = this.checkType(m, 'html')
+        m.unknown = this.checkType(m, 'unknown')
+        m.url = this.checkType(m, 'url')
+        m.bold = this.checkType(m, 'bold')
+        m.italic = this.checkType(m, 'italic')
+        m.strike = this.checkType(m, 'strike')
+        m.underline = this.checkType(m, 'underline')
+        m.inline = this.checkType(m, 'inline-code')
+        m.multiline = this.checkType(m, 'multiline-code')
+        m.tag = this.checkType(m, 'tag')
+        m.image = this.checkImageType(m)
+      })
 
 			return message
-		},
-		formattedContent() {
-			if (this.deleted) {
-				return this.textMessages.MESSAGE_DELETED
-			} else {
-				return this.formatTags(this.content)
-			}
 		}
 	},
 
@@ -162,29 +171,6 @@ export default {
 				image.removeEventListener('load', onLoad)
 			}
 		},
-		formatTags(content) {
-			const firstTag = '<usertag>'
-			const secondTag = '</usertag>'
-
-			const usertags = [...content.matchAll(new RegExp(firstTag, 'gi'))].map(
-				a => a.index
-			)
-
-			const initialContent = content
-
-			usertags.forEach(index => {
-				const userId = initialContent.substring(
-					index + firstTag.length,
-					initialContent.indexOf(secondTag, index)
-				)
-
-				const user = this.users.find(user => user._id === userId)
-
-				content = content.replaceAll(userId, `@${user?.username || 'unknown'}`)
-			})
-
-			return content
-		},
 		openTag(message) {
 			if (!this.singleLine && this.checkType(message, 'tag')) {
 				const user = this.users.find(
@@ -192,33 +178,6 @@ export default {
 				)
 				this.$emit('open-user-tag', user)
 			}
-		},
-		replaceEmojiByElement(value) {
-			let emojiSize
-			if (this.singleLine) {
-				emojiSize = 16
-			} else {
-				const onlyEmojis = this.containsOnlyEmojis()
-				emojiSize = onlyEmojis ? 28 : 20
-			}
-
-			return value.replaceAll(
-				/[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{1F9B0}-\u{1F9B3}]/gu,
-				v => {
-					return `<span style="font-size: ${emojiSize}px">${v}</span>`
-				}
-			)
-		},
-		containsOnlyEmojis() {
-			const onlyEmojis = this.content.replace(
-				new RegExp('[\u0000-\u1eeff]', 'g'),
-				''
-			)
-			const visibleChars = this.content.replace(
-				new RegExp('[\n\rs]+|( )+', 'g'),
-				''
-			)
-			return onlyEmojis.length === visibleChars.length
 		}
 	}
 }
