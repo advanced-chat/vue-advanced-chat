@@ -264,7 +264,7 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `scroll-distance`(25)               | Number           | -        | `60`                                                                                                              |
 | `theme`(26)                         | `light` / `dark` | -        | `light`                                                                                                           |
 | `accepted-files`(27)                | String           | -        | `*`                                                                                                               |
-| `capture-files`(28)                 | String           | -        | `undefined`                                                                                                       |
+| `capture-files`(28)                 | String           | -        | `''`                                                                                                              |
 | `styles`(29)                        | [String, Object] | -        | (26)                                                                                                              |
 | `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                              |
 

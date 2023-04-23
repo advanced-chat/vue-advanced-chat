@@ -204,7 +204,7 @@ export default {
 		roomMessage: { type: String, default: '' },
 		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
-		captureFiles: { type: String, default: undefined },
+		captureFiles: { type: String, default: '' },
 		templatesText: { type: [Array, String], default: () => [] },
 		mediaPreviewEnabled: { type: [Boolean, String], default: true },
 		usernameOptions: {
