@@ -3,15 +3,12 @@
 		class="vac-format-message-wrapper"
 		:class="{ 'vac-text-ellipsis': singleLine }"
 	>
-		<template
-      v-for="(message, i) in parsedMessage"
-      :key="i"
-		>
-      <div v-if="message.html" v-html="message.value" />
+		<template v-for="(message, i) in parsedMessage" :key="i">
+			<div v-if="message.html" v-html="message.value" />
 			<div
-        v-else
+				v-else
 				class="vac-format-container"
-        :class="{ 'vac-text-ellipsis': singleLine }"
+				:class="{ 'vac-text-ellipsis': singleLine }"
 			>
 				<component
 					:is="message.url ? 'a' : 'span'"
@@ -61,7 +58,7 @@
 						</div>
 					</template>
 					<template v-else>
-            <span>{{ message.value }}</span>
+						<span>{{ message.value }}</span>
 					</template>
 				</component>
 			</div>
@@ -102,40 +99,40 @@ export default {
 				return [{ value: this.textMessages.MESSAGE_DELETED }]
 			}
 
-      let options
-      if (this.textFormatting.markdown) {
-        options = { markdown: true }
-      } else if (this.textFormatting.html) {
-        options = { html: true }
-      } else if (!this.textFormatting.disabled) {
-        options = {
-          textFormatting: {
-            linkify: this.linkify,
-            linkOptions: this.linkOptions,
-            singleLine: this.singleLine,
-            users: this.users,
-            ...this.textFormatting
-          }
-        }
-      } else {
-        options = {}
-      }
+			let options
+			if (this.textFormatting.markdown) {
+				options = { markdown: true }
+			} else if (this.textFormatting.html) {
+				options = { html: true }
+			} else if (!this.textFormatting.disabled) {
+				options = {
+					textFormatting: {
+						linkify: this.linkify,
+						linkOptions: this.linkOptions,
+						singleLine: this.singleLine,
+						users: this.users,
+						...this.textFormatting
+					}
+				}
+			} else {
+				options = {}
+			}
 
-      const message = parseMessage(this.content, options)
+			const message = parseMessage(this.content, options)
 
-      message.forEach(m => {
-        m.html = this.checkType(m, 'html')
-        m.unknown = this.checkType(m, 'unknown')
-        m.url = this.checkType(m, 'url')
-        m.bold = this.checkType(m, 'bold')
-        m.italic = this.checkType(m, 'italic')
-        m.strike = this.checkType(m, 'strike')
-        m.underline = this.checkType(m, 'underline')
-        m.inline = this.checkType(m, 'inline-code')
-        m.multiline = this.checkType(m, 'multiline-code')
-        m.tag = this.checkType(m, 'tag')
-        m.image = this.checkImageType(m)
-      })
+			message.forEach(m => {
+				m.html = this.checkType(m, 'html')
+				m.unknown = this.checkType(m, 'unknown')
+				m.url = this.checkType(m, 'url')
+				m.bold = this.checkType(m, 'bold')
+				m.italic = this.checkType(m, 'italic')
+				m.strike = this.checkType(m, 'strike')
+				m.underline = this.checkType(m, 'underline')
+				m.inline = this.checkType(m, 'inline-code')
+				m.multiline = this.checkType(m, 'multiline-code')
+				m.tag = this.checkType(m, 'tag')
+				m.image = this.checkImageType(m)
+			})
 
 			return message
 		}
