@@ -7,7 +7,7 @@ import remarkRehype from 'remark-rehype'
 
 import formatString from './format-string'
 
-const emojiRegex =
+const EMOJI_REGEX =
 	/[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{1F9B0}-\u{1F9B3}]/gu
 
 export default (text, { textFormatting, markdown, html }) => {
@@ -112,11 +112,11 @@ function replaceEmojiByElement(content, value, { singleLine }) {
 		emojiSize = onlyEmojis ? 28 : 20
 	}
 
-	const html = emojiRegex.test(value)
+	const html = EMOJI_REGEX.test(value)
 
 	return {
 		html,
-		value: value.replaceAll(emojiRegex, v => {
+		value: value.replaceAll(EMOJI_REGEX, v => {
 			return `<span style="font-size: ${emojiSize}px">${v}</span>`
 		})
 	}
