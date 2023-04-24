@@ -54,11 +54,11 @@
 							/>
 						</div>
 						<div class="vac-image-link-message">
-							<span>{{ message.value }}</span>
+							{{ message.value }}
 						</div>
 					</template>
 					<template v-else>
-						<span>{{ message.value }}</span>
+						{{ message.value }}
 					</template>
 				</component>
 			</div>
