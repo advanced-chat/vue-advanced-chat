@@ -66,12 +66,7 @@
 	},
 	"dependencies": {
 		"emoji-picker-element": "1.12.1",
-		"linkifyjs": "2.1.9",
-		"rehype-parse": "^8.0.4",
-		"rehype-sanitize": "^5.0.1",
-		"rehype-stringify": "^9.0.3",
-		"remark-parse": "^10.0.1",
-		"remark-rehype": "^10.1.0",
-		"unified": "^10.1.2"
+		"micromark": "^3.1.0",
+		"micromark-extension-gfm": "^2.0.1"
 	}
 }

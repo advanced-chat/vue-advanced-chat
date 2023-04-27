@@ -4,7 +4,7 @@
 		:class="{ 'vac-text-ellipsis': singleLine }"
 	>
 		<template v-for="(message, i) in parsedMessage" :key="i">
-			<div v-if="message.html" v-html="message.value" />
+			<div v-if="message.markdown" class="markdown" v-html="message.value" />
 			<div
 				v-else
 				class="vac-format-container"
@@ -14,12 +14,6 @@
 					:is="message.url ? 'a' : 'span'"
 					:class="{
 						'vac-text-ellipsis': singleLine,
-						'vac-text-bold': message.bold,
-						'vac-text-italic': deleted || message.italic,
-						'vac-text-strike': message.strike,
-						'vac-text-underline': message.underline,
-						'vac-text-inline-code': !singleLine && message.inline,
-						'vac-text-multiline-code': !singleLine && message.multiline,
 						'vac-text-tag': !singleLine && !reply && message.tag
 					}"
 					:href="message.href"
@@ -69,7 +63,7 @@
 <script>
 import SvgIcon from '../SvgIcon/SvgIcon'
 
-import parseMessage from '../../utils/parse-message'
+import markdown from '../../utils/markdown'
 import { IMAGE_TYPES } from '../../utils/constants'
 
 export default {
@@ -100,16 +94,13 @@ export default {
 			}
 
 			let options
-			if (this.textFormatting.markdown) {
-				options = { markdown: true }
-			} else if (this.textFormatting.html) {
-				options = { html: true }
-			} else if (!this.textFormatting.disabled) {
+			if (!this.textFormatting.disabled) {
 				options = {
 					textFormatting: {
 						linkify: this.linkify,
 						linkOptions: this.linkOptions,
 						singleLine: this.singleLine,
+						reply: this.reply,
 						users: this.users,
 						...this.textFormatting
 					}
@@ -118,18 +109,10 @@ export default {
 				options = {}
 			}
 
-			const message = parseMessage(this.content, options)
+			const message = markdown(this.content, options)
 
 			message.forEach(m => {
-				m.html = this.checkType(m, 'html')
-				m.unknown = this.checkType(m, 'unknown')
-				m.url = this.checkType(m, 'url')
-				m.bold = this.checkType(m, 'bold')
-				m.italic = this.checkType(m, 'italic')
-				m.strike = this.checkType(m, 'strike')
-				m.underline = this.checkType(m, 'underline')
-				m.inline = this.checkType(m, 'inline-code')
-				m.multiline = this.checkType(m, 'multiline-code')
+				m.markdown = this.checkType(m, 'markdown')
 				m.tag = this.checkType(m, 'tag')
 				m.image = this.checkImageType(m)
 			})

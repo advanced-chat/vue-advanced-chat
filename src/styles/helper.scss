@@ -84,44 +84,6 @@
 	text-overflow: ellipsis;
 }
 
-.vac-text-bold {
-	font-weight: bold;
-}
-
-.vac-text-italic {
-	font-style: italic;
-}
-
-.vac-text-strike {
-	text-decoration: line-through;
-}
-
-.vac-text-underline {
-	text-decoration: underline;
-}
-
-.vac-text-inline-code {
-	display: inline-block;
-	font-size: 12px;
-	color: var(--chat-markdown-color);
-	background: var(--chat-markdown-bg);
-	border: 1px solid var(--chat-markdown-border);
-	border-radius: 3px;
-	margin: 2px 0;
-	padding: 2px 3px;
-}
-
-.vac-text-multiline-code {
-	display: block;
-	font-size: 12px;
-	color: var(--chat-markdown-color-multi);
-	background: var(--chat-markdown-bg);
-	border: 1px solid var(--chat-markdown-border);
-	border-radius: 3px;
-	margin: 4px 0;
-	padding: 7px;
-}
-
 .vac-text-tag {
 	color: var(--chat-message-color-tag);
 	cursor: pointer;
