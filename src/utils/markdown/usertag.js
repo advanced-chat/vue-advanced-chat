@@ -1,16 +1,23 @@
+import { codes } from '@/utils/markdown/constants'
+
 const usertagTokenize = (effects, ok, nok) => {
 	const inside = code => {
-		if (code === -5 || code === -4 || code === -3 || code === null) {
+		if (
+			code === codes.carriageReturn ||
+			code === codes.lineFeed ||
+			code === codes.carriageReturnLineFeed ||
+			code === codes.eof
+		) {
 			return nok(code)
 		}
 
-		if (code === 92) {
+		if (code === codes.backslash) {
 			effects.consume(code)
 
 			return insideEscape
 		}
 
-		if (code === 62) {
+		if (code === codes.greaterThan) {
 			effects.exit('usertagContent')
 			effects.enter('usertagMarker')
 			effects.consume(code)
@@ -26,7 +33,7 @@ const usertagTokenize = (effects, ok, nok) => {
 	}
 
 	const insideEscape = code => {
-		if (code === 92 || code === 125) {
+		if (code === codes.backslash || code === codes.greaterThan) {
 			effects.consume(code)
 
 			return inside
@@ -36,8 +43,9 @@ const usertagTokenize = (effects, ok, nok) => {
 	}
 
 	const begin = code => {
-		if (code === 64) {
+		if (code === codes.atSign) {
 			effects.consume(code)
+			effects.exit('usertagMarker')
 			effects.enter('usertagContent')
 
 			return inside(code)
@@ -50,7 +58,6 @@ const usertagTokenize = (effects, ok, nok) => {
 		effects.enter('usertag')
 		effects.enter('usertagMarker')
 		effects.consume(code)
-		effects.exit('usertagMarker')
 
 		return begin
 	}
@@ -58,10 +65,17 @@ const usertagTokenize = (effects, ok, nok) => {
 
 const usertagConstruct = { name: 'usertag', tokenize: usertagTokenize }
 
-export const usertag = { text: { 60: usertagConstruct } }
+export const usertag = { text: { 60: usertagConstruct } } // 60 is the less than sign
 
 export const usertagHtml = users => ({
 	enter: {
+		usertagContent(token) {
+			if (!token.end) {
+				this.raw('<@')
+			}
+		}
+	},
+	exit: {
 		usertagContent(token) {
 			const userId = this.sliceSerialize(token)
 
@@ -69,11 +83,8 @@ export const usertagHtml = users => ({
 
 			const user = users.find(user => user._id === userId)
 
-			this.raw(this.encode(user.username))
-		}
-	},
-	exit: {
-		usertag() {
+			this.raw(this.encode(user ? user.username : userId))
+
 			this.tag('</span>')
 		}
 	}

@@ -3,8 +3,6 @@ import { gfm, gfmHtml } from 'micromark-extension-gfm'
 import { underline, underlineHtml } from '@/utils/markdown/underline'
 import { usertag, usertagHtml } from '@/utils/markdown/usertag'
 
-const TAG_REGEX = /<[^>]+>/g
-
 export default (text, { textFormatting }) => {
 	if (textFormatting) {
 		let gfmDisabled = []
@@ -33,10 +31,14 @@ export default (text, { textFormatting }) => {
 		)
 
 		if (textFormatting.singleLine) {
+			const element = document.createElement('div')
+
+			element.innerHTML = markdown
+
 			return [
 				{
 					types: [],
-					value: markdown.replace(TAG_REGEX, '')
+					value: element.innerText
 				}
 			]
 		}

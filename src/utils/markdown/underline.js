@@ -1,16 +1,23 @@
+import { codes } from '@/utils/markdown/constants'
+
 const underlineTokenize = (effects, ok, nok) => {
 	const inside = code => {
-		if (code === -5 || code === -4 || code === -3 || code === null) {
+		if (
+			code === codes.carriageReturn ||
+			code === codes.lineFeed ||
+			code === codes.carriageReturnLineFeed ||
+			code === codes.eof
+		) {
 			return nok(code)
 		}
 
-		if (code === 92) {
+		if (code === codes.backslash) {
 			effects.consume(code)
 
 			return insideEscape
 		}
 
-		if (code === 176) {
+		if (code === codes.degree) {
 			effects.exit('underlineContent')
 			effects.enter('underlineMarker')
 			effects.consume(code)
@@ -26,7 +33,7 @@ const underlineTokenize = (effects, ok, nok) => {
 	}
 
 	const insideEscape = code => {
-		if (code === 92 || code === 125) {
+		if (code === codes.backslash || code === codes.degree) {
 			effects.consume(code)
 
 			return inside
@@ -35,7 +42,7 @@ const underlineTokenize = (effects, ok, nok) => {
 		return inside(code)
 	}
 
-	const begin = code => (code === 176 ? nok(code) : inside(code))
+	const begin = code => (code === codes.degree ? nok(code) : inside(code))
 
 	return code => {
 		effects.enter('underline')
@@ -50,7 +57,7 @@ const underlineTokenize = (effects, ok, nok) => {
 
 const underlineConstruct = { name: 'underline', tokenize: underlineTokenize }
 
-export const underline = { text: { 176: underlineConstruct } }
+export const underline = { text: { 176: underlineConstruct } } // 176 is the degree sign
 
 export const underlineHtml = {
 	enter: {
