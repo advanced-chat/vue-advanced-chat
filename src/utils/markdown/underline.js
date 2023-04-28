@@ -11,8 +11,7 @@ const underlineTokenize = (effects, ok, nok) => {
 		}
 
 		if (code === 176) {
-			effects.exit('chunkString')
-			effects.exit('underlineString')
+			effects.exit('underlineContent')
 			effects.enter('underlineMarker')
 			effects.consume(code)
 			effects.exit('underlineMarker')
@@ -43,8 +42,7 @@ const underlineTokenize = (effects, ok, nok) => {
 		effects.enter('underlineMarker')
 		effects.consume(code)
 		effects.exit('underlineMarker')
-		effects.enter('underlineString')
-		effects.enter('chunkString', { contentType: 'string' })
+		effects.enter('underlineContent', { contentType: 'string' })
 
 		return begin
 	}

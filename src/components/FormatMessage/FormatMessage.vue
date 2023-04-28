@@ -4,7 +4,12 @@
 		:class="{ 'vac-text-ellipsis': singleLine }"
 	>
 		<template v-for="(message, i) in parsedMessage" :key="i">
-			<div v-if="message.markdown" class="markdown" v-html="message.value" />
+			<div
+				v-if="message.markdown"
+				class="markdown"
+				@click="openTag"
+				v-html="message.value"
+			/>
 			<div
 				v-else
 				class="vac-format-container"
@@ -19,7 +24,6 @@
 					:href="message.href"
 					:target="message.href ? linkOptions.target : null"
 					:rel="message.href ? linkOptions.rel : null"
-					@click="openTag(message)"
 				>
 					<template v-if="deleted">
 						<slot
@@ -151,11 +155,10 @@ export default {
 				image.removeEventListener('load', onLoad)
 			}
 		},
-		openTag(message) {
-			if (!this.singleLine && this.checkType(message, 'tag')) {
-				const user = this.users.find(
-					u => message.value.indexOf(u.username) !== -1
-				)
+		openTag(event) {
+			const userId = event.target.getAttribute('data-user-id')
+			if (!this.singleLine && userId) {
+				const user = this.users.find(u => String(u._id) === userId)
 				this.$emit('open-user-tag', user)
 			}
 		}

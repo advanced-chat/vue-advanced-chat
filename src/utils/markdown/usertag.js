@@ -11,7 +11,7 @@ const usertagTokenize = (effects, ok, nok) => {
 		}
 
 		if (code === 62) {
-			effects.exit('usertagString')
+			effects.exit('usertagContent')
 			effects.enter('usertagMarker')
 			effects.consume(code)
 			effects.exit('usertagMarker')
@@ -38,6 +38,7 @@ const usertagTokenize = (effects, ok, nok) => {
 	const begin = code => {
 		if (code === 64) {
 			effects.consume(code)
+			effects.enter('usertagContent')
 
 			return inside(code)
 		}
@@ -50,7 +51,6 @@ const usertagTokenize = (effects, ok, nok) => {
 		effects.enter('usertagMarker')
 		effects.consume(code)
 		effects.exit('usertagMarker')
-		effects.enter('usertagString')
 
 		return begin
 	}
@@ -62,11 +62,11 @@ export const usertag = { text: { 60: usertagConstruct } }
 
 export const usertagHtml = users => ({
 	enter: {
-		usertag(token) {
-			this.tag('<span class="vac-text-tag">')
+		usertagContent(token) {
+			const userId = this.sliceSerialize(token)
 
-			const tag = this.sliceSerialize(token)
-			const userId = tag.substring(2, tag.length - 1)
+			this.tag(`<span class="vac-text-tag" data-user-id="${userId}">`)
+
 			const user = users.find(user => user._id === userId)
 
 			this.raw(this.encode(user.username))
