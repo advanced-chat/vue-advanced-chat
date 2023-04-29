@@ -1,4 +1,4 @@
-import { codes } from '@/utils/markdown/constants'
+import { codes } from './constants'
 
 const underlineTokenize = (effects, ok, nok) => {
 	const inside = code => {

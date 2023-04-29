@@ -1,4 +1,4 @@
-import { codes } from '@/utils/markdown/constants'
+import { codes } from './constants'
 
 const usertagTokenize = (effects, ok, nok) => {
 	const inside = code => {
@@ -83,7 +83,7 @@ export const usertagHtml = users => ({
 
 			const user = users.find(user => user._id === userId)
 
-			this.raw(this.encode(user ? user.username : userId))
+			this.raw(`@${this.encode(user ? user.username : userId)}`)
 
 			this.tag('</span>')
 		}

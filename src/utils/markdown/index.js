@@ -1,7 +1,7 @@
 import { micromark } from 'micromark'
 import { gfm, gfmHtml } from 'micromark-extension-gfm'
-import { underline, underlineHtml } from '@/utils/markdown/underline'
-import { usertag, usertagHtml } from '@/utils/markdown/usertag'
+import { underline, underlineHtml } from './underline'
+import { usertag, usertagHtml } from './usertag'
 
 export default (text, { textFormatting }) => {
 	if (textFormatting) {
