@@ -48,7 +48,7 @@ const usertagTokenize = (effects, ok, nok) => {
 			effects.exit('usertagMarker')
 			effects.enter('usertagContent')
 
-			return inside(code)
+			return inside
 		}
 
 		return nok(code)
