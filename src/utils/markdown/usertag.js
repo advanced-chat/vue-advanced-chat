@@ -68,13 +68,6 @@ const usertagConstruct = { name: 'usertag', tokenize: usertagTokenize }
 export const usertag = { text: { 60: usertagConstruct } } // 60 is the less than sign
 
 export const usertagHtml = users => ({
-	enter: {
-		usertagContent(token) {
-			if (!token.end) {
-				this.raw('<@')
-			}
-		}
-	},
 	exit: {
 		usertagContent(token) {
 			const userId = this.sliceSerialize(token)
