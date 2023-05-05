@@ -183,13 +183,7 @@ export default {
 		textFormatting: {
 			type: [Object, String],
 			default: () => ({
-				disabled: false,
-				italic: '_',
-				bold: '*',
-				strike: '~',
-				underline: '°',
-				multilineCode: '```',
-				inlineCode: '`'
+				disabled: false
 			})
 		},
 		linkOptions: {
