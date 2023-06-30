@@ -39,7 +39,6 @@
 		display: flex;
 		flex: 1 1 100%;
 		margin-bottom: 5px;
-		cursor: pointer;
 		padding: 0 14px;
 		position: relative;
 		min-height: 71px;
@@ -48,7 +47,13 @@
 		&:hover {
 			background: var(--chat-sidemenu-bg-color-hover);
 		}
+
+		&:not(.vac-room-selected) {
+			cursor: pointer;
+		}
 	}
+
+	
 
 	.vac-room-selected {
 		color: var(--chat-sidemenu-color-active) !important;
