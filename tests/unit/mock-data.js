@@ -35,6 +35,7 @@ const singleRoom = false
 const theme = 'dark'
 const acceptedFiles = '*'
 const captureFiles = undefined
+const multipleFiles = true
 const linkOptions = { disabled: false, target: '_blank' }
 const styles = { general: { color: '#0a0a0a' } }
 
@@ -68,6 +69,7 @@ export default {
 	theme,
 	acceptedFiles,
 	captureFiles,
+	multipleFiles,
 	linkOptions,
 	styles
 }
