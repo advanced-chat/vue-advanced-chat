@@ -110,7 +110,7 @@
 					</div>
 				</div>
 				<div class="row">
-					<span v-for="tag in room.tags" :key="tag.name" class="chip primary">
+					<span v-for="tag in room.tags" :key="tag.name" class="chip primary no-padding">
 						{{ tag.content }}
 					</span>
 				</div>
@@ -271,6 +271,10 @@ h3{
 .chip.primary{
 	background: #2F4058;
 	color: whitesmoke;
+}
+
+.no-padding{
+	padding: 0;
 }
 
 .chip.secondary{
