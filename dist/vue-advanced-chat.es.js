@@ -1,16 +1,16 @@
 function makeMap$2(str, expectsLowerCase) {
   const map = /* @__PURE__ */ Object.create(null);
-  const list = str.split(",");
-  for (let i = 0; i < list.length; i++) {
-    map[list[i]] = true;
+  const list2 = str.split(",");
+  for (let i = 0; i < list2.length; i++) {
+    map[list2[i]] = true;
   }
   return expectsLowerCase ? (val) => !!map[val.toLowerCase()] : (val) => !!map[val];
 }
 const NOOP$1 = () => {
 };
 const extend$2 = Object.assign;
-const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
-const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
+const hasOwnProperty$3 = Object.prototype.hasOwnProperty;
+const hasOwn$1 = (val, key) => hasOwnProperty$3.call(val, key);
 const isArray$2 = Array.isArray;
 const isMap$1 = (val) => toTypeString$1(val) === "[object Map]";
 const isFunction$2 = (val) => typeof val === "function";
@@ -351,7 +351,7 @@ function createArrayInstrumentations() {
   return instrumentations;
 }
 function createGetter(isReadonly2 = false, shallow = false) {
-  return function get3(target, key, receiver) {
+  return function get2(target, key, receiver) {
     if (key === "__v_isReactive") {
       return !isReadonly2;
     } else if (key === "__v_isReadonly") {
@@ -507,13 +507,13 @@ function add(value) {
 function set$1$1(key, value) {
   value = toRaw(value);
   const target = toRaw(this);
-  const { has: has2, get: get3 } = getProto(target);
+  const { has: has2, get: get2 } = getProto(target);
   let hadKey = has2.call(target, key);
   if (!hadKey) {
     key = toRaw(key);
     hadKey = has2.call(target, key);
   }
-  const oldValue = get3.call(target, key);
+  const oldValue = get2.call(target, key);
   target.set(key, value);
   if (!hadKey) {
     trigger(target, "add", key, value);
@@ -524,13 +524,13 @@ function set$1$1(key, value) {
 }
 function deleteEntry(key) {
   const target = toRaw(this);
-  const { has: has2, get: get3 } = getProto(target);
+  const { has: has2, get: get2 } = getProto(target);
   let hadKey = has2.call(target, key);
   if (!hadKey) {
     key = toRaw(key);
     hadKey = has2.call(target, key);
   }
-  get3 ? get3.call(target, key) : void 0;
+  get2 ? get2.call(target, key) : void 0;
   const result = target.delete(key);
   if (hadKey) {
     trigger(target, "delete", key, void 0);
@@ -844,9 +844,9 @@ function computed$1(getterOrOptions, debugOptions, isSSR = false) {
 }
 function makeMap$1(str, expectsLowerCase) {
   const map = /* @__PURE__ */ Object.create(null);
-  const list = str.split(",");
-  for (let i = 0; i < list.length; i++) {
-    map[list[i]] = true;
+  const list2 = str.split(",");
+  for (let i = 0; i < list2.length; i++) {
+    map[list2[i]] = true;
   }
   return expectsLowerCase ? (val) => !!map[val.toLowerCase()] : (val) => !!map[val];
 }
@@ -950,8 +950,8 @@ const remove = (arr, el) => {
     arr.splice(i, 1);
   }
 };
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-const hasOwn = (val, key) => hasOwnProperty.call(val, key);
+const hasOwnProperty$2 = Object.prototype.hasOwnProperty;
+const hasOwn = (val, key) => hasOwnProperty$2.call(val, key);
 const isArray$1 = Array.isArray;
 const isMap = (val) => toTypeString(val) === "[object Map]";
 const isSet = (val) => toTypeString(val) === "[object Set]";
@@ -1076,14 +1076,14 @@ function nextTick(fn) {
   return fn ? p2.then(this ? fn.bind(this) : fn) : p2;
 }
 function findInsertionIndex(id) {
-  let start2 = flushIndex + 1;
+  let start = flushIndex + 1;
   let end = queue.length;
-  while (start2 < end) {
-    const middle = start2 + end >>> 1;
+  while (start < end) {
+    const middle = start + end >>> 1;
     const middleJobId = getId(queue[middle]);
-    middleJobId < id ? start2 = middle + 1 : end = middle;
+    middleJobId < id ? start = middle + 1 : end = middle;
   }
-  return start2;
+  return start;
 }
 function queueJob(job) {
   if ((!queue.length || !queue.includes(job, isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex)) && job !== currentPreFlushParentJob) {
@@ -1161,7 +1161,7 @@ function flushJobs(seen) {
   isFlushing = true;
   flushPreFlushCbs(seen);
   queue.sort((a, b) => getId(a) - getId(b));
-  const check2 = NOOP;
+  const check = NOOP;
   try {
     for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
       const job = queue[flushIndex];
@@ -1257,12 +1257,12 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
   cache.set(comp, normalized);
   return normalized;
 }
-function isEmitListener(options2, key) {
-  if (!options2 || !isOn$1(key)) {
+function isEmitListener(options, key) {
+  if (!options || !isOn$1(key)) {
     return false;
   }
   key = key.slice(2).replace(/Once$/, "");
-  return hasOwn(options2, key[0].toLowerCase() + key.slice(1)) || hasOwn(options2, hyphenate$1(key)) || hasOwn(options2, key);
+  return hasOwn(options, key[0].toLowerCase() + key.slice(1)) || hasOwn(options, hyphenate$1(key)) || hasOwn(options, key);
 }
 let currentRenderingInstance = null;
 let currentScopeId = null;
@@ -1298,7 +1298,7 @@ function withCtx(fn, ctx = currentRenderingInstance, isNonScopedSlot) {
 function markAttrsAccessed() {
 }
 function renderComponentRoot(instance2) {
-  const { type: Component, vnode, proxy, withProxy, props, propsOptions: [propsOptions], slots, attrs, emit: emit2, render: render2, renderCache, data, setupState, ctx, inheritAttrs } = instance2;
+  const { type: Component, vnode, proxy, withProxy, props, propsOptions: [propsOptions], slots, attrs, emit, render: render2, renderCache, data, setupState, ctx, inheritAttrs } = instance2;
   let result;
   let fallthroughAttrs;
   const prev = setCurrentRenderingInstance(instance2);
@@ -1317,8 +1317,8 @@ function renderComponentRoot(instance2) {
           return attrs;
         },
         slots,
-        emit: emit2
-      } : { attrs, slots, emit: emit2 }) : render3(props, null));
+        emit
+      } : { attrs, slots, emit }) : render3(props, null));
       fallthroughAttrs = Component.props ? attrs : getFunctionalFallthrough(attrs);
     }
   } catch (err) {
@@ -1470,8 +1470,8 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
   }
 }
 const INITIAL_WATCHER_VALUE = {};
-function watch(source, cb, options2) {
-  return doWatch(source, cb, options2);
+function watch(source, cb, options) {
+  return doWatch(source, cb, options);
 }
 function doWatch(source, cb, { immediate, deep, flush: flush2, onTrack, onTrigger } = EMPTY_OBJ) {
   const instance2 = currentInstance;
@@ -1587,7 +1587,7 @@ function doWatch(source, cb, { immediate, deep, flush: flush2, onTrack, onTrigge
     }
   };
 }
-function instanceWatch(source, value, options2) {
+function instanceWatch(source, value, options) {
   const publicThis = this.proxy;
   const getter = isString$1(source) ? source.includes(".") ? createPathGetter(publicThis, source) : () => publicThis[source] : source.bind(publicThis, publicThis);
   let cb;
@@ -1595,11 +1595,11 @@ function instanceWatch(source, value, options2) {
     cb = value;
   } else {
     cb = value.handler;
-    options2 = value;
+    options = value;
   }
   const cur = currentInstance;
   setCurrentInstance(this);
-  const res = doWatch(getter, cb.bind(publicThis), options2);
+  const res = doWatch(getter, cb.bind(publicThis), options);
   if (cur) {
     setCurrentInstance(cur);
   } else {
@@ -1607,8 +1607,8 @@ function instanceWatch(source, value, options2) {
   }
   return res;
 }
-function createPathGetter(ctx, path) {
-  const segments = path.split(".");
+function createPathGetter(ctx, path2) {
+  const segments = path2.split(".");
   return () => {
     let cur = ctx;
     for (let i = 0; i < segments.length && cur; i++) {
@@ -1644,19 +1644,19 @@ function traverse(value, seen) {
   return value;
 }
 function useTransitionState() {
-  const state2 = {
+  const state = {
     isMounted: false,
     isLeaving: false,
     isUnmounting: false,
     leavingVNodes: /* @__PURE__ */ new Map()
   };
   onMounted(() => {
-    state2.isMounted = true;
+    state.isMounted = true;
   });
   onBeforeUnmount(() => {
-    state2.isUnmounting = true;
+    state.isUnmounting = true;
   });
-  return state2;
+  return state;
 }
 const TransitionHookValidator = [Function, Array];
 const BaseTransitionImpl = {
@@ -1680,7 +1680,7 @@ const BaseTransitionImpl = {
   },
   setup(props, { slots }) {
     const instance2 = getCurrentInstance();
-    const state2 = useTransitionState();
+    const state = useTransitionState();
     let prevTransitionKey;
     return () => {
       const children = slots.default && getTransitionRawChildren(slots.default(), true);
@@ -1698,14 +1698,14 @@ const BaseTransitionImpl = {
       }
       const rawProps = toRaw(props);
       const { mode } = rawProps;
-      if (state2.isLeaving) {
+      if (state.isLeaving) {
         return emptyPlaceholder(child);
       }
       const innerChild = getKeepAliveChild(child);
       if (!innerChild) {
         return emptyPlaceholder(child);
       }
-      const enterHooks = resolveTransitionHooks(innerChild, rawProps, state2, instance2);
+      const enterHooks = resolveTransitionHooks(innerChild, rawProps, state, instance2);
       setTransitionHooks(innerChild, enterHooks);
       const oldChild = instance2.subTree;
       const oldInnerChild = oldChild && getKeepAliveChild(oldChild);
@@ -1721,18 +1721,18 @@ const BaseTransitionImpl = {
         }
       }
       if (oldInnerChild && oldInnerChild.type !== Comment && (!isSameVNodeType(innerChild, oldInnerChild) || transitionKeyChanged)) {
-        const leavingHooks = resolveTransitionHooks(oldInnerChild, rawProps, state2, instance2);
+        const leavingHooks = resolveTransitionHooks(oldInnerChild, rawProps, state, instance2);
         setTransitionHooks(oldInnerChild, leavingHooks);
         if (mode === "out-in") {
-          state2.isLeaving = true;
+          state.isLeaving = true;
           leavingHooks.afterLeave = () => {
-            state2.isLeaving = false;
+            state.isLeaving = false;
             instance2.update();
           };
           return emptyPlaceholder(child);
         } else if (mode === "in-out" && innerChild.type !== Comment) {
           leavingHooks.delayLeave = (el, earlyRemove, delayedLeave) => {
-            const leavingVNodesCache = getLeavingNodesForType(state2, oldInnerChild);
+            const leavingVNodesCache = getLeavingNodesForType(state, oldInnerChild);
             leavingVNodesCache[String(oldInnerChild.key)] = oldInnerChild;
             el._leaveCb = () => {
               earlyRemove();
@@ -1748,8 +1748,8 @@ const BaseTransitionImpl = {
   }
 };
 const BaseTransition = BaseTransitionImpl;
-function getLeavingNodesForType(state2, vnode) {
-  const { leavingVNodes } = state2;
+function getLeavingNodesForType(state, vnode) {
+  const { leavingVNodes } = state;
   let leavingVNodesCache = leavingVNodes.get(vnode.type);
   if (!leavingVNodesCache) {
     leavingVNodesCache = /* @__PURE__ */ Object.create(null);
@@ -1757,10 +1757,10 @@ function getLeavingNodesForType(state2, vnode) {
   }
   return leavingVNodesCache;
 }
-function resolveTransitionHooks(vnode, props, state2, instance2) {
+function resolveTransitionHooks(vnode, props, state, instance2) {
   const { appear, mode, persisted = false, onBeforeEnter, onEnter, onAfterEnter, onEnterCancelled, onBeforeLeave, onLeave, onAfterLeave, onLeaveCancelled, onBeforeAppear, onAppear, onAfterAppear, onAppearCancelled } = props;
   const key = String(vnode.key);
-  const leavingVNodesCache = getLeavingNodesForType(state2, vnode);
+  const leavingVNodesCache = getLeavingNodesForType(state, vnode);
   const callHook2 = (hook, args) => {
     hook && callWithAsyncErrorHandling(hook, instance2, 9, args);
   };
@@ -1779,7 +1779,7 @@ function resolveTransitionHooks(vnode, props, state2, instance2) {
     persisted,
     beforeEnter(el) {
       let hook = onBeforeEnter;
-      if (!state2.isMounted) {
+      if (!state.isMounted) {
         if (appear) {
           hook = onBeforeAppear || onBeforeEnter;
         } else {
@@ -1799,7 +1799,7 @@ function resolveTransitionHooks(vnode, props, state2, instance2) {
       let hook = onEnter;
       let afterHook = onAfterEnter;
       let cancelHook = onEnterCancelled;
-      if (!state2.isMounted) {
+      if (!state.isMounted) {
         if (appear) {
           hook = onAppear || onEnter;
           afterHook = onAfterAppear || onAfterEnter;
@@ -1834,7 +1834,7 @@ function resolveTransitionHooks(vnode, props, state2, instance2) {
       if (el._enterCb) {
         el._enterCb(true);
       }
-      if (state2.isUnmounting) {
+      if (state.isUnmounting) {
         return remove2();
       }
       callHook2(onBeforeLeave, [el]);
@@ -1862,7 +1862,7 @@ function resolveTransitionHooks(vnode, props, state2, instance2) {
       }
     },
     clone(vnode2) {
-      return resolveTransitionHooks(vnode2, props, state2, instance2);
+      return resolveTransitionHooks(vnode2, props, state, instance2);
     }
   };
   return hooks;
@@ -1908,8 +1908,8 @@ function getTransitionRawChildren(children, keepComment = false, parentKey) {
   }
   return ret;
 }
-function defineComponent(options2) {
-  return isFunction$1(options2) ? { setup: options2, name: options2.name } : options2;
+function defineComponent(options) {
+  return isFunction$1(options) ? { setup: options, name: options.name } : options;
 }
 const isAsyncWrapper = (i) => !!i.type.__asyncLoader;
 const isKeepAlive = (vnode) => vnode.type.__isKeepAlive;
@@ -2253,12 +2253,12 @@ const PublicInstanceProxyHandlers = {
 };
 let shouldCacheAccess = true;
 function applyOptions(instance2) {
-  const options2 = resolveMergedOptions(instance2);
+  const options = resolveMergedOptions(instance2);
   const publicThis = instance2.proxy;
   const ctx = instance2.ctx;
   shouldCacheAccess = false;
-  if (options2.beforeCreate) {
-    callHook$1(options2.beforeCreate, instance2, "bc");
+  if (options.beforeCreate) {
+    callHook$1(options.beforeCreate, instance2, "bc");
   }
   const {
     data: dataOptions,
@@ -2288,7 +2288,7 @@ function applyOptions(instance2) {
     components,
     directives,
     filters
-  } = options2;
+  } = options;
   const checkDuplicateProperties = null;
   if (injectOptions) {
     resolveInjections(injectOptions, ctx, checkDuplicateProperties, instance2.appContext.config.unwrapInjectedRef);
@@ -2315,10 +2315,10 @@ function applyOptions(instance2) {
   if (computedOptions) {
     for (const key in computedOptions) {
       const opt = computedOptions[key];
-      const get3 = isFunction$1(opt) ? opt.bind(publicThis, publicThis) : isFunction$1(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
+      const get2 = isFunction$1(opt) ? opt.bind(publicThis, publicThis) : isFunction$1(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
       const set2 = !isFunction$1(opt) && isFunction$1(opt.set) ? opt.set.bind(publicThis) : NOOP;
       const c = computed({
-        get: get3,
+        get: get2,
         set: set2
       });
       Object.defineProperty(ctx, key, {
@@ -2574,7 +2574,7 @@ function initProps(instance2, rawProps, isStateful, isSSR = false) {
 function updateProps(instance2, rawProps, rawPrevProps, optimized) {
   const { props, attrs, vnode: { patchFlag } } = instance2;
   const rawCurrentProps = toRaw(props);
-  const [options2] = instance2.propsOptions;
+  const [options] = instance2.propsOptions;
   let hasAttrsChanged = false;
   if ((optimized || patchFlag > 0) && !(patchFlag & 16)) {
     if (patchFlag & 8) {
@@ -2585,7 +2585,7 @@ function updateProps(instance2, rawProps, rawPrevProps, optimized) {
           continue;
         }
         const value = rawProps[key];
-        if (options2) {
+        if (options) {
           if (hasOwn(attrs, key)) {
             if (value !== attrs[key]) {
               attrs[key] = value;
@@ -2593,7 +2593,7 @@ function updateProps(instance2, rawProps, rawPrevProps, optimized) {
             }
           } else {
             const camelizedKey = camelize$1(key);
-            props[camelizedKey] = resolvePropValue(options2, rawCurrentProps, camelizedKey, value, instance2, false);
+            props[camelizedKey] = resolvePropValue(options, rawCurrentProps, camelizedKey, value, instance2, false);
           }
         } else {
           if (value !== attrs[key]) {
@@ -2610,9 +2610,9 @@ function updateProps(instance2, rawProps, rawPrevProps, optimized) {
     let kebabKey;
     for (const key in rawCurrentProps) {
       if (!rawProps || !hasOwn(rawProps, key) && ((kebabKey = hyphenate$1(key)) === key || !hasOwn(rawProps, kebabKey))) {
-        if (options2) {
+        if (options) {
           if (rawPrevProps && (rawPrevProps[key] !== void 0 || rawPrevProps[kebabKey] !== void 0)) {
-            props[key] = resolvePropValue(options2, rawCurrentProps, key, void 0, instance2, true);
+            props[key] = resolvePropValue(options, rawCurrentProps, key, void 0, instance2, true);
           }
         } else {
           delete props[key];
@@ -2633,7 +2633,7 @@ function updateProps(instance2, rawProps, rawPrevProps, optimized) {
   }
 }
 function setFullProps(instance2, rawProps, props, attrs) {
-  const [options2, needCastKeys] = instance2.propsOptions;
+  const [options, needCastKeys] = instance2.propsOptions;
   let hasAttrsChanged = false;
   let rawCastValues;
   if (rawProps) {
@@ -2643,7 +2643,7 @@ function setFullProps(instance2, rawProps, props, attrs) {
       }
       const value = rawProps[key];
       let camelKey;
-      if (options2 && hasOwn(options2, camelKey = camelize$1(key))) {
+      if (options && hasOwn(options, camelKey = camelize$1(key))) {
         if (!needCastKeys || !needCastKeys.includes(camelKey)) {
           props[camelKey] = value;
         } else {
@@ -2662,13 +2662,13 @@ function setFullProps(instance2, rawProps, props, attrs) {
     const castValues = rawCastValues || EMPTY_OBJ;
     for (let i = 0; i < needCastKeys.length; i++) {
       const key = needCastKeys[i];
-      props[key] = resolvePropValue(options2, rawCurrentProps, key, castValues[key], instance2, !hasOwn(castValues, key));
+      props[key] = resolvePropValue(options, rawCurrentProps, key, castValues[key], instance2, !hasOwn(castValues, key));
     }
   }
   return hasAttrsChanged;
 }
-function resolvePropValue(options2, props, key, value, instance2, isAbsent) {
-  const opt = options2[key];
+function resolvePropValue(options, props, key, value, instance2, isAbsent) {
+  const opt = options[key];
   if (opt != null) {
     const hasDefault = hasOwn(opt, "default");
     if (hasDefault && value === void 0) {
@@ -2903,15 +2903,15 @@ function createAppAPI(render2, hydrate) {
       },
       set config(v) {
       },
-      use(plugin, ...options2) {
+      use(plugin, ...options) {
         if (installedPlugins.has(plugin))
           ;
         else if (plugin && isFunction$1(plugin.install)) {
           installedPlugins.add(plugin);
-          plugin.install(app, ...options2);
+          plugin.install(app, ...options);
         } else if (isFunction$1(plugin)) {
           installedPlugins.add(plugin);
-          plugin(app, ...options2);
+          plugin(app, ...options);
         } else
           ;
         return app;
@@ -3040,13 +3040,13 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
   }
 }
 const queuePostRenderEffect = queueEffectWithSuspense;
-function createRenderer(options2) {
-  return baseCreateRenderer(options2);
+function createRenderer(options) {
+  return baseCreateRenderer(options);
 }
-function baseCreateRenderer(options2, createHydrationFns) {
+function baseCreateRenderer(options, createHydrationFns) {
   const target = getGlobalThis();
   target.__VUE__ = true;
-  const { insert: hostInsert, remove: hostRemove, patchProp: hostPatchProp, createElement: hostCreateElement, createText: hostCreateText, createComment: hostCreateComment, setText: hostSetText, setElementText: hostSetElementText, parentNode: hostParentNode, nextSibling: hostNextSibling, setScopeId: hostSetScopeId = NOOP, cloneNode: hostCloneNode, insertStaticContent: hostInsertStaticContent } = options2;
+  const { insert: hostInsert, remove: hostRemove, patchProp: hostPatchProp, createElement: hostCreateElement, createText: hostCreateText, createComment: hostCreateComment, setText: hostSetText, setElementText: hostSetElementText, parentNode: hostParentNode, nextSibling: hostNextSibling, setScopeId: hostSetScopeId = NOOP, cloneNode: hostCloneNode, insertStaticContent: hostInsertStaticContent } = options;
   const patch = (n1, n2, container, anchor = null, parentComponent = null, parentSuspense = null, isSVG = false, slotScopeIds = null, optimized = !!n2.dynamicChildren) => {
     if (n1 === n2) {
       return;
@@ -3113,20 +3113,20 @@ function baseCreateRenderer(options2, createHydrationFns) {
     [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, isSVG, n2.el, n2.anchor);
   };
   const moveStaticNode = ({ el, anchor }, container, nextSibling) => {
-    let next2;
+    let next;
     while (el && el !== anchor) {
-      next2 = hostNextSibling(el);
+      next = hostNextSibling(el);
       hostInsert(el, container, nextSibling);
-      el = next2;
+      el = next;
     }
     hostInsert(anchor, container, nextSibling);
   };
   const removeStaticNode = ({ el, anchor }) => {
-    let next2;
+    let next;
     while (el && el !== anchor) {
-      next2 = hostNextSibling(el);
+      next = hostNextSibling(el);
       hostRemove(el);
-      el = next2;
+      el = next;
     }
     hostRemove(anchor);
   };
@@ -3202,8 +3202,8 @@ function baseCreateRenderer(options2, createHydrationFns) {
       }
     }
   };
-  const mountChildren = (children, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, start2 = 0) => {
-    for (let i = start2; i < children.length; i++) {
+  const mountChildren = (children, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, start = 0) => {
+    for (let i = start; i < children.length; i++) {
       const child = children[i] = optimized ? cloneIfMounted(children[i]) : normalizeVNode(children[i]);
       patch(null, child, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
     }
@@ -3246,9 +3246,9 @@ function baseCreateRenderer(options2, createHydrationFns) {
           for (let i = 0; i < propsToUpdate.length; i++) {
             const key = propsToUpdate[i];
             const prev = oldProps[key];
-            const next2 = newProps[key];
-            if (next2 !== prev || key === "value") {
-              hostPatchProp(el, key, prev, next2, isSVG, n1.children, parentComponent, parentSuspense, unmountChildren);
+            const next = newProps[key];
+            if (next !== prev || key === "value") {
+              hostPatchProp(el, key, prev, next, isSVG, n1.children, parentComponent, parentSuspense, unmountChildren);
             }
           }
         }
@@ -3281,10 +3281,10 @@ function baseCreateRenderer(options2, createHydrationFns) {
       for (const key in newProps) {
         if (isReservedProp(key))
           continue;
-        const next2 = newProps[key];
+        const next = newProps[key];
         const prev = oldProps[key];
-        if (next2 !== prev && key !== "value") {
-          hostPatchProp(el, key, prev, next2, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
+        if (next !== prev && key !== "value") {
+          hostPatchProp(el, key, prev, next, isSVG, vnode.children, parentComponent, parentSuspense, unmountChildren);
         }
       }
       if (oldProps !== EMPTY_OBJ) {
@@ -3412,21 +3412,21 @@ function baseCreateRenderer(options2, createHydrationFns) {
         instance2.isMounted = true;
         initialVNode = container = anchor = null;
       } else {
-        let { next: next2, bu, u, parent, vnode } = instance2;
-        let originNext = next2;
+        let { next, bu, u, parent, vnode } = instance2;
+        let originNext = next;
         let vnodeHook;
         toggleRecurse(instance2, false);
-        if (next2) {
-          next2.el = vnode.el;
-          updateComponentPreRender(instance2, next2, optimized);
+        if (next) {
+          next.el = vnode.el;
+          updateComponentPreRender(instance2, next, optimized);
         } else {
-          next2 = vnode;
+          next = vnode;
         }
         if (bu) {
           invokeArrayFns(bu);
         }
-        if (vnodeHook = next2.props && next2.props.onVnodeBeforeUpdate) {
-          invokeVNodeHook(vnodeHook, parent, next2, vnode);
+        if (vnodeHook = next.props && next.props.onVnodeBeforeUpdate) {
+          invokeVNodeHook(vnodeHook, parent, next, vnode);
         }
         toggleRecurse(instance2, true);
         const nextTree = renderComponentRoot(instance2);
@@ -3441,15 +3441,15 @@ function baseCreateRenderer(options2, createHydrationFns) {
           parentSuspense,
           isSVG
         );
-        next2.el = nextTree.el;
+        next.el = nextTree.el;
         if (originNext === null) {
           updateHOCHostEl(instance2, nextTree.el);
         }
         if (u) {
           queuePostRenderEffect(u, parentSuspense);
         }
-        if (vnodeHook = next2.props && next2.props.onVnodeUpdated) {
-          queuePostRenderEffect(() => invokeVNodeHook(vnodeHook, parent, next2, vnode), parentSuspense);
+        if (vnodeHook = next.props && next.props.onVnodeUpdated) {
+          queuePostRenderEffect(() => invokeVNodeHook(vnodeHook, parent, next, vnode), parentSuspense);
         }
       }
     };
@@ -3760,11 +3760,11 @@ function baseCreateRenderer(options2, createHydrationFns) {
     }
   };
   const removeFragment = (cur, end) => {
-    let next2;
+    let next;
     while (cur !== end) {
-      next2 = hostNextSibling(cur);
+      next = hostNextSibling(cur);
       hostRemove(cur);
-      cur = next2;
+      cur = next;
     }
     hostRemove(end);
   };
@@ -3791,8 +3791,8 @@ function baseCreateRenderer(options2, createHydrationFns) {
       }
     }
   };
-  const unmountChildren = (children, parentComponent, parentSuspense, doRemove = false, optimized = false, start2 = 0) => {
-    for (let i = start2; i < children.length; i++) {
+  const unmountChildren = (children, parentComponent, parentSuspense, doRemove = false, optimized = false, start = 0) => {
+    for (let i = start; i < children.length; i++) {
       unmount(children[i], parentComponent, parentSuspense, doRemove, optimized);
     }
   };
@@ -3826,7 +3826,7 @@ function baseCreateRenderer(options2, createHydrationFns) {
     pc: patchChildren,
     pbc: patchBlockChildren,
     n: getNextHostNode,
-    o: options2
+    o: options
   };
   let hydrate;
   let hydrateNode;
@@ -4299,11 +4299,11 @@ function handleSetupResult(instance2, setupResult, isSSR) {
     ;
   finishComponentSetup(instance2, isSSR);
 }
-let compile;
+let compile$1;
 function finishComponentSetup(instance2, isSSR, skipOptions) {
   const Component = instance2.type;
   if (!instance2.render) {
-    if (!isSSR && compile && !Component.render) {
+    if (!isSSR && compile$1 && !Component.render) {
       const template = Component.template;
       if (template) {
         const { isCustomElement, compilerOptions } = instance2.appContext.config;
@@ -4312,7 +4312,7 @@ function finishComponentSetup(instance2, isSSR, skipOptions) {
           isCustomElement,
           delimiters
         }, compilerOptions), componentCompilerOptions);
-        Component.render = compile(template, finalCompilerOptions);
+        Component.render = compile$1(template, finalCompilerOptions);
       }
     }
     instance2.render = Component.render || NOOP;
@@ -4394,9 +4394,9 @@ function h(type, propsOrChildren, children) {
 const version = "3.2.37";
 function makeMap(str, expectsLowerCase) {
   const map = /* @__PURE__ */ Object.create(null);
-  const list = str.split(",");
-  for (let i = 0; i < list.length; i++) {
-    map[list[i]] = true;
+  const list2 = str.split(",");
+  for (let i = 0; i < list2.length; i++) {
+    map[list2[i]] = true;
   }
   return expectsLowerCase ? (val) => !!map[val.toLowerCase()] : (val) => !!map[val];
 }
@@ -4472,16 +4472,16 @@ const nodeOps = {
     }
     return cloned;
   },
-  insertStaticContent(content, parent, anchor, isSVG, start2, end) {
+  insertStaticContent(content2, parent, anchor, isSVG, start, end) {
     const before = anchor ? anchor.previousSibling : parent.lastChild;
-    if (start2 && (start2 === end || start2.nextSibling)) {
+    if (start && (start === end || start.nextSibling)) {
       while (true) {
-        parent.insertBefore(start2.cloneNode(true), anchor);
-        if (start2 === end || !(start2 = start2.nextSibling))
+        parent.insertBefore(start.cloneNode(true), anchor);
+        if (start === end || !(start = start.nextSibling))
           break;
       }
     } else {
-      templateContainer.innerHTML = isSVG ? `<svg>${content}</svg>` : content;
+      templateContainer.innerHTML = isSVG ? `<svg>${content2}</svg>` : content2;
       const template = templateContainer.content;
       if (isSVG) {
         const wrapper = template.firstChild;
@@ -4511,16 +4511,16 @@ function patchClass(el, value, isSVG) {
     el.className = value;
   }
 }
-function patchStyle(el, prev, next2) {
+function patchStyle(el, prev, next) {
   const style = el.style;
-  const isCssString = isString(next2);
-  if (next2 && !isCssString) {
-    for (const key in next2) {
-      setStyle(style, key, next2[key]);
+  const isCssString = isString(next);
+  if (next && !isCssString) {
+    for (const key in next) {
+      setStyle(style, key, next[key]);
     }
     if (prev && !isString(prev)) {
       for (const key in prev) {
-        if (next2[key] == null) {
+        if (next[key] == null) {
           setStyle(style, key, "");
         }
       }
@@ -4528,8 +4528,8 @@ function patchStyle(el, prev, next2) {
   } else {
     const currentDisplay = style.display;
     if (isCssString) {
-      if (prev !== next2) {
-        style.cssText = next2;
+      if (prev !== next) {
+        style.cssText = next;
       }
     } else if (prev) {
       el.removeAttribute("style");
@@ -4651,11 +4651,11 @@ const reset = () => {
   cachedNow = 0;
 };
 const getNow = () => cachedNow || (p.then(reset), cachedNow = _getNow());
-function addEventListener$1(el, event, handler, options2) {
-  el.addEventListener(event, handler, options2);
+function addEventListener$1(el, event, handler, options) {
+  el.addEventListener(event, handler, options);
 }
-function removeEventListener(el, event, handler, options2) {
-  el.removeEventListener(event, handler, options2);
+function removeEventListener(el, event, handler, options) {
+  el.removeEventListener(event, handler, options);
 }
 function patchEvent(el, rawName, prevValue, nextValue, instance2 = null) {
   const invokers = el._vei || (el._vei = {});
@@ -4663,28 +4663,28 @@ function patchEvent(el, rawName, prevValue, nextValue, instance2 = null) {
   if (nextValue && existingInvoker) {
     existingInvoker.value = nextValue;
   } else {
-    const [name, options2] = parseName(rawName);
+    const [name, options] = parseName(rawName);
     if (nextValue) {
       const invoker = invokers[rawName] = createInvoker(nextValue, instance2);
-      addEventListener$1(el, name, invoker, options2);
+      addEventListener$1(el, name, invoker, options);
     } else if (existingInvoker) {
-      removeEventListener(el, name, existingInvoker, options2);
+      removeEventListener(el, name, existingInvoker, options);
       invokers[rawName] = void 0;
     }
   }
 }
 const optionsModifierRE = /(?:Once|Passive|Capture)$/;
 function parseName(name) {
-  let options2;
+  let options;
   if (optionsModifierRE.test(name)) {
-    options2 = {};
+    options = {};
     let m;
     while (m = name.match(optionsModifierRE)) {
       name = name.slice(0, name.length - m[0].length);
-      options2[m[0].toLowerCase()] = true;
+      options[m[0].toLowerCase()] = true;
     }
   }
-  return [hyphenate(name.slice(2)), options2];
+  return [hyphenate(name.slice(2)), options];
 }
 function createInvoker(initialValue, instance2) {
   const invoker = (e) => {
@@ -4757,8 +4757,8 @@ function shouldSetAsProp(el, key, value, isSVG) {
   }
   return key in el;
 }
-function defineCustomElement(options2, hydrate) {
-  const Comp = defineComponent(options2);
+function defineCustomElement(options, hydrate) {
+  const Comp = defineComponent(options);
   class VueCustomElement extends VueElement {
     constructor(initialProps) {
       super(Comp, initialProps, hydrate);
@@ -4812,7 +4812,7 @@ class VueElement extends BaseClass {
         this._setAttr(m.attributeName);
       }
     }).observe(this, { attributes: true });
-    const resolve3 = (def2) => {
+    const resolve2 = (def2) => {
       const { props, styles } = def2;
       const hasOptions = !isArray(props);
       const rawKeys = props ? hasOptions ? Object.keys(props) : props : [];
@@ -4847,9 +4847,9 @@ class VueElement extends BaseClass {
     };
     const asyncDef = this._def.__asyncLoader;
     if (asyncDef) {
-      asyncDef().then(resolve3);
+      asyncDef().then(resolve2);
     } else {
-      resolve3(this._def);
+      resolve2(this._def);
     }
   }
   _setAttr(key) {
@@ -4977,13 +4977,13 @@ function resolveTransitionProps(rawProps) {
   const makeEnterHook = (isAppear) => {
     return (el, done) => {
       const hook = isAppear ? onAppear : onEnter;
-      const resolve3 = () => finishEnter(el, isAppear, done);
-      callHook(hook, [el, resolve3]);
+      const resolve2 = () => finishEnter(el, isAppear, done);
+      callHook(hook, [el, resolve2]);
       nextFrame(() => {
         removeTransitionClass(el, isAppear ? appearFromClass : enterFromClass);
         addTransitionClass(el, isAppear ? appearToClass : enterToClass);
         if (!hasExplicitCallback(hook)) {
-          whenTransitionEnds(el, type, enterDuration, resolve3);
+          whenTransitionEnds(el, type, enterDuration, resolve2);
         }
       });
     };
@@ -5003,7 +5003,7 @@ function resolveTransitionProps(rawProps) {
     onAppear: makeEnterHook(true),
     onLeave(el, done) {
       el._isLeaving = true;
-      const resolve3 = () => finishLeave(el, done);
+      const resolve2 = () => finishLeave(el, done);
       addTransitionClass(el, leaveFromClass);
       forceReflow();
       addTransitionClass(el, leaveActiveClass);
@@ -5014,10 +5014,10 @@ function resolveTransitionProps(rawProps) {
         removeTransitionClass(el, leaveFromClass);
         addTransitionClass(el, leaveToClass);
         if (!hasExplicitCallback(onLeave)) {
-          whenTransitionEnds(el, type, leaveDuration, resolve3);
+          whenTransitionEnds(el, type, leaveDuration, resolve2);
         }
       });
-      callHook(onLeave, [el, resolve3]);
+      callHook(onLeave, [el, resolve2]);
     },
     onEnterCancelled(el) {
       finishEnter(el, false);
@@ -5067,11 +5067,11 @@ function nextFrame(cb) {
   });
 }
 let endId = 0;
-function whenTransitionEnds(el, expectedType, explicitTimeout, resolve3) {
+function whenTransitionEnds(el, expectedType, explicitTimeout, resolve2) {
   const id = el._endId = ++endId;
   const resolveIfNotStale = () => {
     if (id === el._endId) {
-      resolve3();
+      resolve2();
     }
   };
   if (explicitTimeout) {
@@ -5079,7 +5079,7 @@ function whenTransitionEnds(el, expectedType, explicitTimeout, resolve3) {
   }
   const { type, timeout, propCount } = getTransitionInfo(el, expectedType);
   if (!type) {
-    return resolve3();
+    return resolve2();
   }
   const endEvent = type + "end";
   let ended = 0;
@@ -5158,7 +5158,7 @@ const TransitionGroupImpl = {
   }),
   setup(props, { slots }) {
     const instance2 = getCurrentInstance();
-    const state2 = useTransitionState();
+    const state = useTransitionState();
     let prevChildren;
     let children;
     onUpdated(() => {
@@ -5200,13 +5200,13 @@ const TransitionGroupImpl = {
       for (let i = 0; i < children.length; i++) {
         const child = children[i];
         if (child.key != null) {
-          setTransitionHooks(child, resolveTransitionHooks(child, cssTransitionProps, state2, instance2));
+          setTransitionHooks(child, resolveTransitionHooks(child, cssTransitionProps, state, instance2));
         }
       }
       if (prevChildren) {
         for (let i = 0; i < prevChildren.length; i++) {
           const child = prevChildren[i];
-          setTransitionHooks(child, resolveTransitionHooks(child, cssTransitionProps, state2, instance2));
+          setTransitionHooks(child, resolveTransitionHooks(child, cssTransitionProps, state, instance2));
           positionMap.set(child, child.el.getBoundingClientRect());
         }
       }
@@ -5363,7 +5363,7 @@ const _sfc_main$q = {
 const _hoisted_1$q = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
 const _hoisted_2$n = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
 const _hoisted_3$j = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
-const _hoisted_4$h = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_4$g = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
 const _hoisted_5$b = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
 const _hoisted_6$7 = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
 function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
@@ -5389,7 +5389,7 @@ function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
           _hoisted_3$j
         ]) : createCommentVNode("", true),
         $props.type === "room-file" ? renderSlot(_ctx.$slots, "spinner-icon-room-file", { key: 3 }, () => [
-          _hoisted_4$h
+          _hoisted_4$g
         ]) : createCommentVNode("", true),
         $props.type === "messages" ? renderSlot(_ctx.$slots, "spinner-icon-messages", { key: 4 }, () => [
           _hoisted_5$b
@@ -5576,887 +5576,6382 @@ function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
   ], 2);
 }
 var RoomsSearch = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$o]]);
-var linkify = {};
-var _class$4 = {};
-_class$4.__esModule = true;
-_class$4.inherits = inherits;
-function inherits(parent, child) {
-  var props = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
-  var extended = Object.create(parent.prototype);
-  for (var p2 in props) {
-    extended[p2] = props[p2];
+const element$1 = document.createElement("i");
+function decodeNamedCharacterReference(value) {
+  const characterReference2 = "&" + value + ";";
+  element$1.innerHTML = characterReference2;
+  const char = element$1.textContent;
+  if (char.charCodeAt(char.length - 1) === 59 && value !== "semi") {
+    return false;
   }
-  extended.constructor = child;
-  child.prototype = extended;
-  return child;
+  return char === characterReference2 ? false : char;
 }
-var options$1 = {};
-options$1.__esModule = true;
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(obj) {
-  return typeof obj;
-} : function(obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
-var defaults = {
-  defaultProtocol: "http",
-  events: null,
-  format: noop$1,
-  formatHref: noop$1,
-  nl2br: false,
-  tagName: "a",
-  target: typeToTarget,
-  validate: true,
-  ignoreTags: [],
-  attributes: null,
-  className: "linkified"
-};
-options$1.defaults = defaults;
-options$1.Options = Options;
-options$1.contains = contains;
-function Options(opts) {
-  opts = opts || {};
-  this.defaultProtocol = opts.hasOwnProperty("defaultProtocol") ? opts.defaultProtocol : defaults.defaultProtocol;
-  this.events = opts.hasOwnProperty("events") ? opts.events : defaults.events;
-  this.format = opts.hasOwnProperty("format") ? opts.format : defaults.format;
-  this.formatHref = opts.hasOwnProperty("formatHref") ? opts.formatHref : defaults.formatHref;
-  this.nl2br = opts.hasOwnProperty("nl2br") ? opts.nl2br : defaults.nl2br;
-  this.tagName = opts.hasOwnProperty("tagName") ? opts.tagName : defaults.tagName;
-  this.target = opts.hasOwnProperty("target") ? opts.target : defaults.target;
-  this.validate = opts.hasOwnProperty("validate") ? opts.validate : defaults.validate;
-  this.ignoreTags = [];
-  this.attributes = opts.attributes || opts.linkAttributes || defaults.attributes;
-  this.className = opts.hasOwnProperty("className") ? opts.className : opts.linkClass || defaults.className;
-  var ignoredTags = opts.hasOwnProperty("ignoreTags") ? opts.ignoreTags : defaults.ignoreTags;
-  for (var i = 0; i < ignoredTags.length; i++) {
-    this.ignoreTags.push(ignoredTags[i].toUpperCase());
-  }
-}
-Options.prototype = {
-  resolve: function resolve2(token) {
-    var href = token.toHref(this.defaultProtocol);
-    return {
-      formatted: this.get("format", token.toString(), token),
-      formattedHref: this.get("formatHref", href, token),
-      tagName: this.get("tagName", href, token),
-      className: this.get("className", href, token),
-      target: this.get("target", href, token),
-      events: this.getObject("events", href, token),
-      attributes: this.getObject("attributes", href, token)
-    };
-  },
-  check: function check(token) {
-    return this.get("validate", token.toString(), token);
-  },
-  get: function get(key, operator, token) {
-    var optionValue = void 0, option = this[key];
-    if (!option) {
-      return option;
-    }
-    switch (typeof option === "undefined" ? "undefined" : _typeof(option)) {
-      case "function":
-        return option(operator, token.type);
-      case "object":
-        optionValue = option.hasOwnProperty(token.type) ? option[token.type] : defaults[key];
-        return typeof optionValue === "function" ? optionValue(operator, token.type) : optionValue;
-    }
-    return option;
-  },
-  getObject: function getObject(key, operator, token) {
-    var option = this[key];
-    return typeof option === "function" ? option(operator, token.type) : option;
-  }
-};
-function contains(arr, value) {
-  for (var i = 0; i < arr.length; i++) {
-    if (arr[i] === value) {
-      return true;
-    }
-  }
-  return false;
-}
-function noop$1(val) {
-  return val;
-}
-function typeToTarget(href, type) {
-  return type === "url" ? "_blank" : null;
-}
-var scanner$1 = {};
-var state = {};
-state.__esModule = true;
-state.stateify = state.TokenState = state.CharacterState = void 0;
-var _class$3 = _class$4;
-function createStateClass() {
-  return function(tClass) {
-    this.j = [];
-    this.T = tClass || null;
-  };
-}
-var BaseState = createStateClass();
-BaseState.prototype = {
-  defaultTransition: false,
-  on: function on(symbol, state2) {
-    if (symbol instanceof Array) {
-      for (var i = 0; i < symbol.length; i++) {
-        this.j.push([symbol[i], state2]);
-      }
-      return this;
-    }
-    this.j.push([symbol, state2]);
-    return this;
-  },
-  next: function next(item) {
-    for (var i = 0; i < this.j.length; i++) {
-      var jump2 = this.j[i];
-      var symbol = jump2[0];
-      var state2 = jump2[1];
-      if (this.test(item, symbol)) {
-        return state2;
-      }
-    }
-    return this.defaultTransition;
-  },
-  accepts: function accepts() {
-    return !!this.T;
-  },
-  test: function test(item, symbol) {
-    return item === symbol;
-  },
-  emit: function emit() {
-    return this.T;
-  }
-};
-var CharacterState = (0, _class$3.inherits)(BaseState, createStateClass(), {
-  test: function test2(character, charOrRegExp) {
-    return character === charOrRegExp || charOrRegExp instanceof RegExp && charOrRegExp.test(character);
-  }
-});
-var TokenState = (0, _class$3.inherits)(BaseState, createStateClass(), {
-  jump: function jump(token) {
-    var tClass = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : null;
-    var state2 = this.next(new token(""));
-    if (state2 === this.defaultTransition) {
-      state2 = new this.constructor(tClass);
-      this.on(token, state2);
-    } else if (tClass) {
-      state2.T = tClass;
-    }
-    return state2;
-  },
-  test: function test3(token, tokenClass) {
-    return token instanceof tokenClass;
-  }
-});
-function stateify(str, start2, endToken, defaultToken) {
-  var i = 0, len = str.length, state2 = start2, newStates = [], nextState = void 0;
-  while (i < len && (nextState = state2.next(str[i]))) {
-    state2 = nextState;
-    i++;
-  }
-  if (i >= len) {
-    return [];
-  }
-  while (i < len - 1) {
-    nextState = new CharacterState(defaultToken);
-    newStates.push(nextState);
-    state2.on(str[i], nextState);
-    state2 = nextState;
-    i++;
-  }
-  nextState = new CharacterState(endToken);
-  newStates.push(nextState);
-  state2.on(str[len - 1], nextState);
-  return newStates;
-}
-state.CharacterState = CharacterState;
-state.TokenState = TokenState;
-state.stateify = stateify;
-var text$1 = {};
-var createTokenClass$1 = {};
-createTokenClass$1.__esModule = true;
-function createTokenClass() {
-  return function(value) {
-    if (value) {
-      this.v = value;
-    }
-  };
-}
-createTokenClass$1.createTokenClass = createTokenClass;
-text$1.__esModule = true;
-text$1.AMPERSAND = text$1.CLOSEPAREN = text$1.CLOSEANGLEBRACKET = text$1.CLOSEBRACKET = text$1.CLOSEBRACE = text$1.OPENPAREN = text$1.OPENANGLEBRACKET = text$1.OPENBRACKET = text$1.OPENBRACE = text$1.WS = text$1.TLD = text$1.SYM = text$1.UNDERSCORE = text$1.SLASH = text$1.MAILTO = text$1.PROTOCOL = text$1.QUERY = text$1.POUND = text$1.PLUS = text$1.NUM = text$1.NL = text$1.LOCALHOST = text$1.PUNCTUATION = text$1.DOT = text$1.COLON = text$1.AT = text$1.DOMAIN = text$1.Base = void 0;
-var _createTokenClass$1 = createTokenClass$1;
-var _class$2 = _class$4;
-var TextToken = (0, _createTokenClass$1.createTokenClass)();
-TextToken.prototype = {
-  toString: function toString() {
-    return this.v + "";
-  }
-};
-function inheritsToken(value) {
-  var props = value ? { v: value } : {};
-  return (0, _class$2.inherits)(TextToken, (0, _createTokenClass$1.createTokenClass)(), props);
-}
-var DOMAIN = inheritsToken();
-var AT = inheritsToken("@");
-var COLON = inheritsToken(":");
-var DOT = inheritsToken(".");
-var PUNCTUATION = inheritsToken();
-var LOCALHOST = inheritsToken();
-var NL$1 = inheritsToken("\n");
-var NUM = inheritsToken();
-var PLUS = inheritsToken("+");
-var POUND = inheritsToken("#");
-var PROTOCOL = inheritsToken();
-var MAILTO = inheritsToken("mailto:");
-var QUERY = inheritsToken("?");
-var SLASH = inheritsToken("/");
-var UNDERSCORE = inheritsToken("_");
-var SYM = inheritsToken();
-var TLD = inheritsToken();
-var WS = inheritsToken();
-var OPENBRACE = inheritsToken("{");
-var OPENBRACKET = inheritsToken("[");
-var OPENANGLEBRACKET = inheritsToken("<");
-var OPENPAREN = inheritsToken("(");
-var CLOSEBRACE = inheritsToken("}");
-var CLOSEBRACKET = inheritsToken("]");
-var CLOSEANGLEBRACKET = inheritsToken(">");
-var CLOSEPAREN = inheritsToken(")");
-var AMPERSAND = inheritsToken("&");
-text$1.Base = TextToken;
-text$1.DOMAIN = DOMAIN;
-text$1.AT = AT;
-text$1.COLON = COLON;
-text$1.DOT = DOT;
-text$1.PUNCTUATION = PUNCTUATION;
-text$1.LOCALHOST = LOCALHOST;
-text$1.NL = NL$1;
-text$1.NUM = NUM;
-text$1.PLUS = PLUS;
-text$1.POUND = POUND;
-text$1.QUERY = QUERY;
-text$1.PROTOCOL = PROTOCOL;
-text$1.MAILTO = MAILTO;
-text$1.SLASH = SLASH;
-text$1.UNDERSCORE = UNDERSCORE;
-text$1.SYM = SYM;
-text$1.TLD = TLD;
-text$1.WS = WS;
-text$1.OPENBRACE = OPENBRACE;
-text$1.OPENBRACKET = OPENBRACKET;
-text$1.OPENANGLEBRACKET = OPENANGLEBRACKET;
-text$1.OPENPAREN = OPENPAREN;
-text$1.CLOSEBRACE = CLOSEBRACE;
-text$1.CLOSEBRACKET = CLOSEBRACKET;
-text$1.CLOSEANGLEBRACKET = CLOSEANGLEBRACKET;
-text$1.CLOSEPAREN = CLOSEPAREN;
-text$1.AMPERSAND = AMPERSAND;
-scanner$1.__esModule = true;
-scanner$1.start = scanner$1.run = scanner$1.TOKENS = scanner$1.State = void 0;
-var _state$1 = state;
-var _text$2 = text$1;
-var TOKENS = _interopRequireWildcard$2(_text$2);
-function _interopRequireWildcard$2(obj) {
-  if (obj && obj.__esModule) {
-    return obj;
+function splice(list2, start, remove2, items) {
+  const end = list2.length;
+  let chunkStart = 0;
+  let parameters;
+  if (start < 0) {
+    start = -start > end ? 0 : end + start;
   } else {
-    var newObj = {};
-    if (obj != null) {
-      for (var key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key))
-          newObj[key] = obj[key];
-      }
-    }
-    newObj.default = obj;
-    return newObj;
+    start = start > end ? end : start;
   }
-}
-var tlds = "aaa|aarp|abarth|abb|abbott|abbvie|abc|able|abogado|abudhabi|ac|academy|accenture|accountant|accountants|aco|active|actor|ad|adac|ads|adult|ae|aeg|aero|aetna|af|afamilycompany|afl|africa|ag|agakhan|agency|ai|aig|aigo|airbus|airforce|airtel|akdn|al|alfaromeo|alibaba|alipay|allfinanz|allstate|ally|alsace|alstom|am|americanexpress|americanfamily|amex|amfam|amica|amsterdam|analytics|android|anquan|anz|ao|aol|apartments|app|apple|aq|aquarelle|ar|arab|aramco|archi|army|arpa|art|arte|as|asda|asia|associates|at|athleta|attorney|au|auction|audi|audible|audio|auspost|author|auto|autos|avianca|aw|aws|ax|axa|az|azure|ba|baby|baidu|banamex|bananarepublic|band|bank|bar|barcelona|barclaycard|barclays|barefoot|bargains|baseball|basketball|bauhaus|bayern|bb|bbc|bbt|bbva|bcg|bcn|bd|be|beats|beauty|beer|bentley|berlin|best|bestbuy|bet|bf|bg|bh|bharti|bi|bible|bid|bike|bing|bingo|bio|biz|bj|black|blackfriday|blanco|blockbuster|blog|bloomberg|blue|bm|bms|bmw|bn|bnl|bnpparibas|bo|boats|boehringer|bofa|bom|bond|boo|book|booking|boots|bosch|bostik|boston|bot|boutique|box|br|bradesco|bridgestone|broadway|broker|brother|brussels|bs|bt|budapest|bugatti|build|builders|business|buy|buzz|bv|bw|by|bz|bzh|ca|cab|cafe|cal|call|calvinklein|cam|camera|camp|cancerresearch|canon|capetown|capital|capitalone|car|caravan|cards|care|career|careers|cars|cartier|casa|case|caseih|cash|casino|cat|catering|catholic|cba|cbn|cbre|cbs|cc|cd|ceb|center|ceo|cern|cf|cfa|cfd|cg|ch|chanel|channel|chase|chat|cheap|chintai|chloe|christmas|chrome|chrysler|church|ci|cipriani|circle|cisco|citadel|citi|citic|city|cityeats|ck|cl|claims|cleaning|click|clinic|clinique|clothing|cloud|club|clubmed|cm|cn|co|coach|codes|coffee|college|cologne|com|comcast|commbank|community|company|compare|computer|comsec|condos|construction|consulting|contact|contractors|cooking|cookingchannel|cool|coop|corsica|country|coupon|coupons|courses|cr|credit|creditcard|creditunion|cricket|crown|crs|cruise|cruises|csc|cu|cuisinella|cv|cw|cx|cy|cymru|cyou|cz|dabur|dad|dance|data|date|dating|datsun|day|dclk|dds|de|deal|dealer|deals|degree|delivery|dell|deloitte|delta|democrat|dental|dentist|desi|design|dev|dhl|diamonds|diet|digital|direct|directory|discount|discover|dish|diy|dj|dk|dm|dnp|do|docs|doctor|dodge|dog|doha|domains|dot|download|drive|dtv|dubai|duck|dunlop|duns|dupont|durban|dvag|dvr|dz|earth|eat|ec|eco|edeka|edu|education|ee|eg|email|emerck|energy|engineer|engineering|enterprises|epost|epson|equipment|er|ericsson|erni|es|esq|estate|esurance|et|etisalat|eu|eurovision|eus|events|everbank|exchange|expert|exposed|express|extraspace|fage|fail|fairwinds|faith|family|fan|fans|farm|farmers|fashion|fast|fedex|feedback|ferrari|ferrero|fi|fiat|fidelity|fido|film|final|finance|financial|fire|firestone|firmdale|fish|fishing|fit|fitness|fj|fk|flickr|flights|flir|florist|flowers|fly|fm|fo|foo|food|foodnetwork|football|ford|forex|forsale|forum|foundation|fox|fr|free|fresenius|frl|frogans|frontdoor|frontier|ftr|fujitsu|fujixerox|fun|fund|furniture|futbol|fyi|ga|gal|gallery|gallo|gallup|game|games|gap|garden|gb|gbiz|gd|gdn|ge|gea|gent|genting|george|gf|gg|ggee|gh|gi|gift|gifts|gives|giving|gl|glade|glass|gle|global|globo|gm|gmail|gmbh|gmo|gmx|gn|godaddy|gold|goldpoint|golf|goo|goodhands|goodyear|goog|google|gop|got|gov|gp|gq|gr|grainger|graphics|gratis|green|gripe|grocery|group|gs|gt|gu|guardian|gucci|guge|guide|guitars|guru|gw|gy|hair|hamburg|hangout|haus|hbo|hdfc|hdfcbank|health|healthcare|help|helsinki|here|hermes|hgtv|hiphop|hisamitsu|hitachi|hiv|hk|hkt|hm|hn|hockey|holdings|holiday|homedepot|homegoods|homes|homesense|honda|honeywell|horse|hospital|host|hosting|hot|hoteles|hotels|hotmail|house|how|hr|hsbc|ht|htc|hu|hughes|hyatt|hyundai|ibm|icbc|ice|icu|id|ie|ieee|ifm|ikano|il|im|imamat|imdb|immo|immobilien|in|industries|infiniti|info|ing|ink|institute|insurance|insure|int|intel|international|intuit|investments|io|ipiranga|iq|ir|irish|is|iselect|ismaili|ist|istanbul|it|itau|itv|iveco|iwc|jaguar|java|jcb|jcp|je|jeep|jetzt|jewelry|jio|jlc|jll|jm|jmp|jnj|jo|jobs|joburg|jot|joy|jp|jpmorgan|jprs|juegos|juniper|kaufen|kddi|ke|kerryhotels|kerrylogistics|kerryproperties|kfh|kg|kh|ki|kia|kim|kinder|kindle|kitchen|kiwi|km|kn|koeln|komatsu|kosher|kp|kpmg|kpn|kr|krd|kred|kuokgroup|kw|ky|kyoto|kz|la|lacaixa|ladbrokes|lamborghini|lamer|lancaster|lancia|lancome|land|landrover|lanxess|lasalle|lat|latino|latrobe|law|lawyer|lb|lc|lds|lease|leclerc|lefrak|legal|lego|lexus|lgbt|li|liaison|lidl|life|lifeinsurance|lifestyle|lighting|like|lilly|limited|limo|lincoln|linde|link|lipsy|live|living|lixil|lk|loan|loans|locker|locus|loft|lol|london|lotte|lotto|love|lpl|lplfinancial|lr|ls|lt|ltd|ltda|lu|lundbeck|lupin|luxe|luxury|lv|ly|ma|macys|madrid|maif|maison|makeup|man|management|mango|map|market|marketing|markets|marriott|marshalls|maserati|mattel|mba|mc|mckinsey|md|me|med|media|meet|melbourne|meme|memorial|men|menu|meo|merckmsd|metlife|mg|mh|miami|microsoft|mil|mini|mint|mit|mitsubishi|mk|ml|mlb|mls|mm|mma|mn|mo|mobi|mobile|mobily|moda|moe|moi|mom|monash|money|monster|mopar|mormon|mortgage|moscow|moto|motorcycles|mov|movie|movistar|mp|mq|mr|ms|msd|mt|mtn|mtr|mu|museum|mutual|mv|mw|mx|my|mz|na|nab|nadex|nagoya|name|nationwide|natura|navy|nba|nc|ne|nec|net|netbank|netflix|network|neustar|new|newholland|news|next|nextdirect|nexus|nf|nfl|ng|ngo|nhk|ni|nico|nike|nikon|ninja|nissan|nissay|nl|no|nokia|northwesternmutual|norton|now|nowruz|nowtv|np|nr|nra|nrw|ntt|nu|nyc|nz|obi|observer|off|office|okinawa|olayan|olayangroup|oldnavy|ollo|om|omega|one|ong|onl|online|onyourside|ooo|open|oracle|orange|org|organic|origins|osaka|otsuka|ott|ovh|pa|page|panasonic|panerai|paris|pars|partners|parts|party|passagens|pay|pccw|pe|pet|pf|pfizer|pg|ph|pharmacy|phd|philips|phone|photo|photography|photos|physio|piaget|pics|pictet|pictures|pid|pin|ping|pink|pioneer|pizza|pk|pl|place|play|playstation|plumbing|plus|pm|pn|pnc|pohl|poker|politie|porn|post|pr|pramerica|praxi|press|prime|pro|prod|productions|prof|progressive|promo|properties|property|protection|pru|prudential|ps|pt|pub|pw|pwc|py|qa|qpon|quebec|quest|qvc|racing|radio|raid|re|read|realestate|realtor|realty|recipes|red|redstone|redumbrella|rehab|reise|reisen|reit|reliance|ren|rent|rentals|repair|report|republican|rest|restaurant|review|reviews|rexroth|rich|richardli|ricoh|rightathome|ril|rio|rip|rmit|ro|rocher|rocks|rodeo|rogers|room|rs|rsvp|ru|rugby|ruhr|run|rw|rwe|ryukyu|sa|saarland|safe|safety|sakura|sale|salon|samsclub|samsung|sandvik|sandvikcoromant|sanofi|sap|sapo|sarl|sas|save|saxo|sb|sbi|sbs|sc|sca|scb|schaeffler|schmidt|scholarships|school|schule|schwarz|science|scjohnson|scor|scot|sd|se|search|seat|secure|security|seek|select|sener|services|ses|seven|sew|sex|sexy|sfr|sg|sh|shangrila|sharp|shaw|shell|shia|shiksha|shoes|shop|shopping|shouji|show|showtime|shriram|si|silk|sina|singles|site|sj|sk|ski|skin|sky|skype|sl|sling|sm|smart|smile|sn|sncf|so|soccer|social|softbank|software|sohu|solar|solutions|song|sony|soy|space|spiegel|spot|spreadbetting|sr|srl|srt|st|stada|staples|star|starhub|statebank|statefarm|statoil|stc|stcgroup|stockholm|storage|store|stream|studio|study|style|su|sucks|supplies|supply|support|surf|surgery|suzuki|sv|swatch|swiftcover|swiss|sx|sy|sydney|symantec|systems|sz|tab|taipei|talk|taobao|target|tatamotors|tatar|tattoo|tax|taxi|tc|tci|td|tdk|team|tech|technology|tel|telecity|telefonica|temasek|tennis|teva|tf|tg|th|thd|theater|theatre|tiaa|tickets|tienda|tiffany|tips|tires|tirol|tj|tjmaxx|tjx|tk|tkmaxx|tl|tm|tmall|tn|to|today|tokyo|tools|top|toray|toshiba|total|tours|town|toyota|toys|tr|trade|trading|training|travel|travelchannel|travelers|travelersinsurance|trust|trv|tt|tube|tui|tunes|tushu|tv|tvs|tw|tz|ua|ubank|ubs|uconnect|ug|uk|unicom|university|uno|uol|ups|us|uy|uz|va|vacations|vana|vanguard|vc|ve|vegas|ventures|verisign|versicherung|vet|vg|vi|viajes|video|vig|viking|villas|vin|vip|virgin|visa|vision|vista|vistaprint|viva|vivo|vlaanderen|vn|vodka|volkswagen|volvo|vote|voting|voto|voyage|vu|vuelos|wales|walmart|walter|wang|wanggou|warman|watch|watches|weather|weatherchannel|webcam|weber|website|wed|wedding|weibo|weir|wf|whoswho|wien|wiki|williamhill|win|windows|wine|winners|wme|wolterskluwer|woodside|work|works|world|wow|ws|wtc|wtf|xbox|xerox|xfinity|xihuan|xin|xn--11b4c3d|xn--1ck2e1b|xn--1qqw23a|xn--2scrj9c|xn--30rr7y|xn--3bst00m|xn--3ds443g|xn--3e0b707e|xn--3hcrj9c|xn--3oq18vl8pn36a|xn--3pxu8k|xn--42c2d9a|xn--45br5cyl|xn--45brj9c|xn--45q11c|xn--4gbrim|xn--54b7fta0cc|xn--55qw42g|xn--55qx5d|xn--5su34j936bgsg|xn--5tzm5g|xn--6frz82g|xn--6qq986b3xl|xn--80adxhks|xn--80ao21a|xn--80aqecdr1a|xn--80asehdb|xn--80aswg|xn--8y0a063a|xn--90a3ac|xn--90ae|xn--90ais|xn--9dbq2a|xn--9et52u|xn--9krt00a|xn--b4w605ferd|xn--bck1b9a5dre4c|xn--c1avg|xn--c2br7g|xn--cck2b3b|xn--cg4bki|xn--clchc0ea0b2g2a9gcd|xn--czr694b|xn--czrs0t|xn--czru2d|xn--d1acj3b|xn--d1alf|xn--e1a4c|xn--eckvdtc9d|xn--efvy88h|xn--estv75g|xn--fct429k|xn--fhbei|xn--fiq228c5hs|xn--fiq64b|xn--fiqs8s|xn--fiqz9s|xn--fjq720a|xn--flw351e|xn--fpcrj9c3d|xn--fzc2c9e2c|xn--fzys8d69uvgm|xn--g2xx48c|xn--gckr3f0f|xn--gecrj9c|xn--gk3at1e|xn--h2breg3eve|xn--h2brj9c|xn--h2brj9c8c|xn--hxt814e|xn--i1b6b1a6a2e|xn--imr513n|xn--io0a7i|xn--j1aef|xn--j1amh|xn--j6w193g|xn--jlq61u9w7b|xn--jvr189m|xn--kcrx77d1x4a|xn--kprw13d|xn--kpry57d|xn--kpu716f|xn--kput3i|xn--l1acc|xn--lgbbat1ad8j|xn--mgb9awbf|xn--mgba3a3ejt|xn--mgba3a4f16a|xn--mgba7c0bbn0a|xn--mgbaakc7dvf|xn--mgbaam7a8h|xn--mgbab2bd|xn--mgbai9azgqp6j|xn--mgbayh7gpa|xn--mgbb9fbpob|xn--mgbbh1a|xn--mgbbh1a71e|xn--mgbc0a9azcg|xn--mgbca7dzdo|xn--mgberp4a5d4ar|xn--mgbgu82a|xn--mgbi4ecexp|xn--mgbpl2fh|xn--mgbt3dhd|xn--mgbtx2b|xn--mgbx4cd0ab|xn--mix891f|xn--mk1bu44c|xn--mxtq1m|xn--ngbc5azd|xn--ngbe9e0a|xn--ngbrx|xn--node|xn--nqv7f|xn--nqv7fs00ema|xn--nyqy26a|xn--o3cw4h|xn--ogbpf8fl|xn--p1acf|xn--p1ai|xn--pbt977c|xn--pgbs0dh|xn--pssy2u|xn--q9jyb4c|xn--qcka1pmc|xn--qxam|xn--rhqv96g|xn--rovu88b|xn--rvc1e0am3e|xn--s9brj9c|xn--ses554g|xn--t60b56a|xn--tckwe|xn--tiq49xqyj|xn--unup4y|xn--vermgensberater-ctb|xn--vermgensberatung-pwb|xn--vhquv|xn--vuq861b|xn--w4r85el8fhu5dnra|xn--w4rs40l|xn--wgbh1c|xn--wgbl6a|xn--xhq521b|xn--xkc2al3hye2a|xn--xkc2dl3a5ee0h|xn--y9a3aq|xn--yfro4i67o|xn--ygbi2ammx|xn--zfr164b|xperia|xxx|xyz|yachts|yahoo|yamaxun|yandex|ye|yodobashi|yoga|yokohama|you|youtube|yt|yun|za|zappos|zara|zero|zip|zippo|zm|zone|zuerich|zw".split("|");
-var NUMBERS = "0123456789".split("");
-var ALPHANUM = "0123456789abcdefghijklmnopqrstuvwxyz".split("");
-var WHITESPACE = [" ", "\f", "\r", "	", "\v", "\xA0", "\u1680", "\u180E"];
-var domainStates = [];
-var makeState$1 = function makeState(tokenClass) {
-  return new _state$1.CharacterState(tokenClass);
-};
-var S_START$1 = makeState$1();
-var S_NUM = makeState$1(_text$2.NUM);
-var S_DOMAIN$1 = makeState$1(_text$2.DOMAIN);
-var S_DOMAIN_HYPHEN = makeState$1();
-var S_WS = makeState$1(_text$2.WS);
-S_START$1.on("@", makeState$1(_text$2.AT)).on(".", makeState$1(_text$2.DOT)).on("+", makeState$1(_text$2.PLUS)).on("#", makeState$1(_text$2.POUND)).on("?", makeState$1(_text$2.QUERY)).on("/", makeState$1(_text$2.SLASH)).on("_", makeState$1(_text$2.UNDERSCORE)).on(":", makeState$1(_text$2.COLON)).on("{", makeState$1(_text$2.OPENBRACE)).on("[", makeState$1(_text$2.OPENBRACKET)).on("<", makeState$1(_text$2.OPENANGLEBRACKET)).on("(", makeState$1(_text$2.OPENPAREN)).on("}", makeState$1(_text$2.CLOSEBRACE)).on("]", makeState$1(_text$2.CLOSEBRACKET)).on(">", makeState$1(_text$2.CLOSEANGLEBRACKET)).on(")", makeState$1(_text$2.CLOSEPAREN)).on("&", makeState$1(_text$2.AMPERSAND)).on([",", ";", "!", '"', "'"], makeState$1(_text$2.PUNCTUATION));
-S_START$1.on("\n", makeState$1(_text$2.NL)).on(WHITESPACE, S_WS);
-S_WS.on(WHITESPACE, S_WS);
-for (var i = 0; i < tlds.length; i++) {
-  var newStates = (0, _state$1.stateify)(tlds[i], S_START$1, _text$2.TLD, _text$2.DOMAIN);
-  domainStates.push.apply(domainStates, newStates);
-}
-var partialProtocolFileStates = (0, _state$1.stateify)("file", S_START$1, _text$2.DOMAIN, _text$2.DOMAIN);
-var partialProtocolFtpStates = (0, _state$1.stateify)("ftp", S_START$1, _text$2.DOMAIN, _text$2.DOMAIN);
-var partialProtocolHttpStates = (0, _state$1.stateify)("http", S_START$1, _text$2.DOMAIN, _text$2.DOMAIN);
-var partialProtocolMailtoStates = (0, _state$1.stateify)("mailto", S_START$1, _text$2.DOMAIN, _text$2.DOMAIN);
-domainStates.push.apply(domainStates, partialProtocolFileStates);
-domainStates.push.apply(domainStates, partialProtocolFtpStates);
-domainStates.push.apply(domainStates, partialProtocolHttpStates);
-domainStates.push.apply(domainStates, partialProtocolMailtoStates);
-var S_PROTOCOL_FILE = partialProtocolFileStates.pop();
-var S_PROTOCOL_FTP = partialProtocolFtpStates.pop();
-var S_PROTOCOL_HTTP = partialProtocolHttpStates.pop();
-var S_MAILTO$1 = partialProtocolMailtoStates.pop();
-var S_PROTOCOL_SECURE = makeState$1(_text$2.DOMAIN);
-var S_FULL_PROTOCOL = makeState$1(_text$2.PROTOCOL);
-var S_FULL_MAILTO = makeState$1(_text$2.MAILTO);
-S_PROTOCOL_FTP.on("s", S_PROTOCOL_SECURE).on(":", S_FULL_PROTOCOL);
-S_PROTOCOL_HTTP.on("s", S_PROTOCOL_SECURE).on(":", S_FULL_PROTOCOL);
-domainStates.push(S_PROTOCOL_SECURE);
-S_PROTOCOL_FILE.on(":", S_FULL_PROTOCOL);
-S_PROTOCOL_SECURE.on(":", S_FULL_PROTOCOL);
-S_MAILTO$1.on(":", S_FULL_MAILTO);
-var partialLocalhostStates = (0, _state$1.stateify)("localhost", S_START$1, _text$2.LOCALHOST, _text$2.DOMAIN);
-domainStates.push.apply(domainStates, partialLocalhostStates);
-S_START$1.on(NUMBERS, S_NUM);
-S_NUM.on("-", S_DOMAIN_HYPHEN).on(NUMBERS, S_NUM).on(ALPHANUM, S_DOMAIN$1);
-S_DOMAIN$1.on("-", S_DOMAIN_HYPHEN).on(ALPHANUM, S_DOMAIN$1);
-for (var _i = 0; _i < domainStates.length; _i++) {
-  domainStates[_i].on("-", S_DOMAIN_HYPHEN).on(ALPHANUM, S_DOMAIN$1);
-}
-S_DOMAIN_HYPHEN.on("-", S_DOMAIN_HYPHEN).on(NUMBERS, S_DOMAIN$1).on(ALPHANUM, S_DOMAIN$1);
-S_START$1.defaultTransition = makeState$1(_text$2.SYM);
-var run$2 = function run(str) {
-  var lowerStr = str.replace(/[A-Z]/g, function(c) {
-    return c.toLowerCase();
-  });
-  var len = str.length;
-  var tokens = [];
-  var cursor = 0;
-  while (cursor < len) {
-    var state2 = S_START$1;
-    var nextState = null;
-    var tokenLength = 0;
-    var latestAccepting = null;
-    var sinceAccepts = -1;
-    while (cursor < len && (nextState = state2.next(lowerStr[cursor]))) {
-      state2 = nextState;
-      if (state2.accepts()) {
-        sinceAccepts = 0;
-        latestAccepting = state2;
-      } else if (sinceAccepts >= 0) {
-        sinceAccepts++;
-      }
-      tokenLength++;
-      cursor++;
-    }
-    if (sinceAccepts < 0) {
-      continue;
-    }
-    cursor -= sinceAccepts;
-    tokenLength -= sinceAccepts;
-    var TOKEN = latestAccepting.emit();
-    tokens.push(new TOKEN(str.substr(cursor - tokenLength, tokenLength)));
-  }
-  return tokens;
-};
-var start = S_START$1;
-scanner$1.State = _state$1.CharacterState;
-scanner$1.TOKENS = TOKENS;
-scanner$1.run = run$2;
-scanner$1.start = start;
-var parser$1 = {};
-var multi = {};
-multi.__esModule = true;
-multi.URL = multi.TEXT = multi.NL = multi.EMAIL = multi.MAILTOEMAIL = multi.Base = void 0;
-var _createTokenClass = createTokenClass$1;
-var _class$1 = _class$4;
-var _text$1 = text$1;
-function isDomainToken(token) {
-  return token instanceof _text$1.DOMAIN || token instanceof _text$1.TLD;
-}
-var MultiToken = (0, _createTokenClass.createTokenClass)();
-MultiToken.prototype = {
-  type: "token",
-  isLink: false,
-  toString: function toString2() {
-    var result = [];
-    for (var i = 0; i < this.v.length; i++) {
-      result.push(this.v[i].toString());
-    }
-    return result.join("");
-  },
-  toHref: function toHref() {
-    return this.toString();
-  },
-  toObject: function toObject() {
-    var protocol = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : "http";
-    return {
-      type: this.type,
-      value: this.toString(),
-      href: this.toHref(protocol)
-    };
-  }
-};
-var MAILTOEMAIL = (0, _class$1.inherits)(MultiToken, (0, _createTokenClass.createTokenClass)(), {
-  type: "email",
-  isLink: true
-});
-var EMAIL = (0, _class$1.inherits)(MultiToken, (0, _createTokenClass.createTokenClass)(), {
-  type: "email",
-  isLink: true,
-  toHref: function toHref2() {
-    return "mailto:" + this.toString();
-  }
-});
-var TEXT = (0, _class$1.inherits)(MultiToken, (0, _createTokenClass.createTokenClass)(), { type: "text" });
-var NL = (0, _class$1.inherits)(MultiToken, (0, _createTokenClass.createTokenClass)(), { type: "nl" });
-var URL$1 = (0, _class$1.inherits)(MultiToken, (0, _createTokenClass.createTokenClass)(), {
-  type: "url",
-  isLink: true,
-  toHref: function toHref3() {
-    var protocol = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : "http";
-    var hasProtocol2 = false;
-    var hasSlashSlash = false;
-    var tokens = this.v;
-    var result = [];
-    var i = 0;
-    while (tokens[i] instanceof _text$1.PROTOCOL) {
-      hasProtocol2 = true;
-      result.push(tokens[i].toString().toLowerCase());
-      i++;
-    }
-    while (tokens[i] instanceof _text$1.SLASH) {
-      hasSlashSlash = true;
-      result.push(tokens[i].toString());
-      i++;
-    }
-    while (isDomainToken(tokens[i])) {
-      result.push(tokens[i].toString().toLowerCase());
-      i++;
-    }
-    for (; i < tokens.length; i++) {
-      result.push(tokens[i].toString());
-    }
-    result = result.join("");
-    if (!(hasProtocol2 || hasSlashSlash)) {
-      result = protocol + "://" + result;
-    }
-    return result;
-  },
-  hasProtocol: function hasProtocol() {
-    return this.v[0] instanceof _text$1.PROTOCOL;
-  }
-});
-multi.Base = MultiToken;
-multi.MAILTOEMAIL = MAILTOEMAIL;
-multi.EMAIL = EMAIL;
-multi.NL = NL;
-multi.TEXT = TEXT;
-multi.URL = URL$1;
-parser$1.__esModule = true;
-parser$1.start = parser$1.run = parser$1.TOKENS = parser$1.State = void 0;
-var _state = state;
-var _multi = multi;
-var MULTI_TOKENS = _interopRequireWildcard$1(_multi);
-var _text = text$1;
-function _interopRequireWildcard$1(obj) {
-  if (obj && obj.__esModule) {
-    return obj;
+  remove2 = remove2 > 0 ? remove2 : 0;
+  if (items.length < 1e4) {
+    parameters = Array.from(items);
+    parameters.unshift(start, remove2);
+    list2.splice(...parameters);
   } else {
-    var newObj = {};
-    if (obj != null) {
-      for (var key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key))
-          newObj[key] = obj[key];
-      }
-    }
-    newObj.default = obj;
-    return newObj;
-  }
-}
-var makeState2 = function makeState3(tokenClass) {
-  return new _state.TokenState(tokenClass);
-};
-var S_START = makeState2();
-var S_PROTOCOL = makeState2();
-var S_MAILTO = makeState2();
-var S_PROTOCOL_SLASH = makeState2();
-var S_PROTOCOL_SLASH_SLASH = makeState2();
-var S_DOMAIN = makeState2();
-var S_DOMAIN_DOT = makeState2();
-var S_TLD = makeState2(_multi.URL);
-var S_TLD_COLON = makeState2();
-var S_TLD_PORT = makeState2(_multi.URL);
-var S_URL = makeState2(_multi.URL);
-var S_URL_NON_ACCEPTING = makeState2();
-var S_URL_OPENBRACE = makeState2();
-var S_URL_OPENBRACKET = makeState2();
-var S_URL_OPENANGLEBRACKET = makeState2();
-var S_URL_OPENPAREN = makeState2();
-var S_URL_OPENBRACE_Q = makeState2(_multi.URL);
-var S_URL_OPENBRACKET_Q = makeState2(_multi.URL);
-var S_URL_OPENANGLEBRACKET_Q = makeState2(_multi.URL);
-var S_URL_OPENPAREN_Q = makeState2(_multi.URL);
-var S_URL_OPENBRACE_SYMS = makeState2();
-var S_URL_OPENBRACKET_SYMS = makeState2();
-var S_URL_OPENANGLEBRACKET_SYMS = makeState2();
-var S_URL_OPENPAREN_SYMS = makeState2();
-var S_EMAIL_DOMAIN = makeState2();
-var S_EMAIL_DOMAIN_DOT = makeState2();
-var S_EMAIL = makeState2(_multi.EMAIL);
-var S_EMAIL_COLON = makeState2();
-var S_EMAIL_PORT = makeState2(_multi.EMAIL);
-var S_MAILTO_EMAIL = makeState2(_multi.MAILTOEMAIL);
-var S_MAILTO_EMAIL_NON_ACCEPTING = makeState2();
-var S_LOCALPART = makeState2();
-var S_LOCALPART_AT = makeState2();
-var S_LOCALPART_DOT = makeState2();
-var S_NL = makeState2(_multi.NL);
-S_START.on(_text.NL, S_NL).on(_text.PROTOCOL, S_PROTOCOL).on(_text.MAILTO, S_MAILTO).on(_text.SLASH, S_PROTOCOL_SLASH);
-S_PROTOCOL.on(_text.SLASH, S_PROTOCOL_SLASH);
-S_PROTOCOL_SLASH.on(_text.SLASH, S_PROTOCOL_SLASH_SLASH);
-S_START.on(_text.TLD, S_DOMAIN).on(_text.DOMAIN, S_DOMAIN).on(_text.LOCALHOST, S_TLD).on(_text.NUM, S_DOMAIN);
-S_PROTOCOL_SLASH_SLASH.on(_text.TLD, S_URL).on(_text.DOMAIN, S_URL).on(_text.NUM, S_URL).on(_text.LOCALHOST, S_URL);
-S_DOMAIN.on(_text.DOT, S_DOMAIN_DOT);
-S_EMAIL_DOMAIN.on(_text.DOT, S_EMAIL_DOMAIN_DOT);
-S_DOMAIN_DOT.on(_text.TLD, S_TLD).on(_text.DOMAIN, S_DOMAIN).on(_text.NUM, S_DOMAIN).on(_text.LOCALHOST, S_DOMAIN);
-S_EMAIL_DOMAIN_DOT.on(_text.TLD, S_EMAIL).on(_text.DOMAIN, S_EMAIL_DOMAIN).on(_text.NUM, S_EMAIL_DOMAIN).on(_text.LOCALHOST, S_EMAIL_DOMAIN);
-S_TLD.on(_text.DOT, S_DOMAIN_DOT);
-S_EMAIL.on(_text.DOT, S_EMAIL_DOMAIN_DOT);
-S_TLD.on(_text.COLON, S_TLD_COLON).on(_text.SLASH, S_URL);
-S_TLD_COLON.on(_text.NUM, S_TLD_PORT);
-S_TLD_PORT.on(_text.SLASH, S_URL);
-S_EMAIL.on(_text.COLON, S_EMAIL_COLON);
-S_EMAIL_COLON.on(_text.NUM, S_EMAIL_PORT);
-var qsAccepting = [_text.DOMAIN, _text.AT, _text.LOCALHOST, _text.NUM, _text.PLUS, _text.POUND, _text.PROTOCOL, _text.SLASH, _text.TLD, _text.UNDERSCORE, _text.SYM, _text.AMPERSAND];
-var qsNonAccepting = [_text.COLON, _text.DOT, _text.QUERY, _text.PUNCTUATION, _text.CLOSEBRACE, _text.CLOSEBRACKET, _text.CLOSEANGLEBRACKET, _text.CLOSEPAREN, _text.OPENBRACE, _text.OPENBRACKET, _text.OPENANGLEBRACKET, _text.OPENPAREN];
-S_URL.on(_text.OPENBRACE, S_URL_OPENBRACE).on(_text.OPENBRACKET, S_URL_OPENBRACKET).on(_text.OPENANGLEBRACKET, S_URL_OPENANGLEBRACKET).on(_text.OPENPAREN, S_URL_OPENPAREN);
-S_URL_NON_ACCEPTING.on(_text.OPENBRACE, S_URL_OPENBRACE).on(_text.OPENBRACKET, S_URL_OPENBRACKET).on(_text.OPENANGLEBRACKET, S_URL_OPENANGLEBRACKET).on(_text.OPENPAREN, S_URL_OPENPAREN);
-S_URL_OPENBRACE.on(_text.CLOSEBRACE, S_URL);
-S_URL_OPENBRACKET.on(_text.CLOSEBRACKET, S_URL);
-S_URL_OPENANGLEBRACKET.on(_text.CLOSEANGLEBRACKET, S_URL);
-S_URL_OPENPAREN.on(_text.CLOSEPAREN, S_URL);
-S_URL_OPENBRACE_Q.on(_text.CLOSEBRACE, S_URL);
-S_URL_OPENBRACKET_Q.on(_text.CLOSEBRACKET, S_URL);
-S_URL_OPENANGLEBRACKET_Q.on(_text.CLOSEANGLEBRACKET, S_URL);
-S_URL_OPENPAREN_Q.on(_text.CLOSEPAREN, S_URL);
-S_URL_OPENBRACE_SYMS.on(_text.CLOSEBRACE, S_URL);
-S_URL_OPENBRACKET_SYMS.on(_text.CLOSEBRACKET, S_URL);
-S_URL_OPENANGLEBRACKET_SYMS.on(_text.CLOSEANGLEBRACKET, S_URL);
-S_URL_OPENPAREN_SYMS.on(_text.CLOSEPAREN, S_URL);
-S_URL_OPENBRACE.on(qsAccepting, S_URL_OPENBRACE_Q);
-S_URL_OPENBRACKET.on(qsAccepting, S_URL_OPENBRACKET_Q);
-S_URL_OPENANGLEBRACKET.on(qsAccepting, S_URL_OPENANGLEBRACKET_Q);
-S_URL_OPENPAREN.on(qsAccepting, S_URL_OPENPAREN_Q);
-S_URL_OPENBRACE.on(qsNonAccepting, S_URL_OPENBRACE_SYMS);
-S_URL_OPENBRACKET.on(qsNonAccepting, S_URL_OPENBRACKET_SYMS);
-S_URL_OPENANGLEBRACKET.on(qsNonAccepting, S_URL_OPENANGLEBRACKET_SYMS);
-S_URL_OPENPAREN.on(qsNonAccepting, S_URL_OPENPAREN_SYMS);
-S_URL_OPENBRACE_Q.on(qsAccepting, S_URL_OPENBRACE_Q);
-S_URL_OPENBRACKET_Q.on(qsAccepting, S_URL_OPENBRACKET_Q);
-S_URL_OPENANGLEBRACKET_Q.on(qsAccepting, S_URL_OPENANGLEBRACKET_Q);
-S_URL_OPENPAREN_Q.on(qsAccepting, S_URL_OPENPAREN_Q);
-S_URL_OPENBRACE_Q.on(qsNonAccepting, S_URL_OPENBRACE_Q);
-S_URL_OPENBRACKET_Q.on(qsNonAccepting, S_URL_OPENBRACKET_Q);
-S_URL_OPENANGLEBRACKET_Q.on(qsNonAccepting, S_URL_OPENANGLEBRACKET_Q);
-S_URL_OPENPAREN_Q.on(qsNonAccepting, S_URL_OPENPAREN_Q);
-S_URL_OPENBRACE_SYMS.on(qsAccepting, S_URL_OPENBRACE_Q);
-S_URL_OPENBRACKET_SYMS.on(qsAccepting, S_URL_OPENBRACKET_Q);
-S_URL_OPENANGLEBRACKET_SYMS.on(qsAccepting, S_URL_OPENANGLEBRACKET_Q);
-S_URL_OPENPAREN_SYMS.on(qsAccepting, S_URL_OPENPAREN_Q);
-S_URL_OPENBRACE_SYMS.on(qsNonAccepting, S_URL_OPENBRACE_SYMS);
-S_URL_OPENBRACKET_SYMS.on(qsNonAccepting, S_URL_OPENBRACKET_SYMS);
-S_URL_OPENANGLEBRACKET_SYMS.on(qsNonAccepting, S_URL_OPENANGLEBRACKET_SYMS);
-S_URL_OPENPAREN_SYMS.on(qsNonAccepting, S_URL_OPENPAREN_SYMS);
-S_URL.on(qsAccepting, S_URL);
-S_URL_NON_ACCEPTING.on(qsAccepting, S_URL);
-S_URL.on(qsNonAccepting, S_URL_NON_ACCEPTING);
-S_URL_NON_ACCEPTING.on(qsNonAccepting, S_URL_NON_ACCEPTING);
-S_MAILTO.on(_text.TLD, S_MAILTO_EMAIL).on(_text.DOMAIN, S_MAILTO_EMAIL).on(_text.NUM, S_MAILTO_EMAIL).on(_text.LOCALHOST, S_MAILTO_EMAIL);
-S_MAILTO_EMAIL.on(qsAccepting, S_MAILTO_EMAIL).on(qsNonAccepting, S_MAILTO_EMAIL_NON_ACCEPTING);
-S_MAILTO_EMAIL_NON_ACCEPTING.on(qsAccepting, S_MAILTO_EMAIL).on(qsNonAccepting, S_MAILTO_EMAIL_NON_ACCEPTING);
-var localpartAccepting = [_text.DOMAIN, _text.NUM, _text.PLUS, _text.POUND, _text.QUERY, _text.UNDERSCORE, _text.SYM, _text.AMPERSAND, _text.TLD];
-S_DOMAIN.on(localpartAccepting, S_LOCALPART).on(_text.AT, S_LOCALPART_AT);
-S_TLD.on(localpartAccepting, S_LOCALPART).on(_text.AT, S_LOCALPART_AT);
-S_DOMAIN_DOT.on(localpartAccepting, S_LOCALPART);
-S_LOCALPART.on(localpartAccepting, S_LOCALPART).on(_text.AT, S_LOCALPART_AT).on(_text.DOT, S_LOCALPART_DOT);
-S_LOCALPART_DOT.on(localpartAccepting, S_LOCALPART);
-S_LOCALPART_AT.on(_text.TLD, S_EMAIL_DOMAIN).on(_text.DOMAIN, S_EMAIL_DOMAIN).on(_text.LOCALHOST, S_EMAIL);
-var run$1 = function run2(tokens) {
-  var len = tokens.length;
-  var cursor = 0;
-  var multis = [];
-  var textTokens = [];
-  while (cursor < len) {
-    var state2 = S_START;
-    var secondState = null;
-    var nextState = null;
-    var multiLength = 0;
-    var latestAccepting = null;
-    var sinceAccepts = -1;
-    while (cursor < len && !(secondState = state2.next(tokens[cursor]))) {
-      textTokens.push(tokens[cursor++]);
-    }
-    while (cursor < len && (nextState = secondState || state2.next(tokens[cursor]))) {
-      secondState = null;
-      state2 = nextState;
-      if (state2.accepts()) {
-        sinceAccepts = 0;
-        latestAccepting = state2;
-      } else if (sinceAccepts >= 0) {
-        sinceAccepts++;
-      }
-      cursor++;
-      multiLength++;
-    }
-    if (sinceAccepts < 0) {
-      for (var i = cursor - multiLength; i < cursor; i++) {
-        textTokens.push(tokens[i]);
-      }
-    } else {
-      if (textTokens.length > 0) {
-        multis.push(new _multi.TEXT(textTokens));
-        textTokens = [];
-      }
-      cursor -= sinceAccepts;
-      multiLength -= sinceAccepts;
-      var MULTI = latestAccepting.emit();
-      multis.push(new MULTI(tokens.slice(cursor - multiLength, cursor)));
-    }
-  }
-  if (textTokens.length > 0) {
-    multis.push(new _multi.TEXT(textTokens));
-  }
-  return multis;
-};
-parser$1.State = _state.TokenState;
-parser$1.TOKENS = MULTI_TOKENS;
-parser$1.run = run$1;
-parser$1.start = S_START;
-linkify.__esModule = true;
-linkify.tokenize = linkify.test = linkify.scanner = linkify.parser = linkify.options = linkify.inherits = linkify.find = void 0;
-var _class = _class$4;
-var _options = options$1;
-var options = _interopRequireWildcard(_options);
-var _scanner = scanner$1;
-var scanner = _interopRequireWildcard(_scanner);
-var _parser = parser$1;
-var parser = _interopRequireWildcard(_parser);
-function _interopRequireWildcard(obj) {
-  if (obj && obj.__esModule) {
-    return obj;
-  } else {
-    var newObj = {};
-    if (obj != null) {
-      for (var key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key))
-          newObj[key] = obj[key];
-      }
-    }
-    newObj.default = obj;
-    return newObj;
-  }
-}
-if (!Array.isArray) {
-  Array.isArray = function(arg) {
-    return Object.prototype.toString.call(arg) === "[object Array]";
-  };
-}
-var tokenize = function tokenize2(str) {
-  return parser.run(scanner.run(str));
-};
-var find = function find2(str) {
-  var type = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : null;
-  var tokens = tokenize(str);
-  var filtered = [];
-  for (var i = 0; i < tokens.length; i++) {
-    var token = tokens[i];
-    if (token.isLink && (!type || token.type === type)) {
-      filtered.push(token.toObject());
-    }
-  }
-  return filtered;
-};
-var test4 = function test5(str) {
-  var type = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : null;
-  var tokens = tokenize(str);
-  return tokens.length === 1 && tokens[0].isLink && (!type || tokens[0].type === type);
-};
-linkify.find = find;
-linkify.inherits = _class.inherits;
-linkify.options = options;
-linkify.parser = parser;
-linkify.scanner = scanner;
-linkify.test = test4;
-linkify.tokenize = tokenize;
-var linkifyjs = linkify;
-var formatString$1 = (text2, doLinkify, textFormatting) => {
-  const typeMarkdown = {
-    bold: textFormatting.bold,
-    italic: textFormatting.italic,
-    strike: textFormatting.strike,
-    underline: textFormatting.underline,
-    multilineCode: textFormatting.multilineCode,
-    inlineCode: textFormatting.inlineCode
-  };
-  const pseudoMarkdown = {
-    [typeMarkdown.bold]: {
-      end: "\\" + typeMarkdown.bold,
-      allowed_chars: ".",
-      type: "bold"
-    },
-    [typeMarkdown.italic]: {
-      end: typeMarkdown.italic,
-      allowed_chars: ".",
-      type: "italic"
-    },
-    [typeMarkdown.strike]: {
-      end: typeMarkdown.strike,
-      allowed_chars: ".",
-      type: "strike"
-    },
-    [typeMarkdown.underline]: {
-      end: typeMarkdown.underline,
-      allowed_chars: ".",
-      type: "underline"
-    },
-    [typeMarkdown.multilineCode]: {
-      end: typeMarkdown.multilineCode,
-      allowed_chars: "(.|\n)",
-      type: "multiline-code"
-    },
-    [typeMarkdown.inlineCode]: {
-      end: typeMarkdown.inlineCode,
-      allowed_chars: ".",
-      type: "inline-code"
-    },
-    "<usertag>": {
-      allowed_chars: ".",
-      end: "</usertag>",
-      type: "tag"
-    }
-  };
-  const json = compileToJSON(text2, pseudoMarkdown);
-  const html = compileToHTML(json, pseudoMarkdown);
-  const result = [].concat.apply([], html);
-  if (doLinkify)
-    linkifyResult(result);
-  return result;
-};
-function compileToJSON(str, pseudoMarkdown) {
-  let result = [];
-  let minIndexOf = -1;
-  let minIndexOfKey = null;
-  let links = linkifyjs.find(str);
-  let minIndexFromLink = false;
-  if (links.length > 0) {
-    minIndexOf = str.indexOf(links[0].value);
-    minIndexFromLink = true;
-  }
-  Object.keys(pseudoMarkdown).forEach((startingValue) => {
-    const io = str.indexOf(startingValue);
-    if (io >= 0 && (minIndexOf < 0 || io < minIndexOf)) {
-      minIndexOf = io;
-      minIndexOfKey = startingValue;
-      minIndexFromLink = false;
-    }
-  });
-  if (minIndexFromLink && minIndexOfKey !== -1) {
-    let strLeft = str.substr(0, minIndexOf);
-    let strLink = str.substr(minIndexOf, links[0].value.length);
-    let strRight = str.substr(minIndexOf + links[0].value.length);
-    result.push(strLeft);
-    result.push(strLink);
-    result = result.concat(compileToJSON(strRight, pseudoMarkdown));
-    return result;
-  }
-  if (minIndexOfKey) {
-    let strLeft = str.substr(0, minIndexOf);
-    const char = minIndexOfKey;
-    let strRight = str.substr(minIndexOf + char.length);
-    if (str.replace(/\s/g, "").length === char.length * 2) {
-      return [str];
-    }
-    const match = strRight.match(
-      new RegExp(
-        "^(" + (pseudoMarkdown[char].allowed_chars || ".") + "*" + (pseudoMarkdown[char].end ? "?" : "") + ")" + (pseudoMarkdown[char].end ? "(" + pseudoMarkdown[char].end + ")" : ""),
-        "m"
-      )
-    );
-    if (!match || !match[1]) {
-      strLeft = strLeft + char;
-      result.push(strLeft);
-    } else {
-      if (strLeft) {
-        result.push(strLeft);
-      }
-      const object = {
-        start: char,
-        content: compileToJSON(match[1], pseudoMarkdown),
-        end: match[2],
-        type: pseudoMarkdown[char].type
-      };
-      result.push(object);
-      strRight = strRight.substr(match[0].length);
-    }
-    result = result.concat(compileToJSON(strRight, pseudoMarkdown));
-    return result;
-  } else {
-    if (str) {
-      return [str];
-    } else {
-      return [];
+    if (remove2)
+      list2.splice(start, remove2);
+    while (chunkStart < items.length) {
+      parameters = items.slice(chunkStart, chunkStart + 1e4);
+      parameters.unshift(start, 0);
+      list2.splice(...parameters);
+      chunkStart += 1e4;
+      start += 1e4;
     }
   }
 }
-function compileToHTML(json, pseudoMarkdown) {
+function push(list2, items) {
+  if (list2.length > 0) {
+    splice(list2, list2.length, 0, items);
+    return list2;
+  }
+  return items;
+}
+const hasOwnProperty$1 = {}.hasOwnProperty;
+function combineExtensions(extensions) {
+  const all = {};
+  let index = -1;
+  while (++index < extensions.length) {
+    syntaxExtension(all, extensions[index]);
+  }
+  return all;
+}
+function syntaxExtension(all, extension) {
+  let hook;
+  for (hook in extension) {
+    const maybe = hasOwnProperty$1.call(all, hook) ? all[hook] : void 0;
+    const left = maybe || (all[hook] = {});
+    const right = extension[hook];
+    let code2;
+    if (right) {
+      for (code2 in right) {
+        if (!hasOwnProperty$1.call(left, code2))
+          left[code2] = [];
+        const value = right[code2];
+        constructs(
+          left[code2],
+          Array.isArray(value) ? value : value ? [value] : []
+        );
+      }
+    }
+  }
+}
+function constructs(existing, list2) {
+  let index = -1;
+  const before = [];
+  while (++index < list2.length) {
+    (list2[index].add === "after" ? existing : before).push(list2[index]);
+  }
+  splice(existing, 0, 0, before);
+}
+function combineHtmlExtensions(htmlExtensions) {
+  const handlers = {};
+  let index = -1;
+  while (++index < htmlExtensions.length) {
+    htmlExtension(handlers, htmlExtensions[index]);
+  }
+  return handlers;
+}
+function htmlExtension(all, extension) {
+  let hook;
+  for (hook in extension) {
+    const maybe = hasOwnProperty$1.call(all, hook) ? all[hook] : void 0;
+    const left = maybe || (all[hook] = {});
+    const right = extension[hook];
+    let type;
+    if (right) {
+      for (type in right) {
+        left[type] = right[type];
+      }
+    }
+  }
+}
+function decodeNumericCharacterReference(value, base) {
+  const code2 = Number.parseInt(value, base);
+  if (code2 < 9 || code2 === 11 || code2 > 13 && code2 < 32 || code2 > 126 && code2 < 160 || code2 > 55295 && code2 < 57344 || code2 > 64975 && code2 < 65008 || (code2 & 65535) === 65535 || (code2 & 65535) === 65534 || code2 > 1114111) {
+    return "\uFFFD";
+  }
+  return String.fromCharCode(code2);
+}
+const characterReferences = { '"': "quot", "&": "amp", "<": "lt", ">": "gt" };
+function encode(value) {
+  return value.replace(/["&<>]/g, replace2);
+  function replace2(value2) {
+    return "&" + characterReferences[value2] + ";";
+  }
+}
+function normalizeIdentifier(value) {
+  return value.replace(/[\t\n\r ]+/g, " ").replace(/^ | $/g, "").toLowerCase().toUpperCase();
+}
+const unicodePunctuationRegex = /[!-\/:-@\[-`\{-~\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061D-\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u09FD\u0A76\u0AF0\u0C77\u0C84\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1B7D\u1B7E\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E4F\u2E52-\u2E5D\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA8FC\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]/;
+const asciiAlpha = regexCheck(/[A-Za-z]/);
+const asciiAlphanumeric = regexCheck(/[\dA-Za-z]/);
+const asciiAtext = regexCheck(/[#-'*+\--9=?A-Z^-~]/);
+function asciiControl(code2) {
+  return code2 !== null && (code2 < 32 || code2 === 127);
+}
+const asciiDigit = regexCheck(/\d/);
+const asciiHexDigit = regexCheck(/[\dA-Fa-f]/);
+const asciiPunctuation = regexCheck(/[!-/:-@[-`{-~]/);
+function markdownLineEnding(code2) {
+  return code2 !== null && code2 < -2;
+}
+function markdownLineEndingOrSpace(code2) {
+  return code2 !== null && (code2 < 0 || code2 === 32);
+}
+function markdownSpace(code2) {
+  return code2 === -2 || code2 === -1 || code2 === 32;
+}
+const unicodePunctuation = regexCheck(unicodePunctuationRegex);
+const unicodeWhitespace = regexCheck(/\s/);
+function regexCheck(regex) {
+  return check;
+  function check(code2) {
+    return code2 !== null && regex.test(String.fromCharCode(code2));
+  }
+}
+function sanitizeUri(url, protocol) {
+  const value = encode(normalizeUri(url || ""));
+  if (!protocol) {
+    return value;
+  }
+  const colon = value.indexOf(":");
+  const questionMark = value.indexOf("?");
+  const numberSign = value.indexOf("#");
+  const slash = value.indexOf("/");
+  if (colon < 0 || slash > -1 && colon > slash || questionMark > -1 && colon > questionMark || numberSign > -1 && colon > numberSign || protocol.test(value.slice(0, colon))) {
+    return value;
+  }
+  return "";
+}
+function normalizeUri(value) {
   const result = [];
-  json.forEach((item) => {
-    if (typeof item === "string") {
-      result.push({ types: [], value: item });
+  let index = -1;
+  let start = 0;
+  let skip = 0;
+  while (++index < value.length) {
+    const code2 = value.charCodeAt(index);
+    let replace2 = "";
+    if (code2 === 37 && asciiAlphanumeric(value.charCodeAt(index + 1)) && asciiAlphanumeric(value.charCodeAt(index + 2))) {
+      skip = 2;
+    } else if (code2 < 128) {
+      if (!/[!#$&-;=?-Z_a-z~]/.test(String.fromCharCode(code2))) {
+        replace2 = String.fromCharCode(code2);
+      }
+    } else if (code2 > 55295 && code2 < 57344) {
+      const next = value.charCodeAt(index + 1);
+      if (code2 < 56320 && next > 56319 && next < 57344) {
+        replace2 = String.fromCharCode(code2, next);
+        skip = 1;
+      } else {
+        replace2 = "\uFFFD";
+      }
     } else {
-      if (pseudoMarkdown[item.start]) {
-        result.push(parseContent(item));
+      replace2 = String.fromCharCode(code2);
+    }
+    if (replace2) {
+      result.push(value.slice(start, index), encodeURIComponent(replace2));
+      start = index + skip + 1;
+      replace2 = "";
+    }
+    if (skip) {
+      index += skip;
+      skip = 0;
+    }
+  }
+  return result.join("") + value.slice(start);
+}
+const hasOwnProperty = {}.hasOwnProperty;
+const protocolHref = /^(https?|ircs?|mailto|xmpp)$/i;
+const protocolSrc = /^https?$/i;
+function compile(options) {
+  const settings = options || {};
+  let tags = true;
+  const definitions2 = {};
+  const buffers = [[]];
+  const mediaStack = [];
+  const tightStack = [];
+  const defaultHandlers = {
+    enter: {
+      blockQuote: onenterblockquote,
+      codeFenced: onentercodefenced,
+      codeFencedFenceInfo: buffer,
+      codeFencedFenceMeta: buffer,
+      codeIndented: onentercodeindented,
+      codeText: onentercodetext,
+      content: onentercontent,
+      definition: onenterdefinition,
+      definitionDestinationString: onenterdefinitiondestinationstring,
+      definitionLabelString: buffer,
+      definitionTitleString: buffer,
+      emphasis: onenteremphasis,
+      htmlFlow: onenterhtmlflow,
+      htmlText: onenterhtml,
+      image: onenterimage,
+      label: buffer,
+      link: onenterlink,
+      listItemMarker: onenterlistitemmarker,
+      listItemValue: onenterlistitemvalue,
+      listOrdered: onenterlistordered,
+      listUnordered: onenterlistunordered,
+      paragraph: onenterparagraph,
+      reference: buffer,
+      resource: onenterresource,
+      resourceDestinationString: onenterresourcedestinationstring,
+      resourceTitleString: buffer,
+      setextHeading: onentersetextheading,
+      strong: onenterstrong
+    },
+    exit: {
+      atxHeading: onexitatxheading,
+      atxHeadingSequence: onexitatxheadingsequence,
+      autolinkEmail: onexitautolinkemail,
+      autolinkProtocol: onexitautolinkprotocol,
+      blockQuote: onexitblockquote,
+      characterEscapeValue: onexitdata,
+      characterReferenceMarkerHexadecimal: onexitcharacterreferencemarker,
+      characterReferenceMarkerNumeric: onexitcharacterreferencemarker,
+      characterReferenceValue: onexitcharacterreferencevalue,
+      codeFenced: onexitflowcode,
+      codeFencedFence: onexitcodefencedfence,
+      codeFencedFenceInfo: onexitcodefencedfenceinfo,
+      codeFencedFenceMeta: resume,
+      codeFlowValue: onexitcodeflowvalue,
+      codeIndented: onexitflowcode,
+      codeText: onexitcodetext,
+      codeTextData: onexitdata,
+      data: onexitdata,
+      definition: onexitdefinition,
+      definitionDestinationString: onexitdefinitiondestinationstring,
+      definitionLabelString: onexitdefinitionlabelstring,
+      definitionTitleString: onexitdefinitiontitlestring,
+      emphasis: onexitemphasis,
+      hardBreakEscape: onexithardbreak,
+      hardBreakTrailing: onexithardbreak,
+      htmlFlow: onexithtml,
+      htmlFlowData: onexitdata,
+      htmlText: onexithtml,
+      htmlTextData: onexitdata,
+      image: onexitmedia,
+      label: onexitlabel,
+      labelText: onexitlabeltext,
+      lineEnding: onexitlineending,
+      link: onexitmedia,
+      listOrdered: onexitlistordered,
+      listUnordered: onexitlistunordered,
+      paragraph: onexitparagraph,
+      reference: resume,
+      referenceString: onexitreferencestring,
+      resource: resume,
+      resourceDestinationString: onexitresourcedestinationstring,
+      resourceTitleString: onexitresourcetitlestring,
+      setextHeading: onexitsetextheading,
+      setextHeadingLineSequence: onexitsetextheadinglinesequence,
+      setextHeadingText: onexitsetextheadingtext,
+      strong: onexitstrong,
+      thematicBreak: onexitthematicbreak
+    }
+  };
+  const handlers = combineHtmlExtensions(
+    [defaultHandlers].concat(settings.htmlExtensions || [])
+  );
+  const data = {
+    tightStack,
+    definitions: definitions2
+  };
+  const context = {
+    lineEndingIfNeeded,
+    options: settings,
+    encode: encode$1,
+    raw,
+    tag,
+    buffer,
+    resume,
+    setData,
+    getData
+  };
+  let lineEndingStyle = settings.defaultLineEnding;
+  return compile2;
+  function compile2(events) {
+    let index = -1;
+    let start = 0;
+    const listStack = [];
+    let head = [];
+    let body = [];
+    while (++index < events.length) {
+      if (!lineEndingStyle && (events[index][1].type === "lineEnding" || events[index][1].type === "lineEndingBlank")) {
+        lineEndingStyle = events[index][2].sliceSerialize(events[index][1]);
+      }
+      if (events[index][1].type === "listOrdered" || events[index][1].type === "listUnordered") {
+        if (events[index][0] === "enter") {
+          listStack.push(index);
+        } else {
+          prepareList(events.slice(listStack.pop(), index));
+        }
+      }
+      if (events[index][1].type === "definition") {
+        if (events[index][0] === "enter") {
+          body = push(body, events.slice(start, index));
+          start = index;
+        } else {
+          head = push(head, events.slice(start, index + 1));
+          start = index + 1;
+        }
       }
     }
-  });
-  return result;
-}
-function parseContent(item) {
-  const result = [];
-  iterateContent(item, result, []);
-  return result;
-}
-function iterateContent(item, result, types) {
-  item.content.forEach((it) => {
-    if (typeof it === "string") {
-      result.push({
-        types: removeDuplicates(types.concat([item.type])),
-        value: it
-      });
+    head = push(head, body);
+    head = push(head, events.slice(start));
+    index = -1;
+    const result = head;
+    if (handlers.enter.null) {
+      handlers.enter.null.call(context);
+    }
+    while (++index < events.length) {
+      const handles = handlers[result[index][0]];
+      const kind = result[index][1].type;
+      const handle = handles[kind];
+      if (hasOwnProperty.call(handles, kind) && handle) {
+        handle.call(
+          Object.assign(
+            {
+              sliceSerialize: result[index][2].sliceSerialize
+            },
+            context
+          ),
+          result[index][1]
+        );
+      }
+    }
+    if (handlers.exit.null) {
+      handlers.exit.null.call(context);
+    }
+    return buffers[0].join("");
+  }
+  function prepareList(slice) {
+    const length = slice.length;
+    let index = 0;
+    let containerBalance = 0;
+    let loose = false;
+    let atMarker;
+    while (++index < length) {
+      const event = slice[index];
+      if (event[1]._container) {
+        atMarker = void 0;
+        if (event[0] === "enter") {
+          containerBalance++;
+        } else {
+          containerBalance--;
+        }
+      } else
+        switch (event[1].type) {
+          case "listItemPrefix": {
+            if (event[0] === "exit") {
+              atMarker = true;
+            }
+            break;
+          }
+          case "linePrefix": {
+            break;
+          }
+          case "lineEndingBlank": {
+            if (event[0] === "enter" && !containerBalance) {
+              if (atMarker) {
+                atMarker = void 0;
+              } else {
+                loose = true;
+              }
+            }
+            break;
+          }
+          default: {
+            atMarker = void 0;
+          }
+        }
+    }
+    slice[0][1]._loose = loose;
+  }
+  function setData(key, value) {
+    data[key] = value;
+  }
+  function getData(key) {
+    return data[key];
+  }
+  function buffer() {
+    buffers.push([]);
+  }
+  function resume() {
+    const buf = buffers.pop();
+    return buf.join("");
+  }
+  function tag(value) {
+    if (!tags)
+      return;
+    setData("lastWasTag", true);
+    buffers[buffers.length - 1].push(value);
+  }
+  function raw(value) {
+    setData("lastWasTag");
+    buffers[buffers.length - 1].push(value);
+  }
+  function lineEnding2() {
+    raw(lineEndingStyle || "\n");
+  }
+  function lineEndingIfNeeded() {
+    const buffer2 = buffers[buffers.length - 1];
+    const slice = buffer2[buffer2.length - 1];
+    const previous2 = slice ? slice.charCodeAt(slice.length - 1) : null;
+    if (previous2 === 10 || previous2 === 13 || previous2 === null) {
+      return;
+    }
+    lineEnding2();
+  }
+  function encode$1(value) {
+    return getData("ignoreEncode") ? value : encode(value);
+  }
+  function onenterlistordered(token) {
+    tightStack.push(!token._loose);
+    lineEndingIfNeeded();
+    tag("<ol");
+    setData("expectFirstItem", true);
+  }
+  function onenterlistunordered(token) {
+    tightStack.push(!token._loose);
+    lineEndingIfNeeded();
+    tag("<ul");
+    setData("expectFirstItem", true);
+  }
+  function onenterlistitemvalue(token) {
+    if (getData("expectFirstItem")) {
+      const value = Number.parseInt(this.sliceSerialize(token), 10);
+      if (value !== 1) {
+        tag(' start="' + encode$1(String(value)) + '"');
+      }
+    }
+  }
+  function onenterlistitemmarker() {
+    if (getData("expectFirstItem")) {
+      tag(">");
     } else {
-      iterateContent(
-        it,
-        result,
-        removeDuplicates([it.type].concat([item.type]).concat(types))
+      onexitlistitem();
+    }
+    lineEndingIfNeeded();
+    tag("<li>");
+    setData("expectFirstItem");
+    setData("lastWasTag");
+  }
+  function onexitlistordered() {
+    onexitlistitem();
+    tightStack.pop();
+    lineEnding2();
+    tag("</ol>");
+  }
+  function onexitlistunordered() {
+    onexitlistitem();
+    tightStack.pop();
+    lineEnding2();
+    tag("</ul>");
+  }
+  function onexitlistitem() {
+    if (getData("lastWasTag") && !getData("slurpAllLineEndings")) {
+      lineEndingIfNeeded();
+    }
+    tag("</li>");
+    setData("slurpAllLineEndings");
+  }
+  function onenterblockquote() {
+    tightStack.push(false);
+    lineEndingIfNeeded();
+    tag("<blockquote>");
+  }
+  function onexitblockquote() {
+    tightStack.pop();
+    lineEndingIfNeeded();
+    tag("</blockquote>");
+    setData("slurpAllLineEndings");
+  }
+  function onenterparagraph() {
+    if (!tightStack[tightStack.length - 1]) {
+      lineEndingIfNeeded();
+      tag("<p>");
+    }
+    setData("slurpAllLineEndings");
+  }
+  function onexitparagraph() {
+    if (tightStack[tightStack.length - 1]) {
+      setData("slurpAllLineEndings", true);
+    } else {
+      tag("</p>");
+    }
+  }
+  function onentercodefenced() {
+    lineEndingIfNeeded();
+    tag("<pre><code");
+    setData("fencesCount", 0);
+  }
+  function onexitcodefencedfenceinfo() {
+    const value = resume();
+    tag(' class="language-' + value + '"');
+  }
+  function onexitcodefencedfence() {
+    const count = getData("fencesCount") || 0;
+    if (!count) {
+      tag(">");
+      setData("slurpOneLineEnding", true);
+    }
+    setData("fencesCount", count + 1);
+  }
+  function onentercodeindented() {
+    lineEndingIfNeeded();
+    tag("<pre><code>");
+  }
+  function onexitflowcode() {
+    const count = getData("fencesCount");
+    if (count !== void 0 && count < 2 && data.tightStack.length > 0 && !getData("lastWasTag")) {
+      lineEnding2();
+    }
+    if (getData("flowCodeSeenData")) {
+      lineEndingIfNeeded();
+    }
+    tag("</code></pre>");
+    if (count !== void 0 && count < 2)
+      lineEndingIfNeeded();
+    setData("flowCodeSeenData");
+    setData("fencesCount");
+    setData("slurpOneLineEnding");
+  }
+  function onenterimage() {
+    mediaStack.push({
+      image: true
+    });
+    tags = void 0;
+  }
+  function onenterlink() {
+    mediaStack.push({});
+  }
+  function onexitlabeltext(token) {
+    mediaStack[mediaStack.length - 1].labelId = this.sliceSerialize(token);
+  }
+  function onexitlabel() {
+    mediaStack[mediaStack.length - 1].label = resume();
+  }
+  function onexitreferencestring(token) {
+    mediaStack[mediaStack.length - 1].referenceId = this.sliceSerialize(token);
+  }
+  function onenterresource() {
+    buffer();
+    mediaStack[mediaStack.length - 1].destination = "";
+  }
+  function onenterresourcedestinationstring() {
+    buffer();
+    setData("ignoreEncode", true);
+  }
+  function onexitresourcedestinationstring() {
+    mediaStack[mediaStack.length - 1].destination = resume();
+    setData("ignoreEncode");
+  }
+  function onexitresourcetitlestring() {
+    mediaStack[mediaStack.length - 1].title = resume();
+  }
+  function onexitmedia() {
+    let index = mediaStack.length - 1;
+    const media = mediaStack[index];
+    const id = media.referenceId || media.labelId;
+    const context2 = media.destination === void 0 ? definitions2[normalizeIdentifier(id)] : media;
+    tags = true;
+    while (index--) {
+      if (mediaStack[index].image) {
+        tags = void 0;
+        break;
+      }
+    }
+    if (media.image) {
+      tag(
+        '<img src="' + sanitizeUri(
+          context2.destination,
+          settings.allowDangerousProtocol ? void 0 : protocolSrc
+        ) + '" alt="'
+      );
+      raw(media.label);
+      tag('"');
+    } else {
+      tag(
+        '<a href="' + sanitizeUri(
+          context2.destination,
+          settings.allowDangerousProtocol ? void 0 : protocolHref
+        ) + '"'
       );
     }
-  });
-}
-function removeDuplicates(items) {
-  return [...new Set(items)];
-}
-function linkifyResult(array) {
-  const result = [];
-  array.forEach((arr) => {
-    const links = linkifyjs.find(arr.value);
-    if (links.length) {
-      const spaces = arr.value.replace(links[0].value, "");
-      result.push({ types: arr.types, value: spaces });
-      arr.types = ["url"].concat(arr.types);
-      arr.href = links[0].href;
-      arr.value = links[0].value;
+    tag(context2.title ? ' title="' + context2.title + '"' : "");
+    if (media.image) {
+      tag(" />");
+    } else {
+      tag(">");
+      raw(media.label);
+      tag("</a>");
     }
-    result.push(arr);
-  });
+    mediaStack.pop();
+  }
+  function onenterdefinition() {
+    buffer();
+    mediaStack.push({});
+  }
+  function onexitdefinitionlabelstring(token) {
+    resume();
+    mediaStack[mediaStack.length - 1].labelId = this.sliceSerialize(token);
+  }
+  function onenterdefinitiondestinationstring() {
+    buffer();
+    setData("ignoreEncode", true);
+  }
+  function onexitdefinitiondestinationstring() {
+    mediaStack[mediaStack.length - 1].destination = resume();
+    setData("ignoreEncode");
+  }
+  function onexitdefinitiontitlestring() {
+    mediaStack[mediaStack.length - 1].title = resume();
+  }
+  function onexitdefinition() {
+    const media = mediaStack[mediaStack.length - 1];
+    const id = normalizeIdentifier(media.labelId);
+    resume();
+    if (!hasOwnProperty.call(definitions2, id)) {
+      definitions2[id] = mediaStack[mediaStack.length - 1];
+    }
+    mediaStack.pop();
+  }
+  function onentercontent() {
+    setData("slurpAllLineEndings", true);
+  }
+  function onexitatxheadingsequence(token) {
+    if (getData("headingRank"))
+      return;
+    setData("headingRank", this.sliceSerialize(token).length);
+    lineEndingIfNeeded();
+    tag("<h" + getData("headingRank") + ">");
+  }
+  function onentersetextheading() {
+    buffer();
+    setData("slurpAllLineEndings");
+  }
+  function onexitsetextheadingtext() {
+    setData("slurpAllLineEndings", true);
+  }
+  function onexitatxheading() {
+    tag("</h" + getData("headingRank") + ">");
+    setData("headingRank");
+  }
+  function onexitsetextheadinglinesequence(token) {
+    setData(
+      "headingRank",
+      this.sliceSerialize(token).charCodeAt(0) === 61 ? 1 : 2
+    );
+  }
+  function onexitsetextheading() {
+    const value = resume();
+    lineEndingIfNeeded();
+    tag("<h" + getData("headingRank") + ">");
+    raw(value);
+    tag("</h" + getData("headingRank") + ">");
+    setData("slurpAllLineEndings");
+    setData("headingRank");
+  }
+  function onexitdata(token) {
+    raw(encode$1(this.sliceSerialize(token)));
+  }
+  function onexitlineending(token) {
+    if (getData("slurpAllLineEndings")) {
+      return;
+    }
+    if (getData("slurpOneLineEnding")) {
+      setData("slurpOneLineEnding");
+      return;
+    }
+    if (getData("inCodeText")) {
+      raw(" ");
+      return;
+    }
+    raw(encode$1(this.sliceSerialize(token)));
+  }
+  function onexitcodeflowvalue(token) {
+    raw(encode$1(this.sliceSerialize(token)));
+    setData("flowCodeSeenData", true);
+  }
+  function onexithardbreak() {
+    tag("<br />");
+  }
+  function onenterhtmlflow() {
+    lineEndingIfNeeded();
+    onenterhtml();
+  }
+  function onexithtml() {
+    setData("ignoreEncode");
+  }
+  function onenterhtml() {
+    if (settings.allowDangerousHtml) {
+      setData("ignoreEncode", true);
+    }
+  }
+  function onenteremphasis() {
+    tag("<em>");
+  }
+  function onenterstrong() {
+    tag("<strong>");
+  }
+  function onentercodetext() {
+    setData("inCodeText", true);
+    tag("<code>");
+  }
+  function onexitcodetext() {
+    setData("inCodeText");
+    tag("</code>");
+  }
+  function onexitemphasis() {
+    tag("</em>");
+  }
+  function onexitstrong() {
+    tag("</strong>");
+  }
+  function onexitthematicbreak() {
+    lineEndingIfNeeded();
+    tag("<hr />");
+  }
+  function onexitcharacterreferencemarker(token) {
+    setData("characterReferenceType", token.type);
+  }
+  function onexitcharacterreferencevalue(token) {
+    let value = this.sliceSerialize(token);
+    value = getData("characterReferenceType") ? decodeNumericCharacterReference(
+      value,
+      getData("characterReferenceType") === "characterReferenceMarkerNumeric" ? 10 : 16
+    ) : decodeNamedCharacterReference(value);
+    raw(encode$1(value));
+    setData("characterReferenceType");
+  }
+  function onexitautolinkprotocol(token) {
+    const uri = this.sliceSerialize(token);
+    tag(
+      '<a href="' + sanitizeUri(
+        uri,
+        settings.allowDangerousProtocol ? void 0 : protocolHref
+      ) + '">'
+    );
+    raw(encode$1(uri));
+    tag("</a>");
+  }
+  function onexitautolinkemail(token) {
+    const uri = this.sliceSerialize(token);
+    tag('<a href="' + sanitizeUri("mailto:" + uri) + '">');
+    raw(encode$1(uri));
+    tag("</a>");
+  }
+}
+function factorySpace(effects, ok, type, max) {
+  const limit = max ? max - 1 : Number.POSITIVE_INFINITY;
+  let size2 = 0;
+  return start;
+  function start(code2) {
+    if (markdownSpace(code2)) {
+      effects.enter(type);
+      return prefix(code2);
+    }
+    return ok(code2);
+  }
+  function prefix(code2) {
+    if (markdownSpace(code2) && size2++ < limit) {
+      effects.consume(code2);
+      return prefix;
+    }
+    effects.exit(type);
+    return ok(code2);
+  }
+}
+const content$1 = {
+  tokenize: initializeContent
+};
+function initializeContent(effects) {
+  const contentStart = effects.attempt(
+    this.parser.constructs.contentInitial,
+    afterContentStartConstruct,
+    paragraphInitial
+  );
+  let previous2;
+  return contentStart;
+  function afterContentStartConstruct(code2) {
+    if (code2 === null) {
+      effects.consume(code2);
+      return;
+    }
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return factorySpace(effects, contentStart, "linePrefix");
+  }
+  function paragraphInitial(code2) {
+    effects.enter("paragraph");
+    return lineStart(code2);
+  }
+  function lineStart(code2) {
+    const token = effects.enter("chunkText", {
+      contentType: "text",
+      previous: previous2
+    });
+    if (previous2) {
+      previous2.next = token;
+    }
+    previous2 = token;
+    return data(code2);
+  }
+  function data(code2) {
+    if (code2 === null) {
+      effects.exit("chunkText");
+      effects.exit("paragraph");
+      effects.consume(code2);
+      return;
+    }
+    if (markdownLineEnding(code2)) {
+      effects.consume(code2);
+      effects.exit("chunkText");
+      return lineStart;
+    }
+    effects.consume(code2);
+    return data;
+  }
+}
+const document$2 = {
+  tokenize: initializeDocument
+};
+const containerConstruct = {
+  tokenize: tokenizeContainer
+};
+function initializeDocument(effects) {
+  const self2 = this;
+  const stack = [];
+  let continued = 0;
+  let childFlow;
+  let childToken;
+  let lineStartOffset;
+  return start;
+  function start(code2) {
+    if (continued < stack.length) {
+      const item = stack[continued];
+      self2.containerState = item[1];
+      return effects.attempt(
+        item[0].continuation,
+        documentContinue,
+        checkNewContainers
+      )(code2);
+    }
+    return checkNewContainers(code2);
+  }
+  function documentContinue(code2) {
+    continued++;
+    if (self2.containerState._closeFlow) {
+      self2.containerState._closeFlow = void 0;
+      if (childFlow) {
+        closeFlow();
+      }
+      const indexBeforeExits = self2.events.length;
+      let indexBeforeFlow = indexBeforeExits;
+      let point;
+      while (indexBeforeFlow--) {
+        if (self2.events[indexBeforeFlow][0] === "exit" && self2.events[indexBeforeFlow][1].type === "chunkFlow") {
+          point = self2.events[indexBeforeFlow][1].end;
+          break;
+        }
+      }
+      exitContainers(continued);
+      let index = indexBeforeExits;
+      while (index < self2.events.length) {
+        self2.events[index][1].end = Object.assign({}, point);
+        index++;
+      }
+      splice(
+        self2.events,
+        indexBeforeFlow + 1,
+        0,
+        self2.events.slice(indexBeforeExits)
+      );
+      self2.events.length = index;
+      return checkNewContainers(code2);
+    }
+    return start(code2);
+  }
+  function checkNewContainers(code2) {
+    if (continued === stack.length) {
+      if (!childFlow) {
+        return documentContinued(code2);
+      }
+      if (childFlow.currentConstruct && childFlow.currentConstruct.concrete) {
+        return flowStart(code2);
+      }
+      self2.interrupt = Boolean(
+        childFlow.currentConstruct && !childFlow._gfmTableDynamicInterruptHack
+      );
+    }
+    self2.containerState = {};
+    return effects.check(
+      containerConstruct,
+      thereIsANewContainer,
+      thereIsNoNewContainer
+    )(code2);
+  }
+  function thereIsANewContainer(code2) {
+    if (childFlow)
+      closeFlow();
+    exitContainers(continued);
+    return documentContinued(code2);
+  }
+  function thereIsNoNewContainer(code2) {
+    self2.parser.lazy[self2.now().line] = continued !== stack.length;
+    lineStartOffset = self2.now().offset;
+    return flowStart(code2);
+  }
+  function documentContinued(code2) {
+    self2.containerState = {};
+    return effects.attempt(
+      containerConstruct,
+      containerContinue,
+      flowStart
+    )(code2);
+  }
+  function containerContinue(code2) {
+    continued++;
+    stack.push([self2.currentConstruct, self2.containerState]);
+    return documentContinued(code2);
+  }
+  function flowStart(code2) {
+    if (code2 === null) {
+      if (childFlow)
+        closeFlow();
+      exitContainers(0);
+      effects.consume(code2);
+      return;
+    }
+    childFlow = childFlow || self2.parser.flow(self2.now());
+    effects.enter("chunkFlow", {
+      contentType: "flow",
+      previous: childToken,
+      _tokenizer: childFlow
+    });
+    return flowContinue(code2);
+  }
+  function flowContinue(code2) {
+    if (code2 === null) {
+      writeToChild(effects.exit("chunkFlow"), true);
+      exitContainers(0);
+      effects.consume(code2);
+      return;
+    }
+    if (markdownLineEnding(code2)) {
+      effects.consume(code2);
+      writeToChild(effects.exit("chunkFlow"));
+      continued = 0;
+      self2.interrupt = void 0;
+      return start;
+    }
+    effects.consume(code2);
+    return flowContinue;
+  }
+  function writeToChild(token, eof) {
+    const stream = self2.sliceStream(token);
+    if (eof)
+      stream.push(null);
+    token.previous = childToken;
+    if (childToken)
+      childToken.next = token;
+    childToken = token;
+    childFlow.defineSkip(token.start);
+    childFlow.write(stream);
+    if (self2.parser.lazy[token.start.line]) {
+      let index = childFlow.events.length;
+      while (index--) {
+        if (childFlow.events[index][1].start.offset < lineStartOffset && (!childFlow.events[index][1].end || childFlow.events[index][1].end.offset > lineStartOffset)) {
+          return;
+        }
+      }
+      const indexBeforeExits = self2.events.length;
+      let indexBeforeFlow = indexBeforeExits;
+      let seen;
+      let point;
+      while (indexBeforeFlow--) {
+        if (self2.events[indexBeforeFlow][0] === "exit" && self2.events[indexBeforeFlow][1].type === "chunkFlow") {
+          if (seen) {
+            point = self2.events[indexBeforeFlow][1].end;
+            break;
+          }
+          seen = true;
+        }
+      }
+      exitContainers(continued);
+      index = indexBeforeExits;
+      while (index < self2.events.length) {
+        self2.events[index][1].end = Object.assign({}, point);
+        index++;
+      }
+      splice(
+        self2.events,
+        indexBeforeFlow + 1,
+        0,
+        self2.events.slice(indexBeforeExits)
+      );
+      self2.events.length = index;
+    }
+  }
+  function exitContainers(size2) {
+    let index = stack.length;
+    while (index-- > size2) {
+      const entry = stack[index];
+      self2.containerState = entry[1];
+      entry[0].exit.call(self2, effects);
+    }
+    stack.length = size2;
+  }
+  function closeFlow() {
+    childFlow.write([null]);
+    childToken = void 0;
+    childFlow = void 0;
+    self2.containerState._closeFlow = void 0;
+  }
+}
+function tokenizeContainer(effects, ok, nok) {
+  return factorySpace(
+    effects,
+    effects.attempt(this.parser.constructs.document, ok, nok),
+    "linePrefix",
+    this.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4
+  );
+}
+function classifyCharacter(code2) {
+  if (code2 === null || markdownLineEndingOrSpace(code2) || unicodeWhitespace(code2)) {
+    return 1;
+  }
+  if (unicodePunctuation(code2)) {
+    return 2;
+  }
+}
+function resolveAll(constructs2, events, context) {
+  const called = [];
+  let index = -1;
+  while (++index < constructs2.length) {
+    const resolve2 = constructs2[index].resolveAll;
+    if (resolve2 && !called.includes(resolve2)) {
+      events = resolve2(events, context);
+      called.push(resolve2);
+    }
+  }
+  return events;
+}
+const attention = {
+  name: "attention",
+  tokenize: tokenizeAttention,
+  resolveAll: resolveAllAttention
+};
+function resolveAllAttention(events, context) {
+  let index = -1;
+  let open;
+  let group;
+  let text2;
+  let openingSequence;
+  let closingSequence;
+  let use;
+  let nextEvents;
+  let offset;
+  while (++index < events.length) {
+    if (events[index][0] === "enter" && events[index][1].type === "attentionSequence" && events[index][1]._close) {
+      open = index;
+      while (open--) {
+        if (events[open][0] === "exit" && events[open][1].type === "attentionSequence" && events[open][1]._open && context.sliceSerialize(events[open][1]).charCodeAt(0) === context.sliceSerialize(events[index][1]).charCodeAt(0)) {
+          if ((events[open][1]._close || events[index][1]._open) && (events[index][1].end.offset - events[index][1].start.offset) % 3 && !((events[open][1].end.offset - events[open][1].start.offset + events[index][1].end.offset - events[index][1].start.offset) % 3)) {
+            continue;
+          }
+          use = events[open][1].end.offset - events[open][1].start.offset > 1 && events[index][1].end.offset - events[index][1].start.offset > 1 ? 2 : 1;
+          const start = Object.assign({}, events[open][1].end);
+          const end = Object.assign({}, events[index][1].start);
+          movePoint(start, -use);
+          movePoint(end, use);
+          openingSequence = {
+            type: use > 1 ? "strongSequence" : "emphasisSequence",
+            start,
+            end: Object.assign({}, events[open][1].end)
+          };
+          closingSequence = {
+            type: use > 1 ? "strongSequence" : "emphasisSequence",
+            start: Object.assign({}, events[index][1].start),
+            end
+          };
+          text2 = {
+            type: use > 1 ? "strongText" : "emphasisText",
+            start: Object.assign({}, events[open][1].end),
+            end: Object.assign({}, events[index][1].start)
+          };
+          group = {
+            type: use > 1 ? "strong" : "emphasis",
+            start: Object.assign({}, openingSequence.start),
+            end: Object.assign({}, closingSequence.end)
+          };
+          events[open][1].end = Object.assign({}, openingSequence.start);
+          events[index][1].start = Object.assign({}, closingSequence.end);
+          nextEvents = [];
+          if (events[open][1].end.offset - events[open][1].start.offset) {
+            nextEvents = push(nextEvents, [
+              ["enter", events[open][1], context],
+              ["exit", events[open][1], context]
+            ]);
+          }
+          nextEvents = push(nextEvents, [
+            ["enter", group, context],
+            ["enter", openingSequence, context],
+            ["exit", openingSequence, context],
+            ["enter", text2, context]
+          ]);
+          nextEvents = push(
+            nextEvents,
+            resolveAll(
+              context.parser.constructs.insideSpan.null,
+              events.slice(open + 1, index),
+              context
+            )
+          );
+          nextEvents = push(nextEvents, [
+            ["exit", text2, context],
+            ["enter", closingSequence, context],
+            ["exit", closingSequence, context],
+            ["exit", group, context]
+          ]);
+          if (events[index][1].end.offset - events[index][1].start.offset) {
+            offset = 2;
+            nextEvents = push(nextEvents, [
+              ["enter", events[index][1], context],
+              ["exit", events[index][1], context]
+            ]);
+          } else {
+            offset = 0;
+          }
+          splice(events, open - 1, index - open + 3, nextEvents);
+          index = open + nextEvents.length - offset - 2;
+          break;
+        }
+      }
+    }
+  }
+  index = -1;
+  while (++index < events.length) {
+    if (events[index][1].type === "attentionSequence") {
+      events[index][1].type = "data";
+    }
+  }
+  return events;
+}
+function tokenizeAttention(effects, ok) {
+  const attentionMarkers2 = this.parser.constructs.attentionMarkers.null;
+  const previous2 = this.previous;
+  const before = classifyCharacter(previous2);
+  let marker;
+  return start;
+  function start(code2) {
+    marker = code2;
+    effects.enter("attentionSequence");
+    return inside(code2);
+  }
+  function inside(code2) {
+    if (code2 === marker) {
+      effects.consume(code2);
+      return inside;
+    }
+    const token = effects.exit("attentionSequence");
+    const after = classifyCharacter(code2);
+    const open = !after || after === 2 && before || attentionMarkers2.includes(code2);
+    const close = !before || before === 2 && after || attentionMarkers2.includes(previous2);
+    token._open = Boolean(marker === 42 ? open : open && (before || !close));
+    token._close = Boolean(marker === 42 ? close : close && (after || !open));
+    return ok(code2);
+  }
+}
+function movePoint(point, offset) {
+  point.column += offset;
+  point.offset += offset;
+  point._bufferIndex += offset;
+}
+const autolink = {
+  name: "autolink",
+  tokenize: tokenizeAutolink
+};
+function tokenizeAutolink(effects, ok, nok) {
+  let size2 = 0;
+  return start;
+  function start(code2) {
+    effects.enter("autolink");
+    effects.enter("autolinkMarker");
+    effects.consume(code2);
+    effects.exit("autolinkMarker");
+    effects.enter("autolinkProtocol");
+    return open;
+  }
+  function open(code2) {
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      return schemeOrEmailAtext;
+    }
+    return emailAtext(code2);
+  }
+  function schemeOrEmailAtext(code2) {
+    if (code2 === 43 || code2 === 45 || code2 === 46 || asciiAlphanumeric(code2)) {
+      size2 = 1;
+      return schemeInsideOrEmailAtext(code2);
+    }
+    return emailAtext(code2);
+  }
+  function schemeInsideOrEmailAtext(code2) {
+    if (code2 === 58) {
+      effects.consume(code2);
+      size2 = 0;
+      return urlInside;
+    }
+    if ((code2 === 43 || code2 === 45 || code2 === 46 || asciiAlphanumeric(code2)) && size2++ < 32) {
+      effects.consume(code2);
+      return schemeInsideOrEmailAtext;
+    }
+    size2 = 0;
+    return emailAtext(code2);
+  }
+  function urlInside(code2) {
+    if (code2 === 62) {
+      effects.exit("autolinkProtocol");
+      effects.enter("autolinkMarker");
+      effects.consume(code2);
+      effects.exit("autolinkMarker");
+      effects.exit("autolink");
+      return ok;
+    }
+    if (code2 === null || code2 === 32 || code2 === 60 || asciiControl(code2)) {
+      return nok(code2);
+    }
+    effects.consume(code2);
+    return urlInside;
+  }
+  function emailAtext(code2) {
+    if (code2 === 64) {
+      effects.consume(code2);
+      return emailAtSignOrDot;
+    }
+    if (asciiAtext(code2)) {
+      effects.consume(code2);
+      return emailAtext;
+    }
+    return nok(code2);
+  }
+  function emailAtSignOrDot(code2) {
+    return asciiAlphanumeric(code2) ? emailLabel(code2) : nok(code2);
+  }
+  function emailLabel(code2) {
+    if (code2 === 46) {
+      effects.consume(code2);
+      size2 = 0;
+      return emailAtSignOrDot;
+    }
+    if (code2 === 62) {
+      effects.exit("autolinkProtocol").type = "autolinkEmail";
+      effects.enter("autolinkMarker");
+      effects.consume(code2);
+      effects.exit("autolinkMarker");
+      effects.exit("autolink");
+      return ok;
+    }
+    return emailValue(code2);
+  }
+  function emailValue(code2) {
+    if ((code2 === 45 || asciiAlphanumeric(code2)) && size2++ < 63) {
+      const next = code2 === 45 ? emailValue : emailLabel;
+      effects.consume(code2);
+      return next;
+    }
+    return nok(code2);
+  }
+}
+const blankLine = {
+  tokenize: tokenizeBlankLine,
+  partial: true
+};
+function tokenizeBlankLine(effects, ok, nok) {
+  return start;
+  function start(code2) {
+    return markdownSpace(code2) ? factorySpace(effects, after, "linePrefix")(code2) : after(code2);
+  }
+  function after(code2) {
+    return code2 === null || markdownLineEnding(code2) ? ok(code2) : nok(code2);
+  }
+}
+const blockQuote = {
+  name: "blockQuote",
+  tokenize: tokenizeBlockQuoteStart,
+  continuation: {
+    tokenize: tokenizeBlockQuoteContinuation
+  },
+  exit
+};
+function tokenizeBlockQuoteStart(effects, ok, nok) {
+  const self2 = this;
+  return start;
+  function start(code2) {
+    if (code2 === 62) {
+      const state = self2.containerState;
+      if (!state.open) {
+        effects.enter("blockQuote", {
+          _container: true
+        });
+        state.open = true;
+      }
+      effects.enter("blockQuotePrefix");
+      effects.enter("blockQuoteMarker");
+      effects.consume(code2);
+      effects.exit("blockQuoteMarker");
+      return after;
+    }
+    return nok(code2);
+  }
+  function after(code2) {
+    if (markdownSpace(code2)) {
+      effects.enter("blockQuotePrefixWhitespace");
+      effects.consume(code2);
+      effects.exit("blockQuotePrefixWhitespace");
+      effects.exit("blockQuotePrefix");
+      return ok;
+    }
+    effects.exit("blockQuotePrefix");
+    return ok(code2);
+  }
+}
+function tokenizeBlockQuoteContinuation(effects, ok, nok) {
+  const self2 = this;
+  return contStart;
+  function contStart(code2) {
+    if (markdownSpace(code2)) {
+      return factorySpace(
+        effects,
+        contBefore,
+        "linePrefix",
+        self2.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4
+      )(code2);
+    }
+    return contBefore(code2);
+  }
+  function contBefore(code2) {
+    return effects.attempt(blockQuote, ok, nok)(code2);
+  }
+}
+function exit(effects) {
+  effects.exit("blockQuote");
+}
+const characterEscape = {
+  name: "characterEscape",
+  tokenize: tokenizeCharacterEscape
+};
+function tokenizeCharacterEscape(effects, ok, nok) {
+  return start;
+  function start(code2) {
+    effects.enter("characterEscape");
+    effects.enter("escapeMarker");
+    effects.consume(code2);
+    effects.exit("escapeMarker");
+    return inside;
+  }
+  function inside(code2) {
+    if (asciiPunctuation(code2)) {
+      effects.enter("characterEscapeValue");
+      effects.consume(code2);
+      effects.exit("characterEscapeValue");
+      effects.exit("characterEscape");
+      return ok;
+    }
+    return nok(code2);
+  }
+}
+const characterReference = {
+  name: "characterReference",
+  tokenize: tokenizeCharacterReference
+};
+function tokenizeCharacterReference(effects, ok, nok) {
+  const self2 = this;
+  let size2 = 0;
+  let max;
+  let test;
+  return start;
+  function start(code2) {
+    effects.enter("characterReference");
+    effects.enter("characterReferenceMarker");
+    effects.consume(code2);
+    effects.exit("characterReferenceMarker");
+    return open;
+  }
+  function open(code2) {
+    if (code2 === 35) {
+      effects.enter("characterReferenceMarkerNumeric");
+      effects.consume(code2);
+      effects.exit("characterReferenceMarkerNumeric");
+      return numeric;
+    }
+    effects.enter("characterReferenceValue");
+    max = 31;
+    test = asciiAlphanumeric;
+    return value(code2);
+  }
+  function numeric(code2) {
+    if (code2 === 88 || code2 === 120) {
+      effects.enter("characterReferenceMarkerHexadecimal");
+      effects.consume(code2);
+      effects.exit("characterReferenceMarkerHexadecimal");
+      effects.enter("characterReferenceValue");
+      max = 6;
+      test = asciiHexDigit;
+      return value;
+    }
+    effects.enter("characterReferenceValue");
+    max = 7;
+    test = asciiDigit;
+    return value(code2);
+  }
+  function value(code2) {
+    if (code2 === 59 && size2) {
+      const token = effects.exit("characterReferenceValue");
+      if (test === asciiAlphanumeric && !decodeNamedCharacterReference(self2.sliceSerialize(token))) {
+        return nok(code2);
+      }
+      effects.enter("characterReferenceMarker");
+      effects.consume(code2);
+      effects.exit("characterReferenceMarker");
+      effects.exit("characterReference");
+      return ok;
+    }
+    if (test(code2) && size2++ < max) {
+      effects.consume(code2);
+      return value;
+    }
+    return nok(code2);
+  }
+}
+const nonLazyContinuation = {
+  tokenize: tokenizeNonLazyContinuation,
+  partial: true
+};
+const codeFenced = {
+  name: "codeFenced",
+  tokenize: tokenizeCodeFenced,
+  concrete: true
+};
+function tokenizeCodeFenced(effects, ok, nok) {
+  const self2 = this;
+  const closeStart = {
+    tokenize: tokenizeCloseStart,
+    partial: true
+  };
+  let initialPrefix = 0;
+  let sizeOpen = 0;
+  let marker;
+  return start;
+  function start(code2) {
+    return beforeSequenceOpen(code2);
+  }
+  function beforeSequenceOpen(code2) {
+    const tail = self2.events[self2.events.length - 1];
+    initialPrefix = tail && tail[1].type === "linePrefix" ? tail[2].sliceSerialize(tail[1], true).length : 0;
+    marker = code2;
+    effects.enter("codeFenced");
+    effects.enter("codeFencedFence");
+    effects.enter("codeFencedFenceSequence");
+    return sequenceOpen(code2);
+  }
+  function sequenceOpen(code2) {
+    if (code2 === marker) {
+      sizeOpen++;
+      effects.consume(code2);
+      return sequenceOpen;
+    }
+    if (sizeOpen < 3) {
+      return nok(code2);
+    }
+    effects.exit("codeFencedFenceSequence");
+    return markdownSpace(code2) ? factorySpace(effects, infoBefore, "whitespace")(code2) : infoBefore(code2);
+  }
+  function infoBefore(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("codeFencedFence");
+      return self2.interrupt ? ok(code2) : effects.check(nonLazyContinuation, atNonLazyBreak, after)(code2);
+    }
+    effects.enter("codeFencedFenceInfo");
+    effects.enter("chunkString", {
+      contentType: "string"
+    });
+    return info(code2);
+  }
+  function info(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("chunkString");
+      effects.exit("codeFencedFenceInfo");
+      return infoBefore(code2);
+    }
+    if (markdownSpace(code2)) {
+      effects.exit("chunkString");
+      effects.exit("codeFencedFenceInfo");
+      return factorySpace(effects, metaBefore, "whitespace")(code2);
+    }
+    if (code2 === 96 && code2 === marker) {
+      return nok(code2);
+    }
+    effects.consume(code2);
+    return info;
+  }
+  function metaBefore(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      return infoBefore(code2);
+    }
+    effects.enter("codeFencedFenceMeta");
+    effects.enter("chunkString", {
+      contentType: "string"
+    });
+    return meta(code2);
+  }
+  function meta(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("chunkString");
+      effects.exit("codeFencedFenceMeta");
+      return infoBefore(code2);
+    }
+    if (code2 === 96 && code2 === marker) {
+      return nok(code2);
+    }
+    effects.consume(code2);
+    return meta;
+  }
+  function atNonLazyBreak(code2) {
+    return effects.attempt(closeStart, after, contentBefore)(code2);
+  }
+  function contentBefore(code2) {
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return contentStart;
+  }
+  function contentStart(code2) {
+    return initialPrefix > 0 && markdownSpace(code2) ? factorySpace(
+      effects,
+      beforeContentChunk,
+      "linePrefix",
+      initialPrefix + 1
+    )(code2) : beforeContentChunk(code2);
+  }
+  function beforeContentChunk(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      return effects.check(nonLazyContinuation, atNonLazyBreak, after)(code2);
+    }
+    effects.enter("codeFlowValue");
+    return contentChunk(code2);
+  }
+  function contentChunk(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("codeFlowValue");
+      return beforeContentChunk(code2);
+    }
+    effects.consume(code2);
+    return contentChunk;
+  }
+  function after(code2) {
+    effects.exit("codeFenced");
+    return ok(code2);
+  }
+  function tokenizeCloseStart(effects2, ok2, nok2) {
+    let size2 = 0;
+    return startBefore;
+    function startBefore(code2) {
+      effects2.enter("lineEnding");
+      effects2.consume(code2);
+      effects2.exit("lineEnding");
+      return start2;
+    }
+    function start2(code2) {
+      effects2.enter("codeFencedFence");
+      return markdownSpace(code2) ? factorySpace(
+        effects2,
+        beforeSequenceClose,
+        "linePrefix",
+        self2.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4
+      )(code2) : beforeSequenceClose(code2);
+    }
+    function beforeSequenceClose(code2) {
+      if (code2 === marker) {
+        effects2.enter("codeFencedFenceSequence");
+        return sequenceClose(code2);
+      }
+      return nok2(code2);
+    }
+    function sequenceClose(code2) {
+      if (code2 === marker) {
+        size2++;
+        effects2.consume(code2);
+        return sequenceClose;
+      }
+      if (size2 >= sizeOpen) {
+        effects2.exit("codeFencedFenceSequence");
+        return markdownSpace(code2) ? factorySpace(effects2, sequenceCloseAfter, "whitespace")(code2) : sequenceCloseAfter(code2);
+      }
+      return nok2(code2);
+    }
+    function sequenceCloseAfter(code2) {
+      if (code2 === null || markdownLineEnding(code2)) {
+        effects2.exit("codeFencedFence");
+        return ok2(code2);
+      }
+      return nok2(code2);
+    }
+  }
+}
+function tokenizeNonLazyContinuation(effects, ok, nok) {
+  const self2 = this;
+  return start;
+  function start(code2) {
+    if (code2 === null) {
+      return nok(code2);
+    }
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return lineStart;
+  }
+  function lineStart(code2) {
+    return self2.parser.lazy[self2.now().line] ? nok(code2) : ok(code2);
+  }
+}
+const codeIndented = {
+  name: "codeIndented",
+  tokenize: tokenizeCodeIndented
+};
+const furtherStart = {
+  tokenize: tokenizeFurtherStart,
+  partial: true
+};
+function tokenizeCodeIndented(effects, ok, nok) {
+  const self2 = this;
+  return start;
+  function start(code2) {
+    effects.enter("codeIndented");
+    return factorySpace(effects, afterPrefix, "linePrefix", 4 + 1)(code2);
+  }
+  function afterPrefix(code2) {
+    const tail = self2.events[self2.events.length - 1];
+    return tail && tail[1].type === "linePrefix" && tail[2].sliceSerialize(tail[1], true).length >= 4 ? atBreak(code2) : nok(code2);
+  }
+  function atBreak(code2) {
+    if (code2 === null) {
+      return after(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      return effects.attempt(furtherStart, atBreak, after)(code2);
+    }
+    effects.enter("codeFlowValue");
+    return inside(code2);
+  }
+  function inside(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("codeFlowValue");
+      return atBreak(code2);
+    }
+    effects.consume(code2);
+    return inside;
+  }
+  function after(code2) {
+    effects.exit("codeIndented");
+    return ok(code2);
+  }
+}
+function tokenizeFurtherStart(effects, ok, nok) {
+  const self2 = this;
+  return furtherStart2;
+  function furtherStart2(code2) {
+    if (self2.parser.lazy[self2.now().line]) {
+      return nok(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      effects.enter("lineEnding");
+      effects.consume(code2);
+      effects.exit("lineEnding");
+      return furtherStart2;
+    }
+    return factorySpace(effects, afterPrefix, "linePrefix", 4 + 1)(code2);
+  }
+  function afterPrefix(code2) {
+    const tail = self2.events[self2.events.length - 1];
+    return tail && tail[1].type === "linePrefix" && tail[2].sliceSerialize(tail[1], true).length >= 4 ? ok(code2) : markdownLineEnding(code2) ? furtherStart2(code2) : nok(code2);
+  }
+}
+const codeText = {
+  name: "codeText",
+  tokenize: tokenizeCodeText,
+  resolve: resolveCodeText,
+  previous
+};
+function resolveCodeText(events) {
+  let tailExitIndex = events.length - 4;
+  let headEnterIndex = 3;
+  let index;
+  let enter;
+  if ((events[headEnterIndex][1].type === "lineEnding" || events[headEnterIndex][1].type === "space") && (events[tailExitIndex][1].type === "lineEnding" || events[tailExitIndex][1].type === "space")) {
+    index = headEnterIndex;
+    while (++index < tailExitIndex) {
+      if (events[index][1].type === "codeTextData") {
+        events[headEnterIndex][1].type = "codeTextPadding";
+        events[tailExitIndex][1].type = "codeTextPadding";
+        headEnterIndex += 2;
+        tailExitIndex -= 2;
+        break;
+      }
+    }
+  }
+  index = headEnterIndex - 1;
+  tailExitIndex++;
+  while (++index <= tailExitIndex) {
+    if (enter === void 0) {
+      if (index !== tailExitIndex && events[index][1].type !== "lineEnding") {
+        enter = index;
+      }
+    } else if (index === tailExitIndex || events[index][1].type === "lineEnding") {
+      events[enter][1].type = "codeTextData";
+      if (index !== enter + 2) {
+        events[enter][1].end = events[index - 1][1].end;
+        events.splice(enter + 2, index - enter - 2);
+        tailExitIndex -= index - enter - 2;
+        index = enter + 2;
+      }
+      enter = void 0;
+    }
+  }
+  return events;
+}
+function previous(code2) {
+  return code2 !== 96 || this.events[this.events.length - 1][1].type === "characterEscape";
+}
+function tokenizeCodeText(effects, ok, nok) {
+  let sizeOpen = 0;
+  let size2;
+  let token;
+  return start;
+  function start(code2) {
+    effects.enter("codeText");
+    effects.enter("codeTextSequence");
+    return sequenceOpen(code2);
+  }
+  function sequenceOpen(code2) {
+    if (code2 === 96) {
+      effects.consume(code2);
+      sizeOpen++;
+      return sequenceOpen;
+    }
+    effects.exit("codeTextSequence");
+    return between(code2);
+  }
+  function between(code2) {
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (code2 === 32) {
+      effects.enter("space");
+      effects.consume(code2);
+      effects.exit("space");
+      return between;
+    }
+    if (code2 === 96) {
+      token = effects.enter("codeTextSequence");
+      size2 = 0;
+      return sequenceClose(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      effects.enter("lineEnding");
+      effects.consume(code2);
+      effects.exit("lineEnding");
+      return between;
+    }
+    effects.enter("codeTextData");
+    return data(code2);
+  }
+  function data(code2) {
+    if (code2 === null || code2 === 32 || code2 === 96 || markdownLineEnding(code2)) {
+      effects.exit("codeTextData");
+      return between(code2);
+    }
+    effects.consume(code2);
+    return data;
+  }
+  function sequenceClose(code2) {
+    if (code2 === 96) {
+      effects.consume(code2);
+      size2++;
+      return sequenceClose;
+    }
+    if (size2 === sizeOpen) {
+      effects.exit("codeTextSequence");
+      effects.exit("codeText");
+      return ok(code2);
+    }
+    token.type = "codeTextData";
+    return data(code2);
+  }
+}
+function subtokenize(events) {
+  const jumps = {};
+  let index = -1;
+  let event;
+  let lineIndex;
+  let otherIndex;
+  let otherEvent;
+  let parameters;
+  let subevents;
+  let more;
+  while (++index < events.length) {
+    while (index in jumps) {
+      index = jumps[index];
+    }
+    event = events[index];
+    if (index && event[1].type === "chunkFlow" && events[index - 1][1].type === "listItemPrefix") {
+      subevents = event[1]._tokenizer.events;
+      otherIndex = 0;
+      if (otherIndex < subevents.length && subevents[otherIndex][1].type === "lineEndingBlank") {
+        otherIndex += 2;
+      }
+      if (otherIndex < subevents.length && subevents[otherIndex][1].type === "content") {
+        while (++otherIndex < subevents.length) {
+          if (subevents[otherIndex][1].type === "content") {
+            break;
+          }
+          if (subevents[otherIndex][1].type === "chunkText") {
+            subevents[otherIndex][1]._isInFirstContentOfListItem = true;
+            otherIndex++;
+          }
+        }
+      }
+    }
+    if (event[0] === "enter") {
+      if (event[1].contentType) {
+        Object.assign(jumps, subcontent(events, index));
+        index = jumps[index];
+        more = true;
+      }
+    } else if (event[1]._container) {
+      otherIndex = index;
+      lineIndex = void 0;
+      while (otherIndex--) {
+        otherEvent = events[otherIndex];
+        if (otherEvent[1].type === "lineEnding" || otherEvent[1].type === "lineEndingBlank") {
+          if (otherEvent[0] === "enter") {
+            if (lineIndex) {
+              events[lineIndex][1].type = "lineEndingBlank";
+            }
+            otherEvent[1].type = "lineEnding";
+            lineIndex = otherIndex;
+          }
+        } else {
+          break;
+        }
+      }
+      if (lineIndex) {
+        event[1].end = Object.assign({}, events[lineIndex][1].start);
+        parameters = events.slice(lineIndex, index);
+        parameters.unshift(event);
+        splice(events, lineIndex, index - lineIndex + 1, parameters);
+      }
+    }
+  }
+  return !more;
+}
+function subcontent(events, eventIndex) {
+  const token = events[eventIndex][1];
+  const context = events[eventIndex][2];
+  let startPosition = eventIndex - 1;
+  const startPositions = [];
+  const tokenizer = token._tokenizer || context.parser[token.contentType](token.start);
+  const childEvents = tokenizer.events;
+  const jumps = [];
+  const gaps = {};
+  let stream;
+  let previous2;
+  let index = -1;
+  let current = token;
+  let adjust = 0;
+  let start = 0;
+  const breaks = [start];
+  while (current) {
+    while (events[++startPosition][1] !== current) {
+    }
+    startPositions.push(startPosition);
+    if (!current._tokenizer) {
+      stream = context.sliceStream(current);
+      if (!current.next) {
+        stream.push(null);
+      }
+      if (previous2) {
+        tokenizer.defineSkip(current.start);
+      }
+      if (current._isInFirstContentOfListItem) {
+        tokenizer._gfmTasklistFirstContentOfListItem = true;
+      }
+      tokenizer.write(stream);
+      if (current._isInFirstContentOfListItem) {
+        tokenizer._gfmTasklistFirstContentOfListItem = void 0;
+      }
+    }
+    previous2 = current;
+    current = current.next;
+  }
+  current = token;
+  while (++index < childEvents.length) {
+    if (childEvents[index][0] === "exit" && childEvents[index - 1][0] === "enter" && childEvents[index][1].type === childEvents[index - 1][1].type && childEvents[index][1].start.line !== childEvents[index][1].end.line) {
+      start = index + 1;
+      breaks.push(start);
+      current._tokenizer = void 0;
+      current.previous = void 0;
+      current = current.next;
+    }
+  }
+  tokenizer.events = [];
+  if (current) {
+    current._tokenizer = void 0;
+    current.previous = void 0;
+  } else {
+    breaks.pop();
+  }
+  index = breaks.length;
+  while (index--) {
+    const slice = childEvents.slice(breaks[index], breaks[index + 1]);
+    const start2 = startPositions.pop();
+    jumps.unshift([start2, start2 + slice.length - 1]);
+    splice(events, start2, 2, slice);
+  }
+  index = -1;
+  while (++index < jumps.length) {
+    gaps[adjust + jumps[index][0]] = adjust + jumps[index][1];
+    adjust += jumps[index][1] - jumps[index][0] - 1;
+  }
+  return gaps;
+}
+const content = {
+  tokenize: tokenizeContent,
+  resolve: resolveContent
+};
+const continuationConstruct = {
+  tokenize: tokenizeContinuation,
+  partial: true
+};
+function resolveContent(events) {
+  subtokenize(events);
+  return events;
+}
+function tokenizeContent(effects, ok) {
+  let previous2;
+  return chunkStart;
+  function chunkStart(code2) {
+    effects.enter("content");
+    previous2 = effects.enter("chunkContent", {
+      contentType: "content"
+    });
+    return chunkInside(code2);
+  }
+  function chunkInside(code2) {
+    if (code2 === null) {
+      return contentEnd(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      return effects.check(
+        continuationConstruct,
+        contentContinue,
+        contentEnd
+      )(code2);
+    }
+    effects.consume(code2);
+    return chunkInside;
+  }
+  function contentEnd(code2) {
+    effects.exit("chunkContent");
+    effects.exit("content");
+    return ok(code2);
+  }
+  function contentContinue(code2) {
+    effects.consume(code2);
+    effects.exit("chunkContent");
+    previous2.next = effects.enter("chunkContent", {
+      contentType: "content",
+      previous: previous2
+    });
+    previous2 = previous2.next;
+    return chunkInside;
+  }
+}
+function tokenizeContinuation(effects, ok, nok) {
+  const self2 = this;
+  return startLookahead;
+  function startLookahead(code2) {
+    effects.exit("chunkContent");
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return factorySpace(effects, prefixed, "linePrefix");
+  }
+  function prefixed(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      return nok(code2);
+    }
+    const tail = self2.events[self2.events.length - 1];
+    if (!self2.parser.constructs.disable.null.includes("codeIndented") && tail && tail[1].type === "linePrefix" && tail[2].sliceSerialize(tail[1], true).length >= 4) {
+      return ok(code2);
+    }
+    return effects.interrupt(self2.parser.constructs.flow, nok, ok)(code2);
+  }
+}
+function factoryDestination(effects, ok, nok, type, literalType, literalMarkerType, rawType, stringType, max) {
+  const limit = max || Number.POSITIVE_INFINITY;
+  let balance = 0;
+  return start;
+  function start(code2) {
+    if (code2 === 60) {
+      effects.enter(type);
+      effects.enter(literalType);
+      effects.enter(literalMarkerType);
+      effects.consume(code2);
+      effects.exit(literalMarkerType);
+      return enclosedBefore;
+    }
+    if (code2 === null || code2 === 32 || code2 === 41 || asciiControl(code2)) {
+      return nok(code2);
+    }
+    effects.enter(type);
+    effects.enter(rawType);
+    effects.enter(stringType);
+    effects.enter("chunkString", {
+      contentType: "string"
+    });
+    return raw(code2);
+  }
+  function enclosedBefore(code2) {
+    if (code2 === 62) {
+      effects.enter(literalMarkerType);
+      effects.consume(code2);
+      effects.exit(literalMarkerType);
+      effects.exit(literalType);
+      effects.exit(type);
+      return ok;
+    }
+    effects.enter(stringType);
+    effects.enter("chunkString", {
+      contentType: "string"
+    });
+    return enclosed(code2);
+  }
+  function enclosed(code2) {
+    if (code2 === 62) {
+      effects.exit("chunkString");
+      effects.exit(stringType);
+      return enclosedBefore(code2);
+    }
+    if (code2 === null || code2 === 60 || markdownLineEnding(code2)) {
+      return nok(code2);
+    }
+    effects.consume(code2);
+    return code2 === 92 ? enclosedEscape : enclosed;
+  }
+  function enclosedEscape(code2) {
+    if (code2 === 60 || code2 === 62 || code2 === 92) {
+      effects.consume(code2);
+      return enclosed;
+    }
+    return enclosed(code2);
+  }
+  function raw(code2) {
+    if (!balance && (code2 === null || code2 === 41 || markdownLineEndingOrSpace(code2))) {
+      effects.exit("chunkString");
+      effects.exit(stringType);
+      effects.exit(rawType);
+      effects.exit(type);
+      return ok(code2);
+    }
+    if (balance < limit && code2 === 40) {
+      effects.consume(code2);
+      balance++;
+      return raw;
+    }
+    if (code2 === 41) {
+      effects.consume(code2);
+      balance--;
+      return raw;
+    }
+    if (code2 === null || code2 === 32 || code2 === 40 || asciiControl(code2)) {
+      return nok(code2);
+    }
+    effects.consume(code2);
+    return code2 === 92 ? rawEscape : raw;
+  }
+  function rawEscape(code2) {
+    if (code2 === 40 || code2 === 41 || code2 === 92) {
+      effects.consume(code2);
+      return raw;
+    }
+    return raw(code2);
+  }
+}
+function factoryLabel(effects, ok, nok, type, markerType, stringType) {
+  const self2 = this;
+  let size2 = 0;
+  let seen;
+  return start;
+  function start(code2) {
+    effects.enter(type);
+    effects.enter(markerType);
+    effects.consume(code2);
+    effects.exit(markerType);
+    effects.enter(stringType);
+    return atBreak;
+  }
+  function atBreak(code2) {
+    if (size2 > 999 || code2 === null || code2 === 91 || code2 === 93 && !seen || code2 === 94 && !size2 && "_hiddenFootnoteSupport" in self2.parser.constructs) {
+      return nok(code2);
+    }
+    if (code2 === 93) {
+      effects.exit(stringType);
+      effects.enter(markerType);
+      effects.consume(code2);
+      effects.exit(markerType);
+      effects.exit(type);
+      return ok;
+    }
+    if (markdownLineEnding(code2)) {
+      effects.enter("lineEnding");
+      effects.consume(code2);
+      effects.exit("lineEnding");
+      return atBreak;
+    }
+    effects.enter("chunkString", {
+      contentType: "string"
+    });
+    return labelInside(code2);
+  }
+  function labelInside(code2) {
+    if (code2 === null || code2 === 91 || code2 === 93 || markdownLineEnding(code2) || size2++ > 999) {
+      effects.exit("chunkString");
+      return atBreak(code2);
+    }
+    effects.consume(code2);
+    if (!seen)
+      seen = !markdownSpace(code2);
+    return code2 === 92 ? labelEscape : labelInside;
+  }
+  function labelEscape(code2) {
+    if (code2 === 91 || code2 === 92 || code2 === 93) {
+      effects.consume(code2);
+      size2++;
+      return labelInside;
+    }
+    return labelInside(code2);
+  }
+}
+function factoryTitle(effects, ok, nok, type, markerType, stringType) {
+  let marker;
+  return start;
+  function start(code2) {
+    if (code2 === 34 || code2 === 39 || code2 === 40) {
+      effects.enter(type);
+      effects.enter(markerType);
+      effects.consume(code2);
+      effects.exit(markerType);
+      marker = code2 === 40 ? 41 : code2;
+      return begin;
+    }
+    return nok(code2);
+  }
+  function begin(code2) {
+    if (code2 === marker) {
+      effects.enter(markerType);
+      effects.consume(code2);
+      effects.exit(markerType);
+      effects.exit(type);
+      return ok;
+    }
+    effects.enter(stringType);
+    return atBreak(code2);
+  }
+  function atBreak(code2) {
+    if (code2 === marker) {
+      effects.exit(stringType);
+      return begin(marker);
+    }
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      effects.enter("lineEnding");
+      effects.consume(code2);
+      effects.exit("lineEnding");
+      return factorySpace(effects, atBreak, "linePrefix");
+    }
+    effects.enter("chunkString", {
+      contentType: "string"
+    });
+    return inside(code2);
+  }
+  function inside(code2) {
+    if (code2 === marker || code2 === null || markdownLineEnding(code2)) {
+      effects.exit("chunkString");
+      return atBreak(code2);
+    }
+    effects.consume(code2);
+    return code2 === 92 ? escape : inside;
+  }
+  function escape(code2) {
+    if (code2 === marker || code2 === 92) {
+      effects.consume(code2);
+      return inside;
+    }
+    return inside(code2);
+  }
+}
+function factoryWhitespace(effects, ok) {
+  let seen;
+  return start;
+  function start(code2) {
+    if (markdownLineEnding(code2)) {
+      effects.enter("lineEnding");
+      effects.consume(code2);
+      effects.exit("lineEnding");
+      seen = true;
+      return start;
+    }
+    if (markdownSpace(code2)) {
+      return factorySpace(
+        effects,
+        start,
+        seen ? "linePrefix" : "lineSuffix"
+      )(code2);
+    }
+    return ok(code2);
+  }
+}
+const definition = {
+  name: "definition",
+  tokenize: tokenizeDefinition
+};
+const titleBefore = {
+  tokenize: tokenizeTitleBefore,
+  partial: true
+};
+function tokenizeDefinition(effects, ok, nok) {
+  const self2 = this;
+  let identifier;
+  return start;
+  function start(code2) {
+    effects.enter("definition");
+    return before(code2);
+  }
+  function before(code2) {
+    return factoryLabel.call(
+      self2,
+      effects,
+      labelAfter,
+      nok,
+      "definitionLabel",
+      "definitionLabelMarker",
+      "definitionLabelString"
+    )(code2);
+  }
+  function labelAfter(code2) {
+    identifier = normalizeIdentifier(
+      self2.sliceSerialize(self2.events[self2.events.length - 1][1]).slice(1, -1)
+    );
+    if (code2 === 58) {
+      effects.enter("definitionMarker");
+      effects.consume(code2);
+      effects.exit("definitionMarker");
+      return markerAfter;
+    }
+    return nok(code2);
+  }
+  function markerAfter(code2) {
+    return markdownLineEndingOrSpace(code2) ? factoryWhitespace(effects, destinationBefore)(code2) : destinationBefore(code2);
+  }
+  function destinationBefore(code2) {
+    return factoryDestination(
+      effects,
+      destinationAfter,
+      nok,
+      "definitionDestination",
+      "definitionDestinationLiteral",
+      "definitionDestinationLiteralMarker",
+      "definitionDestinationRaw",
+      "definitionDestinationString"
+    )(code2);
+  }
+  function destinationAfter(code2) {
+    return effects.attempt(titleBefore, after, after)(code2);
+  }
+  function after(code2) {
+    return markdownSpace(code2) ? factorySpace(effects, afterWhitespace, "whitespace")(code2) : afterWhitespace(code2);
+  }
+  function afterWhitespace(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("definition");
+      self2.parser.defined.push(identifier);
+      return ok(code2);
+    }
+    return nok(code2);
+  }
+}
+function tokenizeTitleBefore(effects, ok, nok) {
+  return titleBefore2;
+  function titleBefore2(code2) {
+    return markdownLineEndingOrSpace(code2) ? factoryWhitespace(effects, beforeMarker)(code2) : nok(code2);
+  }
+  function beforeMarker(code2) {
+    return factoryTitle(
+      effects,
+      titleAfter,
+      nok,
+      "definitionTitle",
+      "definitionTitleMarker",
+      "definitionTitleString"
+    )(code2);
+  }
+  function titleAfter(code2) {
+    return markdownSpace(code2) ? factorySpace(effects, titleAfterOptionalWhitespace, "whitespace")(code2) : titleAfterOptionalWhitespace(code2);
+  }
+  function titleAfterOptionalWhitespace(code2) {
+    return code2 === null || markdownLineEnding(code2) ? ok(code2) : nok(code2);
+  }
+}
+const hardBreakEscape = {
+  name: "hardBreakEscape",
+  tokenize: tokenizeHardBreakEscape
+};
+function tokenizeHardBreakEscape(effects, ok, nok) {
+  return start;
+  function start(code2) {
+    effects.enter("hardBreakEscape");
+    effects.consume(code2);
+    return after;
+  }
+  function after(code2) {
+    if (markdownLineEnding(code2)) {
+      effects.exit("hardBreakEscape");
+      return ok(code2);
+    }
+    return nok(code2);
+  }
+}
+const headingAtx = {
+  name: "headingAtx",
+  tokenize: tokenizeHeadingAtx,
+  resolve: resolveHeadingAtx
+};
+function resolveHeadingAtx(events, context) {
+  let contentEnd = events.length - 2;
+  let contentStart = 3;
+  let content2;
+  let text2;
+  if (events[contentStart][1].type === "whitespace") {
+    contentStart += 2;
+  }
+  if (contentEnd - 2 > contentStart && events[contentEnd][1].type === "whitespace") {
+    contentEnd -= 2;
+  }
+  if (events[contentEnd][1].type === "atxHeadingSequence" && (contentStart === contentEnd - 1 || contentEnd - 4 > contentStart && events[contentEnd - 2][1].type === "whitespace")) {
+    contentEnd -= contentStart + 1 === contentEnd ? 2 : 4;
+  }
+  if (contentEnd > contentStart) {
+    content2 = {
+      type: "atxHeadingText",
+      start: events[contentStart][1].start,
+      end: events[contentEnd][1].end
+    };
+    text2 = {
+      type: "chunkText",
+      start: events[contentStart][1].start,
+      end: events[contentEnd][1].end,
+      contentType: "text"
+    };
+    splice(events, contentStart, contentEnd - contentStart + 1, [
+      ["enter", content2, context],
+      ["enter", text2, context],
+      ["exit", text2, context],
+      ["exit", content2, context]
+    ]);
+  }
+  return events;
+}
+function tokenizeHeadingAtx(effects, ok, nok) {
+  let size2 = 0;
+  return start;
+  function start(code2) {
+    effects.enter("atxHeading");
+    return before(code2);
+  }
+  function before(code2) {
+    effects.enter("atxHeadingSequence");
+    return sequenceOpen(code2);
+  }
+  function sequenceOpen(code2) {
+    if (code2 === 35 && size2++ < 6) {
+      effects.consume(code2);
+      return sequenceOpen;
+    }
+    if (code2 === null || markdownLineEndingOrSpace(code2)) {
+      effects.exit("atxHeadingSequence");
+      return atBreak(code2);
+    }
+    return nok(code2);
+  }
+  function atBreak(code2) {
+    if (code2 === 35) {
+      effects.enter("atxHeadingSequence");
+      return sequenceFurther(code2);
+    }
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("atxHeading");
+      return ok(code2);
+    }
+    if (markdownSpace(code2)) {
+      return factorySpace(effects, atBreak, "whitespace")(code2);
+    }
+    effects.enter("atxHeadingText");
+    return data(code2);
+  }
+  function sequenceFurther(code2) {
+    if (code2 === 35) {
+      effects.consume(code2);
+      return sequenceFurther;
+    }
+    effects.exit("atxHeadingSequence");
+    return atBreak(code2);
+  }
+  function data(code2) {
+    if (code2 === null || code2 === 35 || markdownLineEndingOrSpace(code2)) {
+      effects.exit("atxHeadingText");
+      return atBreak(code2);
+    }
+    effects.consume(code2);
+    return data;
+  }
+}
+const htmlBlockNames = [
+  "address",
+  "article",
+  "aside",
+  "base",
+  "basefont",
+  "blockquote",
+  "body",
+  "caption",
+  "center",
+  "col",
+  "colgroup",
+  "dd",
+  "details",
+  "dialog",
+  "dir",
+  "div",
+  "dl",
+  "dt",
+  "fieldset",
+  "figcaption",
+  "figure",
+  "footer",
+  "form",
+  "frame",
+  "frameset",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "head",
+  "header",
+  "hr",
+  "html",
+  "iframe",
+  "legend",
+  "li",
+  "link",
+  "main",
+  "menu",
+  "menuitem",
+  "nav",
+  "noframes",
+  "ol",
+  "optgroup",
+  "option",
+  "p",
+  "param",
+  "search",
+  "section",
+  "summary",
+  "table",
+  "tbody",
+  "td",
+  "tfoot",
+  "th",
+  "thead",
+  "title",
+  "tr",
+  "track",
+  "ul"
+];
+const htmlRawNames = ["pre", "script", "style", "textarea"];
+const htmlFlow = {
+  name: "htmlFlow",
+  tokenize: tokenizeHtmlFlow,
+  resolveTo: resolveToHtmlFlow,
+  concrete: true
+};
+const blankLineBefore = {
+  tokenize: tokenizeBlankLineBefore,
+  partial: true
+};
+const nonLazyContinuationStart = {
+  tokenize: tokenizeNonLazyContinuationStart,
+  partial: true
+};
+function resolveToHtmlFlow(events) {
+  let index = events.length;
+  while (index--) {
+    if (events[index][0] === "enter" && events[index][1].type === "htmlFlow") {
+      break;
+    }
+  }
+  if (index > 1 && events[index - 2][1].type === "linePrefix") {
+    events[index][1].start = events[index - 2][1].start;
+    events[index + 1][1].start = events[index - 2][1].start;
+    events.splice(index - 2, 2);
+  }
+  return events;
+}
+function tokenizeHtmlFlow(effects, ok, nok) {
+  const self2 = this;
+  let marker;
+  let closingTag;
+  let buffer;
+  let index;
+  let markerB;
+  return start;
+  function start(code2) {
+    return before(code2);
+  }
+  function before(code2) {
+    effects.enter("htmlFlow");
+    effects.enter("htmlFlowData");
+    effects.consume(code2);
+    return open;
+  }
+  function open(code2) {
+    if (code2 === 33) {
+      effects.consume(code2);
+      return declarationOpen;
+    }
+    if (code2 === 47) {
+      effects.consume(code2);
+      closingTag = true;
+      return tagCloseStart;
+    }
+    if (code2 === 63) {
+      effects.consume(code2);
+      marker = 3;
+      return self2.interrupt ? ok : continuationDeclarationInside;
+    }
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      buffer = String.fromCharCode(code2);
+      return tagName;
+    }
+    return nok(code2);
+  }
+  function declarationOpen(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      marker = 2;
+      return commentOpenInside;
+    }
+    if (code2 === 91) {
+      effects.consume(code2);
+      marker = 5;
+      index = 0;
+      return cdataOpenInside;
+    }
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      marker = 4;
+      return self2.interrupt ? ok : continuationDeclarationInside;
+    }
+    return nok(code2);
+  }
+  function commentOpenInside(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      return self2.interrupt ? ok : continuationDeclarationInside;
+    }
+    return nok(code2);
+  }
+  function cdataOpenInside(code2) {
+    const value = "CDATA[";
+    if (code2 === value.charCodeAt(index++)) {
+      effects.consume(code2);
+      if (index === value.length) {
+        return self2.interrupt ? ok : continuation;
+      }
+      return cdataOpenInside;
+    }
+    return nok(code2);
+  }
+  function tagCloseStart(code2) {
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      buffer = String.fromCharCode(code2);
+      return tagName;
+    }
+    return nok(code2);
+  }
+  function tagName(code2) {
+    if (code2 === null || code2 === 47 || code2 === 62 || markdownLineEndingOrSpace(code2)) {
+      const slash = code2 === 47;
+      const name = buffer.toLowerCase();
+      if (!slash && !closingTag && htmlRawNames.includes(name)) {
+        marker = 1;
+        return self2.interrupt ? ok(code2) : continuation(code2);
+      }
+      if (htmlBlockNames.includes(buffer.toLowerCase())) {
+        marker = 6;
+        if (slash) {
+          effects.consume(code2);
+          return basicSelfClosing;
+        }
+        return self2.interrupt ? ok(code2) : continuation(code2);
+      }
+      marker = 7;
+      return self2.interrupt && !self2.parser.lazy[self2.now().line] ? nok(code2) : closingTag ? completeClosingTagAfter(code2) : completeAttributeNameBefore(code2);
+    }
+    if (code2 === 45 || asciiAlphanumeric(code2)) {
+      effects.consume(code2);
+      buffer += String.fromCharCode(code2);
+      return tagName;
+    }
+    return nok(code2);
+  }
+  function basicSelfClosing(code2) {
+    if (code2 === 62) {
+      effects.consume(code2);
+      return self2.interrupt ? ok : continuation;
+    }
+    return nok(code2);
+  }
+  function completeClosingTagAfter(code2) {
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return completeClosingTagAfter;
+    }
+    return completeEnd(code2);
+  }
+  function completeAttributeNameBefore(code2) {
+    if (code2 === 47) {
+      effects.consume(code2);
+      return completeEnd;
+    }
+    if (code2 === 58 || code2 === 95 || asciiAlpha(code2)) {
+      effects.consume(code2);
+      return completeAttributeName;
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return completeAttributeNameBefore;
+    }
+    return completeEnd(code2);
+  }
+  function completeAttributeName(code2) {
+    if (code2 === 45 || code2 === 46 || code2 === 58 || code2 === 95 || asciiAlphanumeric(code2)) {
+      effects.consume(code2);
+      return completeAttributeName;
+    }
+    return completeAttributeNameAfter(code2);
+  }
+  function completeAttributeNameAfter(code2) {
+    if (code2 === 61) {
+      effects.consume(code2);
+      return completeAttributeValueBefore;
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return completeAttributeNameAfter;
+    }
+    return completeAttributeNameBefore(code2);
+  }
+  function completeAttributeValueBefore(code2) {
+    if (code2 === null || code2 === 60 || code2 === 61 || code2 === 62 || code2 === 96) {
+      return nok(code2);
+    }
+    if (code2 === 34 || code2 === 39) {
+      effects.consume(code2);
+      markerB = code2;
+      return completeAttributeValueQuoted;
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return completeAttributeValueBefore;
+    }
+    return completeAttributeValueUnquoted(code2);
+  }
+  function completeAttributeValueQuoted(code2) {
+    if (code2 === markerB) {
+      effects.consume(code2);
+      markerB = null;
+      return completeAttributeValueQuotedAfter;
+    }
+    if (code2 === null || markdownLineEnding(code2)) {
+      return nok(code2);
+    }
+    effects.consume(code2);
+    return completeAttributeValueQuoted;
+  }
+  function completeAttributeValueUnquoted(code2) {
+    if (code2 === null || code2 === 34 || code2 === 39 || code2 === 47 || code2 === 60 || code2 === 61 || code2 === 62 || code2 === 96 || markdownLineEndingOrSpace(code2)) {
+      return completeAttributeNameAfter(code2);
+    }
+    effects.consume(code2);
+    return completeAttributeValueUnquoted;
+  }
+  function completeAttributeValueQuotedAfter(code2) {
+    if (code2 === 47 || code2 === 62 || markdownSpace(code2)) {
+      return completeAttributeNameBefore(code2);
+    }
+    return nok(code2);
+  }
+  function completeEnd(code2) {
+    if (code2 === 62) {
+      effects.consume(code2);
+      return completeAfter;
+    }
+    return nok(code2);
+  }
+  function completeAfter(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      return continuation(code2);
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return completeAfter;
+    }
+    return nok(code2);
+  }
+  function continuation(code2) {
+    if (code2 === 45 && marker === 2) {
+      effects.consume(code2);
+      return continuationCommentInside;
+    }
+    if (code2 === 60 && marker === 1) {
+      effects.consume(code2);
+      return continuationRawTagOpen;
+    }
+    if (code2 === 62 && marker === 4) {
+      effects.consume(code2);
+      return continuationClose;
+    }
+    if (code2 === 63 && marker === 3) {
+      effects.consume(code2);
+      return continuationDeclarationInside;
+    }
+    if (code2 === 93 && marker === 5) {
+      effects.consume(code2);
+      return continuationCdataInside;
+    }
+    if (markdownLineEnding(code2) && (marker === 6 || marker === 7)) {
+      effects.exit("htmlFlowData");
+      return effects.check(
+        blankLineBefore,
+        continuationAfter,
+        continuationStart
+      )(code2);
+    }
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("htmlFlowData");
+      return continuationStart(code2);
+    }
+    effects.consume(code2);
+    return continuation;
+  }
+  function continuationStart(code2) {
+    return effects.check(
+      nonLazyContinuationStart,
+      continuationStartNonLazy,
+      continuationAfter
+    )(code2);
+  }
+  function continuationStartNonLazy(code2) {
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return continuationBefore;
+  }
+  function continuationBefore(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      return continuationStart(code2);
+    }
+    effects.enter("htmlFlowData");
+    return continuation(code2);
+  }
+  function continuationCommentInside(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      return continuationDeclarationInside;
+    }
+    return continuation(code2);
+  }
+  function continuationRawTagOpen(code2) {
+    if (code2 === 47) {
+      effects.consume(code2);
+      buffer = "";
+      return continuationRawEndTag;
+    }
+    return continuation(code2);
+  }
+  function continuationRawEndTag(code2) {
+    if (code2 === 62) {
+      const name = buffer.toLowerCase();
+      if (htmlRawNames.includes(name)) {
+        effects.consume(code2);
+        return continuationClose;
+      }
+      return continuation(code2);
+    }
+    if (asciiAlpha(code2) && buffer.length < 8) {
+      effects.consume(code2);
+      buffer += String.fromCharCode(code2);
+      return continuationRawEndTag;
+    }
+    return continuation(code2);
+  }
+  function continuationCdataInside(code2) {
+    if (code2 === 93) {
+      effects.consume(code2);
+      return continuationDeclarationInside;
+    }
+    return continuation(code2);
+  }
+  function continuationDeclarationInside(code2) {
+    if (code2 === 62) {
+      effects.consume(code2);
+      return continuationClose;
+    }
+    if (code2 === 45 && marker === 2) {
+      effects.consume(code2);
+      return continuationDeclarationInside;
+    }
+    return continuation(code2);
+  }
+  function continuationClose(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("htmlFlowData");
+      return continuationAfter(code2);
+    }
+    effects.consume(code2);
+    return continuationClose;
+  }
+  function continuationAfter(code2) {
+    effects.exit("htmlFlow");
+    return ok(code2);
+  }
+}
+function tokenizeNonLazyContinuationStart(effects, ok, nok) {
+  const self2 = this;
+  return start;
+  function start(code2) {
+    if (markdownLineEnding(code2)) {
+      effects.enter("lineEnding");
+      effects.consume(code2);
+      effects.exit("lineEnding");
+      return after;
+    }
+    return nok(code2);
+  }
+  function after(code2) {
+    return self2.parser.lazy[self2.now().line] ? nok(code2) : ok(code2);
+  }
+}
+function tokenizeBlankLineBefore(effects, ok, nok) {
+  return start;
+  function start(code2) {
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return effects.attempt(blankLine, ok, nok);
+  }
+}
+const htmlText = {
+  name: "htmlText",
+  tokenize: tokenizeHtmlText
+};
+function tokenizeHtmlText(effects, ok, nok) {
+  const self2 = this;
+  let marker;
+  let index;
+  let returnState;
+  return start;
+  function start(code2) {
+    effects.enter("htmlText");
+    effects.enter("htmlTextData");
+    effects.consume(code2);
+    return open;
+  }
+  function open(code2) {
+    if (code2 === 33) {
+      effects.consume(code2);
+      return declarationOpen;
+    }
+    if (code2 === 47) {
+      effects.consume(code2);
+      return tagCloseStart;
+    }
+    if (code2 === 63) {
+      effects.consume(code2);
+      return instruction;
+    }
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      return tagOpen;
+    }
+    return nok(code2);
+  }
+  function declarationOpen(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      return commentOpenInside;
+    }
+    if (code2 === 91) {
+      effects.consume(code2);
+      index = 0;
+      return cdataOpenInside;
+    }
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      return declaration;
+    }
+    return nok(code2);
+  }
+  function commentOpenInside(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      return commentEnd;
+    }
+    return nok(code2);
+  }
+  function comment(code2) {
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (code2 === 45) {
+      effects.consume(code2);
+      return commentClose;
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = comment;
+      return lineEndingBefore(code2);
+    }
+    effects.consume(code2);
+    return comment;
+  }
+  function commentClose(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      return commentEnd;
+    }
+    return comment(code2);
+  }
+  function commentEnd(code2) {
+    return code2 === 62 ? end(code2) : code2 === 45 ? commentClose(code2) : comment(code2);
+  }
+  function cdataOpenInside(code2) {
+    const value = "CDATA[";
+    if (code2 === value.charCodeAt(index++)) {
+      effects.consume(code2);
+      return index === value.length ? cdata : cdataOpenInside;
+    }
+    return nok(code2);
+  }
+  function cdata(code2) {
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (code2 === 93) {
+      effects.consume(code2);
+      return cdataClose;
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = cdata;
+      return lineEndingBefore(code2);
+    }
+    effects.consume(code2);
+    return cdata;
+  }
+  function cdataClose(code2) {
+    if (code2 === 93) {
+      effects.consume(code2);
+      return cdataEnd;
+    }
+    return cdata(code2);
+  }
+  function cdataEnd(code2) {
+    if (code2 === 62) {
+      return end(code2);
+    }
+    if (code2 === 93) {
+      effects.consume(code2);
+      return cdataEnd;
+    }
+    return cdata(code2);
+  }
+  function declaration(code2) {
+    if (code2 === null || code2 === 62) {
+      return end(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = declaration;
+      return lineEndingBefore(code2);
+    }
+    effects.consume(code2);
+    return declaration;
+  }
+  function instruction(code2) {
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (code2 === 63) {
+      effects.consume(code2);
+      return instructionClose;
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = instruction;
+      return lineEndingBefore(code2);
+    }
+    effects.consume(code2);
+    return instruction;
+  }
+  function instructionClose(code2) {
+    return code2 === 62 ? end(code2) : instruction(code2);
+  }
+  function tagCloseStart(code2) {
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      return tagClose;
+    }
+    return nok(code2);
+  }
+  function tagClose(code2) {
+    if (code2 === 45 || asciiAlphanumeric(code2)) {
+      effects.consume(code2);
+      return tagClose;
+    }
+    return tagCloseBetween(code2);
+  }
+  function tagCloseBetween(code2) {
+    if (markdownLineEnding(code2)) {
+      returnState = tagCloseBetween;
+      return lineEndingBefore(code2);
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return tagCloseBetween;
+    }
+    return end(code2);
+  }
+  function tagOpen(code2) {
+    if (code2 === 45 || asciiAlphanumeric(code2)) {
+      effects.consume(code2);
+      return tagOpen;
+    }
+    if (code2 === 47 || code2 === 62 || markdownLineEndingOrSpace(code2)) {
+      return tagOpenBetween(code2);
+    }
+    return nok(code2);
+  }
+  function tagOpenBetween(code2) {
+    if (code2 === 47) {
+      effects.consume(code2);
+      return end;
+    }
+    if (code2 === 58 || code2 === 95 || asciiAlpha(code2)) {
+      effects.consume(code2);
+      return tagOpenAttributeName;
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = tagOpenBetween;
+      return lineEndingBefore(code2);
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return tagOpenBetween;
+    }
+    return end(code2);
+  }
+  function tagOpenAttributeName(code2) {
+    if (code2 === 45 || code2 === 46 || code2 === 58 || code2 === 95 || asciiAlphanumeric(code2)) {
+      effects.consume(code2);
+      return tagOpenAttributeName;
+    }
+    return tagOpenAttributeNameAfter(code2);
+  }
+  function tagOpenAttributeNameAfter(code2) {
+    if (code2 === 61) {
+      effects.consume(code2);
+      return tagOpenAttributeValueBefore;
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = tagOpenAttributeNameAfter;
+      return lineEndingBefore(code2);
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return tagOpenAttributeNameAfter;
+    }
+    return tagOpenBetween(code2);
+  }
+  function tagOpenAttributeValueBefore(code2) {
+    if (code2 === null || code2 === 60 || code2 === 61 || code2 === 62 || code2 === 96) {
+      return nok(code2);
+    }
+    if (code2 === 34 || code2 === 39) {
+      effects.consume(code2);
+      marker = code2;
+      return tagOpenAttributeValueQuoted;
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = tagOpenAttributeValueBefore;
+      return lineEndingBefore(code2);
+    }
+    if (markdownSpace(code2)) {
+      effects.consume(code2);
+      return tagOpenAttributeValueBefore;
+    }
+    effects.consume(code2);
+    return tagOpenAttributeValueUnquoted;
+  }
+  function tagOpenAttributeValueQuoted(code2) {
+    if (code2 === marker) {
+      effects.consume(code2);
+      marker = void 0;
+      return tagOpenAttributeValueQuotedAfter;
+    }
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      returnState = tagOpenAttributeValueQuoted;
+      return lineEndingBefore(code2);
+    }
+    effects.consume(code2);
+    return tagOpenAttributeValueQuoted;
+  }
+  function tagOpenAttributeValueUnquoted(code2) {
+    if (code2 === null || code2 === 34 || code2 === 39 || code2 === 60 || code2 === 61 || code2 === 96) {
+      return nok(code2);
+    }
+    if (code2 === 47 || code2 === 62 || markdownLineEndingOrSpace(code2)) {
+      return tagOpenBetween(code2);
+    }
+    effects.consume(code2);
+    return tagOpenAttributeValueUnquoted;
+  }
+  function tagOpenAttributeValueQuotedAfter(code2) {
+    if (code2 === 47 || code2 === 62 || markdownLineEndingOrSpace(code2)) {
+      return tagOpenBetween(code2);
+    }
+    return nok(code2);
+  }
+  function end(code2) {
+    if (code2 === 62) {
+      effects.consume(code2);
+      effects.exit("htmlTextData");
+      effects.exit("htmlText");
+      return ok;
+    }
+    return nok(code2);
+  }
+  function lineEndingBefore(code2) {
+    effects.exit("htmlTextData");
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return lineEndingAfter;
+  }
+  function lineEndingAfter(code2) {
+    return markdownSpace(code2) ? factorySpace(
+      effects,
+      lineEndingAfterPrefix,
+      "linePrefix",
+      self2.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4
+    )(code2) : lineEndingAfterPrefix(code2);
+  }
+  function lineEndingAfterPrefix(code2) {
+    effects.enter("htmlTextData");
+    return returnState(code2);
+  }
+}
+const labelEnd = {
+  name: "labelEnd",
+  tokenize: tokenizeLabelEnd,
+  resolveTo: resolveToLabelEnd,
+  resolveAll: resolveAllLabelEnd
+};
+const resourceConstruct = {
+  tokenize: tokenizeResource
+};
+const referenceFullConstruct = {
+  tokenize: tokenizeReferenceFull
+};
+const referenceCollapsedConstruct = {
+  tokenize: tokenizeReferenceCollapsed
+};
+function resolveAllLabelEnd(events) {
+  let index = -1;
+  while (++index < events.length) {
+    const token = events[index][1];
+    if (token.type === "labelImage" || token.type === "labelLink" || token.type === "labelEnd") {
+      events.splice(index + 1, token.type === "labelImage" ? 4 : 2);
+      token.type = "data";
+      index++;
+    }
+  }
+  return events;
+}
+function resolveToLabelEnd(events, context) {
+  let index = events.length;
+  let offset = 0;
+  let token;
+  let open;
+  let close;
+  let media;
+  while (index--) {
+    token = events[index][1];
+    if (open) {
+      if (token.type === "link" || token.type === "labelLink" && token._inactive) {
+        break;
+      }
+      if (events[index][0] === "enter" && token.type === "labelLink") {
+        token._inactive = true;
+      }
+    } else if (close) {
+      if (events[index][0] === "enter" && (token.type === "labelImage" || token.type === "labelLink") && !token._balanced) {
+        open = index;
+        if (token.type !== "labelLink") {
+          offset = 2;
+          break;
+        }
+      }
+    } else if (token.type === "labelEnd") {
+      close = index;
+    }
+  }
+  const group = {
+    type: events[open][1].type === "labelLink" ? "link" : "image",
+    start: Object.assign({}, events[open][1].start),
+    end: Object.assign({}, events[events.length - 1][1].end)
+  };
+  const label = {
+    type: "label",
+    start: Object.assign({}, events[open][1].start),
+    end: Object.assign({}, events[close][1].end)
+  };
+  const text2 = {
+    type: "labelText",
+    start: Object.assign({}, events[open + offset + 2][1].end),
+    end: Object.assign({}, events[close - 2][1].start)
+  };
+  media = [
+    ["enter", group, context],
+    ["enter", label, context]
+  ];
+  media = push(media, events.slice(open + 1, open + offset + 3));
+  media = push(media, [["enter", text2, context]]);
+  media = push(
+    media,
+    resolveAll(
+      context.parser.constructs.insideSpan.null,
+      events.slice(open + offset + 4, close - 3),
+      context
+    )
+  );
+  media = push(media, [
+    ["exit", text2, context],
+    events[close - 2],
+    events[close - 1],
+    ["exit", label, context]
+  ]);
+  media = push(media, events.slice(close + 1));
+  media = push(media, [["exit", group, context]]);
+  splice(events, open, events.length, media);
+  return events;
+}
+function tokenizeLabelEnd(effects, ok, nok) {
+  const self2 = this;
+  let index = self2.events.length;
+  let labelStart;
+  let defined;
+  while (index--) {
+    if ((self2.events[index][1].type === "labelImage" || self2.events[index][1].type === "labelLink") && !self2.events[index][1]._balanced) {
+      labelStart = self2.events[index][1];
+      break;
+    }
+  }
+  return start;
+  function start(code2) {
+    if (!labelStart) {
+      return nok(code2);
+    }
+    if (labelStart._inactive) {
+      return labelEndNok(code2);
+    }
+    defined = self2.parser.defined.includes(
+      normalizeIdentifier(
+        self2.sliceSerialize({
+          start: labelStart.end,
+          end: self2.now()
+        })
+      )
+    );
+    effects.enter("labelEnd");
+    effects.enter("labelMarker");
+    effects.consume(code2);
+    effects.exit("labelMarker");
+    effects.exit("labelEnd");
+    return after;
+  }
+  function after(code2) {
+    if (code2 === 40) {
+      return effects.attempt(
+        resourceConstruct,
+        labelEndOk,
+        defined ? labelEndOk : labelEndNok
+      )(code2);
+    }
+    if (code2 === 91) {
+      return effects.attempt(
+        referenceFullConstruct,
+        labelEndOk,
+        defined ? referenceNotFull : labelEndNok
+      )(code2);
+    }
+    return defined ? labelEndOk(code2) : labelEndNok(code2);
+  }
+  function referenceNotFull(code2) {
+    return effects.attempt(
+      referenceCollapsedConstruct,
+      labelEndOk,
+      labelEndNok
+    )(code2);
+  }
+  function labelEndOk(code2) {
+    return ok(code2);
+  }
+  function labelEndNok(code2) {
+    labelStart._balanced = true;
+    return nok(code2);
+  }
+}
+function tokenizeResource(effects, ok, nok) {
+  return resourceStart;
+  function resourceStart(code2) {
+    effects.enter("resource");
+    effects.enter("resourceMarker");
+    effects.consume(code2);
+    effects.exit("resourceMarker");
+    return resourceBefore;
+  }
+  function resourceBefore(code2) {
+    return markdownLineEndingOrSpace(code2) ? factoryWhitespace(effects, resourceOpen)(code2) : resourceOpen(code2);
+  }
+  function resourceOpen(code2) {
+    if (code2 === 41) {
+      return resourceEnd(code2);
+    }
+    return factoryDestination(
+      effects,
+      resourceDestinationAfter,
+      resourceDestinationMissing,
+      "resourceDestination",
+      "resourceDestinationLiteral",
+      "resourceDestinationLiteralMarker",
+      "resourceDestinationRaw",
+      "resourceDestinationString",
+      32
+    )(code2);
+  }
+  function resourceDestinationAfter(code2) {
+    return markdownLineEndingOrSpace(code2) ? factoryWhitespace(effects, resourceBetween)(code2) : resourceEnd(code2);
+  }
+  function resourceDestinationMissing(code2) {
+    return nok(code2);
+  }
+  function resourceBetween(code2) {
+    if (code2 === 34 || code2 === 39 || code2 === 40) {
+      return factoryTitle(
+        effects,
+        resourceTitleAfter,
+        nok,
+        "resourceTitle",
+        "resourceTitleMarker",
+        "resourceTitleString"
+      )(code2);
+    }
+    return resourceEnd(code2);
+  }
+  function resourceTitleAfter(code2) {
+    return markdownLineEndingOrSpace(code2) ? factoryWhitespace(effects, resourceEnd)(code2) : resourceEnd(code2);
+  }
+  function resourceEnd(code2) {
+    if (code2 === 41) {
+      effects.enter("resourceMarker");
+      effects.consume(code2);
+      effects.exit("resourceMarker");
+      effects.exit("resource");
+      return ok;
+    }
+    return nok(code2);
+  }
+}
+function tokenizeReferenceFull(effects, ok, nok) {
+  const self2 = this;
+  return referenceFull;
+  function referenceFull(code2) {
+    return factoryLabel.call(
+      self2,
+      effects,
+      referenceFullAfter,
+      referenceFullMissing,
+      "reference",
+      "referenceMarker",
+      "referenceString"
+    )(code2);
+  }
+  function referenceFullAfter(code2) {
+    return self2.parser.defined.includes(
+      normalizeIdentifier(
+        self2.sliceSerialize(self2.events[self2.events.length - 1][1]).slice(1, -1)
+      )
+    ) ? ok(code2) : nok(code2);
+  }
+  function referenceFullMissing(code2) {
+    return nok(code2);
+  }
+}
+function tokenizeReferenceCollapsed(effects, ok, nok) {
+  return referenceCollapsedStart;
+  function referenceCollapsedStart(code2) {
+    effects.enter("reference");
+    effects.enter("referenceMarker");
+    effects.consume(code2);
+    effects.exit("referenceMarker");
+    return referenceCollapsedOpen;
+  }
+  function referenceCollapsedOpen(code2) {
+    if (code2 === 93) {
+      effects.enter("referenceMarker");
+      effects.consume(code2);
+      effects.exit("referenceMarker");
+      effects.exit("reference");
+      return ok;
+    }
+    return nok(code2);
+  }
+}
+const labelStartImage = {
+  name: "labelStartImage",
+  tokenize: tokenizeLabelStartImage,
+  resolveAll: labelEnd.resolveAll
+};
+function tokenizeLabelStartImage(effects, ok, nok) {
+  const self2 = this;
+  return start;
+  function start(code2) {
+    effects.enter("labelImage");
+    effects.enter("labelImageMarker");
+    effects.consume(code2);
+    effects.exit("labelImageMarker");
+    return open;
+  }
+  function open(code2) {
+    if (code2 === 91) {
+      effects.enter("labelMarker");
+      effects.consume(code2);
+      effects.exit("labelMarker");
+      effects.exit("labelImage");
+      return after;
+    }
+    return nok(code2);
+  }
+  function after(code2) {
+    return code2 === 94 && "_hiddenFootnoteSupport" in self2.parser.constructs ? nok(code2) : ok(code2);
+  }
+}
+const labelStartLink = {
+  name: "labelStartLink",
+  tokenize: tokenizeLabelStartLink,
+  resolveAll: labelEnd.resolveAll
+};
+function tokenizeLabelStartLink(effects, ok, nok) {
+  const self2 = this;
+  return start;
+  function start(code2) {
+    effects.enter("labelLink");
+    effects.enter("labelMarker");
+    effects.consume(code2);
+    effects.exit("labelMarker");
+    effects.exit("labelLink");
+    return after;
+  }
+  function after(code2) {
+    return code2 === 94 && "_hiddenFootnoteSupport" in self2.parser.constructs ? nok(code2) : ok(code2);
+  }
+}
+const lineEnding = {
+  name: "lineEnding",
+  tokenize: tokenizeLineEnding
+};
+function tokenizeLineEnding(effects, ok) {
+  return start;
+  function start(code2) {
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    return factorySpace(effects, ok, "linePrefix");
+  }
+}
+const thematicBreak = {
+  name: "thematicBreak",
+  tokenize: tokenizeThematicBreak
+};
+function tokenizeThematicBreak(effects, ok, nok) {
+  let size2 = 0;
+  let marker;
+  return start;
+  function start(code2) {
+    effects.enter("thematicBreak");
+    return before(code2);
+  }
+  function before(code2) {
+    marker = code2;
+    return atBreak(code2);
+  }
+  function atBreak(code2) {
+    if (code2 === marker) {
+      effects.enter("thematicBreakSequence");
+      return sequence(code2);
+    }
+    if (size2 >= 3 && (code2 === null || markdownLineEnding(code2))) {
+      effects.exit("thematicBreak");
+      return ok(code2);
+    }
+    return nok(code2);
+  }
+  function sequence(code2) {
+    if (code2 === marker) {
+      effects.consume(code2);
+      size2++;
+      return sequence;
+    }
+    effects.exit("thematicBreakSequence");
+    return markdownSpace(code2) ? factorySpace(effects, atBreak, "whitespace")(code2) : atBreak(code2);
+  }
+}
+const list = {
+  name: "list",
+  tokenize: tokenizeListStart,
+  continuation: {
+    tokenize: tokenizeListContinuation
+  },
+  exit: tokenizeListEnd
+};
+const listItemPrefixWhitespaceConstruct = {
+  tokenize: tokenizeListItemPrefixWhitespace,
+  partial: true
+};
+const indentConstruct = {
+  tokenize: tokenizeIndent$1,
+  partial: true
+};
+function tokenizeListStart(effects, ok, nok) {
+  const self2 = this;
+  const tail = self2.events[self2.events.length - 1];
+  let initialSize = tail && tail[1].type === "linePrefix" ? tail[2].sliceSerialize(tail[1], true).length : 0;
+  let size2 = 0;
+  return start;
+  function start(code2) {
+    const kind = self2.containerState.type || (code2 === 42 || code2 === 43 || code2 === 45 ? "listUnordered" : "listOrdered");
+    if (kind === "listUnordered" ? !self2.containerState.marker || code2 === self2.containerState.marker : asciiDigit(code2)) {
+      if (!self2.containerState.type) {
+        self2.containerState.type = kind;
+        effects.enter(kind, {
+          _container: true
+        });
+      }
+      if (kind === "listUnordered") {
+        effects.enter("listItemPrefix");
+        return code2 === 42 || code2 === 45 ? effects.check(thematicBreak, nok, atMarker)(code2) : atMarker(code2);
+      }
+      if (!self2.interrupt || code2 === 49) {
+        effects.enter("listItemPrefix");
+        effects.enter("listItemValue");
+        return inside(code2);
+      }
+    }
+    return nok(code2);
+  }
+  function inside(code2) {
+    if (asciiDigit(code2) && ++size2 < 10) {
+      effects.consume(code2);
+      return inside;
+    }
+    if ((!self2.interrupt || size2 < 2) && (self2.containerState.marker ? code2 === self2.containerState.marker : code2 === 41 || code2 === 46)) {
+      effects.exit("listItemValue");
+      return atMarker(code2);
+    }
+    return nok(code2);
+  }
+  function atMarker(code2) {
+    effects.enter("listItemMarker");
+    effects.consume(code2);
+    effects.exit("listItemMarker");
+    self2.containerState.marker = self2.containerState.marker || code2;
+    return effects.check(
+      blankLine,
+      self2.interrupt ? nok : onBlank,
+      effects.attempt(
+        listItemPrefixWhitespaceConstruct,
+        endOfPrefix,
+        otherPrefix
+      )
+    );
+  }
+  function onBlank(code2) {
+    self2.containerState.initialBlankLine = true;
+    initialSize++;
+    return endOfPrefix(code2);
+  }
+  function otherPrefix(code2) {
+    if (markdownSpace(code2)) {
+      effects.enter("listItemPrefixWhitespace");
+      effects.consume(code2);
+      effects.exit("listItemPrefixWhitespace");
+      return endOfPrefix;
+    }
+    return nok(code2);
+  }
+  function endOfPrefix(code2) {
+    self2.containerState.size = initialSize + self2.sliceSerialize(effects.exit("listItemPrefix"), true).length;
+    return ok(code2);
+  }
+}
+function tokenizeListContinuation(effects, ok, nok) {
+  const self2 = this;
+  self2.containerState._closeFlow = void 0;
+  return effects.check(blankLine, onBlank, notBlank);
+  function onBlank(code2) {
+    self2.containerState.furtherBlankLines = self2.containerState.furtherBlankLines || self2.containerState.initialBlankLine;
+    return factorySpace(
+      effects,
+      ok,
+      "listItemIndent",
+      self2.containerState.size + 1
+    )(code2);
+  }
+  function notBlank(code2) {
+    if (self2.containerState.furtherBlankLines || !markdownSpace(code2)) {
+      self2.containerState.furtherBlankLines = void 0;
+      self2.containerState.initialBlankLine = void 0;
+      return notInCurrentItem(code2);
+    }
+    self2.containerState.furtherBlankLines = void 0;
+    self2.containerState.initialBlankLine = void 0;
+    return effects.attempt(indentConstruct, ok, notInCurrentItem)(code2);
+  }
+  function notInCurrentItem(code2) {
+    self2.containerState._closeFlow = true;
+    self2.interrupt = void 0;
+    return factorySpace(
+      effects,
+      effects.attempt(list, ok, nok),
+      "linePrefix",
+      self2.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4
+    )(code2);
+  }
+}
+function tokenizeIndent$1(effects, ok, nok) {
+  const self2 = this;
+  return factorySpace(
+    effects,
+    afterPrefix,
+    "listItemIndent",
+    self2.containerState.size + 1
+  );
+  function afterPrefix(code2) {
+    const tail = self2.events[self2.events.length - 1];
+    return tail && tail[1].type === "listItemIndent" && tail[2].sliceSerialize(tail[1], true).length === self2.containerState.size ? ok(code2) : nok(code2);
+  }
+}
+function tokenizeListEnd(effects) {
+  effects.exit(this.containerState.type);
+}
+function tokenizeListItemPrefixWhitespace(effects, ok, nok) {
+  const self2 = this;
+  return factorySpace(
+    effects,
+    afterPrefix,
+    "listItemPrefixWhitespace",
+    self2.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4 + 1
+  );
+  function afterPrefix(code2) {
+    const tail = self2.events[self2.events.length - 1];
+    return !markdownSpace(code2) && tail && tail[1].type === "listItemPrefixWhitespace" ? ok(code2) : nok(code2);
+  }
+}
+const setextUnderline = {
+  name: "setextUnderline",
+  tokenize: tokenizeSetextUnderline,
+  resolveTo: resolveToSetextUnderline
+};
+function resolveToSetextUnderline(events, context) {
+  let index = events.length;
+  let content2;
+  let text2;
+  let definition2;
+  while (index--) {
+    if (events[index][0] === "enter") {
+      if (events[index][1].type === "content") {
+        content2 = index;
+        break;
+      }
+      if (events[index][1].type === "paragraph") {
+        text2 = index;
+      }
+    } else {
+      if (events[index][1].type === "content") {
+        events.splice(index, 1);
+      }
+      if (!definition2 && events[index][1].type === "definition") {
+        definition2 = index;
+      }
+    }
+  }
+  const heading = {
+    type: "setextHeading",
+    start: Object.assign({}, events[text2][1].start),
+    end: Object.assign({}, events[events.length - 1][1].end)
+  };
+  events[text2][1].type = "setextHeadingText";
+  if (definition2) {
+    events.splice(text2, 0, ["enter", heading, context]);
+    events.splice(definition2 + 1, 0, ["exit", events[content2][1], context]);
+    events[content2][1].end = Object.assign({}, events[definition2][1].end);
+  } else {
+    events[content2][1] = heading;
+  }
+  events.push(["exit", heading, context]);
+  return events;
+}
+function tokenizeSetextUnderline(effects, ok, nok) {
+  const self2 = this;
+  let marker;
+  return start;
+  function start(code2) {
+    let index = self2.events.length;
+    let paragraph;
+    while (index--) {
+      if (self2.events[index][1].type !== "lineEnding" && self2.events[index][1].type !== "linePrefix" && self2.events[index][1].type !== "content") {
+        paragraph = self2.events[index][1].type === "paragraph";
+        break;
+      }
+    }
+    if (!self2.parser.lazy[self2.now().line] && (self2.interrupt || paragraph)) {
+      effects.enter("setextHeadingLine");
+      marker = code2;
+      return before(code2);
+    }
+    return nok(code2);
+  }
+  function before(code2) {
+    effects.enter("setextHeadingLineSequence");
+    return inside(code2);
+  }
+  function inside(code2) {
+    if (code2 === marker) {
+      effects.consume(code2);
+      return inside;
+    }
+    effects.exit("setextHeadingLineSequence");
+    return markdownSpace(code2) ? factorySpace(effects, after, "lineSuffix")(code2) : after(code2);
+  }
+  function after(code2) {
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("setextHeadingLine");
+      return ok(code2);
+    }
+    return nok(code2);
+  }
+}
+const flow$1 = {
+  tokenize: initializeFlow
+};
+function initializeFlow(effects) {
+  const self2 = this;
+  const initial = effects.attempt(
+    blankLine,
+    atBlankEnding,
+    effects.attempt(
+      this.parser.constructs.flowInitial,
+      afterConstruct,
+      factorySpace(
+        effects,
+        effects.attempt(
+          this.parser.constructs.flow,
+          afterConstruct,
+          effects.attempt(content, afterConstruct)
+        ),
+        "linePrefix"
+      )
+    )
+  );
+  return initial;
+  function atBlankEnding(code2) {
+    if (code2 === null) {
+      effects.consume(code2);
+      return;
+    }
+    effects.enter("lineEndingBlank");
+    effects.consume(code2);
+    effects.exit("lineEndingBlank");
+    self2.currentConstruct = void 0;
+    return initial;
+  }
+  function afterConstruct(code2) {
+    if (code2 === null) {
+      effects.consume(code2);
+      return;
+    }
+    effects.enter("lineEnding");
+    effects.consume(code2);
+    effects.exit("lineEnding");
+    self2.currentConstruct = void 0;
+    return initial;
+  }
+}
+const resolver = {
+  resolveAll: createResolver()
+};
+const string$1 = initializeFactory("string");
+const text$3 = initializeFactory("text");
+function initializeFactory(field) {
+  return {
+    tokenize: initializeText,
+    resolveAll: createResolver(
+      field === "text" ? resolveAllLineSuffixes : void 0
+    )
+  };
+  function initializeText(effects) {
+    const self2 = this;
+    const constructs2 = this.parser.constructs[field];
+    const text2 = effects.attempt(constructs2, start, notText);
+    return start;
+    function start(code2) {
+      return atBreak(code2) ? text2(code2) : notText(code2);
+    }
+    function notText(code2) {
+      if (code2 === null) {
+        effects.consume(code2);
+        return;
+      }
+      effects.enter("data");
+      effects.consume(code2);
+      return data;
+    }
+    function data(code2) {
+      if (atBreak(code2)) {
+        effects.exit("data");
+        return text2(code2);
+      }
+      effects.consume(code2);
+      return data;
+    }
+    function atBreak(code2) {
+      if (code2 === null) {
+        return true;
+      }
+      const list2 = constructs2[code2];
+      let index = -1;
+      if (list2) {
+        while (++index < list2.length) {
+          const item = list2[index];
+          if (!item.previous || item.previous.call(self2, self2.previous)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+  }
+}
+function createResolver(extraResolver) {
+  return resolveAllText;
+  function resolveAllText(events, context) {
+    let index = -1;
+    let enter;
+    while (++index <= events.length) {
+      if (enter === void 0) {
+        if (events[index] && events[index][1].type === "data") {
+          enter = index;
+          index++;
+        }
+      } else if (!events[index] || events[index][1].type !== "data") {
+        if (index !== enter + 2) {
+          events[enter][1].end = events[index - 1][1].end;
+          events.splice(enter + 2, index - enter - 2);
+          index = enter + 2;
+        }
+        enter = void 0;
+      }
+    }
+    return extraResolver ? extraResolver(events, context) : events;
+  }
+}
+function resolveAllLineSuffixes(events, context) {
+  let eventIndex = 0;
+  while (++eventIndex <= events.length) {
+    if ((eventIndex === events.length || events[eventIndex][1].type === "lineEnding") && events[eventIndex - 1][1].type === "data") {
+      const data = events[eventIndex - 1][1];
+      const chunks = context.sliceStream(data);
+      let index = chunks.length;
+      let bufferIndex = -1;
+      let size2 = 0;
+      let tabs;
+      while (index--) {
+        const chunk = chunks[index];
+        if (typeof chunk === "string") {
+          bufferIndex = chunk.length;
+          while (chunk.charCodeAt(bufferIndex - 1) === 32) {
+            size2++;
+            bufferIndex--;
+          }
+          if (bufferIndex)
+            break;
+          bufferIndex = -1;
+        } else if (chunk === -2) {
+          tabs = true;
+          size2++;
+        } else if (chunk === -1)
+          ;
+        else {
+          index++;
+          break;
+        }
+      }
+      if (size2) {
+        const token = {
+          type: eventIndex === events.length || tabs || size2 < 2 ? "lineSuffix" : "hardBreakTrailing",
+          start: {
+            line: data.end.line,
+            column: data.end.column - size2,
+            offset: data.end.offset - size2,
+            _index: data.start._index + index,
+            _bufferIndex: index ? bufferIndex : data.start._bufferIndex + bufferIndex
+          },
+          end: Object.assign({}, data.end)
+        };
+        data.end = Object.assign({}, token.start);
+        if (data.start.offset === data.end.offset) {
+          Object.assign(data, token);
+        } else {
+          events.splice(
+            eventIndex,
+            0,
+            ["enter", token, context],
+            ["exit", token, context]
+          );
+          eventIndex += 2;
+        }
+      }
+      eventIndex++;
+    }
+  }
+  return events;
+}
+function createTokenizer(parser, initialize, from) {
+  let point = Object.assign(
+    from ? Object.assign({}, from) : {
+      line: 1,
+      column: 1,
+      offset: 0
+    },
+    {
+      _index: 0,
+      _bufferIndex: -1
+    }
+  );
+  const columnStart = {};
+  const resolveAllConstructs = [];
+  let chunks = [];
+  let stack = [];
+  const effects = {
+    consume,
+    enter,
+    exit: exit2,
+    attempt: constructFactory(onsuccessfulconstruct),
+    check: constructFactory(onsuccessfulcheck),
+    interrupt: constructFactory(onsuccessfulcheck, {
+      interrupt: true
+    })
+  };
+  const context = {
+    previous: null,
+    code: null,
+    containerState: {},
+    events: [],
+    parser,
+    sliceStream,
+    sliceSerialize,
+    now,
+    defineSkip,
+    write
+  };
+  let state = initialize.tokenize.call(context, effects);
+  if (initialize.resolveAll) {
+    resolveAllConstructs.push(initialize);
+  }
+  return context;
+  function write(slice) {
+    chunks = push(chunks, slice);
+    main();
+    if (chunks[chunks.length - 1] !== null) {
+      return [];
+    }
+    addResult(initialize, 0);
+    context.events = resolveAll(resolveAllConstructs, context.events, context);
+    return context.events;
+  }
+  function sliceSerialize(token, expandTabs) {
+    return serializeChunks(sliceStream(token), expandTabs);
+  }
+  function sliceStream(token) {
+    return sliceChunks(chunks, token);
+  }
+  function now() {
+    const { line, column, offset, _index, _bufferIndex } = point;
+    return {
+      line,
+      column,
+      offset,
+      _index,
+      _bufferIndex
+    };
+  }
+  function defineSkip(value) {
+    columnStart[value.line] = value.column;
+    accountForPotentialSkip();
+  }
+  function main() {
+    let chunkIndex;
+    while (point._index < chunks.length) {
+      const chunk = chunks[point._index];
+      if (typeof chunk === "string") {
+        chunkIndex = point._index;
+        if (point._bufferIndex < 0) {
+          point._bufferIndex = 0;
+        }
+        while (point._index === chunkIndex && point._bufferIndex < chunk.length) {
+          go(chunk.charCodeAt(point._bufferIndex));
+        }
+      } else {
+        go(chunk);
+      }
+    }
+  }
+  function go(code2) {
+    state = state(code2);
+  }
+  function consume(code2) {
+    if (markdownLineEnding(code2)) {
+      point.line++;
+      point.column = 1;
+      point.offset += code2 === -3 ? 2 : 1;
+      accountForPotentialSkip();
+    } else if (code2 !== -1) {
+      point.column++;
+      point.offset++;
+    }
+    if (point._bufferIndex < 0) {
+      point._index++;
+    } else {
+      point._bufferIndex++;
+      if (point._bufferIndex === chunks[point._index].length) {
+        point._bufferIndex = -1;
+        point._index++;
+      }
+    }
+    context.previous = code2;
+  }
+  function enter(type, fields) {
+    const token = fields || {};
+    token.type = type;
+    token.start = now();
+    context.events.push(["enter", token, context]);
+    stack.push(token);
+    return token;
+  }
+  function exit2(type) {
+    const token = stack.pop();
+    token.end = now();
+    context.events.push(["exit", token, context]);
+    return token;
+  }
+  function onsuccessfulconstruct(construct, info) {
+    addResult(construct, info.from);
+  }
+  function onsuccessfulcheck(_, info) {
+    info.restore();
+  }
+  function constructFactory(onreturn, fields) {
+    return hook;
+    function hook(constructs2, returnState, bogusState) {
+      let listOfConstructs;
+      let constructIndex;
+      let currentConstruct;
+      let info;
+      return Array.isArray(constructs2) ? handleListOfConstructs(constructs2) : "tokenize" in constructs2 ? handleListOfConstructs([constructs2]) : handleMapOfConstructs(constructs2);
+      function handleMapOfConstructs(map) {
+        return start;
+        function start(code2) {
+          const def2 = code2 !== null && map[code2];
+          const all = code2 !== null && map.null;
+          const list2 = [
+            ...Array.isArray(def2) ? def2 : def2 ? [def2] : [],
+            ...Array.isArray(all) ? all : all ? [all] : []
+          ];
+          return handleListOfConstructs(list2)(code2);
+        }
+      }
+      function handleListOfConstructs(list2) {
+        listOfConstructs = list2;
+        constructIndex = 0;
+        if (list2.length === 0) {
+          return bogusState;
+        }
+        return handleConstruct(list2[constructIndex]);
+      }
+      function handleConstruct(construct) {
+        return start;
+        function start(code2) {
+          info = store();
+          currentConstruct = construct;
+          if (!construct.partial) {
+            context.currentConstruct = construct;
+          }
+          if (construct.name && context.parser.constructs.disable.null.includes(construct.name)) {
+            return nok();
+          }
+          return construct.tokenize.call(
+            fields ? Object.assign(Object.create(context), fields) : context,
+            effects,
+            ok,
+            nok
+          )(code2);
+        }
+      }
+      function ok(code2) {
+        onreturn(currentConstruct, info);
+        return returnState;
+      }
+      function nok(code2) {
+        info.restore();
+        if (++constructIndex < listOfConstructs.length) {
+          return handleConstruct(listOfConstructs[constructIndex]);
+        }
+        return bogusState;
+      }
+    }
+  }
+  function addResult(construct, from2) {
+    if (construct.resolveAll && !resolveAllConstructs.includes(construct)) {
+      resolveAllConstructs.push(construct);
+    }
+    if (construct.resolve) {
+      splice(
+        context.events,
+        from2,
+        context.events.length - from2,
+        construct.resolve(context.events.slice(from2), context)
+      );
+    }
+    if (construct.resolveTo) {
+      context.events = construct.resolveTo(context.events, context);
+    }
+  }
+  function store() {
+    const startPoint = now();
+    const startPrevious = context.previous;
+    const startCurrentConstruct = context.currentConstruct;
+    const startEventsIndex = context.events.length;
+    const startStack = Array.from(stack);
+    return {
+      restore,
+      from: startEventsIndex
+    };
+    function restore() {
+      point = startPoint;
+      context.previous = startPrevious;
+      context.currentConstruct = startCurrentConstruct;
+      context.events.length = startEventsIndex;
+      stack = startStack;
+      accountForPotentialSkip();
+    }
+  }
+  function accountForPotentialSkip() {
+    if (point.line in columnStart && point.column < 2) {
+      point.column = columnStart[point.line];
+      point.offset += columnStart[point.line] - 1;
+    }
+  }
+}
+function sliceChunks(chunks, token) {
+  const startIndex = token.start._index;
+  const startBufferIndex = token.start._bufferIndex;
+  const endIndex = token.end._index;
+  const endBufferIndex = token.end._bufferIndex;
+  let view;
+  if (startIndex === endIndex) {
+    view = [chunks[startIndex].slice(startBufferIndex, endBufferIndex)];
+  } else {
+    view = chunks.slice(startIndex, endIndex);
+    if (startBufferIndex > -1) {
+      const head = view[0];
+      if (typeof head === "string") {
+        view[0] = head.slice(startBufferIndex);
+      } else {
+        view.shift();
+      }
+    }
+    if (endBufferIndex > 0) {
+      view.push(chunks[endIndex].slice(0, endBufferIndex));
+    }
+  }
+  return view;
+}
+function serializeChunks(chunks, expandTabs) {
+  let index = -1;
+  const result = [];
+  let atTab;
+  while (++index < chunks.length) {
+    const chunk = chunks[index];
+    let value;
+    if (typeof chunk === "string") {
+      value = chunk;
+    } else
+      switch (chunk) {
+        case -5: {
+          value = "\r";
+          break;
+        }
+        case -4: {
+          value = "\n";
+          break;
+        }
+        case -3: {
+          value = "\r\n";
+          break;
+        }
+        case -2: {
+          value = expandTabs ? " " : "	";
+          break;
+        }
+        case -1: {
+          if (!expandTabs && atTab)
+            continue;
+          value = " ";
+          break;
+        }
+        default: {
+          value = String.fromCharCode(chunk);
+        }
+      }
+    atTab = chunk === -2;
+    result.push(value);
+  }
+  return result.join("");
+}
+const document$1 = {
+  [42]: list,
+  [43]: list,
+  [45]: list,
+  [48]: list,
+  [49]: list,
+  [50]: list,
+  [51]: list,
+  [52]: list,
+  [53]: list,
+  [54]: list,
+  [55]: list,
+  [56]: list,
+  [57]: list,
+  [62]: blockQuote
+};
+const contentInitial = {
+  [91]: definition
+};
+const flowInitial = {
+  [-2]: codeIndented,
+  [-1]: codeIndented,
+  [32]: codeIndented
+};
+const flow = {
+  [35]: headingAtx,
+  [42]: thematicBreak,
+  [45]: [setextUnderline, thematicBreak],
+  [60]: htmlFlow,
+  [61]: setextUnderline,
+  [95]: thematicBreak,
+  [96]: codeFenced,
+  [126]: codeFenced
+};
+const string = {
+  [38]: characterReference,
+  [92]: characterEscape
+};
+const text$2 = {
+  [-5]: lineEnding,
+  [-4]: lineEnding,
+  [-3]: lineEnding,
+  [33]: labelStartImage,
+  [38]: characterReference,
+  [42]: attention,
+  [60]: [autolink, htmlText],
+  [91]: labelStartLink,
+  [92]: [hardBreakEscape, characterEscape],
+  [93]: labelEnd,
+  [95]: attention,
+  [96]: codeText
+};
+const insideSpan = {
+  null: [attention, resolver]
+};
+const attentionMarkers = {
+  null: [42, 95]
+};
+const disable = {
+  null: []
+};
+var defaultConstructs = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  document: document$1,
+  contentInitial,
+  flowInitial,
+  flow,
+  string,
+  text: text$2,
+  insideSpan,
+  attentionMarkers,
+  disable
+}, Symbol.toStringTag, { value: "Module" }));
+function parse(options) {
+  const settings = options || {};
+  const constructs2 = combineExtensions([defaultConstructs, ...settings.extensions || []]);
+  const parser = {
+    defined: [],
+    lazy: {},
+    constructs: constructs2,
+    content: create(content$1),
+    document: create(document$2),
+    flow: create(flow$1),
+    string: create(string$1),
+    text: create(text$3)
+  };
+  return parser;
+  function create(initial) {
+    return creator;
+    function creator(from) {
+      return createTokenizer(parser, initial, from);
+    }
+  }
+}
+function postprocess(events) {
+  while (!subtokenize(events)) {
+  }
+  return events;
+}
+const search = /[\0\t\n\r]/g;
+function preprocess() {
+  let column = 1;
+  let buffer = "";
+  let start = true;
+  let atCarriageReturn;
+  return preprocessor;
+  function preprocessor(value, encoding, end) {
+    const chunks = [];
+    let match;
+    let next;
+    let startPosition;
+    let endPosition;
+    let code2;
+    value = buffer + value.toString(encoding);
+    startPosition = 0;
+    buffer = "";
+    if (start) {
+      if (value.charCodeAt(0) === 65279) {
+        startPosition++;
+      }
+      start = void 0;
+    }
+    while (startPosition < value.length) {
+      search.lastIndex = startPosition;
+      match = search.exec(value);
+      endPosition = match && match.index !== void 0 ? match.index : value.length;
+      code2 = value.charCodeAt(endPosition);
+      if (!match) {
+        buffer = value.slice(startPosition);
+        break;
+      }
+      if (code2 === 10 && startPosition === endPosition && atCarriageReturn) {
+        chunks.push(-3);
+        atCarriageReturn = void 0;
+      } else {
+        if (atCarriageReturn) {
+          chunks.push(-5);
+          atCarriageReturn = void 0;
+        }
+        if (startPosition < endPosition) {
+          chunks.push(value.slice(startPosition, endPosition));
+          column += endPosition - startPosition;
+        }
+        switch (code2) {
+          case 0: {
+            chunks.push(65533);
+            column++;
+            break;
+          }
+          case 9: {
+            next = Math.ceil(column / 4) * 4;
+            chunks.push(-2);
+            while (column++ < next)
+              chunks.push(-1);
+            break;
+          }
+          case 10: {
+            chunks.push(-4);
+            column = 1;
+            break;
+          }
+          default: {
+            atCarriageReturn = true;
+            column = 1;
+          }
+        }
+      }
+      startPosition = endPosition + 1;
+    }
+    if (end) {
+      if (atCarriageReturn)
+        chunks.push(-5);
+      if (buffer)
+        chunks.push(buffer);
+      chunks.push(null);
+    }
+    return chunks;
+  }
+}
+function micromark(value, encoding, options) {
+  if (typeof encoding !== "string") {
+    options = encoding;
+    encoding = void 0;
+  }
+  return compile(options)(
+    postprocess(
+      parse(options).document().write(preprocess()(value, encoding, true))
+    )
+  );
+}
+const wwwPrefix = {
+  tokenize: tokenizeWwwPrefix,
+  partial: true
+};
+const domain = {
+  tokenize: tokenizeDomain,
+  partial: true
+};
+const path = {
+  tokenize: tokenizePath,
+  partial: true
+};
+const trail = {
+  tokenize: tokenizeTrail,
+  partial: true
+};
+const emailDomainDotTrail = {
+  tokenize: tokenizeEmailDomainDotTrail,
+  partial: true
+};
+const wwwAutolink = {
+  tokenize: tokenizeWwwAutolink,
+  previous: previousWww
+};
+const protocolAutolink = {
+  tokenize: tokenizeProtocolAutolink,
+  previous: previousProtocol
+};
+const emailAutolink = {
+  tokenize: tokenizeEmailAutolink,
+  previous: previousEmail
+};
+const text$1 = {};
+const gfmAutolinkLiteral = {
+  text: text$1
+};
+let code = 48;
+while (code < 123) {
+  text$1[code] = emailAutolink;
+  code++;
+  if (code === 58)
+    code = 65;
+  else if (code === 91)
+    code = 97;
+}
+text$1[43] = emailAutolink;
+text$1[45] = emailAutolink;
+text$1[46] = emailAutolink;
+text$1[95] = emailAutolink;
+text$1[72] = [emailAutolink, protocolAutolink];
+text$1[104] = [emailAutolink, protocolAutolink];
+text$1[87] = [emailAutolink, wwwAutolink];
+text$1[119] = [emailAutolink, wwwAutolink];
+function tokenizeEmailAutolink(effects, ok, nok) {
+  const self2 = this;
+  let dot;
+  let data;
+  return start;
+  function start(code2) {
+    if (!gfmAtext(code2) || !previousEmail.call(self2, self2.previous) || previousUnbalanced(self2.events)) {
+      return nok(code2);
+    }
+    effects.enter("literalAutolink");
+    effects.enter("literalAutolinkEmail");
+    return atext(code2);
+  }
+  function atext(code2) {
+    if (gfmAtext(code2)) {
+      effects.consume(code2);
+      return atext;
+    }
+    if (code2 === 64) {
+      effects.consume(code2);
+      return emailDomain;
+    }
+    return nok(code2);
+  }
+  function emailDomain(code2) {
+    if (code2 === 46) {
+      return effects.check(
+        emailDomainDotTrail,
+        emailDomainAfter,
+        emailDomainDot
+      )(code2);
+    }
+    if (code2 === 45 || code2 === 95 || asciiAlphanumeric(code2)) {
+      data = true;
+      effects.consume(code2);
+      return emailDomain;
+    }
+    return emailDomainAfter(code2);
+  }
+  function emailDomainDot(code2) {
+    effects.consume(code2);
+    dot = true;
+    return emailDomain;
+  }
+  function emailDomainAfter(code2) {
+    if (data && dot && asciiAlpha(self2.previous)) {
+      effects.exit("literalAutolinkEmail");
+      effects.exit("literalAutolink");
+      return ok(code2);
+    }
+    return nok(code2);
+  }
+}
+function tokenizeWwwAutolink(effects, ok, nok) {
+  const self2 = this;
+  return wwwStart;
+  function wwwStart(code2) {
+    if (code2 !== 87 && code2 !== 119 || !previousWww.call(self2, self2.previous) || previousUnbalanced(self2.events)) {
+      return nok(code2);
+    }
+    effects.enter("literalAutolink");
+    effects.enter("literalAutolinkWww");
+    return effects.check(
+      wwwPrefix,
+      effects.attempt(domain, effects.attempt(path, wwwAfter), nok),
+      nok
+    )(code2);
+  }
+  function wwwAfter(code2) {
+    effects.exit("literalAutolinkWww");
+    effects.exit("literalAutolink");
+    return ok(code2);
+  }
+}
+function tokenizeProtocolAutolink(effects, ok, nok) {
+  const self2 = this;
+  let buffer = "";
+  let seen = false;
+  return protocolStart;
+  function protocolStart(code2) {
+    if ((code2 === 72 || code2 === 104) && previousProtocol.call(self2, self2.previous) && !previousUnbalanced(self2.events)) {
+      effects.enter("literalAutolink");
+      effects.enter("literalAutolinkHttp");
+      buffer += String.fromCodePoint(code2);
+      effects.consume(code2);
+      return protocolPrefixInside;
+    }
+    return nok(code2);
+  }
+  function protocolPrefixInside(code2) {
+    if (asciiAlpha(code2) && buffer.length < 5) {
+      buffer += String.fromCodePoint(code2);
+      effects.consume(code2);
+      return protocolPrefixInside;
+    }
+    if (code2 === 58) {
+      const protocol = buffer.toLowerCase();
+      if (protocol === "http" || protocol === "https") {
+        effects.consume(code2);
+        return protocolSlashesInside;
+      }
+    }
+    return nok(code2);
+  }
+  function protocolSlashesInside(code2) {
+    if (code2 === 47) {
+      effects.consume(code2);
+      if (seen) {
+        return afterProtocol;
+      }
+      seen = true;
+      return protocolSlashesInside;
+    }
+    return nok(code2);
+  }
+  function afterProtocol(code2) {
+    return code2 === null || asciiControl(code2) || markdownLineEndingOrSpace(code2) || unicodeWhitespace(code2) || unicodePunctuation(code2) ? nok(code2) : effects.attempt(domain, effects.attempt(path, protocolAfter), nok)(code2);
+  }
+  function protocolAfter(code2) {
+    effects.exit("literalAutolinkHttp");
+    effects.exit("literalAutolink");
+    return ok(code2);
+  }
+}
+function tokenizeWwwPrefix(effects, ok, nok) {
+  let size2 = 0;
+  return wwwPrefixInside;
+  function wwwPrefixInside(code2) {
+    if ((code2 === 87 || code2 === 119) && size2 < 3) {
+      size2++;
+      effects.consume(code2);
+      return wwwPrefixInside;
+    }
+    if (code2 === 46 && size2 === 3) {
+      effects.consume(code2);
+      return wwwPrefixAfter;
+    }
+    return nok(code2);
+  }
+  function wwwPrefixAfter(code2) {
+    return code2 === null ? nok(code2) : ok(code2);
+  }
+}
+function tokenizeDomain(effects, ok, nok) {
+  let underscoreInLastSegment;
+  let underscoreInLastLastSegment;
+  let seen;
+  return domainInside;
+  function domainInside(code2) {
+    if (code2 === 46 || code2 === 95) {
+      return effects.check(trail, domainAfter, domainAtPunctuation)(code2);
+    }
+    if (code2 === null || markdownLineEndingOrSpace(code2) || unicodeWhitespace(code2) || code2 !== 45 && unicodePunctuation(code2)) {
+      return domainAfter(code2);
+    }
+    seen = true;
+    effects.consume(code2);
+    return domainInside;
+  }
+  function domainAtPunctuation(code2) {
+    if (code2 === 95) {
+      underscoreInLastSegment = true;
+    } else {
+      underscoreInLastLastSegment = underscoreInLastSegment;
+      underscoreInLastSegment = void 0;
+    }
+    effects.consume(code2);
+    return domainInside;
+  }
+  function domainAfter(code2) {
+    if (underscoreInLastLastSegment || underscoreInLastSegment || !seen) {
+      return nok(code2);
+    }
+    return ok(code2);
+  }
+}
+function tokenizePath(effects, ok) {
+  let sizeOpen = 0;
+  let sizeClose = 0;
+  return pathInside;
+  function pathInside(code2) {
+    if (code2 === 40) {
+      sizeOpen++;
+      effects.consume(code2);
+      return pathInside;
+    }
+    if (code2 === 41 && sizeClose < sizeOpen) {
+      return pathAtPunctuation(code2);
+    }
+    if (code2 === 33 || code2 === 34 || code2 === 38 || code2 === 39 || code2 === 41 || code2 === 42 || code2 === 44 || code2 === 46 || code2 === 58 || code2 === 59 || code2 === 60 || code2 === 63 || code2 === 93 || code2 === 95 || code2 === 126) {
+      return effects.check(trail, ok, pathAtPunctuation)(code2);
+    }
+    if (code2 === null || markdownLineEndingOrSpace(code2) || unicodeWhitespace(code2)) {
+      return ok(code2);
+    }
+    effects.consume(code2);
+    return pathInside;
+  }
+  function pathAtPunctuation(code2) {
+    if (code2 === 41) {
+      sizeClose++;
+    }
+    effects.consume(code2);
+    return pathInside;
+  }
+}
+function tokenizeTrail(effects, ok, nok) {
+  return trail2;
+  function trail2(code2) {
+    if (code2 === 33 || code2 === 34 || code2 === 39 || code2 === 41 || code2 === 42 || code2 === 44 || code2 === 46 || code2 === 58 || code2 === 59 || code2 === 63 || code2 === 95 || code2 === 126) {
+      effects.consume(code2);
+      return trail2;
+    }
+    if (code2 === 38) {
+      effects.consume(code2);
+      return trailCharRefStart;
+    }
+    if (code2 === 93) {
+      effects.consume(code2);
+      return trailBracketAfter;
+    }
+    if (code2 === 60 || code2 === null || markdownLineEndingOrSpace(code2) || unicodeWhitespace(code2)) {
+      return ok(code2);
+    }
+    return nok(code2);
+  }
+  function trailBracketAfter(code2) {
+    if (code2 === null || code2 === 40 || code2 === 91 || markdownLineEndingOrSpace(code2) || unicodeWhitespace(code2)) {
+      return ok(code2);
+    }
+    return trail2(code2);
+  }
+  function trailCharRefStart(code2) {
+    return asciiAlpha(code2) ? trailCharRefInside(code2) : nok(code2);
+  }
+  function trailCharRefInside(code2) {
+    if (code2 === 59) {
+      effects.consume(code2);
+      return trail2;
+    }
+    if (asciiAlpha(code2)) {
+      effects.consume(code2);
+      return trailCharRefInside;
+    }
+    return nok(code2);
+  }
+}
+function tokenizeEmailDomainDotTrail(effects, ok, nok) {
+  return start;
+  function start(code2) {
+    effects.consume(code2);
+    return after;
+  }
+  function after(code2) {
+    return asciiAlphanumeric(code2) ? nok(code2) : ok(code2);
+  }
+}
+function previousWww(code2) {
+  return code2 === null || code2 === 40 || code2 === 42 || code2 === 95 || code2 === 91 || code2 === 93 || code2 === 126 || markdownLineEndingOrSpace(code2);
+}
+function previousProtocol(code2) {
+  return !asciiAlpha(code2);
+}
+function previousEmail(code2) {
+  return !(code2 === 47 || gfmAtext(code2));
+}
+function gfmAtext(code2) {
+  return code2 === 43 || code2 === 45 || code2 === 46 || code2 === 95 || asciiAlphanumeric(code2);
+}
+function previousUnbalanced(events) {
+  let index = events.length;
+  let result = false;
+  while (index--) {
+    const token = events[index][1];
+    if ((token.type === "labelLink" || token.type === "labelImage") && !token._balanced) {
+      result = true;
+      break;
+    }
+    if (token._gfmAutolinkLiteralWalkedInto) {
+      result = false;
+      break;
+    }
+  }
+  if (events.length > 0 && !result) {
+    events[events.length - 1][1]._gfmAutolinkLiteralWalkedInto = true;
+  }
   return result;
 }
+const gfmAutolinkLiteralHtml = {
+  exit: {
+    literalAutolinkEmail,
+    literalAutolinkHttp,
+    literalAutolinkWww
+  }
+};
+function literalAutolinkWww(token) {
+  anchorFromToken.call(this, token, "http://");
+}
+function literalAutolinkEmail(token) {
+  anchorFromToken.call(this, token, "mailto:");
+}
+function literalAutolinkHttp(token) {
+  anchorFromToken.call(this, token);
+}
+function anchorFromToken(token, protocol) {
+  const url = this.sliceSerialize(token);
+  this.tag('<a href="' + sanitizeUri((protocol || "") + url) + '">');
+  this.raw(this.encode(url));
+  this.tag("</a>");
+}
+const indent = {
+  tokenize: tokenizeIndent,
+  partial: true
+};
+function gfmFootnote() {
+  return {
+    document: {
+      [91]: {
+        tokenize: tokenizeDefinitionStart,
+        continuation: {
+          tokenize: tokenizeDefinitionContinuation
+        },
+        exit: gfmFootnoteDefinitionEnd
+      }
+    },
+    text: {
+      [91]: {
+        tokenize: tokenizeGfmFootnoteCall
+      },
+      [93]: {
+        add: "after",
+        tokenize: tokenizePotentialGfmFootnoteCall,
+        resolveTo: resolveToPotentialGfmFootnoteCall
+      }
+    }
+  };
+}
+function tokenizePotentialGfmFootnoteCall(effects, ok, nok) {
+  const self2 = this;
+  let index = self2.events.length;
+  const defined = self2.parser.gfmFootnotes || (self2.parser.gfmFootnotes = []);
+  let labelStart;
+  while (index--) {
+    const token = self2.events[index][1];
+    if (token.type === "labelImage") {
+      labelStart = token;
+      break;
+    }
+    if (token.type === "gfmFootnoteCall" || token.type === "labelLink" || token.type === "label" || token.type === "image" || token.type === "link") {
+      break;
+    }
+  }
+  return start;
+  function start(code2) {
+    if (!labelStart || !labelStart._balanced) {
+      return nok(code2);
+    }
+    const id = normalizeIdentifier(
+      self2.sliceSerialize({
+        start: labelStart.end,
+        end: self2.now()
+      })
+    );
+    if (id.codePointAt(0) !== 94 || !defined.includes(id.slice(1))) {
+      return nok(code2);
+    }
+    effects.enter("gfmFootnoteCallLabelMarker");
+    effects.consume(code2);
+    effects.exit("gfmFootnoteCallLabelMarker");
+    return ok(code2);
+  }
+}
+function resolveToPotentialGfmFootnoteCall(events, context) {
+  let index = events.length;
+  while (index--) {
+    if (events[index][1].type === "labelImage" && events[index][0] === "enter") {
+      events[index][1];
+      break;
+    }
+  }
+  events[index + 1][1].type = "data";
+  events[index + 3][1].type = "gfmFootnoteCallLabelMarker";
+  const call = {
+    type: "gfmFootnoteCall",
+    start: Object.assign({}, events[index + 3][1].start),
+    end: Object.assign({}, events[events.length - 1][1].end)
+  };
+  const marker = {
+    type: "gfmFootnoteCallMarker",
+    start: Object.assign({}, events[index + 3][1].end),
+    end: Object.assign({}, events[index + 3][1].end)
+  };
+  marker.end.column++;
+  marker.end.offset++;
+  marker.end._bufferIndex++;
+  const string2 = {
+    type: "gfmFootnoteCallString",
+    start: Object.assign({}, marker.end),
+    end: Object.assign({}, events[events.length - 1][1].start)
+  };
+  const chunk = {
+    type: "chunkString",
+    contentType: "string",
+    start: Object.assign({}, string2.start),
+    end: Object.assign({}, string2.end)
+  };
+  const replacement = [
+    events[index + 1],
+    events[index + 2],
+    ["enter", call, context],
+    events[index + 3],
+    events[index + 4],
+    ["enter", marker, context],
+    ["exit", marker, context],
+    ["enter", string2, context],
+    ["enter", chunk, context],
+    ["exit", chunk, context],
+    ["exit", string2, context],
+    events[events.length - 2],
+    events[events.length - 1],
+    ["exit", call, context]
+  ];
+  events.splice(index, events.length - index + 1, ...replacement);
+  return events;
+}
+function tokenizeGfmFootnoteCall(effects, ok, nok) {
+  const self2 = this;
+  const defined = self2.parser.gfmFootnotes || (self2.parser.gfmFootnotes = []);
+  let size2 = 0;
+  let data;
+  return start;
+  function start(code2) {
+    effects.enter("gfmFootnoteCall");
+    effects.enter("gfmFootnoteCallLabelMarker");
+    effects.consume(code2);
+    effects.exit("gfmFootnoteCallLabelMarker");
+    return callStart;
+  }
+  function callStart(code2) {
+    if (code2 !== 94)
+      return nok(code2);
+    effects.enter("gfmFootnoteCallMarker");
+    effects.consume(code2);
+    effects.exit("gfmFootnoteCallMarker");
+    effects.enter("gfmFootnoteCallString");
+    effects.enter("chunkString").contentType = "string";
+    return callData;
+  }
+  function callData(code2) {
+    if (size2 > 999 || code2 === 93 && !data || code2 === null || code2 === 91 || markdownLineEndingOrSpace(code2)) {
+      return nok(code2);
+    }
+    if (code2 === 93) {
+      effects.exit("chunkString");
+      const token = effects.exit("gfmFootnoteCallString");
+      if (!defined.includes(normalizeIdentifier(self2.sliceSerialize(token)))) {
+        return nok(code2);
+      }
+      effects.enter("gfmFootnoteCallLabelMarker");
+      effects.consume(code2);
+      effects.exit("gfmFootnoteCallLabelMarker");
+      effects.exit("gfmFootnoteCall");
+      return ok;
+    }
+    if (!markdownLineEndingOrSpace(code2)) {
+      data = true;
+    }
+    size2++;
+    effects.consume(code2);
+    return code2 === 92 ? callEscape : callData;
+  }
+  function callEscape(code2) {
+    if (code2 === 91 || code2 === 92 || code2 === 93) {
+      effects.consume(code2);
+      size2++;
+      return callData;
+    }
+    return callData(code2);
+  }
+}
+function tokenizeDefinitionStart(effects, ok, nok) {
+  const self2 = this;
+  const defined = self2.parser.gfmFootnotes || (self2.parser.gfmFootnotes = []);
+  let identifier;
+  let size2 = 0;
+  let data;
+  return start;
+  function start(code2) {
+    effects.enter("gfmFootnoteDefinition")._container = true;
+    effects.enter("gfmFootnoteDefinitionLabel");
+    effects.enter("gfmFootnoteDefinitionLabelMarker");
+    effects.consume(code2);
+    effects.exit("gfmFootnoteDefinitionLabelMarker");
+    return labelAtMarker;
+  }
+  function labelAtMarker(code2) {
+    if (code2 === 94) {
+      effects.enter("gfmFootnoteDefinitionMarker");
+      effects.consume(code2);
+      effects.exit("gfmFootnoteDefinitionMarker");
+      effects.enter("gfmFootnoteDefinitionLabelString");
+      effects.enter("chunkString").contentType = "string";
+      return labelInside;
+    }
+    return nok(code2);
+  }
+  function labelInside(code2) {
+    if (size2 > 999 || code2 === 93 && !data || code2 === null || code2 === 91 || markdownLineEndingOrSpace(code2)) {
+      return nok(code2);
+    }
+    if (code2 === 93) {
+      effects.exit("chunkString");
+      const token = effects.exit("gfmFootnoteDefinitionLabelString");
+      identifier = normalizeIdentifier(self2.sliceSerialize(token));
+      effects.enter("gfmFootnoteDefinitionLabelMarker");
+      effects.consume(code2);
+      effects.exit("gfmFootnoteDefinitionLabelMarker");
+      effects.exit("gfmFootnoteDefinitionLabel");
+      return labelAfter;
+    }
+    if (!markdownLineEndingOrSpace(code2)) {
+      data = true;
+    }
+    size2++;
+    effects.consume(code2);
+    return code2 === 92 ? labelEscape : labelInside;
+  }
+  function labelEscape(code2) {
+    if (code2 === 91 || code2 === 92 || code2 === 93) {
+      effects.consume(code2);
+      size2++;
+      return labelInside;
+    }
+    return labelInside(code2);
+  }
+  function labelAfter(code2) {
+    if (code2 === 58) {
+      effects.enter("definitionMarker");
+      effects.consume(code2);
+      effects.exit("definitionMarker");
+      if (!defined.includes(identifier)) {
+        defined.push(identifier);
+      }
+      return factorySpace(
+        effects,
+        whitespaceAfter,
+        "gfmFootnoteDefinitionWhitespace"
+      );
+    }
+    return nok(code2);
+  }
+  function whitespaceAfter(code2) {
+    return ok(code2);
+  }
+}
+function tokenizeDefinitionContinuation(effects, ok, nok) {
+  return effects.check(blankLine, ok, effects.attempt(indent, ok, nok));
+}
+function gfmFootnoteDefinitionEnd(effects) {
+  effects.exit("gfmFootnoteDefinition");
+}
+function tokenizeIndent(effects, ok, nok) {
+  const self2 = this;
+  return factorySpace(
+    effects,
+    afterPrefix,
+    "gfmFootnoteDefinitionIndent",
+    4 + 1
+  );
+  function afterPrefix(code2) {
+    const tail = self2.events[self2.events.length - 1];
+    return tail && tail[1].type === "gfmFootnoteDefinitionIndent" && tail[2].sliceSerialize(tail[1], true).length === 4 ? ok(code2) : nok(code2);
+  }
+}
+const own = {}.hasOwnProperty;
+const emptyOptions = {};
+function defaultBackLabel(referenceIndex, rereferenceIndex) {
+  return "Back to reference " + (referenceIndex + 1) + (rereferenceIndex > 1 ? "-" + rereferenceIndex : "");
+}
+function gfmFootnoteHtml(options) {
+  const config = options || emptyOptions;
+  const label = config.label || "Footnotes";
+  const labelTagName = config.labelTagName || "h2";
+  const labelAttributes = config.labelAttributes === null || config.labelAttributes === void 0 ? 'class="sr-only"' : config.labelAttributes;
+  const backLabel = config.backLabel || defaultBackLabel;
+  const clobberPrefix = config.clobberPrefix === null || config.clobberPrefix === void 0 ? "user-content-" : config.clobberPrefix;
+  return {
+    enter: {
+      gfmFootnoteDefinition() {
+        const stack = this.getData("tightStack");
+        stack.push(false);
+      },
+      gfmFootnoteDefinitionLabelString() {
+        this.buffer();
+      },
+      gfmFootnoteCallString() {
+        this.buffer();
+      }
+    },
+    exit: {
+      gfmFootnoteDefinition() {
+        let definitions2 = this.getData("gfmFootnoteDefinitions");
+        const footnoteStack = this.getData("gfmFootnoteDefinitionStack");
+        const tightStack = this.getData("tightStack");
+        const current = footnoteStack.pop();
+        const value = this.resume();
+        if (!definitions2) {
+          this.setData("gfmFootnoteDefinitions", definitions2 = {});
+        }
+        if (!own.call(definitions2, current))
+          definitions2[current] = value;
+        tightStack.pop();
+        this.setData("slurpOneLineEnding", true);
+        this.setData("lastWasTag");
+      },
+      gfmFootnoteDefinitionLabelString(token) {
+        let footnoteStack = this.getData("gfmFootnoteDefinitionStack");
+        if (!footnoteStack) {
+          this.setData("gfmFootnoteDefinitionStack", footnoteStack = []);
+        }
+        footnoteStack.push(normalizeIdentifier(this.sliceSerialize(token)));
+        this.resume();
+        this.buffer();
+      },
+      gfmFootnoteCallString(token) {
+        let calls = this.getData("gfmFootnoteCallOrder");
+        let counts = this.getData("gfmFootnoteCallCounts");
+        const id = normalizeIdentifier(this.sliceSerialize(token));
+        let counter;
+        this.resume();
+        if (!calls)
+          this.setData("gfmFootnoteCallOrder", calls = []);
+        if (!counts)
+          this.setData("gfmFootnoteCallCounts", counts = {});
+        const index = calls.indexOf(id);
+        const safeId = sanitizeUri(id.toLowerCase());
+        if (index === -1) {
+          calls.push(id);
+          counts[id] = 1;
+          counter = calls.length;
+        } else {
+          counts[id]++;
+          counter = index + 1;
+        }
+        const reuseCounter = counts[id];
+        this.tag(
+          '<sup><a href="#' + clobberPrefix + "fn-" + safeId + '" id="' + clobberPrefix + "fnref-" + safeId + (reuseCounter > 1 ? "-" + reuseCounter : "") + '" data-footnote-ref="" aria-describedby="footnote-label">' + String(counter) + "</a></sup>"
+        );
+      },
+      null() {
+        const calls = this.getData("gfmFootnoteCallOrder") || [];
+        const counts = this.getData("gfmFootnoteCallCounts") || {};
+        const definitions2 = this.getData("gfmFootnoteDefinitions") || {};
+        let index = -1;
+        if (calls.length > 0) {
+          this.lineEndingIfNeeded();
+          this.tag(
+            '<section data-footnotes="" class="footnotes"><' + labelTagName + ' id="footnote-label"' + (labelAttributes ? " " + labelAttributes : "") + ">"
+          );
+          this.raw(this.encode(label));
+          this.tag("</" + labelTagName + ">");
+          this.lineEndingIfNeeded();
+          this.tag("<ol>");
+        }
+        while (++index < calls.length) {
+          const id = calls[index];
+          const safeId = sanitizeUri(id.toLowerCase());
+          let referenceIndex = 0;
+          const references = [];
+          while (++referenceIndex <= counts[id]) {
+            references.push(
+              '<a href="#' + clobberPrefix + "fnref-" + safeId + (referenceIndex > 1 ? "-" + referenceIndex : "") + '" data-footnote-backref="" aria-label="' + this.encode(
+                typeof backLabel === "string" ? backLabel : backLabel(index, referenceIndex)
+              ) + '" class="data-footnote-backref">\u21A9' + (referenceIndex > 1 ? "<sup>" + referenceIndex + "</sup>" : "") + "</a>"
+            );
+          }
+          const reference = references.join(" ");
+          let injected = false;
+          this.lineEndingIfNeeded();
+          this.tag('<li id="' + clobberPrefix + "fn-" + safeId + '">');
+          this.lineEndingIfNeeded();
+          this.tag(
+            definitions2[id].replace(
+              /<\/p>(?:\r?\n|\r)?$/,
+              ($0) => {
+                injected = true;
+                return " " + reference + $0;
+              }
+            )
+          );
+          if (!injected) {
+            this.lineEndingIfNeeded();
+            this.tag(reference);
+          }
+          this.lineEndingIfNeeded();
+          this.tag("</li>");
+        }
+        if (calls.length > 0) {
+          this.lineEndingIfNeeded();
+          this.tag("</ol>");
+          this.lineEndingIfNeeded();
+          this.tag("</section>");
+        }
+      }
+    }
+  };
+}
+const gfmStrikethroughHtml = {
+  enter: {
+    strikethrough() {
+      this.tag("<del>");
+    }
+  },
+  exit: {
+    strikethrough() {
+      this.tag("</del>");
+    }
+  }
+};
+function gfmStrikethrough(options) {
+  const options_ = options || {};
+  let single = options_.singleTilde;
+  const tokenizer = {
+    tokenize: tokenizeStrikethrough,
+    resolveAll: resolveAllStrikethrough
+  };
+  if (single === null || single === void 0) {
+    single = true;
+  }
+  return {
+    text: {
+      [126]: tokenizer
+    },
+    insideSpan: {
+      null: [tokenizer]
+    },
+    attentionMarkers: {
+      null: [126]
+    }
+  };
+  function resolveAllStrikethrough(events, context) {
+    let index = -1;
+    while (++index < events.length) {
+      if (events[index][0] === "enter" && events[index][1].type === "strikethroughSequenceTemporary" && events[index][1]._close) {
+        let open = index;
+        while (open--) {
+          if (events[open][0] === "exit" && events[open][1].type === "strikethroughSequenceTemporary" && events[open][1]._open && events[index][1].end.offset - events[index][1].start.offset === events[open][1].end.offset - events[open][1].start.offset) {
+            events[index][1].type = "strikethroughSequence";
+            events[open][1].type = "strikethroughSequence";
+            const strikethrough = {
+              type: "strikethrough",
+              start: Object.assign({}, events[open][1].start),
+              end: Object.assign({}, events[index][1].end)
+            };
+            const text2 = {
+              type: "strikethroughText",
+              start: Object.assign({}, events[open][1].end),
+              end: Object.assign({}, events[index][1].start)
+            };
+            const nextEvents = [
+              ["enter", strikethrough, context],
+              ["enter", events[open][1], context],
+              ["exit", events[open][1], context],
+              ["enter", text2, context]
+            ];
+            const insideSpan2 = context.parser.constructs.insideSpan.null;
+            if (insideSpan2) {
+              splice(
+                nextEvents,
+                nextEvents.length,
+                0,
+                resolveAll(insideSpan2, events.slice(open + 1, index), context)
+              );
+            }
+            splice(nextEvents, nextEvents.length, 0, [
+              ["exit", text2, context],
+              ["enter", events[index][1], context],
+              ["exit", events[index][1], context],
+              ["exit", strikethrough, context]
+            ]);
+            splice(events, open - 1, index - open + 3, nextEvents);
+            index = open + nextEvents.length - 2;
+            break;
+          }
+        }
+      }
+    }
+    index = -1;
+    while (++index < events.length) {
+      if (events[index][1].type === "strikethroughSequenceTemporary") {
+        events[index][1].type = "data";
+      }
+    }
+    return events;
+  }
+  function tokenizeStrikethrough(effects, ok, nok) {
+    const previous2 = this.previous;
+    const events = this.events;
+    let size2 = 0;
+    return start;
+    function start(code2) {
+      if (previous2 === 126 && events[events.length - 1][1].type !== "characterEscape") {
+        return nok(code2);
+      }
+      effects.enter("strikethroughSequenceTemporary");
+      return more(code2);
+    }
+    function more(code2) {
+      const before = classifyCharacter(previous2);
+      if (code2 === 126) {
+        if (size2 > 1)
+          return nok(code2);
+        effects.consume(code2);
+        size2++;
+        return more;
+      }
+      if (size2 < 2 && !single)
+        return nok(code2);
+      const token = effects.exit("strikethroughSequenceTemporary");
+      const after = classifyCharacter(code2);
+      token._open = !after || after === 2 && Boolean(before);
+      token._close = !before || before === 2 && Boolean(after);
+      return ok(code2);
+    }
+  }
+}
+const alignment = {
+  none: "",
+  left: ' align="left"',
+  right: ' align="right"',
+  center: ' align="center"'
+};
+const gfmTableHtml = {
+  enter: {
+    table(token) {
+      const tableAlign = token._align;
+      this.lineEndingIfNeeded();
+      this.tag("<table>");
+      this.setData("tableAlign", tableAlign);
+    },
+    tableBody() {
+      this.tag("<tbody>");
+    },
+    tableData() {
+      const tableAlign = this.getData("tableAlign");
+      const tableColumn = this.getData("tableColumn");
+      const align = alignment[tableAlign[tableColumn]];
+      if (align === void 0) {
+        this.buffer();
+      } else {
+        this.lineEndingIfNeeded();
+        this.tag("<td" + align + ">");
+      }
+    },
+    tableHead() {
+      this.lineEndingIfNeeded();
+      this.tag("<thead>");
+    },
+    tableHeader() {
+      const tableAlign = this.getData("tableAlign");
+      const tableColumn = this.getData("tableColumn");
+      const align = alignment[tableAlign[tableColumn]];
+      this.lineEndingIfNeeded();
+      this.tag("<th" + align + ">");
+    },
+    tableRow() {
+      this.setData("tableColumn", 0);
+      this.lineEndingIfNeeded();
+      this.tag("<tr>");
+    }
+  },
+  exit: {
+    codeTextData(token) {
+      let value = this.sliceSerialize(token);
+      if (this.getData("tableAlign")) {
+        value = value.replace(/\\([\\|])/g, replace);
+      }
+      this.raw(this.encode(value));
+    },
+    table() {
+      this.setData("tableAlign");
+      this.setData("slurpAllLineEndings");
+      this.lineEndingIfNeeded();
+      this.tag("</table>");
+    },
+    tableBody() {
+      this.lineEndingIfNeeded();
+      this.tag("</tbody>");
+    },
+    tableData() {
+      const tableAlign = this.getData("tableAlign");
+      const tableColumn = this.getData("tableColumn");
+      if (tableColumn in tableAlign) {
+        this.tag("</td>");
+        this.setData("tableColumn", tableColumn + 1);
+      } else {
+        this.resume();
+      }
+    },
+    tableHead() {
+      this.lineEndingIfNeeded();
+      this.tag("</thead>");
+    },
+    tableHeader() {
+      const tableColumn = this.getData("tableColumn");
+      this.tag("</th>");
+      this.setData("tableColumn", tableColumn + 1);
+    },
+    tableRow() {
+      const tableAlign = this.getData("tableAlign");
+      let tableColumn = this.getData("tableColumn");
+      while (tableColumn < tableAlign.length) {
+        this.lineEndingIfNeeded();
+        this.tag("<td" + alignment[tableAlign[tableColumn]] + "></td>");
+        tableColumn++;
+      }
+      this.setData("tableColumn", tableColumn);
+      this.lineEndingIfNeeded();
+      this.tag("</tr>");
+    }
+  }
+};
+function replace($0, $1) {
+  return $1 === "|" ? $1 : $0;
+}
+class EditMap {
+  constructor() {
+    this.map = [];
+  }
+  add(index, remove2, add2) {
+    addImpl(this, index, remove2, add2);
+  }
+  consume(events) {
+    this.map.sort((a, b) => a[0] - b[0]);
+    if (this.map.length === 0) {
+      return;
+    }
+    let index = this.map.length;
+    const vecs = [];
+    while (index > 0) {
+      index -= 1;
+      vecs.push(events.slice(this.map[index][0] + this.map[index][1]));
+      vecs.push(this.map[index][2]);
+      events.length = this.map[index][0];
+    }
+    vecs.push([...events]);
+    events.length = 0;
+    let slice = vecs.pop();
+    while (slice) {
+      events.push(...slice);
+      slice = vecs.pop();
+    }
+    this.map.length = 0;
+  }
+}
+function addImpl(editMap, at, remove2, add2) {
+  let index = 0;
+  if (remove2 === 0 && add2.length === 0) {
+    return;
+  }
+  while (index < editMap.map.length) {
+    if (editMap.map[index][0] === at) {
+      editMap.map[index][1] += remove2;
+      editMap.map[index][2].push(...add2);
+      return;
+    }
+    index += 1;
+  }
+  editMap.map.push([at, remove2, add2]);
+}
+function gfmTableAlign(events, index) {
+  let inDelimiterRow = false;
+  const align = [];
+  while (index < events.length) {
+    const event = events[index];
+    if (inDelimiterRow) {
+      if (event[0] === "enter") {
+        if (event[1].type === "tableContent") {
+          align.push(
+            events[index + 1][1].type === "tableDelimiterMarker" ? "left" : "none"
+          );
+        }
+      } else if (event[1].type === "tableContent") {
+        if (events[index - 1][1].type === "tableDelimiterMarker") {
+          const alignIndex = align.length - 1;
+          align[alignIndex] = align[alignIndex] === "left" ? "center" : "right";
+        }
+      } else if (event[1].type === "tableDelimiterRow") {
+        break;
+      }
+    } else if (event[0] === "enter" && event[1].type === "tableDelimiterRow") {
+      inDelimiterRow = true;
+    }
+    index += 1;
+  }
+  return align;
+}
+const gfmTable = {
+  flow: {
+    null: {
+      tokenize: tokenizeTable,
+      resolveAll: resolveTable
+    }
+  }
+};
+function tokenizeTable(effects, ok, nok) {
+  const self2 = this;
+  let size2 = 0;
+  let sizeB = 0;
+  let seen;
+  return start;
+  function start(code2) {
+    let index = self2.events.length - 1;
+    while (index > -1) {
+      const type = self2.events[index][1].type;
+      if (type === "lineEnding" || type === "linePrefix")
+        index--;
+      else
+        break;
+    }
+    const tail = index > -1 ? self2.events[index][1].type : null;
+    const next = tail === "tableHead" || tail === "tableRow" ? bodyRowStart : headRowBefore;
+    if (next === bodyRowStart && self2.parser.lazy[self2.now().line]) {
+      return nok(code2);
+    }
+    return next(code2);
+  }
+  function headRowBefore(code2) {
+    effects.enter("tableHead");
+    effects.enter("tableRow");
+    return headRowStart(code2);
+  }
+  function headRowStart(code2) {
+    if (code2 === 124) {
+      return headRowBreak(code2);
+    }
+    seen = true;
+    sizeB += 1;
+    return headRowBreak(code2);
+  }
+  function headRowBreak(code2) {
+    if (code2 === null) {
+      return nok(code2);
+    }
+    if (markdownLineEnding(code2)) {
+      if (sizeB > 1) {
+        sizeB = 0;
+        self2.interrupt = true;
+        effects.exit("tableRow");
+        effects.enter("lineEnding");
+        effects.consume(code2);
+        effects.exit("lineEnding");
+        return headDelimiterStart;
+      }
+      return nok(code2);
+    }
+    if (markdownSpace(code2)) {
+      return factorySpace(effects, headRowBreak, "whitespace")(code2);
+    }
+    sizeB += 1;
+    if (seen) {
+      seen = false;
+      size2 += 1;
+    }
+    if (code2 === 124) {
+      effects.enter("tableCellDivider");
+      effects.consume(code2);
+      effects.exit("tableCellDivider");
+      seen = true;
+      return headRowBreak;
+    }
+    effects.enter("data");
+    return headRowData(code2);
+  }
+  function headRowData(code2) {
+    if (code2 === null || code2 === 124 || markdownLineEndingOrSpace(code2)) {
+      effects.exit("data");
+      return headRowBreak(code2);
+    }
+    effects.consume(code2);
+    return code2 === 92 ? headRowEscape : headRowData;
+  }
+  function headRowEscape(code2) {
+    if (code2 === 92 || code2 === 124) {
+      effects.consume(code2);
+      return headRowData;
+    }
+    return headRowData(code2);
+  }
+  function headDelimiterStart(code2) {
+    self2.interrupt = false;
+    if (self2.parser.lazy[self2.now().line]) {
+      return nok(code2);
+    }
+    effects.enter("tableDelimiterRow");
+    seen = false;
+    if (markdownSpace(code2)) {
+      return factorySpace(
+        effects,
+        headDelimiterBefore,
+        "linePrefix",
+        self2.parser.constructs.disable.null.includes("codeIndented") ? void 0 : 4
+      )(code2);
+    }
+    return headDelimiterBefore(code2);
+  }
+  function headDelimiterBefore(code2) {
+    if (code2 === 45 || code2 === 58) {
+      return headDelimiterValueBefore(code2);
+    }
+    if (code2 === 124) {
+      seen = true;
+      effects.enter("tableCellDivider");
+      effects.consume(code2);
+      effects.exit("tableCellDivider");
+      return headDelimiterCellBefore;
+    }
+    return headDelimiterNok(code2);
+  }
+  function headDelimiterCellBefore(code2) {
+    if (markdownSpace(code2)) {
+      return factorySpace(effects, headDelimiterValueBefore, "whitespace")(code2);
+    }
+    return headDelimiterValueBefore(code2);
+  }
+  function headDelimiterValueBefore(code2) {
+    if (code2 === 58) {
+      sizeB += 1;
+      seen = true;
+      effects.enter("tableDelimiterMarker");
+      effects.consume(code2);
+      effects.exit("tableDelimiterMarker");
+      return headDelimiterLeftAlignmentAfter;
+    }
+    if (code2 === 45) {
+      sizeB += 1;
+      return headDelimiterLeftAlignmentAfter(code2);
+    }
+    if (code2 === null || markdownLineEnding(code2)) {
+      return headDelimiterCellAfter(code2);
+    }
+    return headDelimiterNok(code2);
+  }
+  function headDelimiterLeftAlignmentAfter(code2) {
+    if (code2 === 45) {
+      effects.enter("tableDelimiterFiller");
+      return headDelimiterFiller(code2);
+    }
+    return headDelimiterNok(code2);
+  }
+  function headDelimiterFiller(code2) {
+    if (code2 === 45) {
+      effects.consume(code2);
+      return headDelimiterFiller;
+    }
+    if (code2 === 58) {
+      seen = true;
+      effects.exit("tableDelimiterFiller");
+      effects.enter("tableDelimiterMarker");
+      effects.consume(code2);
+      effects.exit("tableDelimiterMarker");
+      return headDelimiterRightAlignmentAfter;
+    }
+    effects.exit("tableDelimiterFiller");
+    return headDelimiterRightAlignmentAfter(code2);
+  }
+  function headDelimiterRightAlignmentAfter(code2) {
+    if (markdownSpace(code2)) {
+      return factorySpace(effects, headDelimiterCellAfter, "whitespace")(code2);
+    }
+    return headDelimiterCellAfter(code2);
+  }
+  function headDelimiterCellAfter(code2) {
+    if (code2 === 124) {
+      return headDelimiterBefore(code2);
+    }
+    if (code2 === null || markdownLineEnding(code2)) {
+      if (!seen || size2 !== sizeB) {
+        return headDelimiterNok(code2);
+      }
+      effects.exit("tableDelimiterRow");
+      effects.exit("tableHead");
+      return ok(code2);
+    }
+    return headDelimiterNok(code2);
+  }
+  function headDelimiterNok(code2) {
+    return nok(code2);
+  }
+  function bodyRowStart(code2) {
+    effects.enter("tableRow");
+    return bodyRowBreak(code2);
+  }
+  function bodyRowBreak(code2) {
+    if (code2 === 124) {
+      effects.enter("tableCellDivider");
+      effects.consume(code2);
+      effects.exit("tableCellDivider");
+      return bodyRowBreak;
+    }
+    if (code2 === null || markdownLineEnding(code2)) {
+      effects.exit("tableRow");
+      return ok(code2);
+    }
+    if (markdownSpace(code2)) {
+      return factorySpace(effects, bodyRowBreak, "whitespace")(code2);
+    }
+    effects.enter("data");
+    return bodyRowData(code2);
+  }
+  function bodyRowData(code2) {
+    if (code2 === null || code2 === 124 || markdownLineEndingOrSpace(code2)) {
+      effects.exit("data");
+      return bodyRowBreak(code2);
+    }
+    effects.consume(code2);
+    return code2 === 92 ? bodyRowEscape : bodyRowData;
+  }
+  function bodyRowEscape(code2) {
+    if (code2 === 92 || code2 === 124) {
+      effects.consume(code2);
+      return bodyRowData;
+    }
+    return bodyRowData(code2);
+  }
+}
+function resolveTable(events, context) {
+  let index = -1;
+  let inFirstCellAwaitingPipe = true;
+  let rowKind = 0;
+  let lastCell = [0, 0, 0, 0];
+  let cell = [0, 0, 0, 0];
+  let afterHeadAwaitingFirstBodyRow = false;
+  let lastTableEnd = 0;
+  let currentTable;
+  let currentBody;
+  let currentCell;
+  const map = new EditMap();
+  while (++index < events.length) {
+    const event = events[index];
+    const token = event[1];
+    if (event[0] === "enter") {
+      if (token.type === "tableHead") {
+        afterHeadAwaitingFirstBodyRow = false;
+        if (lastTableEnd !== 0) {
+          flushTableEnd(map, context, lastTableEnd, currentTable, currentBody);
+          currentBody = void 0;
+          lastTableEnd = 0;
+        }
+        currentTable = {
+          type: "table",
+          start: Object.assign({}, token.start),
+          end: Object.assign({}, token.end)
+        };
+        map.add(index, 0, [["enter", currentTable, context]]);
+      } else if (token.type === "tableRow" || token.type === "tableDelimiterRow") {
+        inFirstCellAwaitingPipe = true;
+        currentCell = void 0;
+        lastCell = [0, 0, 0, 0];
+        cell = [0, index + 1, 0, 0];
+        if (afterHeadAwaitingFirstBodyRow) {
+          afterHeadAwaitingFirstBodyRow = false;
+          currentBody = {
+            type: "tableBody",
+            start: Object.assign({}, token.start),
+            end: Object.assign({}, token.end)
+          };
+          map.add(index, 0, [["enter", currentBody, context]]);
+        }
+        rowKind = token.type === "tableDelimiterRow" ? 2 : currentBody ? 3 : 1;
+      } else if (rowKind && (token.type === "data" || token.type === "tableDelimiterMarker" || token.type === "tableDelimiterFiller")) {
+        inFirstCellAwaitingPipe = false;
+        if (cell[2] === 0) {
+          if (lastCell[1] !== 0) {
+            cell[0] = cell[1];
+            currentCell = flushCell(
+              map,
+              context,
+              lastCell,
+              rowKind,
+              void 0,
+              currentCell
+            );
+            lastCell = [0, 0, 0, 0];
+          }
+          cell[2] = index;
+        }
+      } else if (token.type === "tableCellDivider") {
+        if (inFirstCellAwaitingPipe) {
+          inFirstCellAwaitingPipe = false;
+        } else {
+          if (lastCell[1] !== 0) {
+            cell[0] = cell[1];
+            currentCell = flushCell(
+              map,
+              context,
+              lastCell,
+              rowKind,
+              void 0,
+              currentCell
+            );
+          }
+          lastCell = cell;
+          cell = [lastCell[1], index, 0, 0];
+        }
+      }
+    } else if (token.type === "tableHead") {
+      afterHeadAwaitingFirstBodyRow = true;
+      lastTableEnd = index;
+    } else if (token.type === "tableRow" || token.type === "tableDelimiterRow") {
+      lastTableEnd = index;
+      if (lastCell[1] !== 0) {
+        cell[0] = cell[1];
+        currentCell = flushCell(
+          map,
+          context,
+          lastCell,
+          rowKind,
+          index,
+          currentCell
+        );
+      } else if (cell[1] !== 0) {
+        currentCell = flushCell(map, context, cell, rowKind, index, currentCell);
+      }
+      rowKind = 0;
+    } else if (rowKind && (token.type === "data" || token.type === "tableDelimiterMarker" || token.type === "tableDelimiterFiller")) {
+      cell[3] = index;
+    }
+  }
+  if (lastTableEnd !== 0) {
+    flushTableEnd(map, context, lastTableEnd, currentTable, currentBody);
+  }
+  map.consume(context.events);
+  index = -1;
+  while (++index < context.events.length) {
+    const event = context.events[index];
+    if (event[0] === "enter" && event[1].type === "table") {
+      event[1]._align = gfmTableAlign(context.events, index);
+    }
+  }
+  return events;
+}
+function flushCell(map, context, range, rowKind, rowEnd, previousCell) {
+  const groupName = rowKind === 1 ? "tableHeader" : rowKind === 2 ? "tableDelimiter" : "tableData";
+  const valueName = "tableContent";
+  if (range[0] !== 0) {
+    previousCell.end = Object.assign({}, getPoint(context.events, range[0]));
+    map.add(range[0], 0, [["exit", previousCell, context]]);
+  }
+  const now = getPoint(context.events, range[1]);
+  previousCell = {
+    type: groupName,
+    start: Object.assign({}, now),
+    end: Object.assign({}, now)
+  };
+  map.add(range[1], 0, [["enter", previousCell, context]]);
+  if (range[2] !== 0) {
+    const relatedStart = getPoint(context.events, range[2]);
+    const relatedEnd = getPoint(context.events, range[3]);
+    const valueToken = {
+      type: valueName,
+      start: Object.assign({}, relatedStart),
+      end: Object.assign({}, relatedEnd)
+    };
+    map.add(range[2], 0, [["enter", valueToken, context]]);
+    if (rowKind !== 2) {
+      const start = context.events[range[2]];
+      const end = context.events[range[3]];
+      start[1].end = Object.assign({}, end[1].end);
+      start[1].type = "chunkText";
+      start[1].contentType = "text";
+      if (range[3] > range[2] + 1) {
+        const a = range[2] + 1;
+        const b = range[3] - range[2] - 1;
+        map.add(a, b, []);
+      }
+    }
+    map.add(range[3] + 1, 0, [["exit", valueToken, context]]);
+  }
+  if (rowEnd !== void 0) {
+    previousCell.end = Object.assign({}, getPoint(context.events, rowEnd));
+    map.add(rowEnd, 0, [["exit", previousCell, context]]);
+    previousCell = void 0;
+  }
+  return previousCell;
+}
+function flushTableEnd(map, context, index, table, tableBody) {
+  const exits = [];
+  const related = getPoint(context.events, index);
+  if (tableBody) {
+    tableBody.end = Object.assign({}, related);
+    exits.push(["exit", tableBody, context]);
+  }
+  table.end = Object.assign({}, related);
+  exits.push(["exit", table, context]);
+  map.add(index + 1, 0, exits);
+}
+function getPoint(events, index) {
+  const event = events[index];
+  const side = event[0] === "enter" ? "start" : "end";
+  return event[1][side];
+}
+const reFlow = /<(\/?)(iframe|noembed|noframes|plaintext|script|style|title|textarea|xmp)(?=[\t\n\f\r />])/gi;
+const reText = new RegExp("^" + reFlow.source, "i");
+const gfmTagfilterHtml = {
+  exit: {
+    htmlFlowData(token) {
+      exitHtmlData.call(this, token, reFlow);
+    },
+    htmlTextData(token) {
+      exitHtmlData.call(this, token, reText);
+    }
+  }
+};
+function exitHtmlData(token, filter) {
+  let value = this.sliceSerialize(token);
+  if (this.options.allowDangerousHtml) {
+    value = value.replace(filter, "&lt;$1$2");
+  }
+  this.raw(this.encode(value));
+}
+const gfmTaskListItemHtml = {
+  enter: {
+    taskListCheck() {
+      this.tag('<input type="checkbox" disabled="" ');
+    }
+  },
+  exit: {
+    taskListCheck() {
+      this.tag("/>");
+    },
+    taskListCheckValueChecked() {
+      this.tag('checked="" ');
+    }
+  }
+};
+const tasklistCheck = {
+  tokenize: tokenizeTasklistCheck
+};
+const gfmTaskListItem = {
+  text: {
+    [91]: tasklistCheck
+  }
+};
+function tokenizeTasklistCheck(effects, ok, nok) {
+  const self2 = this;
+  return open;
+  function open(code2) {
+    if (self2.previous !== null || !self2._gfmTasklistFirstContentOfListItem) {
+      return nok(code2);
+    }
+    effects.enter("taskListCheck");
+    effects.enter("taskListCheckMarker");
+    effects.consume(code2);
+    effects.exit("taskListCheckMarker");
+    return inside;
+  }
+  function inside(code2) {
+    if (markdownLineEndingOrSpace(code2)) {
+      effects.enter("taskListCheckValueUnchecked");
+      effects.consume(code2);
+      effects.exit("taskListCheckValueUnchecked");
+      return close;
+    }
+    if (code2 === 88 || code2 === 120) {
+      effects.enter("taskListCheckValueChecked");
+      effects.consume(code2);
+      effects.exit("taskListCheckValueChecked");
+      return close;
+    }
+    return nok(code2);
+  }
+  function close(code2) {
+    if (code2 === 93) {
+      effects.enter("taskListCheckMarker");
+      effects.consume(code2);
+      effects.exit("taskListCheckMarker");
+      effects.exit("taskListCheck");
+      return after;
+    }
+    return nok(code2);
+  }
+  function after(code2) {
+    if (markdownLineEnding(code2)) {
+      return ok(code2);
+    }
+    if (markdownSpace(code2)) {
+      return effects.check(
+        {
+          tokenize: spaceThenNonSpace
+        },
+        ok,
+        nok
+      )(code2);
+    }
+    return nok(code2);
+  }
+}
+function spaceThenNonSpace(effects, ok, nok) {
+  return factorySpace(effects, after, "whitespace");
+  function after(code2) {
+    return code2 === null ? nok(code2) : ok(code2);
+  }
+}
+function gfm(options) {
+  return combineExtensions([
+    gfmAutolinkLiteral,
+    gfmFootnote(),
+    gfmStrikethrough(options),
+    gfmTable,
+    gfmTaskListItem
+  ]);
+}
+function gfmHtml(options) {
+  return combineHtmlExtensions([
+    gfmAutolinkLiteralHtml,
+    gfmFootnoteHtml(options),
+    gfmStrikethroughHtml,
+    gfmTableHtml,
+    gfmTagfilterHtml,
+    gfmTaskListItemHtml
+  ]);
+}
+const codes = {
+  carriageReturn: -5,
+  lineFeed: -4,
+  carriageReturnLineFeed: -3,
+  horizontalTab: -2,
+  virtualSpace: -1,
+  eof: null,
+  nul: 0,
+  soh: 1,
+  stx: 2,
+  etx: 3,
+  eot: 4,
+  enq: 5,
+  ack: 6,
+  bel: 7,
+  bs: 8,
+  ht: 9,
+  lf: 10,
+  vt: 11,
+  ff: 12,
+  cr: 13,
+  so: 14,
+  si: 15,
+  dle: 16,
+  dc1: 17,
+  dc2: 18,
+  dc3: 19,
+  dc4: 20,
+  nak: 21,
+  syn: 22,
+  etb: 23,
+  can: 24,
+  em: 25,
+  sub: 26,
+  esc: 27,
+  fs: 28,
+  gs: 29,
+  rs: 30,
+  us: 31,
+  space: 32,
+  exclamationMark: 33,
+  quotationMark: 34,
+  numberSign: 35,
+  dollarSign: 36,
+  percentSign: 37,
+  ampersand: 38,
+  apostrophe: 39,
+  leftParenthesis: 40,
+  rightParenthesis: 41,
+  asterisk: 42,
+  plusSign: 43,
+  comma: 44,
+  dash: 45,
+  dot: 46,
+  slash: 47,
+  digit0: 48,
+  digit1: 49,
+  digit2: 50,
+  digit3: 51,
+  digit4: 52,
+  digit5: 53,
+  digit6: 54,
+  digit7: 55,
+  digit8: 56,
+  digit9: 57,
+  colon: 58,
+  semicolon: 59,
+  lessThan: 60,
+  equalsTo: 61,
+  greaterThan: 62,
+  questionMark: 63,
+  atSign: 64,
+  uppercaseA: 65,
+  uppercaseB: 66,
+  uppercaseC: 67,
+  uppercaseD: 68,
+  uppercaseE: 69,
+  uppercaseF: 70,
+  uppercaseG: 71,
+  uppercaseH: 72,
+  uppercaseI: 73,
+  uppercaseJ: 74,
+  uppercaseK: 75,
+  uppercaseL: 76,
+  uppercaseM: 77,
+  uppercaseN: 78,
+  uppercaseO: 79,
+  uppercaseP: 80,
+  uppercaseQ: 81,
+  uppercaseR: 82,
+  uppercaseS: 83,
+  uppercaseT: 84,
+  uppercaseU: 85,
+  uppercaseV: 86,
+  uppercaseW: 87,
+  uppercaseX: 88,
+  uppercaseY: 89,
+  uppercaseZ: 90,
+  leftSquareBracket: 91,
+  backslash: 92,
+  rightSquareBracket: 93,
+  caret: 94,
+  underscore: 95,
+  graveAccent: 96,
+  lowercaseA: 97,
+  lowercaseB: 98,
+  lowercaseC: 99,
+  lowercaseD: 100,
+  lowercaseE: 101,
+  lowercaseF: 102,
+  lowercaseG: 103,
+  lowercaseH: 104,
+  lowercaseI: 105,
+  lowercaseJ: 106,
+  lowercaseK: 107,
+  lowercaseL: 108,
+  lowercaseM: 109,
+  lowercaseN: 110,
+  lowercaseO: 111,
+  lowercaseP: 112,
+  lowercaseQ: 113,
+  lowercaseR: 114,
+  lowercaseS: 115,
+  lowercaseT: 116,
+  lowercaseU: 117,
+  lowercaseV: 118,
+  lowercaseW: 119,
+  lowercaseX: 120,
+  lowercaseY: 121,
+  lowercaseZ: 122,
+  leftCurlyBrace: 123,
+  verticalBar: 124,
+  rightCurlyBrace: 125,
+  tilde: 126,
+  del: 127,
+  degree: 176,
+  byteOrderMarker: 65279,
+  replacementCharacter: 65533
+};
+const underlineTokenize = (effects, ok, nok) => {
+  const inside = (code2) => {
+    if (code2 === codes.carriageReturn || code2 === codes.lineFeed || code2 === codes.carriageReturnLineFeed || code2 === codes.eof) {
+      return nok(code2);
+    }
+    if (code2 === codes.backslash) {
+      effects.consume(code2);
+      return insideEscape;
+    }
+    if (code2 === codes.degree) {
+      effects.exit("underlineContent");
+      effects.enter("underlineMarker");
+      effects.consume(code2);
+      effects.exit("underlineMarker");
+      effects.exit("underline");
+      return ok;
+    }
+    effects.consume(code2);
+    return inside;
+  };
+  const insideEscape = (code2) => {
+    if (code2 === codes.backslash || code2 === codes.degree) {
+      effects.consume(code2);
+      return inside;
+    }
+    return inside(code2);
+  };
+  const begin = (code2) => code2 === codes.degree ? nok(code2) : inside(code2);
+  return (code2) => {
+    effects.enter("underline");
+    effects.enter("underlineMarker");
+    effects.consume(code2);
+    effects.exit("underlineMarker");
+    effects.enter("underlineContent", { contentType: "string" });
+    return begin;
+  };
+};
+const underlineConstruct = { name: "underline", tokenize: underlineTokenize };
+const underline = { text: { 176: underlineConstruct } };
+const underlineHtml = {
+  enter: {
+    underline() {
+      this.tag("<u>");
+    }
+  },
+  exit: {
+    underline() {
+      this.tag("</u>");
+    }
+  }
+};
+const usertagTokenize = (effects, ok, nok) => {
+  const inside = (code2) => {
+    if (code2 === codes.carriageReturn || code2 === codes.lineFeed || code2 === codes.carriageReturnLineFeed || code2 === codes.eof) {
+      return nok(code2);
+    }
+    if (code2 === codes.backslash) {
+      effects.consume(code2);
+      return insideEscape;
+    }
+    if (code2 === codes.greaterThan) {
+      effects.exit("usertagContent");
+      effects.enter("usertagMarker");
+      effects.consume(code2);
+      effects.exit("usertagMarker");
+      effects.exit("usertag");
+      return ok;
+    }
+    effects.consume(code2);
+    return inside;
+  };
+  const insideEscape = (code2) => {
+    if (code2 === codes.backslash || code2 === codes.greaterThan) {
+      effects.consume(code2);
+      return inside;
+    }
+    return inside(code2);
+  };
+  const begin = (code2) => {
+    if (code2 === codes.atSign) {
+      effects.consume(code2);
+      effects.exit("usertagMarker");
+      effects.enter("usertagContent");
+      return inside;
+    }
+    return nok(code2);
+  };
+  return (code2) => {
+    effects.enter("usertag");
+    effects.enter("usertagMarker");
+    effects.consume(code2);
+    return begin;
+  };
+};
+const usertagConstruct = { name: "usertag", tokenize: usertagTokenize };
+const usertag = { text: { 60: usertagConstruct } };
+const usertagHtml = (users) => ({
+  exit: {
+    usertagContent(token) {
+      const userId = this.sliceSerialize(token);
+      this.tag(`<span class="vac-text-tag" data-user-id="${userId}">`);
+      const user = users.find((user2) => user2._id === userId);
+      this.raw(`@${this.encode(user ? user.username : userId)}`);
+      this.tag("</span>");
+    }
+  }
+});
+var markdown = (text2, { textFormatting }) => {
+  if (textFormatting) {
+    let gfmDisabled = [];
+    if (!textFormatting.linkify) {
+      gfmDisabled = ["literalAutolink", "literalAutolinkEmail"];
+    }
+    const markdown2 = micromark(
+      text2.replaceAll("<usertag>", "<@").replaceAll("</usertag>", ">"),
+      {
+        extensions: [
+          {
+            ...gfm(),
+            disable: { null: gfmDisabled }
+          },
+          underline,
+          usertag
+        ],
+        htmlExtensions: [
+          gfmHtml(),
+          underlineHtml,
+          usertagHtml(textFormatting.users)
+        ]
+      }
+    );
+    if (textFormatting.singleLine) {
+      const element2 = document.createElement("div");
+      element2.innerHTML = markdown2;
+      return [
+        {
+          types: [],
+          value: element2.innerText
+        }
+      ];
+    }
+    return [
+      {
+        types: ["markdown"],
+        value: markdown2
+      }
+    ];
+  }
+  return [
+    {
+      types: [],
+      value: text2
+    }
+  ];
+};
 const IMAGE_TYPES = ["png", "jpg", "jpeg", "webp", "svg", "gif"];
 const VIDEO_TYPES = ["mp4", "video/ogg", "webm", "quicktime"];
 const AUDIO_TYPES = ["mp3", "audio/ogg", "wav", "mpeg"];
@@ -6480,35 +11975,32 @@ const _sfc_main$n = {
   },
   emits: ["open-user-tag"],
   computed: {
-    linkifiedMessage() {
+    parsedMessage() {
       if (this.deleted) {
         return [{ value: this.textMessages.MESSAGE_DELETED }];
       }
-      const message = formatString$1(
-        this.formatTags(this.content),
-        this.linkify && !this.linkOptions.disabled,
-        this.textFormatting
-      );
+      let options;
+      if (!this.textFormatting.disabled) {
+        options = {
+          textFormatting: {
+            linkify: this.linkify,
+            linkOptions: this.linkOptions,
+            singleLine: this.singleLine,
+            reply: this.reply,
+            users: this.users,
+            ...this.textFormatting
+          }
+        };
+      } else {
+        options = {};
+      }
+      const message = markdown(this.content, options);
       message.forEach((m) => {
-        m.url = this.checkType(m, "url");
-        m.bold = this.checkType(m, "bold");
-        m.italic = this.checkType(m, "italic");
-        m.strike = this.checkType(m, "strike");
-        m.underline = this.checkType(m, "underline");
-        m.inline = this.checkType(m, "inline-code");
-        m.multiline = this.checkType(m, "multiline-code");
+        m.markdown = this.checkType(m, "markdown");
         m.tag = this.checkType(m, "tag");
         m.image = this.checkImageType(m);
-        m.value = this.replaceEmojiByElement(m.value);
       });
       return message;
-    },
-    formattedContent() {
-      if (this.deleted) {
-        return this.textMessages.MESSAGE_DELETED;
-      } else {
-        return this.formatTags(this.content);
-      }
     }
   },
   methods: {
@@ -6536,92 +12028,42 @@ const _sfc_main$n = {
         image.removeEventListener("load", onLoad);
       }
     },
-    formatTags(content) {
-      const firstTag = "<usertag>";
-      const secondTag = "</usertag>";
-      const usertags = [...content.matchAll(new RegExp(firstTag, "gi"))].map(
-        (a) => a.index
-      );
-      const initialContent = content;
-      usertags.forEach((index) => {
-        const userId = initialContent.substring(
-          index + firstTag.length,
-          initialContent.indexOf(secondTag, index)
-        );
-        const user = this.users.find((user2) => user2._id === userId);
-        content = content.replaceAll(userId, `@${(user == null ? void 0 : user.username) || "unknown"}`);
-      });
-      return content;
-    },
-    openTag(message) {
-      if (!this.singleLine && this.checkType(message, "tag")) {
-        const user = this.users.find(
-          (u) => message.value.indexOf(u.username) !== -1
-        );
+    openTag(event) {
+      const userId = event.target.getAttribute("data-user-id");
+      if (!this.singleLine && userId) {
+        const user = this.users.find((u) => String(u._id) === userId);
         this.$emit("open-user-tag", user);
       }
-    },
-    replaceEmojiByElement(value) {
-      let emojiSize;
-      if (this.singleLine) {
-        emojiSize = 16;
-      } else {
-        const onlyEmojis = this.containsOnlyEmojis();
-        emojiSize = onlyEmojis ? 28 : 20;
-      }
-      return value.replaceAll(
-        /[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{1F9B0}-\u{1F9B3}]/gu,
-        (v) => {
-          return `<span style="font-size: ${emojiSize}px">${v}</span>`;
-        }
-      );
-    },
-    containsOnlyEmojis() {
-      const onlyEmojis = this.content.replace(
-        new RegExp("[\0-\u1EEFf]", "g"),
-        ""
-      );
-      const visibleChars = this.content.replace(
-        new RegExp("[\n\rs]+|( )+", "g"),
-        ""
-      );
-      return onlyEmojis.length === visibleChars.length;
     }
   }
 };
-const _hoisted_1$n = { class: "vac-image-link-container" };
-const _hoisted_2$k = { class: "vac-image-link-message" };
-const _hoisted_3$h = ["innerHTML"];
-const _hoisted_4$g = ["innerHTML"];
+const _hoisted_1$n = ["innerHTML"];
+const _hoisted_2$k = { class: "vac-image-link-container" };
+const _hoisted_3$h = { class: "vac-image-link-message" };
 function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createElementBlock("div", {
     class: normalizeClass(["vac-format-message-wrapper", { "vac-text-ellipsis": $props.singleLine }])
   }, [
-    !$props.textFormatting.disabled ? (openBlock(), createElementBlock("div", {
-      key: 0,
-      class: normalizeClass({ "vac-text-ellipsis": $props.singleLine })
-    }, [
-      (openBlock(true), createElementBlock(Fragment, null, renderList($options.linkifiedMessage, (message, i) => {
-        return openBlock(), createElementBlock("div", {
-          key: i,
-          class: "vac-format-container"
+    (openBlock(true), createElementBlock(Fragment, null, renderList($options.parsedMessage, (message, i) => {
+      return openBlock(), createElementBlock(Fragment, { key: i }, [
+        message.markdown ? (openBlock(), createElementBlock("div", {
+          key: 0,
+          class: "markdown",
+          onClick: _cache[0] || (_cache[0] = (...args) => $options.openTag && $options.openTag(...args)),
+          innerHTML: message.value
+        }, null, 8, _hoisted_1$n)) : (openBlock(), createElementBlock("div", {
+          key: 1,
+          class: normalizeClass(["vac-format-container", { "vac-text-ellipsis": $props.singleLine }])
         }, [
           (openBlock(), createBlock(resolveDynamicComponent(message.url ? "a" : "span"), {
             class: normalizeClass({
               "vac-text-ellipsis": $props.singleLine,
-              "vac-text-bold": message.bold,
-              "vac-text-italic": $props.deleted || message.italic,
-              "vac-text-strike": message.strike,
-              "vac-text-underline": message.underline,
-              "vac-text-inline-code": !$props.singleLine && message.inline,
-              "vac-text-multiline-code": !$props.singleLine && message.multiline,
               "vac-text-tag": !$props.singleLine && !$props.reply && message.tag
             }),
             href: message.href,
             target: message.href ? $props.linkOptions.target : null,
-            rel: message.href ? $props.linkOptions.rel : null,
-            onClick: ($event) => $options.openTag(message)
+            rel: message.href ? $props.linkOptions.rel : null
           }, {
             default: withCtx(() => [
               $props.deleted ? (openBlock(), createElementBlock(Fragment, { key: 0 }, [
@@ -6638,7 +12080,7 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
                 ),
                 createTextVNode(" " + toDisplayString($props.textMessages.MESSAGE_DELETED), 1)
               ], 64)) : message.url && message.image ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
-                createBaseVNode("div", _hoisted_1$n, [
+                createBaseVNode("div", _hoisted_2$k, [
                   createBaseVNode("div", {
                     class: "vac-image-link",
                     style: normalizeStyle({
@@ -6647,22 +12089,16 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
                     })
                   }, null, 4)
                 ]),
-                createBaseVNode("div", _hoisted_2$k, [
-                  createBaseVNode("span", null, toDisplayString(message.value), 1)
-                ])
-              ], 64)) : (openBlock(), createElementBlock("span", {
-                key: 2,
-                innerHTML: message.value
-              }, null, 8, _hoisted_3$h))
+                createBaseVNode("div", _hoisted_3$h, toDisplayString(message.value), 1)
+              ], 64)) : (openBlock(), createElementBlock(Fragment, { key: 2 }, [
+                createTextVNode(toDisplayString(message.value), 1)
+              ], 64))
             ]),
             _: 2
-          }, 1032, ["class", "href", "target", "rel", "onClick"]))
-        ]);
-      }), 128))
-    ], 2)) : (openBlock(), createElementBlock("div", {
-      key: 1,
-      innerHTML: $options.formattedContent
-    }, null, 8, _hoisted_4$g))
+          }, 1032, ["class", "href", "target", "rel"]))
+        ], 2))
+      ], 64);
+    }), 128))
   ], 2);
 }
 var FormatMessage = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$n]]);
@@ -6701,8 +12137,8 @@ const onFauxIframeClick = ({ el, event, handler, middleware }) => {
   }, 0);
 };
 const onEvent = ({ el, event, handler, middleware }) => {
-  const path = event.path || event.composedPath && event.composedPath();
-  const isClickOutside = path ? path.indexOf(el) < 0 : !el.contains(event.target);
+  const path2 = event.path || event.composedPath && event.composedPath();
+  const isClickOutside = path2 ? path2.indexOf(el) < 0 : !el.contains(event.target);
   if (!isClickOutside) {
     return;
   }
@@ -6829,19 +12265,19 @@ const _sfc_main$m = {
       const isTyping = this.typingUsers;
       if (isTyping)
         return isTyping;
-      const content = this.room.lastMessage.content;
+      const content2 = this.room.lastMessage.content;
       if (this.room.users.length <= 2) {
-        return content;
+        return content2;
       }
       const user = this.room.users.find(
         (user2) => user2._id === this.room.lastMessage.senderId
       );
       if (this.room.lastMessage.username) {
-        return `${this.room.lastMessage.username} - ${content}`;
+        return `${this.room.lastMessage.username} - ${content2}`;
       } else if (!user || user._id === this.currentUserId) {
-        return content;
+        return content2;
       }
-      return `${user.username} - ${content}`;
+      return `${user.username} - ${content2}`;
     },
     userStatus() {
       if (!this.room.users || this.room.users.length !== 2)
@@ -7035,8 +12471,8 @@ var filteredItems = (items, prop, val, startsWith = false) => {
     return formatString(v[prop]).includes(formatString(val));
   });
 };
-function formatString(string) {
-  return string.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+function formatString(string2) {
+  return string2.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 const _sfc_main$l = {
   name: "RoomsList",
@@ -7124,7 +12560,7 @@ const _sfc_main$l = {
       }
       const loader = this.$el.querySelector("#infinite-loader-rooms");
       if (loader) {
-        const options2 = {
+        const options = {
           root: this.$el.querySelector("#rooms-list"),
           rootMargin: `${this.scrollDistance}px`,
           threshold: 0
@@ -7133,7 +12569,7 @@ const _sfc_main$l = {
           if (entries[0].isIntersecting) {
             this.loadMoreRooms();
           }
-        }, options2);
+        }, options);
         this.observer.observe(loader);
       }
     },
@@ -7560,13 +12996,13 @@ function initialMigration(db) {
 const openReqs = {};
 const databaseCache = {};
 const onCloseListeners = {};
-function handleOpenOrDeleteReq(resolve3, reject, req) {
+function handleOpenOrDeleteReq(resolve2, reject, req) {
   req.onerror = () => reject(req.error);
   req.onblocked = () => reject(new Error("IDB blocked"));
-  req.onsuccess = () => resolve3(req.result);
+  req.onsuccess = () => resolve2(req.result);
 }
 async function createDatabase(dbName) {
-  const db = await new Promise((resolve3, reject) => {
+  const db = await new Promise((resolve2, reject) => {
     const req = indexedDB.open(dbName, DB_VERSION_CURRENT);
     openReqs[dbName] = req;
     req.onupgradeneeded = (e) => {
@@ -7574,7 +13010,7 @@ async function createDatabase(dbName) {
         initialMigration(req.result);
       }
     };
-    handleOpenOrDeleteReq(resolve3, reject, req);
+    handleOpenOrDeleteReq(resolve2, reject, req);
   });
   db.onclose = () => closeDatabase(dbName);
   return db;
@@ -7586,14 +13022,14 @@ function openDatabase(dbName) {
   return databaseCache[dbName];
 }
 function dbPromise(db, storeName, readOnlyOrReadWrite, cb) {
-  return new Promise((resolve3, reject) => {
+  return new Promise((resolve2, reject) => {
     const txn = db.transaction(storeName, readOnlyOrReadWrite, { durability: "relaxed" });
     const store = typeof storeName === "string" ? txn.objectStore(storeName) : storeName.map((name) => txn.objectStore(name));
     let res;
     cb(store, txn, (result) => {
       res = result;
     });
-    txn.oncomplete = () => resolve3(res);
+    txn.oncomplete = () => resolve2(res);
     txn.onerror = () => reject(txn.error);
   });
 }
@@ -7614,10 +13050,10 @@ function closeDatabase(dbName) {
   delete onCloseListeners[dbName];
 }
 function deleteDatabase(dbName) {
-  return new Promise((resolve3, reject) => {
+  return new Promise((resolve2, reject) => {
     closeDatabase(dbName);
     const req = indexedDB.deleteDatabase(dbName);
-    handleOpenOrDeleteReq(resolve3, reject, req);
+    handleOpenOrDeleteReq(resolve2, reject, req);
   });
 }
 function addOnCloseListener(dbName, listener) {
@@ -7744,10 +13180,10 @@ function findCommonMembers(arrays, uniqByFunc) {
   return results;
 }
 async function isEmpty(db) {
-  return !await get2(db, STORE_KEYVALUE, KEY_URL);
+  return !await get(db, STORE_KEYVALUE, KEY_URL);
 }
 async function hasData(db, url, eTag) {
-  const [oldETag, oldUrl] = await Promise.all([KEY_ETAG, KEY_URL].map((key) => get2(db, STORE_KEYVALUE, key)));
+  const [oldETag, oldUrl] = await Promise.all([KEY_ETAG, KEY_URL].map((key) => get(db, STORE_KEYVALUE, key)));
   return oldETag === eTag && oldUrl === url;
 }
 async function doFullDatabaseScanForSingleResult(db, predicate) {
@@ -7859,7 +13295,7 @@ async function getEmojiByUnicode(db, unicode) {
     getIDB(emojiStore.index(INDEX_SKIN_UNICODE), unicode, (result2) => cb(result2 || null));
   }));
 }
-function get2(db, storeName, key) {
+function get(db, storeName, key) {
   return dbPromise(db, storeName, MODE_READONLY, (store, txn, cb) => getIDB(store, key, cb));
 }
 function set(db, storeName, key, value) {
@@ -7930,7 +13366,7 @@ function trie(arr, itemToTokens) {
       valuesAtCoda.push(item);
     }
   }
-  const search = (query, exact) => {
+  const search2 = (query, exact) => {
     let currentMap = map;
     for (let i = 0; i < query.length; i++) {
       const char = query.charAt(i);
@@ -7960,7 +13396,7 @@ function trie(arr, itemToTokens) {
     }
     return results;
   };
-  return search;
+  return search2;
 }
 const requiredKeys$1 = [
   "name",
@@ -7981,7 +13417,7 @@ function customEmojiIndex(customEmojis) {
   const searchTrie = trie(customEmojis, emojiToTokens);
   const searchByExactMatch = (_) => searchTrie(_, true);
   const searchByPrefix = (_) => searchTrie(_, false);
-  const search = (query) => {
+  const search2 = (query) => {
     const tokens = extractTokens(query);
     const intermediateResults = tokens.map((token, i) => (i < tokens.length - 1 ? searchByExactMatch : searchByPrefix)(token));
     return findCommonMembers(intermediateResults, (_) => _.name).sort(sortByName);
@@ -7998,7 +13434,7 @@ function customEmojiIndex(customEmojis) {
   const byName = (name) => nameToEmoji.get(name.toLowerCase());
   return {
     all,
-    search,
+    search: search2,
     byShortcode,
     byName
   };
@@ -8188,7 +13624,7 @@ class Database {
   }
   async getPreferredSkinTone() {
     await this.ready();
-    return await get2(this._db, STORE_KEYVALUE, KEY_PREFERRED_SKINTONE) || 0;
+    return await get(this._db, STORE_KEYVALUE, KEY_PREFERRED_SKINTONE) || 0;
   }
   async setPreferredSkinTone(skinTone) {
     assertNumber(skinTone);
@@ -8232,14 +13668,14 @@ class Database {
 }
 function noop() {
 }
-function run3(fn) {
+function run(fn) {
   return fn();
 }
 function blank_object() {
   return /* @__PURE__ */ Object.create(null);
 }
 function run_all(fns) {
-  fns.forEach(run3);
+  fns.forEach(run);
 }
 function is_function(thing) {
   return typeof thing === "function";
@@ -8276,9 +13712,9 @@ function element(name) {
 function text(data) {
   return document.createTextNode(data);
 }
-function listen(node, event, handler, options2) {
-  node.addEventListener(event, handler, options2);
-  return () => node.removeEventListener(event, handler, options2);
+function listen(node, event, handler, options) {
+  node.addEventListener(event, handler, options);
+  return () => node.removeEventListener(event, handler, options);
 }
 function attr(node, attribute, value) {
   if (value == null)
@@ -8378,9 +13814,9 @@ function destroy_block(block, lookup) {
   block.d(1);
   lookup.delete(block.key);
 }
-function update_keyed_each(old_blocks, dirty, get_key, dynamic, ctx, list, lookup, node, destroy, create_each_block2, next2, get_context) {
+function update_keyed_each(old_blocks, dirty, get_key, dynamic, ctx, list2, lookup, node, destroy, create_each_block2, next, get_context) {
   let o = old_blocks.length;
-  let n = list.length;
+  let n = list2.length;
   let i = o;
   const old_indexes = {};
   while (i--)
@@ -8390,7 +13826,7 @@ function update_keyed_each(old_blocks, dirty, get_key, dynamic, ctx, list, looku
   const deltas = /* @__PURE__ */ new Map();
   i = n;
   while (i--) {
-    const child_ctx = get_context(ctx, list, i);
+    const child_ctx = get_context(ctx, list2, i);
     const key = get_key(child_ctx);
     let block = lookup.get(key);
     if (!block) {
@@ -8407,9 +13843,9 @@ function update_keyed_each(old_blocks, dirty, get_key, dynamic, ctx, list, looku
   const did_move = /* @__PURE__ */ new Set();
   function insert2(block) {
     transition_in(block, 1);
-    block.m(node, next2);
+    block.m(node, next);
     lookup.set(block.key, block);
-    next2 = block.first;
+    next = block.first;
     n--;
   }
   while (o && n) {
@@ -8418,7 +13854,7 @@ function update_keyed_each(old_blocks, dirty, get_key, dynamic, ctx, list, looku
     const new_key = new_block.key;
     const old_key = old_block.key;
     if (new_block === old_block) {
-      next2 = new_block.first;
+      next = new_block.first;
       o--;
       n--;
     } else if (!new_lookup.has(old_key)) {
@@ -8450,7 +13886,7 @@ function mount_component(component, target, anchor, customElement) {
   fragment && fragment.m(target, anchor);
   if (!customElement) {
     add_render_callback(() => {
-      const new_on_destroy = on_mount.map(run3).filter(is_function);
+      const new_on_destroy = on_mount.map(run).filter(is_function);
       if (on_destroy) {
         on_destroy.push(...new_on_destroy);
       } else {
@@ -8478,7 +13914,7 @@ function make_dirty(component, i) {
   }
   component.$$.dirty[i / 31 | 0] |= 1 << i % 31;
 }
-function init(component, options2, instance2, create_fragment2, not_equal, props, append_styles, dirty = [-1]) {
+function init(component, options, instance2, create_fragment2, not_equal, props, append_styles, dirty = [-1]) {
   const parent_component = current_component;
   set_current_component(component);
   const $$ = component.$$ = {
@@ -8497,11 +13933,11 @@ function init(component, options2, instance2, create_fragment2, not_equal, props
     callbacks: blank_object(),
     dirty,
     skip_bound: false,
-    root: options2.target || parent_component.$$.root
+    root: options.target || parent_component.$$.root
   };
   append_styles && append_styles($$.root);
   let ready = false;
-  $$.ctx = instance2 ? instance2(component, options2.props || {}, (i, ret, ...rest) => {
+  $$.ctx = instance2 ? instance2(component, options.props || {}, (i, ret, ...rest) => {
     const value = rest.length ? rest[0] : ret;
     if ($$.ctx && not_equal($$.ctx[i], $$.ctx[i] = value)) {
       if (!$$.skip_bound && $$.bound[i])
@@ -8515,11 +13951,11 @@ function init(component, options2, instance2, create_fragment2, not_equal, props
   ready = true;
   run_all($$.before_update);
   $$.fragment = create_fragment2 ? create_fragment2($$.ctx) : false;
-  if (options2.target) {
+  if (options.target) {
     {
       $$.fragment && $$.fragment.c();
     }
-    mount_component(component, options2.target, void 0, void 0);
+    mount_component(component, options.target, void 0, void 0);
     flush();
   }
   set_current_component(parent_component);
@@ -8634,7 +14070,7 @@ function determineEmojiSupportLevel() {
   }
   return entries[0][1];
 }
-const emojiSupportLevelPromise = new Promise((resolve3) => rIC(() => resolve3(determineEmojiSupportLevel())));
+const emojiSupportLevelPromise = new Promise((resolve2) => rIC(() => resolve2(determineEmojiSupportLevel())));
 const supportedZwjEmojis = /* @__PURE__ */ new Map();
 const VARIATION_SELECTOR = "\uFE0F";
 const SKINTONE_MODIFIER = "\uD83C";
@@ -8741,32 +14177,32 @@ function uniq(arr) {
   return uniqBy(arr, (_) => _);
 }
 const { Map: Map_1 } = globals;
-function get_each_context(ctx, list, i) {
+function get_each_context(ctx, list2, i) {
   const child_ctx = ctx.slice();
-  child_ctx[63] = list[i];
+  child_ctx[63] = list2[i];
   child_ctx[65] = i;
   return child_ctx;
 }
-function get_each_context_1(ctx, list, i) {
+function get_each_context_1(ctx, list2, i) {
   const child_ctx = ctx.slice();
-  child_ctx[66] = list[i];
+  child_ctx[66] = list2[i];
   child_ctx[65] = i;
   return child_ctx;
 }
-function get_each_context_2(ctx, list, i) {
+function get_each_context_2(ctx, list2, i) {
   const child_ctx = ctx.slice();
-  child_ctx[63] = list[i];
+  child_ctx[63] = list2[i];
   child_ctx[65] = i;
   return child_ctx;
 }
-function get_each_context_3(ctx, list, i) {
+function get_each_context_3(ctx, list2, i) {
   const child_ctx = ctx.slice();
-  child_ctx[69] = list[i];
+  child_ctx[69] = list2[i];
   return child_ctx;
 }
-function get_each_context_4(ctx, list, i) {
+function get_each_context_4(ctx, list2, i) {
   const child_ctx = ctx.slice();
-  child_ctx[72] = list[i];
+  child_ctx[72] = list2[i];
   child_ctx[65] = i;
   return child_ctx;
 }
@@ -9669,9 +15105,9 @@ function instance($$self, $$props, $$invalidate) {
     if (!searchMode || !currentEmojis.length) {
       return;
     }
-    const goToNextOrPrevious = (previous) => {
+    const goToNextOrPrevious = (previous2) => {
       halt(event);
-      $$invalidate(5, activeSearchItem = incrementOrDecrement(previous, activeSearchItem, currentEmojis));
+      $$invalidate(5, activeSearchItem = incrementOrDecrement(previous2, activeSearchItem, currentEmojis));
     };
     switch (event.key) {
       case "ArrowDown":
@@ -10083,11 +15519,11 @@ function instance($$self, $$props, $$invalidate) {
   ];
 }
 class Picker extends SvelteComponent {
-  constructor(options2) {
+  constructor(options) {
     super();
     init(
       this,
-      options2,
+      options,
       instance,
       create_fragment,
       safe_not_equal,
@@ -10294,7 +15730,7 @@ const _sfc_main$j = {
 				padding-right: 2px;
 				padding-left: 2px;
 			}`;
-      const search = `input.search {
+      const search2 = `input.search {
 				height: 32px;
 				font-size: 14px;
 				border-radius: 10rem;
@@ -10305,7 +15741,7 @@ const _sfc_main$j = {
 				color: var(--chat-color);
 			}`;
       const style = document.createElement("style");
-      style.textContent = picker + nav + searchBox + search;
+      style.textContent = picker + nav + searchBox + search2;
       this.$refs.emojiPicker.shadowRoot.appendChild(style);
     },
     openEmoji(ev) {
@@ -11464,7 +16900,7 @@ function NewMDCT() {
     -69618e-9 / 2384e-9
   ];
   var NS = 12;
-  var NL2 = 36;
+  var NL = 36;
   var win = [
     [
       2382191739347913e-28,
@@ -12138,7 +17574,7 @@ function NewMDCT() {
               mdct_short(mdct_enc, mdct_encPos);
             } else {
               var work = new_float$e(18);
-              for (var k = -NL2 / 4; k < 0; k++) {
+              for (var k = -NL / 4; k < 0; k++) {
                 var a, b;
                 a = win[type][k + 27] * band1[k + 9][order[band]] + win[type][k + 36] * band1[8 - k][order[band]];
                 b = win[type][k + 9] * band0[k + 9][order[band]] - win[type][k + 18] * band0[8 - k][order[band]];
@@ -14662,11 +20098,11 @@ function PsyModel() {
     }
     b_frq[i] = sfreq * j;
     for (var sfb = 0; sfb < sbmax; sfb++) {
-      var i1, i2, start2, end;
+      var i1, i2, start, end;
       var arg;
-      start2 = scalepos[sfb];
+      start = scalepos[sfb];
       end = scalepos[sfb + 1];
-      i1 = 0 | Math.floor(0.5 + deltafreq * (start2 - 0.5));
+      i1 = 0 | Math.floor(0.5 + deltafreq * (start - 0.5));
       if (i1 < 0)
         i1 = 0;
       i2 = 0 | Math.floor(0.5 + deltafreq * (end - 0.5));
@@ -19944,30 +25380,30 @@ function QuantizePVT() {
     var gfc = gfp.internal_flags;
     var samp_freq = gfp.out_samplerate;
     for (var sfb = 0; sfb < Encoder.SBMAX_l; sfb++) {
-      var start2 = gfc.scalefac_band.l[sfb];
+      var start = gfc.scalefac_band.l[sfb];
       var end = gfc.scalefac_band.l[sfb + 1];
       ATH_l[sfb] = Float.MAX_VALUE;
-      for (var i = start2; i < end; i++) {
+      for (var i = start; i < end; i++) {
         var freq = i * samp_freq / (2 * 576);
         var ATH_f = ATHmdct(gfp, freq);
         ATH_l[sfb] = Math.min(ATH_l[sfb], ATH_f);
       }
     }
     for (var sfb = 0; sfb < Encoder.PSFB21; sfb++) {
-      var start2 = gfc.scalefac_band.psfb21[sfb];
+      var start = gfc.scalefac_band.psfb21[sfb];
       var end = gfc.scalefac_band.psfb21[sfb + 1];
       ATH_psfb21[sfb] = Float.MAX_VALUE;
-      for (var i = start2; i < end; i++) {
+      for (var i = start; i < end; i++) {
         var freq = i * samp_freq / (2 * 576);
         var ATH_f = ATHmdct(gfp, freq);
         ATH_psfb21[sfb] = Math.min(ATH_psfb21[sfb], ATH_f);
       }
     }
     for (var sfb = 0; sfb < Encoder.SBMAX_s; sfb++) {
-      var start2 = gfc.scalefac_band.s[sfb];
+      var start = gfc.scalefac_band.s[sfb];
       var end = gfc.scalefac_band.s[sfb + 1];
       ATH_s[sfb] = Float.MAX_VALUE;
-      for (var i = start2; i < end; i++) {
+      for (var i = start; i < end; i++) {
         var freq = i * samp_freq / (2 * 192);
         var ATH_f = ATHmdct(gfp, freq);
         ATH_s[sfb] = Math.min(ATH_s[sfb], ATH_f);
@@ -19975,10 +25411,10 @@ function QuantizePVT() {
       ATH_s[sfb] *= gfc.scalefac_band.s[sfb + 1] - gfc.scalefac_band.s[sfb];
     }
     for (var sfb = 0; sfb < Encoder.PSFB12; sfb++) {
-      var start2 = gfc.scalefac_band.psfb12[sfb];
+      var start = gfc.scalefac_band.psfb12[sfb];
       var end = gfc.scalefac_band.psfb12[sfb + 1];
       ATH_psfb12[sfb] = Float.MAX_VALUE;
-      for (var i = start2; i < end; i++) {
+      for (var i = start; i < end; i++) {
         var freq = i * samp_freq / (2 * 192);
         var ATH_f = ATHmdct(gfp, freq);
         ATH_psfb12[sfb] = Math.min(ATH_psfb12[sfb], ATH_f);
@@ -20434,9 +25870,9 @@ function QuantizePVT() {
       sfb2 = 22;
     }
     for (sfb = 0; sfb < sfb2; sfb++) {
-      var start2 = gfc.scalefac_band.l[sfb];
+      var start = gfc.scalefac_band.l[sfb];
       var end = gfc.scalefac_band.l[sfb + 1];
-      var bw = end - start2;
+      var bw = end - start;
       for (en0 = 0; j < end; j++)
         en0 += cod_info.xr[j] * cod_info.xr[j];
       en0 /= bw;
@@ -20460,11 +25896,11 @@ function QuantizePVT() {
     if (cod_info.block_type == Encoder.SHORT_TYPE) {
       sfb2 = sfb;
       for (sfb = cod_info.sfb_smin; sfb < Encoder.SBMAX_s; sfb++) {
-        var start2 = gfc.scalefac_band.s[sfb];
+        var start = gfc.scalefac_band.s[sfb];
         var end = gfc.scalefac_band.s[sfb + 1];
-        var bw = end - start2;
+        var bw = end - start;
         for (var i = 0; i < 3; i++) {
-          for (en0 = 0, l = start2; l < end; l++) {
+          for (en0 = 0, l = start; l < end; l++) {
             en0 += cod_info.xr[j] * cod_info.xr[j];
             j++;
           }
@@ -21793,12 +27229,12 @@ function BitStream$1() {
     }
     return bits;
   }
-  function Huffmancode(gfc, tableindex, start2, end, gi) {
+  function Huffmancode(gfc, tableindex, start, end, gi) {
     var h2 = Tables$1.ht[tableindex];
     var bits = 0;
     if (tableindex == 0)
       return bits;
-    for (var i = start2; i < end; i += 2) {
+    for (var i = start; i < end; i += 2) {
       var cbits = 0;
       var xbits = 0;
       var linbits = h2.xlen;
@@ -22929,8 +28365,8 @@ function Lame$1() {
     }
     for (var i = 0; i < Encoder.PSFB21 + 1; i++) {
       var size2 = (gfc.scalefac_band.l[22] - gfc.scalefac_band.l[21]) / Encoder.PSFB21;
-      var start2 = gfc.scalefac_band.l[21] + i * size2;
-      gfc.scalefac_band.psfb21[i] = start2;
+      var start = gfc.scalefac_band.l[21] + i * size2;
+      gfc.scalefac_band.psfb21[i] = start;
     }
     gfc.scalefac_band.psfb21[Encoder.PSFB21] = 576;
     for (var i = 0; i < Encoder.SBMAX_s + 1; i++) {
@@ -22938,8 +28374,8 @@ function Lame$1() {
     }
     for (var i = 0; i < Encoder.PSFB12 + 1; i++) {
       var size2 = (gfc.scalefac_band.s[13] - gfc.scalefac_band.s[12]) / Encoder.PSFB12;
-      var start2 = gfc.scalefac_band.s[12] + i * size2;
-      gfc.scalefac_band.psfb12[i] = start2;
+      var start = gfc.scalefac_band.s[12] + i * size2;
+      gfc.scalefac_band.psfb12[i] = start;
     }
     gfc.scalefac_band.psfb12[Encoder.PSFB12] = 192;
     if (gfp.version == 1) {
@@ -24502,12 +29938,12 @@ function Quantize() {
     if (cod_info.block_type != Encoder.SHORT_TYPE) {
       var stop = false;
       for (var gsfb = Encoder.PSFB21 - 1; gsfb >= 0 && !stop; gsfb--) {
-        var start2 = gfc.scalefac_band.psfb21[gsfb];
+        var start = gfc.scalefac_band.psfb21[gsfb];
         var end = gfc.scalefac_band.psfb21[gsfb + 1];
         var ath21 = qupvt.athAdjust(ath.adjust, ath.psfb21[gsfb], ath.floor);
         if (gfc.nsPsy.longfact[21] > 1e-12)
           ath21 *= gfc.nsPsy.longfact[21];
-        for (var j = end - 1; j >= start2; j--) {
+        for (var j = end - 1; j >= start; j--) {
           if (Math.abs(xr[j]) < ath21)
             xr[j] = 0;
           else {
@@ -24520,12 +29956,12 @@ function Quantize() {
       for (var block = 0; block < 3; block++) {
         var stop = false;
         for (var gsfb = Encoder.PSFB12 - 1; gsfb >= 0 && !stop; gsfb--) {
-          var start2 = gfc.scalefac_band.s[12] * 3 + (gfc.scalefac_band.s[13] - gfc.scalefac_band.s[12]) * block + (gfc.scalefac_band.psfb12[gsfb] - gfc.scalefac_band.psfb12[0]);
-          var end = start2 + (gfc.scalefac_band.psfb12[gsfb + 1] - gfc.scalefac_band.psfb12[gsfb]);
+          var start = gfc.scalefac_band.s[12] * 3 + (gfc.scalefac_band.s[13] - gfc.scalefac_band.s[12]) * block + (gfc.scalefac_band.psfb12[gsfb] - gfc.scalefac_band.psfb12[0]);
+          var end = start + (gfc.scalefac_band.psfb12[gsfb + 1] - gfc.scalefac_band.psfb12[gsfb]);
           var ath12 = qupvt.athAdjust(ath.adjust, ath.psfb12[gsfb], ath.floor);
           if (gfc.nsPsy.shortfact[12] > 1e-12)
             ath12 *= gfc.nsPsy.shortfact[12];
-          for (var j = end - 1; j >= start2; j--) {
+          for (var j = end - 1; j >= start; j--) {
             if (Math.abs(xr[j]) < ath12)
               xr[j] = 0;
             else {
@@ -24581,10 +30017,10 @@ function Quantize() {
       var ix = gfc.scalefac_band.l[cod_info.sfb_lmax];
       System$1.arraycopy(cod_info.xr, 0, ixwork, 0, 576);
       for (var sfb = cod_info.sfb_smin; sfb < Encoder.SBMAX_s; sfb++) {
-        var start2 = gfc.scalefac_band.s[sfb];
+        var start = gfc.scalefac_band.s[sfb];
         var end = gfc.scalefac_band.s[sfb + 1];
         for (var window2 = 0; window2 < 3; window2++) {
-          for (var l = start2; l < end; l++) {
+          for (var l = start; l < end; l++) {
             cod_info.xr[ix++] = ixwork[3 * l + window2];
           }
         }
@@ -24618,9 +30054,9 @@ function Quantize() {
     var nBits;
     var CurrentStep = gfc.CurrentStep[ch];
     var flagGoneOver = false;
-    var start2 = gfc.OldValue[ch];
+    var start = gfc.OldValue[ch];
     var Direction = BinSearchDirection.BINSEARCH_NONE;
-    cod_info.global_gain = start2;
+    cod_info.global_gain = start;
     desired_rate -= cod_info.part2_length;
     for (; ; ) {
       var step;
@@ -24658,7 +30094,7 @@ function Quantize() {
       cod_info.global_gain++;
       nBits = tk.count_bits(gfc, xrpow, cod_info, null);
     }
-    gfc.CurrentStep[ch] = start2 - cod_info.global_gain >= 4 ? 4 : 2;
+    gfc.CurrentStep[ch] = start - cod_info.global_gain >= 4 ? 4 : 2;
     gfc.OldValue[ch] = cod_info.global_gain;
     cod_info.part2_3_length = nBits;
     return nBits;
@@ -24681,7 +30117,7 @@ function Quantize() {
       sfb = 6;
     do {
       var allowedNoise, trancateThreshold;
-      var nsame, start2;
+      var nsame, start;
       var width = gi.width[sfb];
       j += width;
       if (distort[sfb] >= 1)
@@ -24691,26 +30127,26 @@ function Quantize() {
         continue;
       allowedNoise = (1 - distort[sfb]) * l3_xmin[sfb];
       trancateThreshold = 0;
-      start2 = 0;
+      start = 0;
       do {
         var noise;
-        for (nsame = 1; start2 + nsame < width; nsame++) {
+        for (nsame = 1; start + nsame < width; nsame++) {
           if (BitStream.NEQ(
-            work[start2 + j - width],
-            work[start2 + j + nsame - width]
+            work[start + j - width],
+            work[start + j + nsame - width]
           )) {
             break;
           }
         }
-        noise = work[start2 + j - width] * work[start2 + j - width] * nsame;
+        noise = work[start + j - width] * work[start + j - width] * nsame;
         if (allowedNoise < noise) {
-          if (start2 != 0)
-            trancateThreshold = work[start2 + j - width - 1];
+          if (start != 0)
+            trancateThreshold = work[start + j - width - 1];
           break;
         }
         allowedNoise -= noise;
-        start2 += nsame;
-      } while (start2 < width);
+        start += nsame;
+      } while (start < width);
       if (BitStream.EQ(trancateThreshold, 0))
         continue;
       do {
@@ -26270,7 +31706,7 @@ function Mp3Encoder$1(channels, samplerate, kbps) {
   var id3 = new ID3Tag();
   var rv = new Reservoir();
   var tak = new Takehiro();
-  var parse = new Parse();
+  var parse2 = new Parse();
   var mpg = new MPGLib();
   lame.setModules(ga, bs, p2, qupvt, qu, vbr, ver, id3, mpg);
   bs.setModules(ga, mpg, ver, vbr);
@@ -26281,8 +31717,8 @@ function Mp3Encoder$1(channels, samplerate, kbps) {
   rv.setModules(bs);
   tak.setModules(qupvt);
   vbr.setModules(lame, bs, ver);
-  gaud.setModules(parse, mpg);
-  parse.setModules(ver, id3, p2);
+  gaud.setModules(parse2, mpg);
+  parse2.setModules(ver, id3, p2);
   var gfp = lame.lame_init();
   gfp.num_channels = channels;
   gfp.in_samplerate = samplerate;
@@ -26371,14 +31807,14 @@ class Mp3Encoder {
   }
 }
 class Recorder {
-  constructor(options2 = {}) {
-    this.beforeRecording = options2.beforeRecording;
-    this.pauseRecording = options2.pauseRecording;
-    this.afterRecording = options2.afterRecording;
-    this.micFailed = options2.micFailed;
+  constructor(options = {}) {
+    this.beforeRecording = options.beforeRecording;
+    this.pauseRecording = options.pauseRecording;
+    this.afterRecording = options.afterRecording;
+    this.micFailed = options.micFailed;
     this.encoderOptions = {
-      bitRate: options2.bitRate,
-      sampleRate: options2.sampleRate
+      bitRate: options.bitRate,
+      sampleRate: options.sampleRate
     };
     this.bufferSize = 4096;
     this.records = [];
@@ -26509,6 +31945,8 @@ const _sfc_main$a = {
     showEmojis: { type: Boolean, required: true },
     showFooter: { type: Boolean, required: true },
     acceptedFiles: { type: String, required: true },
+    multipleFiles: { type: Boolean, default: true },
+    captureFiles: { type: String, required: true },
     textareaActionEnabled: { type: Boolean, required: true },
     textareaAutoFocus: { type: Boolean, required: true },
     userTagsEnabled: { type: Boolean, required: true },
@@ -27024,7 +32462,7 @@ const _hoisted_3$8 = { class: "vac-dot-audio-record-time" };
 const _hoisted_4$8 = ["placeholder"];
 const _hoisted_5$6 = { class: "vac-icon-textarea" };
 const _hoisted_6$3 = { key: 1 };
-const _hoisted_7$3 = ["accept"];
+const _hoisted_7$3 = ["multiple", "accept", "capture"];
 function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_room_emojis = resolveComponent("room-emojis");
   const _component_room_users_tag = resolveComponent("room-users-tag");
@@ -27200,8 +32638,9 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
           key: 4,
           ref: "file",
           type: "file",
-          multiple: "",
+          multiple: $props.multipleFiles ? true : null,
           accept: $props.acceptedFiles,
+          capture: $props.captureFiles,
           style: { "display": "none" },
           onChange: _cache[21] || (_cache[21] = ($event) => $options.onFileChange($event.target.files))
         }, null, 40, _hoisted_7$3)) : createCommentVNode("", true),
@@ -28432,6 +33871,8 @@ const _sfc_main$2 = {
     showNewMessagesDivider: { type: Boolean, required: true },
     showFooter: { type: Boolean, required: true },
     acceptedFiles: { type: String, required: true },
+    captureFiles: { type: String, required: true },
+    multipleFiles: { type: Boolean, default: true },
     textFormatting: { type: Object, required: true },
     linkOptions: { type: Object, required: true },
     loadingRooms: { type: Boolean, required: true },
@@ -28543,7 +33984,7 @@ const _sfc_main$2 = {
       }
       const loader = this.$el.querySelector("#infinite-loader-messages");
       if (loader) {
-        const options2 = {
+        const options = {
           root: this.$el.querySelector("#messages-list"),
           rootMargin: `${this.scrollDistance}px`,
           threshold: 0
@@ -28552,7 +33993,7 @@ const _sfc_main$2 = {
           if (entries[0].isIntersecting) {
             this.loadMoreMessages();
           }
-        }, options2);
+        }, options);
         this.observer.observe(loader);
       }
     },
@@ -28635,7 +34076,11 @@ const _sfc_main$2 = {
         return;
       const autoScrollOffset = ref.offsetHeight + 60;
       setTimeout(() => {
-        const scrolledUp = this.getBottomScroll(this.$refs.scrollContainer) > autoScrollOffset;
+        const scrollContainer = this.$refs.scrollContainer;
+        let scrolledUp = false;
+        if (scrollContainer) {
+          scrolledUp = this.getBottomScroll(scrollContainer) > autoScrollOffset;
+        }
         if (message.senderId === this.currentUserId) {
           if (scrolledUp) {
             if (this.autoScroll.send.newAfterScrollUp) {
@@ -28733,9 +34178,11 @@ const _sfc_main$2 = {
     scrollToBottom() {
       setTimeout(() => {
         const element2 = this.$refs.scrollContainer;
-        element2.classList.add("vac-scroll-smooth");
-        element2.scrollTo({ top: element2.scrollHeight, behavior: "smooth" });
-        setTimeout(() => element2.classList.remove("vac-scroll-smooth"));
+        if (element2) {
+          element2.classList.add("vac-scroll-smooth");
+          element2.scrollTo({ top: element2.scrollHeight, behavior: "smooth" });
+          setTimeout(() => element2.classList.remove("vac-scroll-smooth"));
+        }
       }, 50);
     },
     openFile({ message, file }) {
@@ -28961,6 +34408,8 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
       "show-emojis": $props.showEmojis,
       "show-footer": $props.showFooter,
       "accepted-files": $props.acceptedFiles,
+      "capture-files": $props.captureFiles,
+      "multiple-files": $props.multipleFiles,
       "textarea-action-enabled": $props.textareaActionEnabled,
       "textarea-auto-focus": $props.textareaAutoFocus,
       "user-tags-enabled": $props.userTagsEnabled,
@@ -28988,7 +34437,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
           ])
         };
       })
-    ]), 1032, ["room", "room-id", "room-message", "text-messages", "show-send-icon", "show-files", "show-audio", "show-emojis", "show-footer", "accepted-files", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "templates-text", "text-formatting", "link-options", "audio-bit-rate", "audio-sample-rate", "init-reply-message", "init-edit-message", "dropped-files", "emoji-data-source"])
+    ]), 1032, ["room", "room-id", "room-message", "text-messages", "show-send-icon", "show-files", "show-audio", "show-emojis", "show-footer", "accepted-files", "capture-files", "multiple-files", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "templates-text", "text-formatting", "link-options", "audio-bit-rate", "audio-sample-rate", "init-reply-message", "init-edit-message", "dropped-files", "emoji-data-source"])
   ], 544)), [
     [vShow, $props.isMobile && !$props.showRoomsList || !$props.isMobile || $props.singleRoom]
   ]);
@@ -29364,10 +34813,10 @@ const cssThemeVars = ({
   header,
   footer,
   sidemenu,
-  content,
+  content: content2,
   dropdown,
   message,
-  markdown,
+  markdown: markdown2,
   room,
   emoji,
   icons
@@ -29395,7 +34844,7 @@ const cssThemeVars = ({
     "--chat-footer-bg-color-reply": footer.backgroundReply,
     "--chat-footer-bg-color-tag-active": footer.backgroundTagActive,
     "--chat-footer-bg-color-tag": footer.backgroundTag,
-    "--chat-content-bg-color": content.background,
+    "--chat-content-bg-color": content2.background,
     "--chat-sidemenu-bg-color": sidemenu.background,
     "--chat-sidemenu-bg-color-hover": sidemenu.backgroundHover,
     "--chat-sidemenu-bg-color-active": sidemenu.backgroundActive,
@@ -29440,10 +34889,10 @@ const cssThemeVars = ({
     "--chat-message-bg-color-audio-progress": message.backgroundAudioProgress,
     "--chat-message-bg-color-audio-progress-selector": message.backgroundAudioProgressSelector,
     "--chat-message-color-file-extension": message.colorFileExtension,
-    "--chat-markdown-bg": markdown.background,
-    "--chat-markdown-border": markdown.border,
-    "--chat-markdown-color": markdown.color,
-    "--chat-markdown-color-multi": markdown.colorMulti,
+    "--chat-markdown-bg": markdown2.background,
+    "--chat-markdown-border": markdown2.border,
+    "--chat-markdown-color": markdown2.color,
+    "--chat-markdown-color-multi": markdown2.colorMulti,
     "--chat-room-color-username": room.colorUsername,
     "--chat-room-color-message": room.colorMessage,
     "--chat-room-color-timestamp": room.colorTimestamp,
@@ -29482,7 +34931,7 @@ const cssThemeVars = ({
     "--chat-icon-color-audio-confirm": icons.audioConfirm
   };
 };
-var _style_0 = '.vac-fade-spinner-enter-from{opacity:0}.vac-fade-spinner-enter-active{transition:opacity .8s}.vac-fade-spinner-leave-active{transition:opacity .2s;opacity:0}.vac-fade-image-enter-from{opacity:0}.vac-fade-image-enter-active{transition:opacity 1s}.vac-fade-image-leave-active{transition:opacity .5s;opacity:0}.vac-fade-message-enter-from{opacity:0}.vac-fade-message-enter-active{transition:opacity .5s}.vac-fade-message-leave-active{transition:opacity .2s;opacity:0}.vac-slide-left-enter-active,.vac-slide-right-enter-active{transition:all .3s ease;transition-property:transform,opacity}.vac-slide-left-leave-active,.vac-slide-right-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)!important;transition-property:transform,opacity}.vac-slide-left-enter-from,.vac-slide-left-leave-to{transform:translate(10px);opacity:0}.vac-slide-right-enter-from,.vac-slide-right-leave-to{transform:translate(-10px);opacity:0}.vac-slide-up-enter-active{transition:all .3s ease}.vac-slide-up-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)}.vac-slide-up-enter-from,.vac-slide-up-leave-to{transform:translateY(10px);opacity:0}.vac-bounce-enter-active{animation:vac-bounce-in .5s}.vac-bounce-leave-active{animation:vac-bounce-in .3s reverse}@keyframes vac-bounce-in{0%{transform:scale(0)}50%{transform:scale(1.05)}to{transform:scale(1)}}.vac-fade-preview-enter{opacity:0}.vac-fade-preview-enter-active{transition:opacity .1s}.vac-fade-preview-leave-active{transition:opacity .2s;opacity:0}.vac-bounce-preview-enter-active{animation:vac-bounce-image-in .4s}.vac-bounce-preview-leave-active{animation:vac-bounce-image-in .3s reverse}@keyframes vac-bounce-image-in{0%{transform:scale(.6)}to{transform:scale(1)}}.vac-menu-list{border-radius:4px;display:block;cursor:pointer;background:var(--chat-dropdown-bg-color);padding:6px 0}.vac-menu-list :hover{background:var(--chat-dropdown-bg-color-hover);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-list :not(:hover){transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-item{-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-flex:1;-ms-flex:1 1 100%;flex:1 1 100%;min-height:30px;padding:5px 16px;position:relative;white-space:nowrap;line-height:30px}.vac-menu-options{position:absolute;right:10px;top:20px;z-index:9999;min-width:150px;display:inline-block;border-radius:4px;font-size:14px;color:var(--chat-color);overflow-y:auto;overflow-x:hidden;contain:content;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-app-border{border:var(--chat-border-style)}.vac-app-border-t{border-top:var(--chat-border-style)}.vac-app-border-r{border-right:var(--chat-border-style)}.vac-app-border-b{border-bottom:var(--chat-border-style)}.vac-app-box-shadow{transition:all .5s;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-item-clickable{cursor:pointer}.vac-vertical-center{display:flex;align-items:center;height:100%}.vac-vertical-center .vac-vertical-container{width:100%;text-align:center}.vac-svg-button{max-height:30px;display:flex;cursor:pointer;transition:all .2s}.vac-svg-button:hover{transform:scale(1.1);opacity:.7}.vac-avatar{background-size:cover;background-position:center center;background-repeat:no-repeat;background-color:#ddd;height:42px;width:42px;min-height:42px;min-width:42px;margin-right:15px;border-radius:50%}.vac-blur-loading{filter:blur(3px)}.vac-badge-counter{height:13px;width:auto;min-width:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:3px;font-size:11px;font-weight:500}.vac-text-ellipsis{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-text-bold{font-weight:700}.vac-text-italic{font-style:italic}.vac-text-strike{text-decoration:line-through}.vac-text-underline{text-decoration:underline}.vac-text-inline-code{display:inline-block;font-size:12px;color:var(--chat-markdown-color);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:2px 0;padding:2px 3px}.vac-text-multiline-code{display:block;font-size:12px;color:var(--chat-markdown-color-multi);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:4px 0;padding:7px}.vac-text-tag{color:var(--chat-message-color-tag);cursor:pointer}.vac-file-container{display:flex;align-content:center;justify-content:center;flex-wrap:wrap;text-align:center;background:var(--chat-bg-color-input);border:var(--chat-border-style-input);border-radius:4px;padding:10px}.vac-file-container svg{height:28px;width:28px}.vac-file-container .vac-text-extension{font-size:12px;color:var(--chat-message-color-file-extension);margin-top:-2px}.vac-card-window{width:100%;display:block;max-width:100%;background:var(--chat-content-bg-color);color:var(--chat-color);overflow-wrap:break-word;white-space:normal;border:var(--chat-container-border);border-radius:var(--chat-container-border-radius);box-shadow:var(--chat-container-box-shadow);-webkit-tap-highlight-color:transparent}.vac-card-window *{font-family:inherit}.vac-card-window a{color:#0d579c;font-weight:500}.vac-card-window .vac-chat-container{height:100%;display:flex}.vac-card-window .vac-chat-container input{min-width:10px}.vac-card-window .vac-chat-container textarea,.vac-card-window .vac-chat-container input[type=text],.vac-card-window .vac-chat-container input[type=search]{-webkit-appearance:none}.vac-media-preview{position:fixed;top:0;left:0;z-index:99;width:100vw;height:100vh;display:flex;align-items:center;background-color:#000c;outline:none}.vac-media-preview .vac-media-preview-container{height:calc(100% - 140px);width:calc(100% - 80px);padding:70px 40px;margin:0 auto}.vac-media-preview .vac-image-preview{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}.vac-media-preview video{width:100%;height:100%}.vac-media-preview .vac-svg-button{position:absolute;top:30px;right:30px;transform:scale(1.4)}@media only screen and (max-width: 768px){.vac-media-preview .vac-svg-button{top:20px;right:20px;transform:scale(1.2)}.vac-media-preview .vac-media-preview-container{width:calc(100% - 40px);padding:70px 20px}}.vac-col-messages{position:relative;height:100%;flex:1;overflow:hidden;display:flex;flex-flow:column}.vac-col-messages .vac-container-center{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.vac-col-messages .vac-room-empty{font-size:14px;color:#9ca6af;font-style:italic;line-height:20px;white-space:pre-line}.vac-col-messages .vac-room-empty div{padding:0 10%}.vac-col-messages .vac-container-scroll{background:var(--chat-content-bg-color);flex:1;overflow-y:auto;margin-right:1px;margin-top:65px;-webkit-overflow-scrolling:touch}.vac-col-messages .vac-container-scroll.vac-scroll-smooth{scroll-behavior:smooth}.vac-col-messages .vac-messages-container{padding:0 5px 5px}.vac-col-messages .vac-text-started{font-size:14px;color:var(--chat-message-color-started);font-style:italic;text-align:center;margin-top:25px;margin-bottom:20px}.vac-col-messages .vac-icon-scroll{position:absolute;bottom:80px;right:20px;padding:8px;background:var(--chat-bg-scroll-icon);border-radius:50%;box-shadow:0 1px 1px -1px #0003,0 1px 1px #00000024,0 1px 2px #0000001f;display:flex;cursor:pointer;z-index:10}.vac-col-messages .vac-icon-scroll svg{height:25px;width:25px}.vac-col-messages .vac-messages-count{position:absolute;top:-8px;left:11px;background-color:var(--chat-message-bg-color-scroll-counter);color:var(--chat-message-color-scroll-counter)}.vac-col-messages .vac-messages-hidden{opacity:0}@media only screen and (max-width: 768px){.vac-col-messages .vac-container-scroll{margin-top:50px}.vac-col-messages .vac-text-started{margin-top:20px}.vac-col-messages .vac-icon-scroll{bottom:70px}}.vac-room-header{position:absolute;display:flex;align-items:center;height:64px;width:100%;z-index:10;margin-right:1px;background:var(--chat-header-bg-color);border-top-right-radius:var(--chat-container-border-radius)}.vac-room-header .vac-room-wrapper{display:flex;align-items:center;min-width:0;height:100%;width:100%;padding:0 16px}.vac-room-header .vac-toggle-button{margin-right:15px}.vac-room-header .vac-toggle-button svg{height:26px;width:26px}.vac-room-header .vac-rotate-icon{transform:rotate(180deg)!important}.vac-room-header .vac-rotate-icon-init{transform:rotate(360deg)}.vac-room-header .vac-info-wrapper,.vac-room-header .vac-room-selection{display:flex;align-items:center;min-width:0;width:100%;height:100%}.vac-room-header .vac-room-selection .vac-selection-button{padding:8px 16px;color:var(--chat-color-button);background-color:var(--chat-bg-color-button);border-radius:4px;margin-right:10px;cursor:pointer;transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-button:hover{opacity:.7}.vac-room-header .vac-room-selection .vac-selection-button:active{opacity:.9}.vac-room-header .vac-room-selection .vac-selection-button .vac-selection-button-count{margin-left:6px;opacity:.9}.vac-room-header .vac-room-selection .vac-selection-cancel{display:flex;align-items:center;margin-left:auto;white-space:nowrap;color:var(--chat-color-button-clear);transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-cancel:hover{opacity:.7}.vac-room-header .vac-room-name{font-size:17px;font-weight:500;line-height:22px;color:var(--chat-header-color-name)}.vac-room-header .vac-room-info{font-size:13px;line-height:18px;color:var(--chat-header-color-info)}.vac-room-header .vac-room-options{margin-left:auto}@media only screen and (max-width: 768px){.vac-room-header{height:50px}.vac-room-header .vac-room-wrapper{padding:0 10px}.vac-room-header .vac-room-name{font-size:16px;line-height:22px}.vac-room-header .vac-room-info{font-size:12px;line-height:16px}.vac-room-header .vac-avatar{height:37px;width:37px;min-height:37px;min-width:37px}}.vac-room-footer{width:100%;border-bottom-right-radius:4px;z-index:10}.vac-box-footer{display:flex;position:relative;background:var(--chat-footer-bg-color);padding:10px 8px}.vac-textarea{max-height:300px;overflow-y:auto;height:20px;width:100%;line-height:20px;outline:0;resize:none;border-radius:20px;padding:12px 16px;box-sizing:content-box;font-size:16px;background:var(--chat-bg-color-input);color:var(--chat-color);caret-color:var(--chat-color-caret);border:var(--chat-border-style-input)}.vac-textarea::placeholder{color:var(--chat-color-placeholder);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-textarea-outline{border:1px solid var(--chat-border-color-input-selected);box-shadow:inset 0 0 0 1px var(--chat-border-color-input-selected)}.vac-icon-textarea,.vac-icon-textarea-left{display:flex;align-items:center}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea{margin-left:5px}.vac-icon-textarea-left{display:flex;align-items:center;margin-right:5px}.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea-left .vac-icon-microphone{fill:var(--chat-icon-color-microphone);margin:0 7px}.vac-icon-textarea-left .vac-dot-audio-record{height:15px;width:15px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-record);animation:vac-scaling .8s ease-in-out infinite alternate}@keyframes vac-scaling{0%{transform:scale(1);opacity:.4}to{transform:scale(1.1);opacity:1}}.vac-icon-textarea-left .vac-dot-audio-record-time{font-size:16px;color:var(--chat-color);margin-left:8px;width:45px}.vac-icon-textarea-left .vac-icon-audio-stop,.vac-icon-textarea-left .vac-icon-audio-confirm{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop svg,.vac-icon-textarea-left .vac-icon-audio-confirm svg{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop{margin-right:20px}.vac-icon-textarea-left .vac-icon-audio-stop #vac-icon-close-outline{fill:var(--chat-icon-color-audio-cancel)}.vac-icon-textarea-left .vac-icon-audio-confirm{margin-right:3px;margin-left:12px}.vac-icon-textarea-left .vac-icon-audio-confirm #vac-icon-checkmark{fill:var(--chat-icon-color-audio-confirm)}.vac-send-disabled,.vac-send-disabled svg{cursor:none!important;pointer-events:none!important;transform:none!important}@media only screen and (max-width: 768px){.vac-room-footer{width:100%}.vac-box-footer{padding:7px 2px 7px 7px}.vac-box-footer.vac-box-footer-border{border-top:var(--chat-border-style-input)}.vac-textarea{padding:7px;line-height:18px}.vac-textarea::placeholder{color:transparent}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 5px!important}}@media only screen and (max-height: 768px){.vac-textarea{max-height:120px}}.vac-emojis-container{width:calc(100% - 16px);padding:10px 8px;background:var(--chat-footer-bg-color);display:flex;align-items:center;overflow:auto}.vac-emojis-container .vac-emoji-element{padding:0 8px;font-size:30px;border-radius:4px;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-emojis-container .vac-emoji-element-active{background:var(--chat-footer-bg-color-tag-active)}@media only screen and (max-width: 768px){.vac-emojis-container{width:calc(100% - 10px);padding:7px 5px}.vac-emojis-container .vac-emoji-element{padding:0 7px;font-size:26px}}.vac-reply-container{display:flex;padding:10px 10px 0;background:var(--chat-footer-bg-color);align-items:center;width:calc(100% - 20px)}.vac-reply-container .vac-reply-box{width:100%;overflow:hidden;background:var(--chat-footer-bg-color-reply);border-radius:4px;padding:8px 10px}.vac-reply-container .vac-reply-info{overflow:hidden}.vac-reply-container .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-container .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content);white-space:pre-line}.vac-reply-container .vac-icon-reply{margin-left:10px}.vac-reply-container .vac-icon-reply svg{height:20px;width:20px}.vac-reply-container .vac-image-reply{max-height:100px;max-width:200px;margin:4px 10px 0 0;border-radius:4px}.vac-reply-container .vac-audio-reply{margin-right:10px}.vac-reply-container .vac-file-container{max-width:80px}@media only screen and (max-width: 768px){.vac-reply-container{padding:5px 8px;width:calc(100% - 16px)}}.vac-room-files-container{display:flex;align-items:center;padding:10px 6px 0;background:var(--chat-footer-bg-color)}.vac-room-files-container .vac-files-box{display:flex;overflow:auto;width:calc(100% - 30px)}.vac-room-files-container video{height:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-files-container .vac-icon-close{margin-left:auto}.vac-room-files-container .vac-icon-close svg{height:20px;width:20px}@media only screen and (max-width: 768px){.vac-files-container{padding:6px 4px 4px 2px}}.vac-room-file-container{display:flex;position:relative;margin:0 4px}.vac-room-file-container .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:100px;width:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-file-container .vac-file-container{height:80px;width:80px}.vac-room-file-container .vac-icon-remove{position:absolute;top:6px;left:6px;z-index:10}.vac-room-file-container .vac-icon-remove svg{height:20px;width:20px;border-radius:50%}.vac-room-file-container .vac-icon-remove:before{content:" ";position:absolute;width:100%;height:100%;background:rgba(0,0,0,.5);border-radius:50%;z-index:-1}.vac-tags-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-tags-container .vac-tags-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-tags-container .vac-tags-box-active{background:var(--chat-footer-bg-color-tag-active)}.vac-tags-container .vac-tags-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-tags-container .vac-tags-avatar{height:34px;width:34px;min-height:34px;min-width:34px}.vac-tags-container .vac-tags-username{font-size:14px}@media only screen and (max-width: 768px){.vac-tags-container .vac-tags-box{height:50px}.vac-tags-container .vac-tags-info{padding:0 12px}}.vac-template-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-template-container .vac-template-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-template-container .vac-template-active{background:var(--chat-footer-bg-color-tag-active)}.vac-template-container .vac-template-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-template-container .vac-template-tag{font-size:14px;font-weight:700;margin-right:10px}.vac-template-container .vac-template-text{font-size:14px}@media only screen and (max-width: 768px){.vac-template-container .vac-template-box{height:50px}.vac-template-container .vac-template-info{padding:0 12px}}.vac-rooms-container{display:flex;flex-flow:column;flex:0 0 25%;min-width:260px;max-width:500px;position:relative;background:var(--chat-sidemenu-bg-color);height:100%;border-top-left-radius:var(--chat-container-border-radius);border-bottom-left-radius:var(--chat-container-border-radius)}.vac-rooms-container.vac-rooms-container-full{flex:0 0 100%;max-width:100%}.vac-rooms-container .vac-rooms-empty{font-size:14px;color:#9ca6af;font-style:italic;text-align:center;margin:40px 0;line-height:20px;white-space:pre-line}.vac-rooms-container .vac-room-list{flex:1;position:relative;max-width:100%;cursor:pointer;padding:0 10px 5px;overflow-y:auto}.vac-rooms-container .vac-room-item{border-radius:8px;align-items:center;display:flex;flex:1 1 100%;margin-bottom:5px;padding:0 14px;position:relative;min-height:71px;transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-rooms-container .vac-room-item:hover{background:var(--chat-sidemenu-bg-color-hover)}.vac-rooms-container .vac-room-selected{color:var(--chat-sidemenu-color-active)!important;background:var(--chat-sidemenu-bg-color-active)!important}.vac-rooms-container .vac-room-selected:hover{background:var(--chat-sidemenu-bg-color-active)!important}@media only screen and (max-width: 768px){.vac-rooms-container .vac-room-list{padding:0 7px 5px}.vac-rooms-container .vac-room-item{min-height:60px;padding:0 8px}}.vac-room-container{display:flex;flex:1;align-items:center;width:100%}.vac-room-container .vac-name-container{flex:1}.vac-room-container .vac-title-container{display:flex;align-items:center;line-height:25px}.vac-room-container .vac-state-circle{width:9px;height:9px;border-radius:50%;background-color:var(--chat-room-color-offline);margin-right:6px;transition:.3s}.vac-room-container .vac-state-online{background-color:var(--chat-room-color-online)}.vac-room-container .vac-room-name{flex:1;color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-text-date{margin-left:5px;font-size:11px;color:var(--chat-room-color-timestamp)}.vac-room-container .vac-text-last{display:flex;align-items:center;font-size:12px;line-height:19px;color:var(--chat-room-color-message)}.vac-room-container .vac-message-new{color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-icon-check{display:flex;vertical-align:middle;height:14px;width:14px;margin-top:-2px;margin-right:2px}.vac-room-container .vac-icon-microphone{height:15px;width:15px;vertical-align:middle;margin:-3px 1px 0 -2px;fill:var(--chat-room-color-message)}.vac-room-container .vac-room-options-container{display:flex;margin-left:auto}.vac-room-container .vac-room-badge{background-color:var(--chat-room-bg-color-badge);color:var(--chat-room-color-badge);margin-left:5px}.vac-room-container .vac-list-room-options{height:19px;width:19px;align-items:center;margin-left:5px}.vac-box-empty{margin-top:10px}@media only screen and (max-width: 768px){.vac-box-empty{margin-top:7px}}.vac-box-search{position:sticky;display:flex;align-items:center;height:64px;padding:0 15px}.vac-box-search .vac-icon-search{display:flex;position:absolute;left:30px}.vac-box-search .vac-icon-search svg{width:18px;height:18px}.vac-box-search .vac-input{height:38px;width:100%;background:var(--chat-bg-color-input);color:var(--chat-color);font-size:15px;outline:0;caret-color:var(--chat-color-caret);padding:10px 10px 10px 40px;border:1px solid var(--chat-sidemenu-border-color-search);border-radius:20px}.vac-box-search .vac-input::placeholder{color:var(--chat-color-placeholder)}.vac-box-search .vac-add-icon{margin-left:auto;padding-left:10px}@media only screen and (max-width: 768px){.vac-box-search{height:58px}}.vac-message-wrapper .vac-card-info{border-radius:4px;text-align:center;margin:10px auto;font-size:12px;padding:4px;display:block;overflow-wrap:break-word;position:relative;white-space:normal;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-card-date{max-width:150px;font-weight:500;text-transform:uppercase;color:var(--chat-message-color-date);background-color:var(--chat-message-bg-color-date)}.vac-message-wrapper .vac-card-system{max-width:250px;padding:8px 4px;color:var(--chat-message-color-system);background-color:var(--chat-message-bg-color-system)}.vac-message-wrapper .vac-line-new{color:var(--chat-message-color-new-messages);position:relative;text-align:center;font-size:13px;padding:10px 0}.vac-message-wrapper .vac-line-new:after,.vac-message-wrapper .vac-line-new:before{border-top:1px solid var(--chat-message-color-new-messages);content:"";left:0;position:absolute;top:50%;width:calc(50% - 60px)}.vac-message-wrapper .vac-line-new:before{left:auto;right:0}.vac-message-wrapper .vac-message-box{display:flex;flex:0 0 50%;max-width:50%;justify-content:flex-start;line-height:1.4}.vac-message-wrapper .vac-avatar{height:28px;width:28px;min-height:28px;min-width:28px;margin:0 0 2px;align-self:flex-end}.vac-message-wrapper .vac-avatar-current-offset{margin-right:28px}.vac-message-wrapper .vac-avatar-offset{margin-left:28px}.vac-message-wrapper .vac-failure-container{position:relative;align-self:flex-end;height:20px;width:20px;margin:0 0 2px -4px;border-radius:50%;background-color:#f44336}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:6px}.vac-message-wrapper .vac-failure-container .vac-failure-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:15px;font-weight:700}.vac-message-wrapper .vac-message-container{position:relative;padding:2px 10px;align-items:end;min-width:100px;box-sizing:content-box}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-offset-current{margin-left:50%;justify-content:flex-end}.vac-message-wrapper .vac-message-card{background-color:var(--chat-message-bg-color);color:var(--chat-message-color);border-radius:8px;font-size:14px;padding:6px 9px 3px;white-space:pre-line;max-width:100%;-webkit-transition-property:box-shadow,opacity;transition-property:box-shadow,opacity;transition:box-shadow .28s cubic-bezier(.4,0,.2,1);will-change:box-shadow;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-message-highlight{box-shadow:0 1px 2px -1px #0000001a,0 1px 2px -1px #0000001c,0 1px 5px -1px #0000001c}.vac-message-wrapper .vac-message-current{background-color:var(--chat-message-bg-color-me)!important}.vac-message-wrapper .vac-message-deleted{color:var(--chat-message-color-deleted)!important;font-size:13px!important;font-style:italic!important;background-color:var(--chat-message-bg-color-deleted)!important}.vac-message-wrapper .vac-message-selected{background-color:var(--chat-message-bg-color-selected)!important;transition:background-color .2s}.vac-message-wrapper .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:250px;width:250px;max-width:100%;border-radius:4px;margin:4px auto 5px;transition:.4s filter linear}.vac-message-wrapper .vac-text-username{font-size:13px;color:var(--chat-message-color-username);margin-bottom:2px}.vac-message-wrapper .vac-username-reply{margin-bottom:5px}.vac-message-wrapper .vac-text-timestamp{font-size:10px;color:var(--chat-message-color-timestamp);text-align:right}.vac-message-wrapper .vac-progress-time{float:left;margin:-2px 0 0 40px;color:var(--chat-color);font-size:12px}.vac-message-wrapper .vac-icon-edited{-webkit-box-align:center;align-items:center;display:-webkit-inline-box;display:inline-flex;justify-content:center;letter-spacing:normal;line-height:1;text-indent:0;vertical-align:middle;margin:0 4px 2px}.vac-message-wrapper .vac-icon-edited svg{height:12px;width:12px}.vac-message-wrapper .vac-icon-check{height:14px;width:14px;vertical-align:middle;margin:-3px -3px 0 3px}@media only screen and (max-width: 768px){.vac-message-wrapper .vac-message-container{padding:2px 3px 1px}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-message-box{flex:0 0 80%;max-width:80%}.vac-message-wrapper .vac-avatar{height:25px;width:25px;min-height:25px;min-width:25px;margin:0 6px 1px 0}.vac-message-wrapper .vac-avatar.vac-avatar-current{margin:0 0 1px 6px}.vac-message-wrapper .vac-avatar-current-offset{margin-right:31px}.vac-message-wrapper .vac-avatar-offset{margin-left:31px}.vac-message-wrapper .vac-failure-container{margin-left:2px}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:0}.vac-message-wrapper .vac-offset-current{margin-left:20%}.vac-message-wrapper .vac-progress-time{margin-left:37px}}.vac-audio-player{display:flex;margin:8px 0 5px}.vac-audio-player .vac-svg-button{max-width:18px;margin-left:7px}@media only screen and (max-width: 768px){.vac-audio-player{margin:4px 0 0}.vac-audio-player .vac-svg-button{max-width:16px;margin-left:5px}}.vac-player-bar{display:flex;align-items:center;max-width:calc(100% - 18px);margin-right:7px;margin-left:20px}.vac-player-bar .vac-player-progress{width:190px}.vac-player-bar .vac-player-progress .vac-line-container{position:relative;height:4px;border-radius:5px;background-color:var(--chat-message-bg-color-audio-line)}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-progress{position:absolute;height:inherit;background-color:var(--chat-message-bg-color-audio-progress);border-radius:inherit}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{position:absolute;top:-5px;margin-left:-7px;height:14px;width:14px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-progress-selector);transition:transform .25s}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot__active{transform:scale(1.2)}@media only screen and (max-width: 768px){.vac-player-bar{margin-right:5px}.vac-player-bar .vac-player-progress .vac-line-container{height:3px}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{height:12px;width:12px;top:-5px;margin-left:-5px}}.vac-message-actions-wrapper .vac-options-container{position:absolute;top:2px;right:10px;height:40px;width:70px;overflow:hidden;border-top-right-radius:8px}.vac-message-actions-wrapper .vac-blur-container{position:absolute;height:100%;width:100%;left:8px;bottom:10px;background:var(--chat-message-bg-color);filter:blur(3px);border-bottom-left-radius:8px}.vac-message-actions-wrapper .vac-options-me{background:var(--chat-message-bg-color-me)}.vac-message-actions-wrapper .vac-message-options{background:var(--chat-icon-bg-dropdown-message);border-radius:50%;position:absolute;top:7px;right:7px}.vac-message-actions-wrapper .vac-message-options svg{height:17px;width:17px;padding:5px;margin:-5px}.vac-message-actions-wrapper .vac-message-emojis{position:absolute;top:6px;right:30px}.vac-message-actions-wrapper .vac-menu-options{right:15px}.vac-message-actions-wrapper .vac-menu-left{right:-118px}@media only screen and (max-width: 768px){.vac-message-actions-wrapper .vac-options-container{right:3px}.vac-message-actions-wrapper .vac-menu-left{right:-50px}}.vac-message-files-container .vac-file-wrapper{position:relative;width:fit-content}.vac-message-files-container .vac-file-wrapper .vac-file-container{height:60px;width:60px;margin:3px 0 5px;cursor:pointer;transition:all .6s}.vac-message-files-container .vac-file-wrapper .vac-file-container:hover{opacity:.85}.vac-message-files-container .vac-file-wrapper .vac-file-container svg{height:30px;width:30px}.vac-message-files-container .vac-file-wrapper .vac-file-container.vac-file-container-progress{background-color:#0000004d}.vac-message-file-container{position:relative;z-index:0}.vac-message-file-container .vac-message-image-container{cursor:pointer}.vac-message-file-container .vac-image-buttons{position:absolute;width:100%;height:100%;border-radius:4px;background:linear-gradient(to bottom,rgba(0,0,0,0) 55%,rgba(0,0,0,.02) 60%,rgba(0,0,0,.05) 65%,rgba(0,0,0,.1) 70%,rgba(0,0,0,.2) 75%,rgba(0,0,0,.3) 80%,rgba(0,0,0,.5) 85%,rgba(0,0,0,.6) 90%,rgba(0,0,0,.7) 95%,rgba(0,0,0,.8) 100%)}.vac-message-file-container .vac-image-buttons svg{height:26px;width:26px}.vac-message-file-container .vac-image-buttons .vac-button-view,.vac-message-file-container .vac-image-buttons .vac-button-download{position:absolute;bottom:6px;left:7px}.vac-message-file-container .vac-image-buttons :first-child{left:40px}.vac-message-file-container .vac-image-buttons .vac-button-view{max-width:18px;bottom:8px}.vac-message-file-container .vac-video-container{width:350px;max-width:100%;margin:4px auto 5px;cursor:pointer}.vac-message-file-container .vac-video-container video{width:100%;height:100%;border-radius:4px}.vac-button-reaction{display:inline-flex;align-items:center;border:var(--chat-message-border-style-reaction);outline:none;background:var(--chat-message-bg-color-reaction);border-radius:4px;margin:4px 2px 0;transition:.3s;padding:0 5px;font-size:18px;line-height:23px}.vac-button-reaction span{font-size:11px;font-weight:500;min-width:7px;color:var(--chat-message-color-reaction-counter)}.vac-button-reaction:hover{border:var(--chat-message-border-style-reaction-hover);background:var(--chat-message-bg-color-reaction-hover);cursor:pointer}.vac-button-reaction.vac-reaction-me{border:var(--chat-message-border-style-reaction-me);background:var(--chat-message-bg-color-reaction-me)}.vac-button-reaction.vac-reaction-me span{color:var(--chat-message-color-reaction-counter-me)}.vac-button-reaction.vac-reaction-me:hover{border:var(--chat-message-border-style-reaction-hover-me);background:var(--chat-message-bg-color-reaction-hover-me)}.vac-reply-message{background:var(--chat-message-bg-color-reply);border-radius:4px;margin:-1px -5px 8px;padding:8px 10px}.vac-reply-message .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-message .vac-image-reply-container{width:70px}.vac-reply-message .vac-image-reply-container .vac-message-image-reply{height:70px;width:70px;margin:4px auto 3px}.vac-reply-message .vac-video-reply-container{width:200px;max-width:100%}.vac-reply-message .vac-video-reply-container video{width:100%;height:100%;border-radius:4px}.vac-reply-message .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content)}.vac-reply-message .vac-file-container{height:60px;width:60px}.vac-emoji-wrapper{position:relative;display:flex}.vac-emoji-wrapper .vac-emoji-reaction svg{height:19px;width:19px}.vac-emoji-wrapper .vac-emoji-picker{position:absolute;z-index:9999;bottom:32px;right:10px;width:300px;padding-top:4px;overflow:scroll;box-sizing:border-box;border-radius:.5rem;background:var(--chat-emoji-bg-color);box-shadow:0 1px 2px -2px #0000001a,0 1px 2px -1px #0000001a,0 1px 2px 1px #0000001a;scrollbar-width:none}.vac-emoji-wrapper .vac-emoji-picker::-webkit-scrollbar{display:none}.vac-emoji-wrapper .vac-emoji-picker.vac-picker-reaction{position:fixed;top:initial;right:initial}.vac-emoji-wrapper .vac-emoji-picker emoji-picker{height:100%;width:100%;--emoji-size: 1.2rem;--background: var(--chat-emoji-bg-color);--emoji-padding: .4rem;--border-color: var(--chat-sidemenu-border-color-search);--button-hover-background: var(--chat-sidemenu-bg-color-hover);--button-active-background: var(--chat-sidemenu-bg-color-hover)}.vac-format-message-wrapper .vac-format-container{display:inline}.vac-format-message-wrapper .vac-icon-deleted{height:14px;width:14px;vertical-align:middle;margin:-2px 2px 0 0;fill:var(--chat-message-color-deleted)}.vac-format-message-wrapper .vac-icon-deleted.vac-icon-deleted-room{margin:-3px 1px 0 0;fill:var(--chat-room-color-message)}.vac-format-message-wrapper .vac-image-link-container{background-color:var(--chat-message-bg-color-media);padding:8px;margin:2px auto;border-radius:4px}.vac-format-message-wrapper .vac-image-link{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:contain;background-position:center center!important;background-repeat:no-repeat!important;height:150px;width:150px;max-width:100%;border-radius:4px;margin:0 auto}.vac-format-message-wrapper .vac-image-link-message{max-width:166px;font-size:12px}.vac-loader-wrapper.vac-container-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-loader-wrapper.vac-container-top{padding:21px}.vac-loader-wrapper.vac-container-top #vac-circle{height:20px;width:20px}.vac-loader-wrapper #vac-circle{margin:auto;height:28px;width:28px;border:3px rgba(0,0,0,.25) solid;border-top:3px var(--chat-color-spinner) solid;border-right:3px var(--chat-color-spinner) solid;border-bottom:3px var(--chat-color-spinner) solid;border-radius:50%;-webkit-animation:vac-spin 1s infinite linear;animation:vac-spin 1s infinite linear}@media only screen and (max-width: 768px){.vac-loader-wrapper #vac-circle{height:24px;width:24px}.vac-loader-wrapper.vac-container-top{padding:18px}.vac-loader-wrapper.vac-container-top #vac-circle{height:16px;width:16px}}@-webkit-keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}@keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}#vac-icon-search{fill:var(--chat-icon-color-search)}#vac-icon-add{fill:var(--chat-icon-color-add)}#vac-icon-toggle{fill:var(--chat-icon-color-toggle)}#vac-icon-menu{fill:var(--chat-icon-color-menu)}#vac-icon-close{fill:var(--chat-icon-color-close)}#vac-icon-close-image{fill:var(--chat-icon-color-close-image)}#vac-icon-file{fill:var(--chat-icon-color-file)}#vac-icon-paperclip{fill:var(--chat-icon-color-paperclip)}#vac-icon-close-outline{fill:var(--chat-icon-color-close-outline)}#vac-icon-close-outline-preview{fill:var(--chat-icon-color-close-preview)}#vac-icon-send{fill:var(--chat-icon-color-send)}#vac-icon-send-disabled{fill:var(--chat-icon-color-send-disabled)}#vac-icon-emoji{fill:var(--chat-icon-color-emoji)}#vac-icon-emoji-reaction{fill:var(--chat-icon-color-emoji-reaction)}#vac-icon-document{fill:var(--chat-icon-color-document)}#vac-icon-pencil{fill:var(--chat-icon-color-pencil)}#vac-icon-checkmark,#vac-icon-double-checkmark{fill:var(--chat-icon-color-checkmark)}#vac-icon-checkmark-seen,#vac-icon-double-checkmark-seen{fill:var(--chat-icon-color-checkmark-seen)}#vac-icon-eye{fill:var(--chat-icon-color-eye)}#vac-icon-dropdown-message{fill:var(--chat-icon-color-dropdown-message)}#vac-icon-dropdown-room{fill:var(--chat-icon-color-dropdown-room)}#vac-icon-dropdown-scroll{fill:var(--chat-icon-color-dropdown-scroll)}#vac-icon-audio-play{fill:var(--chat-icon-color-audio-play)}#vac-icon-audio-pause{fill:var(--chat-icon-color-audio-pause)}.vac-progress-wrapper{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-progress-wrapper circle{transition:stroke-dashoffset .35s;transform:rotate(-90deg);transform-origin:50% 50%}.vac-progress-wrapper .vac-progress-content{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:-1;margin-top:-2px;background-color:#000000b3;border-radius:50%}.vac-progress-wrapper .vac-progress-content .vac-progress-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:700;color:#fff}.vac-progress-wrapper .vac-progress-content .vac-progress-text .vac-progress-pourcent{font-size:9px;font-weight:400}\n';
+var _style_0 = '.vac-fade-spinner-enter-from{opacity:0}.vac-fade-spinner-enter-active{transition:opacity .8s}.vac-fade-spinner-leave-active{transition:opacity .2s;opacity:0}.vac-fade-image-enter-from{opacity:0}.vac-fade-image-enter-active{transition:opacity 1s}.vac-fade-image-leave-active{transition:opacity .5s;opacity:0}.vac-fade-message-enter-from{opacity:0}.vac-fade-message-enter-active{transition:opacity .5s}.vac-fade-message-leave-active{transition:opacity .2s;opacity:0}.vac-slide-left-enter-active,.vac-slide-right-enter-active{transition:all .3s ease;transition-property:transform,opacity}.vac-slide-left-leave-active,.vac-slide-right-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)!important;transition-property:transform,opacity}.vac-slide-left-enter-from,.vac-slide-left-leave-to{transform:translate(10px);opacity:0}.vac-slide-right-enter-from,.vac-slide-right-leave-to{transform:translate(-10px);opacity:0}.vac-slide-up-enter-active{transition:all .3s ease}.vac-slide-up-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)}.vac-slide-up-enter-from,.vac-slide-up-leave-to{transform:translateY(10px);opacity:0}.vac-bounce-enter-active{animation:vac-bounce-in .5s}.vac-bounce-leave-active{animation:vac-bounce-in .3s reverse}@keyframes vac-bounce-in{0%{transform:scale(0)}50%{transform:scale(1.05)}to{transform:scale(1)}}.vac-fade-preview-enter{opacity:0}.vac-fade-preview-enter-active{transition:opacity .1s}.vac-fade-preview-leave-active{transition:opacity .2s;opacity:0}.vac-bounce-preview-enter-active{animation:vac-bounce-image-in .4s}.vac-bounce-preview-leave-active{animation:vac-bounce-image-in .3s reverse}@keyframes vac-bounce-image-in{0%{transform:scale(.6)}to{transform:scale(1)}}.vac-menu-list{border-radius:4px;display:block;cursor:pointer;background:var(--chat-dropdown-bg-color);padding:6px 0}.vac-menu-list :hover{background:var(--chat-dropdown-bg-color-hover);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-list :not(:hover){transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-item{-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-flex:1;-ms-flex:1 1 100%;flex:1 1 100%;min-height:30px;padding:5px 16px;position:relative;white-space:nowrap;line-height:30px}.vac-menu-options{position:absolute;right:10px;top:20px;z-index:9999;min-width:150px;display:inline-block;border-radius:4px;font-size:14px;color:var(--chat-color);overflow-y:auto;overflow-x:hidden;contain:content;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-app-border{border:var(--chat-border-style)}.vac-app-border-t{border-top:var(--chat-border-style)}.vac-app-border-r{border-right:var(--chat-border-style)}.vac-app-border-b{border-bottom:var(--chat-border-style)}.vac-app-box-shadow{transition:all .5s;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-item-clickable{cursor:pointer}.vac-vertical-center{display:flex;align-items:center;height:100%}.vac-vertical-center .vac-vertical-container{width:100%;text-align:center}.vac-svg-button{max-height:30px;display:flex;cursor:pointer;transition:all .2s}.vac-svg-button:hover{transform:scale(1.1);opacity:.7}.vac-avatar{background-size:cover;background-position:center center;background-repeat:no-repeat;background-color:#ddd;height:42px;width:42px;min-height:42px;min-width:42px;margin-right:15px;border-radius:50%}.vac-blur-loading{filter:blur(3px)}.vac-badge-counter{height:13px;width:auto;min-width:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:3px;font-size:11px;font-weight:500}.vac-text-ellipsis{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-text-tag{color:var(--chat-message-color-tag);cursor:pointer}.vac-file-container{display:flex;align-content:center;justify-content:center;flex-wrap:wrap;text-align:center;background:var(--chat-bg-color-input);border:var(--chat-border-style-input);border-radius:4px;padding:10px}.vac-file-container svg{height:28px;width:28px}.vac-file-container .vac-text-extension{font-size:12px;color:var(--chat-message-color-file-extension);margin-top:-2px}.markdown p{margin:0}.markdown ol{display:flex;flex-direction:column;list-style-position:inside}.markdown ul{display:flex;flex-direction:column}.markdown code{display:block;font-size:12px;color:var(--chat-markdown-color-multi);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:4px 0;padding:7px}.markdown p code{display:inline-block;font-size:12px;color:var(--chat-markdown-color);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:2px 0;padding:2px 3px}.vac-card-window{width:100%;display:block;max-width:100%;background:var(--chat-content-bg-color);color:var(--chat-color);overflow-wrap:break-word;white-space:normal;border:var(--chat-container-border);border-radius:var(--chat-container-border-radius);box-shadow:var(--chat-container-box-shadow);-webkit-tap-highlight-color:transparent}.vac-card-window *{font-family:inherit}.vac-card-window a{color:#0d579c;font-weight:500}.vac-card-window .vac-chat-container{height:100%;display:flex}.vac-card-window .vac-chat-container input{min-width:10px}.vac-card-window .vac-chat-container textarea,.vac-card-window .vac-chat-container input[type=text],.vac-card-window .vac-chat-container input[type=search]{-webkit-appearance:none}.vac-media-preview{position:fixed;top:0;left:0;z-index:99;width:100vw;height:100vh;display:flex;align-items:center;background-color:#000c;outline:none}.vac-media-preview .vac-media-preview-container{height:calc(100% - 140px);width:calc(100% - 80px);padding:70px 40px;margin:0 auto}.vac-media-preview .vac-image-preview{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}.vac-media-preview video{width:100%;height:100%}.vac-media-preview .vac-svg-button{position:absolute;top:30px;right:30px;transform:scale(1.4)}@media only screen and (max-width: 768px){.vac-media-preview .vac-svg-button{top:20px;right:20px;transform:scale(1.2)}.vac-media-preview .vac-media-preview-container{width:calc(100% - 40px);padding:70px 20px}}.vac-col-messages{position:relative;height:100%;flex:1;overflow:hidden;display:flex;flex-flow:column;z-index:0}.vac-col-messages .vac-container-center{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.vac-col-messages .vac-room-empty{font-size:14px;color:#9ca6af;font-style:italic;line-height:20px;white-space:pre-line}.vac-col-messages .vac-room-empty div{padding:0 10%}.vac-col-messages .vac-container-scroll{background:var(--chat-content-bg-color);flex:1;overflow-y:auto;margin-right:1px;margin-top:65px;-webkit-overflow-scrolling:touch}.vac-col-messages .vac-container-scroll.vac-scroll-smooth{scroll-behavior:smooth}.vac-col-messages .vac-messages-container{padding:0 5px 5px}.vac-col-messages .vac-text-started{font-size:14px;color:var(--chat-message-color-started);font-style:italic;text-align:center;margin-top:25px;margin-bottom:20px}.vac-col-messages .vac-icon-scroll{position:absolute;bottom:80px;right:20px;padding:8px;background:var(--chat-bg-scroll-icon);border-radius:50%;box-shadow:0 1px 1px -1px #0003,0 1px 1px #00000024,0 1px 2px #0000001f;display:flex;cursor:pointer;z-index:10}.vac-col-messages .vac-icon-scroll svg{height:25px;width:25px}.vac-col-messages .vac-messages-count{position:absolute;top:-8px;left:11px;background-color:var(--chat-message-bg-color-scroll-counter);color:var(--chat-message-color-scroll-counter)}.vac-col-messages .vac-messages-hidden{opacity:0}@media only screen and (max-width: 768px){.vac-col-messages .vac-container-scroll{margin-top:50px}.vac-col-messages .vac-text-started{margin-top:20px}.vac-col-messages .vac-icon-scroll{bottom:70px}}.vac-room-header{position:absolute;display:flex;align-items:center;height:64px;width:100%;z-index:10;margin-right:1px;background:var(--chat-header-bg-color);border-top-right-radius:var(--chat-container-border-radius)}.vac-room-header .vac-room-wrapper{display:flex;align-items:center;min-width:0;height:100%;width:100%;padding:0 16px}.vac-room-header .vac-toggle-button{margin-right:15px}.vac-room-header .vac-toggle-button svg{height:26px;width:26px}.vac-room-header .vac-rotate-icon{transform:rotate(180deg)!important}.vac-room-header .vac-rotate-icon-init{transform:rotate(360deg)}.vac-room-header .vac-info-wrapper,.vac-room-header .vac-room-selection{display:flex;align-items:center;min-width:0;width:100%;height:100%}.vac-room-header .vac-room-selection .vac-selection-button{padding:8px 16px;color:var(--chat-color-button);background-color:var(--chat-bg-color-button);border-radius:4px;margin-right:10px;cursor:pointer;transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-button:hover{opacity:.7}.vac-room-header .vac-room-selection .vac-selection-button:active{opacity:.9}.vac-room-header .vac-room-selection .vac-selection-button .vac-selection-button-count{margin-left:6px;opacity:.9}.vac-room-header .vac-room-selection .vac-selection-cancel{display:flex;align-items:center;margin-left:auto;white-space:nowrap;color:var(--chat-color-button-clear);transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-cancel:hover{opacity:.7}.vac-room-header .vac-room-name{font-size:17px;font-weight:500;line-height:22px;color:var(--chat-header-color-name)}.vac-room-header .vac-room-info{font-size:13px;line-height:18px;color:var(--chat-header-color-info)}.vac-room-header .vac-room-options{margin-left:auto}@media only screen and (max-width: 768px){.vac-room-header{height:50px}.vac-room-header .vac-room-wrapper{padding:0 10px}.vac-room-header .vac-room-name{font-size:16px;line-height:22px}.vac-room-header .vac-room-info{font-size:12px;line-height:16px}.vac-room-header .vac-avatar{height:37px;width:37px;min-height:37px;min-width:37px}}.vac-room-footer{width:100%;border-bottom-right-radius:4px;z-index:10}.vac-box-footer{display:flex;position:relative;background:var(--chat-footer-bg-color);padding:10px 8px}.vac-textarea{max-height:300px;overflow-y:auto;height:20px;width:100%;line-height:20px;outline:0;resize:none;border-radius:20px;padding:12px 16px;box-sizing:content-box;font-size:16px;background:var(--chat-bg-color-input);color:var(--chat-color);caret-color:var(--chat-color-caret);border:var(--chat-border-style-input)}.vac-textarea::placeholder{color:var(--chat-color-placeholder);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-textarea-outline{border:1px solid var(--chat-border-color-input-selected);box-shadow:inset 0 0 0 1px var(--chat-border-color-input-selected)}.vac-icon-textarea,.vac-icon-textarea-left{display:flex;align-items:center}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea{margin-left:5px}.vac-icon-textarea-left{display:flex;align-items:center;margin-right:5px}.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea-left .vac-icon-microphone{fill:var(--chat-icon-color-microphone);margin:0 7px}.vac-icon-textarea-left .vac-dot-audio-record{height:15px;width:15px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-record);animation:vac-scaling .8s ease-in-out infinite alternate}@keyframes vac-scaling{0%{transform:scale(1);opacity:.4}to{transform:scale(1.1);opacity:1}}.vac-icon-textarea-left .vac-dot-audio-record-time{font-size:16px;color:var(--chat-color);margin-left:8px;width:45px}.vac-icon-textarea-left .vac-icon-audio-stop,.vac-icon-textarea-left .vac-icon-audio-confirm{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop svg,.vac-icon-textarea-left .vac-icon-audio-confirm svg{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop{margin-right:20px}.vac-icon-textarea-left .vac-icon-audio-stop #vac-icon-close-outline{fill:var(--chat-icon-color-audio-cancel)}.vac-icon-textarea-left .vac-icon-audio-confirm{margin-right:3px;margin-left:12px}.vac-icon-textarea-left .vac-icon-audio-confirm #vac-icon-checkmark{fill:var(--chat-icon-color-audio-confirm)}.vac-send-disabled,.vac-send-disabled svg{cursor:none!important;pointer-events:none!important;transform:none!important}@media only screen and (max-width: 768px){.vac-room-footer{width:100%}.vac-box-footer{padding:7px 2px 7px 7px}.vac-box-footer.vac-box-footer-border{border-top:var(--chat-border-style-input)}.vac-textarea{padding:7px;line-height:18px}.vac-textarea::placeholder{color:transparent}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 5px!important}}@media only screen and (max-height: 768px){.vac-textarea{max-height:120px}}.vac-emojis-container{width:calc(100% - 16px);padding:10px 8px;background:var(--chat-footer-bg-color);display:flex;align-items:center;overflow:auto}.vac-emojis-container .vac-emoji-element{padding:0 8px;font-size:30px;border-radius:4px;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-emojis-container .vac-emoji-element-active{background:var(--chat-footer-bg-color-tag-active)}@media only screen and (max-width: 768px){.vac-emojis-container{width:calc(100% - 10px);padding:7px 5px}.vac-emojis-container .vac-emoji-element{padding:0 7px;font-size:26px}}.vac-reply-container{display:flex;padding:10px 10px 0;background:var(--chat-footer-bg-color);align-items:center;width:calc(100% - 20px)}.vac-reply-container .vac-reply-box{width:100%;overflow:hidden;background:var(--chat-footer-bg-color-reply);border-radius:4px;padding:8px 10px}.vac-reply-container .vac-reply-info{overflow:hidden}.vac-reply-container .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-container .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content);white-space:pre-line}.vac-reply-container .vac-icon-reply{margin-left:10px}.vac-reply-container .vac-icon-reply svg{height:20px;width:20px}.vac-reply-container .vac-image-reply{max-height:100px;max-width:200px;margin:4px 10px 0 0;border-radius:4px}.vac-reply-container .vac-audio-reply{margin-right:10px}.vac-reply-container .vac-file-container{max-width:80px}@media only screen and (max-width: 768px){.vac-reply-container{padding:5px 8px;width:calc(100% - 16px)}}.vac-room-files-container{display:flex;align-items:center;padding:10px 6px 0;background:var(--chat-footer-bg-color)}.vac-room-files-container .vac-files-box{display:flex;overflow:auto;width:calc(100% - 30px)}.vac-room-files-container video{height:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-files-container .vac-icon-close{margin-left:auto}.vac-room-files-container .vac-icon-close svg{height:20px;width:20px}@media only screen and (max-width: 768px){.vac-files-container{padding:6px 4px 4px 2px}}.vac-room-file-container{display:flex;position:relative;margin:0 4px}.vac-room-file-container .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:100px;width:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-file-container .vac-file-container{height:80px;width:80px}.vac-room-file-container .vac-icon-remove{position:absolute;top:6px;left:6px;z-index:10}.vac-room-file-container .vac-icon-remove svg{height:20px;width:20px;border-radius:50%}.vac-room-file-container .vac-icon-remove:before{content:" ";position:absolute;width:100%;height:100%;background:rgba(0,0,0,.5);border-radius:50%;z-index:-1}.vac-tags-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-tags-container .vac-tags-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-tags-container .vac-tags-box-active{background:var(--chat-footer-bg-color-tag-active)}.vac-tags-container .vac-tags-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-tags-container .vac-tags-avatar{height:34px;width:34px;min-height:34px;min-width:34px}.vac-tags-container .vac-tags-username{font-size:14px}@media only screen and (max-width: 768px){.vac-tags-container .vac-tags-box{height:50px}.vac-tags-container .vac-tags-info{padding:0 12px}}.vac-template-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-template-container .vac-template-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-template-container .vac-template-active{background:var(--chat-footer-bg-color-tag-active)}.vac-template-container .vac-template-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-template-container .vac-template-tag{font-size:14px;font-weight:700;margin-right:10px}.vac-template-container .vac-template-text{font-size:14px}@media only screen and (max-width: 768px){.vac-template-container .vac-template-box{height:50px}.vac-template-container .vac-template-info{padding:0 12px}}.vac-rooms-container{display:flex;flex-flow:column;flex:0 0 25%;min-width:260px;max-width:500px;position:relative;background:var(--chat-sidemenu-bg-color);height:100%;border-top-left-radius:var(--chat-container-border-radius);border-bottom-left-radius:var(--chat-container-border-radius)}.vac-rooms-container.vac-rooms-container-full{flex:0 0 100%;max-width:100%}.vac-rooms-container .vac-rooms-empty{font-size:14px;color:#9ca6af;font-style:italic;text-align:center;margin:40px 0;line-height:20px;white-space:pre-line}.vac-rooms-container .vac-room-list{flex:1;position:relative;max-width:100%;cursor:pointer;padding:0 10px 5px;overflow-y:auto}.vac-rooms-container .vac-room-item{border-radius:8px;align-items:center;display:flex;flex:1 1 100%;margin-bottom:5px;padding:0 14px;position:relative;min-height:71px;transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-rooms-container .vac-room-item:hover{background:var(--chat-sidemenu-bg-color-hover)}.vac-rooms-container .vac-room-selected{color:var(--chat-sidemenu-color-active)!important;background:var(--chat-sidemenu-bg-color-active)!important}.vac-rooms-container .vac-room-selected:hover{background:var(--chat-sidemenu-bg-color-active)!important}@media only screen and (max-width: 768px){.vac-rooms-container .vac-room-list{padding:0 7px 5px}.vac-rooms-container .vac-room-item{min-height:60px;padding:0 8px}}.vac-room-container{display:flex;flex:1;align-items:center;width:100%}.vac-room-container .vac-name-container{flex:1}.vac-room-container .vac-title-container{display:flex;align-items:center;line-height:25px}.vac-room-container .vac-state-circle{width:9px;height:9px;border-radius:50%;background-color:var(--chat-room-color-offline);margin-right:6px;transition:.3s}.vac-room-container .vac-state-online{background-color:var(--chat-room-color-online)}.vac-room-container .vac-room-name{flex:1;color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-text-date{margin-left:5px;font-size:11px;color:var(--chat-room-color-timestamp)}.vac-room-container .vac-text-last{display:flex;align-items:center;font-size:12px;line-height:19px;color:var(--chat-room-color-message)}.vac-room-container .vac-message-new{color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-icon-check{display:flex;vertical-align:middle;height:14px;width:14px;margin-top:-2px;margin-right:2px}.vac-room-container .vac-icon-microphone{height:15px;width:15px;vertical-align:middle;margin:-3px 1px 0 -2px;fill:var(--chat-room-color-message)}.vac-room-container .vac-room-options-container{display:flex;margin-left:auto}.vac-room-container .vac-room-badge{background-color:var(--chat-room-bg-color-badge);color:var(--chat-room-color-badge);margin-left:5px}.vac-room-container .vac-list-room-options{height:19px;width:19px;align-items:center;margin-left:5px}.vac-box-empty{margin-top:10px}@media only screen and (max-width: 768px){.vac-box-empty{margin-top:7px}}.vac-box-search{position:sticky;display:flex;align-items:center;height:64px;padding:0 15px}.vac-box-search .vac-icon-search{display:flex;position:absolute;left:30px}.vac-box-search .vac-icon-search svg{width:18px;height:18px}.vac-box-search .vac-input{height:38px;width:100%;background:var(--chat-bg-color-input);color:var(--chat-color);font-size:15px;outline:0;caret-color:var(--chat-color-caret);padding:10px 10px 10px 40px;border:1px solid var(--chat-sidemenu-border-color-search);border-radius:20px}.vac-box-search .vac-input::placeholder{color:var(--chat-color-placeholder)}.vac-box-search .vac-add-icon{margin-left:auto;padding-left:10px}@media only screen and (max-width: 768px){.vac-box-search{height:58px}}.vac-message-wrapper .vac-card-info{border-radius:4px;text-align:center;margin:10px auto;font-size:12px;padding:4px;display:block;overflow-wrap:break-word;position:relative;white-space:normal;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-card-date{max-width:150px;font-weight:500;text-transform:uppercase;color:var(--chat-message-color-date);background-color:var(--chat-message-bg-color-date)}.vac-message-wrapper .vac-card-system{max-width:250px;padding:8px 4px;color:var(--chat-message-color-system);background-color:var(--chat-message-bg-color-system)}.vac-message-wrapper .vac-line-new{color:var(--chat-message-color-new-messages);position:relative;text-align:center;font-size:13px;padding:10px 0}.vac-message-wrapper .vac-line-new:after,.vac-message-wrapper .vac-line-new:before{border-top:1px solid var(--chat-message-color-new-messages);content:"";left:0;position:absolute;top:50%;width:calc(50% - 60px)}.vac-message-wrapper .vac-line-new:before{left:auto;right:0}.vac-message-wrapper .vac-message-box{display:flex;flex:0 0 50%;max-width:50%;justify-content:flex-start;line-height:1.4}.vac-message-wrapper .vac-avatar{height:28px;width:28px;min-height:28px;min-width:28px;margin:0 0 2px;align-self:flex-end}.vac-message-wrapper .vac-avatar-current-offset{margin-right:28px}.vac-message-wrapper .vac-avatar-offset{margin-left:28px}.vac-message-wrapper .vac-failure-container{position:relative;align-self:flex-end;height:20px;width:20px;margin:0 0 2px -4px;border-radius:50%;background-color:#f44336}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:6px}.vac-message-wrapper .vac-failure-container .vac-failure-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:15px;font-weight:700}.vac-message-wrapper .vac-message-container{position:relative;padding:2px 10px;align-items:end;min-width:100px;box-sizing:content-box}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-offset-current{margin-left:50%;justify-content:flex-end}.vac-message-wrapper .vac-message-card{background-color:var(--chat-message-bg-color);color:var(--chat-message-color);border-radius:8px;font-size:14px;padding:6px 9px 3px;white-space:pre-line;max-width:100%;-webkit-transition-property:box-shadow,opacity;transition-property:box-shadow,opacity;transition:box-shadow .28s cubic-bezier(.4,0,.2,1);will-change:box-shadow;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-message-highlight{box-shadow:0 1px 2px -1px #0000001a,0 1px 2px -1px #0000001c,0 1px 5px -1px #0000001c}.vac-message-wrapper .vac-message-current{background-color:var(--chat-message-bg-color-me)!important}.vac-message-wrapper .vac-message-deleted{color:var(--chat-message-color-deleted)!important;font-size:13px!important;font-style:italic!important;background-color:var(--chat-message-bg-color-deleted)!important}.vac-message-wrapper .vac-message-selected{background-color:var(--chat-message-bg-color-selected)!important;transition:background-color .2s}.vac-message-wrapper .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:250px;width:250px;max-width:100%;border-radius:4px;margin:4px auto 5px;transition:.4s filter linear}.vac-message-wrapper .vac-text-username{font-size:13px;color:var(--chat-message-color-username);margin-bottom:2px}.vac-message-wrapper .vac-username-reply{margin-bottom:5px}.vac-message-wrapper .vac-text-timestamp{font-size:10px;color:var(--chat-message-color-timestamp);text-align:right}.vac-message-wrapper .vac-progress-time{float:left;margin:-2px 0 0 40px;color:var(--chat-color);font-size:12px}.vac-message-wrapper .vac-icon-edited{-webkit-box-align:center;align-items:center;display:-webkit-inline-box;display:inline-flex;justify-content:center;letter-spacing:normal;line-height:1;text-indent:0;vertical-align:middle;margin:0 4px 2px}.vac-message-wrapper .vac-icon-edited svg{height:12px;width:12px}.vac-message-wrapper .vac-icon-check{height:14px;width:14px;vertical-align:middle;margin:-3px -3px 0 3px}@media only screen and (max-width: 768px){.vac-message-wrapper .vac-message-container{padding:2px 3px 1px}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-message-box{flex:0 0 80%;max-width:80%}.vac-message-wrapper .vac-avatar{height:25px;width:25px;min-height:25px;min-width:25px;margin:0 6px 1px 0}.vac-message-wrapper .vac-avatar.vac-avatar-current{margin:0 0 1px 6px}.vac-message-wrapper .vac-avatar-current-offset{margin-right:31px}.vac-message-wrapper .vac-avatar-offset{margin-left:31px}.vac-message-wrapper .vac-failure-container{margin-left:2px}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:0}.vac-message-wrapper .vac-offset-current{margin-left:20%}.vac-message-wrapper .vac-progress-time{margin-left:37px}}.vac-audio-player{display:flex;margin:8px 0 5px}.vac-audio-player .vac-svg-button{max-width:18px;margin-left:7px}@media only screen and (max-width: 768px){.vac-audio-player{margin:4px 0 0}.vac-audio-player .vac-svg-button{max-width:16px;margin-left:5px}}.vac-player-bar{display:flex;align-items:center;max-width:calc(100% - 18px);margin-right:7px;margin-left:20px}.vac-player-bar .vac-player-progress{width:190px}.vac-player-bar .vac-player-progress .vac-line-container{position:relative;height:4px;border-radius:5px;background-color:var(--chat-message-bg-color-audio-line)}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-progress{position:absolute;height:inherit;background-color:var(--chat-message-bg-color-audio-progress);border-radius:inherit}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{position:absolute;top:-5px;margin-left:-7px;height:14px;width:14px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-progress-selector);transition:transform .25s}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot__active{transform:scale(1.2)}@media only screen and (max-width: 768px){.vac-player-bar{margin-right:5px}.vac-player-bar .vac-player-progress .vac-line-container{height:3px}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{height:12px;width:12px;top:-5px;margin-left:-5px}}.vac-message-actions-wrapper .vac-options-container{position:absolute;top:2px;right:10px;height:40px;width:70px;overflow:hidden;border-top-right-radius:8px}.vac-message-actions-wrapper .vac-blur-container{position:absolute;height:100%;width:100%;left:8px;bottom:10px;background:var(--chat-message-bg-color);filter:blur(3px);border-bottom-left-radius:8px}.vac-message-actions-wrapper .vac-options-me{background:var(--chat-message-bg-color-me)}.vac-message-actions-wrapper .vac-message-options{background:var(--chat-icon-bg-dropdown-message);border-radius:50%;position:absolute;top:7px;right:7px}.vac-message-actions-wrapper .vac-message-options svg{height:17px;width:17px;padding:5px;margin:-5px}.vac-message-actions-wrapper .vac-message-emojis{position:absolute;top:6px;right:30px}.vac-message-actions-wrapper .vac-menu-options{right:15px}.vac-message-actions-wrapper .vac-menu-left{right:-118px}@media only screen and (max-width: 768px){.vac-message-actions-wrapper .vac-options-container{right:3px}.vac-message-actions-wrapper .vac-menu-left{right:-50px}}.vac-message-files-container .vac-file-wrapper{position:relative;width:fit-content}.vac-message-files-container .vac-file-wrapper .vac-file-container{height:60px;width:60px;margin:3px 0 5px;cursor:pointer;transition:all .6s}.vac-message-files-container .vac-file-wrapper .vac-file-container:hover{opacity:.85}.vac-message-files-container .vac-file-wrapper .vac-file-container svg{height:30px;width:30px}.vac-message-files-container .vac-file-wrapper .vac-file-container.vac-file-container-progress{background-color:#0000004d}.vac-message-file-container{position:relative;z-index:0}.vac-message-file-container .vac-message-image-container{cursor:pointer}.vac-message-file-container .vac-image-buttons{position:absolute;width:100%;height:100%;border-radius:4px;background:linear-gradient(to bottom,rgba(0,0,0,0) 55%,rgba(0,0,0,.02) 60%,rgba(0,0,0,.05) 65%,rgba(0,0,0,.1) 70%,rgba(0,0,0,.2) 75%,rgba(0,0,0,.3) 80%,rgba(0,0,0,.5) 85%,rgba(0,0,0,.6) 90%,rgba(0,0,0,.7) 95%,rgba(0,0,0,.8) 100%)}.vac-message-file-container .vac-image-buttons svg{height:26px;width:26px}.vac-message-file-container .vac-image-buttons .vac-button-view,.vac-message-file-container .vac-image-buttons .vac-button-download{position:absolute;bottom:6px;left:7px}.vac-message-file-container .vac-image-buttons :first-child{left:40px}.vac-message-file-container .vac-image-buttons .vac-button-view{max-width:18px;bottom:8px}.vac-message-file-container .vac-video-container{width:350px;max-width:100%;margin:4px auto 5px;cursor:pointer}.vac-message-file-container .vac-video-container video{width:100%;height:100%;border-radius:4px}.vac-button-reaction{display:inline-flex;align-items:center;border:var(--chat-message-border-style-reaction);outline:none;background:var(--chat-message-bg-color-reaction);border-radius:4px;margin:4px 2px 0;transition:.3s;padding:0 5px;font-size:18px;line-height:23px}.vac-button-reaction span{font-size:11px;font-weight:500;min-width:7px;color:var(--chat-message-color-reaction-counter)}.vac-button-reaction:hover{border:var(--chat-message-border-style-reaction-hover);background:var(--chat-message-bg-color-reaction-hover);cursor:pointer}.vac-button-reaction.vac-reaction-me{border:var(--chat-message-border-style-reaction-me);background:var(--chat-message-bg-color-reaction-me)}.vac-button-reaction.vac-reaction-me span{color:var(--chat-message-color-reaction-counter-me)}.vac-button-reaction.vac-reaction-me:hover{border:var(--chat-message-border-style-reaction-hover-me);background:var(--chat-message-bg-color-reaction-hover-me)}.vac-reply-message{background:var(--chat-message-bg-color-reply);border-radius:4px;margin:-1px -5px 8px;padding:8px 10px}.vac-reply-message .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-message .vac-image-reply-container{width:70px}.vac-reply-message .vac-image-reply-container .vac-message-image-reply{height:70px;width:70px;margin:4px auto 3px}.vac-reply-message .vac-video-reply-container{width:200px;max-width:100%}.vac-reply-message .vac-video-reply-container video{width:100%;height:100%;border-radius:4px}.vac-reply-message .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content)}.vac-reply-message .vac-file-container{height:60px;width:60px}.vac-emoji-wrapper{position:relative;display:flex}.vac-emoji-wrapper .vac-emoji-reaction svg{height:19px;width:19px}.vac-emoji-wrapper .vac-emoji-picker{position:absolute;z-index:9999;bottom:32px;right:10px;width:300px;padding-top:4px;overflow:scroll;box-sizing:border-box;border-radius:.5rem;background:var(--chat-emoji-bg-color);box-shadow:0 1px 2px -2px #0000001a,0 1px 2px -1px #0000001a,0 1px 2px 1px #0000001a;scrollbar-width:none}.vac-emoji-wrapper .vac-emoji-picker::-webkit-scrollbar{display:none}.vac-emoji-wrapper .vac-emoji-picker.vac-picker-reaction{position:fixed;top:initial;right:initial}.vac-emoji-wrapper .vac-emoji-picker emoji-picker{height:100%;width:100%;--emoji-size: 1.2rem;--background: var(--chat-emoji-bg-color);--emoji-padding: .4rem;--border-color: var(--chat-sidemenu-border-color-search);--button-hover-background: var(--chat-sidemenu-bg-color-hover);--button-active-background: var(--chat-sidemenu-bg-color-hover)}.vac-format-message-wrapper .vac-format-container{display:inline}.vac-format-message-wrapper .vac-icon-deleted{height:14px;width:14px;vertical-align:middle;margin:-2px 2px 0 0;fill:var(--chat-message-color-deleted)}.vac-format-message-wrapper .vac-icon-deleted.vac-icon-deleted-room{margin:-3px 1px 0 0;fill:var(--chat-room-color-message)}.vac-format-message-wrapper .vac-image-link-container{background-color:var(--chat-message-bg-color-media);padding:8px;margin:2px auto;border-radius:4px}.vac-format-message-wrapper .vac-image-link{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:contain;background-position:center center!important;background-repeat:no-repeat!important;height:150px;width:150px;max-width:100%;border-radius:4px;margin:0 auto}.vac-format-message-wrapper .vac-image-link-message{max-width:166px;font-size:12px}.vac-loader-wrapper.vac-container-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-loader-wrapper.vac-container-top{padding:21px}.vac-loader-wrapper.vac-container-top #vac-circle{height:20px;width:20px}.vac-loader-wrapper #vac-circle{margin:auto;height:28px;width:28px;border:3px rgba(0,0,0,.25) solid;border-top:3px var(--chat-color-spinner) solid;border-right:3px var(--chat-color-spinner) solid;border-bottom:3px var(--chat-color-spinner) solid;border-radius:50%;-webkit-animation:vac-spin 1s infinite linear;animation:vac-spin 1s infinite linear}@media only screen and (max-width: 768px){.vac-loader-wrapper #vac-circle{height:24px;width:24px}.vac-loader-wrapper.vac-container-top{padding:18px}.vac-loader-wrapper.vac-container-top #vac-circle{height:16px;width:16px}}@-webkit-keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}@keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}#vac-icon-search{fill:var(--chat-icon-color-search)}#vac-icon-add{fill:var(--chat-icon-color-add)}#vac-icon-toggle{fill:var(--chat-icon-color-toggle)}#vac-icon-menu{fill:var(--chat-icon-color-menu)}#vac-icon-close{fill:var(--chat-icon-color-close)}#vac-icon-close-image{fill:var(--chat-icon-color-close-image)}#vac-icon-file{fill:var(--chat-icon-color-file)}#vac-icon-paperclip{fill:var(--chat-icon-color-paperclip)}#vac-icon-close-outline{fill:var(--chat-icon-color-close-outline)}#vac-icon-close-outline-preview{fill:var(--chat-icon-color-close-preview)}#vac-icon-send{fill:var(--chat-icon-color-send)}#vac-icon-send-disabled{fill:var(--chat-icon-color-send-disabled)}#vac-icon-emoji{fill:var(--chat-icon-color-emoji)}#vac-icon-emoji-reaction{fill:var(--chat-icon-color-emoji-reaction)}#vac-icon-document{fill:var(--chat-icon-color-document)}#vac-icon-pencil{fill:var(--chat-icon-color-pencil)}#vac-icon-checkmark,#vac-icon-double-checkmark{fill:var(--chat-icon-color-checkmark)}#vac-icon-checkmark-seen,#vac-icon-double-checkmark-seen{fill:var(--chat-icon-color-checkmark-seen)}#vac-icon-eye{fill:var(--chat-icon-color-eye)}#vac-icon-dropdown-message{fill:var(--chat-icon-color-dropdown-message)}#vac-icon-dropdown-room{fill:var(--chat-icon-color-dropdown-room)}#vac-icon-dropdown-scroll{fill:var(--chat-icon-color-dropdown-scroll)}#vac-icon-audio-play{fill:var(--chat-icon-color-audio-play)}#vac-icon-audio-pause{fill:var(--chat-icon-color-audio-pause)}.vac-progress-wrapper{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-progress-wrapper circle{transition:stroke-dashoffset .35s;transform:rotate(-90deg);transform-origin:50% 50%}.vac-progress-wrapper .vac-progress-content{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:-1;margin-top:-2px;background-color:#000000b3;border-radius:50%}.vac-progress-wrapper .vac-progress-content .vac-progress-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:700;color:#fff}.vac-progress-wrapper .vac-progress-content .vac-progress-text .vac-progress-pourcent{font-size:9px;font-weight:400}\n';
 const _sfc_main = {
   name: "ChatContainer",
   components: {
@@ -29549,13 +34998,7 @@ const _sfc_main = {
     textFormatting: {
       type: [Object, String],
       default: () => ({
-        disabled: false,
-        italic: "_",
-        bold: "*",
-        strike: "~",
-        underline: "\xB0",
-        multilineCode: "```",
-        inlineCode: "`"
+        disabled: false
       })
     },
     linkOptions: {
@@ -29570,6 +35013,8 @@ const _sfc_main = {
     roomMessage: { type: String, default: "" },
     scrollDistance: { type: Number, default: 60 },
     acceptedFiles: { type: String, default: "*" },
+    captureFiles: { type: String, default: "" },
+    multipleFiles: { type: [Boolean, String], default: true },
     templatesText: { type: [Array, String], default: () => [] },
     mediaPreviewEnabled: { type: [Boolean, String], default: true },
     usernameOptions: {
@@ -29655,6 +35100,9 @@ const _sfc_main = {
     },
     messagesLoadedCasted() {
       return this.castBoolean(this.messagesLoaded);
+    },
+    multipleFilesCasted() {
+      return this.castBoolean(this.multipleFiles);
     },
     showSearchCasted() {
       return this.castBoolean(this.showSearch);
@@ -29841,8 +35289,8 @@ const _sfc_main = {
     searchRoom(val) {
       this.$emit("search-room", { value: val, roomId: this.room.roomId });
     },
-    fetchMessages(options2) {
-      this.$emit("fetch-messages", { room: this.room, options: options2 });
+    fetchMessages(options) {
+      this.$emit("fetch-messages", { room: this.room, options });
     },
     sendMessage(message) {
       this.$emit("send-message", { ...message, roomId: this.room.roomId });
@@ -29992,6 +35440,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         "emojis-suggestion-enabled": $options.emojisSuggestionEnabledCasted,
         "scroll-distance": $props.scrollDistance,
         "accepted-files": $props.acceptedFiles,
+        "capture-files": $props.captureFiles,
+        "multiple-files": $options.multipleFilesCasted,
         "templates-text": $options.templatesTextCasted,
         "username-options": $options.usernameOptionsCasted,
         "emoji-data-source": $props.emojiDataSource,
@@ -30019,7 +35469,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             ])
           };
         })
-      ]), 1032, ["current-user-id", "rooms", "room-id", "load-first-room", "messages", "room-message", "messages-loaded", "menu-actions", "message-actions", "message-selection-actions", "auto-scroll", "show-send-icon", "show-files", "show-audio", "audio-bit-rate", "audio-sample-rate", "show-emojis", "show-reaction-emojis", "show-new-messages-divider", "show-footer", "text-messages", "single-room", "show-rooms-list", "text-formatting", "link-options", "is-mobile", "loading-rooms", "room-info-enabled", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "scroll-distance", "accepted-files", "templates-text", "username-options", "emoji-data-source", "onToggleRoomsList", "onRoomInfo", "onFetchMessages", "onSendMessage", "onEditMessage", "onDeleteMessage", "onOpenFile", "onOpenUserTag", "onOpenFailedMessage", "onMenuActionHandler", "onMessageActionHandler", "onMessageSelectionActionHandler", "onSendMessageReaction", "onTypingMessage", "onTextareaActionHandler"])
+      ]), 1032, ["current-user-id", "rooms", "room-id", "load-first-room", "messages", "room-message", "messages-loaded", "menu-actions", "message-actions", "message-selection-actions", "auto-scroll", "show-send-icon", "show-files", "show-audio", "audio-bit-rate", "audio-sample-rate", "show-emojis", "show-reaction-emojis", "show-new-messages-divider", "show-footer", "text-messages", "single-room", "show-rooms-list", "text-formatting", "link-options", "is-mobile", "loading-rooms", "room-info-enabled", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "scroll-distance", "accepted-files", "capture-files", "multiple-files", "templates-text", "username-options", "emoji-data-source", "onToggleRoomsList", "onRoomInfo", "onFetchMessages", "onSendMessage", "onEditMessage", "onDeleteMessage", "onOpenFile", "onOpenUserTag", "onOpenFailedMessage", "onMenuActionHandler", "onMessageActionHandler", "onMessageSelectionActionHandler", "onSendMessageReaction", "onTypingMessage", "onTextareaActionHandler"])
     ]),
     createVNode(Transition, {
       name: "vac-fade-preview",
