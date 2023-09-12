@@ -3,6 +3,16 @@ import { gfm, gfmHtml } from 'micromark-extension-gfm'
 import { underline, underlineHtml } from './underline'
 import { usertag, usertagHtml } from './usertag'
 
+const addLinkOptions = (html, { linkOptions }) => {
+	return html.replaceAll('href', (match) => {
+		return `target=${linkOptions.target} rel=${linkOptions.rel} ${match}`
+	})
+};
+
+const removeLinks = (html) => {
+	return html.replaceAll(/<a.*?>(.*?)<\/a>/g, '$1');
+};
+
 export default (text, { textFormatting }) => {
 	if (textFormatting) {
 		let gfmDisabled = []
@@ -43,10 +53,19 @@ export default (text, { textFormatting }) => {
 			]
 		}
 
+		if (textFormatting.linkOptions.disabled) {
+			return [
+				{
+					types: ['markdown'],
+					value: removeLinks(markdown)
+				}
+			]
+		}
+
 		return [
 			{
 				types: ['markdown'],
-				value: markdown
+				value: addLinkOptions(markdown, textFormatting)
 			}
 		]
 	}
