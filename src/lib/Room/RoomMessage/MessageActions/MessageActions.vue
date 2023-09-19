@@ -89,6 +89,7 @@ import vClickOutside from 'v-click-outside'
 
 import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
 import EmojiPickerContainer from '../../../../components/EmojiPickerContainer/EmojiPickerContainer'
+import { findParentBySelector } from '../../../../utils/element-selector'
 
 export default {
 	name: 'MessageActions',
@@ -169,7 +170,7 @@ export default {
 			if (!this.optionsOpened) return
 
 			setTimeout(() => {
-				const roomFooterRef = document.getElementById('room-footer')
+				const roomFooterRef = findParentBySelector(this.$el, '#room-footer')
 
 				if (
 					!roomFooterRef ||

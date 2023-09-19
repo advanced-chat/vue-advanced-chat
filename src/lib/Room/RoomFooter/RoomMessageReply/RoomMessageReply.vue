@@ -3,7 +3,6 @@
 		<div
 			v-if="messageReply"
 			class="vac-reply-container"
-			:style="{ bottom: `${footerHeight}px` }"
 		>
 			<div class="vac-reply-box">
 				<div class="vac-reply-info">
@@ -100,9 +99,6 @@ export default {
 	emits: ['reset-message'],
 
 	computed: {
-		footerHeight() {
-			return document.getElementById('room-footer').clientHeight
-		},
 		firstFile() {
 			return this.messageReply?.files?.length ? this.messageReply.files[0] : {}
 		},

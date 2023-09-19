@@ -3,7 +3,6 @@
 		<div
 			v-if="filteredTemplatesText.length"
 			class="vac-template-container vac-app-box-shadow"
-			:style="{ bottom: `${footerHeight}px` }"
 		>
 			<div
 				v-for="(template, index) in filteredTemplatesText"
@@ -41,12 +40,6 @@ export default {
 	data() {
 		return {
 			activeItem: null
-		}
-	},
-
-	computed: {
-		footerHeight() {
-			return document.getElementById('room-footer').clientHeight
 		}
 	},
 

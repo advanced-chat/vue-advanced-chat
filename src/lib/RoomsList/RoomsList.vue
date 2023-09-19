@@ -165,11 +165,11 @@ export default {
 				this.observer.disconnect()
 			}
 
-			const loader = document.getElementById('infinite-loader-rooms')
+			const loader = this.$el.querySelector('#infinite-loader-rooms')
 
 			if (loader) {
 				const options = {
-					root: document.getElementById('rooms-list'),
+					root: this.$el.querySelector('#rooms-list'),
 					rootMargin: `${this.scrollDistance}px`,
 					threshold: 0
 				}

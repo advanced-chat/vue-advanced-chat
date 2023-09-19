@@ -332,11 +332,11 @@ export default {
 				this.observer.disconnect()
 			}
 
-			const loader = document.getElementById('infinite-loader-messages')
+			const loader = this.$el.querySelector('#infinite-loader-messages')
 
 			if (loader) {
 				const options = {
-					root: document.getElementById('messages-list'),
+					root: this.$el.querySelector('#messages-list'),
 					rootMargin: `${this.scrollDistance}px`,
 					threshold: 0
 				}

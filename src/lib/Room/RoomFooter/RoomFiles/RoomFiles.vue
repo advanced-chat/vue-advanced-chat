@@ -3,7 +3,6 @@
 		<div
 			v-if="files.length"
 			class="vac-room-files-container"
-			:style="{ bottom: `${footerHeight}px` }"
 		>
 			<div class="vac-files-box">
 				<div v-for="(file, i) in files" :key="i">
@@ -42,12 +41,6 @@ export default {
 		files: { type: Array, required: true }
 	},
 
-	emits: ['remove-file', 'reset-message'],
-
-	computed: {
-		footerHeight() {
-			return document.getElementById('room-footer').clientHeight
-		}
-	}
+	emits: ['remove-file', 'reset-message']
 }
 </script>
