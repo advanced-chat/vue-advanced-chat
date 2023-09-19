@@ -38,28 +38,30 @@
 		</div>
 
 		<div v-if="!loadingRooms" id="rooms-list" class="vac-room-list">
-			<div
-				v-for="fRoom in filteredRooms"
-				:id="fRoom.roomId"
-				:key="fRoom.roomId"
-				class="vac-room-item"
-				:class="{ 'vac-room-selected': selectedRoomId === fRoom.roomId }"
-				@click="openRoom(fRoom)"
-			>
-				<room-content
-					:current-user-id="currentUserId"
-					:room="fRoom"
-					:text-formatting="textFormatting"
-					:link-options="linkOptions"
-					:text-messages="textMessages"
-					:room-actions="roomActions"
-					@room-action-handler="$emit('room-action-handler', $event)"
+			<transition-group name="rooms">
+				<div
+					v-for="fRoom in filteredRooms"
+					:id="fRoom.roomId"
+					:key="fRoom.roomId"
+					class="vac-room-item"
+					:class="{ 'vac-room-selected': selectedRoomId === fRoom.roomId }"
+					@click="openRoom(fRoom)"
 				>
-					<template v-for="(idx, name) in $slots" #[name]="data">
-						<slot :name="name" v-bind="data" />
-					</template>
-				</room-content>
-			</div>
+					<room-content
+						:current-user-id="currentUserId"
+						:room="fRoom"
+						:text-formatting="textFormatting"
+						:link-options="linkOptions"
+						:text-messages="textMessages"
+						:room-actions="roomActions"
+						@room-action-handler="$emit('room-action-handler', $event)"
+					>
+						<template v-for="(idx, name) in $slots" #[name]="data">
+							<slot :name="name" v-bind="data" />
+						</template>
+					</room-content>
+				</div>
+			</transition-group>
 			<transition name="vac-fade-message">
 				<div v-if="rooms.length && !loadingRooms" id="infinite-loader-rooms">
 					<loader :show="showLoader" :infinite="true" type="infinite-rooms">

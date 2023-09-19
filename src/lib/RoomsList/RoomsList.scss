@@ -69,4 +69,23 @@
 			padding: 0 8px;
 		}
 	}
+
+	.rooms-move,
+	.rooms-enter-active,
+	.rooms-leave-active {
+		transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+	}
+
+	.rooms-enter-from {
+		opacity: 0;
+		transform: translateY(2rem);
+	}
+
+	.rooms-leave-to {
+		opacity: 0;
+	}
+
+	.rooms-leave-active {
+		position: absolute;
+	}
 }
