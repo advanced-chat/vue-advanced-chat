@@ -17,7 +17,7 @@
 		overflow: scroll;
 		box-sizing: border-box;
 		border-radius: 0.5rem;
-		background: var(--chat-emoji-bg-color);
+		background: #283046;
 		box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.1),
 			0 1px 2px -1px rgba(0, 0, 0, 0.1), 0 1px 2px 1px rgba(0, 0, 0, 0.1);
 		scrollbar-width: none;
@@ -31,15 +31,15 @@
 			top: initial;
 			right: initial;
 		}
-
+	
 		emoji-picker {
 			height: 100%;
 			width: 100%;
 			--emoji-size: 1.2rem;
-			--background: var(--chat-emoji-bg-color);
+			--background: #283046;
 			--emoji-padding: 0.4rem;
 			--border-color: var(--chat-sidemenu-border-color-search);
-			--button-hover-background: var(--chat-sidemenu-bg-color-hover);
+			--button-hover-background: #161d31;
 			--button-active-background: var(--chat-sidemenu-bg-color-hover);
 		}
 	}
