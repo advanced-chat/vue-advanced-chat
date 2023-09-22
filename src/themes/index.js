@@ -59,6 +59,7 @@ export const defaultThemeStyles = {
 			colorStarted: '#9ca6af',
 			backgroundDeleted: '#dadfe2',
 			backgroundSelected: '#c2dcf2',
+      backgroundSelectedHover: 'rgba(202,215,250,0.49)',
 			colorDeleted: '#757e85',
 			colorUsername: '#9ca6af',
 			colorTimestamp: '#828c94',
@@ -89,7 +90,8 @@ export const defaultThemeStyles = {
 			backgroundAudioLine: 'rgba(0, 0, 0, 0.15)',
 			backgroundAudioProgress: '#455247',
 			backgroundAudioProgressSelector: '#455247',
-			colorFileExtension: '#757e85'
+			colorFileExtension: '#757e85',
+      forwarded: '#8696a0'
 		},
 
 		markdown: {
@@ -203,7 +205,8 @@ export const defaultThemeStyles = {
 			color: '#fff',
 			colorStarted: '#9ca6af',
 			backgroundDeleted: '#1b1c21',
-			backgroundSelected: '#c2dcf2',
+			backgroundSelected: '#29365f',
+      backgroundSelectedHover: 'rgba(32,42,72,0.62)',
 			colorDeleted: '#a2a5a8',
 			colorUsername: '#b3bac9',
 			colorTimestamp: '#ebedf2',
@@ -234,7 +237,8 @@ export const defaultThemeStyles = {
 			backgroundAudioLine: 'rgba(255, 255, 255, 0.15)',
 			backgroundAudioProgress: '#b7d4d3',
 			backgroundAudioProgressSelector: '#b7d4d3',
-			colorFileExtension: '#a2a5a8'
+			colorFileExtension: '#a2a5a8',
+      forwarded: 'rgba(255, 255, 255, 0.6)'
 		},
 
 		markdown: {
@@ -356,8 +360,10 @@ export const cssThemeVars = ({
 		'--chat-message-color-started': message.colorStarted,
 		'--chat-message-bg-color-deleted': message.backgroundDeleted,
 		'--chat-message-bg-color-selected': message.backgroundSelected,
+		'--chat-message-bg-color-selected-hover': message.backgroundSelectedHover,
 		'--chat-message-color-deleted': message.colorDeleted,
 		'--chat-message-color-username': message.colorUsername,
+		'--chat-message-color-forwarded': message.forwarded,
 		'--chat-message-color-timestamp': message.colorTimestamp,
 		'--chat-message-bg-color-date': message.backgroundDate,
 		'--chat-message-color-date': message.colorDate,

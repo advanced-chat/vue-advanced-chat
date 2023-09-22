@@ -7,11 +7,11 @@ const addLinkOptions = (html, { linkOptions }) => {
 	return html.replaceAll('href', (match) => {
 		return `target=${linkOptions.target} rel=${linkOptions.rel} ${match}`
 	})
-};
+}
 
 const removeLinks = (html) => {
-	return html.replaceAll(/<a.*?>(.*?)<\/a>/g, '$1');
-};
+	return html.replaceAll(/<a.*?>(.*?)<\/a>/g, '$1')
+}
 
 export default (text, { textFormatting }) => {
 	if (textFormatting) {

@@ -4,26 +4,43 @@
 			<div class="vac-room-wrapper">
 				<transition name="vac-slide-up">
 					<div v-if="messageSelectionEnabled" class="vac-room-selection">
+            <div
+              class="vac-selection-cancel"
+              @click="$emit('cancel-message-selection')"
+            >
+              <span class="x-icon vac-item-clickable">
+                <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class="" fill="currentColor" enable-background="new 0 0 24 24" xml:space="preserve">
+                  <path d="M19.6004 17.2L14.3004 11.9L19.6004 6.60005L17.8004 4.80005L12.5004 10.2L7.20039 4.90005L5.40039 6.60005L10.7004 11.9L5.40039 17.2L7.20039 19L12.5004 13.7L17.8004 19L19.6004 17.2Z" />
+                </svg>
+              </span>
+
+              <div class="vac-selection-count-container">
+               <span class="vac-selection-button-count">
+									{{ selectedMessagesTotal }}
+               </span>
+                {{ textMessages.COUNT_SELECT_MESSAGE }}
+              </div>
+          </div>
 						<div
 							v-for="action in messageSelectionActions"
 							:id="action.name"
 							:key="action.name"
 						>
+              <div v-if="action.name === 'forwardMessages'" class="vac-item-clickable forward-messages" :title="action.title" @click="messageSelectionActionHandler(action)">
+                  <span>
+                    <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class="" version="1.1" x="0px" y="0px" enable-background="new 0 0 24 24" xml:space="preserve">
+                      <path fill="currentColor" d="M14.278,4.813c0-0.723,0.873-1.085,1.383-0.574l6.045,6.051 c0.317,0.317,0.317,0.829,0,1.146l-6.045,6.051c-0.51,0.51-1.383,0.149-1.383-0.574v-2.732c-5.096,0-8.829,1.455-11.604,4.611 c-0.246,0.279-0.702,0.042-0.602-0.316C3.502,13.303,6.997,8.472,14.278,7.431V4.813z" />
+                    </svg>
+                  </span>
+              </div>
+
 							<div
+                v-else
 								class="vac-selection-button"
 								@click="messageSelectionActionHandler(action)"
 							>
 								{{ action.title }}
-								<span class="vac-selection-button-count">
-									{{ selectedMessagesTotal }}
-								</span>
-							</div>
-						</div>
-						<div
-							class="vac-selection-cancel vac-item-clickable"
-							@click="$emit('cancel-message-selection')"
-						>
-							{{ textMessages.CANCEL_SELECT_MESSAGE }}
+              </div>
 						</div>
 					</div>
 				</transition>
