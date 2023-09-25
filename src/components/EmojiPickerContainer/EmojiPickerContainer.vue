@@ -106,28 +106,28 @@ export default {
 				height: 32px;
 				font-size: 14px;
 				border-radius: 10rem;
-				border: var(--chat-border-style);
+				border: var(--chat-emoji-search-color);
 				padding: 5px 10px;
 				outline: none;
-				background: #161d31;
+				background: var(--chat-emoji-search-color);
 				color: var(--chat-color);
 			}`
 
-			const emojiMenu = `#tab-0::-webkit-scrollbar {
+			const emojiMenu = `.tabpanel::-webkit-scrollbar {
         		width: 10px;
 			}
 
-			#tab-0::-webkit-scrollbar-track {
+			.tabpanel::-webkit-scrollbar-track {
 				border-radius: 10px;
 			}
 
-			#tab-0::-webkit-scrollbar-thumb {
-				background: #161d31;
+			.tabpanel::-webkit-scrollbar-thumb {
+				background: var(--chat-emoji-scroll-color);
 				border-radius: 10px;
 			}
 
-			#tab-0::-webkit-scrollbar-thumb:hover {
-				background: #7367f0;
+			.tabpanel::-webkit-scrollbar-thumb:hover {
+				background: var(--chat-emoji-scroll-color-hover);
 			}`
 
 			const style = document.createElement('style')

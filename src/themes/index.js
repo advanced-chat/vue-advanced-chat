@@ -112,7 +112,10 @@ export const defaultThemeStyles = {
 		},
 
 		emoji: {
-			background: '#fff'
+			background: '#fff',
+      search: '#e8e8e8',
+      scroll: '#e8e8e8',
+      scroll_hover: '#d7d7d7'
 		},
 
 		icons: {
@@ -259,7 +262,10 @@ export const defaultThemeStyles = {
 		},
 
 		emoji: {
-			background: '#343740'
+			background: '#343740',
+      search: '#161d31',
+      scroll: '#161d31',
+      scroll_hover: '#7367f0'
 		},
 
 		icons: {
@@ -416,6 +422,9 @@ export const cssThemeVars = ({
 
 		// emoji
 		'--chat-emoji-bg-color': emoji.background,
+		'--chat-emoji-search-color': emoji.search,
+		'--chat-emoji-scroll-color': emoji.scroll,
+		'--chat-emoji-scroll-color-hover': emoji.scroll_hover,
 
 		// icons
 		'--chat-icon-color-search': icons.search,
