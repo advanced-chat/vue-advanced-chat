@@ -80,18 +80,19 @@
 			transition: all 0.2s;
 
 			.x-icon {
-				color: var(----chat-message-color-forwarded);
+				color: var(--chat-message-color-forwarded);
 			}
 
 			.vac-selection-count-container{
 				margin-left:14px;
 				font-size: 14.5px;
-				color: var(----chat-message-color-forwarded);;
+				color: var(--chat-message-color-forwarded);;
 				user-select: none;
+				margin-top: 2px;
 			}
 		}
 		.forward-messages{
-			color: var(----chat-message-color-forwarded);;
+			color: var(--chat-message-color-forwarded);;
 		}
 	}
 
