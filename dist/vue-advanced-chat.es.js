@@ -33226,7 +33226,9 @@ const _sfc_main$5 = {
       return this.showReactionEmojis && this.messageHover && !this.message.deleted && !this.message.disableReactions && !this.hoverAudioProgress;
     },
     filteredMessageActions() {
-      return this.message.senderId === this.currentUserId ? this.messageActions : this.messageActions.filter((message) => !message.onlyMe);
+      const actionsFilteredByUser = this.message.senderId === this.currentUserId ? this.messageActions : this.messageActions.filter((message) => !message.onlyMe);
+      const messageType = this.getMessageType();
+      return actionsFilteredByUser.filter((action) => !(action == null ? void 0 : action.type) || action.type === messageType);
     }
   },
   watch: {
@@ -33286,6 +33288,13 @@ const _sfc_main$5 = {
     sendMessageReaction(emoji, reaction) {
       this.$emit("send-message-reaction", { emoji, reaction });
       this.closeEmoji();
+    },
+    getMessageType() {
+      var _a;
+      if (((_a = this.message.files) == null ? void 0 : _a.length) === 0) {
+        return null;
+      }
+      return "file";
     }
   }
 };

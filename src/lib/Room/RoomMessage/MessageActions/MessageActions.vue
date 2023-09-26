@@ -149,9 +149,13 @@ export default {
 			)
 		},
 		filteredMessageActions() {
-			return this.message.senderId === this.currentUserId
+			const actionsFilteredByUser = this.message.senderId === this.currentUserId
 				? this.messageActions
 				: this.messageActions.filter(message => !message.onlyMe)
+
+      const messageType = this.getMessageType()
+
+      return actionsFilteredByUser.filter(action => !action?.type || action.type === messageType)
 		}
 	},
 
@@ -221,7 +225,14 @@ export default {
 		sendMessageReaction(emoji, reaction) {
 			this.$emit('send-message-reaction', { emoji, reaction })
 			this.closeEmoji()
-		}
+		},
+    getMessageType() {
+      if (this.message.files?.length === 0) {
+        return null
+      }
+
+      return 'file'
+    }
 	}
 }
 </script>
