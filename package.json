@@ -4,8 +4,8 @@
 	"license": "MIT",
 	"description": "A beautiful chat rooms component made with Vue.js - compatible with Vue, React & Angular",
 	"author": {
-		"email": "antoindupontdev@gmail.com",
-		"name": "Antoine Dupont"
+		"email": "alexlqi@gmail.com",
+		"name": "Alejandro Andrade"
 	},
 	"types": "./types/vue-advanced-chat.common.d.ts",
 	"keywords": [
@@ -20,12 +20,12 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/antoine92190/vue-advanced-chat.git"
+		"url": "git+https://github.com/alexlqi/vue-advanced-chat.git"
 	},
 	"bugs": {
-		"url": "https://github.com/antoine92190/vue-advanced-chat/issues"
+		"url": "https://github.com/alexlqi/vue-advanced-chat/issues"
 	},
-	"homepage": "https://github.com/antoine92190/vue-advanced-chat#readme",
+	"homepage": "https://github.com/alexlqi/vue-advanced-chat#readme",
 	"main": "./dist/vue-advanced-chat.umd.js",
 	"module": "./dist/vue-advanced-chat.es.js",
 	"unpkg": "./dist/vue-advanced-chat.umd.js",
