@@ -461,10 +461,10 @@ export default {
 			return val === 'true' || val === true
 		},
 		castArray(val) {
-			return !val ? [] : Array.isArray(val) ? val : JSON.parse(val)
+			return !val ? [] : Array.isArray(val) ? val : typeof val === 'object' ? [val] : JSON.parse(val);
 		},
 		castObject(val) {
-			return !val ? {} : typeof val === 'object' ? val : JSON.parse(val)
+			return typeof val === 'object' ? val : (!val ? {} : JSON.parse(val));
 		},
 		updateResponsive() {
 			this.isMobile = window.innerWidth < Number(this.responsiveBreakpoint)
