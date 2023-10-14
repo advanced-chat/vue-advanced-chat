@@ -35,7 +35,7 @@
 - Firestore example
 - Typescript, PWA, Web Component support
 
-## [Demo](https://antoine92190.github.io/vue-advanced-chat)
+## [Demo](https://advanced-chat.github.io/vue-advanced-chat)
 
 Enjoy :smile:
 
