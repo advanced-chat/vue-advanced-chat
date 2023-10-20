@@ -1,71 +1,79 @@
 {
-	"name": "vue-advanced-chat",
-	"version": "2.0.7",
-	"license": "MIT",
-	"description": "A beautiful chat rooms component made with Vue.js - compatible with Vue, React & Angular",
-	"author": {
-		"email": "antoindupontdev@gmail.com",
-		"name": "Antoine Dupont"
-	},
-	"types": "./types/vue-advanced-chat.common.d.ts",
-	"keywords": [
-		"vue",
-		"vuejs",
-		"chat",
-		"vue-js-chat",
-		"multiple",
-		"group",
-		"rooms",
-		"realtime"
-	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/antoine92190/vue-advanced-chat.git"
-	},
-	"bugs": {
-		"url": "https://github.com/antoine92190/vue-advanced-chat/issues"
-	},
-	"homepage": "https://github.com/antoine92190/vue-advanced-chat#readme",
-	"main": "./dist/vue-advanced-chat.umd.js",
-	"module": "./dist/vue-advanced-chat.es.js",
-	"unpkg": "./dist/vue-advanced-chat.umd.js",
-	"jsdelivr": "./dist/vue-advanced-chat.umd.js",
-	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"serve": "vite preview",
-		"clean:lib": "rm -rf dist/*.js && rm -rf dist/*.map && rm -rf dist/*.css && rm -rf dist/*.html",
-		"prepublish": "npm run lint && npm run build",
-		"lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
-		"reset": "rm -rf node_modules && rm -rf package-lock.json && npm i",
-		"reset-all": "cd demo && npm run reset-all",
-		"pull-master": "git pull origin master --no-edit --no-ff"
-	},
-	"typings": "types/index.d.ts",
-	"files": [
-		"dist/*",
-		"types/*"
-	],
-	"devDependencies": {
-		"@babel/core": "7.12.16",
-		"@typescript-eslint/eslint-plugin": "5.4.0",
-		"@typescript-eslint/parser": "5.4.0",
-		"@vitejs/plugin-vue": "1.10.2",
-		"@vue/compiler-sfc": "3.2.22",
-		"@vue/eslint-config-standard": "4.0.0",
-		"@vue/eslint-config-typescript": "9.1.0",
-		"babel-eslint": "10.0.3",
-		"eslint": "7.32.0",
-		"eslint-plugin-vue": "8.0.3",
-		"node-sass": "8.0.0",
-		"sass": "1.56.1",
-		"typescript": "4.6.x",
-		"vite": "2.9.14",
-		"vue": "3.2.37",
-		"vue-loader": "^16.8.3"
-	},
-	"dependencies": {
-		"emoji-picker-element": "1.12.1",
-		"linkifyjs": "2.1.9"
-	}
+    "name": "vue-advanced-chat",
+    "version": "2.0.4",
+    "license": "MIT",
+    "description": "A beautiful chat rooms component made with Vue.js - compatible with Vue, React & Angular",
+    "author": {
+        "email": "antoindupontdev@gmail.com",
+        "name": "Antoine Dupont"
+    },
+    "types": "./types/vue-advanced-chat.common.d.ts",
+    "keywords": [
+        "vue",
+        "vuejs",
+        "chat",
+        "vue-js-chat",
+        "multiple",
+        "group",
+        "rooms",
+        "realtime"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/antoine92190/vue-advanced-chat.git"
+    },
+    "bugs": {
+        "url": "https://github.com/antoine92190/vue-advanced-chat/issues"
+    },
+    "homepage": "https://github.com/antoine92190/vue-advanced-chat#readme",
+    "main": "./dist/vue-advanced-chat.umd.js",
+    "module": "./dist/vue-advanced-chat.es.js",
+    "unpkg": "./dist/vue-advanced-chat.umd.js",
+    "jsdelivr": "./dist/vue-advanced-chat.umd.js",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "serve": "vite preview",
+        "clean:lib": "rm -rf dist/*.js && rm -rf dist/*.map && rm -rf dist/*.css && rm -rf dist/*.html",
+        "prepublish": "npm run lint && npm run build",
+        "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
+        "reset": "rm -rf node_modules && rm -rf package-lock.json && npm i",
+        "reset-all": "cd demo && npm run reset-all",
+        "pull-master": "git pull origin master --no-edit --no-ff"
+    },
+    "typings": "types/index.d.ts",
+    "files": [
+        "dist/*",
+        "types/*"
+    ],
+    "devDependencies": {
+        "@babel/core": "7.12.16",
+        "@iconify-icons/material-symbols": "^1.2.25",
+        "@iconify/vue": "^4.1.0",
+        "@types/wavesurfer.js": "^6.0.3",
+        "@typescript-eslint/eslint-plugin": "5.4.0",
+        "@typescript-eslint/parser": "5.4.0",
+        "@vitejs/plugin-vue": "1.10.2",
+        "@vue/compiler-sfc": "3.2.22",
+        "@vue/eslint-config-standard": "4.0.0",
+        "@vue/eslint-config-typescript": "9.1.0",
+        "babel-eslint": "10.0.3",
+        "eslint": "7.32.0",
+        "eslint-plugin-vue": "8.0.3",
+        "iconify": "^1.4.0",
+        "mitt": "^3.0.0",
+        "node-sass": "8.0.0",
+        "sass": "1.53.0",
+        "typescript": "4.6.x",
+        "vite": "2.9.15",
+        "vue": "3.2.37",
+        "vue-loader": "^16.8.3",
+        "wavesurfer.js": "^6.3.0"
+    },
+    "dependencies": {
+        "@capacitor/core": "^4.4.0",
+        "capacitor-voice-recorder": "^4.0.0",
+        "emoji-picker-element": "1.12.1",
+        "linkifyjs": "2.1.9"
+    }
 }

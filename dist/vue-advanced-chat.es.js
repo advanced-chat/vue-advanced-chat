@@ -1,4 +1,4 @@
-function makeMap$2(str, expectsLowerCase) {
+function makeMap(str, expectsLowerCase) {
   const map = /* @__PURE__ */ Object.create(null);
   const list = str.split(",");
   for (let i = 0; i < list.length; i++) {
@@ -6,30 +6,168 @@ function makeMap$2(str, expectsLowerCase) {
   }
   return expectsLowerCase ? (val) => !!map[val.toLowerCase()] : (val) => !!map[val];
 }
-const NOOP$1 = () => {
+const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
+const isSpecialBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs);
+function includeBooleanAttr(value) {
+  return !!value || value === "";
+}
+function normalizeStyle(value) {
+  if (isArray(value)) {
+    const res = {};
+    for (let i = 0; i < value.length; i++) {
+      const item = value[i];
+      const normalized = isString(item) ? parseStringStyle(item) : normalizeStyle(item);
+      if (normalized) {
+        for (const key in normalized) {
+          res[key] = normalized[key];
+        }
+      }
+    }
+    return res;
+  } else if (isString(value)) {
+    return value;
+  } else if (isObject(value)) {
+    return value;
+  }
+}
+const listDelimiterRE = /;(?![^(]*\))/g;
+const propertyDelimiterRE = /:(.+)/;
+function parseStringStyle(cssText) {
+  const ret = {};
+  cssText.split(listDelimiterRE).forEach((item) => {
+    if (item) {
+      const tmp = item.split(propertyDelimiterRE);
+      tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
+    }
+  });
+  return ret;
+}
+function normalizeClass(value) {
+  let res = "";
+  if (isString(value)) {
+    res = value;
+  } else if (isArray(value)) {
+    for (let i = 0; i < value.length; i++) {
+      const normalized = normalizeClass(value[i]);
+      if (normalized) {
+        res += normalized + " ";
+      }
+    }
+  } else if (isObject(value)) {
+    for (const name in value) {
+      if (value[name]) {
+        res += name + " ";
+      }
+    }
+  }
+  return res.trim();
+}
+function normalizeProps(props) {
+  if (!props)
+    return null;
+  let { class: klass, style } = props;
+  if (klass && !isString(klass)) {
+    props.class = normalizeClass(klass);
+  }
+  if (style) {
+    props.style = normalizeStyle(style);
+  }
+  return props;
+}
+const toDisplayString = (val) => {
+  return isString(val) ? val : val == null ? "" : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
 };
-const extend$2 = Object.assign;
-const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
-const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
-const isArray$2 = Array.isArray;
-const isMap$1 = (val) => toTypeString$1(val) === "[object Map]";
-const isFunction$2 = (val) => typeof val === "function";
-const isString$2 = (val) => typeof val === "string";
+const replacer = (_key, val) => {
+  if (val && val.__v_isRef) {
+    return replacer(_key, val.value);
+  } else if (isMap(val)) {
+    return {
+      [`Map(${val.size})`]: [...val.entries()].reduce((entries, [key, val2]) => {
+        entries[`${key} =>`] = val2;
+        return entries;
+      }, {})
+    };
+  } else if (isSet(val)) {
+    return {
+      [`Set(${val.size})`]: [...val.values()]
+    };
+  } else if (isObject(val) && !isArray(val) && !isPlainObject(val)) {
+    return String(val);
+  }
+  return val;
+};
+const EMPTY_OBJ = {};
+const EMPTY_ARR = [];
+const NOOP = () => {
+};
+const NO = () => false;
+const onRE = /^on[^a-z]/;
+const isOn = (key) => onRE.test(key);
+const isModelListener = (key) => key.startsWith("onUpdate:");
+const extend = Object.assign;
+const remove = (arr, el) => {
+  const i = arr.indexOf(el);
+  if (i > -1) {
+    arr.splice(i, 1);
+  }
+};
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+const hasOwn = (val, key) => hasOwnProperty.call(val, key);
+const isArray = Array.isArray;
+const isMap = (val) => toTypeString(val) === "[object Map]";
+const isSet = (val) => toTypeString(val) === "[object Set]";
+const isFunction = (val) => typeof val === "function";
+const isString = (val) => typeof val === "string";
 const isSymbol = (val) => typeof val === "symbol";
-const isObject$2 = (val) => val !== null && typeof val === "object";
-const objectToString$1 = Object.prototype.toString;
-const toTypeString$1 = (value) => objectToString$1.call(value);
-const toRawType = (value) => {
-  return toTypeString$1(value).slice(8, -1);
+const isObject = (val) => val !== null && typeof val === "object";
+const isPromise = (val) => {
+  return isObject(val) && isFunction(val.then) && isFunction(val.catch);
 };
-const isIntegerKey = (key) => isString$2(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
-const hasChanged$1 = (value, oldValue) => !Object.is(value, oldValue);
-const def$1 = (obj, key, value) => {
+const objectToString = Object.prototype.toString;
+const toTypeString = (value) => objectToString.call(value);
+const toRawType = (value) => {
+  return toTypeString(value).slice(8, -1);
+};
+const isPlainObject = (val) => toTypeString(val) === "[object Object]";
+const isIntegerKey = (key) => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
+const isReservedProp = /* @__PURE__ */ makeMap(
+  ",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
+);
+const cacheStringFunction = (fn) => {
+  const cache = /* @__PURE__ */ Object.create(null);
+  return (str) => {
+    const hit = cache[str];
+    return hit || (cache[str] = fn(str));
+  };
+};
+const camelizeRE = /-(\w)/g;
+const camelize = cacheStringFunction((str) => {
+  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
+});
+const hyphenateRE = /\B([A-Z])/g;
+const hyphenate = cacheStringFunction((str) => str.replace(hyphenateRE, "-$1").toLowerCase());
+const capitalize = cacheStringFunction((str) => str.charAt(0).toUpperCase() + str.slice(1));
+const toHandlerKey = cacheStringFunction((str) => str ? `on${capitalize(str)}` : ``);
+const hasChanged = (value, oldValue) => !Object.is(value, oldValue);
+const invokeArrayFns = (fns, arg) => {
+  for (let i = 0; i < fns.length; i++) {
+    fns[i](arg);
+  }
+};
+const def = (obj, key, value) => {
   Object.defineProperty(obj, key, {
     configurable: true,
     enumerable: false,
     value
   });
+};
+const toNumber = (val) => {
+  const n = parseFloat(val);
+  return isNaN(n) ? val : n;
+};
+let _globalThis;
+const getGlobalThis = () => {
+  return _globalThis || (_globalThis = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {});
 };
 let activeEffectScope;
 class EffectScope {
@@ -240,7 +378,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
   let deps = [];
   if (type === "clear") {
     deps = [...depsMap.values()];
-  } else if (key === "length" && isArray$2(target)) {
+  } else if (key === "length" && isArray(target)) {
     depsMap.forEach((dep, key2) => {
       if (key2 === "length" || key2 >= newValue) {
         deps.push(dep);
@@ -252,9 +390,9 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
     }
     switch (type) {
       case "add":
-        if (!isArray$2(target)) {
+        if (!isArray(target)) {
           deps.push(depsMap.get(ITERATE_KEY));
-          if (isMap$1(target)) {
+          if (isMap(target)) {
             deps.push(depsMap.get(MAP_KEY_ITERATE_KEY));
           }
         } else if (isIntegerKey(key)) {
@@ -262,15 +400,15 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
         }
         break;
       case "delete":
-        if (!isArray$2(target)) {
+        if (!isArray(target)) {
           deps.push(depsMap.get(ITERATE_KEY));
-          if (isMap$1(target)) {
+          if (isMap(target)) {
             deps.push(depsMap.get(MAP_KEY_ITERATE_KEY));
           }
         }
         break;
       case "set":
-        if (isMap$1(target)) {
+        if (isMap(target)) {
           deps.push(depsMap.get(ITERATE_KEY));
         }
         break;
@@ -295,7 +433,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
   }
 }
 function triggerEffects(dep, debuggerEventExtraInfo) {
-  const effects = isArray$2(dep) ? dep : [...dep];
+  const effects = isArray(dep) ? dep : [...dep];
   for (const effect of effects) {
     if (effect.computed) {
       triggerEffect(effect);
@@ -316,7 +454,7 @@ function triggerEffect(effect, debuggerEventExtraInfo) {
     }
   }
 }
-const isNonTrackableKeys = /* @__PURE__ */ makeMap$2(`__proto__,__v_isRef,__isVue`);
+const isNonTrackableKeys = /* @__PURE__ */ makeMap(`__proto__,__v_isRef,__isVue`);
 const builtInSymbols = new Set(
   /* @__PURE__ */ Object.getOwnPropertyNames(Symbol).filter((key) => key !== "arguments" && key !== "caller").map((key) => Symbol[key]).filter(isSymbol)
 );
@@ -361,8 +499,8 @@ function createGetter(isReadonly2 = false, shallow = false) {
     } else if (key === "__v_raw" && receiver === (isReadonly2 ? shallow ? shallowReadonlyMap : readonlyMap : shallow ? shallowReactiveMap : reactiveMap).get(target)) {
       return target;
     }
-    const targetIsArray = isArray$2(target);
-    if (!isReadonly2 && targetIsArray && hasOwn$1(arrayInstrumentations, key)) {
+    const targetIsArray = isArray(target);
+    if (!isReadonly2 && targetIsArray && hasOwn(arrayInstrumentations, key)) {
       return Reflect.get(arrayInstrumentations, key, receiver);
     }
     const res = Reflect.get(target, key, receiver);
@@ -378,7 +516,7 @@ function createGetter(isReadonly2 = false, shallow = false) {
     if (isRef(res)) {
       return targetIsArray && isIntegerKey(key) ? res : res.value;
     }
-    if (isObject$2(res)) {
+    if (isObject(res)) {
       return isReadonly2 ? readonly(res) : reactive(res);
     }
     return res;
@@ -397,17 +535,17 @@ function createSetter(shallow = false) {
         value = toRaw(value);
         oldValue = toRaw(oldValue);
       }
-      if (!isArray$2(target) && isRef(oldValue) && !isRef(value)) {
+      if (!isArray(target) && isRef(oldValue) && !isRef(value)) {
         oldValue.value = value;
         return true;
       }
     }
-    const hadKey = isArray$2(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn$1(target, key);
+    const hadKey = isArray(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn(target, key);
     const result = Reflect.set(target, key, value, receiver);
     if (target === toRaw(receiver)) {
       if (!hadKey) {
         trigger(target, "add", key, value);
-      } else if (hasChanged$1(value, oldValue)) {
+      } else if (hasChanged(value, oldValue)) {
         trigger(target, "set", key, value);
       }
     }
@@ -415,7 +553,7 @@ function createSetter(shallow = false) {
   };
 }
 function deleteProperty(target, key) {
-  const hadKey = hasOwn$1(target, key);
+  const hadKey = hasOwn(target, key);
   target[key];
   const result = Reflect.deleteProperty(target, key);
   if (result && hadKey) {
@@ -431,7 +569,7 @@ function has(target, key) {
   return result;
 }
 function ownKeys(target) {
-  track(target, "iterate", isArray$2(target) ? "length" : ITERATE_KEY);
+  track(target, "iterate", isArray(target) ? "length" : ITERATE_KEY);
   return Reflect.ownKeys(target);
 }
 const mutableHandlers = {
@@ -450,7 +588,7 @@ const readonlyHandlers = {
     return true;
   }
 };
-const shallowReactiveHandlers = /* @__PURE__ */ extend$2({}, mutableHandlers, {
+const shallowReactiveHandlers = /* @__PURE__ */ extend({}, mutableHandlers, {
   get: shallowGet,
   set: shallowSet
 });
@@ -517,7 +655,7 @@ function set$1$1(key, value) {
   target.set(key, value);
   if (!hadKey) {
     trigger(target, "add", key, value);
-  } else if (hasChanged$1(value, oldValue)) {
+  } else if (hasChanged(value, oldValue)) {
     trigger(target, "set", key, value);
   }
   return this;
@@ -562,7 +700,7 @@ function createIterableMethod(method, isReadonly2, isShallow2) {
   return function(...args) {
     const target = this["__v_raw"];
     const rawTarget = toRaw(target);
-    const targetIsMap = isMap$1(rawTarget);
+    const targetIsMap = isMap(rawTarget);
     const isPair = method === "entries" || method === Symbol.iterator && targetIsMap;
     const isKeyOnly = method === "keys" && targetIsMap;
     const innerIterator = target[method](...args);
@@ -673,7 +811,7 @@ function createInstrumentationGetter(isReadonly2, shallow) {
     } else if (key === "__v_raw") {
       return target;
     }
-    return Reflect.get(hasOwn$1(instrumentations, key) && key in target ? instrumentations : target, key, receiver);
+    return Reflect.get(hasOwn(instrumentations, key) && key in target ? instrumentations : target, key, receiver);
   };
 }
 const mutableCollectionHandlers = {
@@ -719,7 +857,7 @@ function readonly(target) {
   return createReactiveObject(target, true, readonlyHandlers, readonlyCollectionHandlers, readonlyMap);
 }
 function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandlers, proxyMap) {
-  if (!isObject$2(target)) {
+  if (!isObject(target)) {
     return target;
   }
   if (target["__v_raw"] && !(isReadonly2 && target["__v_isReactive"])) {
@@ -757,32 +895,62 @@ function toRaw(observed) {
   return raw ? toRaw(raw) : observed;
 }
 function markRaw(value) {
-  def$1(value, "__v_skip", true);
+  def(value, "__v_skip", true);
   return value;
 }
-const toReactive = (value) => isObject$2(value) ? reactive(value) : value;
-const toReadonly = (value) => isObject$2(value) ? readonly(value) : value;
-function trackRefValue(ref) {
+const toReactive = (value) => isObject(value) ? reactive(value) : value;
+const toReadonly = (value) => isObject(value) ? readonly(value) : value;
+function trackRefValue(ref2) {
   if (shouldTrack && activeEffect) {
-    ref = toRaw(ref);
+    ref2 = toRaw(ref2);
     {
-      trackEffects(ref.dep || (ref.dep = createDep()));
+      trackEffects(ref2.dep || (ref2.dep = createDep()));
     }
   }
 }
-function triggerRefValue(ref, newVal) {
-  ref = toRaw(ref);
-  if (ref.dep) {
+function triggerRefValue(ref2, newVal) {
+  ref2 = toRaw(ref2);
+  if (ref2.dep) {
     {
-      triggerEffects(ref.dep);
+      triggerEffects(ref2.dep);
     }
   }
 }
 function isRef(r) {
   return !!(r && r.__v_isRef === true);
 }
-function unref(ref) {
-  return isRef(ref) ? ref.value : ref;
+function ref(value) {
+  return createRef(value, false);
+}
+function createRef(rawValue, shallow) {
+  if (isRef(rawValue)) {
+    return rawValue;
+  }
+  return new RefImpl(rawValue, shallow);
+}
+class RefImpl {
+  constructor(value, __v_isShallow) {
+    this.__v_isShallow = __v_isShallow;
+    this.dep = void 0;
+    this.__v_isRef = true;
+    this._rawValue = __v_isShallow ? value : toRaw(value);
+    this._value = __v_isShallow ? value : toReactive(value);
+  }
+  get value() {
+    trackRefValue(this);
+    return this._value;
+  }
+  set value(newVal) {
+    newVal = this.__v_isShallow ? newVal : toRaw(newVal);
+    if (hasChanged(newVal, this._rawValue)) {
+      this._rawValue = newVal;
+      this._value = this.__v_isShallow ? newVal : toReactive(newVal);
+      triggerRefValue(this);
+    }
+  }
+}
+function unref(ref2) {
+  return isRef(ref2) ? ref2.value : ref2;
 }
 const shallowUnwrapHandlers = {
   get: (target, key, receiver) => unref(Reflect.get(target, key, receiver)),
@@ -831,10 +999,10 @@ class ComputedRefImpl {
 function computed$1(getterOrOptions, debugOptions, isSSR = false) {
   let getter;
   let setter;
-  const onlyGetter = isFunction$2(getterOrOptions);
+  const onlyGetter = isFunction(getterOrOptions);
   if (onlyGetter) {
     getter = getterOrOptions;
-    setter = NOOP$1;
+    setter = NOOP;
   } else {
     getter = getterOrOptions.get;
     setter = getterOrOptions.set;
@@ -842,167 +1010,6 @@ function computed$1(getterOrOptions, debugOptions, isSSR = false) {
   const cRef = new ComputedRefImpl(getter, setter, onlyGetter || !setter, isSSR);
   return cRef;
 }
-function makeMap$1(str, expectsLowerCase) {
-  const map = /* @__PURE__ */ Object.create(null);
-  const list = str.split(",");
-  for (let i = 0; i < list.length; i++) {
-    map[list[i]] = true;
-  }
-  return expectsLowerCase ? (val) => !!map[val.toLowerCase()] : (val) => !!map[val];
-}
-function normalizeStyle(value) {
-  if (isArray$1(value)) {
-    const res = {};
-    for (let i = 0; i < value.length; i++) {
-      const item = value[i];
-      const normalized = isString$1(item) ? parseStringStyle(item) : normalizeStyle(item);
-      if (normalized) {
-        for (const key in normalized) {
-          res[key] = normalized[key];
-        }
-      }
-    }
-    return res;
-  } else if (isString$1(value)) {
-    return value;
-  } else if (isObject$1(value)) {
-    return value;
-  }
-}
-const listDelimiterRE = /;(?![^(]*\))/g;
-const propertyDelimiterRE = /:(.+)/;
-function parseStringStyle(cssText) {
-  const ret = {};
-  cssText.split(listDelimiterRE).forEach((item) => {
-    if (item) {
-      const tmp = item.split(propertyDelimiterRE);
-      tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
-    }
-  });
-  return ret;
-}
-function normalizeClass(value) {
-  let res = "";
-  if (isString$1(value)) {
-    res = value;
-  } else if (isArray$1(value)) {
-    for (let i = 0; i < value.length; i++) {
-      const normalized = normalizeClass(value[i]);
-      if (normalized) {
-        res += normalized + " ";
-      }
-    }
-  } else if (isObject$1(value)) {
-    for (const name in value) {
-      if (value[name]) {
-        res += name + " ";
-      }
-    }
-  }
-  return res.trim();
-}
-function normalizeProps(props) {
-  if (!props)
-    return null;
-  let { class: klass, style } = props;
-  if (klass && !isString$1(klass)) {
-    props.class = normalizeClass(klass);
-  }
-  if (style) {
-    props.style = normalizeStyle(style);
-  }
-  return props;
-}
-const toDisplayString = (val) => {
-  return isString$1(val) ? val : val == null ? "" : isArray$1(val) || isObject$1(val) && (val.toString === objectToString || !isFunction$1(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
-};
-const replacer = (_key, val) => {
-  if (val && val.__v_isRef) {
-    return replacer(_key, val.value);
-  } else if (isMap(val)) {
-    return {
-      [`Map(${val.size})`]: [...val.entries()].reduce((entries, [key, val2]) => {
-        entries[`${key} =>`] = val2;
-        return entries;
-      }, {})
-    };
-  } else if (isSet(val)) {
-    return {
-      [`Set(${val.size})`]: [...val.values()]
-    };
-  } else if (isObject$1(val) && !isArray$1(val) && !isPlainObject(val)) {
-    return String(val);
-  }
-  return val;
-};
-const EMPTY_OBJ = {};
-const EMPTY_ARR = [];
-const NOOP = () => {
-};
-const NO = () => false;
-const onRE$1 = /^on[^a-z]/;
-const isOn$1 = (key) => onRE$1.test(key);
-const isModelListener$1 = (key) => key.startsWith("onUpdate:");
-const extend$1 = Object.assign;
-const remove = (arr, el) => {
-  const i = arr.indexOf(el);
-  if (i > -1) {
-    arr.splice(i, 1);
-  }
-};
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-const hasOwn = (val, key) => hasOwnProperty.call(val, key);
-const isArray$1 = Array.isArray;
-const isMap = (val) => toTypeString(val) === "[object Map]";
-const isSet = (val) => toTypeString(val) === "[object Set]";
-const isFunction$1 = (val) => typeof val === "function";
-const isString$1 = (val) => typeof val === "string";
-const isObject$1 = (val) => val !== null && typeof val === "object";
-const isPromise = (val) => {
-  return isObject$1(val) && isFunction$1(val.then) && isFunction$1(val.catch);
-};
-const objectToString = Object.prototype.toString;
-const toTypeString = (value) => objectToString.call(value);
-const isPlainObject = (val) => toTypeString(val) === "[object Object]";
-const isReservedProp = /* @__PURE__ */ makeMap$1(
-  ",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
-);
-const cacheStringFunction$1 = (fn) => {
-  const cache = /* @__PURE__ */ Object.create(null);
-  return (str) => {
-    const hit = cache[str];
-    return hit || (cache[str] = fn(str));
-  };
-};
-const camelizeRE$1 = /-(\w)/g;
-const camelize$1 = cacheStringFunction$1((str) => {
-  return str.replace(camelizeRE$1, (_, c) => c ? c.toUpperCase() : "");
-});
-const hyphenateRE$1 = /\B([A-Z])/g;
-const hyphenate$1 = cacheStringFunction$1((str) => str.replace(hyphenateRE$1, "-$1").toLowerCase());
-const capitalize$1 = cacheStringFunction$1((str) => str.charAt(0).toUpperCase() + str.slice(1));
-const toHandlerKey = cacheStringFunction$1((str) => str ? `on${capitalize$1(str)}` : ``);
-const hasChanged = (value, oldValue) => !Object.is(value, oldValue);
-const invokeArrayFns = (fns, arg) => {
-  for (let i = 0; i < fns.length; i++) {
-    fns[i](arg);
-  }
-};
-const def = (obj, key, value) => {
-  Object.defineProperty(obj, key, {
-    configurable: true,
-    enumerable: false,
-    value
-  });
-};
-const toNumber$1 = (val) => {
-  const n = parseFloat(val);
-  return isNaN(n) ? val : n;
-};
-let _globalThis;
-const getGlobalThis = () => {
-  return _globalThis || (_globalThis = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {});
-};
 function callWithErrorHandling(fn, instance2, type, args) {
   let res;
   try {
@@ -1013,7 +1020,7 @@ function callWithErrorHandling(fn, instance2, type, args) {
   return res;
 }
 function callWithAsyncErrorHandling(fn, instance2, type, args) {
-  if (isFunction$1(fn)) {
+  if (isFunction(fn)) {
     const res = callWithErrorHandling(fn, instance2, type, args);
     if (res && isPromise(res)) {
       res.catch((err) => {
@@ -1108,7 +1115,7 @@ function invalidateJob(job) {
   }
 }
 function queueCb(cb, activeQueue, pendingQueue, index) {
-  if (!isArray$1(cb)) {
+  if (!isArray(cb)) {
     if (!activeQueue || !activeQueue.includes(cb, cb.allowRecurse ? index + 1 : index)) {
       pendingQueue.push(cb);
     }
@@ -1196,13 +1203,13 @@ function emit$1(instance2, event, ...rawArgs) {
       args = rawArgs.map((a) => a.trim());
     }
     if (number) {
-      args = rawArgs.map(toNumber$1);
+      args = rawArgs.map(toNumber);
     }
   }
   let handlerName;
-  let handler = props[handlerName = toHandlerKey(event)] || props[handlerName = toHandlerKey(camelize$1(event))];
+  let handler = props[handlerName = toHandlerKey(event)] || props[handlerName = toHandlerKey(camelize(event))];
   if (!handler && isModelListener2) {
-    handler = props[handlerName = toHandlerKey(hyphenate$1(event))];
+    handler = props[handlerName = toHandlerKey(hyphenate(event))];
   }
   if (handler) {
     callWithAsyncErrorHandling(handler, instance2, 6, args);
@@ -1227,12 +1234,12 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
   const raw = comp.emits;
   let normalized = {};
   let hasExtends = false;
-  if (!isFunction$1(comp)) {
+  if (!isFunction(comp)) {
     const extendEmits = (raw2) => {
       const normalizedFromExtend = normalizeEmitsOptions(raw2, appContext, true);
       if (normalizedFromExtend) {
         hasExtends = true;
-        extend$1(normalized, normalizedFromExtend);
+        extend(normalized, normalizedFromExtend);
       }
     };
     if (!asMixin && appContext.mixins.length) {
@@ -1249,20 +1256,20 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
     cache.set(comp, null);
     return null;
   }
-  if (isArray$1(raw)) {
+  if (isArray(raw)) {
     raw.forEach((key) => normalized[key] = null);
   } else {
-    extend$1(normalized, raw);
+    extend(normalized, raw);
   }
   cache.set(comp, normalized);
   return normalized;
 }
 function isEmitListener(options2, key) {
-  if (!options2 || !isOn$1(key)) {
+  if (!options2 || !isOn(key)) {
     return false;
   }
   key = key.slice(2).replace(/Once$/, "");
-  return hasOwn(options2, key[0].toLowerCase() + key.slice(1)) || hasOwn(options2, hyphenate$1(key)) || hasOwn(options2, key);
+  return hasOwn(options2, key[0].toLowerCase() + key.slice(1)) || hasOwn(options2, hyphenate(key)) || hasOwn(options2, key);
 }
 let currentRenderingInstance = null;
 let currentScopeId = null;
@@ -1298,14 +1305,14 @@ function withCtx(fn, ctx = currentRenderingInstance, isNonScopedSlot) {
 function markAttrsAccessed() {
 }
 function renderComponentRoot(instance2) {
-  const { type: Component, vnode, proxy, withProxy, props, propsOptions: [propsOptions], slots, attrs, emit: emit2, render: render2, renderCache, data, setupState, ctx, inheritAttrs } = instance2;
+  const { type: Component, vnode, proxy, withProxy, props, propsOptions: [propsOptions], slots, attrs, emit: emit2, render: render2, renderCache, data: data2, setupState, ctx, inheritAttrs } = instance2;
   let result;
   let fallthroughAttrs;
   const prev = setCurrentRenderingInstance(instance2);
   try {
     if (vnode.shapeFlag & 4) {
       const proxyToUse = withProxy || proxy;
-      result = normalizeVNode(render2.call(proxyToUse, proxyToUse, renderCache, props, setupState, data, ctx));
+      result = normalizeVNode(render2.call(proxyToUse, proxyToUse, renderCache, props, setupState, data2, ctx));
       fallthroughAttrs = attrs;
     } else {
       const render3 = Component;
@@ -1332,7 +1339,7 @@ function renderComponentRoot(instance2) {
     const { shapeFlag } = root;
     if (keys.length) {
       if (shapeFlag & (1 | 6)) {
-        if (propsOptions && keys.some(isModelListener$1)) {
+        if (propsOptions && keys.some(isModelListener)) {
           fallthroughAttrs = filterModelListeners(fallthroughAttrs, propsOptions);
         }
         root = cloneVNode(root, fallthroughAttrs);
@@ -1355,7 +1362,7 @@ function renderComponentRoot(instance2) {
 const getFunctionalFallthrough = (attrs) => {
   let res;
   for (const key in attrs) {
-    if (key === "class" || key === "style" || isOn$1(key)) {
+    if (key === "class" || key === "style" || isOn(key)) {
       (res || (res = {}))[key] = attrs[key];
     }
   }
@@ -1364,7 +1371,7 @@ const getFunctionalFallthrough = (attrs) => {
 const filterModelListeners = (attrs, props) => {
   const res = {};
   for (const key in attrs) {
-    if (!isModelListener$1(key) || !(key.slice(9) in props)) {
+    if (!isModelListener(key) || !(key.slice(9) in props)) {
       res[key] = attrs[key];
     }
   }
@@ -1436,7 +1443,7 @@ function updateHOCHostEl({ vnode, parent }, el) {
 const isSuspense = (type) => type.__isSuspense;
 function queueEffectWithSuspense(fn, suspense) {
   if (suspense && suspense.pendingBranch) {
-    if (isArray$1(fn)) {
+    if (isArray(fn)) {
       suspense.effects.push(...fn);
     } else {
       suspense.effects.push(fn);
@@ -1464,10 +1471,13 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
     if (provides && key in provides) {
       return provides[key];
     } else if (arguments.length > 1) {
-      return treatDefaultAsFactory && isFunction$1(defaultValue) ? defaultValue.call(instance2.proxy) : defaultValue;
+      return treatDefaultAsFactory && isFunction(defaultValue) ? defaultValue.call(instance2.proxy) : defaultValue;
     } else
       ;
   }
+}
+function watchPostEffect(effect, options2) {
+  return doWatch(effect, null, { flush: "post" });
 }
 const INITIAL_WATCHER_VALUE = {};
 function watch(source, cb, options2) {
@@ -1484,7 +1494,7 @@ function doWatch(source, cb, { immediate, deep, flush: flush2, onTrack, onTrigge
   } else if (isReactive(source)) {
     getter = () => source;
     deep = true;
-  } else if (isArray$1(source)) {
+  } else if (isArray(source)) {
     isMultiSource = true;
     forceTrigger = source.some((s) => isReactive(s) || isShallow(s));
     getter = () => source.map((s) => {
@@ -1492,12 +1502,12 @@ function doWatch(source, cb, { immediate, deep, flush: flush2, onTrack, onTrigge
         return s.value;
       } else if (isReactive(s)) {
         return traverse(s);
-      } else if (isFunction$1(s)) {
+      } else if (isFunction(s)) {
         return callWithErrorHandling(s, instance2, 2);
       } else
         ;
     });
-  } else if (isFunction$1(source)) {
+  } else if (isFunction(source)) {
     if (cb) {
       getter = () => callWithErrorHandling(source, instance2, 2);
     } else {
@@ -1589,9 +1599,9 @@ function doWatch(source, cb, { immediate, deep, flush: flush2, onTrack, onTrigge
 }
 function instanceWatch(source, value, options2) {
   const publicThis = this.proxy;
-  const getter = isString$1(source) ? source.includes(".") ? createPathGetter(publicThis, source) : () => publicThis[source] : source.bind(publicThis, publicThis);
+  const getter = isString(source) ? source.includes(".") ? createPathGetter(publicThis, source) : () => publicThis[source] : source.bind(publicThis, publicThis);
   let cb;
-  if (isFunction$1(value)) {
+  if (isFunction(value)) {
     cb = value;
   } else {
     cb = value.handler;
@@ -1618,7 +1628,7 @@ function createPathGetter(ctx, path) {
   };
 }
 function traverse(value, seen) {
-  if (!isObject$1(value) || value["__v_skip"]) {
+  if (!isObject(value) || value["__v_skip"]) {
     return value;
   }
   seen = seen || /* @__PURE__ */ new Set();
@@ -1628,7 +1638,7 @@ function traverse(value, seen) {
   seen.add(value);
   if (isRef(value)) {
     traverse(value.value, seen);
-  } else if (isArray$1(value)) {
+  } else if (isArray(value)) {
     for (let i = 0; i < value.length; i++) {
       traverse(value[i], seen);
     }
@@ -1767,7 +1777,7 @@ function resolveTransitionHooks(vnode, props, state2, instance2) {
   const callAsyncHook = (hook, args) => {
     const done = args[1];
     callHook2(hook, args);
-    if (isArray$1(hook)) {
+    if (isArray(hook)) {
       if (hook.every((hook2) => hook2.length <= 1))
         done();
     } else if (hook.length <= 1) {
@@ -1909,7 +1919,7 @@ function getTransitionRawChildren(children, keepComment = false, parentKey) {
   return ret;
 }
 function defineComponent(options2) {
-  return isFunction$1(options2) ? { setup: options2, name: options2.name } : options2;
+  return isFunction(options2) ? { setup: options2, name: options2.name } : options2;
 }
 const isAsyncWrapper = (i) => !!i.type.__asyncLoader;
 const isKeepAlive = (vnode) => vnode.type.__isKeepAlive;
@@ -1991,7 +2001,7 @@ function withDirectives(vnode, directives) {
   const bindings = vnode.dirs || (vnode.dirs = []);
   for (let i = 0; i < directives.length; i++) {
     let [dir, value, arg, modifiers = EMPTY_OBJ] = directives[i];
-    if (isFunction$1(dir)) {
+    if (isFunction(dir)) {
       dir = {
         mounted: dir,
         updated: dir
@@ -2039,7 +2049,7 @@ function resolveComponent(name, maybeSelfReference) {
 }
 const NULL_DYNAMIC_COMPONENT = Symbol();
 function resolveDynamicComponent(component) {
-  if (isString$1(component)) {
+  if (isString(component)) {
     return resolveAsset(COMPONENTS, component, false) || component;
   } else {
     return component || NULL_DYNAMIC_COMPONENT;
@@ -2054,7 +2064,7 @@ function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false
     const Component = instance2.type;
     if (type === COMPONENTS) {
       const selfName = getComponentName(Component, false);
-      if (selfName && (selfName === name || selfName === camelize$1(name) || selfName === capitalize$1(camelize$1(name)))) {
+      if (selfName && (selfName === name || selfName === camelize(name) || selfName === capitalize(camelize(name)))) {
         return Component;
       }
     }
@@ -2066,12 +2076,12 @@ function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false
   }
 }
 function resolve(registry, name) {
-  return registry && (registry[name] || registry[camelize$1(name)] || registry[capitalize$1(camelize$1(name))]);
+  return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
 }
 function renderList(source, renderItem, cache, index) {
   let ret;
   const cached = cache && cache[index];
-  if (isArray$1(source) || isString$1(source)) {
+  if (isArray(source) || isString(source)) {
     ret = new Array(source.length);
     for (let i = 0, l = source.length; i < l; i++) {
       ret[i] = renderItem(source[i], i, void 0, cached && cached[i]);
@@ -2081,7 +2091,7 @@ function renderList(source, renderItem, cache, index) {
     for (let i = 0; i < source; i++) {
       ret[i] = renderItem(i + 1, i, void 0, cached && cached[i]);
     }
-  } else if (isObject$1(source)) {
+  } else if (isObject(source)) {
     if (source[Symbol.iterator]) {
       ret = Array.from(source, (item, i) => renderItem(item, i, void 0, cached && cached[i]));
     } else {
@@ -2103,7 +2113,7 @@ function renderList(source, renderItem, cache, index) {
 function createSlots(slots, dynamicSlots) {
   for (let i = 0; i < dynamicSlots.length; i++) {
     const slot = dynamicSlots[i];
-    if (isArray$1(slot)) {
+    if (isArray(slot)) {
       for (let j = 0; j < slot.length; j++) {
         slots[slot[j].name] = slot[j].fn;
       }
@@ -2150,7 +2160,7 @@ const getPublicInstance = (i) => {
     return getExposeProxy(i) || i.proxy;
   return getPublicInstance(i.parent);
 };
-const publicPropertiesMap = /* @__PURE__ */ extend$1(/* @__PURE__ */ Object.create(null), {
+const publicPropertiesMap = /* @__PURE__ */ extend(/* @__PURE__ */ Object.create(null), {
   $: (i) => i,
   $el: (i) => i.vnode.el,
   $data: (i) => i.data,
@@ -2168,7 +2178,7 @@ const publicPropertiesMap = /* @__PURE__ */ extend$1(/* @__PURE__ */ Object.crea
 });
 const PublicInstanceProxyHandlers = {
   get({ _: instance2 }, key) {
-    const { ctx, setupState, data, props, accessCache, type, appContext } = instance2;
+    const { ctx, setupState, data: data2, props, accessCache, type, appContext } = instance2;
     let normalizedProps;
     if (key[0] !== "$") {
       const n = accessCache[key];
@@ -2177,7 +2187,7 @@ const PublicInstanceProxyHandlers = {
           case 1:
             return setupState[key];
           case 2:
-            return data[key];
+            return data2[key];
           case 4:
             return ctx[key];
           case 3:
@@ -2186,9 +2196,9 @@ const PublicInstanceProxyHandlers = {
       } else if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
         accessCache[key] = 1;
         return setupState[key];
-      } else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
+      } else if (data2 !== EMPTY_OBJ && hasOwn(data2, key)) {
         accessCache[key] = 2;
-        return data[key];
+        return data2[key];
       } else if ((normalizedProps = instance2.propsOptions[0]) && hasOwn(normalizedProps, key)) {
         accessCache[key] = 3;
         return props[key];
@@ -2219,12 +2229,12 @@ const PublicInstanceProxyHandlers = {
       ;
   },
   set({ _: instance2 }, key, value) {
-    const { data, setupState, ctx } = instance2;
+    const { data: data2, setupState, ctx } = instance2;
     if (setupState !== EMPTY_OBJ && hasOwn(setupState, key)) {
       setupState[key] = value;
       return true;
-    } else if (data !== EMPTY_OBJ && hasOwn(data, key)) {
-      data[key] = value;
+    } else if (data2 !== EMPTY_OBJ && hasOwn(data2, key)) {
+      data2[key] = value;
       return true;
     } else if (hasOwn(instance2.props, key)) {
       return false;
@@ -2238,9 +2248,9 @@ const PublicInstanceProxyHandlers = {
     }
     return true;
   },
-  has({ _: { data, setupState, accessCache, ctx, appContext, propsOptions } }, key) {
+  has({ _: { data: data2, setupState, accessCache, ctx, appContext, propsOptions } }, key) {
     let normalizedProps;
-    return !!accessCache[key] || data !== EMPTY_OBJ && hasOwn(data, key) || setupState !== EMPTY_OBJ && hasOwn(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key);
+    return !!accessCache[key] || data2 !== EMPTY_OBJ && hasOwn(data2, key) || setupState !== EMPTY_OBJ && hasOwn(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key);
   },
   defineProperty(target, key, descriptor) {
     if (descriptor.get != null) {
@@ -2296,7 +2306,7 @@ function applyOptions(instance2) {
   if (methods) {
     for (const key in methods) {
       const methodHandler = methods[key];
-      if (isFunction$1(methodHandler)) {
+      if (isFunction(methodHandler)) {
         {
           ctx[key] = methodHandler.bind(publicThis);
         }
@@ -2304,19 +2314,19 @@ function applyOptions(instance2) {
     }
   }
   if (dataOptions) {
-    const data = dataOptions.call(publicThis, publicThis);
-    if (!isObject$1(data))
+    const data2 = dataOptions.call(publicThis, publicThis);
+    if (!isObject(data2))
       ;
     else {
-      instance2.data = reactive(data);
+      instance2.data = reactive(data2);
     }
   }
   shouldCacheAccess = true;
   if (computedOptions) {
     for (const key in computedOptions) {
       const opt = computedOptions[key];
-      const get3 = isFunction$1(opt) ? opt.bind(publicThis, publicThis) : isFunction$1(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
-      const set2 = !isFunction$1(opt) && isFunction$1(opt.set) ? opt.set.bind(publicThis) : NOOP;
+      const get3 = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
+      const set2 = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : NOOP;
       const c = computed({
         get: get3,
         set: set2
@@ -2335,7 +2345,7 @@ function applyOptions(instance2) {
     }
   }
   if (provideOptions) {
-    const provides = isFunction$1(provideOptions) ? provideOptions.call(publicThis) : provideOptions;
+    const provides = isFunction(provideOptions) ? provideOptions.call(publicThis) : provideOptions;
     Reflect.ownKeys(provides).forEach((key) => {
       provide(key, provides[key]);
     });
@@ -2344,7 +2354,7 @@ function applyOptions(instance2) {
     callHook$1(created, instance2, "c");
   }
   function registerLifecycleHook(register2, hook) {
-    if (isArray$1(hook)) {
+    if (isArray(hook)) {
       hook.forEach((_hook) => register2(_hook.bind(publicThis)));
     } else if (hook) {
       register2(hook.bind(publicThis));
@@ -2362,7 +2372,7 @@ function applyOptions(instance2) {
   registerLifecycleHook(onBeforeUnmount, beforeUnmount);
   registerLifecycleHook(onUnmounted, unmounted2);
   registerLifecycleHook(onServerPrefetch, serverPrefetch);
-  if (isArray$1(expose)) {
+  if (isArray(expose)) {
     if (expose.length) {
       const exposed = instance2.exposed || (instance2.exposed = {});
       expose.forEach((key) => {
@@ -2387,13 +2397,13 @@ function applyOptions(instance2) {
     instance2.directives = directives;
 }
 function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP, unwrapRef = false) {
-  if (isArray$1(injectOptions)) {
+  if (isArray(injectOptions)) {
     injectOptions = normalizeInject(injectOptions);
   }
   for (const key in injectOptions) {
     const opt = injectOptions[key];
     let injected;
-    if (isObject$1(opt)) {
+    if (isObject(opt)) {
       if ("default" in opt) {
         injected = inject(opt.from || key, opt.default, true);
       } else {
@@ -2419,23 +2429,23 @@ function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP, 
   }
 }
 function callHook$1(hook, instance2, type) {
-  callWithAsyncErrorHandling(isArray$1(hook) ? hook.map((h2) => h2.bind(instance2.proxy)) : hook.bind(instance2.proxy), instance2, type);
+  callWithAsyncErrorHandling(isArray(hook) ? hook.map((h2) => h2.bind(instance2.proxy)) : hook.bind(instance2.proxy), instance2, type);
 }
 function createWatcher(raw, ctx, publicThis, key) {
   const getter = key.includes(".") ? createPathGetter(publicThis, key) : () => publicThis[key];
-  if (isString$1(raw)) {
+  if (isString(raw)) {
     const handler = ctx[raw];
-    if (isFunction$1(handler)) {
+    if (isFunction(handler)) {
       watch(getter, handler);
     }
-  } else if (isFunction$1(raw)) {
+  } else if (isFunction(raw)) {
     watch(getter, raw.bind(publicThis));
-  } else if (isObject$1(raw)) {
-    if (isArray$1(raw)) {
+  } else if (isObject(raw)) {
+    if (isArray(raw)) {
       raw.forEach((r) => createWatcher(r, ctx, publicThis, key));
     } else {
-      const handler = isFunction$1(raw.handler) ? raw.handler.bind(publicThis) : ctx[raw.handler];
-      if (isFunction$1(handler)) {
+      const handler = isFunction(raw.handler) ? raw.handler.bind(publicThis) : ctx[raw.handler];
+      if (isFunction(handler)) {
         watch(getter, handler, raw);
       }
     }
@@ -2516,14 +2526,14 @@ function mergeDataFn(to, from) {
     return from;
   }
   return function mergedDataFn() {
-    return extend$1(isFunction$1(to) ? to.call(this, this) : to, isFunction$1(from) ? from.call(this, this) : from);
+    return extend(isFunction(to) ? to.call(this, this) : to, isFunction(from) ? from.call(this, this) : from);
   };
 }
 function mergeInject(to, from) {
   return mergeObjectOptions(normalizeInject(to), normalizeInject(from));
 }
 function normalizeInject(raw) {
-  if (isArray$1(raw)) {
+  if (isArray(raw)) {
     const res = {};
     for (let i = 0; i < raw.length; i++) {
       res[raw[i]] = raw[i];
@@ -2536,14 +2546,14 @@ function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from;
 }
 function mergeObjectOptions(to, from) {
-  return to ? extend$1(extend$1(/* @__PURE__ */ Object.create(null), to), from) : from;
+  return to ? extend(extend(/* @__PURE__ */ Object.create(null), to), from) : from;
 }
 function mergeWatchOptions(to, from) {
   if (!to)
     return from;
   if (!from)
     return to;
-  const merged = extend$1(/* @__PURE__ */ Object.create(null), to);
+  const merged = extend(/* @__PURE__ */ Object.create(null), to);
   for (const key in from) {
     merged[key] = mergeAsArray(to[key], from[key]);
   }
@@ -2592,7 +2602,7 @@ function updateProps(instance2, rawProps, rawPrevProps, optimized) {
               hasAttrsChanged = true;
             }
           } else {
-            const camelizedKey = camelize$1(key);
+            const camelizedKey = camelize(key);
             props[camelizedKey] = resolvePropValue(options2, rawCurrentProps, camelizedKey, value, instance2, false);
           }
         } else {
@@ -2609,7 +2619,7 @@ function updateProps(instance2, rawProps, rawPrevProps, optimized) {
     }
     let kebabKey;
     for (const key in rawCurrentProps) {
-      if (!rawProps || !hasOwn(rawProps, key) && ((kebabKey = hyphenate$1(key)) === key || !hasOwn(rawProps, kebabKey))) {
+      if (!rawProps || !hasOwn(rawProps, key) && ((kebabKey = hyphenate(key)) === key || !hasOwn(rawProps, kebabKey))) {
         if (options2) {
           if (rawPrevProps && (rawPrevProps[key] !== void 0 || rawPrevProps[kebabKey] !== void 0)) {
             props[key] = resolvePropValue(options2, rawCurrentProps, key, void 0, instance2, true);
@@ -2643,7 +2653,7 @@ function setFullProps(instance2, rawProps, props, attrs) {
       }
       const value = rawProps[key];
       let camelKey;
-      if (options2 && hasOwn(options2, camelKey = camelize$1(key))) {
+      if (options2 && hasOwn(options2, camelKey = camelize(key))) {
         if (!needCastKeys || !needCastKeys.includes(camelKey)) {
           props[camelKey] = value;
         } else {
@@ -2673,7 +2683,7 @@ function resolvePropValue(options2, props, key, value, instance2, isAbsent) {
     const hasDefault = hasOwn(opt, "default");
     if (hasDefault && value === void 0) {
       const defaultValue = opt.default;
-      if (opt.type !== Function && isFunction$1(defaultValue)) {
+      if (opt.type !== Function && isFunction(defaultValue)) {
         const { propsDefaults } = instance2;
         if (key in propsDefaults) {
           value = propsDefaults[key];
@@ -2689,7 +2699,7 @@ function resolvePropValue(options2, props, key, value, instance2, isAbsent) {
     if (opt[0]) {
       if (isAbsent && !hasDefault) {
         value = false;
-      } else if (opt[1] && (value === "" || value === hyphenate$1(key))) {
+      } else if (opt[1] && (value === "" || value === hyphenate(key))) {
         value = true;
       }
     }
@@ -2706,11 +2716,11 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
   const normalized = {};
   const needCastKeys = [];
   let hasExtends = false;
-  if (!isFunction$1(comp)) {
+  if (!isFunction(comp)) {
     const extendProps = (raw2) => {
       hasExtends = true;
       const [props, keys] = normalizePropsOptions(raw2, appContext, true);
-      extend$1(normalized, props);
+      extend(normalized, props);
       if (keys)
         needCastKeys.push(...keys);
     };
@@ -2728,19 +2738,19 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
     cache.set(comp, EMPTY_ARR);
     return EMPTY_ARR;
   }
-  if (isArray$1(raw)) {
+  if (isArray(raw)) {
     for (let i = 0; i < raw.length; i++) {
-      const normalizedKey = camelize$1(raw[i]);
+      const normalizedKey = camelize(raw[i]);
       if (validatePropName(normalizedKey)) {
         normalized[normalizedKey] = EMPTY_OBJ;
       }
     }
   } else if (raw) {
     for (const key in raw) {
-      const normalizedKey = camelize$1(key);
+      const normalizedKey = camelize(key);
       if (validatePropName(normalizedKey)) {
         const opt = raw[key];
-        const prop = normalized[normalizedKey] = isArray$1(opt) || isFunction$1(opt) ? { type: opt } : opt;
+        const prop = normalized[normalizedKey] = isArray(opt) || isFunction(opt) ? { type: opt } : opt;
         if (prop) {
           const booleanIndex = getTypeIndex(Boolean, prop.type);
           const stringIndex = getTypeIndex(String, prop.type);
@@ -2771,15 +2781,15 @@ function isSameType(a, b) {
   return getType(a) === getType(b);
 }
 function getTypeIndex(type, expectedTypes) {
-  if (isArray$1(expectedTypes)) {
+  if (isArray(expectedTypes)) {
     return expectedTypes.findIndex((t) => isSameType(t, type));
-  } else if (isFunction$1(expectedTypes)) {
+  } else if (isFunction(expectedTypes)) {
     return isSameType(expectedTypes, type) ? 0 : -1;
   }
   return -1;
 }
 const isInternalKey = (key) => key[0] === "_" || key === "$stable";
-const normalizeSlotValue = (value) => isArray$1(value) ? value.map(normalizeVNode) : [normalizeVNode(value)];
+const normalizeSlotValue = (value) => isArray(value) ? value.map(normalizeVNode) : [normalizeVNode(value)];
 const normalizeSlot = (key, rawSlot, ctx) => {
   if (rawSlot._n) {
     return rawSlot;
@@ -2796,7 +2806,7 @@ const normalizeObjectSlots = (rawSlots, slots, instance2) => {
     if (isInternalKey(key))
       continue;
     const value = rawSlots[key];
-    if (isFunction$1(value)) {
+    if (isFunction(value)) {
       slots[key] = normalizeSlot(key, value, ctx);
     } else if (value != null) {
       const normalized = normalizeSlotValue(value);
@@ -2835,7 +2845,7 @@ const updateSlots = (instance2, children, optimized) => {
       if (optimized && type === 1) {
         needDeletionCheck = false;
       } else {
-        extend$1(slots, children);
+        extend(slots, children);
         if (!optimized && type === 1) {
           delete slots._;
         }
@@ -2881,10 +2891,10 @@ function createAppContext() {
 let uid = 0;
 function createAppAPI(render2, hydrate) {
   return function createApp(rootComponent, rootProps = null) {
-    if (!isFunction$1(rootComponent)) {
+    if (!isFunction(rootComponent)) {
       rootComponent = Object.assign({}, rootComponent);
     }
-    if (rootProps != null && !isObject$1(rootProps)) {
+    if (rootProps != null && !isObject(rootProps)) {
       rootProps = null;
     }
     const context = createAppContext();
@@ -2906,10 +2916,10 @@ function createAppAPI(render2, hydrate) {
       use(plugin, ...options2) {
         if (installedPlugins.has(plugin))
           ;
-        else if (plugin && isFunction$1(plugin.install)) {
+        else if (plugin && isFunction(plugin.install)) {
           installedPlugins.add(plugin);
           plugin.install(app, ...options2);
-        } else if (isFunction$1(plugin)) {
+        } else if (isFunction(plugin)) {
           installedPlugins.add(plugin);
           plugin(app, ...options2);
         } else
@@ -2968,8 +2978,8 @@ function createAppAPI(render2, hydrate) {
   };
 }
 function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
-  if (isArray$1(rawRef)) {
-    rawRef.forEach((r, i) => setRef(r, oldRawRef && (isArray$1(oldRawRef) ? oldRawRef[i] : oldRawRef), parentSuspense, vnode, isUnmount));
+  if (isArray(rawRef)) {
+    rawRef.forEach((r, i) => setRef(r, oldRawRef && (isArray(oldRawRef) ? oldRawRef[i] : oldRawRef), parentSuspense, vnode, isUnmount));
     return;
   }
   if (isAsyncWrapper(vnode) && !isUnmount) {
@@ -2977,12 +2987,12 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
   }
   const refValue = vnode.shapeFlag & 4 ? getExposeProxy(vnode.component) || vnode.component.proxy : vnode.el;
   const value = isUnmount ? null : refValue;
-  const { i: owner, r: ref } = rawRef;
+  const { i: owner, r: ref2 } = rawRef;
   const oldRef = oldRawRef && oldRawRef.r;
   const refs = owner.refs === EMPTY_OBJ ? owner.refs = {} : owner.refs;
   const setupState = owner.setupState;
-  if (oldRef != null && oldRef !== ref) {
-    if (isString$1(oldRef)) {
+  if (oldRef != null && oldRef !== ref2) {
+    if (isString(oldRef)) {
       refs[oldRef] = null;
       if (hasOwn(setupState, oldRef)) {
         setupState[oldRef] = null;
@@ -2991,40 +3001,40 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
       oldRef.value = null;
     }
   }
-  if (isFunction$1(ref)) {
-    callWithErrorHandling(ref, owner, 12, [value, refs]);
+  if (isFunction(ref2)) {
+    callWithErrorHandling(ref2, owner, 12, [value, refs]);
   } else {
-    const _isString = isString$1(ref);
-    const _isRef = isRef(ref);
+    const _isString = isString(ref2);
+    const _isRef = isRef(ref2);
     if (_isString || _isRef) {
       const doSet = () => {
         if (rawRef.f) {
-          const existing = _isString ? refs[ref] : ref.value;
+          const existing = _isString ? refs[ref2] : ref2.value;
           if (isUnmount) {
-            isArray$1(existing) && remove(existing, refValue);
+            isArray(existing) && remove(existing, refValue);
           } else {
-            if (!isArray$1(existing)) {
+            if (!isArray(existing)) {
               if (_isString) {
-                refs[ref] = [refValue];
-                if (hasOwn(setupState, ref)) {
-                  setupState[ref] = refs[ref];
+                refs[ref2] = [refValue];
+                if (hasOwn(setupState, ref2)) {
+                  setupState[ref2] = refs[ref2];
                 }
               } else {
-                ref.value = [refValue];
+                ref2.value = [refValue];
                 if (rawRef.k)
-                  refs[rawRef.k] = ref.value;
+                  refs[rawRef.k] = ref2.value;
               }
             } else if (!existing.includes(refValue)) {
               existing.push(refValue);
             }
           }
         } else if (_isString) {
-          refs[ref] = value;
-          if (hasOwn(setupState, ref)) {
-            setupState[ref] = value;
+          refs[ref2] = value;
+          if (hasOwn(setupState, ref2)) {
+            setupState[ref2] = value;
           }
         } else if (_isRef) {
-          ref.value = value;
+          ref2.value = value;
           if (rawRef.k)
             refs[rawRef.k] = value;
         } else
@@ -3060,7 +3070,7 @@ function baseCreateRenderer(options2, createHydrationFns) {
       optimized = false;
       n2.dynamicChildren = null;
     }
-    const { type, ref, shapeFlag } = n2;
+    const { type, ref: ref2, shapeFlag } = n2;
     switch (type) {
       case Text:
         processText(n1, n2, container, anchor);
@@ -3088,8 +3098,8 @@ function baseCreateRenderer(options2, createHydrationFns) {
         } else
           ;
     }
-    if (ref != null && parentComponent) {
-      setRef(ref, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
+    if (ref2 != null && parentComponent) {
+      setRef(ref2, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
     }
   };
   const processText = (n1, n2, container, anchor) => {
@@ -3687,9 +3697,9 @@ function baseCreateRenderer(options2, createHydrationFns) {
     }
   };
   const unmount = (vnode, parentComponent, parentSuspense, doRemove = false, optimized = false) => {
-    const { type, props, ref, children, dynamicChildren, shapeFlag, patchFlag, dirs } = vnode;
-    if (ref != null) {
-      setRef(ref, null, parentSuspense, vnode, true);
+    const { type, props, ref: ref2, children, dynamicChildren, shapeFlag, patchFlag, dirs } = vnode;
+    if (ref2 != null) {
+      setRef(ref2, null, parentSuspense, vnode, true);
     }
     if (shapeFlag & 256) {
       parentComponent.ctx.deactivate(vnode);
@@ -3845,7 +3855,7 @@ function toggleRecurse({ effect, update: update2 }, allowed) {
 function traverseStaticChildren(n1, n2, shallow = false) {
   const ch1 = n1.children;
   const ch2 = n2.children;
-  if (isArray$1(ch1) && isArray$1(ch2)) {
+  if (isArray(ch1) && isArray(ch2)) {
     for (let i = 0; i < ch1.length; i++) {
       const c1 = ch1[i];
       let c2 = ch2[i];
@@ -3940,8 +3950,8 @@ function isSameVNodeType(n1, n2) {
 }
 const InternalObjectKey = `__vInternal`;
 const normalizeKey = ({ key }) => key != null ? key : null;
-const normalizeRef = ({ ref, ref_key, ref_for }) => {
-  return ref != null ? isString$1(ref) || isRef(ref) || isFunction$1(ref) ? { i: currentRenderingInstance, r: ref, k: ref_key, f: !!ref_for } : ref : null;
+const normalizeRef = ({ ref: ref2, ref_key, ref_for }) => {
+  return ref2 != null ? isString(ref2) || isRef(ref2) || isFunction(ref2) ? { i: currentRenderingInstance, r: ref2, k: ref_key, f: !!ref_for } : ref2 : null;
 };
 function createBaseVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, shapeFlag = type === Fragment ? 0 : 1, isBlockNode = false, needFullChildrenNormalization = false) {
   const vnode = {
@@ -3977,7 +3987,7 @@ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dyn
       type.normalize(vnode);
     }
   } else if (children) {
-    vnode.shapeFlag |= isString$1(children) ? 8 : 16;
+    vnode.shapeFlag |= isString(children) ? 8 : 16;
   }
   if (isBlockTreeEnabled > 0 && !isBlockNode && currentBlock && (vnode.patchFlag > 0 || shapeFlag & 6) && vnode.patchFlag !== 32) {
     currentBlock.push(vnode);
@@ -4010,26 +4020,26 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
   if (props) {
     props = guardReactiveProps(props);
     let { class: klass, style } = props;
-    if (klass && !isString$1(klass)) {
+    if (klass && !isString(klass)) {
       props.class = normalizeClass(klass);
     }
-    if (isObject$1(style)) {
-      if (isProxy(style) && !isArray$1(style)) {
-        style = extend$1({}, style);
+    if (isObject(style)) {
+      if (isProxy(style) && !isArray(style)) {
+        style = extend({}, style);
       }
       props.style = normalizeStyle(style);
     }
   }
-  const shapeFlag = isString$1(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject$1(type) ? 4 : isFunction$1(type) ? 2 : 0;
+  const shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject(type) ? 4 : isFunction(type) ? 2 : 0;
   return createBaseVNode(type, props, children, patchFlag, dynamicProps, shapeFlag, isBlockNode, true);
 }
 function guardReactiveProps(props) {
   if (!props)
     return null;
-  return isProxy(props) || InternalObjectKey in props ? extend$1({}, props) : props;
+  return isProxy(props) || InternalObjectKey in props ? extend({}, props) : props;
 }
 function cloneVNode(vnode, extraProps, mergeRef = false) {
-  const { props, ref, patchFlag, children } = vnode;
+  const { props, ref: ref2, patchFlag, children } = vnode;
   const mergedProps = extraProps ? mergeProps(props || {}, extraProps) : props;
   const cloned = {
     __v_isVNode: true,
@@ -4037,7 +4047,7 @@ function cloneVNode(vnode, extraProps, mergeRef = false) {
     type: vnode.type,
     props: mergedProps,
     key: mergedProps && normalizeKey(mergedProps),
-    ref: extraProps && extraProps.ref ? mergeRef && ref ? isArray$1(ref) ? ref.concat(normalizeRef(extraProps)) : [ref, normalizeRef(extraProps)] : normalizeRef(extraProps) : ref,
+    ref: extraProps && extraProps.ref ? mergeRef && ref2 ? isArray(ref2) ? ref2.concat(normalizeRef(extraProps)) : [ref2, normalizeRef(extraProps)] : normalizeRef(extraProps) : ref2,
     scopeId: vnode.scopeId,
     slotScopeIds: vnode.slotScopeIds,
     children,
@@ -4069,7 +4079,7 @@ function createCommentVNode(text2 = "", asBlock = false) {
 function normalizeVNode(child) {
   if (child == null || typeof child === "boolean") {
     return createVNode(Comment);
-  } else if (isArray$1(child)) {
+  } else if (isArray(child)) {
     return createVNode(
       Fragment,
       null,
@@ -4089,7 +4099,7 @@ function normalizeChildren(vnode, children) {
   const { shapeFlag } = vnode;
   if (children == null) {
     children = null;
-  } else if (isArray$1(children)) {
+  } else if (isArray(children)) {
     type = 16;
   } else if (typeof children === "object") {
     if (shapeFlag & (1 | 64)) {
@@ -4114,7 +4124,7 @@ function normalizeChildren(vnode, children) {
         }
       }
     }
-  } else if (isFunction$1(children)) {
+  } else if (isFunction(children)) {
     children = { default: children, _ctx: currentRenderingInstance };
     type = 32;
   } else {
@@ -4140,10 +4150,10 @@ function mergeProps(...args) {
         }
       } else if (key === "style") {
         ret.style = normalizeStyle([ret.style, toMerge.style]);
-      } else if (isOn$1(key)) {
+      } else if (isOn(key)) {
         const existing = ret[key];
         const incoming = toMerge[key];
-        if (incoming && existing !== incoming && !(isArray$1(existing) && existing.includes(incoming))) {
+        if (incoming && existing !== incoming && !(isArray(existing) && existing.includes(incoming))) {
           ret[key] = existing ? [].concat(existing, incoming) : incoming;
         }
       } else if (key !== "") {
@@ -4287,13 +4297,13 @@ function setupStatefulComponent(instance2, isSSR) {
   }
 }
 function handleSetupResult(instance2, setupResult, isSSR) {
-  if (isFunction$1(setupResult)) {
+  if (isFunction(setupResult)) {
     if (instance2.type.__ssrInlineRender) {
       instance2.ssrRender = setupResult;
     } else {
       instance2.render = setupResult;
     }
-  } else if (isObject$1(setupResult)) {
+  } else if (isObject(setupResult)) {
     instance2.setupState = proxyRefs(setupResult);
   } else
     ;
@@ -4308,7 +4318,7 @@ function finishComponentSetup(instance2, isSSR, skipOptions) {
       if (template) {
         const { isCustomElement, compilerOptions } = instance2.appContext.config;
         const { delimiters, compilerOptions: componentCompilerOptions } = Component;
-        const finalCompilerOptions = extend$1(extend$1({
+        const finalCompilerOptions = extend(extend({
           isCustomElement,
           delimiters
         }, compilerOptions), componentCompilerOptions);
@@ -4363,10 +4373,10 @@ function getExposeProxy(instance2) {
   }
 }
 function getComponentName(Component, includeInferred = true) {
-  return isFunction$1(Component) ? Component.displayName || Component.name : Component.name || includeInferred && Component.__name;
+  return isFunction(Component) ? Component.displayName || Component.name : Component.name || includeInferred && Component.__name;
 }
 function isClassComponent(value) {
-  return isFunction$1(value) && "__vccOpts" in value;
+  return isFunction(value) && "__vccOpts" in value;
 }
 const computed = (getterOrOptions, debugOptions) => {
   return computed$1(getterOrOptions, debugOptions, isInSSRComponentSetup);
@@ -4374,7 +4384,7 @@ const computed = (getterOrOptions, debugOptions) => {
 function h(type, propsOrChildren, children) {
   const l = arguments.length;
   if (l === 2) {
-    if (isObject$1(propsOrChildren) && !isArray$1(propsOrChildren)) {
+    if (isObject(propsOrChildren) && !isArray(propsOrChildren)) {
       if (isVNode(propsOrChildren)) {
         return createVNode(type, null, [propsOrChildren]);
       }
@@ -4392,45 +4402,6 @@ function h(type, propsOrChildren, children) {
   }
 }
 const version = "3.2.37";
-function makeMap(str, expectsLowerCase) {
-  const map = /* @__PURE__ */ Object.create(null);
-  const list = str.split(",");
-  for (let i = 0; i < list.length; i++) {
-    map[list[i]] = true;
-  }
-  return expectsLowerCase ? (val) => !!map[val.toLowerCase()] : (val) => !!map[val];
-}
-const specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
-const isSpecialBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs);
-function includeBooleanAttr(value) {
-  return !!value || value === "";
-}
-const onRE = /^on[^a-z]/;
-const isOn = (key) => onRE.test(key);
-const isModelListener = (key) => key.startsWith("onUpdate:");
-const extend = Object.assign;
-const isArray = Array.isArray;
-const isFunction = (val) => typeof val === "function";
-const isString = (val) => typeof val === "string";
-const isObject = (val) => val !== null && typeof val === "object";
-const cacheStringFunction = (fn) => {
-  const cache = /* @__PURE__ */ Object.create(null);
-  return (str) => {
-    const hit = cache[str];
-    return hit || (cache[str] = fn(str));
-  };
-};
-const camelizeRE = /-(\w)/g;
-const camelize = cacheStringFunction((str) => {
-  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
-});
-const hyphenateRE = /\B([A-Z])/g;
-const hyphenate = cacheStringFunction((str) => str.replace(hyphenateRE, "-$1").toLowerCase());
-const capitalize = cacheStringFunction((str) => str.charAt(0).toUpperCase() + str.slice(1));
-const toNumber = (val) => {
-  const n = parseFloat(val);
-  return isNaN(n) ? val : n;
-};
 const svgNS = "http://www.w3.org/2000/svg";
 const doc = typeof document !== "undefined" ? document : null;
 const templateContainer = doc && /* @__PURE__ */ doc.createElement("template");
@@ -4565,7 +4536,7 @@ function autoPrefix(style, rawName) {
   if (cached) {
     return cached;
   }
-  let name = camelize$1(rawName);
+  let name = camelize(rawName);
   if (name !== "filter" && name in style) {
     return prefixCache[rawName] = name;
   }
@@ -4794,7 +4765,7 @@ class VueElement extends BaseClass {
     this._connected = false;
     nextTick(() => {
       if (!this._connected) {
-        render(null, this.shadowRoot);
+        render$1(null, this.shadowRoot);
         this._instance = null;
       }
     });
@@ -4880,7 +4851,7 @@ class VueElement extends BaseClass {
     }
   }
   _update() {
-    render(this._createVNode(), this.shadowRoot);
+    render$1(this._createVNode(), this.shadowRoot);
   }
   _createVNode() {
     const vnode = createVNode(this._def, extend({}, this._props));
@@ -4911,6 +4882,54 @@ class VueElement extends BaseClass {
         s.textContent = css;
         this.shadowRoot.appendChild(s);
       });
+    }
+  }
+}
+function useCssVars(getter) {
+  const instance2 = getCurrentInstance();
+  if (!instance2) {
+    return;
+  }
+  const setVars = () => setVarsOnVNode(instance2.subTree, getter(instance2.proxy));
+  watchPostEffect(setVars);
+  onMounted(() => {
+    const ob = new MutationObserver(setVars);
+    ob.observe(instance2.subTree.el.parentNode, { childList: true });
+    onUnmounted(() => ob.disconnect());
+  });
+}
+function setVarsOnVNode(vnode, vars) {
+  if (vnode.shapeFlag & 128) {
+    const suspense = vnode.suspense;
+    vnode = suspense.activeBranch;
+    if (suspense.pendingBranch && !suspense.isHydrating) {
+      suspense.effects.push(() => {
+        setVarsOnVNode(suspense.activeBranch, vars);
+      });
+    }
+  }
+  while (vnode.component) {
+    vnode = vnode.component.subTree;
+  }
+  if (vnode.shapeFlag & 1 && vnode.el) {
+    setVarsOnNode(vnode.el, vars);
+  } else if (vnode.type === Fragment) {
+    vnode.children.forEach((c) => setVarsOnVNode(c, vars));
+  } else if (vnode.type === Static) {
+    let { el, anchor } = vnode;
+    while (el) {
+      setVarsOnNode(el, vars);
+      if (el === anchor)
+        break;
+      el = el.nextSibling;
+    }
+  }
+}
+function setVarsOnNode(el, vars) {
+  if (el.nodeType === 1) {
+    const style = el.style;
+    for (const key in vars) {
+      style.setProperty(`--${key}`, vars[key]);
     }
   }
 }
@@ -5341,7 +5360,7 @@ let renderer;
 function ensureRenderer() {
   return renderer || (renderer = createRenderer(rendererOptions));
 }
-const render = (...args) => {
+const render$1 = (...args) => {
   ensureRenderer().render(...args);
 };
 var _export_sfc = (sfc, props) => {
@@ -5361,12 +5380,12 @@ const _sfc_main$q = {
   }
 };
 const _hoisted_1$q = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
-const _hoisted_2$n = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
-const _hoisted_3$j = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
-const _hoisted_4$h = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_2$m = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_3$k = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
+const _hoisted_4$i = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
 const _hoisted_5$b = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
 const _hoisted_6$7 = /* @__PURE__ */ createBaseVNode("div", { id: "vac-circle" }, null, -1);
-function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createBlock(Transition, {
     name: "vac-fade-spinner",
     appear: ""
@@ -5383,13 +5402,13 @@ function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
           _hoisted_1$q
         ]) : createCommentVNode("", true),
         $props.type === "infinite-rooms" ? renderSlot(_ctx.$slots, "spinner-icon-infinite-rooms", { key: 1 }, () => [
-          _hoisted_2$n
+          _hoisted_2$m
         ]) : createCommentVNode("", true),
         $props.type === "message-file" ? renderSlot(_ctx.$slots, "spinner-icon-message-file_" + $props.messageId, { key: 2 }, () => [
-          _hoisted_3$j
+          _hoisted_3$k
         ]) : createCommentVNode("", true),
         $props.type === "room-file" ? renderSlot(_ctx.$slots, "spinner-icon-room-file", { key: 3 }, () => [
-          _hoisted_4$h
+          _hoisted_4$i
         ]) : createCommentVNode("", true),
         $props.type === "messages" ? renderSlot(_ctx.$slots, "spinner-icon-messages", { key: 4 }, () => [
           _hoisted_5$b
@@ -5402,7 +5421,7 @@ function _sfc_render$q(_ctx, _cache, $props, $setup, $data, $options) {
     _: 3
   });
 }
-var Loader = /* @__PURE__ */ _export_sfc(_sfc_main$q, [["render", _sfc_render$q]]);
+var Loader = /* @__PURE__ */ _export_sfc(_sfc_main$q, [["render", _sfc_render$p]]);
 const _sfc_main$p = {
   name: "SvgIcon",
   props: {
@@ -5496,9 +5515,9 @@ const _sfc_main$p = {
   }
 };
 const _hoisted_1$p = ["viewBox"];
-const _hoisted_2$m = ["id", "d"];
-const _hoisted_3$i = ["id", "d"];
-function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$l = ["id", "d"];
+const _hoisted_3$j = ["id", "d"];
+function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("svg", {
     xmlns: "http://www.w3.org/2000/svg",
     "xmlns:xlink": "http://www.w3.org/1999/xlink",
@@ -5510,15 +5529,15 @@ function _sfc_render$p(_ctx, _cache, $props, $setup, $data, $options) {
     createBaseVNode("path", {
       id: $options.svgId,
       d: $data.svgItem[$props.name].path
-    }, null, 8, _hoisted_2$m),
+    }, null, 8, _hoisted_2$l),
     $data.svgItem[$props.name].path2 ? (openBlock(), createElementBlock("path", {
       key: 0,
       id: $options.svgId,
       d: $data.svgItem[$props.name].path2
-    }, null, 8, _hoisted_3$i)) : createCommentVNode("", true)
+    }, null, 8, _hoisted_3$j)) : createCommentVNode("", true)
   ], 8, _hoisted_1$p);
 }
-var SvgIcon = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$p]]);
+var SvgIcon = /* @__PURE__ */ _export_sfc(_sfc_main$p, [["render", _sfc_render$o]]);
 const _sfc_main$o = {
   name: "RoomsSearch",
   components: { SvgIcon },
@@ -5540,8 +5559,8 @@ const _hoisted_1$o = {
   key: 0,
   class: "vac-icon-search"
 };
-const _hoisted_2$l = ["placeholder"];
-function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$k = ["placeholder"];
+function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createElementBlock("div", {
     class: normalizeClass({
@@ -5562,7 +5581,7 @@ function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
         autocomplete: "off",
         class: "vac-input",
         onInput: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("search-room", $event))
-      }, null, 40, _hoisted_2$l)) : createCommentVNode("", true)
+      }, null, 40, _hoisted_2$k)) : createCommentVNode("", true)
     ], 64)) : createCommentVNode("", true),
     $props.showAddRoom ? (openBlock(), createElementBlock("div", {
       key: 1,
@@ -5575,7 +5594,10 @@ function _sfc_render$o(_ctx, _cache, $props, $setup, $data, $options) {
     ])) : createCommentVNode("", true)
   ], 2);
 }
-var RoomsSearch = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$o]]);
+var RoomsSearch = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$n]]);
+function getDefaultExportFromCjs(x) {
+  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
+}
 var linkify = {};
 var _class$4 = {};
 _class$4.__esModule = true;
@@ -6590,10 +6612,10 @@ const _sfc_main$n = {
   }
 };
 const _hoisted_1$n = { class: "vac-image-link-container" };
-const _hoisted_2$k = { class: "vac-image-link-message" };
-const _hoisted_3$h = ["innerHTML"];
-const _hoisted_4$g = ["innerHTML"];
-function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$j = { class: "vac-image-link-message" };
+const _hoisted_3$i = ["innerHTML"];
+const _hoisted_4$h = ["innerHTML"];
+function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createElementBlock("div", {
     class: normalizeClass(["vac-format-message-wrapper", { "vac-text-ellipsis": $props.singleLine }])
@@ -6647,13 +6669,13 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
                     })
                   }, null, 4)
                 ]),
-                createBaseVNode("div", _hoisted_2$k, [
+                createBaseVNode("div", _hoisted_2$j, [
                   createBaseVNode("span", null, toDisplayString(message.value), 1)
                 ])
               ], 64)) : (openBlock(), createElementBlock("span", {
                 key: 2,
                 innerHTML: message.value
-              }, null, 8, _hoisted_3$h))
+              }, null, 8, _hoisted_3$i))
             ]),
             _: 2
           }, 1032, ["class", "href", "target", "rel", "onClick"]))
@@ -6662,10 +6684,10 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
     ], 2)) : (openBlock(), createElementBlock("div", {
       key: 1,
       innerHTML: $options.formattedContent
-    }, null, 8, _hoisted_4$g))
+    }, null, 8, _hoisted_4$h))
   ], 2);
 }
-var FormatMessage = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$n]]);
+var FormatMessage = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$m]]);
 const HANDLERS_PROPERTY = "__v-click-outside";
 const HAS_WINDOWS = typeof window !== "undefined";
 const HAS_NAVIGATOR = typeof navigator !== "undefined";
@@ -6793,19 +6815,1718 @@ function isImageFile(file) {
   return checkMediaType(IMAGE_TYPES, file);
 }
 function isVideoFile(file) {
-  return checkMediaType(VIDEO_TYPES, file);
+  var _a;
+  return !((_a = file.type) == null ? void 0 : _a.toLowerCase().startsWith("audio/")) && checkMediaType(VIDEO_TYPES, file);
 }
 function isImageVideoFile(file) {
   return checkMediaType(IMAGE_TYPES, file) || checkMediaType(VIDEO_TYPES, file);
 }
 function isAudioFile(file) {
-  return checkMediaType(AUDIO_TYPES, file);
+  var _a;
+  return ((_a = file == null ? void 0 : file.type) == null ? void 0 : _a.toLowerCase().startsWith("audio/")) || checkMediaType(AUDIO_TYPES, file);
 }
+const matchIconName = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const stringToIcon = (value, validate, allowSimpleName, provider = "") => {
+  const colonSeparated = value.split(":");
+  if (value.slice(0, 1) === "@") {
+    if (colonSeparated.length < 2 || colonSeparated.length > 3) {
+      return null;
+    }
+    provider = colonSeparated.shift().slice(1);
+  }
+  if (colonSeparated.length > 3 || !colonSeparated.length) {
+    return null;
+  }
+  if (colonSeparated.length > 1) {
+    const name2 = colonSeparated.pop();
+    const prefix = colonSeparated.pop();
+    const result = {
+      provider: colonSeparated.length > 0 ? colonSeparated[0] : provider,
+      prefix,
+      name: name2
+    };
+    return validate && !validateIconName(result) ? null : result;
+  }
+  const name = colonSeparated[0];
+  const dashSeparated = name.split("-");
+  if (dashSeparated.length > 1) {
+    const result = {
+      provider,
+      prefix: dashSeparated.shift(),
+      name: dashSeparated.join("-")
+    };
+    return validate && !validateIconName(result) ? null : result;
+  }
+  if (allowSimpleName && provider === "") {
+    const result = {
+      provider,
+      prefix: "",
+      name
+    };
+    return validate && !validateIconName(result, allowSimpleName) ? null : result;
+  }
+  return null;
+};
+const validateIconName = (icon, allowSimpleName) => {
+  if (!icon) {
+    return false;
+  }
+  return !!((icon.provider === "" || icon.provider.match(matchIconName)) && (allowSimpleName && icon.prefix === "" || icon.prefix.match(matchIconName)) && icon.name.match(matchIconName));
+};
+const defaultIconDimensions = Object.freeze(
+  {
+    left: 0,
+    top: 0,
+    width: 16,
+    height: 16
+  }
+);
+const defaultIconTransformations = Object.freeze({
+  rotate: 0,
+  vFlip: false,
+  hFlip: false
+});
+const defaultIconProps = Object.freeze({
+  ...defaultIconDimensions,
+  ...defaultIconTransformations
+});
+const defaultExtendedIconProps = Object.freeze({
+  ...defaultIconProps,
+  body: "",
+  hidden: false
+});
+function mergeIconTransformations(obj1, obj2) {
+  const result = {};
+  if (!obj1.hFlip !== !obj2.hFlip) {
+    result.hFlip = true;
+  }
+  if (!obj1.vFlip !== !obj2.vFlip) {
+    result.vFlip = true;
+  }
+  const rotate = ((obj1.rotate || 0) + (obj2.rotate || 0)) % 4;
+  if (rotate) {
+    result.rotate = rotate;
+  }
+  return result;
+}
+function mergeIconData(parent, child) {
+  const result = mergeIconTransformations(parent, child);
+  for (const key in defaultExtendedIconProps) {
+    if (key in defaultIconTransformations) {
+      if (key in parent && !(key in result)) {
+        result[key] = defaultIconTransformations[key];
+      }
+    } else if (key in child) {
+      result[key] = child[key];
+    } else if (key in parent) {
+      result[key] = parent[key];
+    }
+  }
+  return result;
+}
+function getIconsTree(data2, names) {
+  const icons = data2.icons;
+  const aliases = data2.aliases || /* @__PURE__ */ Object.create(null);
+  const resolved = /* @__PURE__ */ Object.create(null);
+  function resolve3(name) {
+    if (icons[name]) {
+      return resolved[name] = [];
+    }
+    if (!(name in resolved)) {
+      resolved[name] = null;
+      const parent = aliases[name] && aliases[name].parent;
+      const value = parent && resolve3(parent);
+      if (value) {
+        resolved[name] = [parent].concat(value);
+      }
+    }
+    return resolved[name];
+  }
+  (names || Object.keys(icons).concat(Object.keys(aliases))).forEach(resolve3);
+  return resolved;
+}
+function internalGetIconData(data2, name, tree) {
+  const icons = data2.icons;
+  const aliases = data2.aliases || /* @__PURE__ */ Object.create(null);
+  let currentProps = {};
+  function parse(name2) {
+    currentProps = mergeIconData(
+      icons[name2] || aliases[name2],
+      currentProps
+    );
+  }
+  parse(name);
+  tree.forEach(parse);
+  return mergeIconData(data2, currentProps);
+}
+function parseIconSet(data2, callback) {
+  const names = [];
+  if (typeof data2 !== "object" || typeof data2.icons !== "object") {
+    return names;
+  }
+  if (data2.not_found instanceof Array) {
+    data2.not_found.forEach((name) => {
+      callback(name, null);
+      names.push(name);
+    });
+  }
+  const tree = getIconsTree(data2);
+  for (const name in tree) {
+    const item = tree[name];
+    if (item) {
+      callback(name, internalGetIconData(data2, name, item));
+      names.push(name);
+    }
+  }
+  return names;
+}
+const optionalPropertyDefaults = {
+  provider: "",
+  aliases: {},
+  not_found: {},
+  ...defaultIconDimensions
+};
+function checkOptionalProps(item, defaults2) {
+  for (const prop in defaults2) {
+    if (prop in item && typeof item[prop] !== typeof defaults2[prop]) {
+      return false;
+    }
+  }
+  return true;
+}
+function quicklyValidateIconSet(obj) {
+  if (typeof obj !== "object" || obj === null) {
+    return null;
+  }
+  const data2 = obj;
+  if (typeof data2.prefix !== "string" || !obj.icons || typeof obj.icons !== "object") {
+    return null;
+  }
+  if (!checkOptionalProps(obj, optionalPropertyDefaults)) {
+    return null;
+  }
+  const icons = data2.icons;
+  for (const name in icons) {
+    const icon = icons[name];
+    if (!name.match(matchIconName) || typeof icon.body !== "string" || !checkOptionalProps(
+      icon,
+      defaultExtendedIconProps
+    )) {
+      return null;
+    }
+  }
+  const aliases = data2.aliases || /* @__PURE__ */ Object.create(null);
+  for (const name in aliases) {
+    const icon = aliases[name];
+    const parent = icon.parent;
+    if (!name.match(matchIconName) || typeof parent !== "string" || !icons[parent] && !aliases[parent] || !checkOptionalProps(
+      icon,
+      defaultExtendedIconProps
+    )) {
+      return null;
+    }
+  }
+  return data2;
+}
+const dataStorage = /* @__PURE__ */ Object.create(null);
+function newStorage(provider, prefix) {
+  return {
+    provider,
+    prefix,
+    icons: /* @__PURE__ */ Object.create(null),
+    missing: /* @__PURE__ */ new Set()
+  };
+}
+function getStorage(provider, prefix) {
+  const providerStorage = dataStorage[provider] || (dataStorage[provider] = /* @__PURE__ */ Object.create(null));
+  return providerStorage[prefix] || (providerStorage[prefix] = newStorage(provider, prefix));
+}
+function addIconSet(storage2, data2) {
+  if (!quicklyValidateIconSet(data2)) {
+    return [];
+  }
+  return parseIconSet(data2, (name, icon) => {
+    if (icon) {
+      storage2.icons[name] = icon;
+    } else {
+      storage2.missing.add(name);
+    }
+  });
+}
+function addIconToStorage(storage2, name, icon) {
+  try {
+    if (typeof icon.body === "string") {
+      storage2.icons[name] = { ...icon };
+      return true;
+    }
+  } catch (err) {
+  }
+  return false;
+}
+let simpleNames = false;
+function allowSimpleNames(allow) {
+  if (typeof allow === "boolean") {
+    simpleNames = allow;
+  }
+  return simpleNames;
+}
+function getIconData(name) {
+  const icon = typeof name === "string" ? stringToIcon(name, true, simpleNames) : name;
+  if (icon) {
+    const storage2 = getStorage(icon.provider, icon.prefix);
+    const iconName = icon.name;
+    return storage2.icons[iconName] || (storage2.missing.has(iconName) ? null : void 0);
+  }
+}
+function addIcon(name, data2) {
+  const icon = stringToIcon(name, true, simpleNames);
+  if (!icon) {
+    return false;
+  }
+  const storage2 = getStorage(icon.provider, icon.prefix);
+  return addIconToStorage(storage2, icon.name, data2);
+}
+function addCollection(data2, provider) {
+  if (typeof data2 !== "object") {
+    return false;
+  }
+  if (typeof provider !== "string") {
+    provider = data2.provider || "";
+  }
+  if (simpleNames && !provider && !data2.prefix) {
+    let added = false;
+    if (quicklyValidateIconSet(data2)) {
+      data2.prefix = "";
+      parseIconSet(data2, (name, icon) => {
+        if (icon && addIcon(name, icon)) {
+          added = true;
+        }
+      });
+    }
+    return added;
+  }
+  const prefix = data2.prefix;
+  if (!validateIconName({
+    provider,
+    prefix,
+    name: "a"
+  })) {
+    return false;
+  }
+  const storage2 = getStorage(provider, prefix);
+  return !!addIconSet(storage2, data2);
+}
+const defaultIconSizeCustomisations = Object.freeze({
+  width: null,
+  height: null
+});
+const defaultIconCustomisations = Object.freeze({
+  ...defaultIconSizeCustomisations,
+  ...defaultIconTransformations
+});
+const unitsSplit = /(-?[0-9.]*[0-9]+[0-9.]*)/g;
+const unitsTest = /^-?[0-9.]*[0-9]+[0-9.]*$/g;
+function calculateSize(size2, ratio, precision) {
+  if (ratio === 1) {
+    return size2;
+  }
+  precision = precision || 100;
+  if (typeof size2 === "number") {
+    return Math.ceil(size2 * ratio * precision) / precision;
+  }
+  if (typeof size2 !== "string") {
+    return size2;
+  }
+  const oldParts = size2.split(unitsSplit);
+  if (oldParts === null || !oldParts.length) {
+    return size2;
+  }
+  const newParts = [];
+  let code = oldParts.shift();
+  let isNumber = unitsTest.test(code);
+  while (true) {
+    if (isNumber) {
+      const num = parseFloat(code);
+      if (isNaN(num)) {
+        newParts.push(code);
+      } else {
+        newParts.push(Math.ceil(num * ratio * precision) / precision);
+      }
+    } else {
+      newParts.push(code);
+    }
+    code = oldParts.shift();
+    if (code === void 0) {
+      return newParts.join("");
+    }
+    isNumber = !isNumber;
+  }
+}
+const isUnsetKeyword = (value) => value === "unset" || value === "undefined" || value === "none";
+function iconToSVG(icon, customisations) {
+  const fullIcon = {
+    ...defaultIconProps,
+    ...icon
+  };
+  const fullCustomisations = {
+    ...defaultIconCustomisations,
+    ...customisations
+  };
+  const box = {
+    left: fullIcon.left,
+    top: fullIcon.top,
+    width: fullIcon.width,
+    height: fullIcon.height
+  };
+  let body = fullIcon.body;
+  [fullIcon, fullCustomisations].forEach((props) => {
+    const transformations = [];
+    const hFlip = props.hFlip;
+    const vFlip = props.vFlip;
+    let rotation = props.rotate;
+    if (hFlip) {
+      if (vFlip) {
+        rotation += 2;
+      } else {
+        transformations.push(
+          "translate(" + (box.width + box.left).toString() + " " + (0 - box.top).toString() + ")"
+        );
+        transformations.push("scale(-1 1)");
+        box.top = box.left = 0;
+      }
+    } else if (vFlip) {
+      transformations.push(
+        "translate(" + (0 - box.left).toString() + " " + (box.height + box.top).toString() + ")"
+      );
+      transformations.push("scale(1 -1)");
+      box.top = box.left = 0;
+    }
+    let tempValue;
+    if (rotation < 0) {
+      rotation -= Math.floor(rotation / 4) * 4;
+    }
+    rotation = rotation % 4;
+    switch (rotation) {
+      case 1:
+        tempValue = box.height / 2 + box.top;
+        transformations.unshift(
+          "rotate(90 " + tempValue.toString() + " " + tempValue.toString() + ")"
+        );
+        break;
+      case 2:
+        transformations.unshift(
+          "rotate(180 " + (box.width / 2 + box.left).toString() + " " + (box.height / 2 + box.top).toString() + ")"
+        );
+        break;
+      case 3:
+        tempValue = box.width / 2 + box.left;
+        transformations.unshift(
+          "rotate(-90 " + tempValue.toString() + " " + tempValue.toString() + ")"
+        );
+        break;
+    }
+    if (rotation % 2 === 1) {
+      if (box.left !== box.top) {
+        tempValue = box.left;
+        box.left = box.top;
+        box.top = tempValue;
+      }
+      if (box.width !== box.height) {
+        tempValue = box.width;
+        box.width = box.height;
+        box.height = tempValue;
+      }
+    }
+    if (transformations.length) {
+      body = '<g transform="' + transformations.join(" ") + '">' + body + "</g>";
+    }
+  });
+  const customisationsWidth = fullCustomisations.width;
+  const customisationsHeight = fullCustomisations.height;
+  const boxWidth = box.width;
+  const boxHeight = box.height;
+  let width;
+  let height;
+  if (customisationsWidth === null) {
+    height = customisationsHeight === null ? "1em" : customisationsHeight === "auto" ? boxHeight : customisationsHeight;
+    width = calculateSize(height, boxWidth / boxHeight);
+  } else {
+    width = customisationsWidth === "auto" ? boxWidth : customisationsWidth;
+    height = customisationsHeight === null ? calculateSize(width, boxHeight / boxWidth) : customisationsHeight === "auto" ? boxHeight : customisationsHeight;
+  }
+  const attributes = {};
+  const setAttr = (prop, value) => {
+    if (!isUnsetKeyword(value)) {
+      attributes[prop] = value.toString();
+    }
+  };
+  setAttr("width", width);
+  setAttr("height", height);
+  attributes.viewBox = box.left.toString() + " " + box.top.toString() + " " + boxWidth.toString() + " " + boxHeight.toString();
+  return {
+    attributes,
+    body
+  };
+}
+const regex = /\sid="(\S+)"/g;
+const randomPrefix = "IconifyId" + Date.now().toString(16) + (Math.random() * 16777216 | 0).toString(16);
+let counter = 0;
+function replaceIDs(body, prefix = randomPrefix) {
+  const ids = [];
+  let match;
+  while (match = regex.exec(body)) {
+    ids.push(match[1]);
+  }
+  if (!ids.length) {
+    return body;
+  }
+  const suffix = "suffix" + (Math.random() * 16777216 | Date.now()).toString(16);
+  ids.forEach((id) => {
+    const newID = typeof prefix === "function" ? prefix(id) : prefix + (counter++).toString();
+    const escapedID = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    body = body.replace(
+      new RegExp('([#;"])(' + escapedID + ')([")]|\\.[a-z])', "g"),
+      "$1" + newID + suffix + "$3"
+    );
+  });
+  body = body.replace(new RegExp(suffix, "g"), "");
+  return body;
+}
+const storage = /* @__PURE__ */ Object.create(null);
+function setAPIModule(provider, item) {
+  storage[provider] = item;
+}
+function getAPIModule(provider) {
+  return storage[provider] || storage[""];
+}
+function createAPIConfig(source) {
+  let resources;
+  if (typeof source.resources === "string") {
+    resources = [source.resources];
+  } else {
+    resources = source.resources;
+    if (!(resources instanceof Array) || !resources.length) {
+      return null;
+    }
+  }
+  const result = {
+    resources,
+    path: source.path || "/",
+    maxURL: source.maxURL || 500,
+    rotate: source.rotate || 750,
+    timeout: source.timeout || 5e3,
+    random: source.random === true,
+    index: source.index || 0,
+    dataAfterTimeout: source.dataAfterTimeout !== false
+  };
+  return result;
+}
+const configStorage = /* @__PURE__ */ Object.create(null);
+const fallBackAPISources = [
+  "https://api.simplesvg.com",
+  "https://api.unisvg.com"
+];
+const fallBackAPI = [];
+while (fallBackAPISources.length > 0) {
+  if (fallBackAPISources.length === 1) {
+    fallBackAPI.push(fallBackAPISources.shift());
+  } else {
+    if (Math.random() > 0.5) {
+      fallBackAPI.push(fallBackAPISources.shift());
+    } else {
+      fallBackAPI.push(fallBackAPISources.pop());
+    }
+  }
+}
+configStorage[""] = createAPIConfig({
+  resources: ["https://api.iconify.design"].concat(fallBackAPI)
+});
+function addAPIProvider(provider, customConfig) {
+  const config = createAPIConfig(customConfig);
+  if (config === null) {
+    return false;
+  }
+  configStorage[provider] = config;
+  return true;
+}
+function getAPIConfig(provider) {
+  return configStorage[provider];
+}
+const detectFetch = () => {
+  let callback;
+  try {
+    callback = fetch;
+    if (typeof callback === "function") {
+      return callback;
+    }
+  } catch (err) {
+  }
+};
+let fetchModule = detectFetch();
+function calculateMaxLength(provider, prefix) {
+  const config = getAPIConfig(provider);
+  if (!config) {
+    return 0;
+  }
+  let result;
+  if (!config.maxURL) {
+    result = 0;
+  } else {
+    let maxHostLength = 0;
+    config.resources.forEach((item) => {
+      const host = item;
+      maxHostLength = Math.max(maxHostLength, host.length);
+    });
+    const url = prefix + ".json?icons=";
+    result = config.maxURL - maxHostLength - config.path.length - url.length;
+  }
+  return result;
+}
+function shouldAbort(status) {
+  return status === 404;
+}
+const prepare = (provider, prefix, icons) => {
+  const results = [];
+  const maxLength = calculateMaxLength(provider, prefix);
+  const type = "icons";
+  let item = {
+    type,
+    provider,
+    prefix,
+    icons: []
+  };
+  let length = 0;
+  icons.forEach((name, index) => {
+    length += name.length + 1;
+    if (length >= maxLength && index > 0) {
+      results.push(item);
+      item = {
+        type,
+        provider,
+        prefix,
+        icons: []
+      };
+      length = name.length;
+    }
+    item.icons.push(name);
+  });
+  results.push(item);
+  return results;
+};
+function getPath(provider) {
+  if (typeof provider === "string") {
+    const config = getAPIConfig(provider);
+    if (config) {
+      return config.path;
+    }
+  }
+  return "/";
+}
+const send = (host, params, callback) => {
+  if (!fetchModule) {
+    callback("abort", 424);
+    return;
+  }
+  let path = getPath(params.provider);
+  switch (params.type) {
+    case "icons": {
+      const prefix = params.prefix;
+      const icons = params.icons;
+      const iconsList = icons.join(",");
+      const urlParams = new URLSearchParams({
+        icons: iconsList
+      });
+      path += prefix + ".json?" + urlParams.toString();
+      break;
+    }
+    case "custom": {
+      const uri = params.uri;
+      path += uri.slice(0, 1) === "/" ? uri.slice(1) : uri;
+      break;
+    }
+    default:
+      callback("abort", 400);
+      return;
+  }
+  let defaultError = 503;
+  fetchModule(host + path).then((response) => {
+    const status = response.status;
+    if (status !== 200) {
+      setTimeout(() => {
+        callback(shouldAbort(status) ? "abort" : "next", status);
+      });
+      return;
+    }
+    defaultError = 501;
+    return response.json();
+  }).then((data2) => {
+    if (typeof data2 !== "object" || data2 === null) {
+      setTimeout(() => {
+        if (data2 === 404) {
+          callback("abort", data2);
+        } else {
+          callback("next", defaultError);
+        }
+      });
+      return;
+    }
+    setTimeout(() => {
+      callback("success", data2);
+    });
+  }).catch(() => {
+    callback("next", defaultError);
+  });
+};
+const fetchAPIModule = {
+  prepare,
+  send
+};
+function sortIcons(icons) {
+  const result = {
+    loaded: [],
+    missing: [],
+    pending: []
+  };
+  const storage2 = /* @__PURE__ */ Object.create(null);
+  icons.sort((a, b) => {
+    if (a.provider !== b.provider) {
+      return a.provider.localeCompare(b.provider);
+    }
+    if (a.prefix !== b.prefix) {
+      return a.prefix.localeCompare(b.prefix);
+    }
+    return a.name.localeCompare(b.name);
+  });
+  let lastIcon = {
+    provider: "",
+    prefix: "",
+    name: ""
+  };
+  icons.forEach((icon) => {
+    if (lastIcon.name === icon.name && lastIcon.prefix === icon.prefix && lastIcon.provider === icon.provider) {
+      return;
+    }
+    lastIcon = icon;
+    const provider = icon.provider;
+    const prefix = icon.prefix;
+    const name = icon.name;
+    const providerStorage = storage2[provider] || (storage2[provider] = /* @__PURE__ */ Object.create(null));
+    const localStorage = providerStorage[prefix] || (providerStorage[prefix] = getStorage(provider, prefix));
+    let list;
+    if (name in localStorage.icons) {
+      list = result.loaded;
+    } else if (prefix === "" || localStorage.missing.has(name)) {
+      list = result.missing;
+    } else {
+      list = result.pending;
+    }
+    const item = {
+      provider,
+      prefix,
+      name
+    };
+    list.push(item);
+  });
+  return result;
+}
+function removeCallback(storages, id) {
+  storages.forEach((storage2) => {
+    const items = storage2.loaderCallbacks;
+    if (items) {
+      storage2.loaderCallbacks = items.filter((row) => row.id !== id);
+    }
+  });
+}
+function updateCallbacks(storage2) {
+  if (!storage2.pendingCallbacksFlag) {
+    storage2.pendingCallbacksFlag = true;
+    setTimeout(() => {
+      storage2.pendingCallbacksFlag = false;
+      const items = storage2.loaderCallbacks ? storage2.loaderCallbacks.slice(0) : [];
+      if (!items.length) {
+        return;
+      }
+      let hasPending = false;
+      const provider = storage2.provider;
+      const prefix = storage2.prefix;
+      items.forEach((item) => {
+        const icons = item.icons;
+        const oldLength = icons.pending.length;
+        icons.pending = icons.pending.filter((icon) => {
+          if (icon.prefix !== prefix) {
+            return true;
+          }
+          const name = icon.name;
+          if (storage2.icons[name]) {
+            icons.loaded.push({
+              provider,
+              prefix,
+              name
+            });
+          } else if (storage2.missing.has(name)) {
+            icons.missing.push({
+              provider,
+              prefix,
+              name
+            });
+          } else {
+            hasPending = true;
+            return true;
+          }
+          return false;
+        });
+        if (icons.pending.length !== oldLength) {
+          if (!hasPending) {
+            removeCallback([storage2], item.id);
+          }
+          item.callback(
+            icons.loaded.slice(0),
+            icons.missing.slice(0),
+            icons.pending.slice(0),
+            item.abort
+          );
+        }
+      });
+    });
+  }
+}
+let idCounter = 0;
+function storeCallback(callback, icons, pendingSources) {
+  const id = idCounter++;
+  const abort = removeCallback.bind(null, pendingSources, id);
+  if (!icons.pending.length) {
+    return abort;
+  }
+  const item = {
+    id,
+    icons,
+    callback,
+    abort
+  };
+  pendingSources.forEach((storage2) => {
+    (storage2.loaderCallbacks || (storage2.loaderCallbacks = [])).push(item);
+  });
+  return abort;
+}
+function listToIcons(list, validate = true, simpleNames2 = false) {
+  const result = [];
+  list.forEach((item) => {
+    const icon = typeof item === "string" ? stringToIcon(item, validate, simpleNames2) : item;
+    if (icon) {
+      result.push(icon);
+    }
+  });
+  return result;
+}
+var defaultConfig = {
+  resources: [],
+  index: 0,
+  timeout: 2e3,
+  rotate: 750,
+  random: false,
+  dataAfterTimeout: false
+};
+function sendQuery(config, payload, query, done) {
+  const resourcesCount = config.resources.length;
+  const startIndex = config.random ? Math.floor(Math.random() * resourcesCount) : config.index;
+  let resources;
+  if (config.random) {
+    let list = config.resources.slice(0);
+    resources = [];
+    while (list.length > 1) {
+      const nextIndex = Math.floor(Math.random() * list.length);
+      resources.push(list[nextIndex]);
+      list = list.slice(0, nextIndex).concat(list.slice(nextIndex + 1));
+    }
+    resources = resources.concat(list);
+  } else {
+    resources = config.resources.slice(startIndex).concat(config.resources.slice(0, startIndex));
+  }
+  const startTime = Date.now();
+  let status = "pending";
+  let queriesSent = 0;
+  let lastError;
+  let timer = null;
+  let queue2 = [];
+  let doneCallbacks = [];
+  if (typeof done === "function") {
+    doneCallbacks.push(done);
+  }
+  function resetTimer() {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+  function abort() {
+    if (status === "pending") {
+      status = "aborted";
+    }
+    resetTimer();
+    queue2.forEach((item) => {
+      if (item.status === "pending") {
+        item.status = "aborted";
+      }
+    });
+    queue2 = [];
+  }
+  function subscribe(callback, overwrite) {
+    if (overwrite) {
+      doneCallbacks = [];
+    }
+    if (typeof callback === "function") {
+      doneCallbacks.push(callback);
+    }
+  }
+  function getQueryStatus() {
+    return {
+      startTime,
+      payload,
+      status,
+      queriesSent,
+      queriesPending: queue2.length,
+      subscribe,
+      abort
+    };
+  }
+  function failQuery() {
+    status = "failed";
+    doneCallbacks.forEach((callback) => {
+      callback(void 0, lastError);
+    });
+  }
+  function clearQueue() {
+    queue2.forEach((item) => {
+      if (item.status === "pending") {
+        item.status = "aborted";
+      }
+    });
+    queue2 = [];
+  }
+  function moduleResponse(item, response, data2) {
+    const isError = response !== "success";
+    queue2 = queue2.filter((queued) => queued !== item);
+    switch (status) {
+      case "pending":
+        break;
+      case "failed":
+        if (isError || !config.dataAfterTimeout) {
+          return;
+        }
+        break;
+      default:
+        return;
+    }
+    if (response === "abort") {
+      lastError = data2;
+      failQuery();
+      return;
+    }
+    if (isError) {
+      lastError = data2;
+      if (!queue2.length) {
+        if (!resources.length) {
+          failQuery();
+        } else {
+          execNext();
+        }
+      }
+      return;
+    }
+    resetTimer();
+    clearQueue();
+    if (!config.random) {
+      const index = config.resources.indexOf(item.resource);
+      if (index !== -1 && index !== config.index) {
+        config.index = index;
+      }
+    }
+    status = "completed";
+    doneCallbacks.forEach((callback) => {
+      callback(data2);
+    });
+  }
+  function execNext() {
+    if (status !== "pending") {
+      return;
+    }
+    resetTimer();
+    const resource = resources.shift();
+    if (resource === void 0) {
+      if (queue2.length) {
+        timer = setTimeout(() => {
+          resetTimer();
+          if (status === "pending") {
+            clearQueue();
+            failQuery();
+          }
+        }, config.timeout);
+        return;
+      }
+      failQuery();
+      return;
+    }
+    const item = {
+      status: "pending",
+      resource,
+      callback: (status2, data2) => {
+        moduleResponse(item, status2, data2);
+      }
+    };
+    queue2.push(item);
+    queriesSent++;
+    timer = setTimeout(execNext, config.rotate);
+    query(resource, payload, item.callback);
+  }
+  setTimeout(execNext);
+  return getQueryStatus;
+}
+function initRedundancy(cfg) {
+  const config = {
+    ...defaultConfig,
+    ...cfg
+  };
+  let queries = [];
+  function cleanup() {
+    queries = queries.filter((item) => item().status === "pending");
+  }
+  function query(payload, queryCallback, doneCallback) {
+    const query2 = sendQuery(
+      config,
+      payload,
+      queryCallback,
+      (data2, error) => {
+        cleanup();
+        if (doneCallback) {
+          doneCallback(data2, error);
+        }
+      }
+    );
+    queries.push(query2);
+    return query2;
+  }
+  function find3(callback) {
+    return queries.find((value) => {
+      return callback(value);
+    }) || null;
+  }
+  const instance2 = {
+    query,
+    find: find3,
+    setIndex: (index) => {
+      config.index = index;
+    },
+    getIndex: () => config.index,
+    cleanup
+  };
+  return instance2;
+}
+function emptyCallback$1() {
+}
+const redundancyCache = /* @__PURE__ */ Object.create(null);
+function getRedundancyCache(provider) {
+  if (!redundancyCache[provider]) {
+    const config = getAPIConfig(provider);
+    if (!config) {
+      return;
+    }
+    const redundancy = initRedundancy(config);
+    const cachedReundancy = {
+      config,
+      redundancy
+    };
+    redundancyCache[provider] = cachedReundancy;
+  }
+  return redundancyCache[provider];
+}
+function sendAPIQuery(target, query, callback) {
+  let redundancy;
+  let send2;
+  if (typeof target === "string") {
+    const api = getAPIModule(target);
+    if (!api) {
+      callback(void 0, 424);
+      return emptyCallback$1;
+    }
+    send2 = api.send;
+    const cached = getRedundancyCache(target);
+    if (cached) {
+      redundancy = cached.redundancy;
+    }
+  } else {
+    const config = createAPIConfig(target);
+    if (config) {
+      redundancy = initRedundancy(config);
+      const moduleKey = target.resources ? target.resources[0] : "";
+      const api = getAPIModule(moduleKey);
+      if (api) {
+        send2 = api.send;
+      }
+    }
+  }
+  if (!redundancy || !send2) {
+    callback(void 0, 424);
+    return emptyCallback$1;
+  }
+  return redundancy.query(query, send2, callback)().abort;
+}
+const browserCacheVersion = "iconify2";
+const browserCachePrefix = "iconify";
+const browserCacheCountKey = browserCachePrefix + "-count";
+const browserCacheVersionKey = browserCachePrefix + "-version";
+const browserStorageHour = 36e5;
+const browserStorageCacheExpiration = 168;
+function getStoredItem(func, key) {
+  try {
+    return func.getItem(key);
+  } catch (err) {
+  }
+}
+function setStoredItem(func, key, value) {
+  try {
+    func.setItem(key, value);
+    return true;
+  } catch (err) {
+  }
+}
+function removeStoredItem(func, key) {
+  try {
+    func.removeItem(key);
+  } catch (err) {
+  }
+}
+function setBrowserStorageItemsCount(storage2, value) {
+  return setStoredItem(storage2, browserCacheCountKey, value.toString());
+}
+function getBrowserStorageItemsCount(storage2) {
+  return parseInt(getStoredItem(storage2, browserCacheCountKey)) || 0;
+}
+const browserStorageConfig = {
+  local: true,
+  session: true
+};
+const browserStorageEmptyItems = {
+  local: /* @__PURE__ */ new Set(),
+  session: /* @__PURE__ */ new Set()
+};
+let browserStorageStatus = false;
+function setBrowserStorageStatus(status) {
+  browserStorageStatus = status;
+}
+let _window = typeof window === "undefined" ? {} : window;
+function getBrowserStorage(key) {
+  const attr2 = key + "Storage";
+  try {
+    if (_window && _window[attr2] && typeof _window[attr2].length === "number") {
+      return _window[attr2];
+    }
+  } catch (err) {
+  }
+  browserStorageConfig[key] = false;
+}
+function iterateBrowserStorage(key, callback) {
+  const func = getBrowserStorage(key);
+  if (!func) {
+    return;
+  }
+  const version2 = getStoredItem(func, browserCacheVersionKey);
+  if (version2 !== browserCacheVersion) {
+    if (version2) {
+      const total2 = getBrowserStorageItemsCount(func);
+      for (let i = 0; i < total2; i++) {
+        removeStoredItem(func, browserCachePrefix + i.toString());
+      }
+    }
+    setStoredItem(func, browserCacheVersionKey, browserCacheVersion);
+    setBrowserStorageItemsCount(func, 0);
+    return;
+  }
+  const minTime = Math.floor(Date.now() / browserStorageHour) - browserStorageCacheExpiration;
+  const parseItem = (index) => {
+    const name = browserCachePrefix + index.toString();
+    const item = getStoredItem(func, name);
+    if (typeof item !== "string") {
+      return;
+    }
+    try {
+      const data2 = JSON.parse(item);
+      if (typeof data2 === "object" && typeof data2.cached === "number" && data2.cached > minTime && typeof data2.provider === "string" && typeof data2.data === "object" && typeof data2.data.prefix === "string" && callback(data2, index)) {
+        return true;
+      }
+    } catch (err) {
+    }
+    removeStoredItem(func, name);
+  };
+  let total = getBrowserStorageItemsCount(func);
+  for (let i = total - 1; i >= 0; i--) {
+    if (!parseItem(i)) {
+      if (i === total - 1) {
+        total--;
+        setBrowserStorageItemsCount(func, total);
+      } else {
+        browserStorageEmptyItems[key].add(i);
+      }
+    }
+  }
+}
+function initBrowserStorage() {
+  if (browserStorageStatus) {
+    return;
+  }
+  setBrowserStorageStatus(true);
+  for (const key in browserStorageConfig) {
+    iterateBrowserStorage(key, (item) => {
+      const iconSet = item.data;
+      const provider = item.provider;
+      const prefix = iconSet.prefix;
+      const storage2 = getStorage(
+        provider,
+        prefix
+      );
+      if (!addIconSet(storage2, iconSet).length) {
+        return false;
+      }
+      const lastModified = iconSet.lastModified || -1;
+      storage2.lastModifiedCached = storage2.lastModifiedCached ? Math.min(storage2.lastModifiedCached, lastModified) : lastModified;
+      return true;
+    });
+  }
+}
+function updateLastModified(storage2, lastModified) {
+  const lastValue = storage2.lastModifiedCached;
+  if (lastValue && lastValue >= lastModified) {
+    return lastValue === lastModified;
+  }
+  storage2.lastModifiedCached = lastModified;
+  if (lastValue) {
+    for (const key in browserStorageConfig) {
+      iterateBrowserStorage(key, (item) => {
+        const iconSet = item.data;
+        return item.provider !== storage2.provider || iconSet.prefix !== storage2.prefix || iconSet.lastModified === lastModified;
+      });
+    }
+  }
+  return true;
+}
+function storeInBrowserStorage(storage2, data2) {
+  if (!browserStorageStatus) {
+    initBrowserStorage();
+  }
+  function store(key) {
+    let func;
+    if (!browserStorageConfig[key] || !(func = getBrowserStorage(key))) {
+      return;
+    }
+    const set2 = browserStorageEmptyItems[key];
+    let index;
+    if (set2.size) {
+      set2.delete(index = Array.from(set2).shift());
+    } else {
+      index = getBrowserStorageItemsCount(func);
+      if (!setBrowserStorageItemsCount(func, index + 1)) {
+        return;
+      }
+    }
+    const item = {
+      cached: Math.floor(Date.now() / browserStorageHour),
+      provider: storage2.provider,
+      data: data2
+    };
+    return setStoredItem(
+      func,
+      browserCachePrefix + index.toString(),
+      JSON.stringify(item)
+    );
+  }
+  if (data2.lastModified && !updateLastModified(storage2, data2.lastModified)) {
+    return;
+  }
+  if (!Object.keys(data2.icons).length) {
+    return;
+  }
+  if (data2.not_found) {
+    data2 = Object.assign({}, data2);
+    delete data2.not_found;
+  }
+  if (!store("local")) {
+    store("session");
+  }
+}
+function emptyCallback() {
+}
+function loadedNewIcons(storage2) {
+  if (!storage2.iconsLoaderFlag) {
+    storage2.iconsLoaderFlag = true;
+    setTimeout(() => {
+      storage2.iconsLoaderFlag = false;
+      updateCallbacks(storage2);
+    });
+  }
+}
+function loadNewIcons(storage2, icons) {
+  if (!storage2.iconsToLoad) {
+    storage2.iconsToLoad = icons;
+  } else {
+    storage2.iconsToLoad = storage2.iconsToLoad.concat(icons).sort();
+  }
+  if (!storage2.iconsQueueFlag) {
+    storage2.iconsQueueFlag = true;
+    setTimeout(() => {
+      storage2.iconsQueueFlag = false;
+      const { provider, prefix } = storage2;
+      const icons2 = storage2.iconsToLoad;
+      delete storage2.iconsToLoad;
+      let api;
+      if (!icons2 || !(api = getAPIModule(provider))) {
+        return;
+      }
+      const params = api.prepare(provider, prefix, icons2);
+      params.forEach((item) => {
+        sendAPIQuery(provider, item, (data2) => {
+          if (typeof data2 !== "object") {
+            item.icons.forEach((name) => {
+              storage2.missing.add(name);
+            });
+          } else {
+            try {
+              const parsed = addIconSet(
+                storage2,
+                data2
+              );
+              if (!parsed.length) {
+                return;
+              }
+              const pending = storage2.pendingIcons;
+              if (pending) {
+                parsed.forEach((name) => {
+                  pending.delete(name);
+                });
+              }
+              storeInBrowserStorage(storage2, data2);
+            } catch (err) {
+              console.error(err);
+            }
+          }
+          loadedNewIcons(storage2);
+        });
+      });
+    });
+  }
+}
+const loadIcons = (icons, callback) => {
+  const cleanedIcons = listToIcons(icons, true, allowSimpleNames());
+  const sortedIcons = sortIcons(cleanedIcons);
+  if (!sortedIcons.pending.length) {
+    let callCallback = true;
+    if (callback) {
+      setTimeout(() => {
+        if (callCallback) {
+          callback(
+            sortedIcons.loaded,
+            sortedIcons.missing,
+            sortedIcons.pending,
+            emptyCallback
+          );
+        }
+      });
+    }
+    return () => {
+      callCallback = false;
+    };
+  }
+  const newIcons = /* @__PURE__ */ Object.create(null);
+  const sources = [];
+  let lastProvider, lastPrefix;
+  sortedIcons.pending.forEach((icon) => {
+    const { provider, prefix } = icon;
+    if (prefix === lastPrefix && provider === lastProvider) {
+      return;
+    }
+    lastProvider = provider;
+    lastPrefix = prefix;
+    sources.push(getStorage(provider, prefix));
+    const providerNewIcons = newIcons[provider] || (newIcons[provider] = /* @__PURE__ */ Object.create(null));
+    if (!providerNewIcons[prefix]) {
+      providerNewIcons[prefix] = [];
+    }
+  });
+  sortedIcons.pending.forEach((icon) => {
+    const { provider, prefix, name } = icon;
+    const storage2 = getStorage(provider, prefix);
+    const pendingQueue = storage2.pendingIcons || (storage2.pendingIcons = /* @__PURE__ */ new Set());
+    if (!pendingQueue.has(name)) {
+      pendingQueue.add(name);
+      newIcons[provider][prefix].push(name);
+    }
+  });
+  sources.forEach((storage2) => {
+    const { provider, prefix } = storage2;
+    if (newIcons[provider][prefix].length) {
+      loadNewIcons(storage2, newIcons[provider][prefix]);
+    }
+  });
+  return callback ? storeCallback(callback, sortedIcons, sources) : emptyCallback;
+};
+function mergeCustomisations(defaults2, item) {
+  const result = {
+    ...defaults2
+  };
+  for (const key in item) {
+    const value = item[key];
+    const valueType = typeof value;
+    if (key in defaultIconSizeCustomisations) {
+      if (value === null || value && (valueType === "string" || valueType === "number")) {
+        result[key] = value;
+      }
+    } else if (valueType === typeof result[key]) {
+      result[key] = key === "rotate" ? value % 4 : value;
+    }
+  }
+  return result;
+}
+const separator = /[\s,]+/;
+function flipFromString(custom, flip) {
+  flip.split(separator).forEach((str) => {
+    const value = str.trim();
+    switch (value) {
+      case "horizontal":
+        custom.hFlip = true;
+        break;
+      case "vertical":
+        custom.vFlip = true;
+        break;
+    }
+  });
+}
+function rotateFromString(value, defaultValue = 0) {
+  const units = value.replace(/^-?[0-9.]*/, "");
+  function cleanup(value2) {
+    while (value2 < 0) {
+      value2 += 4;
+    }
+    return value2 % 4;
+  }
+  if (units === "") {
+    const num = parseInt(value);
+    return isNaN(num) ? 0 : cleanup(num);
+  } else if (units !== value) {
+    let split = 0;
+    switch (units) {
+      case "%":
+        split = 25;
+        break;
+      case "deg":
+        split = 90;
+    }
+    if (split) {
+      let num = parseFloat(value.slice(0, value.length - units.length));
+      if (isNaN(num)) {
+        return 0;
+      }
+      num = num / split;
+      return num % 1 === 0 ? cleanup(num) : 0;
+    }
+  }
+  return defaultValue;
+}
+function iconToHTML(body, attributes) {
+  let renderAttribsHTML = body.indexOf("xlink:") === -1 ? "" : ' xmlns:xlink="http://www.w3.org/1999/xlink"';
+  for (const attr2 in attributes) {
+    renderAttribsHTML += " " + attr2 + '="' + attributes[attr2] + '"';
+  }
+  return '<svg xmlns="http://www.w3.org/2000/svg"' + renderAttribsHTML + ">" + body + "</svg>";
+}
+function encodeSVGforURL(svg) {
+  return svg.replace(/"/g, "'").replace(/%/g, "%25").replace(/#/g, "%23").replace(/</g, "%3C").replace(/>/g, "%3E").replace(/\s+/g, " ");
+}
+function svgToData(svg) {
+  return "data:image/svg+xml," + encodeSVGforURL(svg);
+}
+function svgToURL(svg) {
+  return 'url("' + svgToData(svg) + '")';
+}
+const defaultExtendedIconCustomisations = {
+  ...defaultIconCustomisations,
+  inline: false
+};
+const svgDefaults = {
+  "xmlns": "http://www.w3.org/2000/svg",
+  "xmlns:xlink": "http://www.w3.org/1999/xlink",
+  "aria-hidden": true,
+  "role": "img"
+};
+const commonProps = {
+  display: "inline-block"
+};
+const monotoneProps = {
+  backgroundColor: "currentColor"
+};
+const coloredProps = {
+  backgroundColor: "transparent"
+};
+const propsToAdd = {
+  Image: "var(--svg)",
+  Repeat: "no-repeat",
+  Size: "100% 100%"
+};
+const propsToAddTo = {
+  webkitMask: monotoneProps,
+  mask: monotoneProps,
+  background: coloredProps
+};
+for (const prefix in propsToAddTo) {
+  const list = propsToAddTo[prefix];
+  for (const prop in propsToAdd) {
+    list[prefix + prop] = propsToAdd[prop];
+  }
+}
+const customisationAliases = {};
+["horizontal", "vertical"].forEach((prefix) => {
+  const attr2 = prefix.slice(0, 1) + "Flip";
+  customisationAliases[prefix + "-flip"] = attr2;
+  customisationAliases[prefix.slice(0, 1) + "-flip"] = attr2;
+  customisationAliases[prefix + "Flip"] = attr2;
+});
+function fixSize(value) {
+  return value + (value.match(/^[-0-9.]+$/) ? "px" : "");
+}
+const render = (icon, props) => {
+  const customisations = mergeCustomisations(defaultExtendedIconCustomisations, props);
+  const componentProps = { ...svgDefaults };
+  const mode = props.mode || "svg";
+  const style = {};
+  const propsStyle = props.style;
+  const customStyle = typeof propsStyle === "object" && !(propsStyle instanceof Array) ? propsStyle : {};
+  for (let key in props) {
+    const value = props[key];
+    if (value === void 0) {
+      continue;
+    }
+    switch (key) {
+      case "icon":
+      case "style":
+      case "onLoad":
+      case "mode":
+        break;
+      case "inline":
+      case "hFlip":
+      case "vFlip":
+        customisations[key] = value === true || value === "true" || value === 1;
+        break;
+      case "flip":
+        if (typeof value === "string") {
+          flipFromString(customisations, value);
+        }
+        break;
+      case "color":
+        style.color = value;
+        break;
+      case "rotate":
+        if (typeof value === "string") {
+          customisations[key] = rotateFromString(value);
+        } else if (typeof value === "number") {
+          customisations[key] = value;
+        }
+        break;
+      case "ariaHidden":
+      case "aria-hidden":
+        if (value !== true && value !== "true") {
+          delete componentProps["aria-hidden"];
+        }
+        break;
+      default: {
+        const alias = customisationAliases[key];
+        if (alias) {
+          if (value === true || value === "true" || value === 1) {
+            customisations[alias] = true;
+          }
+        } else if (defaultExtendedIconCustomisations[key] === void 0) {
+          componentProps[key] = value;
+        }
+      }
+    }
+  }
+  const item = iconToSVG(icon, customisations);
+  const renderAttribs = item.attributes;
+  if (customisations.inline) {
+    style.verticalAlign = "-0.125em";
+  }
+  if (mode === "svg") {
+    componentProps.style = {
+      ...style,
+      ...customStyle
+    };
+    Object.assign(componentProps, renderAttribs);
+    let localCounter = 0;
+    let id = props.id;
+    if (typeof id === "string") {
+      id = id.replace(/-/g, "_");
+    }
+    componentProps["innerHTML"] = replaceIDs(item.body, id ? () => id + "ID" + localCounter++ : "iconifyVue");
+    return h("svg", componentProps);
+  }
+  const { body, width, height } = icon;
+  const useMask = mode === "mask" || (mode === "bg" ? false : body.indexOf("currentColor") !== -1);
+  const html = iconToHTML(body, {
+    ...renderAttribs,
+    width: width + "",
+    height: height + ""
+  });
+  componentProps.style = {
+    ...style,
+    "--svg": svgToURL(html),
+    "width": fixSize(renderAttribs.width),
+    "height": fixSize(renderAttribs.height),
+    ...commonProps,
+    ...useMask ? monotoneProps : coloredProps,
+    ...customStyle
+  };
+  return h("span", componentProps);
+};
+allowSimpleNames(true);
+setAPIModule("", fetchAPIModule);
+if (typeof document !== "undefined" && typeof window !== "undefined") {
+  initBrowserStorage();
+  const _window2 = window;
+  if (_window2.IconifyPreload !== void 0) {
+    const preload = _window2.IconifyPreload;
+    const err = "Invalid IconifyPreload syntax.";
+    if (typeof preload === "object" && preload !== null) {
+      (preload instanceof Array ? preload : [preload]).forEach((item) => {
+        try {
+          if (typeof item !== "object" || item === null || item instanceof Array || typeof item.icons !== "object" || typeof item.prefix !== "string" || !addCollection(item)) {
+            console.error(err);
+          }
+        } catch (e) {
+          console.error(err);
+        }
+      });
+    }
+  }
+  if (_window2.IconifyProviders !== void 0) {
+    const providers = _window2.IconifyProviders;
+    if (typeof providers === "object" && providers !== null) {
+      for (let key in providers) {
+        const err = "IconifyProviders[" + key + "] is invalid.";
+        try {
+          const value = providers[key];
+          if (typeof value !== "object" || !value || value.resources === void 0) {
+            continue;
+          }
+          if (!addAPIProvider(key, value)) {
+            console.error(err);
+          }
+        } catch (e) {
+          console.error(err);
+        }
+      }
+    }
+  }
+}
+const emptyIcon = {
+  ...defaultIconProps,
+  body: ""
+};
+const Icon = defineComponent({
+  inheritAttrs: false,
+  data() {
+    return {
+      iconMounted: false,
+      counter: 0
+    };
+  },
+  mounted() {
+    this._name = "";
+    this._loadingIcon = null;
+    this.iconMounted = true;
+  },
+  unmounted() {
+    this.abortLoading();
+  },
+  methods: {
+    abortLoading() {
+      if (this._loadingIcon) {
+        this._loadingIcon.abort();
+        this._loadingIcon = null;
+      }
+    },
+    getIcon(icon, onload) {
+      if (typeof icon === "object" && icon !== null && typeof icon.body === "string") {
+        this._name = "";
+        this.abortLoading();
+        return {
+          data: icon
+        };
+      }
+      let iconName;
+      if (typeof icon !== "string" || (iconName = stringToIcon(icon, false, true)) === null) {
+        this.abortLoading();
+        return null;
+      }
+      const data2 = getIconData(iconName);
+      if (!data2) {
+        if (!this._loadingIcon || this._loadingIcon.name !== icon) {
+          this.abortLoading();
+          this._name = "";
+          if (data2 !== null) {
+            this._loadingIcon = {
+              name: icon,
+              abort: loadIcons([iconName], () => {
+                this.counter++;
+              })
+            };
+          }
+        }
+        return null;
+      }
+      this.abortLoading();
+      if (this._name !== icon) {
+        this._name = icon;
+        if (onload) {
+          onload(icon);
+        }
+      }
+      const classes = ["iconify"];
+      if (iconName.prefix !== "") {
+        classes.push("iconify--" + iconName.prefix);
+      }
+      if (iconName.provider !== "") {
+        classes.push("iconify--" + iconName.provider);
+      }
+      return { data: data2, classes };
+    }
+  },
+  render() {
+    this.counter;
+    const props = this.$attrs;
+    const icon = this.iconMounted ? this.getIcon(props.icon, props.onLoad) : null;
+    if (!icon) {
+      return render(emptyIcon, props);
+    }
+    let newProps = props;
+    if (icon.classes) {
+      newProps = {
+        ...props,
+        class: (typeof props["class"] === "string" ? props["class"] + " " : "") + icon.classes.join(" ")
+      };
+    }
+    return render({
+      ...defaultIconProps,
+      ...icon.data
+    }, newProps);
+  }
+});
+const data$2 = {
+  "width": 24,
+  "height": 24,
+  "body": '<path fill="currentColor" d="m8.6 22.5l-1.9-3.2l-3.6-.8l.35-3.7L1 12l2.45-2.8l-.35-3.7l3.6-.8l1.9-3.2L12 2.95l3.4-1.45l1.9 3.2l3.6.8l-.35 3.7L23 12l-2.45 2.8l.35 3.7l-3.6.8l-1.9 3.2l-3.4-1.45l-3.4 1.45Zm2.35-6.95L16.6 9.9l-1.4-1.45l-4.25 4.25l-2.15-2.1L7.4 12l3.55 3.55Z"/>'
+};
 const _sfc_main$m = {
   name: "RoomsContent",
   components: {
     SvgIcon,
-    FormatMessage
+    FormatMessage,
+    Icon
   },
   directives: {
     clickOutside: vClickOutside
@@ -6821,7 +8542,10 @@ const _sfc_main$m = {
   emits: ["room-action-handler"],
   data() {
     return {
-      roomMenuOpened: null
+      roomMenuOpened: null,
+      icons: {
+        verifiedIcon: data$2
+      }
     };
   },
   computed: {
@@ -6884,9 +8608,9 @@ const _sfc_main$m = {
   }
 };
 const _hoisted_1$m = { class: "vac-room-container" };
-const _hoisted_2$j = { class: "vac-name-container vac-text-ellipsis" };
-const _hoisted_3$g = { class: "vac-title-container" };
-const _hoisted_4$f = { class: "vac-room-name vac-text-ellipsis" };
+const _hoisted_2$i = { class: "vac-name-container vac-text-ellipsis" };
+const _hoisted_3$h = { class: "vac-title-container" };
+const _hoisted_4$g = { class: "vac-room-name vac-text-ellipsis" };
 const _hoisted_5$a = {
   key: 1,
   class: "vac-text-date"
@@ -6911,7 +8635,8 @@ const _hoisted_11$3 = {
 };
 const _hoisted_12$3 = { class: "vac-menu-list" };
 const _hoisted_13$1 = ["onClick"];
-function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_Icon = resolveComponent("Icon");
   const _component_svg_icon = resolveComponent("svg-icon");
   const _component_format_message = resolveComponent("format-message");
   const _directive_click_outside = resolveDirective("click-outside");
@@ -6924,13 +8649,22 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
           style: normalizeStyle({ "background-image": `url('${$props.room.avatar}')` })
         }, null, 4)) : createCommentVNode("", true)
       ]),
-      createBaseVNode("div", _hoisted_2$j, [
-        createBaseVNode("div", _hoisted_3$g, [
+      createBaseVNode("div", _hoisted_2$i, [
+        createBaseVNode("div", _hoisted_3$h, [
           $options.userStatus ? (openBlock(), createElementBlock("div", {
             key: 0,
             class: normalizeClass(["vac-state-circle", { "vac-state-online": $options.userStatus === "online" }])
           }, null, 2)) : createCommentVNode("", true),
-          createBaseVNode("div", _hoisted_4$f, toDisplayString($props.room.roomName), 1),
+          createBaseVNode("div", _hoisted_4$g, [
+            createTextVNode(toDisplayString($props.room.roomName) + " ", 1),
+            $props.room.verified || $props.room.official ? (openBlock(), createBlock(_component_Icon, {
+              key: 0,
+              inline: true,
+              style: normalizeStyle({ color: `${$props.room.official ? "gold" : "#2689d6"}` }),
+              width: "14",
+              icon: $data.icons.verifiedIcon
+            }, null, 8, ["style", "icon"])) : createCommentVNode("", true)
+          ]),
           $props.room.lastMessage ? (openBlock(), createElementBlock("div", _hoisted_5$a, toDisplayString($props.room.lastMessage.timestamp), 1)) : createCommentVNode("", true)
         ]),
         createBaseVNode("div", {
@@ -6972,8 +8706,8 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
             renderList(_ctx.$slots, (idx, name) => {
               return {
                 name,
-                fn: withCtx((data) => [
-                  renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                fn: withCtx((data2) => [
+                  renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
                 ])
               };
             })
@@ -7025,7 +8759,7 @@ function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ]);
 }
-var RoomContent = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$m]]);
+var RoomContent = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$l]]);
 var filteredItems = (items, prop, val, startsWith = false) => {
   if (!val || val === "")
     return items;
@@ -7172,17 +8906,17 @@ const _hoisted_1$l = {
   key: 0,
   class: "vac-rooms-empty"
 };
-const _hoisted_2$i = {
+const _hoisted_2$h = {
   key: 1,
   id: "rooms-list",
   class: "vac-room-list"
 };
-const _hoisted_3$f = ["id", "onClick"];
-const _hoisted_4$e = {
+const _hoisted_3$g = ["id", "onClick"];
+const _hoisted_4$f = {
   key: 0,
   id: "infinite-loader-rooms"
 };
-function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_rooms_search = resolveComponent("rooms-search");
   const _component_loader = resolveComponent("loader");
   const _component_room_content = resolveComponent("room-content");
@@ -7206,8 +8940,8 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
         renderList(_ctx.$slots, (idx, name) => {
           return {
             name,
-            fn: withCtx((data) => [
-              renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+            fn: withCtx((data2) => [
+              renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
             ])
           };
         })
@@ -7220,8 +8954,8 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
       renderList(_ctx.$slots, (idx, name) => {
         return {
           name,
-          fn: withCtx((data) => [
-            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+          fn: withCtx((data2) => [
+            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
           ])
         };
       })
@@ -7231,7 +8965,7 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
         createTextVNode(toDisplayString($props.textMessages.ROOMS_EMPTY), 1)
       ])
     ])) : createCommentVNode("", true),
-    !$props.loadingRooms ? (openBlock(), createElementBlock("div", _hoisted_2$i, [
+    !$props.loadingRooms ? (openBlock(), createElementBlock("div", _hoisted_2$h, [
       (openBlock(true), createElementBlock(Fragment, null, renderList($data.filteredRooms, (fRoom) => {
         return openBlock(), createElementBlock("div", {
           id: fRoom.roomId,
@@ -7251,17 +8985,17 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
             renderList(_ctx.$slots, (idx, name) => {
               return {
                 name,
-                fn: withCtx((data) => [
-                  renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                fn: withCtx((data2) => [
+                  renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
                 ])
               };
             })
           ]), 1032, ["current-user-id", "room", "text-formatting", "link-options", "text-messages", "room-actions"])
-        ], 10, _hoisted_3$f);
+        ], 10, _hoisted_3$g);
       }), 128)),
       createVNode(Transition, { name: "vac-fade-message" }, {
         default: withCtx(() => [
-          $props.rooms.length && !$props.loadingRooms ? (openBlock(), createElementBlock("div", _hoisted_4$e, [
+          $props.rooms.length && !$props.loadingRooms ? (openBlock(), createElementBlock("div", _hoisted_4$f, [
             createVNode(_component_loader, {
               show: $data.showLoader,
               infinite: true,
@@ -7270,8 +9004,8 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
               renderList(_ctx.$slots, (idx, name) => {
                 return {
                   name,
-                  fn: withCtx((data) => [
-                    renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                  fn: withCtx((data2) => [
+                    renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
                   ])
                 };
               })
@@ -7285,11 +9019,12 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
     [vShow, $props.showRoomsList]
   ]);
 }
-var RoomsList = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$l]]);
+var RoomsList = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$k]]);
 const _sfc_main$k = {
   name: "RoomHeader",
   components: {
-    SvgIcon
+    SvgIcon,
+    Icon
   },
   directives: {
     clickOutside: vClickOutside
@@ -7317,7 +9052,10 @@ const _sfc_main$k = {
   data() {
     return {
       menuOpened: false,
-      messageSelectionAnimationEnded: true
+      messageSelectionAnimationEnded: true,
+      icons: {
+        verifiedIcon: data$2
+      }
     };
   },
   computed: {
@@ -7364,12 +9102,12 @@ const _sfc_main$k = {
   }
 };
 const _hoisted_1$k = { class: "vac-room-header vac-app-border-b" };
-const _hoisted_2$h = { class: "vac-room-wrapper" };
-const _hoisted_3$e = {
+const _hoisted_2$g = { class: "vac-room-wrapper" };
+const _hoisted_3$f = {
   key: 0,
   class: "vac-room-selection"
 };
-const _hoisted_4$d = ["id"];
+const _hoisted_4$e = ["id"];
 const _hoisted_5$9 = ["onClick"];
 const _hoisted_6$5 = { class: "vac-selection-button-count" };
 const _hoisted_7$5 = { class: "vac-text-ellipsis" };
@@ -7388,15 +9126,16 @@ const _hoisted_11$2 = {
 };
 const _hoisted_12$2 = { class: "vac-menu-list" };
 const _hoisted_13 = ["onClick"];
-function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
+  const _component_Icon = resolveComponent("Icon");
   const _directive_click_outside = resolveDirective("click-outside");
   return openBlock(), createElementBlock("div", _hoisted_1$k, [
     renderSlot(_ctx.$slots, "room-header", {}, () => [
-      createBaseVNode("div", _hoisted_2$h, [
+      createBaseVNode("div", _hoisted_2$g, [
         createVNode(Transition, { name: "vac-slide-up" }, {
           default: withCtx(() => [
-            $props.messageSelectionEnabled ? (openBlock(), createElementBlock("div", _hoisted_3$e, [
+            $props.messageSelectionEnabled ? (openBlock(), createElementBlock("div", _hoisted_3$f, [
               (openBlock(true), createElementBlock(Fragment, null, renderList($props.messageSelectionActions, (action) => {
                 return openBlock(), createElementBlock("div", {
                   id: action.name,
@@ -7409,7 +9148,7 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
                     createTextVNode(toDisplayString(action.title) + " ", 1),
                     createBaseVNode("span", _hoisted_6$5, toDisplayString($props.selectedMessagesTotal), 1)
                   ], 8, _hoisted_5$9)
-                ], 8, _hoisted_4$d);
+                ], 8, _hoisted_4$e);
               }), 128)),
               createBaseVNode("div", {
                 class: "vac-selection-cancel vac-item-clickable",
@@ -7445,7 +9184,16 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
             ]),
             renderSlot(_ctx.$slots, "room-header-info", {}, () => [
               createBaseVNode("div", _hoisted_7$5, [
-                createBaseVNode("div", _hoisted_8$3, toDisplayString($props.room.roomName), 1),
+                createBaseVNode("div", _hoisted_8$3, [
+                  createTextVNode(toDisplayString($props.room.roomName) + " ", 1),
+                  $props.room.verified || $props.room.official ? (openBlock(), createBlock(_component_Icon, {
+                    key: 0,
+                    inline: true,
+                    style: normalizeStyle({ color: `${$props.room.official ? "gold" : "#2689d6"}` }),
+                    width: "14",
+                    icon: $data.icons.verifiedIcon
+                  }, null, 8, ["style", "icon"])) : createCommentVNode("", true)
+                ]),
                 $options.typingUsers ? (openBlock(), createElementBlock("div", _hoisted_9$3, toDisplayString($options.typingUsers), 1)) : (openBlock(), createElementBlock("div", _hoisted_10$3, toDisplayString($options.userStatus), 1))
               ])
             ])
@@ -7490,7 +9238,7 @@ function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
     ])
   ]);
 }
-var RoomHeader = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$k]]);
+var RoomHeader = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$j]]);
 function assertNonEmptyString(str) {
   if (typeof str !== "string" || !str) {
     throw new Error("expected a non-empty string, got: " + str);
@@ -7789,8 +9537,8 @@ async function loadData(db, emojiData, url, eTag) {
           return;
         }
         emojiStore.clear();
-        for (const data of transformedData) {
-          emojiStore.put(data);
+        for (const data2 of transformedData) {
+          emojiStore.put(data2);
         }
         metaStore.put(eTag, KEY_ETAG);
         metaStore.put(url, KEY_URL);
@@ -8273,8 +10021,8 @@ function detach(node) {
 function element(name) {
   return document.createElement(name);
 }
-function text(data) {
-  return document.createTextNode(data);
+function text(data2) {
+  return document.createTextNode(data2);
 }
 function listen(node, event, handler, options2) {
   node.addEventListener(event, handler, options2);
@@ -8286,10 +10034,10 @@ function attr(node, attribute, value) {
   else if (node.getAttribute(attribute) !== value)
     node.setAttribute(attribute, value);
 }
-function set_data(text2, data) {
-  data = "" + data;
-  if (text2.wholeText !== data)
-    text2.data = data;
+function set_data(text2, data2) {
+  data2 = "" + data2;
+  if (text2.wholeText !== data2)
+    text2.data = data2;
 }
 function set_input_value(input, value) {
   input.value = value == null ? "" : value;
@@ -10341,7 +12089,7 @@ const _sfc_main$j = {
   }
 };
 const _hoisted_1$j = { class: "vac-emoji-wrapper" };
-function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   const _component_emoji_picker = resolveComponent("emoji-picker");
   return openBlock(), createElementBlock("div", _hoisted_1$j, [
@@ -10387,7 +12135,7 @@ function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
     })) : createCommentVNode("", true)
   ]);
 }
-var EmojiPickerContainer = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$j]]);
+var EmojiPickerContainer = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$i]]);
 const _sfc_main$i = {
   name: "RoomFiles",
   components: {
@@ -10409,13 +12157,13 @@ const _sfc_main$i = {
   }
 };
 const _hoisted_1$i = { class: "vac-room-file-container" };
-const _hoisted_2$g = ["src"];
-const _hoisted_3$d = { class: "vac-text-ellipsis" };
-const _hoisted_4$c = {
+const _hoisted_2$f = ["src"];
+const _hoisted_3$e = { class: "vac-text-ellipsis" };
+const _hoisted_4$d = {
   key: 0,
   class: "vac-text-ellipsis vac-text-extension"
 };
-function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_loader = resolveComponent("loader");
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createElementBlock("div", _hoisted_1$i, [
@@ -10426,8 +12174,8 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
       renderList(_ctx.$slots, (idx, name) => {
         return {
           name,
-          fn: withCtx((data) => [
-            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+          fn: withCtx((data2) => [
+            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
           ])
         };
       })
@@ -10456,7 +12204,7 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
     }, [
       createBaseVNode("source", {
         src: $props.file.localUrl || $props.file.url
-      }, null, 8, _hoisted_2$g)
+      }, null, 8, _hoisted_2$f)
     ], 2)) : (openBlock(), createElementBlock("div", {
       key: 2,
       class: normalizeClass(["vac-file-container", { "vac-blur-loading": $props.file.loading }])
@@ -10466,12 +12214,12 @@ function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
           createVNode(_component_svg_icon, { name: "file" })
         ])
       ]),
-      createBaseVNode("div", _hoisted_3$d, toDisplayString($props.file.name), 1),
-      $props.file.extension ? (openBlock(), createElementBlock("div", _hoisted_4$c, toDisplayString($props.file.extension), 1)) : createCommentVNode("", true)
+      createBaseVNode("div", _hoisted_3$e, toDisplayString($props.file.name), 1),
+      $props.file.extension ? (openBlock(), createElementBlock("div", _hoisted_4$d, toDisplayString($props.file.extension), 1)) : createCommentVNode("", true)
     ], 2))
   ]);
 }
-var RoomFile = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$i]]);
+var RoomFile = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$h]]);
 const _sfc_main$h = {
   name: "RoomFiles",
   components: {
@@ -10488,15 +12236,15 @@ const _hoisted_1$h = {
   key: 0,
   class: "vac-room-files-container"
 };
-const _hoisted_2$f = { class: "vac-files-box" };
-const _hoisted_3$c = { class: "vac-icon-close" };
-function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
+const _hoisted_2$e = { class: "vac-files-box" };
+const _hoisted_3$d = { class: "vac-icon-close" };
+function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_room_file = resolveComponent("room-file");
   const _component_svg_icon = resolveComponent("svg-icon");
   return openBlock(), createBlock(Transition, { name: "vac-slide-up" }, {
     default: withCtx(() => [
       $props.files.length ? (openBlock(), createElementBlock("div", _hoisted_1$h, [
-        createBaseVNode("div", _hoisted_2$f, [
+        createBaseVNode("div", _hoisted_2$e, [
           (openBlock(true), createElementBlock(Fragment, null, renderList($props.files, (file, i) => {
             return openBlock(), createElementBlock("div", { key: i }, [
               createVNode(_component_room_file, {
@@ -10507,8 +12255,8 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
                 renderList(_ctx.$slots, (idx, name) => {
                   return {
                     name,
-                    fn: withCtx((data) => [
-                      renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                    fn: withCtx((data2) => [
+                      renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
                     ])
                   };
                 })
@@ -10516,7 +12264,7 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
             ]);
           }), 128))
         ]),
-        createBaseVNode("div", _hoisted_3$c, [
+        createBaseVNode("div", _hoisted_3$d, [
           createBaseVNode("div", {
             class: "vac-svg-button",
             onClick: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("reset-message"))
@@ -10531,97 +12279,4596 @@ function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
     _: 3
   });
 }
-var RoomFiles = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$h]]);
-const _sfc_main$g = {
-  props: {
-    percentage: { type: Number, default: 0 },
-    messageSelectionEnabled: { type: Boolean, required: true }
-  },
-  emits: ["hover-audio-progress", "change-linehead"],
-  data() {
-    return {
-      isMouseDown: false
-    };
-  },
-  methods: {
-    onMouseDown(ev) {
-      if (this.messageSelectionEnabled)
-        return;
-      this.isMouseDown = true;
-      const seekPos = this.calculateLineHeadPosition(ev, this.$refs.progress);
-      this.$emit("change-linehead", seekPos);
-      document.addEventListener("mousemove", this.onMouseMove);
-      document.addEventListener("mouseup", this.onMouseUp);
-    },
-    onMouseUp(ev) {
-      if (this.messageSelectionEnabled)
-        return;
-      this.isMouseDown = false;
-      document.removeEventListener("mouseup", this.onMouseUp);
-      document.removeEventListener("mousemove", this.onMouseMove);
-      const seekPos = this.calculateLineHeadPosition(ev, this.$refs.progress);
-      this.$emit("change-linehead", seekPos);
-    },
-    onMouseMove(ev) {
-      if (this.messageSelectionEnabled)
-        return;
-      const seekPos = this.calculateLineHeadPosition(ev, this.$refs.progress);
-      this.$emit("change-linehead", seekPos);
-    },
-    calculateLineHeadPosition(ev, element2) {
-      const progressWidth = element2.getBoundingClientRect().width;
-      const leftPosition = element2.getBoundingClientRect().left;
-      let pos = (ev.clientX - leftPosition) / progressWidth;
-      pos = pos < 0 ? 0 : pos;
-      pos = pos > 1 ? 1 : pos;
-      return pos;
-    }
-  }
+var RoomFiles = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$g]]);
+const data$1 = {
+  "width": 24,
+  "height": 24,
+  "body": '<path fill="currentColor" d="M8 17.175V6.825q0-.425.3-.713t.7-.287q.125 0 .263.037t.262.113l8.15 5.175q.225.15.338.375t.112.475q0 .25-.113.475t-.337.375l-8.15 5.175q-.125.075-.263.113T9 18.175q-.4 0-.7-.288t-.3-.712Z"/>'
 };
-const _hoisted_1$g = { class: "vac-player-progress" };
-const _hoisted_2$e = { class: "vac-line-container" };
-function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("div", {
-    ref: "progress",
-    class: "vac-player-bar",
-    onMousedown: _cache[0] || (_cache[0] = (...args) => $options.onMouseDown && $options.onMouseDown(...args)),
-    onMouseover: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("hover-audio-progress", true)),
-    onMouseout: _cache[2] || (_cache[2] = ($event) => _ctx.$emit("hover-audio-progress", false))
-  }, [
-    createBaseVNode("div", _hoisted_1$g, [
-      createBaseVNode("div", _hoisted_2$e, [
-        createBaseVNode("div", {
-          class: "vac-line-progress",
-          style: normalizeStyle({ width: `${$props.percentage}%` })
-        }, null, 4),
-        createBaseVNode("div", {
-          class: normalizeClass(["vac-line-dot", { "vac-line-dot__active": $data.isMouseDown }]),
-          style: normalizeStyle({ left: `${$props.percentage}%` })
-        }, null, 6)
-      ])
-    ])
-  ], 544);
+const data = {
+  "width": 24,
+  "height": 24,
+  "body": '<path fill="currentColor" d="M16 19q-.825 0-1.413-.588T14 17V7q0-.825.588-1.413T16 5q.825 0 1.413.588T18 7v10q0 .825-.588 1.413T16 19Zm-8 0q-.825 0-1.413-.588T6 17V7q0-.825.588-1.413T8 5q.825 0 1.413.588T10 7v10q0 .825-.588 1.413T8 19Z"/>'
+};
+var wavesurfer = { exports: {} };
+/*!
+ * wavesurfer.js 6.6.4 (2023-06-10)
+ * https://wavesurfer-js.org
+ * @license BSD-3-Clause
+ */
+(function(module, exports) {
+  (function webpackUniversalModuleDefinition(root, factory) {
+    module.exports = factory();
+  })(self, () => {
+    return (() => {
+      var __webpack_modules__ = {
+        "./src/drawer.canvasentry.js": (module2, exports2, __webpack_require__2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var _style = _interopRequireDefault2(__webpack_require__2("./src/util/style.js"));
+          var _getId = _interopRequireDefault2(__webpack_require__2("./src/util/get-id.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof2(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof2(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof2(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
+          }
+          var CanvasEntry = /* @__PURE__ */ function() {
+            function CanvasEntry2() {
+              _classCallCheck(this, CanvasEntry2);
+              this.wave = null;
+              this.waveCtx = null;
+              this.progress = null;
+              this.progressCtx = null;
+              this.start = 0;
+              this.end = 1;
+              this.id = (0, _getId.default)(typeof this.constructor.name !== "undefined" ? this.constructor.name.toLowerCase() + "_" : "canvasentry_");
+              this.canvasContextAttributes = {};
+            }
+            _createClass(CanvasEntry2, [{
+              key: "initWave",
+              value: function initWave(element2) {
+                this.wave = element2;
+                this.waveCtx = this.wave.getContext("2d", this.canvasContextAttributes);
+              }
+            }, {
+              key: "initProgress",
+              value: function initProgress(element2) {
+                this.progress = element2;
+                this.progressCtx = this.progress.getContext("2d", this.canvasContextAttributes);
+              }
+            }, {
+              key: "updateDimensions",
+              value: function updateDimensions(elementWidth, totalWidth, width, height) {
+                this.start = this.wave.offsetLeft / totalWidth || 0;
+                this.end = this.start + elementWidth / totalWidth;
+                this.wave.width = width;
+                this.wave.height = height;
+                var elementSize = {
+                  width: elementWidth + "px"
+                };
+                (0, _style.default)(this.wave, elementSize);
+                if (this.hasProgressCanvas) {
+                  this.progress.width = width;
+                  this.progress.height = height;
+                  (0, _style.default)(this.progress, elementSize);
+                }
+              }
+            }, {
+              key: "clearWave",
+              value: function clearWave() {
+                this.waveCtx.clearRect(0, 0, this.waveCtx.canvas.width, this.waveCtx.canvas.height);
+                if (this.hasProgressCanvas) {
+                  this.progressCtx.clearRect(0, 0, this.progressCtx.canvas.width, this.progressCtx.canvas.height);
+                }
+              }
+            }, {
+              key: "setFillStyles",
+              value: function setFillStyles(waveColor, progressColor) {
+                this.waveCtx.fillStyle = this.getFillStyle(this.waveCtx, waveColor);
+                if (this.hasProgressCanvas) {
+                  this.progressCtx.fillStyle = this.getFillStyle(this.progressCtx, progressColor);
+                }
+              }
+            }, {
+              key: "getFillStyle",
+              value: function getFillStyle(ctx, color) {
+                if (typeof color == "string" || color instanceof CanvasGradient) {
+                  return color;
+                }
+                var waveGradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+                color.forEach(function(value, index) {
+                  return waveGradient.addColorStop(index / color.length, value);
+                });
+                return waveGradient;
+              }
+            }, {
+              key: "applyCanvasTransforms",
+              value: function applyCanvasTransforms(vertical) {
+                if (vertical) {
+                  this.waveCtx.setTransform(0, 1, 1, 0, 0, 0);
+                  if (this.hasProgressCanvas) {
+                    this.progressCtx.setTransform(0, 1, 1, 0, 0, 0);
+                  }
+                }
+              }
+            }, {
+              key: "fillRects",
+              value: function fillRects(x, y, width, height, radius) {
+                this.fillRectToContext(this.waveCtx, x, y, width, height, radius);
+                if (this.hasProgressCanvas) {
+                  this.fillRectToContext(this.progressCtx, x, y, width, height, radius);
+                }
+              }
+            }, {
+              key: "fillRectToContext",
+              value: function fillRectToContext(ctx, x, y, width, height, radius) {
+                if (!ctx) {
+                  return;
+                }
+                if (radius) {
+                  this.drawRoundedRect(ctx, x, y, width, height, radius);
+                } else {
+                  ctx.fillRect(x, y, width, height);
+                }
+              }
+            }, {
+              key: "drawRoundedRect",
+              value: function drawRoundedRect(ctx, x, y, width, height, radius) {
+                if (height === 0) {
+                  return;
+                }
+                if (height < 0) {
+                  height *= -1;
+                  y -= height;
+                }
+                ctx.beginPath();
+                ctx.moveTo(x + radius, y);
+                ctx.lineTo(x + width - radius, y);
+                ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+                ctx.lineTo(x + width, y + height - radius);
+                ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                ctx.lineTo(x + radius, y + height);
+                ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+                ctx.lineTo(x, y + radius);
+                ctx.quadraticCurveTo(x, y, x + radius, y);
+                ctx.closePath();
+                ctx.fill();
+              }
+            }, {
+              key: "drawLines",
+              value: function drawLines(peaks, absmax, halfH, offsetY, start2, end) {
+                this.drawLineToContext(this.waveCtx, peaks, absmax, halfH, offsetY, start2, end);
+                if (this.hasProgressCanvas) {
+                  this.drawLineToContext(this.progressCtx, peaks, absmax, halfH, offsetY, start2, end);
+                }
+              }
+            }, {
+              key: "drawLineToContext",
+              value: function drawLineToContext(ctx, peaks, absmax, halfH, offsetY, start2, end) {
+                if (!ctx) {
+                  return;
+                }
+                var length = peaks.length / 2;
+                var first = Math.round(length * this.start);
+                var last = Math.round(length * this.end) + 1;
+                var canvasStart = first;
+                var canvasEnd = last;
+                var scale = this.wave.width / (canvasEnd - canvasStart - 1);
+                var halfOffset = halfH + offsetY;
+                var absmaxHalf = absmax / halfH;
+                ctx.beginPath();
+                ctx.moveTo((canvasStart - first) * scale, halfOffset);
+                ctx.lineTo((canvasStart - first) * scale, halfOffset - Math.round((peaks[2 * canvasStart] || 0) / absmaxHalf));
+                var i, peak, h2;
+                for (i = canvasStart; i < canvasEnd; i++) {
+                  peak = peaks[2 * i] || 0;
+                  h2 = Math.round(peak / absmaxHalf);
+                  ctx.lineTo((i - first) * scale + this.halfPixel, halfOffset - h2);
+                }
+                var j = canvasEnd - 1;
+                for (j; j >= canvasStart; j--) {
+                  peak = peaks[2 * j + 1] || 0;
+                  h2 = Math.round(peak / absmaxHalf);
+                  ctx.lineTo((j - first) * scale + this.halfPixel, halfOffset - h2);
+                }
+                ctx.lineTo((canvasStart - first) * scale, halfOffset - Math.round((peaks[2 * canvasStart + 1] || 0) / absmaxHalf));
+                ctx.closePath();
+                ctx.fill();
+              }
+            }, {
+              key: "destroy",
+              value: function destroy() {
+                this.waveCtx = null;
+                this.wave = null;
+                this.progressCtx = null;
+                this.progress = null;
+              }
+            }, {
+              key: "getImage",
+              value: function getImage(format, quality, type) {
+                var _this = this;
+                if (type === "blob") {
+                  return new Promise(function(resolve3) {
+                    _this.wave.toBlob(resolve3, format, quality);
+                  });
+                } else if (type === "dataURL") {
+                  return this.wave.toDataURL(format, quality);
+                }
+              }
+            }]);
+            return CanvasEntry2;
+          }();
+          exports2["default"] = CanvasEntry;
+          module2.exports = exports2.default;
+        },
+        "./src/drawer.js": (module2, exports2, __webpack_require__2) => {
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var util = _interopRequireWildcard2(__webpack_require__2("./src/util/index.js"));
+          function _getRequireWildcardCache(nodeInterop) {
+            if (typeof WeakMap !== "function")
+              return null;
+            var cacheBabelInterop = /* @__PURE__ */ new WeakMap();
+            var cacheNodeInterop = /* @__PURE__ */ new WeakMap();
+            return (_getRequireWildcardCache = function _getRequireWildcardCache2(nodeInterop2) {
+              return nodeInterop2 ? cacheNodeInterop : cacheBabelInterop;
+            })(nodeInterop);
+          }
+          function _interopRequireWildcard2(obj, nodeInterop) {
+            if (!nodeInterop && obj && obj.__esModule) {
+              return obj;
+            }
+            if (obj === null || _typeof2(obj) !== "object" && typeof obj !== "function") {
+              return { default: obj };
+            }
+            var cache = _getRequireWildcardCache(nodeInterop);
+            if (cache && cache.has(obj)) {
+              return cache.get(obj);
+            }
+            var newObj = {};
+            var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+            for (var key in obj) {
+              if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
+                var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+                if (desc && (desc.get || desc.set)) {
+                  Object.defineProperty(newObj, key, desc);
+                } else {
+                  newObj[key] = obj[key];
+                }
+              }
+            }
+            newObj.default = obj;
+            if (cache) {
+              cache.set(obj, newObj);
+            }
+            return newObj;
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof2(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof2(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof2(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
+          }
+          function _inherits(subClass, superClass) {
+            if (typeof superClass !== "function" && superClass !== null) {
+              throw new TypeError("Super expression must either be null or a function");
+            }
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });
+            Object.defineProperty(subClass, "prototype", { writable: false });
+            if (superClass)
+              _setPrototypeOf(subClass, superClass);
+          }
+          function _setPrototypeOf(o, p2) {
+            _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p3) {
+              o2.__proto__ = p3;
+              return o2;
+            };
+            return _setPrototypeOf(o, p2);
+          }
+          function _createSuper(Derived) {
+            var hasNativeReflectConstruct = _isNativeReflectConstruct();
+            return function _createSuperInternal() {
+              var Super = _getPrototypeOf(Derived), result;
+              if (hasNativeReflectConstruct) {
+                var NewTarget = _getPrototypeOf(this).constructor;
+                result = Reflect.construct(Super, arguments, NewTarget);
+              } else {
+                result = Super.apply(this, arguments);
+              }
+              return _possibleConstructorReturn(this, result);
+            };
+          }
+          function _possibleConstructorReturn(self2, call) {
+            if (call && (_typeof2(call) === "object" || typeof call === "function")) {
+              return call;
+            } else if (call !== void 0) {
+              throw new TypeError("Derived constructors may only return object or undefined");
+            }
+            return _assertThisInitialized(self2);
+          }
+          function _assertThisInitialized(self2) {
+            if (self2 === void 0) {
+              throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+            }
+            return self2;
+          }
+          function _isNativeReflectConstruct() {
+            if (typeof Reflect === "undefined" || !Reflect.construct)
+              return false;
+            if (Reflect.construct.sham)
+              return false;
+            if (typeof Proxy === "function")
+              return true;
+            try {
+              Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+              }));
+              return true;
+            } catch (e) {
+              return false;
+            }
+          }
+          function _getPrototypeOf(o) {
+            _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf2(o2) {
+              return o2.__proto__ || Object.getPrototypeOf(o2);
+            };
+            return _getPrototypeOf(o);
+          }
+          var Drawer = /* @__PURE__ */ function(_util$Observer) {
+            _inherits(Drawer2, _util$Observer);
+            var _super = _createSuper(Drawer2);
+            function Drawer2(container, params) {
+              var _this;
+              _classCallCheck(this, Drawer2);
+              _this = _super.call(this);
+              _this.container = util.withOrientation(container, params.vertical);
+              _this.params = params;
+              _this.width = 0;
+              _this.height = params.height * _this.params.pixelRatio;
+              _this.lastPos = 0;
+              _this.wrapper = null;
+              return _this;
+            }
+            _createClass(Drawer2, [{
+              key: "style",
+              value: function style(el, styles) {
+                return util.style(el, styles);
+              }
+            }, {
+              key: "createWrapper",
+              value: function createWrapper() {
+                this.wrapper = util.withOrientation(this.container.appendChild(document.createElement("wave")), this.params.vertical);
+                this.style(this.wrapper, {
+                  display: "block",
+                  position: "relative",
+                  userSelect: "none",
+                  webkitUserSelect: "none",
+                  height: this.params.height + "px"
+                });
+                if (this.params.fillParent || this.params.scrollParent) {
+                  this.style(this.wrapper, {
+                    width: "100%",
+                    cursor: this.params.hideCursor ? "none" : "auto",
+                    overflowX: this.params.hideScrollbar ? "hidden" : "auto",
+                    overflowY: "hidden"
+                  });
+                }
+                this.setupWrapperEvents();
+              }
+            }, {
+              key: "handleEvent",
+              value: function handleEvent(e, noPrevent) {
+                !noPrevent && e.preventDefault();
+                var clientX = util.withOrientation(e.targetTouches ? e.targetTouches[0] : e, this.params.vertical).clientX;
+                var bbox = this.wrapper.getBoundingClientRect();
+                var nominalWidth = this.width;
+                var parentWidth = this.getWidth();
+                var progressPixels = this.getProgressPixels(bbox, clientX);
+                var progress;
+                if (!this.params.fillParent && nominalWidth < parentWidth) {
+                  progress = progressPixels * (this.params.pixelRatio / nominalWidth) || 0;
+                } else {
+                  progress = (progressPixels + this.wrapper.scrollLeft) / this.wrapper.scrollWidth || 0;
+                }
+                return util.clamp(progress, 0, 1);
+              }
+            }, {
+              key: "getProgressPixels",
+              value: function getProgressPixels(wrapperBbox, clientX) {
+                if (this.params.rtl) {
+                  return wrapperBbox.right - clientX;
+                } else {
+                  return clientX - wrapperBbox.left;
+                }
+              }
+            }, {
+              key: "setupWrapperEvents",
+              value: function setupWrapperEvents() {
+                var _this2 = this;
+                this.wrapper.addEventListener("click", function(e) {
+                  var orientedEvent = util.withOrientation(e, _this2.params.vertical);
+                  var scrollbarHeight = _this2.wrapper.offsetHeight - _this2.wrapper.clientHeight;
+                  if (scrollbarHeight !== 0) {
+                    var bbox = _this2.wrapper.getBoundingClientRect();
+                    if (orientedEvent.clientY >= bbox.bottom - scrollbarHeight) {
+                      return;
+                    }
+                  }
+                  if (_this2.params.interact) {
+                    _this2.fireEvent("click", e, _this2.handleEvent(e));
+                  }
+                });
+                this.wrapper.addEventListener("dblclick", function(e) {
+                  if (_this2.params.interact) {
+                    _this2.fireEvent("dblclick", e, _this2.handleEvent(e));
+                  }
+                });
+                this.wrapper.addEventListener("scroll", function(e) {
+                  return _this2.fireEvent("scroll", e);
+                });
+              }
+            }, {
+              key: "drawPeaks",
+              value: function drawPeaks(peaks, length, start2, end) {
+                if (!this.setWidth(length)) {
+                  this.clearWave();
+                }
+                this.params.barWidth ? this.drawBars(peaks, 0, start2, end) : this.drawWave(peaks, 0, start2, end);
+              }
+            }, {
+              key: "resetScroll",
+              value: function resetScroll() {
+                if (this.wrapper !== null) {
+                  this.wrapper.scrollLeft = 0;
+                }
+              }
+            }, {
+              key: "recenter",
+              value: function recenter(percent) {
+                var position = this.wrapper.scrollWidth * percent;
+                this.recenterOnPosition(position, true);
+              }
+            }, {
+              key: "recenterOnPosition",
+              value: function recenterOnPosition(position, immediate) {
+                var scrollLeft = this.wrapper.scrollLeft;
+                var half = ~~(this.wrapper.clientWidth / 2);
+                var maxScroll = this.wrapper.scrollWidth - this.wrapper.clientWidth;
+                var target = position - half;
+                var offset = target - scrollLeft;
+                if (maxScroll == 0) {
+                  return;
+                }
+                if (!immediate && -half <= offset && offset < half) {
+                  var rate = this.params.autoCenterRate;
+                  rate /= half;
+                  rate *= maxScroll;
+                  offset = Math.max(-rate, Math.min(rate, offset));
+                  target = scrollLeft + offset;
+                }
+                target = Math.max(0, Math.min(maxScroll, target));
+                if (target != scrollLeft) {
+                  this.wrapper.scrollLeft = target;
+                }
+              }
+            }, {
+              key: "getScrollX",
+              value: function getScrollX() {
+                var x = 0;
+                if (this.wrapper) {
+                  var pixelRatio = this.params.pixelRatio;
+                  x = Math.round(this.wrapper.scrollLeft * pixelRatio);
+                  if (this.params.scrollParent) {
+                    var maxScroll = ~~(this.wrapper.scrollWidth * pixelRatio - this.getWidth());
+                    x = Math.min(maxScroll, Math.max(0, x));
+                  }
+                }
+                return x;
+              }
+            }, {
+              key: "getWidth",
+              value: function getWidth() {
+                return Math.round(this.container.clientWidth * this.params.pixelRatio);
+              }
+            }, {
+              key: "setWidth",
+              value: function setWidth(width) {
+                if (this.width == width) {
+                  return false;
+                }
+                this.width = width;
+                if (this.params.fillParent || this.params.scrollParent) {
+                  this.style(this.wrapper, {
+                    width: ""
+                  });
+                } else {
+                  var newWidth = ~~(this.width / this.params.pixelRatio) + "px";
+                  this.style(this.wrapper, {
+                    width: newWidth
+                  });
+                }
+                this.updateSize();
+                return true;
+              }
+            }, {
+              key: "setHeight",
+              value: function setHeight(height) {
+                if (height == this.height) {
+                  return false;
+                }
+                this.height = height;
+                this.style(this.wrapper, {
+                  height: ~~(this.height / this.params.pixelRatio) + "px"
+                });
+                this.updateSize();
+                return true;
+              }
+            }, {
+              key: "progress",
+              value: function progress(_progress) {
+                var minPxDelta = 1 / this.params.pixelRatio;
+                var pos = Math.round(_progress * this.width) * minPxDelta;
+                if (pos < this.lastPos || pos - this.lastPos >= minPxDelta) {
+                  this.lastPos = pos;
+                  if (this.params.scrollParent && this.params.autoCenter) {
+                    var newPos = ~~(this.wrapper.scrollWidth * _progress);
+                    this.recenterOnPosition(newPos, this.params.autoCenterImmediately);
+                  }
+                  this.updateProgress(pos);
+                }
+              }
+            }, {
+              key: "destroy",
+              value: function destroy() {
+                this.unAll();
+                if (this.wrapper) {
+                  if (this.wrapper.parentNode == this.container.domElement) {
+                    this.container.removeChild(this.wrapper.domElement);
+                  }
+                  this.wrapper = null;
+                }
+              }
+            }, {
+              key: "updateCursor",
+              value: function updateCursor() {
+              }
+            }, {
+              key: "updateSize",
+              value: function updateSize() {
+              }
+            }, {
+              key: "drawBars",
+              value: function drawBars(peaks, channelIndex, start2, end) {
+              }
+            }, {
+              key: "drawWave",
+              value: function drawWave(peaks, channelIndex, start2, end) {
+              }
+            }, {
+              key: "clearWave",
+              value: function clearWave() {
+              }
+            }, {
+              key: "updateProgress",
+              value: function updateProgress(position) {
+              }
+            }]);
+            return Drawer2;
+          }(util.Observer);
+          exports2["default"] = Drawer;
+          module2.exports = exports2.default;
+        },
+        "./src/drawer.multicanvas.js": (module2, exports2, __webpack_require__2) => {
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var _drawer = _interopRequireDefault2(__webpack_require__2("./src/drawer.js"));
+          var util = _interopRequireWildcard2(__webpack_require__2("./src/util/index.js"));
+          var _drawer2 = _interopRequireDefault2(__webpack_require__2("./src/drawer.canvasentry.js"));
+          function _getRequireWildcardCache(nodeInterop) {
+            if (typeof WeakMap !== "function")
+              return null;
+            var cacheBabelInterop = /* @__PURE__ */ new WeakMap();
+            var cacheNodeInterop = /* @__PURE__ */ new WeakMap();
+            return (_getRequireWildcardCache = function _getRequireWildcardCache2(nodeInterop2) {
+              return nodeInterop2 ? cacheNodeInterop : cacheBabelInterop;
+            })(nodeInterop);
+          }
+          function _interopRequireWildcard2(obj, nodeInterop) {
+            if (!nodeInterop && obj && obj.__esModule) {
+              return obj;
+            }
+            if (obj === null || _typeof2(obj) !== "object" && typeof obj !== "function") {
+              return { default: obj };
+            }
+            var cache = _getRequireWildcardCache(nodeInterop);
+            if (cache && cache.has(obj)) {
+              return cache.get(obj);
+            }
+            var newObj = {};
+            var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+            for (var key in obj) {
+              if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
+                var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+                if (desc && (desc.get || desc.set)) {
+                  Object.defineProperty(newObj, key, desc);
+                } else {
+                  newObj[key] = obj[key];
+                }
+              }
+            }
+            newObj.default = obj;
+            if (cache) {
+              cache.set(obj, newObj);
+            }
+            return newObj;
+          }
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof2(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof2(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof2(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
+          }
+          function _inherits(subClass, superClass) {
+            if (typeof superClass !== "function" && superClass !== null) {
+              throw new TypeError("Super expression must either be null or a function");
+            }
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });
+            Object.defineProperty(subClass, "prototype", { writable: false });
+            if (superClass)
+              _setPrototypeOf(subClass, superClass);
+          }
+          function _setPrototypeOf(o, p2) {
+            _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p3) {
+              o2.__proto__ = p3;
+              return o2;
+            };
+            return _setPrototypeOf(o, p2);
+          }
+          function _createSuper(Derived) {
+            var hasNativeReflectConstruct = _isNativeReflectConstruct();
+            return function _createSuperInternal() {
+              var Super = _getPrototypeOf(Derived), result;
+              if (hasNativeReflectConstruct) {
+                var NewTarget = _getPrototypeOf(this).constructor;
+                result = Reflect.construct(Super, arguments, NewTarget);
+              } else {
+                result = Super.apply(this, arguments);
+              }
+              return _possibleConstructorReturn(this, result);
+            };
+          }
+          function _possibleConstructorReturn(self2, call) {
+            if (call && (_typeof2(call) === "object" || typeof call === "function")) {
+              return call;
+            } else if (call !== void 0) {
+              throw new TypeError("Derived constructors may only return object or undefined");
+            }
+            return _assertThisInitialized(self2);
+          }
+          function _assertThisInitialized(self2) {
+            if (self2 === void 0) {
+              throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+            }
+            return self2;
+          }
+          function _isNativeReflectConstruct() {
+            if (typeof Reflect === "undefined" || !Reflect.construct)
+              return false;
+            if (Reflect.construct.sham)
+              return false;
+            if (typeof Proxy === "function")
+              return true;
+            try {
+              Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+              }));
+              return true;
+            } catch (e) {
+              return false;
+            }
+          }
+          function _getPrototypeOf(o) {
+            _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf2(o2) {
+              return o2.__proto__ || Object.getPrototypeOf(o2);
+            };
+            return _getPrototypeOf(o);
+          }
+          var MultiCanvas = /* @__PURE__ */ function(_Drawer) {
+            _inherits(MultiCanvas2, _Drawer);
+            var _super = _createSuper(MultiCanvas2);
+            function MultiCanvas2(container, params) {
+              var _this;
+              _classCallCheck(this, MultiCanvas2);
+              _this = _super.call(this, container, params);
+              _this.maxCanvasWidth = params.maxCanvasWidth;
+              _this.maxCanvasElementWidth = Math.round(params.maxCanvasWidth / params.pixelRatio);
+              _this.hasProgressCanvas = params.waveColor != params.progressColor;
+              _this.halfPixel = 0.5 / params.pixelRatio;
+              _this.canvases = [];
+              _this.progressWave = null;
+              _this.EntryClass = _drawer2.default;
+              _this.canvasContextAttributes = params.drawingContextAttributes;
+              _this.overlap = 2 * Math.ceil(params.pixelRatio / 2);
+              _this.barRadius = params.barRadius || 0;
+              _this.vertical = params.vertical;
+              return _this;
+            }
+            _createClass(MultiCanvas2, [{
+              key: "init",
+              value: function init2() {
+                this.createWrapper();
+                this.createElements();
+              }
+            }, {
+              key: "createElements",
+              value: function createElements() {
+                this.progressWave = util.withOrientation(this.wrapper.appendChild(document.createElement("wave")), this.params.vertical);
+                this.style(this.progressWave, {
+                  position: "absolute",
+                  zIndex: 3,
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  overflow: "hidden",
+                  width: "0",
+                  display: "none",
+                  boxSizing: "border-box",
+                  borderRightStyle: "solid",
+                  pointerEvents: "none"
+                });
+                this.addCanvas();
+                this.updateCursor();
+              }
+            }, {
+              key: "updateCursor",
+              value: function updateCursor() {
+                this.style(this.progressWave, {
+                  borderRightWidth: this.params.cursorWidth + "px",
+                  borderRightColor: this.params.cursorColor
+                });
+              }
+            }, {
+              key: "updateSize",
+              value: function updateSize() {
+                var _this2 = this;
+                var totalWidth = Math.round(this.width / this.params.pixelRatio);
+                var requiredCanvases = Math.ceil(totalWidth / (this.maxCanvasElementWidth + this.overlap));
+                while (this.canvases.length < requiredCanvases) {
+                  this.addCanvas();
+                }
+                while (this.canvases.length > requiredCanvases) {
+                  this.removeCanvas();
+                }
+                var canvasWidth = this.maxCanvasWidth + this.overlap;
+                var lastCanvas = this.canvases.length - 1;
+                this.canvases.forEach(function(entry, i) {
+                  if (i == lastCanvas) {
+                    canvasWidth = _this2.width - _this2.maxCanvasWidth * lastCanvas;
+                  }
+                  _this2.updateDimensions(entry, canvasWidth, _this2.height);
+                  entry.clearWave();
+                });
+              }
+            }, {
+              key: "addCanvas",
+              value: function addCanvas() {
+                var entry = new this.EntryClass();
+                entry.canvasContextAttributes = this.canvasContextAttributes;
+                entry.hasProgressCanvas = this.hasProgressCanvas;
+                entry.halfPixel = this.halfPixel;
+                var leftOffset = this.maxCanvasElementWidth * this.canvases.length;
+                var wave = util.withOrientation(this.wrapper.appendChild(document.createElement("canvas")), this.params.vertical);
+                this.style(wave, {
+                  position: "absolute",
+                  zIndex: 2,
+                  left: leftOffset + "px",
+                  top: 0,
+                  bottom: 0,
+                  height: "100%",
+                  pointerEvents: "none"
+                });
+                entry.initWave(wave);
+                if (this.hasProgressCanvas) {
+                  var progress = util.withOrientation(this.progressWave.appendChild(document.createElement("canvas")), this.params.vertical);
+                  this.style(progress, {
+                    position: "absolute",
+                    left: leftOffset + "px",
+                    top: 0,
+                    bottom: 0,
+                    height: "100%"
+                  });
+                  entry.initProgress(progress);
+                }
+                this.canvases.push(entry);
+              }
+            }, {
+              key: "removeCanvas",
+              value: function removeCanvas() {
+                var lastEntry = this.canvases[this.canvases.length - 1];
+                lastEntry.wave.parentElement.removeChild(lastEntry.wave.domElement);
+                if (this.hasProgressCanvas) {
+                  lastEntry.progress.parentElement.removeChild(lastEntry.progress.domElement);
+                }
+                if (lastEntry) {
+                  lastEntry.destroy();
+                  lastEntry = null;
+                }
+                this.canvases.pop();
+              }
+            }, {
+              key: "updateDimensions",
+              value: function updateDimensions(entry, width, height) {
+                var elementWidth = Math.round(width / this.params.pixelRatio);
+                var totalWidth = Math.round(this.width / this.params.pixelRatio);
+                entry.updateDimensions(elementWidth, totalWidth, width, height);
+                this.style(this.progressWave, {
+                  display: "block"
+                });
+              }
+            }, {
+              key: "clearWave",
+              value: function clearWave() {
+                var _this3 = this;
+                util.frame(function() {
+                  _this3.canvases.forEach(function(entry) {
+                    return entry.clearWave();
+                  });
+                })();
+              }
+            }, {
+              key: "drawBars",
+              value: function drawBars(peaks, channelIndex, start2, end) {
+                var _this4 = this;
+                return this.prepareDraw(peaks, channelIndex, start2, end, function(_ref) {
+                  var absmax = _ref.absmax, hasMinVals = _ref.hasMinVals;
+                  _ref.height;
+                  var offsetY = _ref.offsetY, halfH = _ref.halfH, peaks2 = _ref.peaks, ch = _ref.channelIndex;
+                  if (start2 === void 0) {
+                    return;
+                  }
+                  var peakIndexScale = hasMinVals ? 2 : 1;
+                  var length = peaks2.length / peakIndexScale;
+                  var bar = _this4.params.barWidth * _this4.params.pixelRatio;
+                  var gap = _this4.params.barGap === null ? Math.max(_this4.params.pixelRatio, ~~(bar / 2)) : Math.max(_this4.params.pixelRatio, _this4.params.barGap * _this4.params.pixelRatio);
+                  var step = bar + gap;
+                  var scale = length / _this4.width;
+                  var first = start2;
+                  var last = end;
+                  var peakIndex = first;
+                  for (peakIndex; peakIndex < last; peakIndex += step) {
+                    var peak = 0;
+                    var peakIndexRange = Math.floor(peakIndex * scale) * peakIndexScale;
+                    var peakIndexEnd = Math.floor((peakIndex + step) * scale) * peakIndexScale;
+                    do {
+                      var newPeak = Math.abs(peaks2[peakIndexRange]);
+                      if (newPeak > peak) {
+                        peak = newPeak;
+                      }
+                      peakIndexRange += peakIndexScale;
+                    } while (peakIndexRange < peakIndexEnd);
+                    var h2 = Math.round(peak / absmax * halfH);
+                    if (_this4.params.barMinHeight) {
+                      h2 = Math.max(h2, _this4.params.barMinHeight);
+                    }
+                    _this4.fillRect(peakIndex + _this4.halfPixel, halfH - h2 + offsetY, bar + _this4.halfPixel, h2 * 2, _this4.barRadius, ch);
+                  }
+                });
+              }
+            }, {
+              key: "drawWave",
+              value: function drawWave(peaks, channelIndex, start2, end) {
+                var _this5 = this;
+                return this.prepareDraw(peaks, channelIndex, start2, end, function(_ref2) {
+                  var absmax = _ref2.absmax, hasMinVals = _ref2.hasMinVals;
+                  _ref2.height;
+                  var offsetY = _ref2.offsetY, halfH = _ref2.halfH, peaks2 = _ref2.peaks, channelIndex2 = _ref2.channelIndex;
+                  if (!hasMinVals) {
+                    var reflectedPeaks = [];
+                    var len = peaks2.length;
+                    var i = 0;
+                    for (i; i < len; i++) {
+                      reflectedPeaks[2 * i] = peaks2[i];
+                      reflectedPeaks[2 * i + 1] = -peaks2[i];
+                    }
+                    peaks2 = reflectedPeaks;
+                  }
+                  if (start2 !== void 0) {
+                    _this5.drawLine(peaks2, absmax, halfH, offsetY, start2, end, channelIndex2);
+                  }
+                  _this5.fillRect(0, halfH + offsetY - _this5.halfPixel, _this5.width, _this5.halfPixel, _this5.barRadius, channelIndex2);
+                });
+              }
+            }, {
+              key: "drawLine",
+              value: function drawLine(peaks, absmax, halfH, offsetY, start2, end, channelIndex) {
+                var _this6 = this;
+                var _ref3 = this.params.splitChannelsOptions.channelColors[channelIndex] || {}, waveColor = _ref3.waveColor, progressColor = _ref3.progressColor;
+                this.canvases.forEach(function(entry, i) {
+                  _this6.setFillStyles(entry, waveColor, progressColor);
+                  _this6.applyCanvasTransforms(entry, _this6.params.vertical);
+                  entry.drawLines(peaks, absmax, halfH, offsetY, start2, end);
+                });
+              }
+            }, {
+              key: "fillRect",
+              value: function fillRect(x, y, width, height, radius, channelIndex) {
+                var startCanvas = Math.floor(x / this.maxCanvasWidth);
+                var endCanvas = Math.min(Math.ceil((x + width) / this.maxCanvasWidth) + 1, this.canvases.length);
+                var i = startCanvas;
+                for (i; i < endCanvas; i++) {
+                  var entry = this.canvases[i];
+                  var leftOffset = i * this.maxCanvasWidth;
+                  var intersection = {
+                    x1: Math.max(x, i * this.maxCanvasWidth),
+                    y1: y,
+                    x2: Math.min(x + width, i * this.maxCanvasWidth + entry.wave.width),
+                    y2: y + height
+                  };
+                  if (intersection.x1 < intersection.x2) {
+                    var _ref4 = this.params.splitChannelsOptions.channelColors[channelIndex] || {}, waveColor = _ref4.waveColor, progressColor = _ref4.progressColor;
+                    this.setFillStyles(entry, waveColor, progressColor);
+                    this.applyCanvasTransforms(entry, this.params.vertical);
+                    entry.fillRects(intersection.x1 - leftOffset, intersection.y1, intersection.x2 - intersection.x1, intersection.y2 - intersection.y1, radius);
+                  }
+                }
+              }
+            }, {
+              key: "hideChannel",
+              value: function hideChannel(channelIndex) {
+                return this.params.splitChannels && this.params.splitChannelsOptions.filterChannels.includes(channelIndex);
+              }
+            }, {
+              key: "prepareDraw",
+              value: function prepareDraw(peaks, channelIndex, start2, end, fn, drawIndex, normalizedMax) {
+                var _this7 = this;
+                return util.frame(function() {
+                  if (peaks[0] instanceof Array) {
+                    var channels = peaks;
+                    if (_this7.params.splitChannels) {
+                      var filteredChannels = channels.filter(function(c, i) {
+                        return !_this7.hideChannel(i);
+                      });
+                      if (!_this7.params.splitChannelsOptions.overlay) {
+                        _this7.setHeight(Math.max(filteredChannels.length, 1) * _this7.params.height * _this7.params.pixelRatio);
+                      }
+                      var overallAbsMax;
+                      if (_this7.params.splitChannelsOptions && _this7.params.splitChannelsOptions.relativeNormalization) {
+                        overallAbsMax = util.max(channels.map(function(channelPeaks) {
+                          return util.absMax(channelPeaks);
+                        }));
+                      }
+                      return channels.forEach(function(channelPeaks, i) {
+                        return _this7.prepareDraw(channelPeaks, i, start2, end, fn, filteredChannels.indexOf(channelPeaks), overallAbsMax);
+                      });
+                    }
+                    peaks = channels[0];
+                  }
+                  if (_this7.hideChannel(channelIndex)) {
+                    return;
+                  }
+                  var absmax = 1 / _this7.params.barHeight;
+                  if (_this7.params.normalize) {
+                    absmax = normalizedMax === void 0 ? util.absMax(peaks) : normalizedMax;
+                  }
+                  var hasMinVals = [].some.call(peaks, function(val) {
+                    return val < 0;
+                  });
+                  var height = _this7.params.height * _this7.params.pixelRatio;
+                  var halfH = height / 2;
+                  var offsetY = height * drawIndex || 0;
+                  if (_this7.params.splitChannelsOptions && _this7.params.splitChannelsOptions.overlay) {
+                    offsetY = 0;
+                  }
+                  return fn({
+                    absmax,
+                    hasMinVals,
+                    height,
+                    offsetY,
+                    halfH,
+                    peaks,
+                    channelIndex
+                  });
+                })();
+              }
+            }, {
+              key: "setFillStyles",
+              value: function setFillStyles(entry) {
+                var waveColor = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : this.params.waveColor;
+                var progressColor = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : this.params.progressColor;
+                entry.setFillStyles(waveColor, progressColor);
+              }
+            }, {
+              key: "applyCanvasTransforms",
+              value: function applyCanvasTransforms(entry) {
+                var vertical = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
+                entry.applyCanvasTransforms(vertical);
+              }
+            }, {
+              key: "getImage",
+              value: function getImage(format, quality, type) {
+                if (type === "blob") {
+                  return Promise.all(this.canvases.map(function(entry) {
+                    return entry.getImage(format, quality, type);
+                  }));
+                } else if (type === "dataURL") {
+                  var images = this.canvases.map(function(entry) {
+                    return entry.getImage(format, quality, type);
+                  });
+                  return images.length > 1 ? images : images[0];
+                }
+              }
+            }, {
+              key: "updateProgress",
+              value: function updateProgress(position) {
+                this.style(this.progressWave, {
+                  width: position + "px"
+                });
+              }
+            }]);
+            return MultiCanvas2;
+          }(_drawer.default);
+          exports2["default"] = MultiCanvas;
+          module2.exports = exports2.default;
+        },
+        "./src/mediaelement-webaudio.js": (module2, exports2, __webpack_require__2) => {
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var _mediaelement = _interopRequireDefault2(__webpack_require__2("./src/mediaelement.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof2(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof2(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof2(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
+          }
+          function _get() {
+            if (typeof Reflect !== "undefined" && Reflect.get) {
+              _get = Reflect.get.bind();
+            } else {
+              _get = function _get2(target, property, receiver) {
+                var base = _superPropBase(target, property);
+                if (!base)
+                  return;
+                var desc = Object.getOwnPropertyDescriptor(base, property);
+                if (desc.get) {
+                  return desc.get.call(arguments.length < 3 ? target : receiver);
+                }
+                return desc.value;
+              };
+            }
+            return _get.apply(this, arguments);
+          }
+          function _superPropBase(object, property) {
+            while (!Object.prototype.hasOwnProperty.call(object, property)) {
+              object = _getPrototypeOf(object);
+              if (object === null)
+                break;
+            }
+            return object;
+          }
+          function _inherits(subClass, superClass) {
+            if (typeof superClass !== "function" && superClass !== null) {
+              throw new TypeError("Super expression must either be null or a function");
+            }
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });
+            Object.defineProperty(subClass, "prototype", { writable: false });
+            if (superClass)
+              _setPrototypeOf(subClass, superClass);
+          }
+          function _setPrototypeOf(o, p2) {
+            _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p3) {
+              o2.__proto__ = p3;
+              return o2;
+            };
+            return _setPrototypeOf(o, p2);
+          }
+          function _createSuper(Derived) {
+            var hasNativeReflectConstruct = _isNativeReflectConstruct();
+            return function _createSuperInternal() {
+              var Super = _getPrototypeOf(Derived), result;
+              if (hasNativeReflectConstruct) {
+                var NewTarget = _getPrototypeOf(this).constructor;
+                result = Reflect.construct(Super, arguments, NewTarget);
+              } else {
+                result = Super.apply(this, arguments);
+              }
+              return _possibleConstructorReturn(this, result);
+            };
+          }
+          function _possibleConstructorReturn(self2, call) {
+            if (call && (_typeof2(call) === "object" || typeof call === "function")) {
+              return call;
+            } else if (call !== void 0) {
+              throw new TypeError("Derived constructors may only return object or undefined");
+            }
+            return _assertThisInitialized(self2);
+          }
+          function _assertThisInitialized(self2) {
+            if (self2 === void 0) {
+              throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+            }
+            return self2;
+          }
+          function _isNativeReflectConstruct() {
+            if (typeof Reflect === "undefined" || !Reflect.construct)
+              return false;
+            if (Reflect.construct.sham)
+              return false;
+            if (typeof Proxy === "function")
+              return true;
+            try {
+              Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+              }));
+              return true;
+            } catch (e) {
+              return false;
+            }
+          }
+          function _getPrototypeOf(o) {
+            _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf2(o2) {
+              return o2.__proto__ || Object.getPrototypeOf(o2);
+            };
+            return _getPrototypeOf(o);
+          }
+          var MediaElementWebAudio = /* @__PURE__ */ function(_MediaElement) {
+            _inherits(MediaElementWebAudio2, _MediaElement);
+            var _super = _createSuper(MediaElementWebAudio2);
+            function MediaElementWebAudio2(params) {
+              var _this;
+              _classCallCheck(this, MediaElementWebAudio2);
+              _this = _super.call(this, params);
+              _this.params = params;
+              _this.sourceMediaElement = null;
+              return _this;
+            }
+            _createClass(MediaElementWebAudio2, [{
+              key: "init",
+              value: function init2() {
+                this.setPlaybackRate(this.params.audioRate);
+                this.createTimer();
+                this.createVolumeNode();
+                this.createScriptNode();
+                this.createAnalyserNode();
+              }
+            }, {
+              key: "_load",
+              value: function _load(media, peaks, preload) {
+                _get(_getPrototypeOf(MediaElementWebAudio2.prototype), "_load", this).call(this, media, peaks, preload);
+                this.createMediaElementSource(media);
+              }
+            }, {
+              key: "createMediaElementSource",
+              value: function createMediaElementSource(mediaElement) {
+                this.sourceMediaElement = this.ac.createMediaElementSource(mediaElement);
+                this.sourceMediaElement.connect(this.analyser);
+              }
+            }, {
+              key: "play",
+              value: function play(start2, end) {
+                this.resumeAudioContext();
+                return _get(_getPrototypeOf(MediaElementWebAudio2.prototype), "play", this).call(this, start2, end);
+              }
+            }, {
+              key: "destroy",
+              value: function destroy() {
+                _get(_getPrototypeOf(MediaElementWebAudio2.prototype), "destroy", this).call(this);
+                this.destroyWebAudio();
+              }
+            }]);
+            return MediaElementWebAudio2;
+          }(_mediaelement.default);
+          exports2["default"] = MediaElementWebAudio;
+          module2.exports = exports2.default;
+        },
+        "./src/mediaelement.js": (module2, exports2, __webpack_require__2) => {
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var _webaudio = _interopRequireDefault2(__webpack_require__2("./src/webaudio.js"));
+          var util = _interopRequireWildcard2(__webpack_require__2("./src/util/index.js"));
+          function _getRequireWildcardCache(nodeInterop) {
+            if (typeof WeakMap !== "function")
+              return null;
+            var cacheBabelInterop = /* @__PURE__ */ new WeakMap();
+            var cacheNodeInterop = /* @__PURE__ */ new WeakMap();
+            return (_getRequireWildcardCache = function _getRequireWildcardCache2(nodeInterop2) {
+              return nodeInterop2 ? cacheNodeInterop : cacheBabelInterop;
+            })(nodeInterop);
+          }
+          function _interopRequireWildcard2(obj, nodeInterop) {
+            if (!nodeInterop && obj && obj.__esModule) {
+              return obj;
+            }
+            if (obj === null || _typeof2(obj) !== "object" && typeof obj !== "function") {
+              return { default: obj };
+            }
+            var cache = _getRequireWildcardCache(nodeInterop);
+            if (cache && cache.has(obj)) {
+              return cache.get(obj);
+            }
+            var newObj = {};
+            var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+            for (var key in obj) {
+              if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
+                var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+                if (desc && (desc.get || desc.set)) {
+                  Object.defineProperty(newObj, key, desc);
+                } else {
+                  newObj[key] = obj[key];
+                }
+              }
+            }
+            newObj.default = obj;
+            if (cache) {
+              cache.set(obj, newObj);
+            }
+            return newObj;
+          }
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof2(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof2(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof2(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
+          }
+          function _get() {
+            if (typeof Reflect !== "undefined" && Reflect.get) {
+              _get = Reflect.get.bind();
+            } else {
+              _get = function _get2(target, property, receiver) {
+                var base = _superPropBase(target, property);
+                if (!base)
+                  return;
+                var desc = Object.getOwnPropertyDescriptor(base, property);
+                if (desc.get) {
+                  return desc.get.call(arguments.length < 3 ? target : receiver);
+                }
+                return desc.value;
+              };
+            }
+            return _get.apply(this, arguments);
+          }
+          function _superPropBase(object, property) {
+            while (!Object.prototype.hasOwnProperty.call(object, property)) {
+              object = _getPrototypeOf(object);
+              if (object === null)
+                break;
+            }
+            return object;
+          }
+          function _inherits(subClass, superClass) {
+            if (typeof superClass !== "function" && superClass !== null) {
+              throw new TypeError("Super expression must either be null or a function");
+            }
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });
+            Object.defineProperty(subClass, "prototype", { writable: false });
+            if (superClass)
+              _setPrototypeOf(subClass, superClass);
+          }
+          function _setPrototypeOf(o, p2) {
+            _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p3) {
+              o2.__proto__ = p3;
+              return o2;
+            };
+            return _setPrototypeOf(o, p2);
+          }
+          function _createSuper(Derived) {
+            var hasNativeReflectConstruct = _isNativeReflectConstruct();
+            return function _createSuperInternal() {
+              var Super = _getPrototypeOf(Derived), result;
+              if (hasNativeReflectConstruct) {
+                var NewTarget = _getPrototypeOf(this).constructor;
+                result = Reflect.construct(Super, arguments, NewTarget);
+              } else {
+                result = Super.apply(this, arguments);
+              }
+              return _possibleConstructorReturn(this, result);
+            };
+          }
+          function _possibleConstructorReturn(self2, call) {
+            if (call && (_typeof2(call) === "object" || typeof call === "function")) {
+              return call;
+            } else if (call !== void 0) {
+              throw new TypeError("Derived constructors may only return object or undefined");
+            }
+            return _assertThisInitialized(self2);
+          }
+          function _assertThisInitialized(self2) {
+            if (self2 === void 0) {
+              throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+            }
+            return self2;
+          }
+          function _isNativeReflectConstruct() {
+            if (typeof Reflect === "undefined" || !Reflect.construct)
+              return false;
+            if (Reflect.construct.sham)
+              return false;
+            if (typeof Proxy === "function")
+              return true;
+            try {
+              Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+              }));
+              return true;
+            } catch (e) {
+              return false;
+            }
+          }
+          function _getPrototypeOf(o) {
+            _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf2(o2) {
+              return o2.__proto__ || Object.getPrototypeOf(o2);
+            };
+            return _getPrototypeOf(o);
+          }
+          var MediaElement = /* @__PURE__ */ function(_WebAudio) {
+            _inherits(MediaElement2, _WebAudio);
+            var _super = _createSuper(MediaElement2);
+            function MediaElement2(params) {
+              var _this;
+              _classCallCheck(this, MediaElement2);
+              _this = _super.call(this, params);
+              _this.params = params;
+              _this.media = {
+                currentTime: 0,
+                duration: 0,
+                paused: true,
+                playbackRate: 1,
+                play: function play() {
+                },
+                pause: function pause() {
+                },
+                volume: 0
+              };
+              _this.mediaType = params.mediaType.toLowerCase();
+              _this.elementPosition = params.elementPosition;
+              _this.peaks = null;
+              _this.playbackRate = 1;
+              _this.volume = 1;
+              _this.isMuted = false;
+              _this.buffer = null;
+              _this.onPlayEnd = null;
+              _this.mediaListeners = {};
+              return _this;
+            }
+            _createClass(MediaElement2, [{
+              key: "init",
+              value: function init2() {
+                this.setPlaybackRate(this.params.audioRate);
+                this.createTimer();
+              }
+            }, {
+              key: "_setupMediaListeners",
+              value: function _setupMediaListeners() {
+                var _this2 = this;
+                this.mediaListeners.error = function() {
+                  _this2.fireEvent("error", "Error loading media element");
+                };
+                this.mediaListeners.waiting = function() {
+                  _this2.fireEvent("waiting");
+                };
+                this.mediaListeners.canplay = function() {
+                  _this2.fireEvent("canplay");
+                };
+                this.mediaListeners.ended = function() {
+                  _this2.fireEvent("finish");
+                };
+                this.mediaListeners.play = function() {
+                  _this2.fireEvent("play");
+                };
+                this.mediaListeners.pause = function() {
+                  _this2.fireEvent("pause");
+                };
+                this.mediaListeners.seeked = function(event) {
+                  _this2.fireEvent("seek");
+                };
+                this.mediaListeners.volumechange = function(event) {
+                  _this2.isMuted = _this2.media.muted;
+                  if (_this2.isMuted) {
+                    _this2.volume = 0;
+                  } else {
+                    _this2.volume = _this2.media.volume;
+                  }
+                  _this2.fireEvent("volume");
+                };
+                Object.keys(this.mediaListeners).forEach(function(id) {
+                  _this2.media.removeEventListener(id, _this2.mediaListeners[id]);
+                  _this2.media.addEventListener(id, _this2.mediaListeners[id]);
+                });
+              }
+            }, {
+              key: "createTimer",
+              value: function createTimer() {
+                var _this3 = this;
+                var onAudioProcess = function onAudioProcess2() {
+                  if (_this3.isPaused()) {
+                    return;
+                  }
+                  _this3.fireEvent("audioprocess", _this3.getCurrentTime());
+                  util.frame(onAudioProcess2)();
+                };
+                this.on("play", onAudioProcess);
+                this.on("pause", function() {
+                  _this3.fireEvent("audioprocess", _this3.getCurrentTime());
+                });
+              }
+            }, {
+              key: "load",
+              value: function load(url, container, peaks, preload) {
+                var media = document.createElement(this.mediaType);
+                media.controls = this.params.mediaControls;
+                media.autoplay = this.params.autoplay || false;
+                media.preload = preload == null ? "auto" : preload;
+                media.src = url;
+                media.style.width = "100%";
+                var prevMedia = container.querySelector(this.mediaType);
+                if (prevMedia) {
+                  container.removeChild(prevMedia);
+                }
+                container.appendChild(media);
+                this._load(media, peaks, preload);
+              }
+            }, {
+              key: "loadElt",
+              value: function loadElt(elt, peaks) {
+                elt.controls = this.params.mediaControls;
+                elt.autoplay = this.params.autoplay || false;
+                this._load(elt, peaks, elt.preload);
+              }
+            }, {
+              key: "_load",
+              value: function _load(media, peaks, preload) {
+                if (!(media instanceof HTMLMediaElement) || typeof media.addEventListener === "undefined") {
+                  throw new Error("media parameter is not a valid media element");
+                }
+                if (typeof media.load == "function" && !(peaks && preload == "none")) {
+                  media.load();
+                }
+                this.media = media;
+                this._setupMediaListeners();
+                this.peaks = peaks;
+                this.onPlayEnd = null;
+                this.buffer = null;
+                this.isMuted = media.muted;
+                this.setPlaybackRate(this.playbackRate);
+                this.setVolume(this.volume);
+              }
+            }, {
+              key: "isPaused",
+              value: function isPaused() {
+                return !this.media || this.media.paused;
+              }
+            }, {
+              key: "getDuration",
+              value: function getDuration() {
+                if (this.explicitDuration) {
+                  return this.explicitDuration;
+                }
+                var duration = (this.buffer || this.media).duration;
+                if (duration >= Infinity) {
+                  duration = this.media.seekable.end(0);
+                }
+                return duration;
+              }
+            }, {
+              key: "getCurrentTime",
+              value: function getCurrentTime() {
+                return this.media && this.media.currentTime;
+              }
+            }, {
+              key: "getPlayedPercents",
+              value: function getPlayedPercents() {
+                return this.getCurrentTime() / this.getDuration() || 0;
+              }
+            }, {
+              key: "getPlaybackRate",
+              value: function getPlaybackRate() {
+                return this.playbackRate || this.media.playbackRate;
+              }
+            }, {
+              key: "setPlaybackRate",
+              value: function setPlaybackRate(value) {
+                this.playbackRate = value || 1;
+                this.media.playbackRate = this.playbackRate;
+              }
+            }, {
+              key: "seekTo",
+              value: function seekTo(start2) {
+                if (start2 != null && !isNaN(start2)) {
+                  this.media.currentTime = start2;
+                }
+                this.clearPlayEnd();
+              }
+            }, {
+              key: "play",
+              value: function play(start2, end) {
+                this.seekTo(start2);
+                var promise = this.media.play();
+                end && this.setPlayEnd(end);
+                return promise;
+              }
+            }, {
+              key: "pause",
+              value: function pause() {
+                var promise;
+                if (this.media) {
+                  promise = this.media.pause();
+                }
+                this.clearPlayEnd();
+                return promise;
+              }
+            }, {
+              key: "setPlayEnd",
+              value: function setPlayEnd(end) {
+                var _this4 = this;
+                this.clearPlayEnd();
+                this._onPlayEnd = function(time) {
+                  if (time >= end) {
+                    _this4.pause();
+                    _this4.seekTo(end);
+                  }
+                };
+                this.on("audioprocess", this._onPlayEnd);
+              }
+            }, {
+              key: "clearPlayEnd",
+              value: function clearPlayEnd() {
+                if (this._onPlayEnd) {
+                  this.un("audioprocess", this._onPlayEnd);
+                  this._onPlayEnd = null;
+                }
+              }
+            }, {
+              key: "getPeaks",
+              value: function getPeaks(length, first, last) {
+                if (this.buffer) {
+                  return _get(_getPrototypeOf(MediaElement2.prototype), "getPeaks", this).call(this, length, first, last);
+                }
+                return this.peaks || [];
+              }
+            }, {
+              key: "setSinkId",
+              value: function setSinkId(deviceId) {
+                if (deviceId) {
+                  if (!this.media.setSinkId) {
+                    return Promise.reject(new Error("setSinkId is not supported in your browser"));
+                  }
+                  return this.media.setSinkId(deviceId);
+                }
+                return Promise.reject(new Error("Invalid deviceId: " + deviceId));
+              }
+            }, {
+              key: "getVolume",
+              value: function getVolume() {
+                return this.volume;
+              }
+            }, {
+              key: "setVolume",
+              value: function setVolume(value) {
+                this.volume = value;
+                if (this.media.volume !== this.volume) {
+                  this.media.volume = this.volume;
+                }
+              }
+            }, {
+              key: "setMute",
+              value: function setMute(muted) {
+                this.isMuted = this.media.muted = muted;
+              }
+            }, {
+              key: "destroy",
+              value: function destroy() {
+                var _this5 = this;
+                this.pause();
+                this.unAll();
+                this.destroyed = true;
+                Object.keys(this.mediaListeners).forEach(function(id) {
+                  if (_this5.media) {
+                    _this5.media.removeEventListener(id, _this5.mediaListeners[id]);
+                  }
+                });
+                if (this.params.removeMediaElementOnDestroy && this.media && this.media.parentNode) {
+                  this.media.parentNode.removeChild(this.media);
+                }
+                this.media = null;
+              }
+            }]);
+            return MediaElement2;
+          }(_webaudio.default);
+          exports2["default"] = MediaElement;
+          module2.exports = exports2.default;
+        },
+        "./src/peakcache.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof2(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof2(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof2(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
+          }
+          var PeakCache = /* @__PURE__ */ function() {
+            function PeakCache2() {
+              _classCallCheck(this, PeakCache2);
+              this.clearPeakCache();
+            }
+            _createClass(PeakCache2, [{
+              key: "clearPeakCache",
+              value: function clearPeakCache() {
+                this.peakCacheRanges = [];
+                this.peakCacheLength = -1;
+              }
+            }, {
+              key: "addRangeToPeakCache",
+              value: function addRangeToPeakCache(length, start2, end) {
+                if (length != this.peakCacheLength) {
+                  this.clearPeakCache();
+                  this.peakCacheLength = length;
+                }
+                var uncachedRanges = [];
+                var i = 0;
+                while (i < this.peakCacheRanges.length && this.peakCacheRanges[i] < start2) {
+                  i++;
+                }
+                if (i % 2 == 0) {
+                  uncachedRanges.push(start2);
+                }
+                while (i < this.peakCacheRanges.length && this.peakCacheRanges[i] <= end) {
+                  uncachedRanges.push(this.peakCacheRanges[i]);
+                  i++;
+                }
+                if (i % 2 == 0) {
+                  uncachedRanges.push(end);
+                }
+                uncachedRanges = uncachedRanges.filter(function(item, pos, arr) {
+                  if (pos == 0) {
+                    return item != arr[pos + 1];
+                  } else if (pos == arr.length - 1) {
+                    return item != arr[pos - 1];
+                  }
+                  return item != arr[pos - 1] && item != arr[pos + 1];
+                });
+                this.peakCacheRanges = this.peakCacheRanges.concat(uncachedRanges);
+                this.peakCacheRanges = this.peakCacheRanges.sort(function(a, b) {
+                  return a - b;
+                }).filter(function(item, pos, arr) {
+                  if (pos == 0) {
+                    return item != arr[pos + 1];
+                  } else if (pos == arr.length - 1) {
+                    return item != arr[pos - 1];
+                  }
+                  return item != arr[pos - 1] && item != arr[pos + 1];
+                });
+                var uncachedRangePairs = [];
+                for (i = 0; i < uncachedRanges.length; i += 2) {
+                  uncachedRangePairs.push([uncachedRanges[i], uncachedRanges[i + 1]]);
+                }
+                return uncachedRangePairs;
+              }
+            }, {
+              key: "getCacheRanges",
+              value: function getCacheRanges() {
+                var peakCacheRangePairs = [];
+                var i;
+                for (i = 0; i < this.peakCacheRanges.length; i += 2) {
+                  peakCacheRangePairs.push([this.peakCacheRanges[i], this.peakCacheRanges[i + 1]]);
+                }
+                return peakCacheRangePairs;
+              }
+            }]);
+            return PeakCache2;
+          }();
+          exports2["default"] = PeakCache;
+          module2.exports = exports2.default;
+        },
+        "./src/util/absMax.js": (module2, exports2, __webpack_require__2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = absMax;
+          var _max = _interopRequireDefault2(__webpack_require__2("./src/util/max.js"));
+          var _min = _interopRequireDefault2(__webpack_require__2("./src/util/min.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function absMax(values) {
+            var max = (0, _max.default)(values);
+            var min = (0, _min.default)(values);
+            return -min > max ? -min : max;
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/clamp.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = clamp;
+          function clamp(val, min, max) {
+            return Math.min(Math.max(min, val), max);
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/fetch.js": (module2, exports2, __webpack_require__2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = fetchFile;
+          var _observer = _interopRequireDefault2(__webpack_require__2("./src/util/observer.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof2(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof2(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof2(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
+          }
+          var ProgressHandler = /* @__PURE__ */ function() {
+            function ProgressHandler2(instance2, contentLength, response) {
+              _classCallCheck(this, ProgressHandler2);
+              this.instance = instance2;
+              this.instance._reader = response.body.getReader();
+              this.total = parseInt(contentLength, 10);
+              this.loaded = 0;
+            }
+            _createClass(ProgressHandler2, [{
+              key: "start",
+              value: function start2(controller) {
+                var _this = this;
+                var read = function read2() {
+                  _this.instance._reader.read().then(function(_ref) {
+                    var done = _ref.done, value = _ref.value;
+                    if (done) {
+                      if (_this.total === 0) {
+                        _this.instance.onProgress.call(_this.instance, {
+                          loaded: _this.loaded,
+                          total: _this.total,
+                          lengthComputable: false
+                        });
+                      }
+                      controller.close();
+                      return;
+                    }
+                    _this.loaded += value.byteLength;
+                    _this.instance.onProgress.call(_this.instance, {
+                      loaded: _this.loaded,
+                      total: _this.total,
+                      lengthComputable: !(_this.total === 0)
+                    });
+                    controller.enqueue(value);
+                    read2();
+                  }).catch(function(error) {
+                    controller.error(error);
+                  });
+                };
+                read();
+              }
+            }]);
+            return ProgressHandler2;
+          }();
+          function fetchFile(options2) {
+            if (!options2) {
+              throw new Error("fetch options missing");
+            } else if (!options2.url) {
+              throw new Error("fetch url missing");
+            }
+            var instance2 = new _observer.default();
+            var fetchHeaders = new Headers();
+            var fetchRequest = new Request(options2.url);
+            instance2.controller = new AbortController();
+            if (options2 && options2.requestHeaders) {
+              options2.requestHeaders.forEach(function(header) {
+                fetchHeaders.append(header.key, header.value);
+              });
+            }
+            var responseType = options2.responseType || "json";
+            var fetchOptions = {
+              method: options2.method || "GET",
+              headers: fetchHeaders,
+              mode: options2.mode || "cors",
+              credentials: options2.credentials || "same-origin",
+              cache: options2.cache || "default",
+              redirect: options2.redirect || "follow",
+              referrer: options2.referrer || "client",
+              signal: instance2.controller.signal
+            };
+            fetch(fetchRequest, fetchOptions).then(function(response) {
+              instance2.response = response;
+              var progressAvailable = true;
+              if (!response.body) {
+                progressAvailable = false;
+              }
+              var contentLength = response.headers.get("content-length");
+              if (contentLength === null) {
+                progressAvailable = false;
+              }
+              if (!progressAvailable) {
+                return response;
+              }
+              instance2.onProgress = function(e) {
+                instance2.fireEvent("progress", e);
+              };
+              return new Response(new ReadableStream(new ProgressHandler(instance2, contentLength, response)), fetchOptions);
+            }).then(function(response) {
+              var errMsg;
+              if (response.ok) {
+                switch (responseType) {
+                  case "arraybuffer":
+                    return response.arrayBuffer();
+                  case "json":
+                    return response.json();
+                  case "blob":
+                    return response.blob();
+                  case "text":
+                    return response.text();
+                  default:
+                    errMsg = "Unknown responseType: " + responseType;
+                    break;
+                }
+              }
+              if (!errMsg) {
+                errMsg = "HTTP error status: " + response.status;
+              }
+              throw new Error(errMsg);
+            }).then(function(response) {
+              instance2.fireEvent("success", response);
+            }).catch(function(error) {
+              instance2.fireEvent("error", error);
+            });
+            instance2.fetchRequest = fetchRequest;
+            return instance2;
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/frame.js": (module2, exports2, __webpack_require__2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = frame;
+          var _requestAnimationFrame = _interopRequireDefault2(__webpack_require__2("./src/util/request-animation-frame.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function frame(func) {
+            return function() {
+              for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
+              }
+              return (0, _requestAnimationFrame.default)(function() {
+                return func.apply(void 0, args);
+              });
+            };
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/get-id.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = getId2;
+          function getId2(prefix) {
+            if (prefix === void 0) {
+              prefix = "wavesurfer_";
+            }
+            return prefix + Math.random().toString(32).substring(2);
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/index.js": (__unused_webpack_module, exports2, __webpack_require__2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          Object.defineProperty(exports2, "Observer", {
+            enumerable: true,
+            get: function get3() {
+              return _observer.default;
+            }
+          });
+          Object.defineProperty(exports2, "absMax", {
+            enumerable: true,
+            get: function get3() {
+              return _absMax.default;
+            }
+          });
+          Object.defineProperty(exports2, "clamp", {
+            enumerable: true,
+            get: function get3() {
+              return _clamp.default;
+            }
+          });
+          Object.defineProperty(exports2, "debounce", {
+            enumerable: true,
+            get: function get3() {
+              return _debounce.default;
+            }
+          });
+          Object.defineProperty(exports2, "fetchFile", {
+            enumerable: true,
+            get: function get3() {
+              return _fetch.default;
+            }
+          });
+          Object.defineProperty(exports2, "frame", {
+            enumerable: true,
+            get: function get3() {
+              return _frame.default;
+            }
+          });
+          Object.defineProperty(exports2, "getId", {
+            enumerable: true,
+            get: function get3() {
+              return _getId.default;
+            }
+          });
+          Object.defineProperty(exports2, "ignoreSilenceMode", {
+            enumerable: true,
+            get: function get3() {
+              return _silenceMode.default;
+            }
+          });
+          Object.defineProperty(exports2, "max", {
+            enumerable: true,
+            get: function get3() {
+              return _max.default;
+            }
+          });
+          Object.defineProperty(exports2, "min", {
+            enumerable: true,
+            get: function get3() {
+              return _min.default;
+            }
+          });
+          Object.defineProperty(exports2, "preventClick", {
+            enumerable: true,
+            get: function get3() {
+              return _preventClick.default;
+            }
+          });
+          Object.defineProperty(exports2, "requestAnimationFrame", {
+            enumerable: true,
+            get: function get3() {
+              return _requestAnimationFrame.default;
+            }
+          });
+          Object.defineProperty(exports2, "style", {
+            enumerable: true,
+            get: function get3() {
+              return _style.default;
+            }
+          });
+          Object.defineProperty(exports2, "withOrientation", {
+            enumerable: true,
+            get: function get3() {
+              return _orientation.default;
+            }
+          });
+          var _getId = _interopRequireDefault2(__webpack_require__2("./src/util/get-id.js"));
+          var _max = _interopRequireDefault2(__webpack_require__2("./src/util/max.js"));
+          var _min = _interopRequireDefault2(__webpack_require__2("./src/util/min.js"));
+          var _absMax = _interopRequireDefault2(__webpack_require__2("./src/util/absMax.js"));
+          var _observer = _interopRequireDefault2(__webpack_require__2("./src/util/observer.js"));
+          var _style = _interopRequireDefault2(__webpack_require__2("./src/util/style.js"));
+          var _requestAnimationFrame = _interopRequireDefault2(__webpack_require__2("./src/util/request-animation-frame.js"));
+          var _frame = _interopRequireDefault2(__webpack_require__2("./src/util/frame.js"));
+          var _debounce = _interopRequireDefault2(__webpack_require__2("./node_modules/debounce/index.js"));
+          var _preventClick = _interopRequireDefault2(__webpack_require__2("./src/util/prevent-click.js"));
+          var _fetch = _interopRequireDefault2(__webpack_require__2("./src/util/fetch.js"));
+          var _clamp = _interopRequireDefault2(__webpack_require__2("./src/util/clamp.js"));
+          var _orientation = _interopRequireDefault2(__webpack_require__2("./src/util/orientation.js"));
+          var _silenceMode = _interopRequireDefault2(__webpack_require__2("./src/util/silence-mode.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+        },
+        "./src/util/max.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = max;
+          function max(values) {
+            var largest = -Infinity;
+            Object.keys(values).forEach(function(i) {
+              if (values[i] > largest) {
+                largest = values[i];
+              }
+            });
+            return largest;
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/min.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = min;
+          function min(values) {
+            var smallest = Number(Infinity);
+            Object.keys(values).forEach(function(i) {
+              if (values[i] < smallest) {
+                smallest = values[i];
+              }
+            });
+            return smallest;
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/observer.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof2(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof2(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof2(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
+          }
+          var Observer = /* @__PURE__ */ function() {
+            function Observer2() {
+              _classCallCheck(this, Observer2);
+              this._disabledEventEmissions = [];
+              this.handlers = null;
+            }
+            _createClass(Observer2, [{
+              key: "on",
+              value: function on2(event, fn) {
+                var _this = this;
+                if (!this.handlers) {
+                  this.handlers = {};
+                }
+                var handlers = this.handlers[event];
+                if (!handlers) {
+                  handlers = this.handlers[event] = [];
+                }
+                handlers.push(fn);
+                return {
+                  name: event,
+                  callback: fn,
+                  un: function un(e, fn2) {
+                    return _this.un(e, fn2);
+                  }
+                };
+              }
+            }, {
+              key: "un",
+              value: function un(event, fn) {
+                if (!this.handlers) {
+                  return;
+                }
+                var handlers = this.handlers[event];
+                var i;
+                if (handlers) {
+                  if (fn) {
+                    for (i = handlers.length - 1; i >= 0; i--) {
+                      if (handlers[i] == fn) {
+                        handlers.splice(i, 1);
+                      }
+                    }
+                  } else {
+                    handlers.length = 0;
+                  }
+                }
+              }
+            }, {
+              key: "unAll",
+              value: function unAll() {
+                this.handlers = null;
+              }
+            }, {
+              key: "once",
+              value: function once(event, handler) {
+                var _this2 = this;
+                var fn = function fn2() {
+                  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                    args[_key] = arguments[_key];
+                  }
+                  handler.apply(_this2, args);
+                  setTimeout(function() {
+                    _this2.un(event, fn2);
+                  }, 0);
+                };
+                return this.on(event, fn);
+              }
+            }, {
+              key: "setDisabledEventEmissions",
+              value: function setDisabledEventEmissions(eventNames) {
+                this._disabledEventEmissions = eventNames;
+              }
+            }, {
+              key: "_isDisabledEventEmission",
+              value: function _isDisabledEventEmission(event) {
+                return this._disabledEventEmissions && this._disabledEventEmissions.includes(event);
+              }
+            }, {
+              key: "fireEvent",
+              value: function fireEvent(event) {
+                for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+                  args[_key2 - 1] = arguments[_key2];
+                }
+                if (!this.handlers || this._isDisabledEventEmission(event)) {
+                  return;
+                }
+                var handlers = this.handlers[event];
+                handlers && handlers.forEach(function(fn) {
+                  fn.apply(void 0, args);
+                });
+              }
+            }]);
+            return Observer2;
+          }();
+          exports2["default"] = Observer;
+          module2.exports = exports2.default;
+        },
+        "./src/util/orientation.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = withOrientation;
+          var verticalPropMap = {
+            width: "height",
+            height: "width",
+            overflowX: "overflowY",
+            overflowY: "overflowX",
+            clientWidth: "clientHeight",
+            clientHeight: "clientWidth",
+            clientX: "clientY",
+            clientY: "clientX",
+            scrollWidth: "scrollHeight",
+            scrollLeft: "scrollTop",
+            offsetLeft: "offsetTop",
+            offsetTop: "offsetLeft",
+            offsetHeight: "offsetWidth",
+            offsetWidth: "offsetHeight",
+            left: "top",
+            right: "bottom",
+            top: "left",
+            bottom: "right",
+            borderRightStyle: "borderBottomStyle",
+            borderRightWidth: "borderBottomWidth",
+            borderRightColor: "borderBottomColor"
+          };
+          function mapProp(prop, vertical) {
+            if (Object.prototype.hasOwnProperty.call(verticalPropMap, prop)) {
+              return vertical ? verticalPropMap[prop] : prop;
+            } else {
+              return prop;
+            }
+          }
+          var isProxy2 = Symbol("isProxy");
+          function withOrientation(target, vertical) {
+            if (target[isProxy2]) {
+              return target;
+            } else {
+              return new Proxy(target, {
+                get: function get3(obj, prop, receiver) {
+                  if (prop === isProxy2) {
+                    return true;
+                  } else if (prop === "domElement") {
+                    return obj;
+                  } else if (prop === "style") {
+                    return withOrientation(obj.style, vertical);
+                  } else if (prop === "canvas") {
+                    return withOrientation(obj.canvas, vertical);
+                  } else if (prop === "getBoundingClientRect") {
+                    return function() {
+                      return withOrientation(obj.getBoundingClientRect.apply(obj, arguments), vertical);
+                    };
+                  } else if (prop === "getContext") {
+                    return function() {
+                      return withOrientation(obj.getContext.apply(obj, arguments), vertical);
+                    };
+                  } else {
+                    var value = obj[mapProp(prop, vertical)];
+                    return typeof value == "function" ? value.bind(obj) : value;
+                  }
+                },
+                set: function set2(obj, prop, value) {
+                  obj[mapProp(prop, vertical)] = value;
+                  return true;
+                }
+              });
+            }
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/prevent-click.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = preventClick;
+          function preventClickHandler(event) {
+            event.stopPropagation();
+            document.body.removeEventListener("click", preventClickHandler, true);
+          }
+          function preventClick(values) {
+            document.body.addEventListener("click", preventClickHandler, true);
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/request-animation-frame.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var _default = (window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element2) {
+            return setTimeout(callback, 1e3 / 60);
+          }).bind(window);
+          exports2["default"] = _default;
+          module2.exports = exports2.default;
+        },
+        "./src/util/silence-mode.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = ignoreSilenceMode;
+          function ignoreSilenceMode() {
+            var silentAC = new AudioContext();
+            var silentBS = silentAC.createBufferSource();
+            silentBS.buffer = silentAC.createBuffer(1, 1, 44100);
+            silentBS.connect(silentAC.destination);
+            silentBS.start();
+            var audioData = "data:audio/mpeg;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA//////////////////////////////////////////////////////////////////8AAABhTEFNRTMuMTAwA8MAAAAAAAAAABQgJAUHQQAB9AAAAnGMHkkIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//sQxAADgnABGiAAQBCqgCRMAAgEAH///////////////7+n/9FTuQsQH//////2NG0jWUGlio5gLQTOtIoeR2WX////X4s9Atb/JRVCbBUpeRUq//////////////////9RUi0f2jn/+xDECgPCjAEQAABN4AAANIAAAAQVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==";
+            var tmp = document.createElement("div");
+            tmp.innerHTML = '<audio x-webkit-airplay="deny"></audio>';
+            var audioSilentMode = tmp.children.item(0);
+            audioSilentMode.src = audioData;
+            audioSilentMode.preload = "auto";
+            audioSilentMode.type = "audio/mpeg";
+            audioSilentMode.disableRemotePlayback = true;
+            audioSilentMode.play();
+            audioSilentMode.remove();
+            tmp.remove();
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/util/style.js": (module2, exports2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = style;
+          function style(el, styles) {
+            Object.keys(styles).forEach(function(prop) {
+              if (el.style[prop] !== styles[prop]) {
+                el.style[prop] = styles[prop];
+              }
+            });
+            return el;
+          }
+          module2.exports = exports2.default;
+        },
+        "./src/wavesurfer.js": (module2, exports2, __webpack_require__2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var util = _interopRequireWildcard2(__webpack_require__2("./src/util/index.js"));
+          var _drawer = _interopRequireDefault2(__webpack_require__2("./src/drawer.multicanvas.js"));
+          var _webaudio = _interopRequireDefault2(__webpack_require__2("./src/webaudio.js"));
+          var _mediaelement = _interopRequireDefault2(__webpack_require__2("./src/mediaelement.js"));
+          var _peakcache = _interopRequireDefault2(__webpack_require__2("./src/peakcache.js"));
+          var _mediaelementWebaudio = _interopRequireDefault2(__webpack_require__2("./src/mediaelement-webaudio.js"));
+          function _interopRequireDefault2(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+          }
+          function _getRequireWildcardCache(nodeInterop) {
+            if (typeof WeakMap !== "function")
+              return null;
+            var cacheBabelInterop = /* @__PURE__ */ new WeakMap();
+            var cacheNodeInterop = /* @__PURE__ */ new WeakMap();
+            return (_getRequireWildcardCache = function _getRequireWildcardCache2(nodeInterop2) {
+              return nodeInterop2 ? cacheNodeInterop : cacheBabelInterop;
+            })(nodeInterop);
+          }
+          function _interopRequireWildcard2(obj, nodeInterop) {
+            if (!nodeInterop && obj && obj.__esModule) {
+              return obj;
+            }
+            if (obj === null || _typeof2(obj) !== "object" && typeof obj !== "function") {
+              return { default: obj };
+            }
+            var cache = _getRequireWildcardCache(nodeInterop);
+            if (cache && cache.has(obj)) {
+              return cache.get(obj);
+            }
+            var newObj = {};
+            var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+            for (var key in obj) {
+              if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
+                var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+                if (desc && (desc.get || desc.set)) {
+                  Object.defineProperty(newObj, key, desc);
+                } else {
+                  newObj[key] = obj[key];
+                }
+              }
+            }
+            newObj.default = obj;
+            if (cache) {
+              cache.set(obj, newObj);
+            }
+            return newObj;
+          }
+          function _inherits(subClass, superClass) {
+            if (typeof superClass !== "function" && superClass !== null) {
+              throw new TypeError("Super expression must either be null or a function");
+            }
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });
+            Object.defineProperty(subClass, "prototype", { writable: false });
+            if (superClass)
+              _setPrototypeOf(subClass, superClass);
+          }
+          function _setPrototypeOf(o, p2) {
+            _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p3) {
+              o2.__proto__ = p3;
+              return o2;
+            };
+            return _setPrototypeOf(o, p2);
+          }
+          function _createSuper(Derived) {
+            var hasNativeReflectConstruct = _isNativeReflectConstruct();
+            return function _createSuperInternal() {
+              var Super = _getPrototypeOf(Derived), result;
+              if (hasNativeReflectConstruct) {
+                var NewTarget = _getPrototypeOf(this).constructor;
+                result = Reflect.construct(Super, arguments, NewTarget);
+              } else {
+                result = Super.apply(this, arguments);
+              }
+              return _possibleConstructorReturn(this, result);
+            };
+          }
+          function _possibleConstructorReturn(self2, call) {
+            if (call && (_typeof2(call) === "object" || typeof call === "function")) {
+              return call;
+            } else if (call !== void 0) {
+              throw new TypeError("Derived constructors may only return object or undefined");
+            }
+            return _assertThisInitialized(self2);
+          }
+          function _assertThisInitialized(self2) {
+            if (self2 === void 0) {
+              throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+            }
+            return self2;
+          }
+          function _isNativeReflectConstruct() {
+            if (typeof Reflect === "undefined" || !Reflect.construct)
+              return false;
+            if (Reflect.construct.sham)
+              return false;
+            if (typeof Proxy === "function")
+              return true;
+            try {
+              Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+              }));
+              return true;
+            } catch (e) {
+              return false;
+            }
+          }
+          function _getPrototypeOf(o) {
+            _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf2(o2) {
+              return o2.__proto__ || Object.getPrototypeOf(o2);
+            };
+            return _getPrototypeOf(o);
+          }
+          function _defineProperty(obj, key, value) {
+            key = _toPropertyKey(key);
+            if (key in obj) {
+              Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
+            } else {
+              obj[key] = value;
+            }
+            return obj;
+          }
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof2(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof2(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof2(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
+          }
+          var WaveSurfer2 = /* @__PURE__ */ function(_util$Observer) {
+            _inherits(WaveSurfer3, _util$Observer);
+            var _super = _createSuper(WaveSurfer3);
+            function WaveSurfer3(params) {
+              var _this;
+              _classCallCheck(this, WaveSurfer3);
+              _this = _super.call(this);
+              _defineProperty(_assertThisInitialized(_this), "defaultParams", {
+                audioContext: null,
+                audioScriptProcessor: null,
+                audioRate: 1,
+                autoCenter: true,
+                autoCenterRate: 5,
+                autoCenterImmediately: false,
+                backend: "WebAudio",
+                backgroundColor: null,
+                barHeight: 1,
+                barRadius: 0,
+                barGap: null,
+                barMinHeight: null,
+                container: null,
+                cursorColor: "#333",
+                cursorWidth: 1,
+                dragSelection: true,
+                drawingContextAttributes: {
+                  desynchronized: false
+                },
+                duration: null,
+                fillParent: true,
+                forceDecode: false,
+                height: 128,
+                hideScrollbar: false,
+                hideCursor: false,
+                ignoreSilenceMode: false,
+                interact: true,
+                loopSelection: true,
+                maxCanvasWidth: 4e3,
+                mediaContainer: null,
+                mediaControls: false,
+                mediaType: "audio",
+                minPxPerSec: 20,
+                normalize: false,
+                partialRender: false,
+                pixelRatio: window.devicePixelRatio || screen.deviceXDPI / screen.logicalXDPI,
+                plugins: [],
+                progressColor: "#555",
+                removeMediaElementOnDestroy: true,
+                renderer: _drawer.default,
+                responsive: false,
+                rtl: false,
+                scrollParent: false,
+                skipLength: 2,
+                splitChannels: false,
+                splitChannelsOptions: {
+                  overlay: false,
+                  channelColors: {},
+                  filterChannels: [],
+                  relativeNormalization: false,
+                  splitDragSelection: false
+                },
+                vertical: false,
+                waveColor: "#999",
+                xhr: {}
+              });
+              _defineProperty(_assertThisInitialized(_this), "backends", {
+                MediaElement: _mediaelement.default,
+                WebAudio: _webaudio.default,
+                MediaElementWebAudio: _mediaelementWebaudio.default
+              });
+              _defineProperty(_assertThisInitialized(_this), "util", util);
+              _this.params = Object.assign({}, _this.defaultParams, params);
+              _this.params.splitChannelsOptions = Object.assign({}, _this.defaultParams.splitChannelsOptions, params.splitChannelsOptions);
+              _this.container = "string" == typeof params.container ? document.querySelector(_this.params.container) : _this.params.container;
+              if (!_this.container) {
+                throw new Error("Container element not found");
+              }
+              if (_this.params.mediaContainer == null) {
+                _this.mediaContainer = _this.container;
+              } else if (typeof _this.params.mediaContainer == "string") {
+                _this.mediaContainer = document.querySelector(_this.params.mediaContainer);
+              } else {
+                _this.mediaContainer = _this.params.mediaContainer;
+              }
+              if (!_this.mediaContainer) {
+                throw new Error("Media Container element not found");
+              }
+              if (_this.params.maxCanvasWidth <= 1) {
+                throw new Error("maxCanvasWidth must be greater than 1");
+              } else if (_this.params.maxCanvasWidth % 2 == 1) {
+                throw new Error("maxCanvasWidth must be an even number");
+              }
+              if (_this.params.rtl === true) {
+                if (_this.params.vertical === true) {
+                  util.style(_this.container, {
+                    transform: "rotateX(180deg)"
+                  });
+                } else {
+                  util.style(_this.container, {
+                    transform: "rotateY(180deg)"
+                  });
+                }
+              }
+              if (_this.params.backgroundColor) {
+                _this.setBackgroundColor(_this.params.backgroundColor);
+              }
+              _this.savedVolume = 0;
+              _this.isMuted = false;
+              _this.tmpEvents = [];
+              _this.currentRequest = null;
+              _this.arraybuffer = null;
+              _this.drawer = null;
+              _this.backend = null;
+              _this.peakCache = null;
+              if (typeof _this.params.renderer !== "function") {
+                throw new Error("Renderer parameter is invalid");
+              }
+              _this.Drawer = _this.params.renderer;
+              if (_this.params.backend == "AudioElement") {
+                _this.params.backend = "MediaElement";
+              }
+              if ((_this.params.backend == "WebAudio" || _this.params.backend === "MediaElementWebAudio") && !_webaudio.default.prototype.supportsWebAudio.call(null)) {
+                _this.params.backend = "MediaElement";
+              }
+              _this.Backend = _this.backends[_this.params.backend];
+              _this.initialisedPluginList = {};
+              _this.isDestroyed = false;
+              _this.isReady = false;
+              var prevWidth = 0;
+              _this._onResize = util.debounce(function() {
+                if (_this.drawer.wrapper && prevWidth != _this.drawer.wrapper.clientWidth && !_this.params.scrollParent) {
+                  prevWidth = _this.drawer.wrapper.clientWidth;
+                  if (prevWidth) {
+                    _this.drawer.fireEvent("redraw");
+                  }
+                }
+              }, typeof _this.params.responsive === "number" ? _this.params.responsive : 100);
+              return _possibleConstructorReturn(_this, _assertThisInitialized(_this));
+            }
+            _createClass(WaveSurfer3, [{
+              key: "init",
+              value: function init2() {
+                this.registerPlugins(this.params.plugins);
+                this.createDrawer();
+                this.createBackend();
+                this.createPeakCache();
+                return this;
+              }
+            }, {
+              key: "registerPlugins",
+              value: function registerPlugins(plugins) {
+                var _this2 = this;
+                plugins.forEach(function(plugin) {
+                  return _this2.addPlugin(plugin);
+                });
+                plugins.forEach(function(plugin) {
+                  if (!plugin.deferInit) {
+                    _this2.initPlugin(plugin.name);
+                  }
+                });
+                this.fireEvent("plugins-registered", plugins);
+                return this;
+              }
+            }, {
+              key: "getActivePlugins",
+              value: function getActivePlugins() {
+                return this.initialisedPluginList;
+              }
+            }, {
+              key: "addPlugin",
+              value: function addPlugin(plugin) {
+                var _this3 = this;
+                if (!plugin.name) {
+                  throw new Error("Plugin does not have a name!");
+                }
+                if (!plugin.instance) {
+                  throw new Error("Plugin ".concat(plugin.name, " does not have an instance property!"));
+                }
+                if (plugin.staticProps) {
+                  Object.keys(plugin.staticProps).forEach(function(pluginStaticProp) {
+                    _this3[pluginStaticProp] = plugin.staticProps[pluginStaticProp];
+                  });
+                }
+                var Instance = plugin.instance;
+                var observerPrototypeKeys = Object.getOwnPropertyNames(util.Observer.prototype);
+                observerPrototypeKeys.forEach(function(key) {
+                  Instance.prototype[key] = util.Observer.prototype[key];
+                });
+                this[plugin.name] = new Instance(plugin.params || {}, this);
+                this.fireEvent("plugin-added", plugin.name);
+                return this;
+              }
+            }, {
+              key: "initPlugin",
+              value: function initPlugin(name) {
+                if (!this[name]) {
+                  throw new Error("Plugin ".concat(name, " has not been added yet!"));
+                }
+                if (this.initialisedPluginList[name]) {
+                  this.destroyPlugin(name);
+                }
+                this[name].init();
+                this.initialisedPluginList[name] = true;
+                this.fireEvent("plugin-initialised", name);
+                return this;
+              }
+            }, {
+              key: "destroyPlugin",
+              value: function destroyPlugin(name) {
+                if (!this[name]) {
+                  throw new Error("Plugin ".concat(name, " has not been added yet and cannot be destroyed!"));
+                }
+                if (!this.initialisedPluginList[name]) {
+                  throw new Error("Plugin ".concat(name, " is not active and cannot be destroyed!"));
+                }
+                if (typeof this[name].destroy !== "function") {
+                  throw new Error("Plugin ".concat(name, " does not have a destroy function!"));
+                }
+                this[name].destroy();
+                delete this.initialisedPluginList[name];
+                this.fireEvent("plugin-destroyed", name);
+                return this;
+              }
+            }, {
+              key: "destroyAllPlugins",
+              value: function destroyAllPlugins() {
+                var _this4 = this;
+                Object.keys(this.initialisedPluginList).forEach(function(name) {
+                  return _this4.destroyPlugin(name);
+                });
+              }
+            }, {
+              key: "createDrawer",
+              value: function createDrawer() {
+                var _this5 = this;
+                this.drawer = new this.Drawer(this.container, this.params);
+                this.drawer.init();
+                this.fireEvent("drawer-created", this.drawer);
+                if (this.params.responsive !== false) {
+                  window.addEventListener("resize", this._onResize, true);
+                  window.addEventListener("orientationchange", this._onResize, true);
+                }
+                this.drawer.on("redraw", function() {
+                  _this5.drawBuffer();
+                  _this5.drawer.progress(_this5.backend.getPlayedPercents());
+                });
+                this.drawer.on("click", function(e, progress) {
+                  setTimeout(function() {
+                    return _this5.seekTo(progress);
+                  }, 0);
+                });
+                this.drawer.on("scroll", function(e) {
+                  if (_this5.params.partialRender) {
+                    _this5.drawBuffer();
+                  }
+                  _this5.fireEvent("scroll", e);
+                });
+                this.drawer.on("dblclick", function(e, progress) {
+                  _this5.fireEvent("dblclick", e, progress);
+                });
+              }
+            }, {
+              key: "createBackend",
+              value: function createBackend() {
+                var _this6 = this;
+                if (this.backend) {
+                  this.backend.destroy();
+                }
+                this.backend = new this.Backend(this.params);
+                this.backend.init();
+                this.fireEvent("backend-created", this.backend);
+                this.backend.on("finish", function() {
+                  _this6.drawer.progress(_this6.backend.getPlayedPercents());
+                  _this6.fireEvent("finish");
+                });
+                this.backend.on("play", function() {
+                  return _this6.fireEvent("play");
+                });
+                this.backend.on("pause", function() {
+                  return _this6.fireEvent("pause");
+                });
+                this.backend.on("audioprocess", function(time) {
+                  _this6.drawer.progress(_this6.backend.getPlayedPercents());
+                  _this6.fireEvent("audioprocess", time);
+                });
+                if (this.params.backend === "MediaElement" || this.params.backend === "MediaElementWebAudio") {
+                  this.backend.on("seek", function() {
+                    _this6.drawer.progress(_this6.backend.getPlayedPercents());
+                  });
+                  this.backend.on("volume", function() {
+                    var newVolume = _this6.getVolume();
+                    _this6.fireEvent("volume", newVolume);
+                    if (_this6.backend.isMuted !== _this6.isMuted) {
+                      _this6.isMuted = _this6.backend.isMuted;
+                      _this6.fireEvent("mute", _this6.isMuted);
+                    }
+                  });
+                }
+              }
+            }, {
+              key: "createPeakCache",
+              value: function createPeakCache() {
+                if (this.params.partialRender) {
+                  this.peakCache = new _peakcache.default();
+                }
+              }
+            }, {
+              key: "getDuration",
+              value: function getDuration() {
+                return this.backend.getDuration();
+              }
+            }, {
+              key: "getCurrentTime",
+              value: function getCurrentTime() {
+                return this.backend.getCurrentTime();
+              }
+            }, {
+              key: "setCurrentTime",
+              value: function setCurrentTime(seconds) {
+                if (seconds >= this.getDuration()) {
+                  this.seekTo(1);
+                } else {
+                  this.seekTo(seconds / this.getDuration());
+                }
+              }
+            }, {
+              key: "play",
+              value: function play(start2, end) {
+                var _this7 = this;
+                if (this.params.ignoreSilenceMode) {
+                  util.ignoreSilenceMode();
+                }
+                this.fireEvent("interaction", function() {
+                  return _this7.play(start2, end);
+                });
+                return this.backend.play(start2, end);
+              }
+            }, {
+              key: "setPlayEnd",
+              value: function setPlayEnd(position) {
+                this.backend.setPlayEnd(position);
+              }
+            }, {
+              key: "pause",
+              value: function pause() {
+                if (!this.backend.isPaused()) {
+                  return this.backend.pause();
+                }
+              }
+            }, {
+              key: "playPause",
+              value: function playPause() {
+                return this.backend.isPaused() ? this.play() : this.pause();
+              }
+            }, {
+              key: "isPlaying",
+              value: function isPlaying() {
+                return !this.backend.isPaused();
+              }
+            }, {
+              key: "skipBackward",
+              value: function skipBackward(seconds) {
+                this.skip(-seconds || -this.params.skipLength);
+              }
+            }, {
+              key: "skipForward",
+              value: function skipForward(seconds) {
+                this.skip(seconds || this.params.skipLength);
+              }
+            }, {
+              key: "skip",
+              value: function skip(offset) {
+                var duration = this.getDuration() || 1;
+                var position = this.getCurrentTime() || 0;
+                position = Math.max(0, Math.min(duration, position + (offset || 0)));
+                this.seekAndCenter(position / duration);
+              }
+            }, {
+              key: "seekAndCenter",
+              value: function seekAndCenter(progress) {
+                this.seekTo(progress);
+                this.drawer.recenter(progress);
+              }
+            }, {
+              key: "seekTo",
+              value: function seekTo(progress) {
+                var _this8 = this;
+                if (typeof progress !== "number" || !isFinite(progress) || progress < 0 || progress > 1) {
+                  throw new Error("Error calling wavesurfer.seekTo, parameter must be a number between 0 and 1!");
+                }
+                this.fireEvent("interaction", function() {
+                  return _this8.seekTo(progress);
+                });
+                var isWebAudioBackend = this.params.backend === "WebAudio";
+                var paused = this.backend.isPaused();
+                if (isWebAudioBackend && !paused) {
+                  this.backend.pause();
+                }
+                var oldScrollParent = this.params.scrollParent;
+                this.params.scrollParent = false;
+                this.backend.seekTo(progress * this.getDuration());
+                this.drawer.progress(progress);
+                if (isWebAudioBackend && !paused) {
+                  this.backend.play();
+                }
+                this.params.scrollParent = oldScrollParent;
+                this.fireEvent("seek", progress);
+              }
+            }, {
+              key: "stop",
+              value: function stop() {
+                this.pause();
+                this.seekTo(0);
+                this.drawer.progress(0);
+              }
+            }, {
+              key: "setSinkId",
+              value: function setSinkId(deviceId) {
+                return this.backend.setSinkId(deviceId);
+              }
+            }, {
+              key: "setVolume",
+              value: function setVolume(newVolume) {
+                if (this.isMuted === true) {
+                  this.savedVolume = newVolume;
+                  return;
+                }
+                this.backend.setVolume(newVolume);
+                this.fireEvent("volume", newVolume);
+              }
+            }, {
+              key: "getVolume",
+              value: function getVolume() {
+                return this.backend.getVolume();
+              }
+            }, {
+              key: "setPlaybackRate",
+              value: function setPlaybackRate(rate) {
+                this.backend.setPlaybackRate(rate);
+              }
+            }, {
+              key: "getPlaybackRate",
+              value: function getPlaybackRate() {
+                return this.backend.getPlaybackRate();
+              }
+            }, {
+              key: "toggleMute",
+              value: function toggleMute() {
+                this.setMute(!this.isMuted);
+              }
+            }, {
+              key: "setMute",
+              value: function setMute(mute) {
+                if (mute === this.isMuted) {
+                  this.fireEvent("mute", this.isMuted);
+                  return;
+                }
+                if (this.backend.setMute) {
+                  this.backend.setMute(mute);
+                  this.isMuted = mute;
+                } else {
+                  if (mute) {
+                    this.savedVolume = this.backend.getVolume();
+                    this.backend.setVolume(0);
+                    this.isMuted = true;
+                    this.fireEvent("volume", 0);
+                  } else {
+                    this.backend.setVolume(this.savedVolume);
+                    this.isMuted = false;
+                    this.fireEvent("volume", this.savedVolume);
+                  }
+                }
+                this.fireEvent("mute", this.isMuted);
+              }
+            }, {
+              key: "getMute",
+              value: function getMute() {
+                return this.isMuted;
+              }
+            }, {
+              key: "getFilters",
+              value: function getFilters() {
+                return this.backend.filters || [];
+              }
+            }, {
+              key: "toggleScroll",
+              value: function toggleScroll() {
+                this.params.scrollParent = !this.params.scrollParent;
+                this.drawBuffer();
+              }
+            }, {
+              key: "toggleInteraction",
+              value: function toggleInteraction() {
+                this.params.interact = !this.params.interact;
+              }
+            }, {
+              key: "getWaveColor",
+              value: function getWaveColor() {
+                var channelIdx = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : null;
+                if (this.params.splitChannelsOptions.channelColors[channelIdx]) {
+                  return this.params.splitChannelsOptions.channelColors[channelIdx].waveColor;
+                }
+                return this.params.waveColor;
+              }
+            }, {
+              key: "setWaveColor",
+              value: function setWaveColor(color) {
+                var channelIdx = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : null;
+                if (this.params.splitChannelsOptions.channelColors[channelIdx]) {
+                  this.params.splitChannelsOptions.channelColors[channelIdx].waveColor = color;
+                } else {
+                  this.params.waveColor = color;
+                }
+                this.drawBuffer();
+              }
+            }, {
+              key: "getProgressColor",
+              value: function getProgressColor() {
+                var channelIdx = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : null;
+                if (this.params.splitChannelsOptions.channelColors[channelIdx]) {
+                  return this.params.splitChannelsOptions.channelColors[channelIdx].progressColor;
+                }
+                return this.params.progressColor;
+              }
+            }, {
+              key: "setProgressColor",
+              value: function setProgressColor(color, channelIdx) {
+                if (this.params.splitChannelsOptions.channelColors[channelIdx]) {
+                  this.params.splitChannelsOptions.channelColors[channelIdx].progressColor = color;
+                } else {
+                  this.params.progressColor = color;
+                }
+                this.drawBuffer();
+              }
+            }, {
+              key: "getBackgroundColor",
+              value: function getBackgroundColor() {
+                return this.params.backgroundColor;
+              }
+            }, {
+              key: "setBackgroundColor",
+              value: function setBackgroundColor(color) {
+                this.params.backgroundColor = color;
+                util.style(this.container, {
+                  background: this.params.backgroundColor
+                });
+              }
+            }, {
+              key: "getCursorColor",
+              value: function getCursorColor() {
+                return this.params.cursorColor;
+              }
+            }, {
+              key: "setCursorColor",
+              value: function setCursorColor(color) {
+                this.params.cursorColor = color;
+                this.drawer.updateCursor();
+              }
+            }, {
+              key: "getHeight",
+              value: function getHeight() {
+                return this.params.height;
+              }
+            }, {
+              key: "setHeight",
+              value: function setHeight(height) {
+                this.params.height = height;
+                this.drawer.setHeight(height * this.params.pixelRatio);
+                this.drawBuffer();
+              }
+            }, {
+              key: "setFilteredChannels",
+              value: function setFilteredChannels(channelIndices) {
+                this.params.splitChannelsOptions.filterChannels = channelIndices;
+                this.drawBuffer();
+              }
+            }, {
+              key: "drawBuffer",
+              value: function drawBuffer() {
+                var nominalWidth = Math.round(this.getDuration() * this.params.minPxPerSec * this.params.pixelRatio);
+                var parentWidth = this.drawer.getWidth();
+                var width = nominalWidth;
+                var start2 = 0;
+                var end = Math.max(start2 + parentWidth, width);
+                if (this.params.fillParent && (!this.params.scrollParent || nominalWidth < parentWidth)) {
+                  width = parentWidth;
+                  start2 = 0;
+                  end = width;
+                }
+                var peaks;
+                if (this.params.partialRender) {
+                  var newRanges = this.peakCache.addRangeToPeakCache(width, start2, end);
+                  var i;
+                  for (i = 0; i < newRanges.length; i++) {
+                    peaks = this.backend.getPeaks(width, newRanges[i][0], newRanges[i][1]);
+                    this.drawer.drawPeaks(peaks, width, newRanges[i][0], newRanges[i][1]);
+                  }
+                } else {
+                  peaks = this.backend.getPeaks(width, start2, end);
+                  this.drawer.drawPeaks(peaks, width, start2, end);
+                }
+                this.fireEvent("redraw", peaks, width);
+              }
+            }, {
+              key: "zoom",
+              value: function zoom(pxPerSec) {
+                if (!pxPerSec) {
+                  this.params.minPxPerSec = this.defaultParams.minPxPerSec;
+                  this.params.scrollParent = false;
+                } else {
+                  this.params.minPxPerSec = pxPerSec;
+                  this.params.scrollParent = true;
+                }
+                this.drawBuffer();
+                this.drawer.progress(this.backend.getPlayedPercents());
+                this.drawer.recenter(this.getCurrentTime() / this.getDuration());
+                this.fireEvent("zoom", pxPerSec);
+              }
+            }, {
+              key: "loadArrayBuffer",
+              value: function loadArrayBuffer(arraybuffer) {
+                var _this9 = this;
+                this.decodeArrayBuffer(arraybuffer, function(data2) {
+                  if (!_this9.isDestroyed) {
+                    _this9.loadDecodedBuffer(data2);
+                  }
+                });
+              }
+            }, {
+              key: "loadDecodedBuffer",
+              value: function loadDecodedBuffer(buffer) {
+                this.backend.load(buffer);
+                this.drawBuffer();
+                this.isReady = true;
+                this.fireEvent("ready");
+              }
+            }, {
+              key: "loadBlob",
+              value: function loadBlob(blob) {
+                var _this10 = this;
+                var reader = new FileReader();
+                reader.addEventListener("progress", function(e) {
+                  return _this10.onProgress(e);
+                });
+                reader.addEventListener("load", function(e) {
+                  return _this10.loadArrayBuffer(e.target.result);
+                });
+                reader.addEventListener("error", function() {
+                  return _this10.fireEvent("error", "Error reading file");
+                });
+                reader.readAsArrayBuffer(blob);
+                this.empty();
+              }
+            }, {
+              key: "load",
+              value: function load(url, peaks, preload, duration) {
+                if (!url) {
+                  throw new Error("url parameter cannot be empty");
+                }
+                this.empty();
+                if (preload) {
+                  var preloadIgnoreReasons = {
+                    "Preload is not 'auto', 'none' or 'metadata'": ["auto", "metadata", "none"].indexOf(preload) === -1,
+                    "Peaks are not provided": !peaks,
+                    "Backend is not of type 'MediaElement' or 'MediaElementWebAudio'": ["MediaElement", "MediaElementWebAudio"].indexOf(this.params.backend) === -1,
+                    "Url is not of type string": typeof url !== "string"
+                  };
+                  var activeReasons = Object.keys(preloadIgnoreReasons).filter(function(reason) {
+                    return preloadIgnoreReasons[reason];
+                  });
+                  if (activeReasons.length) {
+                    console.warn("Preload parameter of wavesurfer.load will be ignored because:\n	- " + activeReasons.join("\n	- "));
+                    preload = null;
+                  }
+                }
+                if (this.params.backend === "WebAudio" && url instanceof HTMLMediaElement) {
+                  url = url.src;
+                }
+                switch (this.params.backend) {
+                  case "WebAudio":
+                    return this.loadBuffer(url, peaks, duration);
+                  case "MediaElement":
+                  case "MediaElementWebAudio":
+                    return this.loadMediaElement(url, peaks, preload, duration);
+                }
+              }
+            }, {
+              key: "loadBuffer",
+              value: function loadBuffer(url, peaks, duration) {
+                var _this11 = this;
+                var load = function load2(action) {
+                  if (action) {
+                    _this11.tmpEvents.push(_this11.once("ready", action));
+                  }
+                  return _this11.getArrayBuffer(url, function(data2) {
+                    return _this11.loadArrayBuffer(data2);
+                  });
+                };
+                if (peaks) {
+                  this.backend.setPeaks(peaks, duration);
+                  this.drawBuffer();
+                  this.fireEvent("waveform-ready");
+                  this.tmpEvents.push(this.once("interaction", load));
+                } else {
+                  return load();
+                }
+              }
+            }, {
+              key: "loadMediaElement",
+              value: function loadMediaElement(urlOrElt, peaks, preload, duration) {
+                var _this12 = this;
+                var url = urlOrElt;
+                if (typeof urlOrElt === "string") {
+                  this.backend.load(url, this.mediaContainer, peaks, preload);
+                } else {
+                  var elt = urlOrElt;
+                  this.backend.loadElt(elt, peaks);
+                  url = elt.src;
+                }
+                this.tmpEvents.push(this.backend.once("canplay", function() {
+                  if (!_this12.backend.destroyed) {
+                    _this12.drawBuffer();
+                    _this12.isReady = true;
+                    _this12.fireEvent("ready");
+                  }
+                }), this.backend.once("error", function(err) {
+                  return _this12.fireEvent("error", err);
+                }));
+                if (peaks) {
+                  this.backend.setPeaks(peaks, duration);
+                  this.drawBuffer();
+                  this.fireEvent("waveform-ready");
+                }
+                if ((!peaks || this.params.forceDecode) && this.backend.supportsWebAudio()) {
+                  this.getArrayBuffer(url, function(arraybuffer) {
+                    _this12.decodeArrayBuffer(arraybuffer, function(buffer) {
+                      _this12.backend.buffer = buffer;
+                      _this12.backend.setPeaks(null);
+                      _this12.drawBuffer();
+                      _this12.fireEvent("waveform-ready");
+                    });
+                  });
+                }
+              }
+            }, {
+              key: "decodeArrayBuffer",
+              value: function decodeArrayBuffer(arraybuffer, callback) {
+                var _this13 = this;
+                if (!this.isDestroyed) {
+                  this.arraybuffer = arraybuffer;
+                  this.backend.decodeArrayBuffer(arraybuffer, function(data2) {
+                    if (!_this13.isDestroyed && _this13.arraybuffer == arraybuffer) {
+                      callback(data2);
+                      _this13.arraybuffer = null;
+                    }
+                  }, function() {
+                    return _this13.fireEvent("error", "Error decoding audiobuffer");
+                  });
+                }
+              }
+            }, {
+              key: "getArrayBuffer",
+              value: function getArrayBuffer(url, callback) {
+                var _this14 = this;
+                var options2 = Object.assign({
+                  url,
+                  responseType: "arraybuffer"
+                }, this.params.xhr);
+                var request = util.fetchFile(options2);
+                this.currentRequest = request;
+                this.tmpEvents.push(request.on("progress", function(e) {
+                  _this14.onProgress(e);
+                }), request.on("success", function(data2) {
+                  callback(data2);
+                  _this14.currentRequest = null;
+                }), request.on("error", function(e) {
+                  _this14.fireEvent("error", e);
+                  _this14.currentRequest = null;
+                }));
+                return request;
+              }
+            }, {
+              key: "onProgress",
+              value: function onProgress(e) {
+                var percentComplete;
+                if (e.lengthComputable) {
+                  percentComplete = e.loaded / e.total;
+                } else {
+                  percentComplete = e.loaded / (e.loaded + 1e6);
+                }
+                this.fireEvent("loading", Math.round(percentComplete * 100), e.target);
+              }
+            }, {
+              key: "exportPCM",
+              value: function exportPCM(length, accuracy, noWindow, start2, end) {
+                length = length || 1024;
+                start2 = start2 || 0;
+                accuracy = accuracy || 1e4;
+                noWindow = noWindow || false;
+                var peaks = this.backend.getPeaks(length, start2, end);
+                var arr = [].map.call(peaks, function(val) {
+                  return Math.round(val * accuracy) / accuracy;
+                });
+                return new Promise(function(resolve3, reject) {
+                  if (!noWindow) {
+                    var blobJSON = new Blob([JSON.stringify(arr)], {
+                      type: "application/json;charset=utf-8"
+                    });
+                    var objURL = URL.createObjectURL(blobJSON);
+                    window.open(objURL);
+                    URL.revokeObjectURL(objURL);
+                  }
+                  resolve3(arr);
+                });
+              }
+            }, {
+              key: "exportImage",
+              value: function exportImage(format, quality, type) {
+                if (!format) {
+                  format = "image/png";
+                }
+                if (!quality) {
+                  quality = 1;
+                }
+                if (!type) {
+                  type = "dataURL";
+                }
+                return this.drawer.getImage(format, quality, type);
+              }
+            }, {
+              key: "cancelAjax",
+              value: function cancelAjax() {
+                if (this.currentRequest && this.currentRequest.controller) {
+                  if (this.currentRequest._reader) {
+                    this.currentRequest._reader.cancel().catch(function(err) {
+                    });
+                  }
+                  this.currentRequest.controller.abort();
+                  this.currentRequest = null;
+                }
+              }
+            }, {
+              key: "clearTmpEvents",
+              value: function clearTmpEvents() {
+                this.tmpEvents.forEach(function(e) {
+                  return e.un();
+                });
+              }
+            }, {
+              key: "empty",
+              value: function empty() {
+                if (!this.backend.isPaused()) {
+                  this.stop();
+                  this.backend.disconnectSource();
+                }
+                this.isReady = false;
+                this.cancelAjax();
+                this.clearTmpEvents();
+                this.drawer.progress(0);
+                this.drawer.setWidth(0);
+                this.drawer.drawPeaks({
+                  length: this.drawer.getWidth()
+                }, 0);
+              }
+            }, {
+              key: "destroy",
+              value: function destroy() {
+                this.destroyAllPlugins();
+                this.fireEvent("destroy");
+                this.cancelAjax();
+                this.clearTmpEvents();
+                this.unAll();
+                if (this.params.responsive !== false) {
+                  window.removeEventListener("resize", this._onResize, true);
+                  window.removeEventListener("orientationchange", this._onResize, true);
+                }
+                if (this.backend) {
+                  this.backend.destroy();
+                  this.backend = null;
+                }
+                if (this.drawer) {
+                  this.drawer.destroy();
+                }
+                this.isDestroyed = true;
+                this.isReady = false;
+                this.arraybuffer = null;
+              }
+            }], [{
+              key: "create",
+              value: function create(params) {
+                var wavesurfer2 = new WaveSurfer3(params);
+                return wavesurfer2.init();
+              }
+            }]);
+            return WaveSurfer3;
+          }(util.Observer);
+          exports2["default"] = WaveSurfer2;
+          _defineProperty(WaveSurfer2, "VERSION", "6.6.4");
+          _defineProperty(WaveSurfer2, "util", util);
+          module2.exports = exports2.default;
+        },
+        "./src/webaudio.js": (module2, exports2, __webpack_require__2) => {
+          Object.defineProperty(exports2, "__esModule", {
+            value: true
+          });
+          exports2["default"] = void 0;
+          var util = _interopRequireWildcard2(__webpack_require__2("./src/util/index.js"));
+          function _getRequireWildcardCache(nodeInterop) {
+            if (typeof WeakMap !== "function")
+              return null;
+            var cacheBabelInterop = /* @__PURE__ */ new WeakMap();
+            var cacheNodeInterop = /* @__PURE__ */ new WeakMap();
+            return (_getRequireWildcardCache = function _getRequireWildcardCache2(nodeInterop2) {
+              return nodeInterop2 ? cacheNodeInterop : cacheBabelInterop;
+            })(nodeInterop);
+          }
+          function _interopRequireWildcard2(obj, nodeInterop) {
+            if (!nodeInterop && obj && obj.__esModule) {
+              return obj;
+            }
+            if (obj === null || _typeof2(obj) !== "object" && typeof obj !== "function") {
+              return { default: obj };
+            }
+            var cache = _getRequireWildcardCache(nodeInterop);
+            if (cache && cache.has(obj)) {
+              return cache.get(obj);
+            }
+            var newObj = {};
+            var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+            for (var key in obj) {
+              if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
+                var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+                if (desc && (desc.get || desc.set)) {
+                  Object.defineProperty(newObj, key, desc);
+                } else {
+                  newObj[key] = obj[key];
+                }
+              }
+            }
+            newObj.default = obj;
+            if (cache) {
+              cache.set(obj, newObj);
+            }
+            return newObj;
+          }
+          function _typeof2(obj) {
+            "@babel/helpers - typeof";
+            return _typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj2) {
+              return typeof obj2;
+            } : function(obj2) {
+              return obj2 && "function" == typeof Symbol && obj2.constructor === Symbol && obj2 !== Symbol.prototype ? "symbol" : typeof obj2;
+            }, _typeof2(obj);
+          }
+          function _classCallCheck(instance2, Constructor) {
+            if (!(instance2 instanceof Constructor)) {
+              throw new TypeError("Cannot call a class as a function");
+            }
+          }
+          function _defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+              var descriptor = props[i];
+              descriptor.enumerable = descriptor.enumerable || false;
+              descriptor.configurable = true;
+              if ("value" in descriptor)
+                descriptor.writable = true;
+              Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
+            }
+          }
+          function _createClass(Constructor, protoProps, staticProps) {
+            if (protoProps)
+              _defineProperties(Constructor.prototype, protoProps);
+            if (staticProps)
+              _defineProperties(Constructor, staticProps);
+            Object.defineProperty(Constructor, "prototype", { writable: false });
+            return Constructor;
+          }
+          function _inherits(subClass, superClass) {
+            if (typeof superClass !== "function" && superClass !== null) {
+              throw new TypeError("Super expression must either be null or a function");
+            }
+            subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });
+            Object.defineProperty(subClass, "prototype", { writable: false });
+            if (superClass)
+              _setPrototypeOf(subClass, superClass);
+          }
+          function _setPrototypeOf(o, p2) {
+            _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf2(o2, p3) {
+              o2.__proto__ = p3;
+              return o2;
+            };
+            return _setPrototypeOf(o, p2);
+          }
+          function _createSuper(Derived) {
+            var hasNativeReflectConstruct = _isNativeReflectConstruct();
+            return function _createSuperInternal() {
+              var Super = _getPrototypeOf(Derived), result;
+              if (hasNativeReflectConstruct) {
+                var NewTarget = _getPrototypeOf(this).constructor;
+                result = Reflect.construct(Super, arguments, NewTarget);
+              } else {
+                result = Super.apply(this, arguments);
+              }
+              return _possibleConstructorReturn(this, result);
+            };
+          }
+          function _possibleConstructorReturn(self2, call) {
+            if (call && (_typeof2(call) === "object" || typeof call === "function")) {
+              return call;
+            } else if (call !== void 0) {
+              throw new TypeError("Derived constructors may only return object or undefined");
+            }
+            return _assertThisInitialized(self2);
+          }
+          function _assertThisInitialized(self2) {
+            if (self2 === void 0) {
+              throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+            }
+            return self2;
+          }
+          function _isNativeReflectConstruct() {
+            if (typeof Reflect === "undefined" || !Reflect.construct)
+              return false;
+            if (Reflect.construct.sham)
+              return false;
+            if (typeof Proxy === "function")
+              return true;
+            try {
+              Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+              }));
+              return true;
+            } catch (e) {
+              return false;
+            }
+          }
+          function _getPrototypeOf(o) {
+            _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf2(o2) {
+              return o2.__proto__ || Object.getPrototypeOf(o2);
+            };
+            return _getPrototypeOf(o);
+          }
+          function _defineProperty(obj, key, value) {
+            key = _toPropertyKey(key);
+            if (key in obj) {
+              Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
+            } else {
+              obj[key] = value;
+            }
+            return obj;
+          }
+          function _toPropertyKey(arg) {
+            var key = _toPrimitive(arg, "string");
+            return _typeof2(key) === "symbol" ? key : String(key);
+          }
+          function _toPrimitive(input, hint) {
+            if (_typeof2(input) !== "object" || input === null)
+              return input;
+            var prim = input[Symbol.toPrimitive];
+            if (prim !== void 0) {
+              var res = prim.call(input, hint || "default");
+              if (_typeof2(res) !== "object")
+                return res;
+              throw new TypeError("@@toPrimitive must return a primitive value.");
+            }
+            return (hint === "string" ? String : Number)(input);
+          }
+          var PLAYING = "playing";
+          var PAUSED = "paused";
+          var FINISHED = "finished";
+          var WebAudio = /* @__PURE__ */ function(_util$Observer) {
+            _inherits(WebAudio2, _util$Observer);
+            var _super = _createSuper(WebAudio2);
+            function WebAudio2(params) {
+              var _defineProperty2, _this$states;
+              var _this;
+              _classCallCheck(this, WebAudio2);
+              _this = _super.call(this);
+              _defineProperty(_assertThisInitialized(_this), "audioContext", null);
+              _defineProperty(_assertThisInitialized(_this), "stateBehaviors", (_defineProperty2 = {}, _defineProperty(_defineProperty2, PLAYING, {
+                init: function init2() {
+                  this.addOnAudioProcess();
+                },
+                getPlayedPercents: function getPlayedPercents() {
+                  var duration = this.getDuration();
+                  return this.getCurrentTime() / duration || 0;
+                },
+                getCurrentTime: function getCurrentTime() {
+                  return this.startPosition + this.getPlayedTime();
+                }
+              }), _defineProperty(_defineProperty2, PAUSED, {
+                init: function init2() {
+                },
+                getPlayedPercents: function getPlayedPercents() {
+                  var duration = this.getDuration();
+                  return this.getCurrentTime() / duration || 0;
+                },
+                getCurrentTime: function getCurrentTime() {
+                  return this.startPosition;
+                }
+              }), _defineProperty(_defineProperty2, FINISHED, {
+                init: function init2() {
+                  this.fireEvent("finish");
+                },
+                getPlayedPercents: function getPlayedPercents() {
+                  return 1;
+                },
+                getCurrentTime: function getCurrentTime() {
+                  return this.getDuration();
+                }
+              }), _defineProperty2));
+              _this.params = params;
+              _this.ac = params.audioContext || (_this.supportsWebAudio() ? _this.getAudioContext() : {});
+              _this.lastPlay = _this.ac.currentTime;
+              _this.startPosition = 0;
+              _this.scheduledPause = null;
+              _this.states = (_this$states = {}, _defineProperty(_this$states, PLAYING, Object.create(_this.stateBehaviors[PLAYING])), _defineProperty(_this$states, PAUSED, Object.create(_this.stateBehaviors[PAUSED])), _defineProperty(_this$states, FINISHED, Object.create(_this.stateBehaviors[FINISHED])), _this$states);
+              _this.buffer = null;
+              _this.filters = [];
+              _this.gainNode = null;
+              _this.mergedPeaks = null;
+              _this.offlineAc = null;
+              _this.peaks = null;
+              _this.playbackRate = 1;
+              _this.analyser = null;
+              _this.scriptNode = null;
+              _this.source = null;
+              _this.splitPeaks = [];
+              _this.state = null;
+              _this.explicitDuration = params.duration;
+              _this.sinkStreamDestination = null;
+              _this.sinkAudioElement = null;
+              _this.destroyed = false;
+              return _this;
+            }
+            _createClass(WebAudio2, [{
+              key: "supportsWebAudio",
+              value: function supportsWebAudio() {
+                return !!(window.AudioContext || window.webkitAudioContext);
+              }
+            }, {
+              key: "getAudioContext",
+              value: function getAudioContext() {
+                if (!window.WaveSurferAudioContext) {
+                  window.WaveSurferAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                return window.WaveSurferAudioContext;
+              }
+            }, {
+              key: "getOfflineAudioContext",
+              value: function getOfflineAudioContext(sampleRate) {
+                if (!window.WaveSurferOfflineAudioContext) {
+                  window.WaveSurferOfflineAudioContext = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, 2, sampleRate);
+                }
+                return window.WaveSurferOfflineAudioContext;
+              }
+            }, {
+              key: "init",
+              value: function init2() {
+                this.createVolumeNode();
+                this.createScriptNode();
+                this.createAnalyserNode();
+                this.setState(PAUSED);
+                this.setPlaybackRate(this.params.audioRate);
+                this.setLength(0);
+              }
+            }, {
+              key: "disconnectFilters",
+              value: function disconnectFilters() {
+                if (this.filters) {
+                  this.filters.forEach(function(filter) {
+                    filter && filter.disconnect();
+                  });
+                  this.filters = null;
+                  this.analyser.connect(this.gainNode);
+                }
+              }
+            }, {
+              key: "setState",
+              value: function setState(state2) {
+                if (this.state !== this.states[state2]) {
+                  this.state = this.states[state2];
+                  this.state.init.call(this);
+                }
+              }
+            }, {
+              key: "setFilter",
+              value: function setFilter() {
+                for (var _len = arguments.length, filters = new Array(_len), _key = 0; _key < _len; _key++) {
+                  filters[_key] = arguments[_key];
+                }
+                this.setFilters(filters);
+              }
+            }, {
+              key: "setFilters",
+              value: function setFilters(filters) {
+                this.disconnectFilters();
+                if (filters && filters.length) {
+                  this.filters = filters;
+                  this.analyser.disconnect();
+                  filters.reduce(function(prev, curr) {
+                    prev.connect(curr);
+                    return curr;
+                  }, this.analyser).connect(this.gainNode);
+                }
+              }
+            }, {
+              key: "createScriptNode",
+              value: function createScriptNode() {
+                if (this.params.audioScriptProcessor) {
+                  this.scriptNode = this.params.audioScriptProcessor;
+                  this.scriptNode.connect(this.ac.destination);
+                }
+              }
+            }, {
+              key: "addOnAudioProcess",
+              value: function addOnAudioProcess() {
+                var _this2 = this;
+                var loop = function loop2() {
+                  var time = _this2.getCurrentTime();
+                  if (time >= _this2.getDuration() && _this2.state !== _this2.states[FINISHED]) {
+                    _this2.setState(FINISHED);
+                    _this2.fireEvent("pause");
+                  } else if (time >= _this2.scheduledPause && _this2.state !== _this2.states[PAUSED]) {
+                    _this2.pause();
+                  } else if (_this2.state === _this2.states[PLAYING]) {
+                    _this2.fireEvent("audioprocess", time);
+                    util.frame(loop2)();
+                  }
+                };
+                loop();
+              }
+            }, {
+              key: "createAnalyserNode",
+              value: function createAnalyserNode() {
+                this.analyser = this.ac.createAnalyser();
+                this.analyser.connect(this.gainNode);
+              }
+            }, {
+              key: "createVolumeNode",
+              value: function createVolumeNode() {
+                if (this.ac.createGain) {
+                  this.gainNode = this.ac.createGain();
+                } else {
+                  this.gainNode = this.ac.createGainNode();
+                }
+                this.gainNode.connect(this.ac.destination);
+              }
+            }, {
+              key: "setSinkId",
+              value: function setSinkId(deviceId) {
+                if (deviceId) {
+                  if (!this.sinkAudioElement) {
+                    this.sinkAudioElement = new window.Audio();
+                    this.sinkAudioElement.autoplay = true;
+                  }
+                  if (!this.sinkAudioElement.setSinkId) {
+                    return Promise.reject(new Error("setSinkId is not supported in your browser"));
+                  }
+                  if (!this.sinkStreamDestination) {
+                    this.sinkStreamDestination = this.ac.createMediaStreamDestination();
+                  }
+                  this.gainNode.disconnect();
+                  this.gainNode.connect(this.sinkStreamDestination);
+                  this.sinkAudioElement.srcObject = this.sinkStreamDestination.stream;
+                  return this.sinkAudioElement.setSinkId(deviceId);
+                } else {
+                  return Promise.reject(new Error("Invalid deviceId: " + deviceId));
+                }
+              }
+            }, {
+              key: "setVolume",
+              value: function setVolume(value) {
+                this.gainNode.gain.setValueAtTime(value, this.ac.currentTime);
+              }
+            }, {
+              key: "getVolume",
+              value: function getVolume() {
+                return this.gainNode.gain.value;
+              }
+            }, {
+              key: "decodeArrayBuffer",
+              value: function decodeArrayBuffer(arraybuffer, callback, errback) {
+                if (!this.offlineAc) {
+                  this.offlineAc = this.getOfflineAudioContext(this.ac && this.ac.sampleRate ? this.ac.sampleRate : 44100);
+                }
+                if ("webkitAudioContext" in window) {
+                  this.offlineAc.decodeAudioData(arraybuffer, function(data2) {
+                    return callback(data2);
+                  }, errback);
+                } else {
+                  this.offlineAc.decodeAudioData(arraybuffer).then(function(data2) {
+                    return callback(data2);
+                  }).catch(function(err) {
+                    return errback(err);
+                  });
+                }
+              }
+            }, {
+              key: "setPeaks",
+              value: function setPeaks(peaks, duration) {
+                if (duration != null) {
+                  this.explicitDuration = duration;
+                }
+                this.peaks = peaks;
+              }
+            }, {
+              key: "setLength",
+              value: function setLength(length) {
+                if (this.mergedPeaks && length == 2 * this.mergedPeaks.length - 1 + 2) {
+                  return;
+                }
+                this.splitPeaks = [];
+                this.mergedPeaks = [];
+                var channels = this.buffer ? this.buffer.numberOfChannels : 1;
+                var c;
+                for (c = 0; c < channels; c++) {
+                  this.splitPeaks[c] = [];
+                  this.splitPeaks[c][2 * (length - 1)] = 0;
+                  this.splitPeaks[c][2 * (length - 1) + 1] = 0;
+                }
+                this.mergedPeaks[2 * (length - 1)] = 0;
+                this.mergedPeaks[2 * (length - 1) + 1] = 0;
+              }
+            }, {
+              key: "getPeaks",
+              value: function getPeaks(length, first, last) {
+                if (this.peaks) {
+                  return this.peaks;
+                }
+                if (!this.buffer) {
+                  return [];
+                }
+                first = first || 0;
+                last = last || length - 1;
+                this.setLength(length);
+                if (!this.buffer) {
+                  return this.params.splitChannels ? this.splitPeaks : this.mergedPeaks;
+                }
+                if (!this.buffer.length) {
+                  var newBuffer = this.createBuffer(1, 4096, this.sampleRate);
+                  this.buffer = newBuffer.buffer;
+                }
+                var sampleSize = this.buffer.length / length;
+                var sampleStep = ~~(sampleSize / 10) || 1;
+                var channels = this.buffer.numberOfChannels;
+                var c;
+                for (c = 0; c < channels; c++) {
+                  var peaks = this.splitPeaks[c];
+                  var chan = this.buffer.getChannelData(c);
+                  var i = void 0;
+                  for (i = first; i <= last; i++) {
+                    var start2 = ~~(i * sampleSize);
+                    var end = ~~(start2 + sampleSize);
+                    var min = chan[start2];
+                    var max = min;
+                    var j = void 0;
+                    for (j = start2; j < end; j += sampleStep) {
+                      var value = chan[j];
+                      if (value > max) {
+                        max = value;
+                      }
+                      if (value < min) {
+                        min = value;
+                      }
+                    }
+                    peaks[2 * i] = max;
+                    peaks[2 * i + 1] = min;
+                    if (c == 0 || max > this.mergedPeaks[2 * i]) {
+                      this.mergedPeaks[2 * i] = max;
+                    }
+                    if (c == 0 || min < this.mergedPeaks[2 * i + 1]) {
+                      this.mergedPeaks[2 * i + 1] = min;
+                    }
+                  }
+                }
+                return this.params.splitChannels ? this.splitPeaks : this.mergedPeaks;
+              }
+            }, {
+              key: "getPlayedPercents",
+              value: function getPlayedPercents() {
+                return this.state.getPlayedPercents.call(this);
+              }
+            }, {
+              key: "disconnectSource",
+              value: function disconnectSource() {
+                if (this.source) {
+                  this.source.disconnect();
+                }
+              }
+            }, {
+              key: "destroyWebAudio",
+              value: function destroyWebAudio() {
+                this.disconnectFilters();
+                this.disconnectSource();
+                this.gainNode.disconnect();
+                this.scriptNode && this.scriptNode.disconnect();
+                this.analyser.disconnect();
+                if (this.params.closeAudioContext) {
+                  if (typeof this.ac.close === "function" && this.ac.state != "closed") {
+                    this.ac.close();
+                  }
+                  this.ac = null;
+                  if (!this.params.audioContext) {
+                    window.WaveSurferAudioContext = null;
+                  } else {
+                    this.params.audioContext = null;
+                  }
+                  window.WaveSurferOfflineAudioContext = null;
+                }
+                if (this.sinkStreamDestination) {
+                  this.sinkAudioElement.pause();
+                  this.sinkAudioElement.srcObject = null;
+                  this.sinkStreamDestination.disconnect();
+                  this.sinkStreamDestination = null;
+                }
+              }
+            }, {
+              key: "destroy",
+              value: function destroy() {
+                if (!this.isPaused()) {
+                  this.pause();
+                }
+                this.unAll();
+                this.buffer = null;
+                this.destroyed = true;
+                this.destroyWebAudio();
+              }
+            }, {
+              key: "load",
+              value: function load(buffer) {
+                this.startPosition = 0;
+                this.lastPlay = this.ac.currentTime;
+                this.buffer = buffer;
+                this.createSource();
+              }
+            }, {
+              key: "createSource",
+              value: function createSource() {
+                this.disconnectSource();
+                this.source = this.ac.createBufferSource();
+                this.source.start = this.source.start || this.source.noteGrainOn;
+                this.source.stop = this.source.stop || this.source.noteOff;
+                this.setPlaybackRate(this.playbackRate);
+                this.source.buffer = this.buffer;
+                this.source.connect(this.analyser);
+              }
+            }, {
+              key: "resumeAudioContext",
+              value: function resumeAudioContext() {
+                if (this.ac.state == "suspended") {
+                  this.ac.resume && this.ac.resume();
+                }
+              }
+            }, {
+              key: "isPaused",
+              value: function isPaused() {
+                return this.state !== this.states[PLAYING];
+              }
+            }, {
+              key: "getDuration",
+              value: function getDuration() {
+                if (this.explicitDuration) {
+                  return this.explicitDuration;
+                }
+                if (!this.buffer) {
+                  return 0;
+                }
+                return this.buffer.duration;
+              }
+            }, {
+              key: "seekTo",
+              value: function seekTo(start2, end) {
+                if (!this.buffer) {
+                  return;
+                }
+                this.scheduledPause = null;
+                if (start2 == null) {
+                  start2 = this.getCurrentTime();
+                  if (start2 >= this.getDuration()) {
+                    start2 = 0;
+                  }
+                }
+                if (end == null) {
+                  end = this.getDuration();
+                }
+                this.startPosition = start2;
+                this.lastPlay = this.ac.currentTime;
+                if (this.state === this.states[FINISHED]) {
+                  this.setState(PAUSED);
+                }
+                return {
+                  start: start2,
+                  end
+                };
+              }
+            }, {
+              key: "getPlayedTime",
+              value: function getPlayedTime() {
+                return (this.ac.currentTime - this.lastPlay) * this.playbackRate;
+              }
+            }, {
+              key: "play",
+              value: function play(start2, end) {
+                if (!this.buffer) {
+                  return;
+                }
+                this.createSource();
+                var adjustedTime = this.seekTo(start2, end);
+                start2 = adjustedTime.start;
+                end = adjustedTime.end;
+                this.scheduledPause = end;
+                this.source.start(0, start2);
+                this.resumeAudioContext();
+                this.setState(PLAYING);
+                this.fireEvent("play");
+              }
+            }, {
+              key: "pause",
+              value: function pause() {
+                this.scheduledPause = null;
+                this.startPosition += this.getPlayedTime();
+                try {
+                  this.source && this.source.stop(0);
+                } catch (err) {
+                }
+                this.setState(PAUSED);
+                this.fireEvent("pause");
+              }
+            }, {
+              key: "getCurrentTime",
+              value: function getCurrentTime() {
+                return this.state.getCurrentTime.call(this);
+              }
+            }, {
+              key: "getPlaybackRate",
+              value: function getPlaybackRate() {
+                return this.playbackRate;
+              }
+            }, {
+              key: "setPlaybackRate",
+              value: function setPlaybackRate(value) {
+                this.playbackRate = value || 1;
+                this.source && this.source.playbackRate.setValueAtTime(this.playbackRate, this.ac.currentTime);
+              }
+            }, {
+              key: "setPlayEnd",
+              value: function setPlayEnd(end) {
+                this.scheduledPause = end;
+              }
+            }]);
+            return WebAudio2;
+          }(util.Observer);
+          exports2["default"] = WebAudio;
+          module2.exports = exports2.default;
+        },
+        "./node_modules/debounce/index.js": (module2) => {
+          function debounce(func, wait, immediate) {
+            var timeout, args, context, timestamp, result;
+            if (null == wait)
+              wait = 100;
+            function later() {
+              var last = Date.now() - timestamp;
+              if (last < wait && last >= 0) {
+                timeout = setTimeout(later, wait - last);
+              } else {
+                timeout = null;
+                if (!immediate) {
+                  result = func.apply(context, args);
+                  context = args = null;
+                }
+              }
+            }
+            var debounced = function() {
+              context = this;
+              args = arguments;
+              timestamp = Date.now();
+              var callNow = immediate && !timeout;
+              if (!timeout)
+                timeout = setTimeout(later, wait);
+              if (callNow) {
+                result = func.apply(context, args);
+                context = args = null;
+              }
+              return result;
+            };
+            debounced.clear = function() {
+              if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+              }
+            };
+            debounced.flush = function() {
+              if (timeout) {
+                result = func.apply(context, args);
+                context = args = null;
+                clearTimeout(timeout);
+                timeout = null;
+              }
+            };
+            return debounced;
+          }
+          debounce.debounce = debounce;
+          module2.exports = debounce;
+        }
+      };
+      var __webpack_module_cache__ = {};
+      function __webpack_require__(moduleId) {
+        var cachedModule = __webpack_module_cache__[moduleId];
+        if (cachedModule !== void 0) {
+          return cachedModule.exports;
+        }
+        var module2 = __webpack_module_cache__[moduleId] = {
+          exports: {}
+        };
+        __webpack_modules__[moduleId](module2, module2.exports, __webpack_require__);
+        return module2.exports;
+      }
+      var __webpack_exports__ = __webpack_require__("./src/wavesurfer.js");
+      return __webpack_exports__;
+    })();
+  });
+})(wavesurfer);
+var WaveSurfer = /* @__PURE__ */ getDefaultExportFromCjs(wavesurfer.exports);
+function mitt(n) {
+  return { all: n = n || /* @__PURE__ */ new Map(), on: function(t, e) {
+    var i = n.get(t);
+    i ? i.push(e) : n.set(t, [e]);
+  }, off: function(t, e) {
+    var i = n.get(t);
+    i && (e ? i.splice(i.indexOf(e) >>> 0, 1) : n.set(t, []));
+  }, emit: function(t, e) {
+    var i = n.get(t);
+    i && i.slice().map(function(n2) {
+      n2(e);
+    }), (i = n.get("*")) && i.slice().map(function(n2) {
+      n2(t, e);
+    });
+  } };
 }
-var AudioControl = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["render", _sfc_render$g]]);
+const emitter = mitt();
+const provide_emitter = () => ({ emitter });
+var _style_0$1 = ".animate[data-v-677263a8]{animation-name:expand-677263a8;animation-duration:.75s;animation-fill-mode:forwards;transform-origin:50% 50%}.btn[data-v-677263a8]{background-color:var(--69ff51af);margin:5px;height:var(--327b456d);border-top-left-radius:20%;border-bottom-left-radius:20%;color:red}.progress[data-v-677263a8]{width:50px;height:var(--327b456d);display:flex;position:relative;align-items:center;margin-left:10px;min-width:50px;background-color:var(--69ff51af);border-top-right-radius:5px;border-bottom-right-radius:5px}.play-pause-btn[data-v-677263a8]{animation-name:expand-677263a8;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:100% 0%}.play-pause-btn .icon[data-v-677263a8]{animation-name:rotate-677263a8;animation-duration:.5s;animation-fill-mode:forwards;transform-origin:center}@keyframes rotate-677263a8{0%{transform:rotate(0);opacity:0}to{transform:rotate(360deg);opacity:1}}@keyframes expand-677263a8{0%{transform:scaleX(0%)}33%{transform:scaleX(1.1)}66%{transform:scaleX(.9)}to{transform:scaleX(1)}}\n";
+const _hoisted_1$g = { style: { "width": "40px", "height": "50px", "text-align": "center" } };
+const _hoisted_2$d = { style: { "width": "200px" } };
+const _hoisted_3$c = {
+  class: "progress",
+  style: { "display": "none" }
+};
+const _hoisted_4$c = { style: { "justify-content": "center", "display": "flex" } };
+const _sfc_main$g = /* @__PURE__ */ defineComponent({
+  __name: "WavePlayer",
+  props: {
+    "id": { type: Number, required: true },
+    "url": { type: String, required: true },
+    "duration": { type: Number, required: false, default: 0 },
+    "backgroundColor": { type: String, default: "#3f87f7" },
+    "waveColor": { type: String, default: "#a2c4ff" },
+    "progressColor": { type: String, default: "white" },
+    "height": { type: Number, required: false, default: 25 },
+    "animate": { type: Boolean, required: false, default: false },
+    "autoLoad": { type: Boolean, default: true, required: false }
+  },
+  emits: ["hover-audio-progress", "update-progress-time"],
+  setup(__props, { emit: emits }) {
+    const props = __props;
+    useCssVars((_ctx) => ({
+      "69ff51af": unref(bg_color),
+      "327b456d": __props.height
+    }));
+    const { emitter: emitter2 } = provide_emitter();
+    const bg_color = props.backgroundColor;
+    let vue_waveplayer_container = ref();
+    let is_playing = ref(false);
+    let finished = ref(false);
+    ref(false);
+    let duration = ref(props.duration);
+    let pos = ref(0);
+    let wavesurfer2 = null;
+    ref(`width: ${document.documentElement.clientWidth - 100 - 20}px`);
+    emitter2.on("waveplayer:play", (id) => {
+      if (id != props.id) {
+        pause();
+      }
+    });
+    const progress = computed(() => {
+      const totalSeconds = Math.floor(pos.value);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds - minutes * 60;
+      const ret = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+      emits("update-progress-time", format_seconds(totalSeconds));
+      return ret;
+    });
+    async function play() {
+      if (!props.autoLoad)
+        wavesurfer2 == null ? void 0 : wavesurfer2.load(props.url);
+      await until(() => wavesurfer2 != null && wavesurfer2.isReady);
+      if (!wavesurfer2)
+        return;
+      emitter2.emit("waveplayer:play", props.id);
+      is_playing.value = true;
+      wavesurfer2.play();
+    }
+    async function pause() {
+      if (!wavesurfer2 && is_playing.value)
+        return;
+      emitter2.emit("waveplayer:pause", props.id);
+      is_playing.value = false;
+      wavesurfer2.pause();
+    }
+    function on_seek(progress2) {
+      if (!is_playing.value) {
+        play();
+      }
+    }
+    function on_finish() {
+      emitter2.emit("waveplayer:finish", props.id);
+      is_playing.value = false;
+      finished.value = true;
+    }
+    function format_seconds(seconds) {
+      return new Date(seconds * 1e3).toISOString().substr(14, 5);
+    }
+    async function until(predicate, interval = 100) {
+      const poll = (done) => predicate() ? done() : setTimeout(() => poll(done), interval);
+      return new Promise(poll);
+    }
+    onMounted(async () => {
+      if (duration.value) {
+        emits("update-progress-time", format_seconds(duration.value));
+      }
+      wavesurfer2 = WaveSurfer.create({
+        container: vue_waveplayer_container.value,
+        barRadius: 10,
+        barWidth: 4,
+        mediaControls: false,
+        normalize: false,
+        barHeight: 7,
+        responsive: true,
+        cursorColor: "transparent",
+        fillParent: true,
+        hideScrollbar: true,
+        minPxPerSec: 10,
+        height: props.height,
+        waveColor: props.waveColor,
+        progressColor: props.progressColor,
+        backgroundColor: bg_color,
+        barMinHeight: 1
+      });
+      wavesurfer2.on("seek", on_seek);
+      wavesurfer2.on("finish", on_finish);
+      wavesurfer2.on("audioprocess", (time) => pos.value = time);
+      if (props.autoLoad)
+        wavesurfer2.load(props.url);
+      wavesurfer2.on("ready", () => {
+        duration.value = wavesurfer2.getDuration();
+        emits("update-progress-time", format_seconds(duration.value));
+      });
+    });
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", {
+        style: { "display": "flex", "width": "250px", "background-color": "v-bind(bg_color)" },
+        class: normalizeClass({ animate: __props.animate })
+      }, [
+        createBaseVNode("div", _hoisted_1$g, [
+          !is_playing.value ? (openBlock(), createElementBlock("div", {
+            key: 0,
+            class: "btn play-pause-btn",
+            onClick: play
+          }, [
+            createVNode(unref(Icon), {
+              class: "icon",
+              width: "26",
+              icon: unref(data$1),
+              inline: true
+            }, null, 8, ["icon"])
+          ])) : (openBlock(), createElementBlock("div", {
+            key: 1,
+            class: "btn play-pause-btn",
+            onClick: pause
+          }, [
+            createVNode(unref(Icon), {
+              class: "icon",
+              width: "22",
+              icon: unref(data),
+              inline: true
+            }, null, 8, ["icon"])
+          ]))
+        ]),
+        createBaseVNode("div", _hoisted_2$d, [
+          createBaseVNode("div", {
+            id: "vue_waveplayer_container",
+            ref_key: "vue_waveplayer_container",
+            ref: vue_waveplayer_container
+          }, null, 512)
+        ]),
+        createBaseVNode("div", _hoisted_3$c, [
+          createBaseVNode("div", _hoisted_4$c, toDisplayString(unref(progress)), 1)
+        ])
+      ], 2);
+    };
+  }
+});
+var WavePlayer = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["styles", [_style_0$1]], ["__scopeId", "data-v-677263a8"]]);
 const _sfc_main$f = {
   name: "AudioPlayer",
   components: {
-    SvgIcon,
-    AudioControl
+    WavePlayer
   },
   props: {
     messageId: { type: [String, Number], default: null },
+    duration: { type: Number, default: 0, required: false },
     src: { type: String, default: null },
     messageSelectionEnabled: { type: Boolean, required: true }
   },
   emits: ["hover-audio-progress", "update-progress-time"],
   data() {
-    return {
-      isPlaying: false,
-      duration: this.convertTimeMMSS(0),
-      playedTime: this.convertTimeMMSS(0),
-      progress: 0
-    };
   },
   computed: {
     playerUniqId() {
@@ -10630,88 +16877,31 @@ const _sfc_main$f = {
     audioSource() {
       if (this.src)
         return this.src;
-      this.resetProgress();
       return null;
     }
   },
   mounted() {
-    this.player = this.$el.querySelector("#" + this.playerUniqId);
-    this.player.addEventListener("ended", () => {
-      this.isPlaying = false;
-    });
-    this.player.addEventListener("loadeddata", () => {
-      this.resetProgress();
-      this.duration = this.convertTimeMMSS(this.player.duration);
-      this.updateProgressTime();
-    });
-    this.player.addEventListener("timeupdate", this.onTimeUpdate);
   },
-  methods: {
-    convertTimeMMSS(seconds) {
-      return new Date(seconds * 1e3).toISOString().substr(14, 5);
-    },
-    playback() {
-      if (this.messageSelectionEnabled || !this.audioSource)
-        return;
-      if (this.isPlaying)
-        this.player.pause();
-      else
-        setTimeout(() => this.player.play());
-      this.isPlaying = !this.isPlaying;
-    },
-    resetProgress() {
-      if (this.isPlaying)
-        this.player.pause();
-      this.duration = this.convertTimeMMSS(0);
-      this.playedTime = this.convertTimeMMSS(0);
-      this.progress = 0;
-      this.isPlaying = false;
-      this.updateProgressTime();
-    },
-    onTimeUpdate() {
-      this.playedTime = this.convertTimeMMSS(this.player.currentTime);
-      this.progress = this.player.currentTime / this.player.duration * 100;
-      this.updateProgressTime();
-    },
-    onUpdateProgress(pos) {
-      if (pos)
-        this.player.currentTime = pos * this.player.duration;
-    },
-    updateProgressTime() {
-      this.$emit(
-        "update-progress-time",
-        this.progress > 1 ? this.playedTime : this.duration
-      );
-    }
-  }
+  methods: {}
 };
 const _hoisted_1$f = { class: "vac-audio-player" };
-const _hoisted_2$d = ["id", "src"];
 function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_svg_icon = resolveComponent("svg-icon");
-  const _component_audio_control = resolveComponent("audio-control");
+  const _component_wave_player = resolveComponent("wave-player");
   return openBlock(), createElementBlock("div", null, [
     createBaseVNode("div", _hoisted_1$f, [
-      createBaseVNode("div", {
-        class: "vac-svg-button",
-        onClick: _cache[0] || (_cache[0] = (...args) => $options.playback && $options.playback(...args))
-      }, [
-        $data.isPlaying ? renderSlot(_ctx.$slots, "audio-pause-icon_" + $props.messageId, { key: 0 }, () => [
-          createVNode(_component_svg_icon, { name: "audio-pause" })
-        ]) : renderSlot(_ctx.$slots, "audio-play-icon_" + $props.messageId, { key: 1 }, () => [
-          createVNode(_component_svg_icon, { name: "audio-play" })
-        ])
-      ]),
-      createVNode(_component_audio_control, {
-        percentage: $data.progress,
-        "message-selection-enabled": $props.messageSelectionEnabled,
-        onChangeLinehead: $options.onUpdateProgress,
-        onHoverAudioProgress: _cache[1] || (_cache[1] = ($event) => _ctx.$emit("hover-audio-progress", $event))
-      }, null, 8, ["percentage", "message-selection-enabled", "onChangeLinehead"]),
-      createBaseVNode("audio", {
-        id: $options.playerUniqId,
-        src: $options.audioSource
-      }, null, 8, _hoisted_2$d)
+      (openBlock(), createBlock(_component_wave_player, {
+        id: $props.messageId,
+        key: $options.playerUniqId,
+        duration: $props.duration,
+        style: { "padding-right": "25px", "margin-bottom": "-20px" },
+        "background-color": "transparent",
+        "wave-color": "skyblue",
+        "progress-color": "white",
+        height: 25,
+        animate: false,
+        url: $options.audioSource,
+        onUpdateProgressTime: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("update-progress-time", $event))
+      }, null, 8, ["id", "duration", "url"]))
     ])
   ]);
 }
@@ -10813,8 +17003,8 @@ function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
             renderList(_ctx.$slots, (idx, name) => {
               return {
                 name,
-                fn: withCtx((data) => [
-                  renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                fn: withCtx((data2) => [
+                  renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
                 ])
               };
             })
@@ -11037,15339 +17227,488 @@ function _sfc_render$b(_ctx, _cache, $props, $setup, $data, $options) {
   });
 }
 var RoomTemplatesText = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$b]]);
-function new_byte$4(count) {
-  return new Int8Array(count);
-}
-function new_short(count) {
-  return new Int16Array(count);
-}
-function new_int$d(count) {
-  return new Int32Array(count);
-}
-function new_float$f(count) {
-  return new Float32Array(count);
-}
-function new_double$1(count) {
-  return new Float64Array(count);
-}
-function new_float_n$6(args) {
-  if (args.length == 1) {
-    return new_float$f(args[0]);
-  }
-  var sz = args[0];
-  args = args.slice(1);
-  var A = [];
-  for (var i = 0; i < sz; i++) {
-    A.push(new_float_n$6(args));
-  }
-  return A;
-}
-function new_int_n$2(args) {
-  if (args.length == 1) {
-    return new_int$d(args[0]);
-  }
-  var sz = args[0];
-  args = args.slice(1);
-  var A = [];
-  for (var i = 0; i < sz; i++) {
-    A.push(new_int_n$2(args));
-  }
-  return A;
-}
-function new_short_n$1(args) {
-  if (args.length == 1) {
-    return new_short(args[0]);
-  }
-  var sz = args[0];
-  args = args.slice(1);
-  var A = [];
-  for (var i = 0; i < sz; i++) {
-    A.push(new_short_n$1(args));
-  }
-  return A;
-}
-function new_array_n$1(args) {
-  if (args.length == 1) {
-    return new Array(args[0]);
-  }
-  var sz = args[0];
-  args = args.slice(1);
-  var A = [];
-  for (var i = 0; i < sz; i++) {
-    A.push(new_array_n$1(args));
-  }
-  return A;
-}
-var Arrays$7 = {};
-Arrays$7.fill = function(a, fromIndex, toIndex, val) {
-  if (arguments.length == 2) {
-    for (var i = 0; i < a.length; i++) {
-      a[i] = arguments[1];
+/*! Capacitor: https://capacitorjs.com/ - MIT License */
+const createCapacitorPlatforms = (win) => {
+  const defaultPlatformMap = /* @__PURE__ */ new Map();
+  defaultPlatformMap.set("web", { name: "web" });
+  const capPlatforms = win.CapacitorPlatforms || {
+    currentPlatform: { name: "web" },
+    platforms: defaultPlatformMap
+  };
+  const addPlatform = (name, platform) => {
+    capPlatforms.platforms.set(name, platform);
+  };
+  const setPlatform = (name) => {
+    if (capPlatforms.platforms.has(name)) {
+      capPlatforms.currentPlatform = capPlatforms.platforms.get(name);
     }
+  };
+  capPlatforms.addPlatform = addPlatform;
+  capPlatforms.setPlatform = setPlatform;
+  return capPlatforms;
+};
+const initPlatforms = (win) => win.CapacitorPlatforms = createCapacitorPlatforms(win);
+const CapacitorPlatforms = /* @__PURE__ */ initPlatforms(typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {});
+CapacitorPlatforms.addPlatform;
+CapacitorPlatforms.setPlatform;
+var ExceptionCode;
+(function(ExceptionCode2) {
+  ExceptionCode2["Unimplemented"] = "UNIMPLEMENTED";
+  ExceptionCode2["Unavailable"] = "UNAVAILABLE";
+})(ExceptionCode || (ExceptionCode = {}));
+class CapacitorException extends Error {
+  constructor(message, code, data2) {
+    super(message);
+    this.message = message;
+    this.code = code;
+    this.data = data2;
+  }
+}
+const getPlatformId = (win) => {
+  var _a, _b;
+  if (win === null || win === void 0 ? void 0 : win.androidBridge) {
+    return "android";
+  } else if ((_b = (_a = win === null || win === void 0 ? void 0 : win.webkit) === null || _a === void 0 ? void 0 : _a.messageHandlers) === null || _b === void 0 ? void 0 : _b.bridge) {
+    return "ios";
   } else {
-    for (var i = fromIndex; i < toIndex; i++) {
-      a[i] = val;
-    }
+    return "web";
   }
 };
-var System$a = {};
-System$a.arraycopy = function(src, srcPos, dest, destPos, length) {
-  var srcEnd = srcPos + length;
-  while (srcPos < srcEnd)
-    dest[destPos++] = src[srcPos++];
-};
-System$a.out = {};
-System$a.out.println = function(message) {
-  console.log(message);
-};
-System$a.out.printf = function() {
-  console.log.apply(console, arguments);
-};
-var Util$5 = {};
-Util$5.SQRT2 = 1.4142135623730951;
-Util$5.FAST_LOG10 = function(x) {
-  return Math.log10(x);
-};
-Util$5.FAST_LOG10_X = function(x, y) {
-  return Math.log10(x) * y;
-};
-function ShortBlock$3(ordinal) {
-  this.ordinal = ordinal;
-}
-ShortBlock$3.short_block_allowed = new ShortBlock$3(0);
-ShortBlock$3.short_block_coupled = new ShortBlock$3(1);
-ShortBlock$3.short_block_dispensed = new ShortBlock$3(2);
-ShortBlock$3.short_block_forced = new ShortBlock$3(3);
-var Float$2 = {};
-Float$2.MAX_VALUE = 34028235e31;
-function VbrMode$7(ordinal) {
-  this.ordinal = ordinal;
-}
-VbrMode$7.vbr_off = new VbrMode$7(0);
-VbrMode$7.vbr_mt = new VbrMode$7(1);
-VbrMode$7.vbr_rh = new VbrMode$7(2);
-VbrMode$7.vbr_abr = new VbrMode$7(3);
-VbrMode$7.vbr_mtrh = new VbrMode$7(4);
-VbrMode$7.vbr_default = VbrMode$7.vbr_mtrh;
-var assert$b = function(x) {
-};
-var common = {
-  System: System$a,
-  VbrMode: VbrMode$7,
-  Float: Float$2,
-  ShortBlock: ShortBlock$3,
-  Util: Util$5,
-  Arrays: Arrays$7,
-  new_array_n: new_array_n$1,
-  new_byte: new_byte$4,
-  new_double: new_double$1,
-  new_float: new_float$f,
-  new_float_n: new_float_n$6,
-  new_int: new_int$d,
-  new_int_n: new_int_n$2,
-  new_short,
-  new_short_n: new_short_n$1,
-  assert: assert$b
-};
-var System$9 = common.System;
-var Util$4 = common.Util;
-var Arrays$6 = common.Arrays;
-var new_float$e = common.new_float;
-function NewMDCT() {
-  var enwindow = [
-    -477e-9 * 0.740951125354959 / 2384e-9,
-    103951e-9 * 0.740951125354959 / 2384e-9,
-    953674e-9 * 0.740951125354959 / 2384e-9,
-    2841473e-9 * 0.740951125354959 / 2384e-9,
-    0.035758972 * 0.740951125354959 / 2384e-9,
-    3401756e-9 * 0.740951125354959 / 2384e-9,
-    983715e-9 * 0.740951125354959 / 2384e-9,
-    99182e-9 * 0.740951125354959 / 2384e-9,
-    12398e-9 * 0.740951125354959 / 2384e-9,
-    191212e-9 * 0.740951125354959 / 2384e-9,
-    2283096e-9 * 0.740951125354959 / 2384e-9,
-    0.016994476 * 0.740951125354959 / 2384e-9,
-    -0.018756866 * 0.740951125354959 / 2384e-9,
-    -2630711e-9 * 0.740951125354959 / 2384e-9,
-    -247478e-9 * 0.740951125354959 / 2384e-9,
-    -14782e-9 * 0.740951125354959 / 2384e-9,
-    0.9063471690191471,
-    0.1960342806591213,
-    -477e-9 * 0.773010453362737 / 2384e-9,
-    105858e-9 * 0.773010453362737 / 2384e-9,
-    930786e-9 * 0.773010453362737 / 2384e-9,
-    2521515e-9 * 0.773010453362737 / 2384e-9,
-    0.035694122 * 0.773010453362737 / 2384e-9,
-    3643036e-9 * 0.773010453362737 / 2384e-9,
-    991821e-9 * 0.773010453362737 / 2384e-9,
-    96321e-9 * 0.773010453362737 / 2384e-9,
-    11444e-9 * 0.773010453362737 / 2384e-9,
-    165462e-9 * 0.773010453362737 / 2384e-9,
-    2110004e-9 * 0.773010453362737 / 2384e-9,
-    0.016112804 * 0.773010453362737 / 2384e-9,
-    -0.019634247 * 0.773010453362737 / 2384e-9,
-    -2803326e-9 * 0.773010453362737 / 2384e-9,
-    -277042e-9 * 0.773010453362737 / 2384e-9,
-    -16689e-9 * 0.773010453362737 / 2384e-9,
-    0.8206787908286602,
-    0.3901806440322567,
-    -477e-9 * 0.803207531480645 / 2384e-9,
-    107288e-9 * 0.803207531480645 / 2384e-9,
-    902653e-9 * 0.803207531480645 / 2384e-9,
-    2174854e-9 * 0.803207531480645 / 2384e-9,
-    0.035586357 * 0.803207531480645 / 2384e-9,
-    3858566e-9 * 0.803207531480645 / 2384e-9,
-    995159e-9 * 0.803207531480645 / 2384e-9,
-    9346e-8 * 0.803207531480645 / 2384e-9,
-    10014e-9 * 0.803207531480645 / 2384e-9,
-    14019e-8 * 0.803207531480645 / 2384e-9,
-    1937389e-9 * 0.803207531480645 / 2384e-9,
-    0.015233517 * 0.803207531480645 / 2384e-9,
-    -0.020506859 * 0.803207531480645 / 2384e-9,
-    -2974033e-9 * 0.803207531480645 / 2384e-9,
-    -30756e-8 * 0.803207531480645 / 2384e-9,
-    -1812e-8 * 0.803207531480645 / 2384e-9,
-    0.7416505462720353,
-    0.5805693545089249,
-    -477e-9 * 0.831469612302545 / 2384e-9,
-    108242e-9 * 0.831469612302545 / 2384e-9,
-    868797e-9 * 0.831469612302545 / 2384e-9,
-    1800537e-9 * 0.831469612302545 / 2384e-9,
-    0.0354352 * 0.831469612302545 / 2384e-9,
-    4049301e-9 * 0.831469612302545 / 2384e-9,
-    994205e-9 * 0.831469612302545 / 2384e-9,
-    90599e-9 * 0.831469612302545 / 2384e-9,
-    906e-8 * 0.831469612302545 / 2384e-9,
-    116348e-9 * 0.831469612302545 / 2384e-9,
-    1766682e-9 * 0.831469612302545 / 2384e-9,
-    0.014358521 * 0.831469612302545 / 2384e-9,
-    -0.021372318 * 0.831469612302545 / 2384e-9,
-    -314188e-8 * 0.831469612302545 / 2384e-9,
-    -339031e-9 * 0.831469612302545 / 2384e-9,
-    -1955e-8 * 0.831469612302545 / 2384e-9,
-    0.6681786379192989,
-    0.7653668647301797,
-    -477e-9 * 0.857728610000272 / 2384e-9,
-    108719e-9 * 0.857728610000272 / 2384e-9,
-    82922e-8 * 0.857728610000272 / 2384e-9,
-    1399517e-9 * 0.857728610000272 / 2384e-9,
-    0.035242081 * 0.857728610000272 / 2384e-9,
-    421524e-8 * 0.857728610000272 / 2384e-9,
-    989437e-9 * 0.857728610000272 / 2384e-9,
-    87261e-9 * 0.857728610000272 / 2384e-9,
-    8106e-9 * 0.857728610000272 / 2384e-9,
-    93937e-9 * 0.857728610000272 / 2384e-9,
-    1597881e-9 * 0.857728610000272 / 2384e-9,
-    0.013489246 * 0.857728610000272 / 2384e-9,
-    -0.022228718 * 0.857728610000272 / 2384e-9,
-    -3306866e-9 * 0.857728610000272 / 2384e-9,
-    -371456e-9 * 0.857728610000272 / 2384e-9,
-    -21458e-9 * 0.857728610000272 / 2384e-9,
-    0.5993769336819237,
-    0.9427934736519954,
-    -477e-9 * 0.881921264348355 / 2384e-9,
-    108719e-9 * 0.881921264348355 / 2384e-9,
-    78392e-8 * 0.881921264348355 / 2384e-9,
-    971317e-9 * 0.881921264348355 / 2384e-9,
-    0.035007 * 0.881921264348355 / 2384e-9,
-    4357815e-9 * 0.881921264348355 / 2384e-9,
-    980854e-9 * 0.881921264348355 / 2384e-9,
-    83923e-9 * 0.881921264348355 / 2384e-9,
-    7629e-9 * 0.881921264348355 / 2384e-9,
-    72956e-9 * 0.881921264348355 / 2384e-9,
-    1432419e-9 * 0.881921264348355 / 2384e-9,
-    0.012627602 * 0.881921264348355 / 2384e-9,
-    -0.02307415 * 0.881921264348355 / 2384e-9,
-    -3467083e-9 * 0.881921264348355 / 2384e-9,
-    -404358e-9 * 0.881921264348355 / 2384e-9,
-    -23365e-9 * 0.881921264348355 / 2384e-9,
-    0.5345111359507916,
-    1.111140466039205,
-    -954e-9 * 0.903989293123443 / 2384e-9,
-    108242e-9 * 0.903989293123443 / 2384e-9,
-    731945e-9 * 0.903989293123443 / 2384e-9,
-    515938e-9 * 0.903989293123443 / 2384e-9,
-    0.034730434 * 0.903989293123443 / 2384e-9,
-    4477024e-9 * 0.903989293123443 / 2384e-9,
-    968933e-9 * 0.903989293123443 / 2384e-9,
-    80585e-9 * 0.903989293123443 / 2384e-9,
-    6676e-9 * 0.903989293123443 / 2384e-9,
-    52929e-9 * 0.903989293123443 / 2384e-9,
-    1269817e-9 * 0.903989293123443 / 2384e-9,
-    0.011775017 * 0.903989293123443 / 2384e-9,
-    -0.023907185 * 0.903989293123443 / 2384e-9,
-    -3622532e-9 * 0.903989293123443 / 2384e-9,
-    -438213e-9 * 0.903989293123443 / 2384e-9,
-    -25272e-9 * 0.903989293123443 / 2384e-9,
-    0.4729647758913199,
-    1.268786568327291,
-    -954e-9 * 0.9238795325112867 / 2384e-9,
-    106812e-9 * 0.9238795325112867 / 2384e-9,
-    674248e-9 * 0.9238795325112867 / 2384e-9,
-    33379e-9 * 0.9238795325112867 / 2384e-9,
-    0.034412861 * 0.9238795325112867 / 2384e-9,
-    4573822e-9 * 0.9238795325112867 / 2384e-9,
-    954151e-9 * 0.9238795325112867 / 2384e-9,
-    76771e-9 * 0.9238795325112867 / 2384e-9,
-    6199e-9 * 0.9238795325112867 / 2384e-9,
-    34332e-9 * 0.9238795325112867 / 2384e-9,
-    1111031e-9 * 0.9238795325112867 / 2384e-9,
-    0.010933399 * 0.9238795325112867 / 2384e-9,
-    -0.024725437 * 0.9238795325112867 / 2384e-9,
-    -3771782e-9 * 0.9238795325112867 / 2384e-9,
-    -472546e-9 * 0.9238795325112867 / 2384e-9,
-    -27657e-9 * 0.9238795325112867 / 2384e-9,
-    0.41421356237309503,
-    1.414213562373095,
-    -954e-9 * 0.941544065183021 / 2384e-9,
-    105381e-9 * 0.941544065183021 / 2384e-9,
-    610352e-9 * 0.941544065183021 / 2384e-9,
-    -475883e-9 * 0.941544065183021 / 2384e-9,
-    0.03405571 * 0.941544065183021 / 2384e-9,
-    4649162e-9 * 0.941544065183021 / 2384e-9,
-    935555e-9 * 0.941544065183021 / 2384e-9,
-    73433e-9 * 0.941544065183021 / 2384e-9,
-    5245e-9 * 0.941544065183021 / 2384e-9,
-    17166e-9 * 0.941544065183021 / 2384e-9,
-    956535e-9 * 0.941544065183021 / 2384e-9,
-    0.010103703 * 0.941544065183021 / 2384e-9,
-    -0.025527 * 0.941544065183021 / 2384e-9,
-    -3914356e-9 * 0.941544065183021 / 2384e-9,
-    -507355e-9 * 0.941544065183021 / 2384e-9,
-    -30041e-9 * 0.941544065183021 / 2384e-9,
-    0.3578057213145241,
-    1.546020906725474,
-    -954e-9 * 0.956940335732209 / 2384e-9,
-    10252e-8 * 0.956940335732209 / 2384e-9,
-    539303e-9 * 0.956940335732209 / 2384e-9,
-    -1011848e-9 * 0.956940335732209 / 2384e-9,
-    0.033659935 * 0.956940335732209 / 2384e-9,
-    4703045e-9 * 0.956940335732209 / 2384e-9,
-    915051e-9 * 0.956940335732209 / 2384e-9,
-    70095e-9 * 0.956940335732209 / 2384e-9,
-    4768e-9 * 0.956940335732209 / 2384e-9,
-    954e-9 * 0.956940335732209 / 2384e-9,
-    806808e-9 * 0.956940335732209 / 2384e-9,
-    9287834e-9 * 0.956940335732209 / 2384e-9,
-    -0.026310921 * 0.956940335732209 / 2384e-9,
-    -4048824e-9 * 0.956940335732209 / 2384e-9,
-    -542164e-9 * 0.956940335732209 / 2384e-9,
-    -32425e-9 * 0.956940335732209 / 2384e-9,
-    0.3033466836073424,
-    1.66293922460509,
-    -1431e-9 * 0.970031253194544 / 2384e-9,
-    99182e-9 * 0.970031253194544 / 2384e-9,
-    462532e-9 * 0.970031253194544 / 2384e-9,
-    -1573563e-9 * 0.970031253194544 / 2384e-9,
-    0.033225536 * 0.970031253194544 / 2384e-9,
-    4737377e-9 * 0.970031253194544 / 2384e-9,
-    891685e-9 * 0.970031253194544 / 2384e-9,
-    6628e-8 * 0.970031253194544 / 2384e-9,
-    4292e-9 * 0.970031253194544 / 2384e-9,
-    -13828e-9 * 0.970031253194544 / 2384e-9,
-    66185e-8 * 0.970031253194544 / 2384e-9,
-    8487225e-9 * 0.970031253194544 / 2384e-9,
-    -0.02707386 * 0.970031253194544 / 2384e-9,
-    -4174709e-9 * 0.970031253194544 / 2384e-9,
-    -576973e-9 * 0.970031253194544 / 2384e-9,
-    -34809e-9 * 0.970031253194544 / 2384e-9,
-    0.2504869601913055,
-    1.76384252869671,
-    -1431e-9 * 0.98078528040323 / 2384e-9,
-    95367e-9 * 0.98078528040323 / 2384e-9,
-    378609e-9 * 0.98078528040323 / 2384e-9,
-    -2161503e-9 * 0.98078528040323 / 2384e-9,
-    0.032754898 * 0.98078528040323 / 2384e-9,
-    4752159e-9 * 0.98078528040323 / 2384e-9,
-    866413e-9 * 0.98078528040323 / 2384e-9,
-    62943e-9 * 0.98078528040323 / 2384e-9,
-    3815e-9 * 0.98078528040323 / 2384e-9,
-    -2718e-8 * 0.98078528040323 / 2384e-9,
-    522137e-9 * 0.98078528040323 / 2384e-9,
-    7703304e-9 * 0.98078528040323 / 2384e-9,
-    -0.027815342 * 0.98078528040323 / 2384e-9,
-    -4290581e-9 * 0.98078528040323 / 2384e-9,
-    -611782e-9 * 0.98078528040323 / 2384e-9,
-    -3767e-8 * 0.98078528040323 / 2384e-9,
-    0.198912367379658,
-    1.847759065022573,
-    -1907e-9 * 0.989176509964781 / 2384e-9,
-    90122e-9 * 0.989176509964781 / 2384e-9,
-    288486e-9 * 0.989176509964781 / 2384e-9,
-    -2774239e-9 * 0.989176509964781 / 2384e-9,
-    0.03224802 * 0.989176509964781 / 2384e-9,
-    4748821e-9 * 0.989176509964781 / 2384e-9,
-    838757e-9 * 0.989176509964781 / 2384e-9,
-    59605e-9 * 0.989176509964781 / 2384e-9,
-    3338e-9 * 0.989176509964781 / 2384e-9,
-    -39577e-9 * 0.989176509964781 / 2384e-9,
-    388145e-9 * 0.989176509964781 / 2384e-9,
-    6937027e-9 * 0.989176509964781 / 2384e-9,
-    -0.028532982 * 0.989176509964781 / 2384e-9,
-    -4395962e-9 * 0.989176509964781 / 2384e-9,
-    -646591e-9 * 0.989176509964781 / 2384e-9,
-    -40531e-9 * 0.989176509964781 / 2384e-9,
-    0.1483359875383474,
-    1.913880671464418,
-    -1907e-9 * 0.995184726672197 / 2384e-9,
-    844e-7 * 0.995184726672197 / 2384e-9,
-    191689e-9 * 0.995184726672197 / 2384e-9,
-    -3411293e-9 * 0.995184726672197 / 2384e-9,
-    0.03170681 * 0.995184726672197 / 2384e-9,
-    4728317e-9 * 0.995184726672197 / 2384e-9,
-    809669e-9 * 0.995184726672197 / 2384e-9,
-    5579e-8 * 0.995184726672197 / 2384e-9,
-    3338e-9 * 0.995184726672197 / 2384e-9,
-    -50545e-9 * 0.995184726672197 / 2384e-9,
-    259876e-9 * 0.995184726672197 / 2384e-9,
-    6189346e-9 * 0.995184726672197 / 2384e-9,
-    -0.029224873 * 0.995184726672197 / 2384e-9,
-    -4489899e-9 * 0.995184726672197 / 2384e-9,
-    -680923e-9 * 0.995184726672197 / 2384e-9,
-    -43392e-9 * 0.995184726672197 / 2384e-9,
-    0.09849140335716425,
-    1.961570560806461,
-    -2384e-9 * 0.998795456205172 / 2384e-9,
-    77724e-9 * 0.998795456205172 / 2384e-9,
-    88215e-9 * 0.998795456205172 / 2384e-9,
-    -4072189e-9 * 0.998795456205172 / 2384e-9,
-    0.031132698 * 0.998795456205172 / 2384e-9,
-    4691124e-9 * 0.998795456205172 / 2384e-9,
-    779152e-9 * 0.998795456205172 / 2384e-9,
-    52929e-9 * 0.998795456205172 / 2384e-9,
-    2861e-9 * 0.998795456205172 / 2384e-9,
-    -60558e-9 * 0.998795456205172 / 2384e-9,
-    137329e-9 * 0.998795456205172 / 2384e-9,
-    546217e-8 * 0.998795456205172 / 2384e-9,
-    -0.02989006 * 0.998795456205172 / 2384e-9,
-    -4570484e-9 * 0.998795456205172 / 2384e-9,
-    -714302e-9 * 0.998795456205172 / 2384e-9,
-    -46253e-9 * 0.998795456205172 / 2384e-9,
-    0.04912684976946725,
-    1.990369453344394,
-    0.035780907 * Util$4.SQRT2 * 0.5 / 2384e-9,
-    0.017876148 * Util$4.SQRT2 * 0.5 / 2384e-9,
-    3134727e-9 * Util$4.SQRT2 * 0.5 / 2384e-9,
-    2457142e-9 * Util$4.SQRT2 * 0.5 / 2384e-9,
-    971317e-9 * Util$4.SQRT2 * 0.5 / 2384e-9,
-    218868e-9 * Util$4.SQRT2 * 0.5 / 2384e-9,
-    101566e-9 * Util$4.SQRT2 * 0.5 / 2384e-9,
-    13828e-9 * Util$4.SQRT2 * 0.5 / 2384e-9,
-    0.030526638 / 2384e-9,
-    4638195e-9 / 2384e-9,
-    747204e-9 / 2384e-9,
-    49591e-9 / 2384e-9,
-    4756451e-9 / 2384e-9,
-    21458e-9 / 2384e-9,
-    -69618e-9 / 2384e-9
-  ];
-  var NS = 12;
-  var NL2 = 36;
-  var win = [
-    [
-      2382191739347913e-28,
-      6423305872147834e-28,
-      9400849094049688e-28,
-      1122435026096556e-27,
-      1183840321267481e-27,
-      1122435026096556e-27,
-      940084909404969e-27,
-      6423305872147839e-28,
-      2382191739347918e-28,
-      5456116108943412e-27,
-      4878985199565852e-27,
-      4240448995017367e-27,
-      3559909094758252e-27,
-      2858043359288075e-27,
-      2156177623817898e-27,
-      1475637723558783e-27,
-      8371015190102974e-28,
-      2599706096327376e-28,
-      -5456116108943412e-27,
-      -4878985199565852e-27,
-      -4240448995017367e-27,
-      -3559909094758252e-27,
-      -2858043359288076e-27,
-      -2156177623817898e-27,
-      -1475637723558783e-27,
-      -8371015190102975e-28,
-      -2599706096327376e-28,
-      -2382191739347923e-28,
-      -6423305872147843e-28,
-      -9400849094049696e-28,
-      -1122435026096556e-27,
-      -1183840321267481e-27,
-      -1122435026096556e-27,
-      -9400849094049694e-28,
-      -642330587214784e-27,
-      -2382191739347918e-28
-    ],
-    [
-      2382191739347913e-28,
-      6423305872147834e-28,
-      9400849094049688e-28,
-      1122435026096556e-27,
-      1183840321267481e-27,
-      1122435026096556e-27,
-      9400849094049688e-28,
-      6423305872147841e-28,
-      2382191739347918e-28,
-      5456116108943413e-27,
-      4878985199565852e-27,
-      4240448995017367e-27,
-      3559909094758253e-27,
-      2858043359288075e-27,
-      2156177623817898e-27,
-      1475637723558782e-27,
-      8371015190102975e-28,
-      2599706096327376e-28,
-      -5461314069809755e-27,
-      -4921085770524055e-27,
-      -4343405037091838e-27,
-      -3732668368707687e-27,
-      -3093523840190885e-27,
-      -2430835727329465e-27,
-      -1734679010007751e-27,
-      -974825365660928e-27,
-      -2797435120168326e-28,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      -2283748241799531e-28,
-      -4037858874020686e-28,
-      -2146547464825323e-28
-    ],
-    [
-      0.1316524975873958,
-      0.414213562373095,
-      0.7673269879789602,
-      1.091308501069271,
-      1.303225372841206,
-      1.56968557711749,
-      1.920982126971166,
-      2.414213562373094,
-      3.171594802363212,
-      4.510708503662055,
-      7.595754112725146,
-      22.90376554843115,
-      0.984807753012208,
-      0.6427876096865394,
-      0.3420201433256688,
-      0.9396926207859084,
-      -0.1736481776669303,
-      -0.7660444431189779,
-      0.8660254037844387,
-      0.5,
-      -0.5144957554275265,
-      -0.4717319685649723,
-      -0.3133774542039019,
-      -0.1819131996109812,
-      -0.09457419252642064,
-      -0.04096558288530405,
-      -0.01419856857247115,
-      -0.003699974673760037,
-      0.8574929257125442,
-      0.8817419973177052,
-      0.9496286491027329,
-      0.9833145924917901,
-      0.9955178160675857,
-      0.9991605581781475,
-      0.999899195244447,
-      0.9999931550702802
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      2283748241799531e-28,
-      4037858874020686e-28,
-      2146547464825323e-28,
-      5461314069809755e-27,
-      4921085770524055e-27,
-      4343405037091838e-27,
-      3732668368707687e-27,
-      3093523840190885e-27,
-      2430835727329466e-27,
-      1734679010007751e-27,
-      974825365660928e-27,
-      2797435120168326e-28,
-      -5456116108943413e-27,
-      -4878985199565852e-27,
-      -4240448995017367e-27,
-      -3559909094758253e-27,
-      -2858043359288075e-27,
-      -2156177623817898e-27,
-      -1475637723558782e-27,
-      -8371015190102975e-28,
-      -2599706096327376e-28,
-      -2382191739347913e-28,
-      -6423305872147834e-28,
-      -9400849094049688e-28,
-      -1122435026096556e-27,
-      -1183840321267481e-27,
-      -1122435026096556e-27,
-      -9400849094049688e-28,
-      -6423305872147841e-28,
-      -2382191739347918e-28
-    ]
-  ];
-  var tantab_l = win[Encoder.SHORT_TYPE];
-  var cx = win[Encoder.SHORT_TYPE];
-  var ca = win[Encoder.SHORT_TYPE];
-  var cs = win[Encoder.SHORT_TYPE];
-  var order = [
-    0,
-    1,
-    16,
-    17,
-    8,
-    9,
-    24,
-    25,
-    4,
-    5,
-    20,
-    21,
-    12,
-    13,
-    28,
-    29,
-    2,
-    3,
-    18,
-    19,
-    10,
-    11,
-    26,
-    27,
-    6,
-    7,
-    22,
-    23,
-    14,
-    15,
-    30,
-    31
-  ];
-  function window_subband(x1, x1Pos, a) {
-    var wp = 10;
-    var x2 = x1Pos + 238 - 14 - 286;
-    for (var i = -15; i < 0; i++) {
-      var w, s, t;
-      w = enwindow[wp + -10];
-      s = x1[x2 + -224] * w;
-      t = x1[x1Pos + 224] * w;
-      w = enwindow[wp + -9];
-      s += x1[x2 + -160] * w;
-      t += x1[x1Pos + 160] * w;
-      w = enwindow[wp + -8];
-      s += x1[x2 + -96] * w;
-      t += x1[x1Pos + 96] * w;
-      w = enwindow[wp + -7];
-      s += x1[x2 + -32] * w;
-      t += x1[x1Pos + 32] * w;
-      w = enwindow[wp + -6];
-      s += x1[x2 + 32] * w;
-      t += x1[x1Pos + -32] * w;
-      w = enwindow[wp + -5];
-      s += x1[x2 + 96] * w;
-      t += x1[x1Pos + -96] * w;
-      w = enwindow[wp + -4];
-      s += x1[x2 + 160] * w;
-      t += x1[x1Pos + -160] * w;
-      w = enwindow[wp + -3];
-      s += x1[x2 + 224] * w;
-      t += x1[x1Pos + -224] * w;
-      w = enwindow[wp + -2];
-      s += x1[x1Pos + -256] * w;
-      t -= x1[x2 + 256] * w;
-      w = enwindow[wp + -1];
-      s += x1[x1Pos + -192] * w;
-      t -= x1[x2 + 192] * w;
-      w = enwindow[wp + 0];
-      s += x1[x1Pos + -128] * w;
-      t -= x1[x2 + 128] * w;
-      w = enwindow[wp + 1];
-      s += x1[x1Pos + -64] * w;
-      t -= x1[x2 + 64] * w;
-      w = enwindow[wp + 2];
-      s += x1[x1Pos + 0] * w;
-      t -= x1[x2 + 0] * w;
-      w = enwindow[wp + 3];
-      s += x1[x1Pos + 64] * w;
-      t -= x1[x2 + -64] * w;
-      w = enwindow[wp + 4];
-      s += x1[x1Pos + 128] * w;
-      t -= x1[x2 + -128] * w;
-      w = enwindow[wp + 5];
-      s += x1[x1Pos + 192] * w;
-      t -= x1[x2 + -192] * w;
-      s *= enwindow[wp + 6];
-      w = t - s;
-      a[30 + i * 2] = t + s;
-      a[31 + i * 2] = enwindow[wp + 7] * w;
-      wp += 18;
-      x1Pos--;
-      x2++;
+const createCapacitor = (win) => {
+  var _a, _b, _c, _d, _e;
+  const capCustomPlatform = win.CapacitorCustomPlatform || null;
+  const cap = win.Capacitor || {};
+  const Plugins = cap.Plugins = cap.Plugins || {};
+  const capPlatforms = win.CapacitorPlatforms;
+  const defaultGetPlatform = () => {
+    return capCustomPlatform !== null ? capCustomPlatform.name : getPlatformId(win);
+  };
+  const getPlatform = ((_a = capPlatforms === null || capPlatforms === void 0 ? void 0 : capPlatforms.currentPlatform) === null || _a === void 0 ? void 0 : _a.getPlatform) || defaultGetPlatform;
+  const defaultIsNativePlatform = () => getPlatform() !== "web";
+  const isNativePlatform = ((_b = capPlatforms === null || capPlatforms === void 0 ? void 0 : capPlatforms.currentPlatform) === null || _b === void 0 ? void 0 : _b.isNativePlatform) || defaultIsNativePlatform;
+  const defaultIsPluginAvailable = (pluginName) => {
+    const plugin = registeredPlugins.get(pluginName);
+    if (plugin === null || plugin === void 0 ? void 0 : plugin.platforms.has(getPlatform())) {
+      return true;
     }
-    {
-      var s, t, u, v;
-      t = x1[x1Pos + -16] * enwindow[wp + -10];
-      s = x1[x1Pos + -32] * enwindow[wp + -2];
-      t += (x1[x1Pos + -48] - x1[x1Pos + 16]) * enwindow[wp + -9];
-      s += x1[x1Pos + -96] * enwindow[wp + -1];
-      t += (x1[x1Pos + -80] + x1[x1Pos + 48]) * enwindow[wp + -8];
-      s += x1[x1Pos + -160] * enwindow[wp + 0];
-      t += (x1[x1Pos + -112] - x1[x1Pos + 80]) * enwindow[wp + -7];
-      s += x1[x1Pos + -224] * enwindow[wp + 1];
-      t += (x1[x1Pos + -144] + x1[x1Pos + 112]) * enwindow[wp + -6];
-      s -= x1[x1Pos + 32] * enwindow[wp + 2];
-      t += (x1[x1Pos + -176] - x1[x1Pos + 144]) * enwindow[wp + -5];
-      s -= x1[x1Pos + 96] * enwindow[wp + 3];
-      t += (x1[x1Pos + -208] + x1[x1Pos + 176]) * enwindow[wp + -4];
-      s -= x1[x1Pos + 160] * enwindow[wp + 4];
-      t += (x1[x1Pos + -240] - x1[x1Pos + 208]) * enwindow[wp + -3];
-      s -= x1[x1Pos + 224];
-      u = s - t;
-      v = s + t;
-      t = a[14];
-      s = a[15] - t;
-      a[31] = v + t;
-      a[30] = u + s;
-      a[15] = u - s;
-      a[14] = v - t;
+    if (getPluginHeader(pluginName)) {
+      return true;
     }
-    {
-      var xr;
-      xr = a[28] - a[0];
-      a[0] += a[28];
-      a[28] = xr * enwindow[wp + -2 * 18 + 7];
-      xr = a[29] - a[1];
-      a[1] += a[29];
-      a[29] = xr * enwindow[wp + -2 * 18 + 7];
-      xr = a[26] - a[2];
-      a[2] += a[26];
-      a[26] = xr * enwindow[wp + -4 * 18 + 7];
-      xr = a[27] - a[3];
-      a[3] += a[27];
-      a[27] = xr * enwindow[wp + -4 * 18 + 7];
-      xr = a[24] - a[4];
-      a[4] += a[24];
-      a[24] = xr * enwindow[wp + -6 * 18 + 7];
-      xr = a[25] - a[5];
-      a[5] += a[25];
-      a[25] = xr * enwindow[wp + -6 * 18 + 7];
-      xr = a[22] - a[6];
-      a[6] += a[22];
-      a[22] = xr * Util$4.SQRT2;
-      xr = a[23] - a[7];
-      a[7] += a[23];
-      a[23] = xr * Util$4.SQRT2 - a[7];
-      a[7] -= a[6];
-      a[22] -= a[7];
-      a[23] -= a[22];
-      xr = a[6];
-      a[6] = a[31] - xr;
-      a[31] = a[31] + xr;
-      xr = a[7];
-      a[7] = a[30] - xr;
-      a[30] = a[30] + xr;
-      xr = a[22];
-      a[22] = a[15] - xr;
-      a[15] = a[15] + xr;
-      xr = a[23];
-      a[23] = a[14] - xr;
-      a[14] = a[14] + xr;
-      xr = a[20] - a[8];
-      a[8] += a[20];
-      a[20] = xr * enwindow[wp + -10 * 18 + 7];
-      xr = a[21] - a[9];
-      a[9] += a[21];
-      a[21] = xr * enwindow[wp + -10 * 18 + 7];
-      xr = a[18] - a[10];
-      a[10] += a[18];
-      a[18] = xr * enwindow[wp + -12 * 18 + 7];
-      xr = a[19] - a[11];
-      a[11] += a[19];
-      a[19] = xr * enwindow[wp + -12 * 18 + 7];
-      xr = a[16] - a[12];
-      a[12] += a[16];
-      a[16] = xr * enwindow[wp + -14 * 18 + 7];
-      xr = a[17] - a[13];
-      a[13] += a[17];
-      a[17] = xr * enwindow[wp + -14 * 18 + 7];
-      xr = -a[20] + a[24];
-      a[20] += a[24];
-      a[24] = xr * enwindow[wp + -12 * 18 + 7];
-      xr = -a[21] + a[25];
-      a[21] += a[25];
-      a[25] = xr * enwindow[wp + -12 * 18 + 7];
-      xr = a[4] - a[8];
-      a[4] += a[8];
-      a[8] = xr * enwindow[wp + -12 * 18 + 7];
-      xr = a[5] - a[9];
-      a[5] += a[9];
-      a[9] = xr * enwindow[wp + -12 * 18 + 7];
-      xr = a[0] - a[12];
-      a[0] += a[12];
-      a[12] = xr * enwindow[wp + -4 * 18 + 7];
-      xr = a[1] - a[13];
-      a[1] += a[13];
-      a[13] = xr * enwindow[wp + -4 * 18 + 7];
-      xr = a[16] - a[28];
-      a[16] += a[28];
-      a[28] = xr * enwindow[wp + -4 * 18 + 7];
-      xr = -a[17] + a[29];
-      a[17] += a[29];
-      a[29] = xr * enwindow[wp + -4 * 18 + 7];
-      xr = Util$4.SQRT2 * (a[2] - a[10]);
-      a[2] += a[10];
-      a[10] = xr;
-      xr = Util$4.SQRT2 * (a[3] - a[11]);
-      a[3] += a[11];
-      a[11] = xr;
-      xr = Util$4.SQRT2 * (-a[18] + a[26]);
-      a[18] += a[26];
-      a[26] = xr - a[18];
-      xr = Util$4.SQRT2 * (-a[19] + a[27]);
-      a[19] += a[27];
-      a[27] = xr - a[19];
-      xr = a[2];
-      a[19] -= a[3];
-      a[3] -= xr;
-      a[2] = a[31] - xr;
-      a[31] += xr;
-      xr = a[3];
-      a[11] -= a[19];
-      a[18] -= xr;
-      a[3] = a[30] - xr;
-      a[30] += xr;
-      xr = a[18];
-      a[27] -= a[11];
-      a[19] -= xr;
-      a[18] = a[15] - xr;
-      a[15] += xr;
-      xr = a[19];
-      a[10] -= xr;
-      a[19] = a[14] - xr;
-      a[14] += xr;
-      xr = a[10];
-      a[11] -= xr;
-      a[10] = a[23] - xr;
-      a[23] += xr;
-      xr = a[11];
-      a[26] -= xr;
-      a[11] = a[22] - xr;
-      a[22] += xr;
-      xr = a[26];
-      a[27] -= xr;
-      a[26] = a[7] - xr;
-      a[7] += xr;
-      xr = a[27];
-      a[27] = a[6] - xr;
-      a[6] += xr;
-      xr = Util$4.SQRT2 * (a[0] - a[4]);
-      a[0] += a[4];
-      a[4] = xr;
-      xr = Util$4.SQRT2 * (a[1] - a[5]);
-      a[1] += a[5];
-      a[5] = xr;
-      xr = Util$4.SQRT2 * (a[16] - a[20]);
-      a[16] += a[20];
-      a[20] = xr;
-      xr = Util$4.SQRT2 * (a[17] - a[21]);
-      a[17] += a[21];
-      a[21] = xr;
-      xr = -Util$4.SQRT2 * (a[8] - a[12]);
-      a[8] += a[12];
-      a[12] = xr - a[8];
-      xr = -Util$4.SQRT2 * (a[9] - a[13]);
-      a[9] += a[13];
-      a[13] = xr - a[9];
-      xr = -Util$4.SQRT2 * (a[25] - a[29]);
-      a[25] += a[29];
-      a[29] = xr - a[25];
-      xr = -Util$4.SQRT2 * (a[24] + a[28]);
-      a[24] -= a[28];
-      a[28] = xr - a[24];
-      xr = a[24] - a[16];
-      a[24] = xr;
-      xr = a[20] - xr;
-      a[20] = xr;
-      xr = a[28] - xr;
-      a[28] = xr;
-      xr = a[25] - a[17];
-      a[25] = xr;
-      xr = a[21] - xr;
-      a[21] = xr;
-      xr = a[29] - xr;
-      a[29] = xr;
-      xr = a[17] - a[1];
-      a[17] = xr;
-      xr = a[9] - xr;
-      a[9] = xr;
-      xr = a[25] - xr;
-      a[25] = xr;
-      xr = a[5] - xr;
-      a[5] = xr;
-      xr = a[21] - xr;
-      a[21] = xr;
-      xr = a[13] - xr;
-      a[13] = xr;
-      xr = a[29] - xr;
-      a[29] = xr;
-      xr = a[1] - a[0];
-      a[1] = xr;
-      xr = a[16] - xr;
-      a[16] = xr;
-      xr = a[17] - xr;
-      a[17] = xr;
-      xr = a[8] - xr;
-      a[8] = xr;
-      xr = a[9] - xr;
-      a[9] = xr;
-      xr = a[24] - xr;
-      a[24] = xr;
-      xr = a[25] - xr;
-      a[25] = xr;
-      xr = a[4] - xr;
-      a[4] = xr;
-      xr = a[5] - xr;
-      a[5] = xr;
-      xr = a[20] - xr;
-      a[20] = xr;
-      xr = a[21] - xr;
-      a[21] = xr;
-      xr = a[12] - xr;
-      a[12] = xr;
-      xr = a[13] - xr;
-      a[13] = xr;
-      xr = a[28] - xr;
-      a[28] = xr;
-      xr = a[29] - xr;
-      a[29] = xr;
-      xr = a[0];
-      a[0] += a[31];
-      a[31] -= xr;
-      xr = a[1];
-      a[1] += a[30];
-      a[30] -= xr;
-      xr = a[16];
-      a[16] += a[15];
-      a[15] -= xr;
-      xr = a[17];
-      a[17] += a[14];
-      a[14] -= xr;
-      xr = a[8];
-      a[8] += a[23];
-      a[23] -= xr;
-      xr = a[9];
-      a[9] += a[22];
-      a[22] -= xr;
-      xr = a[24];
-      a[24] += a[7];
-      a[7] -= xr;
-      xr = a[25];
-      a[25] += a[6];
-      a[6] -= xr;
-      xr = a[4];
-      a[4] += a[27];
-      a[27] -= xr;
-      xr = a[5];
-      a[5] += a[26];
-      a[26] -= xr;
-      xr = a[20];
-      a[20] += a[11];
-      a[11] -= xr;
-      xr = a[21];
-      a[21] += a[10];
-      a[10] -= xr;
-      xr = a[12];
-      a[12] += a[19];
-      a[19] -= xr;
-      xr = a[13];
-      a[13] += a[18];
-      a[18] -= xr;
-      xr = a[28];
-      a[28] += a[3];
-      a[3] -= xr;
-      xr = a[29];
-      a[29] += a[2];
-      a[2] -= xr;
+    return false;
+  };
+  const isPluginAvailable = ((_c = capPlatforms === null || capPlatforms === void 0 ? void 0 : capPlatforms.currentPlatform) === null || _c === void 0 ? void 0 : _c.isPluginAvailable) || defaultIsPluginAvailable;
+  const defaultGetPluginHeader = (pluginName) => {
+    var _a2;
+    return (_a2 = cap.PluginHeaders) === null || _a2 === void 0 ? void 0 : _a2.find((h2) => h2.name === pluginName);
+  };
+  const getPluginHeader = ((_d = capPlatforms === null || capPlatforms === void 0 ? void 0 : capPlatforms.currentPlatform) === null || _d === void 0 ? void 0 : _d.getPluginHeader) || defaultGetPluginHeader;
+  const handleError2 = (err) => win.console.error(err);
+  const pluginMethodNoop = (_target, prop, pluginName) => {
+    return Promise.reject(`${pluginName} does not have an implementation of "${prop}".`);
+  };
+  const registeredPlugins = /* @__PURE__ */ new Map();
+  const defaultRegisterPlugin = (pluginName, jsImplementations = {}) => {
+    const registeredPlugin = registeredPlugins.get(pluginName);
+    if (registeredPlugin) {
+      console.warn(`Capacitor plugin "${pluginName}" already registered. Cannot register plugins twice.`);
+      return registeredPlugin.proxy;
     }
-  }
-  function mdct_short(inout, inoutPos) {
-    for (var l = 0; l < 3; l++) {
-      var tc0, tc1, tc2, ts0, ts1, ts2;
-      ts0 = inout[inoutPos + 2 * 3] * win[Encoder.SHORT_TYPE][0] - inout[inoutPos + 5 * 3];
-      tc0 = inout[inoutPos + 0 * 3] * win[Encoder.SHORT_TYPE][2] - inout[inoutPos + 3 * 3];
-      tc1 = ts0 + tc0;
-      tc2 = ts0 - tc0;
-      ts0 = inout[inoutPos + 5 * 3] * win[Encoder.SHORT_TYPE][0] + inout[inoutPos + 2 * 3];
-      tc0 = inout[inoutPos + 3 * 3] * win[Encoder.SHORT_TYPE][2] + inout[inoutPos + 0 * 3];
-      ts1 = ts0 + tc0;
-      ts2 = -ts0 + tc0;
-      tc0 = (inout[inoutPos + 1 * 3] * win[Encoder.SHORT_TYPE][1] - inout[inoutPos + 4 * 3]) * 2069978111953089e-26;
-      ts0 = (inout[inoutPos + 4 * 3] * win[Encoder.SHORT_TYPE][1] + inout[inoutPos + 1 * 3]) * 2069978111953089e-26;
-      inout[inoutPos + 3 * 0] = tc1 * 190752519173728e-25 + tc0;
-      inout[inoutPos + 3 * 5] = -ts1 * 190752519173728e-25 + ts0;
-      tc2 = tc2 * 0.8660254037844387 * 1907525191737281e-26;
-      ts1 = ts1 * 0.5 * 1907525191737281e-26 + ts0;
-      inout[inoutPos + 3 * 1] = tc2 - ts1;
-      inout[inoutPos + 3 * 2] = tc2 + ts1;
-      tc1 = tc1 * 0.5 * 1907525191737281e-26 - tc0;
-      ts2 = ts2 * 0.8660254037844387 * 1907525191737281e-26;
-      inout[inoutPos + 3 * 3] = tc1 + ts2;
-      inout[inoutPos + 3 * 4] = tc1 - ts2;
-      inoutPos++;
-    }
-  }
-  function mdct_long(out, outPos, _in) {
-    var ct, st;
-    {
-      var tc1, tc2, tc3, tc4, ts5, ts6, ts7, ts8;
-      tc1 = _in[17] - _in[9];
-      tc3 = _in[15] - _in[11];
-      tc4 = _in[14] - _in[12];
-      ts5 = _in[0] + _in[8];
-      ts6 = _in[1] + _in[7];
-      ts7 = _in[2] + _in[6];
-      ts8 = _in[3] + _in[5];
-      out[outPos + 17] = ts5 + ts7 - ts8 - (ts6 - _in[4]);
-      st = (ts5 + ts7 - ts8) * cx[12 + 7] + (ts6 - _in[4]);
-      ct = (tc1 - tc3 - tc4) * cx[12 + 6];
-      out[outPos + 5] = ct + st;
-      out[outPos + 6] = ct - st;
-      tc2 = (_in[16] - _in[10]) * cx[12 + 6];
-      ts6 = ts6 * cx[12 + 7] + _in[4];
-      ct = tc1 * cx[12 + 0] + tc2 + tc3 * cx[12 + 1] + tc4 * cx[12 + 2];
-      st = -ts5 * cx[12 + 4] + ts6 - ts7 * cx[12 + 5] + ts8 * cx[12 + 3];
-      out[outPos + 1] = ct + st;
-      out[outPos + 2] = ct - st;
-      ct = tc1 * cx[12 + 1] - tc2 - tc3 * cx[12 + 2] + tc4 * cx[12 + 0];
-      st = -ts5 * cx[12 + 5] + ts6 - ts7 * cx[12 + 3] + ts8 * cx[12 + 4];
-      out[outPos + 9] = ct + st;
-      out[outPos + 10] = ct - st;
-      ct = tc1 * cx[12 + 2] - tc2 + tc3 * cx[12 + 0] - tc4 * cx[12 + 1];
-      st = ts5 * cx[12 + 3] - ts6 + ts7 * cx[12 + 4] - ts8 * cx[12 + 5];
-      out[outPos + 13] = ct + st;
-      out[outPos + 14] = ct - st;
-    }
-    {
-      var ts1, ts2, ts3, ts4, tc5, tc6, tc7, tc8;
-      ts1 = _in[8] - _in[0];
-      ts3 = _in[6] - _in[2];
-      ts4 = _in[5] - _in[3];
-      tc5 = _in[17] + _in[9];
-      tc6 = _in[16] + _in[10];
-      tc7 = _in[15] + _in[11];
-      tc8 = _in[14] + _in[12];
-      out[outPos + 0] = tc5 + tc7 + tc8 + (tc6 + _in[13]);
-      ct = (tc5 + tc7 + tc8) * cx[12 + 7] - (tc6 + _in[13]);
-      st = (ts1 - ts3 + ts4) * cx[12 + 6];
-      out[outPos + 11] = ct + st;
-      out[outPos + 12] = ct - st;
-      ts2 = (_in[7] - _in[1]) * cx[12 + 6];
-      tc6 = _in[13] - tc6 * cx[12 + 7];
-      ct = tc5 * cx[12 + 3] - tc6 + tc7 * cx[12 + 4] + tc8 * cx[12 + 5];
-      st = ts1 * cx[12 + 2] + ts2 + ts3 * cx[12 + 0] + ts4 * cx[12 + 1];
-      out[outPos + 3] = ct + st;
-      out[outPos + 4] = ct - st;
-      ct = -tc5 * cx[12 + 5] + tc6 - tc7 * cx[12 + 3] - tc8 * cx[12 + 4];
-      st = ts1 * cx[12 + 1] + ts2 - ts3 * cx[12 + 2] - ts4 * cx[12 + 0];
-      out[outPos + 7] = ct + st;
-      out[outPos + 8] = ct - st;
-      ct = -tc5 * cx[12 + 4] + tc6 - tc7 * cx[12 + 5] - tc8 * cx[12 + 3];
-      st = ts1 * cx[12 + 0] - ts2 + ts3 * cx[12 + 1] - ts4 * cx[12 + 2];
-      out[outPos + 15] = ct + st;
-      out[outPos + 16] = ct - st;
-    }
-  }
-  this.mdct_sub48 = function(gfc, w0, w1) {
-    var wk = w0;
-    var wkPos = 286;
-    for (var ch = 0; ch < gfc.channels_out; ch++) {
-      for (var gr = 0; gr < gfc.mode_gr; gr++) {
-        var band;
-        var gi = gfc.l3_side.tt[gr][ch];
-        var mdct_enc = gi.xr;
-        var mdct_encPos = 0;
-        var samp = gfc.sb_sample[ch][1 - gr];
-        var sampPos = 0;
-        for (var k = 0; k < 18 / 2; k++) {
-          window_subband(wk, wkPos, samp[sampPos]);
-          window_subband(wk, wkPos + 32, samp[sampPos + 1]);
-          sampPos += 2;
-          wkPos += 64;
-          for (band = 1; band < 32; band += 2) {
-            samp[sampPos - 1][band] *= -1;
-          }
-        }
-        for (band = 0; band < 32; band++, mdct_encPos += 18) {
-          var type = gi.block_type;
-          var band0 = gfc.sb_sample[ch][gr];
-          var band1 = gfc.sb_sample[ch][1 - gr];
-          if (gi.mixed_block_flag != 0 && band < 2)
-            type = 0;
-          if (gfc.amp_filter[band] < 1e-12) {
-            Arrays$6.fill(mdct_enc, mdct_encPos + 0, mdct_encPos + 18, 0);
+    const platform = getPlatform();
+    const pluginHeader = getPluginHeader(pluginName);
+    let jsImplementation;
+    const loadPluginImplementation = async () => {
+      if (!jsImplementation && platform in jsImplementations) {
+        jsImplementation = typeof jsImplementations[platform] === "function" ? jsImplementation = await jsImplementations[platform]() : jsImplementation = jsImplementations[platform];
+      } else if (capCustomPlatform !== null && !jsImplementation && "web" in jsImplementations) {
+        jsImplementation = typeof jsImplementations["web"] === "function" ? jsImplementation = await jsImplementations["web"]() : jsImplementation = jsImplementations["web"];
+      }
+      return jsImplementation;
+    };
+    const createPluginMethod = (impl, prop) => {
+      var _a2, _b2;
+      if (pluginHeader) {
+        const methodHeader = pluginHeader === null || pluginHeader === void 0 ? void 0 : pluginHeader.methods.find((m) => prop === m.name);
+        if (methodHeader) {
+          if (methodHeader.rtype === "promise") {
+            return (options2) => cap.nativePromise(pluginName, prop.toString(), options2);
           } else {
-            if (gfc.amp_filter[band] < 1) {
-              for (var k = 0; k < 18; k++) {
-                band1[k][order[band]] *= gfc.amp_filter[band];
-              }
-            }
-            if (type == Encoder.SHORT_TYPE) {
-              for (var k = -NS / 4; k < 0; k++) {
-                var w = win[Encoder.SHORT_TYPE][k + 3];
-                mdct_enc[mdct_encPos + k * 3 + 9] = band0[9 + k][order[band]] * w - band0[8 - k][order[band]];
-                mdct_enc[mdct_encPos + k * 3 + 18] = band0[14 - k][order[band]] * w + band0[15 + k][order[band]];
-                mdct_enc[mdct_encPos + k * 3 + 10] = band0[15 + k][order[band]] * w - band0[14 - k][order[band]];
-                mdct_enc[mdct_encPos + k * 3 + 19] = band1[2 - k][order[band]] * w + band1[3 + k][order[band]];
-                mdct_enc[mdct_encPos + k * 3 + 11] = band1[3 + k][order[band]] * w - band1[2 - k][order[band]];
-                mdct_enc[mdct_encPos + k * 3 + 20] = band1[8 - k][order[band]] * w + band1[9 + k][order[band]];
-              }
-              mdct_short(mdct_enc, mdct_encPos);
-            } else {
-              var work = new_float$e(18);
-              for (var k = -NL2 / 4; k < 0; k++) {
-                var a, b;
-                a = win[type][k + 27] * band1[k + 9][order[band]] + win[type][k + 36] * band1[8 - k][order[band]];
-                b = win[type][k + 9] * band0[k + 9][order[band]] - win[type][k + 18] * band0[8 - k][order[band]];
-                work[k + 9] = a - b * tantab_l[3 + k + 9];
-                work[k + 18] = a * tantab_l[3 + k + 9] + b;
-              }
-              mdct_long(mdct_enc, mdct_encPos, work);
-            }
+            return (options2, callback) => cap.nativeCallback(pluginName, prop.toString(), options2, callback);
           }
-          if (type != Encoder.SHORT_TYPE && band != 0) {
-            for (var k = 7; k >= 0; --k) {
-              var bu, bd;
-              bu = mdct_enc[mdct_encPos + k] * ca[20 + k] + mdct_enc[mdct_encPos + -1 - k] * cs[28 + k];
-              bd = mdct_enc[mdct_encPos + k] * cs[28 + k] - mdct_enc[mdct_encPos + -1 - k] * ca[20 + k];
-              mdct_enc[mdct_encPos + -1 - k] = bu;
-              mdct_enc[mdct_encPos + k] = bd;
-            }
-          }
+        } else if (impl) {
+          return (_a2 = impl[prop]) === null || _a2 === void 0 ? void 0 : _a2.bind(impl);
         }
-      }
-      wk = w1;
-      wkPos = 286;
-      if (gfc.mode_gr == 1) {
-        for (var i = 0; i < 18; i++) {
-          System$9.arraycopy(
-            gfc.sb_sample[ch][1][i],
-            0,
-            gfc.sb_sample[ch][0][i],
-            0,
-            32
-          );
-        }
-      }
-    }
-  };
-}
-var System$8 = common.System;
-var new_float$d = common.new_float;
-var new_float_n$5 = common.new_float_n;
-function III_psy_xmin() {
-  this.l = new_float$d(Encoder.SBMAX_l);
-  this.s = new_float_n$5([Encoder.SBMAX_s, 3]);
-  var self2 = this;
-  this.assign = function(iii_psy_xmin) {
-    System$8.arraycopy(iii_psy_xmin.l, 0, self2.l, 0, Encoder.SBMAX_l);
-    for (var i = 0; i < Encoder.SBMAX_s; i++) {
-      for (var j = 0; j < 3; j++) {
-        self2.s[i][j] = iii_psy_xmin.s[i][j];
-      }
-    }
-  };
-}
-function III_psy_ratio() {
-  this.thm = new III_psy_xmin();
-  this.en = new III_psy_xmin();
-}
-function MPEGMode(ordinal) {
-  var _ordinal = ordinal;
-  this.ordinal = function() {
-    return _ordinal;
-  };
-}
-MPEGMode.STEREO = new MPEGMode(0);
-MPEGMode.JOINT_STEREO = new MPEGMode(1);
-MPEGMode.DUAL_CHANNEL = new MPEGMode(2);
-MPEGMode.MONO = new MPEGMode(3);
-MPEGMode.NOT_SET = new MPEGMode(4);
-var System$7 = common.System;
-var VbrMode$6 = common.VbrMode;
-var new_array_n = common.new_array_n;
-var new_float$c = common.new_float;
-var new_float_n$4 = common.new_float_n;
-var new_int$c = common.new_int;
-var assert$a = common.assert;
-Encoder.ENCDELAY = 576;
-Encoder.POSTDELAY = 1152;
-Encoder.MDCTDELAY = 48;
-Encoder.FFTOFFSET = 224 + Encoder.MDCTDELAY;
-Encoder.DECDELAY = 528;
-Encoder.SBLIMIT = 32;
-Encoder.CBANDS = 64;
-Encoder.SBPSY_l = 21;
-Encoder.SBPSY_s = 12;
-Encoder.SBMAX_l = 22;
-Encoder.SBMAX_s = 13;
-Encoder.PSFB21 = 6;
-Encoder.PSFB12 = 6;
-Encoder.BLKSIZE = 1024;
-Encoder.HBLKSIZE = Encoder.BLKSIZE / 2 + 1;
-Encoder.BLKSIZE_s = 256;
-Encoder.HBLKSIZE_s = Encoder.BLKSIZE_s / 2 + 1;
-Encoder.NORM_TYPE = 0;
-Encoder.START_TYPE = 1;
-Encoder.SHORT_TYPE = 2;
-Encoder.STOP_TYPE = 3;
-Encoder.MPG_MD_LR_LR = 0;
-Encoder.MPG_MD_LR_I = 1;
-Encoder.MPG_MD_MS_LR = 2;
-Encoder.MPG_MD_MS_I = 3;
-Encoder.fircoef = [
-  -0.0207887 * 5,
-  -0.0378413 * 5,
-  -0.0432472 * 5,
-  -0.031183 * 5,
-  779609e-23 * 5,
-  0.0467745 * 5,
-  0.10091 * 5,
-  0.151365 * 5,
-  0.187098 * 5
-];
-function Encoder() {
-  var FFTOFFSET = Encoder.FFTOFFSET;
-  var MPG_MD_MS_LR = Encoder.MPG_MD_MS_LR;
-  var bs = null;
-  this.psy = null;
-  var psy = null;
-  var vbr = null;
-  var qupvt = null;
-  this.setModules = function(_bs, _psy, _qupvt, _vbr) {
-    bs = _bs;
-    this.psy = _psy;
-    psy = _psy;
-    vbr = _vbr;
-    qupvt = _qupvt;
-  };
-  var newMDCT = new NewMDCT();
-  function adjust_ATH(gfc) {
-    var gr2_max, max_pow;
-    if (gfc.ATH.useAdjust == 0) {
-      gfc.ATH.adjust = 1;
-      return;
-    }
-    max_pow = gfc.loudness_sq[0][0];
-    gr2_max = gfc.loudness_sq[1][0];
-    if (gfc.channels_out == 2) {
-      max_pow += gfc.loudness_sq[0][1];
-      gr2_max += gfc.loudness_sq[1][1];
-    } else {
-      max_pow += max_pow;
-      gr2_max += gr2_max;
-    }
-    if (gfc.mode_gr == 2) {
-      max_pow = Math.max(max_pow, gr2_max);
-    }
-    max_pow *= 0.5;
-    max_pow *= gfc.ATH.aaSensitivityP;
-    if (max_pow > 0.03125) {
-      if (gfc.ATH.adjust >= 1) {
-        gfc.ATH.adjust = 1;
+      } else if (impl) {
+        return (_b2 = impl[prop]) === null || _b2 === void 0 ? void 0 : _b2.bind(impl);
       } else {
-        if (gfc.ATH.adjust < gfc.ATH.adjustLimit) {
-          gfc.ATH.adjust = gfc.ATH.adjustLimit;
-        }
+        throw new CapacitorException(`"${pluginName}" plugin is not implemented on ${platform}`, ExceptionCode.Unimplemented);
       }
-      gfc.ATH.adjustLimit = 1;
-    } else {
-      var adj_lim_new = 31.98 * max_pow + 625e-6;
-      if (gfc.ATH.adjust >= adj_lim_new) {
-        gfc.ATH.adjust *= adj_lim_new * 0.075 + 0.925;
-        if (gfc.ATH.adjust < adj_lim_new) {
-          gfc.ATH.adjust = adj_lim_new;
-        }
-      } else {
-        if (gfc.ATH.adjustLimit >= adj_lim_new) {
-          gfc.ATH.adjust = adj_lim_new;
-        } else {
-          if (gfc.ATH.adjust < gfc.ATH.adjustLimit) {
-            gfc.ATH.adjust = gfc.ATH.adjustLimit;
-          }
-        }
-      }
-      gfc.ATH.adjustLimit = adj_lim_new;
-    }
-  }
-  function updateStats(gfc) {
-    var gr, ch;
-    assert$a(gfc.bitrate_index >= 0 && gfc.bitrate_index < 16);
-    assert$a(gfc.mode_ext >= 0 && gfc.mode_ext < 4);
-    gfc.bitrate_stereoMode_Hist[gfc.bitrate_index][4]++;
-    gfc.bitrate_stereoMode_Hist[15][4]++;
-    if (gfc.channels_out == 2) {
-      gfc.bitrate_stereoMode_Hist[gfc.bitrate_index][gfc.mode_ext]++;
-      gfc.bitrate_stereoMode_Hist[15][gfc.mode_ext]++;
-    }
-    for (gr = 0; gr < gfc.mode_gr; ++gr) {
-      for (ch = 0; ch < gfc.channels_out; ++ch) {
-        var bt = gfc.l3_side.tt[gr][ch].block_type | 0;
-        if (gfc.l3_side.tt[gr][ch].mixed_block_flag != 0)
-          bt = 4;
-        gfc.bitrate_blockType_Hist[gfc.bitrate_index][bt]++;
-        gfc.bitrate_blockType_Hist[gfc.bitrate_index][5]++;
-        gfc.bitrate_blockType_Hist[15][bt]++;
-        gfc.bitrate_blockType_Hist[15][5]++;
-      }
-    }
-  }
-  function lame_encode_frame_init(gfp, inbuf) {
-    var gfc = gfp.internal_flags;
-    var ch, gr;
-    if (gfc.lame_encode_frame_init == 0) {
-      var i, j;
-      var primebuff0 = new_float$c(286 + 1152 + 576);
-      var primebuff1 = new_float$c(286 + 1152 + 576);
-      gfc.lame_encode_frame_init = 1;
-      for (i = 0, j = 0; i < 286 + 576 * (1 + gfc.mode_gr); ++i) {
-        if (i < 576 * gfc.mode_gr) {
-          primebuff0[i] = 0;
-          if (gfc.channels_out == 2)
-            primebuff1[i] = 0;
-        } else {
-          primebuff0[i] = inbuf[0][j];
-          if (gfc.channels_out == 2)
-            primebuff1[i] = inbuf[1][j];
-          ++j;
-        }
-      }
-      for (gr = 0; gr < gfc.mode_gr; gr++) {
-        for (ch = 0; ch < gfc.channels_out; ch++) {
-          gfc.l3_side.tt[gr][ch].block_type = Encoder.SHORT_TYPE;
-        }
-      }
-      newMDCT.mdct_sub48(gfc, primebuff0, primebuff1);
-      assert$a(gfc.mf_size >= Encoder.BLKSIZE + gfp.framesize - Encoder.FFTOFFSET);
-      assert$a(gfc.mf_size >= 512 + gfp.framesize - 32);
-    }
-  }
-  this.lame_encode_mp3_frame = function(gfp, inbuf_l, inbuf_r, mp3buf, mp3bufPos, mp3buf_size) {
-    var mp3count;
-    var masking_LR = new_array_n([2, 2]);
-    masking_LR[0][0] = new III_psy_ratio();
-    masking_LR[0][1] = new III_psy_ratio();
-    masking_LR[1][0] = new III_psy_ratio();
-    masking_LR[1][1] = new III_psy_ratio();
-    var masking_MS = new_array_n([2, 2]);
-    masking_MS[0][0] = new III_psy_ratio();
-    masking_MS[0][1] = new III_psy_ratio();
-    masking_MS[1][0] = new III_psy_ratio();
-    masking_MS[1][1] = new III_psy_ratio();
-    var masking;
-    var inbuf = [null, null];
-    var gfc = gfp.internal_flags;
-    var tot_ener = new_float_n$4([2, 4]);
-    var ms_ener_ratio = [0.5, 0.5];
-    var pe = [
-      [0, 0],
-      [0, 0]
-    ];
-    var pe_MS = [
-      [0, 0],
-      [0, 0]
-    ];
-    var pe_use;
-    var ch, gr;
-    inbuf[0] = inbuf_l;
-    inbuf[1] = inbuf_r;
-    if (gfc.lame_encode_frame_init == 0) {
-      lame_encode_frame_init(gfp, inbuf);
-    }
-    gfc.padding = 0;
-    if ((gfc.slot_lag -= gfc.frac_SpF) < 0) {
-      gfc.slot_lag += gfp.out_samplerate;
-      gfc.padding = 1;
-    }
-    if (gfc.psymodel != 0) {
-      var ret;
-      var bufp = [null, null];
-      var bufpPos = 0;
-      var blocktype = new_int$c(2);
-      for (gr = 0; gr < gfc.mode_gr; gr++) {
-        for (ch = 0; ch < gfc.channels_out; ch++) {
-          bufp[ch] = inbuf[ch];
-          bufpPos = 576 + gr * 576 - Encoder.FFTOFFSET;
-        }
-        if (gfp.VBR == VbrMode$6.vbr_mtrh || gfp.VBR == VbrMode$6.vbr_mt) {
-          ret = psy.L3psycho_anal_vbr(
-            gfp,
-            bufp,
-            bufpPos,
-            gr,
-            masking_LR,
-            masking_MS,
-            pe[gr],
-            pe_MS[gr],
-            tot_ener[gr],
-            blocktype
-          );
-        } else {
-          ret = psy.L3psycho_anal_ns(
-            gfp,
-            bufp,
-            bufpPos,
-            gr,
-            masking_LR,
-            masking_MS,
-            pe[gr],
-            pe_MS[gr],
-            tot_ener[gr],
-            blocktype
-          );
-        }
-        if (ret != 0)
-          return -4;
-        if (gfp.mode == MPEGMode.JOINT_STEREO) {
-          ms_ener_ratio[gr] = tot_ener[gr][2] + tot_ener[gr][3];
-          if (ms_ener_ratio[gr] > 0) {
-            ms_ener_ratio[gr] = tot_ener[gr][3] / ms_ener_ratio[gr];
-          }
-        }
-        for (ch = 0; ch < gfc.channels_out; ch++) {
-          var cod_info = gfc.l3_side.tt[gr][ch];
-          cod_info.block_type = blocktype[ch];
-          cod_info.mixed_block_flag = 0;
-        }
-      }
-    } else {
-      for (gr = 0; gr < gfc.mode_gr; gr++) {
-        for (ch = 0; ch < gfc.channels_out; ch++) {
-          gfc.l3_side.tt[gr][ch].block_type = Encoder.NORM_TYPE;
-          gfc.l3_side.tt[gr][ch].mixed_block_flag = 0;
-          pe_MS[gr][ch] = pe[gr][ch] = 700;
-        }
-      }
-    }
-    adjust_ATH(gfc);
-    newMDCT.mdct_sub48(gfc, inbuf[0], inbuf[1]);
-    gfc.mode_ext = Encoder.MPG_MD_LR_LR;
-    if (gfp.force_ms) {
-      gfc.mode_ext = Encoder.MPG_MD_MS_LR;
-    } else if (gfp.mode == MPEGMode.JOINT_STEREO) {
-      var sum_pe_MS = 0;
-      var sum_pe_LR = 0;
-      for (gr = 0; gr < gfc.mode_gr; gr++) {
-        for (ch = 0; ch < gfc.channels_out; ch++) {
-          sum_pe_MS += pe_MS[gr][ch];
-          sum_pe_LR += pe[gr][ch];
-        }
-      }
-      if (sum_pe_MS <= 1 * sum_pe_LR) {
-        var gi0 = gfc.l3_side.tt[0];
-        var gi1 = gfc.l3_side.tt[gfc.mode_gr - 1];
-        if (gi0[0].block_type == gi0[1].block_type && gi1[0].block_type == gi1[1].block_type) {
-          gfc.mode_ext = Encoder.MPG_MD_MS_LR;
-        }
-      }
-    }
-    if (gfc.mode_ext == MPG_MD_MS_LR) {
-      masking = masking_MS;
-      pe_use = pe_MS;
-    } else {
-      masking = masking_LR;
-      pe_use = pe;
-    }
-    if (gfp.analysis && gfc.pinfo != null) {
-      for (gr = 0; gr < gfc.mode_gr; gr++) {
-        for (ch = 0; ch < gfc.channels_out; ch++) {
-          gfc.pinfo.ms_ratio[gr] = gfc.ms_ratio[gr];
-          gfc.pinfo.ms_ener_ratio[gr] = ms_ener_ratio[gr];
-          gfc.pinfo.blocktype[gr][ch] = gfc.l3_side.tt[gr][ch].block_type;
-          gfc.pinfo.pe[gr][ch] = pe_use[gr][ch];
-          System$7.arraycopy(
-            gfc.l3_side.tt[gr][ch].xr,
-            0,
-            gfc.pinfo.xr[gr][ch],
-            0,
-            576
-          );
-          if (gfc.mode_ext == MPG_MD_MS_LR) {
-            gfc.pinfo.ers[gr][ch] = gfc.pinfo.ers[gr][ch + 2];
-            System$7.arraycopy(
-              gfc.pinfo.energy[gr][ch + 2],
-              0,
-              gfc.pinfo.energy[gr][ch],
-              0,
-              gfc.pinfo.energy[gr][ch].length
-            );
-          }
-        }
-      }
-    }
-    if (gfp.VBR == VbrMode$6.vbr_off || gfp.VBR == VbrMode$6.vbr_abr) {
-      var i;
-      var f;
-      for (i = 0; i < 18; i++)
-        gfc.nsPsy.pefirbuf[i] = gfc.nsPsy.pefirbuf[i + 1];
-      f = 0;
-      for (gr = 0; gr < gfc.mode_gr; gr++) {
-        for (ch = 0; ch < gfc.channels_out; ch++)
-          f += pe_use[gr][ch];
-      }
-      gfc.nsPsy.pefirbuf[18] = f;
-      f = gfc.nsPsy.pefirbuf[9];
-      for (i = 0; i < 9; i++) {
-        f += (gfc.nsPsy.pefirbuf[i] + gfc.nsPsy.pefirbuf[18 - i]) * Encoder.fircoef[i];
-      }
-      f = 670 * 5 * gfc.mode_gr * gfc.channels_out / f;
-      for (gr = 0; gr < gfc.mode_gr; gr++) {
-        for (ch = 0; ch < gfc.channels_out; ch++) {
-          pe_use[gr][ch] *= f;
-        }
-      }
-    }
-    gfc.iteration_loop.iteration_loop(gfp, pe_use, ms_ener_ratio, masking);
-    bs.format_bitstream(gfp);
-    mp3count = bs.copy_buffer(gfc, mp3buf, mp3bufPos, mp3buf_size, 1);
-    if (gfp.bWriteVbrTag)
-      vbr.addVbrFrame(gfp);
-    if (gfp.analysis && gfc.pinfo != null) {
-      for (ch = 0; ch < gfc.channels_out; ch++) {
-        var j;
-        for (j = 0; j < FFTOFFSET; j++) {
-          gfc.pinfo.pcmdata[ch][j] = gfc.pinfo.pcmdata[ch][j + gfp.framesize];
-        }
-        for (j = FFTOFFSET; j < 1600; j++) {
-          gfc.pinfo.pcmdata[ch][j] = inbuf[ch][j - FFTOFFSET];
-        }
-      }
-      qupvt.set_frame_pinfo(gfp, masking);
-    }
-    updateStats(gfc);
-    return mp3count;
-  };
-}
-var Util$3 = common.Util;
-var new_float$b = common.new_float;
-function FFT() {
-  var window2 = new_float$b(Encoder.BLKSIZE);
-  var window_s = new_float$b(Encoder.BLKSIZE_s / 2);
-  var costab = [
-    0.9238795325112867,
-    0.3826834323650898,
-    0.9951847266721969,
-    0.0980171403295606,
-    0.9996988186962042,
-    0.02454122852291229,
-    0.9999811752826011,
-    0.006135884649154475
-  ];
-  function fht(fz, fzPos, n) {
-    var tri = 0;
-    var k4;
-    var fi;
-    var gi;
-    n <<= 1;
-    var fn = fzPos + n;
-    k4 = 4;
-    do {
-      var s1, c1;
-      var i, k1, k2, k3, kx;
-      kx = k4 >> 1;
-      k1 = k4;
-      k2 = k4 << 1;
-      k3 = k2 + k1;
-      k4 = k2 << 1;
-      fi = fzPos;
-      gi = fi + kx;
-      do {
-        var f0, f1, f2, f3;
-        f1 = fz[fi + 0] - fz[fi + k1];
-        f0 = fz[fi + 0] + fz[fi + k1];
-        f3 = fz[fi + k2] - fz[fi + k3];
-        f2 = fz[fi + k2] + fz[fi + k3];
-        fz[fi + k2] = f0 - f2;
-        fz[fi + 0] = f0 + f2;
-        fz[fi + k3] = f1 - f3;
-        fz[fi + k1] = f1 + f3;
-        f1 = fz[gi + 0] - fz[gi + k1];
-        f0 = fz[gi + 0] + fz[gi + k1];
-        f3 = Util$3.SQRT2 * fz[gi + k3];
-        f2 = Util$3.SQRT2 * fz[gi + k2];
-        fz[gi + k2] = f0 - f2;
-        fz[gi + 0] = f0 + f2;
-        fz[gi + k3] = f1 - f3;
-        fz[gi + k1] = f1 + f3;
-        gi += k4;
-        fi += k4;
-      } while (fi < fn);
-      c1 = costab[tri + 0];
-      s1 = costab[tri + 1];
-      for (i = 1; i < kx; i++) {
-        var c2, s2;
-        c2 = 1 - 2 * s1 * s1;
-        s2 = 2 * s1 * c1;
-        fi = fzPos + i;
-        gi = fzPos + k1 - i;
-        do {
-          var a, b, g0, f0, f1, g1, f2, g2, f3, g3;
-          b = s2 * fz[fi + k1] - c2 * fz[gi + k1];
-          a = c2 * fz[fi + k1] + s2 * fz[gi + k1];
-          f1 = fz[fi + 0] - a;
-          f0 = fz[fi + 0] + a;
-          g1 = fz[gi + 0] - b;
-          g0 = fz[gi + 0] + b;
-          b = s2 * fz[fi + k3] - c2 * fz[gi + k3];
-          a = c2 * fz[fi + k3] + s2 * fz[gi + k3];
-          f3 = fz[fi + k2] - a;
-          f2 = fz[fi + k2] + a;
-          g3 = fz[gi + k2] - b;
-          g2 = fz[gi + k2] + b;
-          b = s1 * f2 - c1 * g3;
-          a = c1 * f2 + s1 * g3;
-          fz[fi + k2] = f0 - a;
-          fz[fi + 0] = f0 + a;
-          fz[gi + k3] = g1 - b;
-          fz[gi + k1] = g1 + b;
-          b = c1 * g2 - s1 * f3;
-          a = s1 * g2 + c1 * f3;
-          fz[gi + k2] = g0 - a;
-          fz[gi + 0] = g0 + a;
-          fz[fi + k3] = f1 - b;
-          fz[fi + k1] = f1 + b;
-          gi += k4;
-          fi += k4;
-        } while (fi < fn);
-        c2 = c1;
-        c1 = c2 * costab[tri + 0] - s1 * costab[tri + 1];
-        s1 = c2 * costab[tri + 1] + s1 * costab[tri + 0];
-      }
-      tri += 2;
-    } while (k4 < n);
-  }
-  var rv_tbl = [
-    0,
-    128,
-    64,
-    192,
-    32,
-    160,
-    96,
-    224,
-    16,
-    144,
-    80,
-    208,
-    48,
-    176,
-    112,
-    240,
-    8,
-    136,
-    72,
-    200,
-    40,
-    168,
-    104,
-    232,
-    24,
-    152,
-    88,
-    216,
-    56,
-    184,
-    120,
-    248,
-    4,
-    132,
-    68,
-    196,
-    36,
-    164,
-    100,
-    228,
-    20,
-    148,
-    84,
-    212,
-    52,
-    180,
-    116,
-    244,
-    12,
-    140,
-    76,
-    204,
-    44,
-    172,
-    108,
-    236,
-    28,
-    156,
-    92,
-    220,
-    60,
-    188,
-    124,
-    252,
-    2,
-    130,
-    66,
-    194,
-    34,
-    162,
-    98,
-    226,
-    18,
-    146,
-    82,
-    210,
-    50,
-    178,
-    114,
-    242,
-    10,
-    138,
-    74,
-    202,
-    42,
-    170,
-    106,
-    234,
-    26,
-    154,
-    90,
-    218,
-    58,
-    186,
-    122,
-    250,
-    6,
-    134,
-    70,
-    198,
-    38,
-    166,
-    102,
-    230,
-    22,
-    150,
-    86,
-    214,
-    54,
-    182,
-    118,
-    246,
-    14,
-    142,
-    78,
-    206,
-    46,
-    174,
-    110,
-    238,
-    30,
-    158,
-    94,
-    222,
-    62,
-    190,
-    126,
-    254
-  ];
-  this.fft_short = function(gfc, x_real, chn, buffer, bufPos) {
-    for (var b = 0; b < 3; b++) {
-      var x = Encoder.BLKSIZE_s / 2;
-      var k = 65535 & 576 / 3 * (b + 1);
-      var j = Encoder.BLKSIZE_s / 8 - 1;
-      do {
-        var f0, f1, f2, f3, w;
-        var i = rv_tbl[j << 2] & 255;
-        f0 = window_s[i] * buffer[chn][bufPos + i + k];
-        w = window_s[127 - i] * buffer[chn][bufPos + i + k + 128];
-        f1 = f0 - w;
-        f0 = f0 + w;
-        f2 = window_s[i + 64] * buffer[chn][bufPos + i + k + 64];
-        w = window_s[63 - i] * buffer[chn][bufPos + i + k + 192];
-        f3 = f2 - w;
-        f2 = f2 + w;
-        x -= 4;
-        x_real[b][x + 0] = f0 + f2;
-        x_real[b][x + 2] = f0 - f2;
-        x_real[b][x + 1] = f1 + f3;
-        x_real[b][x + 3] = f1 - f3;
-        f0 = window_s[i + 1] * buffer[chn][bufPos + i + k + 1];
-        w = window_s[126 - i] * buffer[chn][bufPos + i + k + 129];
-        f1 = f0 - w;
-        f0 = f0 + w;
-        f2 = window_s[i + 65] * buffer[chn][bufPos + i + k + 65];
-        w = window_s[62 - i] * buffer[chn][bufPos + i + k + 193];
-        f3 = f2 - w;
-        f2 = f2 + w;
-        x_real[b][x + Encoder.BLKSIZE_s / 2 + 0] = f0 + f2;
-        x_real[b][x + Encoder.BLKSIZE_s / 2 + 2] = f0 - f2;
-        x_real[b][x + Encoder.BLKSIZE_s / 2 + 1] = f1 + f3;
-        x_real[b][x + Encoder.BLKSIZE_s / 2 + 3] = f1 - f3;
-      } while (--j >= 0);
-      fht(x_real[b], x, Encoder.BLKSIZE_s / 2);
-    }
-  };
-  this.fft_long = function(gfc, y, chn, buffer, bufPos) {
-    var jj = Encoder.BLKSIZE / 8 - 1;
-    var x = Encoder.BLKSIZE / 2;
-    do {
-      var f0, f1, f2, f3, w;
-      var i = rv_tbl[jj] & 255;
-      f0 = window2[i] * buffer[chn][bufPos + i];
-      w = window2[i + 512] * buffer[chn][bufPos + i + 512];
-      f1 = f0 - w;
-      f0 = f0 + w;
-      f2 = window2[i + 256] * buffer[chn][bufPos + i + 256];
-      w = window2[i + 768] * buffer[chn][bufPos + i + 768];
-      f3 = f2 - w;
-      f2 = f2 + w;
-      x -= 4;
-      y[x + 0] = f0 + f2;
-      y[x + 2] = f0 - f2;
-      y[x + 1] = f1 + f3;
-      y[x + 3] = f1 - f3;
-      f0 = window2[i + 1] * buffer[chn][bufPos + i + 1];
-      w = window2[i + 513] * buffer[chn][bufPos + i + 513];
-      f1 = f0 - w;
-      f0 = f0 + w;
-      f2 = window2[i + 257] * buffer[chn][bufPos + i + 257];
-      w = window2[i + 769] * buffer[chn][bufPos + i + 769];
-      f3 = f2 - w;
-      f2 = f2 + w;
-      y[x + Encoder.BLKSIZE / 2 + 0] = f0 + f2;
-      y[x + Encoder.BLKSIZE / 2 + 2] = f0 - f2;
-      y[x + Encoder.BLKSIZE / 2 + 1] = f1 + f3;
-      y[x + Encoder.BLKSIZE / 2 + 3] = f1 - f3;
-    } while (--jj >= 0);
-    fht(y, x, Encoder.BLKSIZE / 2);
-  };
-  this.init_fft = function(gfc) {
-    for (var i = 0; i < Encoder.BLKSIZE; i++) {
-      window2[i] = 0.42 - 0.5 * Math.cos(2 * Math.PI * (i + 0.5) / Encoder.BLKSIZE) + 0.08 * Math.cos(4 * Math.PI * (i + 0.5) / Encoder.BLKSIZE);
-    }
-    for (var i = 0; i < Encoder.BLKSIZE_s / 2; i++) {
-      window_s[i] = 0.5 * (1 - Math.cos(2 * Math.PI * (i + 0.5) / Encoder.BLKSIZE_s));
-    }
-  };
-}
-var VbrMode$5 = common.VbrMode;
-var Float$1 = common.Float;
-var ShortBlock$2 = common.ShortBlock;
-var Util$2 = common.Util;
-var Arrays$5 = common.Arrays;
-var new_float$a = common.new_float;
-var new_float_n$3 = common.new_float_n;
-var new_int$b = common.new_int;
-var assert$9 = common.assert;
-function PsyModel() {
-  var fft = new FFT();
-  var LOG10 = 2.302585092994046;
-  var rpelev = 2;
-  var rpelev2 = 16;
-  var rpelev_s = 2;
-  var rpelev2_s = 16;
-  var DELBARK = 0.34;
-  var VO_SCALE = 1 / (14752 * 14752) / (Encoder.BLKSIZE / 2);
-  var temporalmask_sustain_sec = 0.01;
-  var NS_PREECHO_ATT0 = 0.8;
-  var NS_PREECHO_ATT1 = 0.6;
-  var NS_PREECHO_ATT2 = 0.3;
-  var NS_MSFIX = 3.5;
-  var NSFIRLEN = 21;
-  var LN_TO_LOG10 = 0.2302585093;
-  function NON_LINEAR_SCALE_ENERGY(x) {
-    return x;
-  }
-  function psycho_loudness_approx(energy, gfc) {
-    var loudness_power = 0;
-    for (var i = 0; i < Encoder.BLKSIZE / 2; ++i) {
-      loudness_power += energy[i] * gfc.ATH.eql_w[i];
-    }
-    loudness_power *= VO_SCALE;
-    return loudness_power;
-  }
-  function compute_ffts(gfp, fftenergy, fftenergy_s, wsamp_l, wsamp_lPos, wsamp_s, wsamp_sPos, gr_out, chn, buffer, bufPos) {
-    var gfc = gfp.internal_flags;
-    if (chn < 2) {
-      fft.fft_long(gfc, wsamp_l[wsamp_lPos], chn, buffer, bufPos);
-      fft.fft_short(gfc, wsamp_s[wsamp_sPos], chn, buffer, bufPos);
-    } else if (chn == 2) {
-      for (var j = Encoder.BLKSIZE - 1; j >= 0; --j) {
-        var l = wsamp_l[wsamp_lPos + 0][j];
-        var r = wsamp_l[wsamp_lPos + 1][j];
-        wsamp_l[wsamp_lPos + 0][j] = (l + r) * Util$2.SQRT2 * 0.5;
-        wsamp_l[wsamp_lPos + 1][j] = (l - r) * Util$2.SQRT2 * 0.5;
-      }
-      for (var b = 2; b >= 0; --b) {
-        for (var j = Encoder.BLKSIZE_s - 1; j >= 0; --j) {
-          var l = wsamp_s[wsamp_sPos + 0][b][j];
-          var r = wsamp_s[wsamp_sPos + 1][b][j];
-          wsamp_s[wsamp_sPos + 0][b][j] = (l + r) * Util$2.SQRT2 * 0.5;
-          wsamp_s[wsamp_sPos + 1][b][j] = (l - r) * Util$2.SQRT2 * 0.5;
-        }
-      }
-    }
-    fftenergy[0] = NON_LINEAR_SCALE_ENERGY(wsamp_l[wsamp_lPos + 0][0]);
-    fftenergy[0] *= fftenergy[0];
-    for (var j = Encoder.BLKSIZE / 2 - 1; j >= 0; --j) {
-      var re = wsamp_l[wsamp_lPos + 0][Encoder.BLKSIZE / 2 - j];
-      var im = wsamp_l[wsamp_lPos + 0][Encoder.BLKSIZE / 2 + j];
-      fftenergy[Encoder.BLKSIZE / 2 - j] = NON_LINEAR_SCALE_ENERGY(
-        (re * re + im * im) * 0.5
-      );
-    }
-    for (var b = 2; b >= 0; --b) {
-      fftenergy_s[b][0] = wsamp_s[wsamp_sPos + 0][b][0];
-      fftenergy_s[b][0] *= fftenergy_s[b][0];
-      for (var j = Encoder.BLKSIZE_s / 2 - 1; j >= 0; --j) {
-        var re = wsamp_s[wsamp_sPos + 0][b][Encoder.BLKSIZE_s / 2 - j];
-        var im = wsamp_s[wsamp_sPos + 0][b][Encoder.BLKSIZE_s / 2 + j];
-        fftenergy_s[b][Encoder.BLKSIZE_s / 2 - j] = NON_LINEAR_SCALE_ENERGY(
-          (re * re + im * im) * 0.5
-        );
-      }
-    }
-    {
-      var totalenergy = 0;
-      for (var j = 11; j < Encoder.HBLKSIZE; j++)
-        totalenergy += fftenergy[j];
-      gfc.tot_ener[chn] = totalenergy;
-    }
-    if (gfp.analysis) {
-      for (var j = 0; j < Encoder.HBLKSIZE; j++) {
-        gfc.pinfo.energy[gr_out][chn][j] = gfc.pinfo.energy_save[chn][j];
-        gfc.pinfo.energy_save[chn][j] = fftenergy[j];
-      }
-      gfc.pinfo.pe[gr_out][chn] = gfc.pe[chn];
-    }
-    if (gfp.athaa_loudapprox == 2 && chn < 2) {
-      gfc.loudness_sq[gr_out][chn] = gfc.loudness_sq_save[chn];
-      gfc.loudness_sq_save[chn] = psycho_loudness_approx(fftenergy, gfc);
-    }
-  }
-  var I1LIMIT = 8;
-  var I2LIMIT = 23;
-  var MLIMIT = 15;
-  var ma_max_i1;
-  var ma_max_i2;
-  var ma_max_m;
-  var tab = [
-    1,
-    0.79433,
-    0.63096,
-    0.63096,
-    0.63096,
-    0.63096,
-    0.63096,
-    0.25119,
-    0.11749
-  ];
-  function init_mask_add_max_values() {
-    ma_max_i1 = Math.pow(10, (I1LIMIT + 1) / 16);
-    ma_max_i2 = Math.pow(10, (I2LIMIT + 1) / 16);
-    ma_max_m = Math.pow(10, MLIMIT / 10);
-  }
-  var table1 = [
-    3.3246 * 3.3246,
-    3.23837 * 3.23837,
-    3.15437 * 3.15437,
-    3.00412 * 3.00412,
-    2.86103 * 2.86103,
-    2.65407 * 2.65407,
-    2.46209 * 2.46209,
-    2.284 * 2.284,
-    2.11879 * 2.11879,
-    1.96552 * 1.96552,
-    1.82335 * 1.82335,
-    1.69146 * 1.69146,
-    1.56911 * 1.56911,
-    1.46658 * 1.46658,
-    1.37074 * 1.37074,
-    1.31036 * 1.31036,
-    1.25264 * 1.25264,
-    1.20648 * 1.20648,
-    1.16203 * 1.16203,
-    1.12765 * 1.12765,
-    1.09428 * 1.09428,
-    1.0659 * 1.0659,
-    1.03826 * 1.03826,
-    1.01895 * 1.01895,
-    1
-  ];
-  var table2 = [
-    1.33352 * 1.33352,
-    1.35879 * 1.35879,
-    1.38454 * 1.38454,
-    1.39497 * 1.39497,
-    1.40548 * 1.40548,
-    1.3537 * 1.3537,
-    1.30382 * 1.30382,
-    1.22321 * 1.22321,
-    1.14758 * 1.14758,
-    1
-  ];
-  var table3 = [
-    2.35364 * 2.35364,
-    2.29259 * 2.29259,
-    2.23313 * 2.23313,
-    2.12675 * 2.12675,
-    2.02545 * 2.02545,
-    1.87894 * 1.87894,
-    1.74303 * 1.74303,
-    1.61695 * 1.61695,
-    1.49999 * 1.49999,
-    1.39148 * 1.39148,
-    1.29083 * 1.29083,
-    1.19746 * 1.19746,
-    1.11084 * 1.11084,
-    1.03826 * 1.03826
-  ];
-  function mask_add(m1, m2, kk, b, gfc, shortblock) {
-    var ratio;
-    if (m2 > m1) {
-      if (m2 < m1 * ma_max_i2)
-        ratio = m2 / m1;
-      else
-        return m1 + m2;
-    } else {
-      if (m1 >= m2 * ma_max_i2)
-        return m1 + m2;
-      ratio = m1 / m2;
-    }
-    m1 += m2;
-    if (b + 3 <= 3 + 3) {
-      if (ratio >= ma_max_i1) {
-        return m1;
-      }
-      var i = 0 | Util$2.FAST_LOG10_X(ratio, 16);
-      return m1 * table2[i];
-    }
-    var i = 0 | Util$2.FAST_LOG10_X(ratio, 16);
-    if (shortblock != 0) {
-      m2 = gfc.ATH.cb_s[kk] * gfc.ATH.adjust;
-    } else {
-      m2 = gfc.ATH.cb_l[kk] * gfc.ATH.adjust;
-    }
-    if (m1 < ma_max_m * m2) {
-      if (m1 > m2) {
-        var f, r;
-        f = 1;
-        if (i <= 13)
-          f = table3[i];
-        r = Util$2.FAST_LOG10_X(m1 / m2, 10 / 15);
-        return m1 * ((table1[i] - f) * r + f);
-      }
-      if (i > 13)
-        return m1;
-      return m1 * table3[i];
-    }
-    return m1 * table1[i];
-  }
-  var table2_ = [
-    1.33352 * 1.33352,
-    1.35879 * 1.35879,
-    1.38454 * 1.38454,
-    1.39497 * 1.39497,
-    1.40548 * 1.40548,
-    1.3537 * 1.3537,
-    1.30382 * 1.30382,
-    1.22321 * 1.22321,
-    1.14758 * 1.14758,
-    1
-  ];
-  function vbrpsy_mask_add(m1, m2, b) {
-    var ratio;
-    if (m1 < 0) {
-      m1 = 0;
-    }
-    if (m2 < 0) {
-      m2 = 0;
-    }
-    if (m1 <= 0) {
-      return m2;
-    }
-    if (m2 <= 0) {
-      return m1;
-    }
-    if (m2 > m1) {
-      ratio = m2 / m1;
-    } else {
-      ratio = m1 / m2;
-    }
-    if (b >= -2 && b <= 2) {
-      if (ratio >= ma_max_i1) {
-        return m1 + m2;
-      } else {
-        var i = 0 | Util$2.FAST_LOG10_X(ratio, 16);
-        return (m1 + m2) * table2_[i];
-      }
-    }
-    if (ratio < ma_max_i2) {
-      return m1 + m2;
-    }
-    if (m1 < m2) {
-      m1 = m2;
-    }
-    return m1;
-  }
-  function calc_interchannel_masking(gfp, ratio) {
-    var gfc = gfp.internal_flags;
-    if (gfc.channels_out > 1) {
-      for (var sb = 0; sb < Encoder.SBMAX_l; sb++) {
-        var l = gfc.thm[0].l[sb];
-        var r = gfc.thm[1].l[sb];
-        gfc.thm[0].l[sb] += r * ratio;
-        gfc.thm[1].l[sb] += l * ratio;
-      }
-      for (var sb = 0; sb < Encoder.SBMAX_s; sb++) {
-        for (var sblock = 0; sblock < 3; sblock++) {
-          var l = gfc.thm[0].s[sb][sblock];
-          var r = gfc.thm[1].s[sb][sblock];
-          gfc.thm[0].s[sb][sblock] += r * ratio;
-          gfc.thm[1].s[sb][sblock] += l * ratio;
-        }
-      }
-    }
-  }
-  function msfix1(gfc) {
-    for (var sb = 0; sb < Encoder.SBMAX_l; sb++) {
-      if (gfc.thm[0].l[sb] > 1.58 * gfc.thm[1].l[sb] || gfc.thm[1].l[sb] > 1.58 * gfc.thm[0].l[sb]) {
-        continue;
-      }
-      var mld = gfc.mld_l[sb] * gfc.en[3].l[sb];
-      var rmid = Math.max(gfc.thm[2].l[sb], Math.min(gfc.thm[3].l[sb], mld));
-      mld = gfc.mld_l[sb] * gfc.en[2].l[sb];
-      var rside = Math.max(gfc.thm[3].l[sb], Math.min(gfc.thm[2].l[sb], mld));
-      gfc.thm[2].l[sb] = rmid;
-      gfc.thm[3].l[sb] = rside;
-    }
-    for (var sb = 0; sb < Encoder.SBMAX_s; sb++) {
-      for (var sblock = 0; sblock < 3; sblock++) {
-        if (gfc.thm[0].s[sb][sblock] > 1.58 * gfc.thm[1].s[sb][sblock] || gfc.thm[1].s[sb][sblock] > 1.58 * gfc.thm[0].s[sb][sblock]) {
-          continue;
-        }
-        var mld = gfc.mld_s[sb] * gfc.en[3].s[sb][sblock];
-        var rmid = Math.max(
-          gfc.thm[2].s[sb][sblock],
-          Math.min(gfc.thm[3].s[sb][sblock], mld)
-        );
-        mld = gfc.mld_s[sb] * gfc.en[2].s[sb][sblock];
-        var rside = Math.max(
-          gfc.thm[3].s[sb][sblock],
-          Math.min(gfc.thm[2].s[sb][sblock], mld)
-        );
-        gfc.thm[2].s[sb][sblock] = rmid;
-        gfc.thm[3].s[sb][sblock] = rside;
-      }
-    }
-  }
-  function ns_msfix(gfc, msfix, athadjust) {
-    var msfix2 = msfix;
-    var athlower = Math.pow(10, athadjust);
-    msfix *= 2;
-    msfix2 *= 2;
-    for (var sb = 0; sb < Encoder.SBMAX_l; sb++) {
-      var thmLR, thmM, thmS, ath;
-      ath = gfc.ATH.cb_l[gfc.bm_l[sb]] * athlower;
-      thmLR = Math.min(
-        Math.max(gfc.thm[0].l[sb], ath),
-        Math.max(gfc.thm[1].l[sb], ath)
-      );
-      thmM = Math.max(gfc.thm[2].l[sb], ath);
-      thmS = Math.max(gfc.thm[3].l[sb], ath);
-      if (thmLR * msfix < thmM + thmS) {
-        var f = thmLR * msfix2 / (thmM + thmS);
-        thmM *= f;
-        thmS *= f;
-      }
-      gfc.thm[2].l[sb] = Math.min(thmM, gfc.thm[2].l[sb]);
-      gfc.thm[3].l[sb] = Math.min(thmS, gfc.thm[3].l[sb]);
-    }
-    athlower *= Encoder.BLKSIZE_s / Encoder.BLKSIZE;
-    for (var sb = 0; sb < Encoder.SBMAX_s; sb++) {
-      for (var sblock = 0; sblock < 3; sblock++) {
-        var thmLR, thmM, thmS, ath;
-        ath = gfc.ATH.cb_s[gfc.bm_s[sb]] * athlower;
-        thmLR = Math.min(
-          Math.max(gfc.thm[0].s[sb][sblock], ath),
-          Math.max(gfc.thm[1].s[sb][sblock], ath)
-        );
-        thmM = Math.max(gfc.thm[2].s[sb][sblock], ath);
-        thmS = Math.max(gfc.thm[3].s[sb][sblock], ath);
-        if (thmLR * msfix < thmM + thmS) {
-          var f = thmLR * msfix / (thmM + thmS);
-          thmM *= f;
-          thmS *= f;
-        }
-        gfc.thm[2].s[sb][sblock] = Math.min(gfc.thm[2].s[sb][sblock], thmM);
-        gfc.thm[3].s[sb][sblock] = Math.min(gfc.thm[3].s[sb][sblock], thmS);
-      }
-    }
-  }
-  function convert_partition2scalefac_s(gfc, eb, thr, chn, sblock) {
-    var sb, b;
-    var enn = 0;
-    var thmm = 0;
-    for (sb = b = 0; sb < Encoder.SBMAX_s; ++b, ++sb) {
-      var bo_s_sb = gfc.bo_s[sb];
-      var npart_s = gfc.npart_s;
-      var b_lim = bo_s_sb < npart_s ? bo_s_sb : npart_s;
-      while (b < b_lim) {
-        assert$9(eb[b] >= 0);
-        assert$9(thr[b] >= 0);
-        enn += eb[b];
-        thmm += thr[b];
-        b++;
-      }
-      gfc.en[chn].s[sb][sblock] = enn;
-      gfc.thm[chn].s[sb][sblock] = thmm;
-      if (b >= npart_s) {
-        ++sb;
-        break;
-      }
-      assert$9(eb[b] >= 0);
-      assert$9(thr[b] >= 0);
-      {
-        var w_curr = gfc.PSY.bo_s_weight[sb];
-        var w_next = 1 - w_curr;
-        enn = w_curr * eb[b];
-        thmm = w_curr * thr[b];
-        gfc.en[chn].s[sb][sblock] += enn;
-        gfc.thm[chn].s[sb][sblock] += thmm;
-        enn = w_next * eb[b];
-        thmm = w_next * thr[b];
-      }
-    }
-    for (; sb < Encoder.SBMAX_s; ++sb) {
-      gfc.en[chn].s[sb][sblock] = 0;
-      gfc.thm[chn].s[sb][sblock] = 0;
-    }
-  }
-  function convert_partition2scalefac_l(gfc, eb, thr, chn) {
-    var sb, b;
-    var enn = 0;
-    var thmm = 0;
-    for (sb = b = 0; sb < Encoder.SBMAX_l; ++b, ++sb) {
-      var bo_l_sb = gfc.bo_l[sb];
-      var npart_l = gfc.npart_l;
-      var b_lim = bo_l_sb < npart_l ? bo_l_sb : npart_l;
-      while (b < b_lim) {
-        assert$9(eb[b] >= 0);
-        assert$9(thr[b] >= 0);
-        enn += eb[b];
-        thmm += thr[b];
-        b++;
-      }
-      gfc.en[chn].l[sb] = enn;
-      gfc.thm[chn].l[sb] = thmm;
-      if (b >= npart_l) {
-        ++sb;
-        break;
-      }
-      assert$9(eb[b] >= 0);
-      assert$9(thr[b] >= 0);
-      {
-        var w_curr = gfc.PSY.bo_l_weight[sb];
-        var w_next = 1 - w_curr;
-        enn = w_curr * eb[b];
-        thmm = w_curr * thr[b];
-        gfc.en[chn].l[sb] += enn;
-        gfc.thm[chn].l[sb] += thmm;
-        enn = w_next * eb[b];
-        thmm = w_next * thr[b];
-      }
-    }
-    for (; sb < Encoder.SBMAX_l; ++sb) {
-      gfc.en[chn].l[sb] = 0;
-      gfc.thm[chn].l[sb] = 0;
-    }
-  }
-  function compute_masking_s(gfp, fftenergy_s, eb, thr, chn, sblock) {
-    var gfc = gfp.internal_flags;
-    var j, b;
-    for (b = j = 0; b < gfc.npart_s; ++b) {
-      var ebb = 0;
-      var n = gfc.numlines_s[b];
-      for (var i = 0; i < n; ++i, ++j) {
-        var el = fftenergy_s[sblock][j];
-        ebb += el;
-      }
-      eb[b] = ebb;
-    }
-    assert$9(b == gfc.npart_s);
-    for (j = b = 0; b < gfc.npart_s; b++) {
-      var kk = gfc.s3ind_s[b][0];
-      var ecb = gfc.s3_ss[j++] * eb[kk];
-      ++kk;
-      while (kk <= gfc.s3ind_s[b][1]) {
-        ecb += gfc.s3_ss[j] * eb[kk];
-        ++j;
-        ++kk;
-      }
-      {
-        var x = rpelev_s * gfc.nb_s1[chn][b];
-        thr[b] = Math.min(ecb, x);
-      }
-      if (gfc.blocktype_old[chn & 1] == Encoder.SHORT_TYPE) {
-        var x = rpelev2_s * gfc.nb_s2[chn][b];
-        var y = thr[b];
-        thr[b] = Math.min(x, y);
-      }
-      gfc.nb_s2[chn][b] = gfc.nb_s1[chn][b];
-      gfc.nb_s1[chn][b] = ecb;
-      assert$9(thr[b] >= 0);
-    }
-    for (; b <= Encoder.CBANDS; ++b) {
-      eb[b] = 0;
-      thr[b] = 0;
-    }
-  }
-  function block_type_set(gfp, uselongblock, blocktype_d, blocktype) {
-    var gfc = gfp.internal_flags;
-    if (gfp.short_blocks == ShortBlock$2.short_block_coupled && !(uselongblock[0] != 0 && uselongblock[1] != 0)) {
-      uselongblock[0] = uselongblock[1] = 0;
-    }
-    for (var chn = 0; chn < gfc.channels_out; chn++) {
-      blocktype[chn] = Encoder.NORM_TYPE;
-      if (gfp.short_blocks == ShortBlock$2.short_block_dispensed) {
-        uselongblock[chn] = 1;
-      }
-      if (gfp.short_blocks == ShortBlock$2.short_block_forced) {
-        uselongblock[chn] = 0;
-      }
-      if (uselongblock[chn] != 0) {
-        assert$9(gfc.blocktype_old[chn] != Encoder.START_TYPE);
-        if (gfc.blocktype_old[chn] == Encoder.SHORT_TYPE) {
-          blocktype[chn] = Encoder.STOP_TYPE;
-        }
-      } else {
-        blocktype[chn] = Encoder.SHORT_TYPE;
-        if (gfc.blocktype_old[chn] == Encoder.NORM_TYPE) {
-          gfc.blocktype_old[chn] = Encoder.START_TYPE;
-        }
-        if (gfc.blocktype_old[chn] == Encoder.STOP_TYPE) {
-          gfc.blocktype_old[chn] = Encoder.SHORT_TYPE;
-        }
-      }
-      blocktype_d[chn] = gfc.blocktype_old[chn];
-      gfc.blocktype_old[chn] = blocktype[chn];
-    }
-  }
-  function NS_INTERP(x, y, r) {
-    if (r >= 1) {
-      return x;
-    }
-    if (r <= 0)
-      return y;
-    if (y > 0) {
-      return Math.pow(x / y, r) * y;
-    }
-    return 0;
-  }
-  var regcoef_s = [
-    11.8,
-    13.6,
-    17.2,
-    32,
-    46.5,
-    51.3,
-    57.5,
-    67.1,
-    71.5,
-    84.6,
-    97.6,
-    130
-  ];
-  function pecalc_s(mr, masking_lower) {
-    var pe_s = 1236.28 / 4;
-    for (var sb = 0; sb < Encoder.SBMAX_s - 1; sb++) {
-      for (var sblock = 0; sblock < 3; sblock++) {
-        var thm = mr.thm.s[sb][sblock];
-        if (thm > 0) {
-          var x = thm * masking_lower;
-          var en = mr.en.s[sb][sblock];
-          if (en > x) {
-            if (en > x * 1e10) {
-              pe_s += regcoef_s[sb] * (10 * LOG10);
-            } else {
-              pe_s += regcoef_s[sb] * Util$2.FAST_LOG10(en / x);
-            }
-          }
-        }
-      }
-    }
-    return pe_s;
-  }
-  var regcoef_l = [
-    6.8,
-    5.8,
-    5.8,
-    6.4,
-    6.5,
-    9.9,
-    12.1,
-    14.4,
-    15,
-    18.9,
-    21.6,
-    26.9,
-    34.2,
-    40.2,
-    46.8,
-    56.5,
-    60.7,
-    73.9,
-    85.7,
-    93.4,
-    126.1
-  ];
-  function pecalc_l(mr, masking_lower) {
-    var pe_l = 1124.23 / 4;
-    for (var sb = 0; sb < Encoder.SBMAX_l - 1; sb++) {
-      var thm = mr.thm.l[sb];
-      if (thm > 0) {
-        var x = thm * masking_lower;
-        var en = mr.en.l[sb];
-        if (en > x) {
-          if (en > x * 1e10) {
-            pe_l += regcoef_l[sb] * (10 * LOG10);
+    };
+    const createPluginMethodWrapper = (prop) => {
+      let remove2;
+      const wrapper = (...args) => {
+        const p2 = loadPluginImplementation().then((impl) => {
+          const fn = createPluginMethod(impl, prop);
+          if (fn) {
+            const p3 = fn(...args);
+            remove2 = p3 === null || p3 === void 0 ? void 0 : p3.remove;
+            return p3;
           } else {
-            pe_l += regcoef_l[sb] * Util$2.FAST_LOG10(en / x);
+            throw new CapacitorException(`"${pluginName}.${prop}()" is not implemented on ${platform}`, ExceptionCode.Unimplemented);
           }
+        });
+        if (prop === "addListener") {
+          p2.remove = async () => remove2();
+        }
+        return p2;
+      };
+      wrapper.toString = () => `${prop.toString()}() { [capacitor code] }`;
+      Object.defineProperty(wrapper, "name", {
+        value: prop,
+        writable: false,
+        configurable: false
+      });
+      return wrapper;
+    };
+    const addListener = createPluginMethodWrapper("addListener");
+    const removeListener = createPluginMethodWrapper("removeListener");
+    const addListenerNative = (eventName, callback) => {
+      const call = addListener({ eventName }, callback);
+      const remove2 = async () => {
+        const callbackId = await call;
+        removeListener({
+          eventName,
+          callbackId
+        }, callback);
+      };
+      const p2 = new Promise((resolve3) => call.then(() => resolve3({ remove: remove2 })));
+      p2.remove = async () => {
+        console.warn(`Using addListener() without 'await' is deprecated.`);
+        await remove2();
+      };
+      return p2;
+    };
+    const proxy = new Proxy({}, {
+      get(_, prop) {
+        switch (prop) {
+          case "$$typeof":
+            return void 0;
+          case "toJSON":
+            return () => ({});
+          case "addListener":
+            return pluginHeader ? addListenerNative : addListener;
+          case "removeListener":
+            return removeListener;
+          default:
+            return createPluginMethodWrapper(prop);
         }
       }
-    }
-    return pe_l;
-  }
-  function calc_energy(gfc, fftenergy, eb, max, avg) {
-    var b, j;
-    for (b = j = 0; b < gfc.npart_l; ++b) {
-      var ebb = 0;
-      var m = 0;
-      var i;
-      for (i = 0; i < gfc.numlines_l[b]; ++i, ++j) {
-        var el = fftenergy[j];
-        ebb += el;
-        if (m < el)
-          m = el;
-      }
-      eb[b] = ebb;
-      max[b] = m;
-      avg[b] = ebb * gfc.rnumlines_l[b];
-      assert$9(gfc.rnumlines_l[b] >= 0);
-      assert$9(eb[b] >= 0);
-      assert$9(max[b] >= 0);
-      assert$9(avg[b] >= 0);
-    }
-  }
-  function calc_mask_index_l(gfc, max, avg, mask_idx) {
-    var last_tab_entry = tab.length - 1;
-    var b = 0;
-    var a = avg[b] + avg[b + 1];
-    if (a > 0) {
-      var m = max[b];
-      if (m < max[b + 1])
-        m = max[b + 1];
-      assert$9(gfc.numlines_l[b] + gfc.numlines_l[b + 1] - 1 > 0);
-      a = 20 * (m * 2 - a) / (a * (gfc.numlines_l[b] + gfc.numlines_l[b + 1] - 1));
-      var k = 0 | a;
-      if (k > last_tab_entry)
-        k = last_tab_entry;
-      mask_idx[b] = k;
-    } else {
-      mask_idx[b] = 0;
-    }
-    for (b = 1; b < gfc.npart_l - 1; b++) {
-      a = avg[b - 1] + avg[b] + avg[b + 1];
-      if (a > 0) {
-        var m = max[b - 1];
-        if (m < max[b])
-          m = max[b];
-        if (m < max[b + 1])
-          m = max[b + 1];
-        assert$9(
-          gfc.numlines_l[b - 1] + gfc.numlines_l[b] + gfc.numlines_l[b + 1] - 1 > 0
-        );
-        a = 20 * (m * 3 - a) / (a * (gfc.numlines_l[b - 1] + gfc.numlines_l[b] + gfc.numlines_l[b + 1] - 1));
-        var k = 0 | a;
-        if (k > last_tab_entry)
-          k = last_tab_entry;
-        mask_idx[b] = k;
-      } else {
-        mask_idx[b] = 0;
-      }
-    }
-    assert$9(b == gfc.npart_l - 1);
-    a = avg[b - 1] + avg[b];
-    if (a > 0) {
-      var m = max[b - 1];
-      if (m < max[b])
-        m = max[b];
-      assert$9(gfc.numlines_l[b - 1] + gfc.numlines_l[b] - 1 > 0);
-      a = 20 * (m * 2 - a) / (a * (gfc.numlines_l[b - 1] + gfc.numlines_l[b] - 1));
-      var k = 0 | a;
-      if (k > last_tab_entry)
-        k = last_tab_entry;
-      mask_idx[b] = k;
-    } else {
-      mask_idx[b] = 0;
-    }
-    assert$9(b == gfc.npart_l - 1);
-  }
-  var fircoef = [
-    -865163e-23 * 2,
-    -851586e-8 * 2,
-    -674764e-23 * 2,
-    0.0209036 * 2,
-    -336639e-22 * 2,
-    -0.0438162 * 2,
-    -154175e-22 * 2,
-    0.0931738 * 2,
-    -552212e-22 * 2,
-    -0.313819 * 2
-  ];
-  this.L3psycho_anal_ns = function(gfp, buffer, bufPos, gr_out, masking_ratio, masking_MS_ratio, percep_entropy, percep_MS_entropy, energy, blocktype_d) {
-    var gfc = gfp.internal_flags;
-    var wsamp_L = new_float_n$3([2, Encoder.BLKSIZE]);
-    var wsamp_S = new_float_n$3([2, 3, Encoder.BLKSIZE_s]);
-    var eb_l = new_float$a(Encoder.CBANDS + 1);
-    var eb_s = new_float$a(Encoder.CBANDS + 1);
-    var thr = new_float$a(Encoder.CBANDS + 2);
-    var blocktype = new_int$b(2);
-    var uselongblock = new_int$b(2);
-    var numchn, chn;
-    var b, i, j, k;
-    var sb, sblock;
-    var ns_hpfsmpl = new_float_n$3([2, 576]);
-    var pcfact;
-    var mask_idx_l = new_int$b(Encoder.CBANDS + 2);
-    var mask_idx_s = new_int$b(Encoder.CBANDS + 2);
-    Arrays$5.fill(mask_idx_s, 0);
-    numchn = gfc.channels_out;
-    if (gfp.mode == MPEGMode.JOINT_STEREO)
-      numchn = 4;
-    if (gfp.VBR == VbrMode$5.vbr_off) {
-      pcfact = gfc.ResvMax == 0 ? 0 : gfc.ResvSize / gfc.ResvMax * 0.5;
-    } else if (gfp.VBR == VbrMode$5.vbr_rh || gfp.VBR == VbrMode$5.vbr_mtrh || gfp.VBR == VbrMode$5.vbr_mt) {
-      pcfact = 0.6;
-    } else
-      pcfact = 1;
-    for (chn = 0; chn < gfc.channels_out; chn++) {
-      var firbuf2 = buffer[chn];
-      var firbufPos = bufPos + 576 - 350 - NSFIRLEN + 192;
-      for (i = 0; i < 576; i++) {
-        var sum1, sum2;
-        sum1 = firbuf2[firbufPos + i + 10];
-        sum2 = 0;
-        for (j = 0; j < (NSFIRLEN - 1) / 2 - 1; j += 2) {
-          sum1 += fircoef[j] * (firbuf2[firbufPos + i + j] + firbuf2[firbufPos + i + NSFIRLEN - j]);
-          sum2 += fircoef[j + 1] * (firbuf2[firbufPos + i + j + 1] + firbuf2[firbufPos + i + NSFIRLEN - j - 1]);
-        }
-        ns_hpfsmpl[chn][i] = sum1 + sum2;
-      }
-      masking_ratio[gr_out][chn].en.assign(gfc.en[chn]);
-      masking_ratio[gr_out][chn].thm.assign(gfc.thm[chn]);
-      if (numchn > 2) {
-        masking_MS_ratio[gr_out][chn].en.assign(gfc.en[chn + 2]);
-        masking_MS_ratio[gr_out][chn].thm.assign(gfc.thm[chn + 2]);
-      }
-    }
-    for (chn = 0; chn < numchn; chn++) {
-      var wsamp_l;
-      var wsamp_s;
-      var en_subshort = new_float$a(12);
-      var en_short = [0, 0, 0, 0];
-      var attack_intensity = new_float$a(12);
-      var ns_uselongblock = 1;
-      var attackThreshold;
-      var max = new_float$a(Encoder.CBANDS);
-      var avg = new_float$a(Encoder.CBANDS);
-      var ns_attacks = [0, 0, 0, 0];
-      var fftenergy = new_float$a(Encoder.HBLKSIZE);
-      var fftenergy_s = new_float_n$3([3, Encoder.HBLKSIZE_s]);
-      assert$9(gfc.npart_s <= Encoder.CBANDS);
-      assert$9(gfc.npart_l <= Encoder.CBANDS);
-      for (i = 0; i < 3; i++) {
-        en_subshort[i] = gfc.nsPsy.last_en_subshort[chn][i + 6];
-        assert$9(gfc.nsPsy.last_en_subshort[chn][i + 4] > 0);
-        attack_intensity[i] = en_subshort[i] / gfc.nsPsy.last_en_subshort[chn][i + 4];
-        en_short[0] += en_subshort[i];
-      }
-      if (chn == 2) {
-        for (i = 0; i < 576; i++) {
-          var l, r;
-          l = ns_hpfsmpl[0][i];
-          r = ns_hpfsmpl[1][i];
-          ns_hpfsmpl[0][i] = l + r;
-          ns_hpfsmpl[1][i] = l - r;
-        }
-      }
-      {
-        var pf = ns_hpfsmpl[chn & 1];
-        var pfPos = 0;
-        for (i = 0; i < 9; i++) {
-          var pfe = pfPos + 576 / 9;
-          var p2 = 1;
-          for (; pfPos < pfe; pfPos++) {
-            if (p2 < Math.abs(pf[pfPos]))
-              p2 = Math.abs(pf[pfPos]);
-          }
-          gfc.nsPsy.last_en_subshort[chn][i] = en_subshort[i + 3] = p2;
-          en_short[1 + i / 3] += p2;
-          if (p2 > en_subshort[i + 3 - 2]) {
-            assert$9(en_subshort[i + 3 - 2] > 0);
-            p2 = p2 / en_subshort[i + 3 - 2];
-          } else if (en_subshort[i + 3 - 2] > p2 * 10) {
-            p2 = en_subshort[i + 3 - 2] / (p2 * 10);
-          } else
-            p2 = 0;
-          attack_intensity[i + 3] = p2;
-        }
-      }
-      if (gfp.analysis) {
-        var x = attack_intensity[0];
-        for (i = 1; i < 12; i++) {
-          if (x < attack_intensity[i])
-            x = attack_intensity[i];
-        }
-        gfc.pinfo.ers[gr_out][chn] = gfc.pinfo.ers_save[chn];
-        gfc.pinfo.ers_save[chn] = x;
-      }
-      attackThreshold = chn == 3 ? gfc.nsPsy.attackthre_s : gfc.nsPsy.attackthre;
-      for (i = 0; i < 12; i++) {
-        if (ns_attacks[i / 3] == 0 && attack_intensity[i] > attackThreshold) {
-          ns_attacks[i / 3] = i % 3 + 1;
-        }
-      }
-      for (i = 1; i < 4; i++) {
-        var ratio;
-        if (en_short[i - 1] > en_short[i]) {
-          assert$9(en_short[i] > 0);
-          ratio = en_short[i - 1] / en_short[i];
-        } else {
-          assert$9(en_short[i - 1] > 0);
-          ratio = en_short[i] / en_short[i - 1];
-        }
-        if (ratio < 1.7) {
-          ns_attacks[i] = 0;
-          if (i == 1)
-            ns_attacks[0] = 0;
-        }
-      }
-      if (ns_attacks[0] != 0 && gfc.nsPsy.lastAttacks[chn] != 0) {
-        ns_attacks[0] = 0;
-      }
-      if (gfc.nsPsy.lastAttacks[chn] == 3 || ns_attacks[0] + ns_attacks[1] + ns_attacks[2] + ns_attacks[3] != 0) {
-        ns_uselongblock = 0;
-        if (ns_attacks[1] != 0 && ns_attacks[0] != 0)
-          ns_attacks[1] = 0;
-        if (ns_attacks[2] != 0 && ns_attacks[1] != 0)
-          ns_attacks[2] = 0;
-        if (ns_attacks[3] != 0 && ns_attacks[2] != 0)
-          ns_attacks[3] = 0;
-      }
-      if (chn < 2) {
-        uselongblock[chn] = ns_uselongblock;
-      } else {
-        if (ns_uselongblock == 0) {
-          uselongblock[0] = uselongblock[1] = 0;
-        }
-      }
-      energy[chn] = gfc.tot_ener[chn];
-      wsamp_s = wsamp_S;
-      wsamp_l = wsamp_L;
-      compute_ffts(
-        gfp,
-        fftenergy,
-        fftenergy_s,
-        wsamp_l,
-        chn & 1,
-        wsamp_s,
-        chn & 1,
-        gr_out,
-        chn,
-        buffer,
-        bufPos
-      );
-      calc_energy(gfc, fftenergy, eb_l, max, avg);
-      calc_mask_index_l(gfc, max, avg, mask_idx_l);
-      for (sblock = 0; sblock < 3; sblock++) {
-        var enn, thmm;
-        compute_masking_s(gfp, fftenergy_s, eb_s, thr, chn, sblock);
-        convert_partition2scalefac_s(gfc, eb_s, thr, chn, sblock);
-        for (sb = 0; sb < Encoder.SBMAX_s; sb++) {
-          thmm = gfc.thm[chn].s[sb][sblock];
-          thmm *= NS_PREECHO_ATT0;
-          if (ns_attacks[sblock] >= 2 || ns_attacks[sblock + 1] == 1) {
-            var idx = sblock != 0 ? sblock - 1 : 2;
-            var p2 = NS_INTERP(
-              gfc.thm[chn].s[sb][idx],
-              thmm,
-              NS_PREECHO_ATT1 * pcfact
-            );
-            thmm = Math.min(thmm, p2);
-          }
-          if (ns_attacks[sblock] == 1) {
-            var idx = sblock != 0 ? sblock - 1 : 2;
-            var p2 = NS_INTERP(
-              gfc.thm[chn].s[sb][idx],
-              thmm,
-              NS_PREECHO_ATT2 * pcfact
-            );
-            thmm = Math.min(thmm, p2);
-          } else if (sblock != 0 && ns_attacks[sblock - 1] == 3 || sblock == 0 && gfc.nsPsy.lastAttacks[chn] == 3) {
-            var idx = sblock != 2 ? sblock + 1 : 0;
-            var p2 = NS_INTERP(
-              gfc.thm[chn].s[sb][idx],
-              thmm,
-              NS_PREECHO_ATT2 * pcfact
-            );
-            thmm = Math.min(thmm, p2);
-          }
-          enn = en_subshort[sblock * 3 + 3] + en_subshort[sblock * 3 + 4] + en_subshort[sblock * 3 + 5];
-          if (en_subshort[sblock * 3 + 5] * 6 < enn) {
-            thmm *= 0.5;
-            if (en_subshort[sblock * 3 + 4] * 6 < enn)
-              thmm *= 0.5;
-          }
-          gfc.thm[chn].s[sb][sblock] = thmm;
-        }
-      }
-      gfc.nsPsy.lastAttacks[chn] = ns_attacks[2];
-      k = 0;
-      {
-        for (b = 0; b < gfc.npart_l; b++) {
-          var kk = gfc.s3ind[b][0];
-          var eb2 = eb_l[kk] * tab[mask_idx_l[kk]];
-          var ecb = gfc.s3_ll[k++] * eb2;
-          while (++kk <= gfc.s3ind[b][1]) {
-            eb2 = eb_l[kk] * tab[mask_idx_l[kk]];
-            ecb = mask_add(ecb, gfc.s3_ll[k++] * eb2, kk, kk - b, gfc, 0);
-          }
-          ecb *= 0.158489319246111;
-          if (gfc.blocktype_old[chn & 1] == Encoder.SHORT_TYPE)
-            thr[b] = ecb;
-          else {
-            thr[b] = NS_INTERP(
-              Math.min(
-                ecb,
-                Math.min(rpelev * gfc.nb_1[chn][b], rpelev2 * gfc.nb_2[chn][b])
-              ),
-              ecb,
-              pcfact
-            );
-          }
-          gfc.nb_2[chn][b] = gfc.nb_1[chn][b];
-          gfc.nb_1[chn][b] = ecb;
-        }
-      }
-      for (; b <= Encoder.CBANDS; ++b) {
-        eb_l[b] = 0;
-        thr[b] = 0;
-      }
-      convert_partition2scalefac_l(gfc, eb_l, thr, chn);
-    }
-    if (gfp.mode == MPEGMode.STEREO || gfp.mode == MPEGMode.JOINT_STEREO) {
-      if (gfp.interChRatio > 0) {
-        calc_interchannel_masking(gfp, gfp.interChRatio);
-      }
-    }
-    if (gfp.mode == MPEGMode.JOINT_STEREO) {
-      var msfix;
-      msfix1(gfc);
-      msfix = gfp.msfix;
-      if (Math.abs(msfix) > 0) {
-        ns_msfix(gfc, msfix, gfp.ATHlower * gfc.ATH.adjust);
-      }
-    }
-    block_type_set(gfp, uselongblock, blocktype_d, blocktype);
-    for (chn = 0; chn < numchn; chn++) {
-      var ppe;
-      var ppePos = 0;
-      var type;
-      var mr;
-      if (chn > 1) {
-        ppe = percep_MS_entropy;
-        ppePos = -2;
-        type = Encoder.NORM_TYPE;
-        if (blocktype_d[0] == Encoder.SHORT_TYPE || blocktype_d[1] == Encoder.SHORT_TYPE) {
-          type = Encoder.SHORT_TYPE;
-        }
-        mr = masking_MS_ratio[gr_out][chn - 2];
-      } else {
-        ppe = percep_entropy;
-        ppePos = 0;
-        type = blocktype_d[chn];
-        mr = masking_ratio[gr_out][chn];
-      }
-      if (type == Encoder.SHORT_TYPE) {
-        ppe[ppePos + chn] = pecalc_s(mr, gfc.masking_lower);
-      } else
-        ppe[ppePos + chn] = pecalc_l(mr, gfc.masking_lower);
-      if (gfp.analysis)
-        gfc.pinfo.pe[gr_out][chn] = ppe[ppePos + chn];
-    }
-    return 0;
+    });
+    Plugins[pluginName] = proxy;
+    registeredPlugins.set(pluginName, {
+      name: pluginName,
+      proxy,
+      platforms: /* @__PURE__ */ new Set([
+        ...Object.keys(jsImplementations),
+        ...pluginHeader ? [platform] : []
+      ])
+    });
+    return proxy;
   };
-  function vbrpsy_compute_fft_l(gfp, buffer, bufPos, chn, gr_out, fftenergy, wsamp_l, wsamp_lPos) {
-    var gfc = gfp.internal_flags;
-    if (chn < 2) {
-      fft.fft_long(gfc, wsamp_l[wsamp_lPos], chn, buffer, bufPos);
-    } else if (chn == 2) {
-      for (var j = Encoder.BLKSIZE - 1; j >= 0; --j) {
-        var l = wsamp_l[wsamp_lPos + 0][j];
-        var r = wsamp_l[wsamp_lPos + 1][j];
-        wsamp_l[wsamp_lPos + 0][j] = (l + r) * Util$2.SQRT2 * 0.5;
-        wsamp_l[wsamp_lPos + 1][j] = (l - r) * Util$2.SQRT2 * 0.5;
-      }
-    }
-    fftenergy[0] = NON_LINEAR_SCALE_ENERGY(wsamp_l[wsamp_lPos + 0][0]);
-    fftenergy[0] *= fftenergy[0];
-    for (var j = Encoder.BLKSIZE / 2 - 1; j >= 0; --j) {
-      var re = wsamp_l[wsamp_lPos + 0][Encoder.BLKSIZE / 2 - j];
-      var im = wsamp_l[wsamp_lPos + 0][Encoder.BLKSIZE / 2 + j];
-      fftenergy[Encoder.BLKSIZE / 2 - j] = NON_LINEAR_SCALE_ENERGY(
-        (re * re + im * im) * 0.5
-      );
-    }
-    {
-      var totalenergy = 0;
-      for (var j = 11; j < Encoder.HBLKSIZE; j++)
-        totalenergy += fftenergy[j];
-      gfc.tot_ener[chn] = totalenergy;
-    }
-    if (gfp.analysis) {
-      for (var j = 0; j < Encoder.HBLKSIZE; j++) {
-        gfc.pinfo.energy[gr_out][chn][j] = gfc.pinfo.energy_save[chn][j];
-        gfc.pinfo.energy_save[chn][j] = fftenergy[j];
-      }
-      gfc.pinfo.pe[gr_out][chn] = gfc.pe[chn];
+  const registerPlugin2 = ((_e = capPlatforms === null || capPlatforms === void 0 ? void 0 : capPlatforms.currentPlatform) === null || _e === void 0 ? void 0 : _e.registerPlugin) || defaultRegisterPlugin;
+  if (!cap.convertFileSrc) {
+    cap.convertFileSrc = (filePath) => filePath;
+  }
+  cap.getPlatform = getPlatform;
+  cap.handleError = handleError2;
+  cap.isNativePlatform = isNativePlatform;
+  cap.isPluginAvailable = isPluginAvailable;
+  cap.pluginMethodNoop = pluginMethodNoop;
+  cap.registerPlugin = registerPlugin2;
+  cap.Exception = CapacitorException;
+  cap.DEBUG = !!cap.DEBUG;
+  cap.isLoggingEnabled = !!cap.isLoggingEnabled;
+  cap.platform = cap.getPlatform();
+  cap.isNative = cap.isNativePlatform();
+  return cap;
+};
+const initCapacitorGlobal = (win) => win.Capacitor = createCapacitor(win);
+const Capacitor = /* @__PURE__ */ initCapacitorGlobal(typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {});
+const registerPlugin = Capacitor.registerPlugin;
+Capacitor.Plugins;
+class WebPlugin {
+  constructor(config) {
+    this.listeners = {};
+    this.windowListeners = {};
+    if (config) {
+      console.warn(`Capacitor WebPlugin "${config.name}" config object was deprecated in v3 and will be removed in v4.`);
+      this.config = config;
     }
   }
-  function vbrpsy_compute_fft_s(gfp, buffer, bufPos, chn, sblock, fftenergy_s, wsamp_s, wsamp_sPos) {
-    var gfc = gfp.internal_flags;
-    if (sblock == 0 && chn < 2) {
-      fft.fft_short(gfc, wsamp_s[wsamp_sPos], chn, buffer, bufPos);
+  addListener(eventName, listenerFunc) {
+    const listeners = this.listeners[eventName];
+    if (!listeners) {
+      this.listeners[eventName] = [];
     }
-    if (chn == 2) {
-      for (var j = Encoder.BLKSIZE_s - 1; j >= 0; --j) {
-        var l = wsamp_s[wsamp_sPos + 0][sblock][j];
-        var r = wsamp_s[wsamp_sPos + 1][sblock][j];
-        wsamp_s[wsamp_sPos + 0][sblock][j] = (l + r) * Util$2.SQRT2 * 0.5;
-        wsamp_s[wsamp_sPos + 1][sblock][j] = (l - r) * Util$2.SQRT2 * 0.5;
-      }
+    this.listeners[eventName].push(listenerFunc);
+    const windowListener = this.windowListeners[eventName];
+    if (windowListener && !windowListener.registered) {
+      this.addWindowListener(windowListener);
     }
-    fftenergy_s[sblock][0] = wsamp_s[wsamp_sPos + 0][sblock][0];
-    fftenergy_s[sblock][0] *= fftenergy_s[sblock][0];
-    for (var j = Encoder.BLKSIZE_s / 2 - 1; j >= 0; --j) {
-      var re = wsamp_s[wsamp_sPos + 0][sblock][Encoder.BLKSIZE_s / 2 - j];
-      var im = wsamp_s[wsamp_sPos + 0][sblock][Encoder.BLKSIZE_s / 2 + j];
-      fftenergy_s[sblock][Encoder.BLKSIZE_s / 2 - j] = NON_LINEAR_SCALE_ENERGY(
-        (re * re + im * im) * 0.5
-      );
-    }
-  }
-  function vbrpsy_compute_loudness_approximation_l(gfp, gr_out, chn, fftenergy) {
-    var gfc = gfp.internal_flags;
-    if (gfp.athaa_loudapprox == 2 && chn < 2) {
-      gfc.loudness_sq[gr_out][chn] = gfc.loudness_sq_save[chn];
-      gfc.loudness_sq_save[chn] = psycho_loudness_approx(fftenergy, gfc);
-    }
-  }
-  var fircoef_ = [
-    -865163e-23 * 2,
-    -851586e-8 * 2,
-    -674764e-23 * 2,
-    0.0209036 * 2,
-    -336639e-22 * 2,
-    -0.0438162 * 2,
-    -154175e-22 * 2,
-    0.0931738 * 2,
-    -552212e-22 * 2,
-    -0.313819 * 2
-  ];
-  function vbrpsy_attack_detection(gfp, buffer, bufPos, gr_out, masking_ratio, masking_MS_ratio, energy, sub_short_factor, ns_attacks, uselongblock) {
-    var ns_hpfsmpl = new_float_n$3([2, 576]);
-    var gfc = gfp.internal_flags;
-    var n_chn_out = gfc.channels_out;
-    var n_chn_psy = gfp.mode == MPEGMode.JOINT_STEREO ? 4 : n_chn_out;
-    for (var chn = 0; chn < n_chn_out; chn++) {
-      firbuf = buffer[chn];
-      var firbufPos = bufPos + 576 - 350 - NSFIRLEN + 192;
-      for (var i = 0; i < 576; i++) {
-        var sum1, sum2;
-        sum1 = firbuf[firbufPos + i + 10];
-        sum2 = 0;
-        for (var j = 0; j < (NSFIRLEN - 1) / 2 - 1; j += 2) {
-          sum1 += fircoef_[j] * (firbuf[firbufPos + i + j] + firbuf[firbufPos + i + NSFIRLEN - j]);
-          sum2 += fircoef_[j + 1] * (firbuf[firbufPos + i + j + 1] + firbuf[firbufPos + i + NSFIRLEN - j - 1]);
-        }
-        ns_hpfsmpl[chn][i] = sum1 + sum2;
+    const remove2 = async () => this.removeListener(eventName, listenerFunc);
+    const p2 = Promise.resolve({ remove: remove2 });
+    Object.defineProperty(p2, "remove", {
+      value: async () => {
+        console.warn(`Using addListener() without 'await' is deprecated.`);
+        await remove2();
       }
-      masking_ratio[gr_out][chn].en.assign(gfc.en[chn]);
-      masking_ratio[gr_out][chn].thm.assign(gfc.thm[chn]);
-      if (n_chn_psy > 2) {
-        masking_MS_ratio[gr_out][chn].en.assign(gfc.en[chn + 2]);
-        masking_MS_ratio[gr_out][chn].thm.assign(gfc.thm[chn + 2]);
-      }
-    }
-    for (var chn = 0; chn < n_chn_psy; chn++) {
-      var attack_intensity = new_float$a(12);
-      var en_subshort = new_float$a(12);
-      var en_short = [0, 0, 0, 0];
-      var pf = ns_hpfsmpl[chn & 1];
-      var pfPos = 0;
-      var attackThreshold = chn == 3 ? gfc.nsPsy.attackthre_s : gfc.nsPsy.attackthre;
-      var ns_uselongblock = 1;
-      if (chn == 2) {
-        for (var i = 0, j = 576; j > 0; ++i, --j) {
-          var l = ns_hpfsmpl[0][i];
-          var r = ns_hpfsmpl[1][i];
-          ns_hpfsmpl[0][i] = l + r;
-          ns_hpfsmpl[1][i] = l - r;
-        }
-      }
-      for (var i = 0; i < 3; i++) {
-        en_subshort[i] = gfc.nsPsy.last_en_subshort[chn][i + 6];
-        assert$9(gfc.nsPsy.last_en_subshort[chn][i + 4] > 0);
-        attack_intensity[i] = en_subshort[i] / gfc.nsPsy.last_en_subshort[chn][i + 4];
-        en_short[0] += en_subshort[i];
-      }
-      for (var i = 0; i < 9; i++) {
-        var pfe = pfPos + 576 / 9;
-        var p2 = 1;
-        for (; pfPos < pfe; pfPos++) {
-          if (p2 < Math.abs(pf[pfPos]))
-            p2 = Math.abs(pf[pfPos]);
-        }
-        gfc.nsPsy.last_en_subshort[chn][i] = en_subshort[i + 3] = p2;
-        en_short[1 + i / 3] += p2;
-        if (p2 > en_subshort[i + 3 - 2]) {
-          assert$9(en_subshort[i + 3 - 2] > 0);
-          p2 = p2 / en_subshort[i + 3 - 2];
-        } else if (en_subshort[i + 3 - 2] > p2 * 10) {
-          p2 = en_subshort[i + 3 - 2] / (p2 * 10);
-        } else {
-          p2 = 0;
-        }
-        attack_intensity[i + 3] = p2;
-      }
-      for (var i = 0; i < 3; ++i) {
-        var enn = en_subshort[i * 3 + 3] + en_subshort[i * 3 + 4] + en_subshort[i * 3 + 5];
-        var factor = 1;
-        if (en_subshort[i * 3 + 5] * 6 < enn) {
-          factor *= 0.5;
-          if (en_subshort[i * 3 + 4] * 6 < enn) {
-            factor *= 0.5;
-          }
-        }
-        sub_short_factor[chn][i] = factor;
-      }
-      if (gfp.analysis) {
-        var x = attack_intensity[0];
-        for (var i = 1; i < 12; i++) {
-          if (x < attack_intensity[i]) {
-            x = attack_intensity[i];
-          }
-        }
-        gfc.pinfo.ers[gr_out][chn] = gfc.pinfo.ers_save[chn];
-        gfc.pinfo.ers_save[chn] = x;
-      }
-      for (var i = 0; i < 12; i++) {
-        if (ns_attacks[chn][i / 3] == 0 && attack_intensity[i] > attackThreshold) {
-          ns_attacks[chn][i / 3] = i % 3 + 1;
-        }
-      }
-      for (var i = 1; i < 4; i++) {
-        var u = en_short[i - 1];
-        var v = en_short[i];
-        var m = Math.max(u, v);
-        if (m < 4e4) {
-          if (u < 1.7 * v && v < 1.7 * u) {
-            if (i == 1 && ns_attacks[chn][0] <= ns_attacks[chn][i]) {
-              ns_attacks[chn][0] = 0;
-            }
-            ns_attacks[chn][i] = 0;
-          }
-        }
-      }
-      if (ns_attacks[chn][0] <= gfc.nsPsy.lastAttacks[chn]) {
-        ns_attacks[chn][0] = 0;
-      }
-      if (gfc.nsPsy.lastAttacks[chn] == 3 || ns_attacks[chn][0] + ns_attacks[chn][1] + ns_attacks[chn][2] + ns_attacks[chn][3] != 0) {
-        ns_uselongblock = 0;
-        if (ns_attacks[chn][1] != 0 && ns_attacks[chn][0] != 0) {
-          ns_attacks[chn][1] = 0;
-        }
-        if (ns_attacks[chn][2] != 0 && ns_attacks[chn][1] != 0) {
-          ns_attacks[chn][2] = 0;
-        }
-        if (ns_attacks[chn][3] != 0 && ns_attacks[chn][2] != 0) {
-          ns_attacks[chn][3] = 0;
-        }
-      }
-      if (chn < 2) {
-        uselongblock[chn] = ns_uselongblock;
-      } else {
-        if (ns_uselongblock == 0) {
-          uselongblock[0] = uselongblock[1] = 0;
-        }
-      }
-      energy[chn] = gfc.tot_ener[chn];
-    }
-  }
-  function vbrpsy_skip_masking_s(gfc, chn, sblock) {
-    if (sblock == 0) {
-      for (var b = 0; b < gfc.npart_s; b++) {
-        gfc.nb_s2[chn][b] = gfc.nb_s1[chn][b];
-        gfc.nb_s1[chn][b] = 0;
-      }
-    }
-  }
-  function vbrpsy_skip_masking_l(gfc, chn) {
-    for (var b = 0; b < gfc.npart_l; b++) {
-      gfc.nb_2[chn][b] = gfc.nb_1[chn][b];
-      gfc.nb_1[chn][b] = 0;
-    }
-  }
-  function psyvbr_calc_mask_index_s(gfc, max, avg, mask_idx) {
-    var last_tab_entry = tab.length - 1;
-    var b = 0;
-    var a = avg[b] + avg[b + 1];
-    if (a > 0) {
-      var m = max[b];
-      if (m < max[b + 1])
-        m = max[b + 1];
-      assert$9(gfc.numlines_s[b] + gfc.numlines_s[b + 1] - 1 > 0);
-      a = 20 * (m * 2 - a) / (a * (gfc.numlines_s[b] + gfc.numlines_s[b + 1] - 1));
-      var k = 0 | a;
-      if (k > last_tab_entry)
-        k = last_tab_entry;
-      mask_idx[b] = k;
-    } else {
-      mask_idx[b] = 0;
-    }
-    for (b = 1; b < gfc.npart_s - 1; b++) {
-      a = avg[b - 1] + avg[b] + avg[b + 1];
-      assert$9(b + 1 < gfc.npart_s);
-      if (a > 0) {
-        var m = max[b - 1];
-        if (m < max[b])
-          m = max[b];
-        if (m < max[b + 1])
-          m = max[b + 1];
-        assert$9(
-          gfc.numlines_s[b - 1] + gfc.numlines_s[b] + gfc.numlines_s[b + 1] - 1 > 0
-        );
-        a = 20 * (m * 3 - a) / (a * (gfc.numlines_s[b - 1] + gfc.numlines_s[b] + gfc.numlines_s[b + 1] - 1));
-        var k = 0 | a;
-        if (k > last_tab_entry)
-          k = last_tab_entry;
-        mask_idx[b] = k;
-      } else {
-        mask_idx[b] = 0;
-      }
-    }
-    assert$9(b == gfc.npart_s - 1);
-    a = avg[b - 1] + avg[b];
-    if (a > 0) {
-      var m = max[b - 1];
-      if (m < max[b])
-        m = max[b];
-      assert$9(gfc.numlines_s[b - 1] + gfc.numlines_s[b] - 1 > 0);
-      a = 20 * (m * 2 - a) / (a * (gfc.numlines_s[b - 1] + gfc.numlines_s[b] - 1));
-      var k = 0 | a;
-      if (k > last_tab_entry)
-        k = last_tab_entry;
-      mask_idx[b] = k;
-    } else {
-      mask_idx[b] = 0;
-    }
-    assert$9(b == gfc.npart_s - 1);
-  }
-  function vbrpsy_compute_masking_s(gfp, fftenergy_s, eb, thr, chn, sblock) {
-    var gfc = gfp.internal_flags;
-    var max = new float[Encoder.CBANDS]();
-    var avg = new_float$a(Encoder.CBANDS);
-    var i, j, b;
-    var mask_idx_s = new int[Encoder.CBANDS]();
-    for (b = j = 0; b < gfc.npart_s; ++b) {
-      var ebb = 0;
-      var m = 0;
-      var n = gfc.numlines_s[b];
-      for (i = 0; i < n; ++i, ++j) {
-        var el = fftenergy_s[sblock][j];
-        ebb += el;
-        if (m < el)
-          m = el;
-      }
-      eb[b] = ebb;
-      max[b] = m;
-      avg[b] = ebb / n;
-      assert$9(avg[b] >= 0);
-    }
-    assert$9(b == gfc.npart_s);
-    for (; b < Encoder.CBANDS; ++b) {
-      max[b] = 0;
-      avg[b] = 0;
-    }
-    psyvbr_calc_mask_index_s(gfc, max, avg, mask_idx_s);
-    for (j = b = 0; b < gfc.npart_s; b++) {
-      var kk = gfc.s3ind_s[b][0];
-      var last = gfc.s3ind_s[b][1];
-      var dd, dd_n;
-      var x, ecb, avg_mask;
-      dd = mask_idx_s[kk];
-      dd_n = 1;
-      ecb = gfc.s3_ss[j] * eb[kk] * tab[mask_idx_s[kk]];
-      ++j;
-      ++kk;
-      while (kk <= last) {
-        dd += mask_idx_s[kk];
-        dd_n += 1;
-        x = gfc.s3_ss[j] * eb[kk] * tab[mask_idx_s[kk]];
-        ecb = vbrpsy_mask_add(ecb, x, kk - b);
-        ++j;
-        ++kk;
-      }
-      dd = (1 + 2 * dd) / (2 * dd_n);
-      avg_mask = tab[dd] * 0.5;
-      ecb *= avg_mask;
-      thr[b] = ecb;
-      gfc.nb_s2[chn][b] = gfc.nb_s1[chn][b];
-      gfc.nb_s1[chn][b] = ecb;
-      {
-        x = max[b];
-        x *= gfc.minval_s[b];
-        x *= avg_mask;
-        if (thr[b] > x) {
-          thr[b] = x;
-        }
-      }
-      if (gfc.masking_lower > 1) {
-        thr[b] *= gfc.masking_lower;
-      }
-      if (thr[b] > eb[b]) {
-        thr[b] = eb[b];
-      }
-      if (gfc.masking_lower < 1) {
-        thr[b] *= gfc.masking_lower;
-      }
-      assert$9(thr[b] >= 0);
-    }
-    for (; b < Encoder.CBANDS; ++b) {
-      eb[b] = 0;
-      thr[b] = 0;
-    }
-  }
-  function vbrpsy_compute_masking_l(gfc, fftenergy, eb_l, thr, chn) {
-    var max = new_float$a(Encoder.CBANDS);
-    var avg = new_float$a(Encoder.CBANDS);
-    var mask_idx_l = new_int$b(Encoder.CBANDS + 2);
-    var b;
-    calc_energy(gfc, fftenergy, eb_l, max, avg);
-    calc_mask_index_l(gfc, max, avg, mask_idx_l);
-    var k = 0;
-    for (b = 0; b < gfc.npart_l; b++) {
-      var x, ecb, avg_mask, t;
-      var kk = gfc.s3ind[b][0];
-      var last = gfc.s3ind[b][1];
-      var dd = 0;
-      var dd_n = 0;
-      dd = mask_idx_l[kk];
-      dd_n += 1;
-      ecb = gfc.s3_ll[k] * eb_l[kk] * tab[mask_idx_l[kk]];
-      ++k;
-      ++kk;
-      while (kk <= last) {
-        dd += mask_idx_l[kk];
-        dd_n += 1;
-        x = gfc.s3_ll[k] * eb_l[kk] * tab[mask_idx_l[kk]];
-        t = vbrpsy_mask_add(ecb, x, kk - b);
-        ecb = t;
-        ++k;
-        ++kk;
-      }
-      dd = (1 + 2 * dd) / (2 * dd_n);
-      avg_mask = tab[dd] * 0.5;
-      ecb *= avg_mask;
-      if (gfc.blocktype_old[chn & 1] == Encoder.SHORT_TYPE) {
-        var ecb_limit = rpelev * gfc.nb_1[chn][b];
-        if (ecb_limit > 0) {
-          thr[b] = Math.min(ecb, ecb_limit);
-        } else {
-          thr[b] = Math.min(ecb, eb_l[b] * NS_PREECHO_ATT2);
-        }
-      } else {
-        var ecb_limit_2 = rpelev2 * gfc.nb_2[chn][b];
-        var ecb_limit_1 = rpelev * gfc.nb_1[chn][b];
-        var ecb_limit;
-        if (ecb_limit_2 <= 0) {
-          ecb_limit_2 = ecb;
-        }
-        if (ecb_limit_1 <= 0) {
-          ecb_limit_1 = ecb;
-        }
-        if (gfc.blocktype_old[chn & 1] == Encoder.NORM_TYPE) {
-          ecb_limit = Math.min(ecb_limit_1, ecb_limit_2);
-        } else {
-          ecb_limit = ecb_limit_1;
-        }
-        thr[b] = Math.min(ecb, ecb_limit);
-      }
-      gfc.nb_2[chn][b] = gfc.nb_1[chn][b];
-      gfc.nb_1[chn][b] = ecb;
-      {
-        x = max[b];
-        x *= gfc.minval_l[b];
-        x *= avg_mask;
-        if (thr[b] > x) {
-          thr[b] = x;
-        }
-      }
-      if (gfc.masking_lower > 1) {
-        thr[b] *= gfc.masking_lower;
-      }
-      if (thr[b] > eb_l[b]) {
-        thr[b] = eb_l[b];
-      }
-      if (gfc.masking_lower < 1) {
-        thr[b] *= gfc.masking_lower;
-      }
-      assert$9(thr[b] >= 0);
-    }
-    for (; b < Encoder.CBANDS; ++b) {
-      eb_l[b] = 0;
-      thr[b] = 0;
-    }
-  }
-  function vbrpsy_compute_block_type(gfp, uselongblock) {
-    var gfc = gfp.internal_flags;
-    if (gfp.short_blocks == ShortBlock$2.short_block_coupled && !(uselongblock[0] != 0 && uselongblock[1] != 0)) {
-      uselongblock[0] = uselongblock[1] = 0;
-    }
-    for (var chn = 0; chn < gfc.channels_out; chn++) {
-      if (gfp.short_blocks == ShortBlock$2.short_block_dispensed) {
-        uselongblock[chn] = 1;
-      }
-      if (gfp.short_blocks == ShortBlock$2.short_block_forced) {
-        uselongblock[chn] = 0;
-      }
-    }
-  }
-  function vbrpsy_apply_block_type(gfp, uselongblock, blocktype_d) {
-    var gfc = gfp.internal_flags;
-    for (var chn = 0; chn < gfc.channels_out; chn++) {
-      var blocktype = Encoder.NORM_TYPE;
-      if (uselongblock[chn] != 0) {
-        assert$9(gfc.blocktype_old[chn] != Encoder.START_TYPE);
-        if (gfc.blocktype_old[chn] == Encoder.SHORT_TYPE) {
-          blocktype = Encoder.STOP_TYPE;
-        }
-      } else {
-        blocktype = Encoder.SHORT_TYPE;
-        if (gfc.blocktype_old[chn] == Encoder.NORM_TYPE) {
-          gfc.blocktype_old[chn] = Encoder.START_TYPE;
-        }
-        if (gfc.blocktype_old[chn] == Encoder.STOP_TYPE) {
-          gfc.blocktype_old[chn] = Encoder.SHORT_TYPE;
-        }
-      }
-      blocktype_d[chn] = gfc.blocktype_old[chn];
-      gfc.blocktype_old[chn] = blocktype;
-    }
-  }
-  function vbrpsy_compute_MS_thresholds(eb, thr, cb_mld, ath_cb, athadjust, msfix, n) {
-    var msfix2 = msfix * 2;
-    var athlower = msfix > 0 ? Math.pow(10, athadjust) : 1;
-    var rside, rmid;
-    for (var b = 0; b < n; ++b) {
-      var ebM = eb[2][b];
-      var ebS = eb[3][b];
-      var thmL = thr[0][b];
-      var thmR = thr[1][b];
-      var thmM = thr[2][b];
-      var thmS = thr[3][b];
-      if (thmL <= 1.58 * thmR && thmR <= 1.58 * thmL) {
-        var mld_m = cb_mld[b] * ebS;
-        var mld_s = cb_mld[b] * ebM;
-        rmid = Math.max(thmM, Math.min(thmS, mld_m));
-        rside = Math.max(thmS, Math.min(thmM, mld_s));
-      } else {
-        rmid = thmM;
-        rside = thmS;
-      }
-      if (msfix > 0) {
-        var thmLR, thmMS;
-        var ath = ath_cb[b] * athlower;
-        thmLR = Math.min(Math.max(thmL, ath), Math.max(thmR, ath));
-        thmM = Math.max(rmid, ath);
-        thmS = Math.max(rside, ath);
-        thmMS = thmM + thmS;
-        if (thmMS > 0 && thmLR * msfix2 < thmMS) {
-          var f = thmLR * msfix2 / thmMS;
-          thmM *= f;
-          thmS *= f;
-        }
-        rmid = Math.min(thmM, rmid);
-        rside = Math.min(thmS, rside);
-      }
-      if (rmid > ebM) {
-        rmid = ebM;
-      }
-      if (rside > ebS) {
-        rside = ebS;
-      }
-      thr[2][b] = rmid;
-      thr[3][b] = rside;
-    }
-  }
-  this.L3psycho_anal_vbr = function(gfp, buffer, bufPos, gr_out, masking_ratio, masking_MS_ratio, percep_entropy, percep_MS_entropy, energy, blocktype_d) {
-    var gfc = gfp.internal_flags;
-    var wsamp_l;
-    var wsamp_s;
-    var fftenergy = new_float$a(Encoder.HBLKSIZE);
-    var fftenergy_s = new_float_n$3([3, Encoder.HBLKSIZE_s]);
-    var wsamp_L = new_float_n$3([2, Encoder.BLKSIZE]);
-    var wsamp_S = new_float_n$3([2, 3, Encoder.BLKSIZE_s]);
-    var eb = new_float_n$3([4, Encoder.CBANDS]);
-    var thr = new_float_n$3([4, Encoder.CBANDS]);
-    var sub_short_factor = new_float_n$3([4, 3]);
-    var pcfact = 0.6;
-    var ns_attacks = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0]
-    ];
-    var uselongblock = new_int$b(2);
-    var n_chn_psy = gfp.mode == MPEGMode.JOINT_STEREO ? 4 : gfc.channels_out;
-    vbrpsy_attack_detection(
-      gfp,
-      buffer,
-      bufPos,
-      gr_out,
-      masking_ratio,
-      masking_MS_ratio,
-      energy,
-      sub_short_factor,
-      ns_attacks,
-      uselongblock
-    );
-    vbrpsy_compute_block_type(gfp, uselongblock);
-    {
-      for (var chn = 0; chn < n_chn_psy; chn++) {
-        var ch01 = chn & 1;
-        wsamp_l = wsamp_L;
-        vbrpsy_compute_fft_l(
-          gfp,
-          buffer,
-          bufPos,
-          chn,
-          gr_out,
-          fftenergy,
-          wsamp_l,
-          ch01
-        );
-        vbrpsy_compute_loudness_approximation_l(gfp, gr_out, chn, fftenergy);
-        if (uselongblock[ch01] != 0) {
-          vbrpsy_compute_masking_l(gfc, fftenergy, eb[chn], thr[chn], chn);
-        } else {
-          vbrpsy_skip_masking_l(gfc, chn);
-        }
-      }
-      if (uselongblock[0] + uselongblock[1] == 2) {
-        if (gfp.mode == MPEGMode.JOINT_STEREO) {
-          vbrpsy_compute_MS_thresholds(
-            eb,
-            thr,
-            gfc.mld_cb_l,
-            gfc.ATH.cb_l,
-            gfp.ATHlower * gfc.ATH.adjust,
-            gfp.msfix,
-            gfc.npart_l
-          );
-        }
-      }
-      for (var chn = 0; chn < n_chn_psy; chn++) {
-        var ch01 = chn & 1;
-        if (uselongblock[ch01] != 0) {
-          convert_partition2scalefac_l(gfc, eb[chn], thr[chn], chn);
-        }
-      }
-    }
-    {
-      for (var sblock = 0; sblock < 3; sblock++) {
-        for (var chn = 0; chn < n_chn_psy; ++chn) {
-          var ch01 = chn & 1;
-          if (uselongblock[ch01] != 0) {
-            vbrpsy_skip_masking_s(gfc, chn, sblock);
-          } else {
-            wsamp_s = wsamp_S;
-            vbrpsy_compute_fft_s(
-              gfp,
-              buffer,
-              bufPos,
-              chn,
-              sblock,
-              fftenergy_s,
-              wsamp_s,
-              ch01
-            );
-            vbrpsy_compute_masking_s(
-              gfp,
-              fftenergy_s,
-              eb[chn],
-              thr[chn],
-              chn,
-              sblock
-            );
-          }
-        }
-        if (uselongblock[0] + uselongblock[1] == 0) {
-          if (gfp.mode == MPEGMode.JOINT_STEREO) {
-            vbrpsy_compute_MS_thresholds(
-              eb,
-              thr,
-              gfc.mld_cb_s,
-              gfc.ATH.cb_s,
-              gfp.ATHlower * gfc.ATH.adjust,
-              gfp.msfix,
-              gfc.npart_s
-            );
-          }
-        }
-        for (var chn = 0; chn < n_chn_psy; ++chn) {
-          var ch01 = chn & 1;
-          if (uselongblock[ch01] == 0) {
-            convert_partition2scalefac_s(gfc, eb[chn], thr[chn], chn, sblock);
-          }
-        }
-      }
-      for (var chn = 0; chn < n_chn_psy; chn++) {
-        var ch01 = chn & 1;
-        if (uselongblock[ch01] != 0) {
-          continue;
-        }
-        for (var sb = 0; sb < Encoder.SBMAX_s; sb++) {
-          var new_thmm = new_float$a(3);
-          for (var sblock = 0; sblock < 3; sblock++) {
-            var thmm = gfc.thm[chn].s[sb][sblock];
-            thmm *= NS_PREECHO_ATT0;
-            if (ns_attacks[chn][sblock] >= 2 || ns_attacks[chn][sblock + 1] == 1) {
-              var idx = sblock != 0 ? sblock - 1 : 2;
-              var p2 = NS_INTERP(
-                gfc.thm[chn].s[sb][idx],
-                thmm,
-                NS_PREECHO_ATT1 * pcfact
-              );
-              thmm = Math.min(thmm, p2);
-            } else if (ns_attacks[chn][sblock] == 1) {
-              var idx = sblock != 0 ? sblock - 1 : 2;
-              var p2 = NS_INTERP(
-                gfc.thm[chn].s[sb][idx],
-                thmm,
-                NS_PREECHO_ATT2 * pcfact
-              );
-              thmm = Math.min(thmm, p2);
-            } else if (sblock != 0 && ns_attacks[chn][sblock - 1] == 3 || sblock == 0 && gfc.nsPsy.lastAttacks[chn] == 3) {
-              var idx = sblock != 2 ? sblock + 1 : 0;
-              var p2 = NS_INTERP(
-                gfc.thm[chn].s[sb][idx],
-                thmm,
-                NS_PREECHO_ATT2 * pcfact
-              );
-              thmm = Math.min(thmm, p2);
-            }
-            thmm *= sub_short_factor[chn][sblock];
-            new_thmm[sblock] = thmm;
-          }
-          for (var sblock = 0; sblock < 3; sblock++) {
-            gfc.thm[chn].s[sb][sblock] = new_thmm[sblock];
-          }
-        }
-      }
-    }
-    for (var chn = 0; chn < n_chn_psy; chn++) {
-      gfc.nsPsy.lastAttacks[chn] = ns_attacks[chn][2];
-    }
-    vbrpsy_apply_block_type(gfp, uselongblock, blocktype_d);
-    for (var chn = 0; chn < n_chn_psy; chn++) {
-      var ppe;
-      var ppePos;
-      var type;
-      var mr;
-      if (chn > 1) {
-        ppe = percep_MS_entropy;
-        ppePos = -2;
-        type = Encoder.NORM_TYPE;
-        if (blocktype_d[0] == Encoder.SHORT_TYPE || blocktype_d[1] == Encoder.SHORT_TYPE) {
-          type = Encoder.SHORT_TYPE;
-        }
-        mr = masking_MS_ratio[gr_out][chn - 2];
-      } else {
-        ppe = percep_entropy;
-        ppePos = 0;
-        type = blocktype_d[chn];
-        mr = masking_ratio[gr_out][chn];
-      }
-      if (type == Encoder.SHORT_TYPE) {
-        ppe[ppePos + chn] = pecalc_s(mr, gfc.masking_lower);
-      } else {
-        ppe[ppePos + chn] = pecalc_l(mr, gfc.masking_lower);
-      }
-      if (gfp.analysis) {
-        gfc.pinfo.pe[gr_out][chn] = ppe[ppePos + chn];
-      }
-    }
-    return 0;
-  };
-  function s3_func_x(bark, hf_slope) {
-    var tempx = bark;
-    var tempy;
-    if (tempx >= 0) {
-      tempy = -tempx * 27;
-    } else {
-      tempy = tempx * hf_slope;
-    }
-    if (tempy <= -72) {
-      return 0;
-    }
-    return Math.exp(tempy * LN_TO_LOG10);
-  }
-  function norm_s3_func_x(hf_slope) {
-    var lim_a = 0;
-    var lim_b = 0;
-    {
-      var x = 0;
-      var l;
-      var h2;
-      for (x = 0; s3_func_x(x, hf_slope) > 1e-20; x -= 1)
-        ;
-      l = x;
-      h2 = 0;
-      while (Math.abs(h2 - l) > 1e-12) {
-        x = (h2 + l) / 2;
-        if (s3_func_x(x, hf_slope) > 0) {
-          h2 = x;
-        } else {
-          l = x;
-        }
-      }
-      lim_a = l;
-    }
-    {
-      var x = 0;
-      var l;
-      var h2;
-      for (x = 0; s3_func_x(x, hf_slope) > 1e-20; x += 1)
-        ;
-      l = 0;
-      h2 = x;
-      while (Math.abs(h2 - l) > 1e-12) {
-        x = (h2 + l) / 2;
-        if (s3_func_x(x, hf_slope) > 0) {
-          l = x;
-        } else {
-          h2 = x;
-        }
-      }
-      lim_b = h2;
-    }
-    {
-      var sum = 0;
-      var m = 1e3;
-      var i;
-      for (i = 0; i <= m; ++i) {
-        var x = lim_a + i * (lim_b - lim_a) / m;
-        var y = s3_func_x(x, hf_slope);
-        sum += y;
-      }
-      {
-        var norm = (m + 1) / (sum * (lim_b - lim_a));
-        return norm;
-      }
-    }
-  }
-  function s3_func(bark) {
-    var tempx, x, tempy, temp;
-    tempx = bark;
-    if (tempx >= 0)
-      tempx *= 3;
-    else
-      tempx *= 1.5;
-    if (tempx >= 0.5 && tempx <= 2.5) {
-      temp = tempx - 0.5;
-      x = 8 * (temp * temp - 2 * temp);
-    } else
-      x = 0;
-    tempx += 0.474;
-    tempy = 15.811389 + 7.5 * tempx - 17.5 * Math.sqrt(1 + tempx * tempx);
-    if (tempy <= -60)
-      return 0;
-    tempx = Math.exp((x + tempy) * LN_TO_LOG10);
-    tempx /= 0.6609193;
-    return tempx;
-  }
-  function freq2bark(freq) {
-    if (freq < 0)
-      freq = 0;
-    freq = freq * 1e-3;
-    return 13 * Math.atan(0.76 * freq) + 3.5 * Math.atan(freq * freq / (7.5 * 7.5));
-  }
-  function init_numline(numlines, bo, bm, bval, bval_width, mld, bo_w, sfreq, blksize, scalepos, deltafreq, sbmax) {
-    var b_frq = new_float$a(Encoder.CBANDS + 1);
-    var sample_freq_frac = sfreq / (sbmax > 15 ? 2 * 576 : 2 * 192);
-    var partition = new_int$b(Encoder.HBLKSIZE);
-    var i;
-    sfreq /= blksize;
-    var j = 0;
-    var ni = 0;
-    for (i = 0; i < Encoder.CBANDS; i++) {
-      var bark1;
-      var j2;
-      bark1 = freq2bark(sfreq * j);
-      b_frq[i] = sfreq * j;
-      for (j2 = j; freq2bark(sfreq * j2) - bark1 < DELBARK && j2 <= blksize / 2; j2++)
-        ;
-      numlines[i] = j2 - j;
-      ni = i + 1;
-      while (j < j2) {
-        partition[j++] = i;
-      }
-      if (j > blksize / 2) {
-        j = blksize / 2;
-        ++i;
-        break;
-      }
-    }
-    b_frq[i] = sfreq * j;
-    for (var sfb = 0; sfb < sbmax; sfb++) {
-      var i1, i2, start2, end;
-      var arg;
-      start2 = scalepos[sfb];
-      end = scalepos[sfb + 1];
-      i1 = 0 | Math.floor(0.5 + deltafreq * (start2 - 0.5));
-      if (i1 < 0)
-        i1 = 0;
-      i2 = 0 | Math.floor(0.5 + deltafreq * (end - 0.5));
-      if (i2 > blksize / 2)
-        i2 = blksize / 2;
-      bm[sfb] = (partition[i1] + partition[i2]) / 2;
-      bo[sfb] = partition[i2];
-      var f_tmp = sample_freq_frac * end;
-      bo_w[sfb] = (f_tmp - b_frq[bo[sfb]]) / (b_frq[bo[sfb] + 1] - b_frq[bo[sfb]]);
-      if (bo_w[sfb] < 0) {
-        bo_w[sfb] = 0;
-      } else {
-        if (bo_w[sfb] > 1) {
-          bo_w[sfb] = 1;
-        }
-      }
-      arg = freq2bark(sfreq * scalepos[sfb] * deltafreq);
-      arg = Math.min(arg, 15.5) / 15.5;
-      mld[sfb] = Math.pow(10, 1.25 * (1 - Math.cos(Math.PI * arg)) - 2.5);
-    }
-    j = 0;
-    for (var k = 0; k < ni; k++) {
-      var w = numlines[k];
-      var bark1, bark2;
-      bark1 = freq2bark(sfreq * j);
-      bark2 = freq2bark(sfreq * (j + w - 1));
-      bval[k] = 0.5 * (bark1 + bark2);
-      bark1 = freq2bark(sfreq * (j - 0.5));
-      bark2 = freq2bark(sfreq * (j + w - 0.5));
-      bval_width[k] = bark2 - bark1;
-      j += w;
-    }
-    return ni;
-  }
-  function init_s3_values(s3ind, npart, bval, bval_width, norm, use_old_s3) {
-    var s3 = new_float_n$3([Encoder.CBANDS, Encoder.CBANDS]);
-    var j;
-    var numberOfNoneZero = 0;
-    if (use_old_s3) {
-      for (var i = 0; i < npart; i++) {
-        for (j = 0; j < npart; j++) {
-          var v = s3_func(bval[i] - bval[j]) * bval_width[j];
-          s3[i][j] = v * norm[i];
-        }
-      }
-    } else {
-      for (j = 0; j < npart; j++) {
-        var hf_slope = 15 + Math.min(21 / bval[j], 12);
-        var s3_x_norm = norm_s3_func_x(hf_slope);
-        for (var i = 0; i < npart; i++) {
-          var v = s3_x_norm * s3_func_x(bval[i] - bval[j], hf_slope) * bval_width[j];
-          s3[i][j] = v * norm[i];
-        }
-      }
-    }
-    for (var i = 0; i < npart; i++) {
-      for (j = 0; j < npart; j++) {
-        if (s3[i][j] > 0)
-          break;
-      }
-      s3ind[i][0] = j;
-      for (j = npart - 1; j > 0; j--) {
-        if (s3[i][j] > 0)
-          break;
-      }
-      s3ind[i][1] = j;
-      numberOfNoneZero += s3ind[i][1] - s3ind[i][0] + 1;
-    }
-    var p2 = new_float$a(numberOfNoneZero);
-    var k = 0;
-    for (var i = 0; i < npart; i++) {
-      for (j = s3ind[i][0]; j <= s3ind[i][1]; j++)
-        p2[k++] = s3[i][j];
-    }
+    });
     return p2;
   }
-  function stereo_demask(f) {
-    var arg = freq2bark(f);
-    arg = Math.min(arg, 15.5) / 15.5;
-    return Math.pow(10, 1.25 * (1 - Math.cos(Math.PI * arg)) - 2.5);
-  }
-  this.psymodel_init = function(gfp) {
-    var gfc = gfp.internal_flags;
-    var i;
-    var useOldS3 = true;
-    var bvl_a = 13;
-    var bvl_b = 24;
-    var snr_l_a = 0;
-    var snr_l_b = 0;
-    var snr_s_a = -8.25;
-    var snr_s_b = -4.5;
-    var bval = new_float$a(Encoder.CBANDS);
-    var bval_width = new_float$a(Encoder.CBANDS);
-    var norm = new_float$a(Encoder.CBANDS);
-    var sfreq = gfp.out_samplerate;
-    switch (gfp.experimentalZ) {
-      default:
-      case 0:
-        useOldS3 = true;
-        break;
-      case 1:
-        useOldS3 = !(gfp.VBR == VbrMode$5.vbr_mtrh || gfp.VBR == VbrMode$5.vbr_mt);
-        break;
-      case 2:
-        useOldS3 = false;
-        break;
-      case 3:
-        bvl_a = 8;
-        snr_l_a = -1.75;
-        snr_l_b = -0.0125;
-        snr_s_a = -8.25;
-        snr_s_b = -2.25;
-        break;
-    }
-    gfc.ms_ener_ratio_old = 0.25;
-    gfc.blocktype_old[0] = gfc.blocktype_old[1] = Encoder.NORM_TYPE;
-    for (i = 0; i < 4; ++i) {
-      for (var j = 0; j < Encoder.CBANDS; ++j) {
-        gfc.nb_1[i][j] = 1e20;
-        gfc.nb_2[i][j] = 1e20;
-        gfc.nb_s1[i][j] = gfc.nb_s2[i][j] = 1;
-      }
-      for (var sb = 0; sb < Encoder.SBMAX_l; sb++) {
-        gfc.en[i].l[sb] = 1e20;
-        gfc.thm[i].l[sb] = 1e20;
-      }
-      for (var j = 0; j < 3; ++j) {
-        for (var sb = 0; sb < Encoder.SBMAX_s; sb++) {
-          gfc.en[i].s[sb][j] = 1e20;
-          gfc.thm[i].s[sb][j] = 1e20;
-        }
-        gfc.nsPsy.lastAttacks[i] = 0;
-      }
-      for (var j = 0; j < 9; j++)
-        gfc.nsPsy.last_en_subshort[i][j] = 10;
-    }
-    gfc.loudness_sq_save[0] = gfc.loudness_sq_save[1] = 0;
-    gfc.npart_l = init_numline(
-      gfc.numlines_l,
-      gfc.bo_l,
-      gfc.bm_l,
-      bval,
-      bval_width,
-      gfc.mld_l,
-      gfc.PSY.bo_l_weight,
-      sfreq,
-      Encoder.BLKSIZE,
-      gfc.scalefac_band.l,
-      Encoder.BLKSIZE / (2 * 576),
-      Encoder.SBMAX_l
-    );
-    assert$9(gfc.npart_l < Encoder.CBANDS);
-    for (i = 0; i < gfc.npart_l; i++) {
-      var snr = snr_l_a;
-      if (bval[i] >= bvl_a) {
-        snr = snr_l_b * (bval[i] - bvl_a) / (bvl_b - bvl_a) + snr_l_a * (bvl_b - bval[i]) / (bvl_b - bvl_a);
-      }
-      norm[i] = Math.pow(10, snr / 10);
-      if (gfc.numlines_l[i] > 0) {
-        gfc.rnumlines_l[i] = 1 / gfc.numlines_l[i];
-      } else {
-        gfc.rnumlines_l[i] = 0;
-      }
-    }
-    gfc.s3_ll = init_s3_values(
-      gfc.s3ind,
-      gfc.npart_l,
-      bval,
-      bval_width,
-      norm,
-      useOldS3
-    );
-    var j = 0;
-    for (i = 0; i < gfc.npart_l; i++) {
-      var x;
-      x = Float$1.MAX_VALUE;
-      for (var k = 0; k < gfc.numlines_l[i]; k++, j++) {
-        var freq = sfreq * j / (1e3 * Encoder.BLKSIZE);
-        var level;
-        level = this.ATHformula(freq * 1e3, gfp) - 20;
-        level = Math.pow(10, 0.1 * level);
-        level *= gfc.numlines_l[i];
-        if (x > level)
-          x = level;
-      }
-      gfc.ATH.cb_l[i] = x;
-      x = -20 + bval[i] * 20 / 10;
-      if (x > 6) {
-        x = 100;
-      }
-      if (x < -15) {
-        x = -15;
-      }
-      x -= 8;
-      gfc.minval_l[i] = Math.pow(10, x / 10) * gfc.numlines_l[i];
-    }
-    gfc.npart_s = init_numline(
-      gfc.numlines_s,
-      gfc.bo_s,
-      gfc.bm_s,
-      bval,
-      bval_width,
-      gfc.mld_s,
-      gfc.PSY.bo_s_weight,
-      sfreq,
-      Encoder.BLKSIZE_s,
-      gfc.scalefac_band.s,
-      Encoder.BLKSIZE_s / (2 * 192),
-      Encoder.SBMAX_s
-    );
-    assert$9(gfc.npart_s < Encoder.CBANDS);
-    j = 0;
-    for (i = 0; i < gfc.npart_s; i++) {
-      var x;
-      var snr = snr_s_a;
-      if (bval[i] >= bvl_a) {
-        snr = snr_s_b * (bval[i] - bvl_a) / (bvl_b - bvl_a) + snr_s_a * (bvl_b - bval[i]) / (bvl_b - bvl_a);
-      }
-      norm[i] = Math.pow(10, snr / 10);
-      x = Float$1.MAX_VALUE;
-      for (var k = 0; k < gfc.numlines_s[i]; k++, j++) {
-        var freq = sfreq * j / (1e3 * Encoder.BLKSIZE_s);
-        var level;
-        level = this.ATHformula(freq * 1e3, gfp) - 20;
-        level = Math.pow(10, 0.1 * level);
-        level *= gfc.numlines_s[i];
-        if (x > level)
-          x = level;
-      }
-      gfc.ATH.cb_s[i] = x;
-      x = -7 + bval[i] * 7 / 12;
-      if (bval[i] > 12) {
-        x *= 1 + Math.log(1 + x) * 3.1;
-      }
-      if (bval[i] < 12) {
-        x *= 1 + Math.log(1 - x) * 2.3;
-      }
-      if (x < -15) {
-        x = -15;
-      }
-      x -= 8;
-      gfc.minval_s[i] = Math.pow(10, x / 10) * gfc.numlines_s[i];
-    }
-    gfc.s3_ss = init_s3_values(
-      gfc.s3ind_s,
-      gfc.npart_s,
-      bval,
-      bval_width,
-      norm,
-      useOldS3
-    );
-    init_mask_add_max_values();
-    fft.init_fft(gfc);
-    gfc.decay = Math.exp(
-      -1 * LOG10 / (temporalmask_sustain_sec * sfreq / 192)
-    );
-    {
-      var msfix;
-      msfix = NS_MSFIX;
-      if ((gfp.exp_nspsytune & 2) != 0)
-        msfix = 1;
-      if (Math.abs(gfp.msfix) > 0)
-        msfix = gfp.msfix;
-      gfp.msfix = msfix;
-      for (var b = 0; b < gfc.npart_l; b++) {
-        if (gfc.s3ind[b][1] > gfc.npart_l - 1)
-          gfc.s3ind[b][1] = gfc.npart_l - 1;
-      }
-    }
-    var frame_duration = 576 * gfc.mode_gr / sfreq;
-    gfc.ATH.decay = Math.pow(10, -12 / 10 * frame_duration);
-    gfc.ATH.adjust = 0.01;
-    gfc.ATH.adjustLimit = 1;
-    assert$9(gfc.bo_l[Encoder.SBMAX_l - 1] <= gfc.npart_l);
-    assert$9(gfc.bo_s[Encoder.SBMAX_s - 1] <= gfc.npart_s);
-    if (gfp.ATHtype != -1) {
-      var freq;
-      var freq_inc = gfp.out_samplerate / Encoder.BLKSIZE;
-      var eql_balance = 0;
-      freq = 0;
-      for (i = 0; i < Encoder.BLKSIZE / 2; ++i) {
-        freq += freq_inc;
-        gfc.ATH.eql_w[i] = 1 / Math.pow(10, this.ATHformula(freq, gfp) / 10);
-        eql_balance += gfc.ATH.eql_w[i];
-      }
-      eql_balance = 1 / eql_balance;
-      for (i = Encoder.BLKSIZE / 2; --i >= 0; ) {
-        gfc.ATH.eql_w[i] *= eql_balance;
-      }
-    }
-    {
-      for (var b = j = 0; b < gfc.npart_s; ++b) {
-        for (i = 0; i < gfc.numlines_s[b]; ++i) {
-          ++j;
-        }
-      }
-      for (var b = j = 0; b < gfc.npart_l; ++b) {
-        for (i = 0; i < gfc.numlines_l[b]; ++i) {
-          ++j;
-        }
-      }
-    }
-    j = 0;
-    for (i = 0; i < gfc.npart_l; i++) {
-      var freq = sfreq * (j + gfc.numlines_l[i] / 2) / (1 * Encoder.BLKSIZE);
-      gfc.mld_cb_l[i] = stereo_demask(freq);
-      j += gfc.numlines_l[i];
-    }
-    for (; i < Encoder.CBANDS; ++i) {
-      gfc.mld_cb_l[i] = 1;
-    }
-    j = 0;
-    for (i = 0; i < gfc.npart_s; i++) {
-      var freq = sfreq * (j + gfc.numlines_s[i] / 2) / (1 * Encoder.BLKSIZE_s);
-      gfc.mld_cb_s[i] = stereo_demask(freq);
-      j += gfc.numlines_s[i];
-    }
-    for (; i < Encoder.CBANDS; ++i) {
-      gfc.mld_cb_s[i] = 1;
-    }
-    return 0;
-  };
-  function ATHformula_GB(f, value) {
-    if (f < -0.3)
-      f = 3410;
-    f /= 1e3;
-    f = Math.max(0.1, f);
-    var ath = 3.64 * Math.pow(f, -0.8) - 6.8 * Math.exp(-0.6 * Math.pow(f - 3.4, 2)) + 6 * Math.exp(-0.15 * Math.pow(f - 8.7, 2)) + (0.6 + 0.04 * value) * 1e-3 * Math.pow(f, 4);
-    return ath;
-  }
-  this.ATHformula = function(f, gfp) {
-    var ath;
-    switch (gfp.ATHtype) {
-      case 0:
-        ath = ATHformula_GB(f, 9);
-        break;
-      case 1:
-        ath = ATHformula_GB(f, -1);
-        break;
-      case 2:
-        ath = ATHformula_GB(f, 0);
-        break;
-      case 3:
-        ath = ATHformula_GB(f, 1) + 6;
-        break;
-      case 4:
-        ath = ATHformula_GB(f, gfp.ATHcurve);
-        break;
-      default:
-        ath = ATHformula_GB(f, 0);
-        break;
-    }
-    return ath;
-  };
-}
-function LameGlobalFlags() {
-  this.class_id = 0;
-  this.num_samples = 0;
-  this.num_channels = 0;
-  this.in_samplerate = 0;
-  this.out_samplerate = 0;
-  this.scale = 0;
-  this.scale_left = 0;
-  this.scale_right = 0;
-  this.analysis = false;
-  this.bWriteVbrTag = false;
-  this.decode_only = false;
-  this.quality = 0;
-  this.mode = MPEGMode.STEREO;
-  this.force_ms = false;
-  this.free_format = false;
-  this.findReplayGain = false;
-  this.decode_on_the_fly = false;
-  this.write_id3tag_automatic = false;
-  this.brate = 0;
-  this.compression_ratio = 0;
-  this.copyright = 0;
-  this.original = 0;
-  this.extension = 0;
-  this.emphasis = 0;
-  this.error_protection = 0;
-  this.strict_ISO = false;
-  this.disable_reservoir = false;
-  this.quant_comp = 0;
-  this.quant_comp_short = 0;
-  this.experimentalY = false;
-  this.experimentalZ = 0;
-  this.exp_nspsytune = 0;
-  this.preset = 0;
-  this.VBR = null;
-  this.VBR_q_frac = 0;
-  this.VBR_q = 0;
-  this.VBR_mean_bitrate_kbps = 0;
-  this.VBR_min_bitrate_kbps = 0;
-  this.VBR_max_bitrate_kbps = 0;
-  this.VBR_hard_min = 0;
-  this.lowpassfreq = 0;
-  this.highpassfreq = 0;
-  this.lowpasswidth = 0;
-  this.highpasswidth = 0;
-  this.maskingadjust = 0;
-  this.maskingadjust_short = 0;
-  this.ATHonly = false;
-  this.ATHshort = false;
-  this.noATH = false;
-  this.ATHtype = 0;
-  this.ATHcurve = 0;
-  this.ATHlower = 0;
-  this.athaa_type = 0;
-  this.athaa_loudapprox = 0;
-  this.athaa_sensitivity = 0;
-  this.short_blocks = null;
-  this.useTemporal = false;
-  this.interChRatio = 0;
-  this.msfix = 0;
-  this.tune = false;
-  this.tune_value_a = 0;
-  this.version = 0;
-  this.encoder_delay = 0;
-  this.encoder_padding = 0;
-  this.framesize = 0;
-  this.frameNum = 0;
-  this.lame_allocated_gfp = 0;
-  this.internal_flags = null;
-}
-var L3Side$1 = {};
-L3Side$1.SFBMAX = Encoder.SBMAX_s * 3;
-var new_float$9 = common.new_float;
-var new_int$a = common.new_int;
-function GrInfo() {
-  this.xr = new_float$9(576);
-  this.l3_enc = new_int$a(576);
-  this.scalefac = new_int$a(L3Side$1.SFBMAX);
-  this.xrpow_max = 0;
-  this.part2_3_length = 0;
-  this.big_values = 0;
-  this.count1 = 0;
-  this.global_gain = 0;
-  this.scalefac_compress = 0;
-  this.block_type = 0;
-  this.mixed_block_flag = 0;
-  this.table_select = new_int$a(3);
-  this.subblock_gain = new_int$a(3 + 1);
-  this.region0_count = 0;
-  this.region1_count = 0;
-  this.preflag = 0;
-  this.scalefac_scale = 0;
-  this.count1table_select = 0;
-  this.part2_length = 0;
-  this.sfb_lmax = 0;
-  this.sfb_smin = 0;
-  this.psy_lmax = 0;
-  this.sfbmax = 0;
-  this.psymax = 0;
-  this.sfbdivide = 0;
-  this.width = new_int$a(L3Side$1.SFBMAX);
-  this.window = new_int$a(L3Side$1.SFBMAX);
-  this.count1bits = 0;
-  this.sfb_partition_table = null;
-  this.slen = new_int$a(4);
-  this.max_nonzero_coeff = 0;
-  var self2 = this;
-  function clone_int(array) {
-    return new Int32Array(array);
-  }
-  function clone_float(array) {
-    return new Float32Array(array);
-  }
-  this.assign = function(other) {
-    self2.xr = clone_float(other.xr);
-    self2.l3_enc = clone_int(other.l3_enc);
-    self2.scalefac = clone_int(other.scalefac);
-    self2.xrpow_max = other.xrpow_max;
-    self2.part2_3_length = other.part2_3_length;
-    self2.big_values = other.big_values;
-    self2.count1 = other.count1;
-    self2.global_gain = other.global_gain;
-    self2.scalefac_compress = other.scalefac_compress;
-    self2.block_type = other.block_type;
-    self2.mixed_block_flag = other.mixed_block_flag;
-    self2.table_select = clone_int(other.table_select);
-    self2.subblock_gain = clone_int(other.subblock_gain);
-    self2.region0_count = other.region0_count;
-    self2.region1_count = other.region1_count;
-    self2.preflag = other.preflag;
-    self2.scalefac_scale = other.scalefac_scale;
-    self2.count1table_select = other.count1table_select;
-    self2.part2_length = other.part2_length;
-    self2.sfb_lmax = other.sfb_lmax;
-    self2.sfb_smin = other.sfb_smin;
-    self2.psy_lmax = other.psy_lmax;
-    self2.sfbmax = other.sfbmax;
-    self2.psymax = other.psymax;
-    self2.sfbdivide = other.sfbdivide;
-    self2.width = clone_int(other.width);
-    self2.window = clone_int(other.window);
-    self2.count1bits = other.count1bits;
-    self2.sfb_partition_table = other.sfb_partition_table.slice(0);
-    self2.slen = clone_int(other.slen);
-    self2.max_nonzero_coeff = other.max_nonzero_coeff;
-  };
-}
-var new_int$9 = common.new_int;
-function IIISideInfo() {
-  this.tt = [
-    [null, null],
-    [null, null]
-  ];
-  this.main_data_begin = 0;
-  this.private_bits = 0;
-  this.resvDrain_pre = 0;
-  this.resvDrain_post = 0;
-  this.scfsi = [new_int$9(4), new_int$9(4)];
-  for (var gr = 0; gr < 2; gr++) {
-    for (var ch = 0; ch < 2; ch++) {
-      this.tt[gr][ch] = new GrInfo();
-    }
-  }
-}
-var System$6 = common.System;
-var new_int$8 = common.new_int;
-function ScaleFac(arrL, arrS, arr21, arr12) {
-  this.l = new_int$8(1 + Encoder.SBMAX_l);
-  this.s = new_int$8(1 + Encoder.SBMAX_s);
-  this.psfb21 = new_int$8(1 + Encoder.PSFB21);
-  this.psfb12 = new_int$8(1 + Encoder.PSFB12);
-  var l = this.l;
-  var s = this.s;
-  if (arguments.length == 4) {
-    this.arrL = arguments[0];
-    this.arrS = arguments[1];
-    this.arr21 = arguments[2];
-    this.arr12 = arguments[3];
-    System$6.arraycopy(
-      this.arrL,
-      0,
-      l,
-      0,
-      Math.min(this.arrL.length, this.l.length)
-    );
-    System$6.arraycopy(
-      this.arrS,
-      0,
-      s,
-      0,
-      Math.min(this.arrS.length, this.s.length)
-    );
-    System$6.arraycopy(
-      this.arr21,
-      0,
-      this.psfb21,
-      0,
-      Math.min(this.arr21.length, this.psfb21.length)
-    );
-    System$6.arraycopy(
-      this.arr12,
-      0,
-      this.psfb12,
-      0,
-      Math.min(this.arr12.length, this.psfb12.length)
-    );
-  }
-}
-var new_float$8 = common.new_float;
-var new_float_n$2 = common.new_float_n;
-var new_int$7 = common.new_int;
-function NsPsy() {
-  this.last_en_subshort = new_float_n$2([4, 9]);
-  this.lastAttacks = new_int$7(4);
-  this.pefirbuf = new_float$8(19);
-  this.longfact = new_float$8(Encoder.SBMAX_l);
-  this.shortfact = new_float$8(Encoder.SBMAX_s);
-  this.attackthre = 0;
-  this.attackthre_s = 0;
-}
-function VBRSeekInfo() {
-  this.sum = 0;
-  this.seen = 0;
-  this.want = 0;
-  this.pos = 0;
-  this.size = 0;
-  this.bag = null;
-  this.nVbrNumFrames = 0;
-  this.nBytesWritten = 0;
-  this.TotalFrameSize = 0;
-}
-var new_byte$3 = common.new_byte;
-var new_double = common.new_double;
-var new_float$7 = common.new_float;
-var new_float_n$1 = common.new_float_n;
-var new_int$6 = common.new_int;
-var new_int_n$1 = common.new_int_n;
-LameInternalFlags$1.MFSIZE = 3 * 1152 + Encoder.ENCDELAY - Encoder.MDCTDELAY;
-LameInternalFlags$1.MAX_HEADER_BUF = 256;
-LameInternalFlags$1.MAX_BITS_PER_CHANNEL = 4095;
-LameInternalFlags$1.MAX_BITS_PER_GRANULE = 7680;
-LameInternalFlags$1.BPC = 320;
-function LameInternalFlags$1() {
-  var MAX_HEADER_LEN = 40;
-  this.Class_ID = 0;
-  this.lame_encode_frame_init = 0;
-  this.iteration_init_init = 0;
-  this.fill_buffer_resample_init = 0;
-  this.mfbuf = new_float_n$1([2, LameInternalFlags$1.MFSIZE]);
-  this.mode_gr = 0;
-  this.channels_in = 0;
-  this.channels_out = 0;
-  this.resample_ratio = 0;
-  this.mf_samples_to_encode = 0;
-  this.mf_size = 0;
-  this.VBR_min_bitrate = 0;
-  this.VBR_max_bitrate = 0;
-  this.bitrate_index = 0;
-  this.samplerate_index = 0;
-  this.mode_ext = 0;
-  this.lowpass1 = 0;
-  this.lowpass2 = 0;
-  this.highpass1 = 0;
-  this.highpass2 = 0;
-  this.noise_shaping = 0;
-  this.noise_shaping_amp = 0;
-  this.substep_shaping = 0;
-  this.psymodel = 0;
-  this.noise_shaping_stop = 0;
-  this.subblock_gain = 0;
-  this.use_best_huffman = 0;
-  this.full_outer_loop = 0;
-  this.l3_side = new IIISideInfo();
-  this.ms_ratio = new_float$7(2);
-  this.padding = 0;
-  this.frac_SpF = 0;
-  this.slot_lag = 0;
-  this.tag_spec = null;
-  this.nMusicCRC = 0;
-  this.OldValue = new_int$6(2);
-  this.CurrentStep = new_int$6(2);
-  this.masking_lower = 0;
-  this.bv_scf = new_int$6(576);
-  this.pseudohalf = new_int$6(L3Side$1.SFBMAX);
-  this.sfb21_extra = false;
-  this.inbuf_old = new Array(2);
-  this.blackfilt = new Array(2 * LameInternalFlags$1.BPC + 1);
-  this.itime = new_double(2);
-  this.sideinfo_len = 0;
-  this.sb_sample = new_float_n$1([2, 2, 18, Encoder.SBLIMIT]);
-  this.amp_filter = new_float$7(32);
-  function Header() {
-    this.write_timing = 0;
-    this.ptr = 0;
-    this.buf = new_byte$3(MAX_HEADER_LEN);
-  }
-  this.header = new Array(LameInternalFlags$1.MAX_HEADER_BUF);
-  this.h_ptr = 0;
-  this.w_ptr = 0;
-  this.ancillary_flag = 0;
-  this.ResvSize = 0;
-  this.ResvMax = 0;
-  this.scalefac_band = new ScaleFac();
-  this.minval_l = new_float$7(Encoder.CBANDS);
-  this.minval_s = new_float$7(Encoder.CBANDS);
-  this.nb_1 = new_float_n$1([4, Encoder.CBANDS]);
-  this.nb_2 = new_float_n$1([4, Encoder.CBANDS]);
-  this.nb_s1 = new_float_n$1([4, Encoder.CBANDS]);
-  this.nb_s2 = new_float_n$1([4, Encoder.CBANDS]);
-  this.s3_ss = null;
-  this.s3_ll = null;
-  this.decay = 0;
-  this.thm = new Array(4);
-  this.en = new Array(4);
-  this.tot_ener = new_float$7(4);
-  this.loudness_sq = new_float_n$1([2, 2]);
-  this.loudness_sq_save = new_float$7(2);
-  this.mld_l = new_float$7(Encoder.SBMAX_l);
-  this.mld_s = new_float$7(Encoder.SBMAX_s);
-  this.bm_l = new_int$6(Encoder.SBMAX_l);
-  this.bo_l = new_int$6(Encoder.SBMAX_l);
-  this.bm_s = new_int$6(Encoder.SBMAX_s);
-  this.bo_s = new_int$6(Encoder.SBMAX_s);
-  this.npart_l = 0;
-  this.npart_s = 0;
-  this.s3ind = new_int_n$1([Encoder.CBANDS, 2]);
-  this.s3ind_s = new_int_n$1([Encoder.CBANDS, 2]);
-  this.numlines_s = new_int$6(Encoder.CBANDS);
-  this.numlines_l = new_int$6(Encoder.CBANDS);
-  this.rnumlines_l = new_float$7(Encoder.CBANDS);
-  this.mld_cb_l = new_float$7(Encoder.CBANDS);
-  this.mld_cb_s = new_float$7(Encoder.CBANDS);
-  this.numlines_s_num1 = 0;
-  this.numlines_l_num1 = 0;
-  this.pe = new_float$7(4);
-  this.ms_ratio_s_old = 0;
-  this.ms_ratio_l_old = 0;
-  this.ms_ener_ratio_old = 0;
-  this.blocktype_old = new_int$6(2);
-  this.nsPsy = new NsPsy();
-  this.VBR_seek_table = new VBRSeekInfo();
-  this.ATH = null;
-  this.PSY = null;
-  this.nogap_total = 0;
-  this.nogap_current = 0;
-  this.decode_on_the_fly = true;
-  this.findReplayGain = true;
-  this.findPeakSample = true;
-  this.PeakSample = 0;
-  this.RadioGain = 0;
-  this.AudiophileGain = 0;
-  this.rgdata = null;
-  this.noclipGainChange = 0;
-  this.noclipScale = 0;
-  this.bitrate_stereoMode_Hist = new_int_n$1([16, 4 + 1]);
-  this.bitrate_blockType_Hist = new_int_n$1([16, 4 + 1 + 1]);
-  this.pinfo = null;
-  this.hip = null;
-  this.in_buffer_nsamples = 0;
-  this.in_buffer_0 = null;
-  this.in_buffer_1 = null;
-  this.iteration_loop = null;
-  for (var i = 0; i < this.en.length; i++) {
-    this.en[i] = new III_psy_xmin();
-  }
-  for (var i = 0; i < this.thm.length; i++) {
-    this.thm[i] = new III_psy_xmin();
-  }
-  for (var i = 0; i < this.header.length; i++) {
-    this.header[i] = new Header();
-  }
-}
-var new_float$6 = common.new_float;
-function ATH() {
-  this.useAdjust = 0;
-  this.aaSensitivityP = 0;
-  this.adjust = 0;
-  this.adjustLimit = 0;
-  this.decay = 0;
-  this.floor = 0;
-  this.l = new_float$6(Encoder.SBMAX_l);
-  this.s = new_float$6(Encoder.SBMAX_s);
-  this.psfb21 = new_float$6(Encoder.PSFB21);
-  this.psfb12 = new_float$6(Encoder.PSFB12);
-  this.cb_l = new_float$6(Encoder.CBANDS);
-  this.cb_s = new_float$6(Encoder.CBANDS);
-  this.eql_w = new_float$6(Encoder.BLKSIZE / 2);
-}
-var System$5 = common.System;
-var Arrays$4 = common.Arrays;
-GainAnalysis$1.STEPS_per_dB = 100;
-GainAnalysis$1.MAX_dB = 120;
-GainAnalysis$1.GAIN_NOT_ENOUGH_SAMPLES = -24601;
-GainAnalysis$1.GAIN_ANALYSIS_ERROR = 0;
-GainAnalysis$1.GAIN_ANALYSIS_OK = 1;
-GainAnalysis$1.INIT_GAIN_ANALYSIS_ERROR = 0;
-GainAnalysis$1.INIT_GAIN_ANALYSIS_OK = 1;
-GainAnalysis$1.YULE_ORDER = 10;
-GainAnalysis$1.MAX_ORDER = GainAnalysis$1.YULE_ORDER;
-GainAnalysis$1.MAX_SAMP_FREQ = 48e3;
-GainAnalysis$1.RMS_WINDOW_TIME_NUMERATOR = 1;
-GainAnalysis$1.RMS_WINDOW_TIME_DENOMINATOR = 20;
-GainAnalysis$1.MAX_SAMPLES_PER_WINDOW = GainAnalysis$1.MAX_SAMP_FREQ * GainAnalysis$1.RMS_WINDOW_TIME_NUMERATOR / GainAnalysis$1.RMS_WINDOW_TIME_DENOMINATOR + 1;
-function GainAnalysis$1() {
-  var PINK_REF = 64.82;
-  var RMS_PERCENTILE = 0.95;
-  var RMS_WINDOW_TIME_NUMERATOR = GainAnalysis$1.RMS_WINDOW_TIME_NUMERATOR;
-  var RMS_WINDOW_TIME_DENOMINATOR = GainAnalysis$1.RMS_WINDOW_TIME_DENOMINATOR;
-  var ABYule = [
-    [
-      0.038575994352,
-      -3.84664617118067,
-      -0.02160367184185,
-      7.81501653005538,
-      -0.00123395316851,
-      -11.34170355132042,
-      -9291677959e-14,
-      13.05504219327545,
-      -0.01655260341619,
-      -12.28759895145294,
-      0.02161526843274,
-      9.4829380631979,
-      -0.02074045215285,
-      -5.87257861775999,
-      0.00594298065125,
-      2.75465861874613,
-      0.00306428023191,
-      -0.86984376593551,
-      12025322027e-14,
-      0.13919314567432,
-      0.00288463683916
-    ],
-    [
-      0.0541865640643,
-      -3.47845948550071,
-      -0.02911007808948,
-      6.36317777566148,
-      -0.00848709379851,
-      -8.54751527471874,
-      -0.00851165645469,
-      9.4769360780128,
-      -0.00834990904936,
-      -8.81498681370155,
-      0.02245293253339,
-      6.85401540936998,
-      -0.02596338512915,
-      -4.39470996079559,
-      0.01624864962975,
-      2.19611684890774,
-      -0.00240879051584,
-      -0.75104302451432,
-      0.00674613682247,
-      0.13149317958808,
-      -0.00187763777362
-    ],
-    [
-      0.15457299681924,
-      -2.37898834973084,
-      -0.09331049056315,
-      2.84868151156327,
-      -0.06247880153653,
-      -2.64577170229825,
-      0.02163541888798,
-      2.23697657451713,
-      -0.05588393329856,
-      -1.67148153367602,
-      0.04781476674921,
-      1.00595954808547,
-      0.00222312597743,
-      -0.45953458054983,
-      0.03174092540049,
-      0.16378164858596,
-      -0.01390589421898,
-      -0.05032077717131,
-      0.00651420667831,
-      0.0234789740702,
-      -0.00881362733839
-    ],
-    [
-      0.30296907319327,
-      -1.61273165137247,
-      -0.22613988682123,
-      1.0797749225997,
-      -0.08587323730772,
-      -0.2565625775407,
-      0.03282930172664,
-      -0.1627671912044,
-      -0.00915702933434,
-      -0.22638893773906,
-      -0.02364141202522,
-      0.39120800788284,
-      -0.00584456039913,
-      -0.22138138954925,
-      0.06276101321749,
-      0.04500235387352,
-      -828086748e-14,
-      0.02005851806501,
-      0.00205861885564,
-      0.00302439095741,
-      -0.02950134983287
-    ],
-    [
-      0.33642304856132,
-      -1.49858979367799,
-      -0.2557224142557,
-      0.87350271418188,
-      -0.11828570177555,
-      0.12205022308084,
-      0.11921148675203,
-      -0.80774944671438,
-      -0.07834489609479,
-      0.47854794562326,
-      -0.0046997791438,
-      -0.12453458140019,
-      -0.0058950022444,
-      -0.04067510197014,
-      0.05724228140351,
-      0.08333755284107,
-      0.00832043980773,
-      -0.04237348025746,
-      -0.0163538138454,
-      0.02977207319925,
-      -0.0176017656815
-    ],
-    [
-      0.4491525660845,
-      -0.62820619233671,
-      -0.14351757464547,
-      0.29661783706366,
-      -0.22784394429749,
-      -0.372563729424,
-      -0.01419140100551,
-      0.00213767857124,
-      0.04078262797139,
-      -0.42029820170918,
-      -0.12398163381748,
-      0.22199650564824,
-      0.04097565135648,
-      0.00613424350682,
-      0.10478503600251,
-      0.06747620744683,
-      -0.01863887810927,
-      0.05784820375801,
-      -0.03193428438915,
-      0.03222754072173,
-      0.00541907748707
-    ],
-    [
-      0.56619470757641,
-      -1.04800335126349,
-      -0.75464456939302,
-      0.29156311971249,
-      0.1624213774223,
-      -0.26806001042947,
-      0.16744243493672,
-      0.00819999645858,
-      -0.18901604199609,
-      0.45054734505008,
-      0.3093178284183,
-      -0.33032403314006,
-      -0.27562961986224,
-      0.0673936833311,
-      0.00647310677246,
-      -0.04784254229033,
-      0.08647503780351,
-      0.01639907836189,
-      -0.0378898455484,
-      0.01807364323573,
-      -0.00588215443421
-    ],
-    [
-      0.58100494960553,
-      -0.51035327095184,
-      -0.53174909058578,
-      -0.31863563325245,
-      -0.14289799034253,
-      -0.20256413484477,
-      0.17520704835522,
-      0.1472815413433,
-      0.02377945217615,
-      0.38952639978999,
-      0.15558449135573,
-      -0.23313271880868,
-      -0.25344790059353,
-      -0.05246019024463,
-      0.01628462406333,
-      -0.02505961724053,
-      0.06920467763959,
-      0.02442357316099,
-      -0.03721611395801,
-      0.01818801111503,
-      -0.00749618797172
-    ],
-    [
-      0.53648789255105,
-      -0.2504987195602,
-      -0.42163034350696,
-      -0.43193942311114,
-      -0.00275953611929,
-      -0.03424681017675,
-      0.04267842219415,
-      -0.04678328784242,
-      -0.10214864179676,
-      0.26408300200955,
-      0.14590772289388,
-      0.15113130533216,
-      -0.02459864859345,
-      -0.17556493366449,
-      -0.11202315195388,
-      -0.18823009262115,
-      -0.04060034127,
-      0.05477720428674,
-      0.0478866554818,
-      0.0470440968812,
-      -0.02217936801134
-    ]
-  ];
-  var ABButter = [
-    [
-      0.98621192462708,
-      -1.97223372919527,
-      -1.97242384925416,
-      0.97261396931306,
-      0.98621192462708
-    ],
-    [
-      0.98500175787242,
-      -1.96977855582618,
-      -1.97000351574484,
-      0.9702284756635,
-      0.98500175787242
-    ],
-    [
-      0.97938932735214,
-      -1.95835380975398,
-      -1.95877865470428,
-      0.95920349965459,
-      0.97938932735214
-    ],
-    [
-      0.97531843204928,
-      -1.95002759149878,
-      -1.95063686409857,
-      0.95124613669835,
-      0.97531843204928
-    ],
-    [
-      0.97316523498161,
-      -1.94561023566527,
-      -1.94633046996323,
-      0.94705070426118,
-      0.97316523498161
-    ],
-    [
-      0.96454515552826,
-      -1.92783286977036,
-      -1.92909031105652,
-      0.93034775234268,
-      0.96454515552826
-    ],
-    [
-      0.96009142950541,
-      -1.91858953033784,
-      -1.92018285901082,
-      0.92177618768381,
-      0.96009142950541
-    ],
-    [
-      0.95856916599601,
-      -1.9154210807478,
-      -1.91713833199203,
-      0.91885558323625,
-      0.95856916599601
-    ],
-    [
-      0.94597685600279,
-      -1.88903307939452,
-      -1.89195371200558,
-      0.89487434461664,
-      0.94597685600279
-    ]
-  ];
-  function filterYule(input, inputPos, output, outputPos, nSamples, kernel) {
-    while (nSamples-- != 0) {
-      output[outputPos] = 1e-10 + input[inputPos + 0] * kernel[0] - output[outputPos - 1] * kernel[1] + input[inputPos - 1] * kernel[2] - output[outputPos - 2] * kernel[3] + input[inputPos - 2] * kernel[4] - output[outputPos - 3] * kernel[5] + input[inputPos - 3] * kernel[6] - output[outputPos - 4] * kernel[7] + input[inputPos - 4] * kernel[8] - output[outputPos - 5] * kernel[9] + input[inputPos - 5] * kernel[10] - output[outputPos - 6] * kernel[11] + input[inputPos - 6] * kernel[12] - output[outputPos - 7] * kernel[13] + input[inputPos - 7] * kernel[14] - output[outputPos - 8] * kernel[15] + input[inputPos - 8] * kernel[16] - output[outputPos - 9] * kernel[17] + input[inputPos - 9] * kernel[18] - output[outputPos - 10] * kernel[19] + input[inputPos - 10] * kernel[20];
-      ++outputPos;
-      ++inputPos;
-    }
-  }
-  function filterButter(input, inputPos, output, outputPos, nSamples, kernel) {
-    while (nSamples-- != 0) {
-      output[outputPos] = input[inputPos + 0] * kernel[0] - output[outputPos - 1] * kernel[1] + input[inputPos - 1] * kernel[2] - output[outputPos - 2] * kernel[3] + input[inputPos - 2] * kernel[4];
-      ++outputPos;
-      ++inputPos;
-    }
-  }
-  function ResetSampleFrequency(rgData, samplefreq) {
-    for (var i = 0; i < MAX_ORDER; i++) {
-      rgData.linprebuf[i] = rgData.lstepbuf[i] = rgData.loutbuf[i] = rgData.rinprebuf[i] = rgData.rstepbuf[i] = rgData.routbuf[i] = 0;
-    }
-    switch (0 | samplefreq) {
-      case 48e3:
-        rgData.reqindex = 0;
-        break;
-      case 44100:
-        rgData.reqindex = 1;
-        break;
-      case 32e3:
-        rgData.reqindex = 2;
-        break;
-      case 24e3:
-        rgData.reqindex = 3;
-        break;
-      case 22050:
-        rgData.reqindex = 4;
-        break;
-      case 16e3:
-        rgData.reqindex = 5;
-        break;
-      case 12e3:
-        rgData.reqindex = 6;
-        break;
-      case 11025:
-        rgData.reqindex = 7;
-        break;
-      case 8e3:
-        rgData.reqindex = 8;
-        break;
-      default:
-        return INIT_GAIN_ANALYSIS_ERROR;
-    }
-    rgData.sampleWindow = 0 | (samplefreq * RMS_WINDOW_TIME_NUMERATOR + RMS_WINDOW_TIME_DENOMINATOR - 1) / RMS_WINDOW_TIME_DENOMINATOR;
-    rgData.lsum = 0;
-    rgData.rsum = 0;
-    rgData.totsamp = 0;
-    Arrays$4.ill(rgData.A, 0);
-    return INIT_GAIN_ANALYSIS_OK;
-  }
-  this.InitGainAnalysis = function(rgData, samplefreq) {
-    if (ResetSampleFrequency(rgData, samplefreq) != INIT_GAIN_ANALYSIS_OK) {
-      return INIT_GAIN_ANALYSIS_ERROR;
-    }
-    rgData.linpre = MAX_ORDER;
-    rgData.rinpre = MAX_ORDER;
-    rgData.lstep = MAX_ORDER;
-    rgData.rstep = MAX_ORDER;
-    rgData.lout = MAX_ORDER;
-    rgData.rout = MAX_ORDER;
-    Arrays$4.fill(rgData.B, 0);
-    return INIT_GAIN_ANALYSIS_OK;
-  };
-  function fsqr(d) {
-    return d * d;
-  }
-  this.AnalyzeSamples = function(rgData, left_samples, left_samplesPos, right_samples, right_samplesPos, num_samples, num_channels) {
-    var curleft;
-    var curleftBase;
-    var curright;
-    var currightBase;
-    var batchsamples;
-    var cursamples;
-    var cursamplepos;
-    if (num_samples == 0)
-      return GAIN_ANALYSIS_OK;
-    cursamplepos = 0;
-    batchsamples = num_samples;
-    switch (num_channels) {
-      case 1:
-        right_samples = left_samples;
-        right_samplesPos = left_samplesPos;
-        break;
-      case 2:
-        break;
-      default:
-        return GAIN_ANALYSIS_ERROR;
-    }
-    if (num_samples < MAX_ORDER) {
-      System$5.arraycopy(
-        left_samples,
-        left_samplesPos,
-        rgData.linprebuf,
-        MAX_ORDER,
-        num_samples
-      );
-      System$5.arraycopy(
-        right_samples,
-        right_samplesPos,
-        rgData.rinprebuf,
-        MAX_ORDER,
-        num_samples
-      );
-    } else {
-      System$5.arraycopy(
-        left_samples,
-        left_samplesPos,
-        rgData.linprebuf,
-        MAX_ORDER,
-        MAX_ORDER
-      );
-      System$5.arraycopy(
-        right_samples,
-        right_samplesPos,
-        rgData.rinprebuf,
-        MAX_ORDER,
-        MAX_ORDER
-      );
-    }
-    while (batchsamples > 0) {
-      cursamples = batchsamples > rgData.sampleWindow - rgData.totsamp ? rgData.sampleWindow - rgData.totsamp : batchsamples;
-      if (cursamplepos < MAX_ORDER) {
-        curleft = rgData.linpre + cursamplepos;
-        curleftBase = rgData.linprebuf;
-        curright = rgData.rinpre + cursamplepos;
-        currightBase = rgData.rinprebuf;
-        if (cursamples > MAX_ORDER - cursamplepos) {
-          cursamples = MAX_ORDER - cursamplepos;
-        }
-      } else {
-        curleft = left_samplesPos + cursamplepos;
-        curleftBase = left_samples;
-        curright = right_samplesPos + cursamplepos;
-        currightBase = right_samples;
-      }
-      filterYule(
-        curleftBase,
-        curleft,
-        rgData.lstepbuf,
-        rgData.lstep + rgData.totsamp,
-        cursamples,
-        ABYule[rgData.reqindex]
-      );
-      filterYule(
-        currightBase,
-        curright,
-        rgData.rstepbuf,
-        rgData.rstep + rgData.totsamp,
-        cursamples,
-        ABYule[rgData.reqindex]
-      );
-      filterButter(
-        rgData.lstepbuf,
-        rgData.lstep + rgData.totsamp,
-        rgData.loutbuf,
-        rgData.lout + rgData.totsamp,
-        cursamples,
-        ABButter[rgData.reqindex]
-      );
-      filterButter(
-        rgData.rstepbuf,
-        rgData.rstep + rgData.totsamp,
-        rgData.routbuf,
-        rgData.rout + rgData.totsamp,
-        cursamples,
-        ABButter[rgData.reqindex]
-      );
-      curleft = rgData.lout + rgData.totsamp;
-      curleftBase = rgData.loutbuf;
-      curright = rgData.rout + rgData.totsamp;
-      currightBase = rgData.routbuf;
-      var i = cursamples % 8;
-      while (i-- != 0) {
-        rgData.lsum += fsqr(curleftBase[curleft++]);
-        rgData.rsum += fsqr(currightBase[curright++]);
-      }
-      i = cursamples / 8;
-      while (i-- != 0) {
-        rgData.lsum += fsqr(curleftBase[curleft + 0]) + fsqr(curleftBase[curleft + 1]) + fsqr(curleftBase[curleft + 2]) + fsqr(curleftBase[curleft + 3]) + fsqr(curleftBase[curleft + 4]) + fsqr(curleftBase[curleft + 5]) + fsqr(curleftBase[curleft + 6]) + fsqr(curleftBase[curleft + 7]);
-        curleft += 8;
-        rgData.rsum += fsqr(currightBase[curright + 0]) + fsqr(currightBase[curright + 1]) + fsqr(currightBase[curright + 2]) + fsqr(currightBase[curright + 3]) + fsqr(currightBase[curright + 4]) + fsqr(currightBase[curright + 5]) + fsqr(currightBase[curright + 6]) + fsqr(currightBase[curright + 7]);
-        curright += 8;
-      }
-      batchsamples -= cursamples;
-      cursamplepos += cursamples;
-      rgData.totsamp += cursamples;
-      if (rgData.totsamp == rgData.sampleWindow) {
-        var val = GainAnalysis$1.STEPS_per_dB * 10 * Math.log10(
-          (rgData.lsum + rgData.rsum) / rgData.totsamp * 0.5 + 1e-37
-        );
-        var ival = val <= 0 ? 0 : 0 | val;
-        if (ival >= rgData.A.length)
-          ival = rgData.A.length - 1;
-        rgData.A[ival]++;
-        rgData.lsum = rgData.rsum = 0;
-        System$5.arraycopy(
-          rgData.loutbuf,
-          rgData.totsamp,
-          rgData.loutbuf,
-          0,
-          MAX_ORDER
-        );
-        System$5.arraycopy(
-          rgData.routbuf,
-          rgData.totsamp,
-          rgData.routbuf,
-          0,
-          MAX_ORDER
-        );
-        System$5.arraycopy(
-          rgData.lstepbuf,
-          rgData.totsamp,
-          rgData.lstepbuf,
-          0,
-          MAX_ORDER
-        );
-        System$5.arraycopy(
-          rgData.rstepbuf,
-          rgData.totsamp,
-          rgData.rstepbuf,
-          0,
-          MAX_ORDER
-        );
-        rgData.totsamp = 0;
-      }
-      if (rgData.totsamp > rgData.sampleWindow) {
-        return GAIN_ANALYSIS_ERROR;
-      }
-    }
-    if (num_samples < MAX_ORDER) {
-      System$5.arraycopy(
-        rgData.linprebuf,
-        num_samples,
-        rgData.linprebuf,
-        0,
-        MAX_ORDER - num_samples
-      );
-      System$5.arraycopy(
-        rgData.rinprebuf,
-        num_samples,
-        rgData.rinprebuf,
-        0,
-        MAX_ORDER - num_samples
-      );
-      System$5.arraycopy(
-        left_samples,
-        left_samplesPos,
-        rgData.linprebuf,
-        MAX_ORDER - num_samples,
-        num_samples
-      );
-      System$5.arraycopy(
-        right_samples,
-        right_samplesPos,
-        rgData.rinprebuf,
-        MAX_ORDER - num_samples,
-        num_samples
-      );
-    } else {
-      System$5.arraycopy(
-        left_samples,
-        left_samplesPos + num_samples - MAX_ORDER,
-        rgData.linprebuf,
-        0,
-        MAX_ORDER
-      );
-      System$5.arraycopy(
-        right_samples,
-        right_samplesPos + num_samples - MAX_ORDER,
-        rgData.rinprebuf,
-        0,
-        MAX_ORDER
-      );
-    }
-    return GAIN_ANALYSIS_OK;
-  };
-  function analyzeResult(Array2, len) {
-    var i;
-    var elems = 0;
-    for (i = 0; i < len; i++)
-      elems += Array2[i];
-    if (elems == 0)
-      return GAIN_NOT_ENOUGH_SAMPLES;
-    var upper = 0 | Math.ceil(elems * (1 - RMS_PERCENTILE));
-    for (i = len; i-- > 0; ) {
-      if ((upper -= Array2[i]) <= 0)
-        break;
-    }
-    return PINK_REF - i / GainAnalysis$1.STEPS_per_dB;
-  }
-  this.GetTitleGain = function(rgData) {
-    var retval = analyzeResult(rgData.A, rgData.A.length);
-    for (var i = 0; i < rgData.A.length; i++) {
-      rgData.B[i] += rgData.A[i];
-      rgData.A[i] = 0;
-    }
-    for (var i = 0; i < MAX_ORDER; i++) {
-      rgData.linprebuf[i] = rgData.lstepbuf[i] = rgData.loutbuf[i] = rgData.rinprebuf[i] = rgData.rstepbuf[i] = rgData.routbuf[i] = 0;
-    }
-    rgData.totsamp = 0;
-    rgData.lsum = rgData.rsum = 0;
-    return retval;
-  };
-}
-var new_float$5 = common.new_float;
-var new_int$5 = common.new_int;
-function ReplayGain() {
-  this.linprebuf = new_float$5(void 0 * 2);
-  this.linpre = 0;
-  this.lstepbuf = new_float$5(
-    void 0 + void 0
-  );
-  this.lstep = 0;
-  this.loutbuf = new_float$5(
-    void 0 + void 0
-  );
-  this.lout = 0;
-  this.rinprebuf = new_float$5(void 0 * 2);
-  this.rinpre = 0;
-  this.rstepbuf = new_float$5(
-    void 0 + void 0
-  );
-  this.rstep = 0;
-  this.routbuf = new_float$5(
-    void 0 + void 0
-  );
-  this.rout = 0;
-  this.sampleWindow = 0;
-  this.totsamp = 0;
-  this.lsum = 0;
-  this.rsum = 0;
-  this.freqindex = 0;
-  this.first = 0;
-  this.A = new_int$5(0 | void 0 * void 0);
-  this.B = new_int$5(0 | void 0 * void 0);
-}
-function MeanBits$1(meanBits) {
-  this.bits = meanBits;
-}
-var new_float$4 = common.new_float;
-var new_int$4 = common.new_int;
-var assert$8 = common.assert;
-function CBRNewIterationLoop(_quantize) {
-  var quantize = _quantize;
-  this.quantize = quantize;
-  this.iteration_loop = function(gfp, pe, ms_ener_ratio, ratio) {
-    var gfc = gfp.internal_flags;
-    var l3_xmin = new_float$4(L3Side$1.SFBMAX);
-    var xrpow = new_float$4(576);
-    var targ_bits = new_int$4(2);
-    var mean_bits = 0;
-    var max_bits;
-    var l3_side = gfc.l3_side;
-    var mb = new MeanBits$1(mean_bits);
-    this.quantize.rv.ResvFrameBegin(gfp, mb);
-    mean_bits = mb.bits;
-    for (var gr = 0; gr < gfc.mode_gr; gr++) {
-      max_bits = this.quantize.qupvt.on_pe(
-        gfp,
-        pe,
-        targ_bits,
-        mean_bits,
-        gr,
-        gr
-      );
-      if (gfc.mode_ext == Encoder.MPG_MD_MS_LR) {
-        this.quantize.ms_convert(gfc.l3_side, gr);
-        this.quantize.qupvt.reduce_side(
-          targ_bits,
-          ms_ener_ratio[gr],
-          mean_bits,
-          max_bits
-        );
-      }
-      for (var ch = 0; ch < gfc.channels_out; ch++) {
-        var adjust, masking_lower_db;
-        var cod_info = l3_side.tt[gr][ch];
-        if (cod_info.block_type != Encoder.SHORT_TYPE) {
-          adjust = 0;
-          masking_lower_db = gfc.PSY.mask_adjust - adjust;
-        } else {
-          adjust = 0;
-          masking_lower_db = gfc.PSY.mask_adjust_short - adjust;
-        }
-        gfc.masking_lower = Math.pow(10, masking_lower_db * 0.1);
-        this.quantize.init_outer_loop(gfc, cod_info);
-        if (this.quantize.init_xrpow(gfc, cod_info, xrpow)) {
-          this.quantize.qupvt.calc_xmin(gfp, ratio[gr][ch], cod_info, l3_xmin);
-          this.quantize.outer_loop(
-            gfp,
-            cod_info,
-            l3_xmin,
-            xrpow,
-            ch,
-            targ_bits[ch]
-          );
-        }
-        this.quantize.iteration_finish_one(gfc, gr, ch);
-        assert$8(
-          cod_info.part2_3_length <= LameInternalFlags$1.MAX_BITS_PER_CHANNEL
-        );
-        assert$8(cod_info.part2_3_length <= targ_bits[ch]);
-      }
-    }
-    this.quantize.rv.ResvFrameEnd(gfc, mean_bits);
-  };
-}
-function HuffCodeTab(len, max, tab, hl) {
-  this.xlen = len;
-  this.linmax = max;
-  this.table = tab;
-  this.hlen = hl;
-}
-var Tables$1 = {};
-Tables$1.t1HB = [1, 1, 1, 0];
-Tables$1.t2HB = [1, 2, 1, 3, 1, 1, 3, 2, 0];
-Tables$1.t3HB = [3, 2, 1, 1, 1, 1, 3, 2, 0];
-Tables$1.t5HB = [1, 2, 6, 5, 3, 1, 4, 4, 7, 5, 7, 1, 6, 1, 1, 0];
-Tables$1.t6HB = [7, 3, 5, 1, 6, 2, 3, 2, 5, 4, 4, 1, 3, 3, 2, 0];
-Tables$1.t7HB = [
-  1,
-  2,
-  10,
-  19,
-  16,
-  10,
-  3,
-  3,
-  7,
-  10,
-  5,
-  3,
-  11,
-  4,
-  13,
-  17,
-  8,
-  4,
-  12,
-  11,
-  18,
-  15,
-  11,
-  2,
-  7,
-  6,
-  9,
-  14,
-  3,
-  1,
-  6,
-  4,
-  5,
-  3,
-  2,
-  0
-];
-Tables$1.t8HB = [
-  3,
-  4,
-  6,
-  18,
-  12,
-  5,
-  5,
-  1,
-  2,
-  16,
-  9,
-  3,
-  7,
-  3,
-  5,
-  14,
-  7,
-  3,
-  19,
-  17,
-  15,
-  13,
-  10,
-  4,
-  13,
-  5,
-  8,
-  11,
-  5,
-  1,
-  12,
-  4,
-  4,
-  1,
-  1,
-  0
-];
-Tables$1.t9HB = [
-  7,
-  5,
-  9,
-  14,
-  15,
-  7,
-  6,
-  4,
-  5,
-  5,
-  6,
-  7,
-  7,
-  6,
-  8,
-  8,
-  8,
-  5,
-  15,
-  6,
-  9,
-  10,
-  5,
-  1,
-  11,
-  7,
-  9,
-  6,
-  4,
-  1,
-  14,
-  4,
-  6,
-  2,
-  6,
-  0
-];
-Tables$1.t10HB = [
-  1,
-  2,
-  10,
-  23,
-  35,
-  30,
-  12,
-  17,
-  3,
-  3,
-  8,
-  12,
-  18,
-  21,
-  12,
-  7,
-  11,
-  9,
-  15,
-  21,
-  32,
-  40,
-  19,
-  6,
-  14,
-  13,
-  22,
-  34,
-  46,
-  23,
-  18,
-  7,
-  20,
-  19,
-  33,
-  47,
-  27,
-  22,
-  9,
-  3,
-  31,
-  22,
-  41,
-  26,
-  21,
-  20,
-  5,
-  3,
-  14,
-  13,
-  10,
-  11,
-  16,
-  6,
-  5,
-  1,
-  9,
-  8,
-  7,
-  8,
-  4,
-  4,
-  2,
-  0
-];
-Tables$1.t11HB = [
-  3,
-  4,
-  10,
-  24,
-  34,
-  33,
-  21,
-  15,
-  5,
-  3,
-  4,
-  10,
-  32,
-  17,
-  11,
-  10,
-  11,
-  7,
-  13,
-  18,
-  30,
-  31,
-  20,
-  5,
-  25,
-  11,
-  19,
-  59,
-  27,
-  18,
-  12,
-  5,
-  35,
-  33,
-  31,
-  58,
-  30,
-  16,
-  7,
-  5,
-  28,
-  26,
-  32,
-  19,
-  17,
-  15,
-  8,
-  14,
-  14,
-  12,
-  9,
-  13,
-  14,
-  9,
-  4,
-  1,
-  11,
-  4,
-  6,
-  6,
-  6,
-  3,
-  2,
-  0
-];
-Tables$1.t12HB = [
-  9,
-  6,
-  16,
-  33,
-  41,
-  39,
-  38,
-  26,
-  7,
-  5,
-  6,
-  9,
-  23,
-  16,
-  26,
-  11,
-  17,
-  7,
-  11,
-  14,
-  21,
-  30,
-  10,
-  7,
-  17,
-  10,
-  15,
-  12,
-  18,
-  28,
-  14,
-  5,
-  32,
-  13,
-  22,
-  19,
-  18,
-  16,
-  9,
-  5,
-  40,
-  17,
-  31,
-  29,
-  17,
-  13,
-  4,
-  2,
-  27,
-  12,
-  11,
-  15,
-  10,
-  7,
-  4,
-  1,
-  27,
-  12,
-  8,
-  12,
-  6,
-  3,
-  1,
-  0
-];
-Tables$1.t13HB = [
-  1,
-  5,
-  14,
-  21,
-  34,
-  51,
-  46,
-  71,
-  42,
-  52,
-  68,
-  52,
-  67,
-  44,
-  43,
-  19,
-  3,
-  4,
-  12,
-  19,
-  31,
-  26,
-  44,
-  33,
-  31,
-  24,
-  32,
-  24,
-  31,
-  35,
-  22,
-  14,
-  15,
-  13,
-  23,
-  36,
-  59,
-  49,
-  77,
-  65,
-  29,
-  40,
-  30,
-  40,
-  27,
-  33,
-  42,
-  16,
-  22,
-  20,
-  37,
-  61,
-  56,
-  79,
-  73,
-  64,
-  43,
-  76,
-  56,
-  37,
-  26,
-  31,
-  25,
-  14,
-  35,
-  16,
-  60,
-  57,
-  97,
-  75,
-  114,
-  91,
-  54,
-  73,
-  55,
-  41,
-  48,
-  53,
-  23,
-  24,
-  58,
-  27,
-  50,
-  96,
-  76,
-  70,
-  93,
-  84,
-  77,
-  58,
-  79,
-  29,
-  74,
-  49,
-  41,
-  17,
-  47,
-  45,
-  78,
-  74,
-  115,
-  94,
-  90,
-  79,
-  69,
-  83,
-  71,
-  50,
-  59,
-  38,
-  36,
-  15,
-  72,
-  34,
-  56,
-  95,
-  92,
-  85,
-  91,
-  90,
-  86,
-  73,
-  77,
-  65,
-  51,
-  44,
-  43,
-  42,
-  43,
-  20,
-  30,
-  44,
-  55,
-  78,
-  72,
-  87,
-  78,
-  61,
-  46,
-  54,
-  37,
-  30,
-  20,
-  16,
-  53,
-  25,
-  41,
-  37,
-  44,
-  59,
-  54,
-  81,
-  66,
-  76,
-  57,
-  54,
-  37,
-  18,
-  39,
-  11,
-  35,
-  33,
-  31,
-  57,
-  42,
-  82,
-  72,
-  80,
-  47,
-  58,
-  55,
-  21,
-  22,
-  26,
-  38,
-  22,
-  53,
-  25,
-  23,
-  38,
-  70,
-  60,
-  51,
-  36,
-  55,
-  26,
-  34,
-  23,
-  27,
-  14,
-  9,
-  7,
-  34,
-  32,
-  28,
-  39,
-  49,
-  75,
-  30,
-  52,
-  48,
-  40,
-  52,
-  28,
-  18,
-  17,
-  9,
-  5,
-  45,
-  21,
-  34,
-  64,
-  56,
-  50,
-  49,
-  45,
-  31,
-  19,
-  12,
-  15,
-  10,
-  7,
-  6,
-  3,
-  48,
-  23,
-  20,
-  39,
-  36,
-  35,
-  53,
-  21,
-  16,
-  23,
-  13,
-  10,
-  6,
-  1,
-  4,
-  2,
-  16,
-  15,
-  17,
-  27,
-  25,
-  20,
-  29,
-  11,
-  17,
-  12,
-  16,
-  8,
-  1,
-  1,
-  0,
-  1
-];
-Tables$1.t15HB = [
-  7,
-  12,
-  18,
-  53,
-  47,
-  76,
-  124,
-  108,
-  89,
-  123,
-  108,
-  119,
-  107,
-  81,
-  122,
-  63,
-  13,
-  5,
-  16,
-  27,
-  46,
-  36,
-  61,
-  51,
-  42,
-  70,
-  52,
-  83,
-  65,
-  41,
-  59,
-  36,
-  19,
-  17,
-  15,
-  24,
-  41,
-  34,
-  59,
-  48,
-  40,
-  64,
-  50,
-  78,
-  62,
-  80,
-  56,
-  33,
-  29,
-  28,
-  25,
-  43,
-  39,
-  63,
-  55,
-  93,
-  76,
-  59,
-  93,
-  72,
-  54,
-  75,
-  50,
-  29,
-  52,
-  22,
-  42,
-  40,
-  67,
-  57,
-  95,
-  79,
-  72,
-  57,
-  89,
-  69,
-  49,
-  66,
-  46,
-  27,
-  77,
-  37,
-  35,
-  66,
-  58,
-  52,
-  91,
-  74,
-  62,
-  48,
-  79,
-  63,
-  90,
-  62,
-  40,
-  38,
-  125,
-  32,
-  60,
-  56,
-  50,
-  92,
-  78,
-  65,
-  55,
-  87,
-  71,
-  51,
-  73,
-  51,
-  70,
-  30,
-  109,
-  53,
-  49,
-  94,
-  88,
-  75,
-  66,
-  122,
-  91,
-  73,
-  56,
-  42,
-  64,
-  44,
-  21,
-  25,
-  90,
-  43,
-  41,
-  77,
-  73,
-  63,
-  56,
-  92,
-  77,
-  66,
-  47,
-  67,
-  48,
-  53,
-  36,
-  20,
-  71,
-  34,
-  67,
-  60,
-  58,
-  49,
-  88,
-  76,
-  67,
-  106,
-  71,
-  54,
-  38,
-  39,
-  23,
-  15,
-  109,
-  53,
-  51,
-  47,
-  90,
-  82,
-  58,
-  57,
-  48,
-  72,
-  57,
-  41,
-  23,
-  27,
-  62,
-  9,
-  86,
-  42,
-  40,
-  37,
-  70,
-  64,
-  52,
-  43,
-  70,
-  55,
-  42,
-  25,
-  29,
-  18,
-  11,
-  11,
-  118,
-  68,
-  30,
-  55,
-  50,
-  46,
-  74,
-  65,
-  49,
-  39,
-  24,
-  16,
-  22,
-  13,
-  14,
-  7,
-  91,
-  44,
-  39,
-  38,
-  34,
-  63,
-  52,
-  45,
-  31,
-  52,
-  28,
-  19,
-  14,
-  8,
-  9,
-  3,
-  123,
-  60,
-  58,
-  53,
-  47,
-  43,
-  32,
-  22,
-  37,
-  24,
-  17,
-  12,
-  15,
-  10,
-  2,
-  1,
-  71,
-  37,
-  34,
-  30,
-  28,
-  20,
-  17,
-  26,
-  21,
-  16,
-  10,
-  6,
-  8,
-  6,
-  2,
-  0
-];
-Tables$1.t16HB = [
-  1,
-  5,
-  14,
-  44,
-  74,
-  63,
-  110,
-  93,
-  172,
-  149,
-  138,
-  242,
-  225,
-  195,
-  376,
-  17,
-  3,
-  4,
-  12,
-  20,
-  35,
-  62,
-  53,
-  47,
-  83,
-  75,
-  68,
-  119,
-  201,
-  107,
-  207,
-  9,
-  15,
-  13,
-  23,
-  38,
-  67,
-  58,
-  103,
-  90,
-  161,
-  72,
-  127,
-  117,
-  110,
-  209,
-  206,
-  16,
-  45,
-  21,
-  39,
-  69,
-  64,
-  114,
-  99,
-  87,
-  158,
-  140,
-  252,
-  212,
-  199,
-  387,
-  365,
-  26,
-  75,
-  36,
-  68,
-  65,
-  115,
-  101,
-  179,
-  164,
-  155,
-  264,
-  246,
-  226,
-  395,
-  382,
-  362,
-  9,
-  66,
-  30,
-  59,
-  56,
-  102,
-  185,
-  173,
-  265,
-  142,
-  253,
-  232,
-  400,
-  388,
-  378,
-  445,
-  16,
-  111,
-  54,
-  52,
-  100,
-  184,
-  178,
-  160,
-  133,
-  257,
-  244,
-  228,
-  217,
-  385,
-  366,
-  715,
-  10,
-  98,
-  48,
-  91,
-  88,
-  165,
-  157,
-  148,
-  261,
-  248,
-  407,
-  397,
-  372,
-  380,
-  889,
-  884,
-  8,
-  85,
-  84,
-  81,
-  159,
-  156,
-  143,
-  260,
-  249,
-  427,
-  401,
-  392,
-  383,
-  727,
-  713,
-  708,
-  7,
-  154,
-  76,
-  73,
-  141,
-  131,
-  256,
-  245,
-  426,
-  406,
-  394,
-  384,
-  735,
-  359,
-  710,
-  352,
-  11,
-  139,
-  129,
-  67,
-  125,
-  247,
-  233,
-  229,
-  219,
-  393,
-  743,
-  737,
-  720,
-  885,
-  882,
-  439,
-  4,
-  243,
-  120,
-  118,
-  115,
-  227,
-  223,
-  396,
-  746,
-  742,
-  736,
-  721,
-  712,
-  706,
-  223,
-  436,
-  6,
-  202,
-  224,
-  222,
-  218,
-  216,
-  389,
-  386,
-  381,
-  364,
-  888,
-  443,
-  707,
-  440,
-  437,
-  1728,
-  4,
-  747,
-  211,
-  210,
-  208,
-  370,
-  379,
-  734,
-  723,
-  714,
-  1735,
-  883,
-  877,
-  876,
-  3459,
-  865,
-  2,
-  377,
-  369,
-  102,
-  187,
-  726,
-  722,
-  358,
-  711,
-  709,
-  866,
-  1734,
-  871,
-  3458,
-  870,
-  434,
-  0,
-  12,
-  10,
-  7,
-  11,
-  10,
-  17,
-  11,
-  9,
-  13,
-  12,
-  10,
-  7,
-  5,
-  3,
-  1,
-  3
-];
-Tables$1.t24HB = [
-  15,
-  13,
-  46,
-  80,
-  146,
-  262,
-  248,
-  434,
-  426,
-  669,
-  653,
-  649,
-  621,
-  517,
-  1032,
-  88,
-  14,
-  12,
-  21,
-  38,
-  71,
-  130,
-  122,
-  216,
-  209,
-  198,
-  327,
-  345,
-  319,
-  297,
-  279,
-  42,
-  47,
-  22,
-  41,
-  74,
-  68,
-  128,
-  120,
-  221,
-  207,
-  194,
-  182,
-  340,
-  315,
-  295,
-  541,
-  18,
-  81,
-  39,
-  75,
-  70,
-  134,
-  125,
-  116,
-  220,
-  204,
-  190,
-  178,
-  325,
-  311,
-  293,
-  271,
-  16,
-  147,
-  72,
-  69,
-  135,
-  127,
-  118,
-  112,
-  210,
-  200,
-  188,
-  352,
-  323,
-  306,
-  285,
-  540,
-  14,
-  263,
-  66,
-  129,
-  126,
-  119,
-  114,
-  214,
-  202,
-  192,
-  180,
-  341,
-  317,
-  301,
-  281,
-  262,
-  12,
-  249,
-  123,
-  121,
-  117,
-  113,
-  215,
-  206,
-  195,
-  185,
-  347,
-  330,
-  308,
-  291,
-  272,
-  520,
-  10,
-  435,
-  115,
-  111,
-  109,
-  211,
-  203,
-  196,
-  187,
-  353,
-  332,
-  313,
-  298,
-  283,
-  531,
-  381,
-  17,
-  427,
-  212,
-  208,
-  205,
-  201,
-  193,
-  186,
-  177,
-  169,
-  320,
-  303,
-  286,
-  268,
-  514,
-  377,
-  16,
-  335,
-  199,
-  197,
-  191,
-  189,
-  181,
-  174,
-  333,
-  321,
-  305,
-  289,
-  275,
-  521,
-  379,
-  371,
-  11,
-  668,
-  184,
-  183,
-  179,
-  175,
-  344,
-  331,
-  314,
-  304,
-  290,
-  277,
-  530,
-  383,
-  373,
-  366,
-  10,
-  652,
-  346,
-  171,
-  168,
-  164,
-  318,
-  309,
-  299,
-  287,
-  276,
-  263,
-  513,
-  375,
-  368,
-  362,
-  6,
-  648,
-  322,
-  316,
-  312,
-  307,
-  302,
-  292,
-  284,
-  269,
-  261,
-  512,
-  376,
-  370,
-  364,
-  359,
-  4,
-  620,
-  300,
-  296,
-  294,
-  288,
-  282,
-  273,
-  266,
-  515,
-  380,
-  374,
-  369,
-  365,
-  361,
-  357,
-  2,
-  1033,
-  280,
-  278,
-  274,
-  267,
-  264,
-  259,
-  382,
-  378,
-  372,
-  367,
-  363,
-  360,
-  358,
-  356,
-  0,
-  43,
-  20,
-  19,
-  17,
-  15,
-  13,
-  11,
-  9,
-  7,
-  6,
-  4,
-  7,
-  5,
-  3,
-  1,
-  3
-];
-Tables$1.t32HB = [
-  1 << 0,
-  5 << 1,
-  4 << 1,
-  5 << 2,
-  6 << 1,
-  5 << 2,
-  4 << 2,
-  4 << 3,
-  7 << 1,
-  3 << 2,
-  6 << 2,
-  0 << 3,
-  7 << 2,
-  2 << 3,
-  3 << 3,
-  1 << 4
-];
-Tables$1.t33HB = [
-  15 << 0,
-  14 << 1,
-  13 << 1,
-  12 << 2,
-  11 << 1,
-  10 << 2,
-  9 << 2,
-  8 << 3,
-  7 << 1,
-  6 << 2,
-  5 << 2,
-  4 << 3,
-  3 << 2,
-  2 << 3,
-  1 << 3,
-  0 << 4
-];
-Tables$1.t1l = [1, 4, 3, 5];
-Tables$1.t2l = [1, 4, 7, 4, 5, 7, 6, 7, 8];
-Tables$1.t3l = [2, 3, 7, 4, 4, 7, 6, 7, 8];
-Tables$1.t5l = [1, 4, 7, 8, 4, 5, 8, 9, 7, 8, 9, 10, 8, 8, 9, 10];
-Tables$1.t6l = [3, 4, 6, 8, 4, 4, 6, 7, 5, 6, 7, 8, 7, 7, 8, 9];
-Tables$1.t7l = [
-  1,
-  4,
-  7,
-  9,
-  9,
-  10,
-  4,
-  6,
-  8,
-  9,
-  9,
-  10,
-  7,
-  7,
-  9,
-  10,
-  10,
-  11,
-  8,
-  9,
-  10,
-  11,
-  11,
-  11,
-  8,
-  9,
-  10,
-  11,
-  11,
-  12,
-  9,
-  10,
-  11,
-  12,
-  12,
-  12
-];
-Tables$1.t8l = [
-  2,
-  4,
-  7,
-  9,
-  9,
-  10,
-  4,
-  4,
-  6,
-  10,
-  10,
-  10,
-  7,
-  6,
-  8,
-  10,
-  10,
-  11,
-  9,
-  10,
-  10,
-  11,
-  11,
-  12,
-  9,
-  9,
-  10,
-  11,
-  12,
-  12,
-  10,
-  10,
-  11,
-  11,
-  13,
-  13
-];
-Tables$1.t9l = [
-  3,
-  4,
-  6,
-  7,
-  9,
-  10,
-  4,
-  5,
-  6,
-  7,
-  8,
-  10,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  7,
-  7,
-  8,
-  9,
-  9,
-  10,
-  8,
-  8,
-  9,
-  9,
-  10,
-  11,
-  9,
-  9,
-  10,
-  10,
-  11,
-  11
-];
-Tables$1.t10l = [
-  1,
-  4,
-  7,
-  9,
-  10,
-  10,
-  10,
-  11,
-  4,
-  6,
-  8,
-  9,
-  10,
-  11,
-  10,
-  10,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  11,
-  11,
-  8,
-  9,
-  10,
-  11,
-  12,
-  12,
-  11,
-  12,
-  9,
-  10,
-  11,
-  12,
-  12,
-  12,
-  12,
-  12,
-  10,
-  11,
-  12,
-  12,
-  13,
-  13,
-  12,
-  13,
-  9,
-  10,
-  11,
-  12,
-  12,
-  12,
-  13,
-  13,
-  10,
-  10,
-  11,
-  12,
-  12,
-  13,
-  13,
-  13
-];
-Tables$1.t11l = [
-  2,
-  4,
-  6,
-  8,
-  9,
-  10,
-  9,
-  10,
-  4,
-  5,
-  6,
-  8,
-  10,
-  10,
-  9,
-  10,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  10,
-  10,
-  8,
-  8,
-  9,
-  11,
-  10,
-  12,
-  10,
-  11,
-  9,
-  10,
-  10,
-  11,
-  11,
-  12,
-  11,
-  12,
-  9,
-  10,
-  11,
-  12,
-  12,
-  13,
-  12,
-  13,
-  9,
-  9,
-  9,
-  10,
-  11,
-  12,
-  12,
-  12,
-  9,
-  9,
-  10,
-  11,
-  12,
-  12,
-  12,
-  12
-];
-Tables$1.t12l = [
-  4,
-  4,
-  6,
-  8,
-  9,
-  10,
-  10,
-  10,
-  4,
-  5,
-  6,
-  7,
-  9,
-  9,
-  10,
-  10,
-  6,
-  6,
-  7,
-  8,
-  9,
-  10,
-  9,
-  10,
-  7,
-  7,
-  8,
-  8,
-  9,
-  10,
-  10,
-  10,
-  8,
-  8,
-  9,
-  9,
-  10,
-  10,
-  10,
-  11,
-  9,
-  9,
-  10,
-  10,
-  10,
-  11,
-  10,
-  11,
-  9,
-  9,
-  9,
-  10,
-  10,
-  11,
-  11,
-  12,
-  10,
-  10,
-  10,
-  11,
-  11,
-  11,
-  11,
-  12
-];
-Tables$1.t13l = [
-  1,
-  5,
-  7,
-  8,
-  9,
-  10,
-  10,
-  11,
-  10,
-  11,
-  12,
-  12,
-  13,
-  13,
-  14,
-  14,
-  4,
-  6,
-  8,
-  9,
-  10,
-  10,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  13,
-  14,
-  14,
-  14,
-  7,
-  8,
-  9,
-  10,
-  11,
-  11,
-  12,
-  12,
-  11,
-  12,
-  12,
-  13,
-  13,
-  14,
-  15,
-  15,
-  8,
-  9,
-  10,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  14,
-  15,
-  15,
-  9,
-  9,
-  11,
-  11,
-  12,
-  12,
-  13,
-  13,
-  12,
-  13,
-  13,
-  14,
-  14,
-  15,
-  15,
-  16,
-  10,
-  10,
-  11,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  14,
-  13,
-  15,
-  15,
-  16,
-  16,
-  10,
-  11,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  13,
-  14,
-  14,
-  14,
-  15,
-  15,
-  16,
-  16,
-  11,
-  11,
-  12,
-  13,
-  13,
-  13,
-  14,
-  14,
-  14,
-  14,
-  15,
-  15,
-  15,
-  16,
-  18,
-  18,
-  10,
-  10,
-  11,
-  12,
-  12,
-  13,
-  13,
-  14,
-  14,
-  14,
-  14,
-  15,
-  15,
-  16,
-  17,
-  17,
-  11,
-  11,
-  12,
-  12,
-  13,
-  13,
-  13,
-  15,
-  14,
-  15,
-  15,
-  16,
-  16,
-  16,
-  18,
-  17,
-  11,
-  12,
-  12,
-  13,
-  13,
-  14,
-  14,
-  15,
-  14,
-  15,
-  16,
-  15,
-  16,
-  17,
-  18,
-  19,
-  12,
-  12,
-  12,
-  13,
-  14,
-  14,
-  14,
-  14,
-  15,
-  15,
-  15,
-  16,
-  17,
-  17,
-  17,
-  18,
-  12,
-  13,
-  13,
-  14,
-  14,
-  15,
-  14,
-  15,
-  16,
-  16,
-  17,
-  17,
-  17,
-  18,
-  18,
-  18,
-  13,
-  13,
-  14,
-  15,
-  15,
-  15,
-  16,
-  16,
-  16,
-  16,
-  16,
-  17,
-  18,
-  17,
-  18,
-  18,
-  14,
-  14,
-  14,
-  15,
-  15,
-  15,
-  17,
-  16,
-  16,
-  19,
-  17,
-  17,
-  17,
-  19,
-  18,
-  18,
-  13,
-  14,
-  15,
-  16,
-  16,
-  16,
-  17,
-  16,
-  17,
-  17,
-  18,
-  18,
-  21,
-  20,
-  21,
-  18
-];
-Tables$1.t15l = [
-  3,
-  5,
-  6,
-  8,
-  8,
-  9,
-  10,
-  10,
-  10,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  14,
-  5,
-  5,
-  7,
-  8,
-  9,
-  9,
-  10,
-  10,
-  10,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  13,
-  6,
-  7,
-  7,
-  8,
-  9,
-  9,
-  10,
-  10,
-  10,
-  11,
-  11,
-  12,
-  12,
-  13,
-  13,
-  13,
-  7,
-  8,
-  8,
-  9,
-  9,
-  10,
-  10,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  8,
-  8,
-  9,
-  9,
-  10,
-  10,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  9,
-  9,
-  9,
-  10,
-  10,
-  10,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  13,
-  13,
-  13,
-  14,
-  10,
-  9,
-  10,
-  10,
-  10,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  13,
-  14,
-  14,
-  10,
-  10,
-  10,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  14,
-  10,
-  10,
-  10,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  14,
-  14,
-  14,
-  10,
-  10,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  14,
-  14,
-  14,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  14,
-  15,
-  14,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  14,
-  14,
-  14,
-  15,
-  12,
-  12,
-  11,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  13,
-  13,
-  14,
-  14,
-  15,
-  15,
-  12,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  14,
-  14,
-  14,
-  14,
-  14,
-  15,
-  15,
-  13,
-  13,
-  13,
-  13,
-  13,
-  13,
-  13,
-  13,
-  14,
-  14,
-  14,
-  14,
-  15,
-  15,
-  14,
-  15,
-  13,
-  13,
-  13,
-  13,
-  13,
-  13,
-  13,
-  14,
-  14,
-  14,
-  14,
-  14,
-  15,
-  15,
-  15,
-  15
-];
-Tables$1.t16_5l = [
-  1,
-  5,
-  7,
-  9,
-  10,
-  10,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  14,
-  11,
-  4,
-  6,
-  8,
-  9,
-  10,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  14,
-  13,
-  14,
-  11,
-  7,
-  8,
-  9,
-  10,
-  11,
-  11,
-  12,
-  12,
-  13,
-  12,
-  13,
-  13,
-  13,
-  14,
-  14,
-  12,
-  9,
-  9,
-  10,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  13,
-  14,
-  14,
-  14,
-  15,
-  15,
-  13,
-  10,
-  10,
-  11,
-  11,
-  12,
-  12,
-  13,
-  13,
-  13,
-  14,
-  14,
-  14,
-  15,
-  15,
-  15,
-  12,
-  10,
-  10,
-  11,
-  11,
-  12,
-  13,
-  13,
-  14,
-  13,
-  14,
-  14,
-  15,
-  15,
-  15,
-  16,
-  13,
-  11,
-  11,
-  11,
-  12,
-  13,
-  13,
-  13,
-  13,
-  14,
-  14,
-  14,
-  14,
-  15,
-  15,
-  16,
-  13,
-  11,
-  11,
-  12,
-  12,
-  13,
-  13,
-  13,
-  14,
-  14,
-  15,
-  15,
-  15,
-  15,
-  17,
-  17,
-  13,
-  11,
-  12,
-  12,
-  13,
-  13,
-  13,
-  14,
-  14,
-  15,
-  15,
-  15,
-  15,
-  16,
-  16,
-  16,
-  13,
-  12,
-  12,
-  12,
-  13,
-  13,
-  14,
-  14,
-  15,
-  15,
-  15,
-  15,
-  16,
-  15,
-  16,
-  15,
-  14,
-  12,
-  13,
-  12,
-  13,
-  14,
-  14,
-  14,
-  14,
-  15,
-  16,
-  16,
-  16,
-  17,
-  17,
-  16,
-  13,
-  13,
-  13,
-  13,
-  13,
-  14,
-  14,
-  15,
-  16,
-  16,
-  16,
-  16,
-  16,
-  16,
-  15,
-  16,
-  14,
-  13,
-  14,
-  14,
-  14,
-  14,
-  15,
-  15,
-  15,
-  15,
-  17,
-  16,
-  16,
-  16,
-  16,
-  18,
-  14,
-  15,
-  14,
-  14,
-  14,
-  15,
-  15,
-  16,
-  16,
-  16,
-  18,
-  17,
-  17,
-  17,
-  19,
-  17,
-  14,
-  14,
-  15,
-  13,
-  14,
-  16,
-  16,
-  15,
-  16,
-  16,
-  17,
-  18,
-  17,
-  19,
-  17,
-  16,
-  14,
-  11,
-  11,
-  11,
-  12,
-  12,
-  13,
-  13,
-  13,
-  14,
-  14,
-  14,
-  14,
-  14,
-  14,
-  14,
-  12
-];
-Tables$1.t16l = [
-  1,
-  5,
-  7,
-  9,
-  10,
-  10,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  14,
-  10,
-  4,
-  6,
-  8,
-  9,
-  10,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  14,
-  13,
-  14,
-  10,
-  7,
-  8,
-  9,
-  10,
-  11,
-  11,
-  12,
-  12,
-  13,
-  12,
-  13,
-  13,
-  13,
-  14,
-  14,
-  11,
-  9,
-  9,
-  10,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  13,
-  14,
-  14,
-  14,
-  15,
-  15,
-  12,
-  10,
-  10,
-  11,
-  11,
-  12,
-  12,
-  13,
-  13,
-  13,
-  14,
-  14,
-  14,
-  15,
-  15,
-  15,
-  11,
-  10,
-  10,
-  11,
-  11,
-  12,
-  13,
-  13,
-  14,
-  13,
-  14,
-  14,
-  15,
-  15,
-  15,
-  16,
-  12,
-  11,
-  11,
-  11,
-  12,
-  13,
-  13,
-  13,
-  13,
-  14,
-  14,
-  14,
-  14,
-  15,
-  15,
-  16,
-  12,
-  11,
-  11,
-  12,
-  12,
-  13,
-  13,
-  13,
-  14,
-  14,
-  15,
-  15,
-  15,
-  15,
-  17,
-  17,
-  12,
-  11,
-  12,
-  12,
-  13,
-  13,
-  13,
-  14,
-  14,
-  15,
-  15,
-  15,
-  15,
-  16,
-  16,
-  16,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  14,
-  14,
-  15,
-  15,
-  15,
-  15,
-  16,
-  15,
-  16,
-  15,
-  13,
-  12,
-  13,
-  12,
-  13,
-  14,
-  14,
-  14,
-  14,
-  15,
-  16,
-  16,
-  16,
-  17,
-  17,
-  16,
-  12,
-  13,
-  13,
-  13,
-  13,
-  14,
-  14,
-  15,
-  16,
-  16,
-  16,
-  16,
-  16,
-  16,
-  15,
-  16,
-  13,
-  13,
-  14,
-  14,
-  14,
-  14,
-  15,
-  15,
-  15,
-  15,
-  17,
-  16,
-  16,
-  16,
-  16,
-  18,
-  13,
-  15,
-  14,
-  14,
-  14,
-  15,
-  15,
-  16,
-  16,
-  16,
-  18,
-  17,
-  17,
-  17,
-  19,
-  17,
-  13,
-  14,
-  15,
-  13,
-  14,
-  16,
-  16,
-  15,
-  16,
-  16,
-  17,
-  18,
-  17,
-  19,
-  17,
-  16,
-  13,
-  10,
-  10,
-  10,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  13,
-  13,
-  13,
-  10
-];
-Tables$1.t24l = [
-  4,
-  5,
-  7,
-  8,
-  9,
-  10,
-  10,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  12,
-  13,
-  10,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  10,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  12,
-  10,
-  7,
-  7,
-  8,
-  9,
-  9,
-  10,
-  10,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  13,
-  9,
-  8,
-  8,
-  9,
-  9,
-  10,
-  10,
-  10,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  9,
-  9,
-  9,
-  9,
-  10,
-  10,
-  10,
-  10,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  13,
-  9,
-  10,
-  9,
-  10,
-  10,
-  10,
-  10,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  12,
-  9,
-  10,
-  10,
-  10,
-  10,
-  10,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  12,
-  13,
-  9,
-  11,
-  10,
-  10,
-  10,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  10,
-  11,
-  11,
-  11,
-  11,
-  11,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  10,
-  11,
-  11,
-  11,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  10,
-  12,
-  11,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  10,
-  12,
-  12,
-  11,
-  11,
-  11,
-  12,
-  12,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  10,
-  12,
-  12,
-  12,
-  12,
-  12,
-  12,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  13,
-  10,
-  12,
-  12,
-  12,
-  12,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  13,
-  13,
-  13,
-  10,
-  13,
-  12,
-  12,
-  12,
-  12,
-  12,
-  12,
-  13,
-  13,
-  13,
-  13,
-  13,
-  13,
-  13,
-  13,
-  10,
-  9,
-  9,
-  9,
-  9,
-  9,
-  9,
-  9,
-  9,
-  9,
-  9,
-  9,
-  10,
-  10,
-  10,
-  10,
-  6
-];
-Tables$1.t32l = [
-  1 + 0,
-  4 + 1,
-  4 + 1,
-  5 + 2,
-  4 + 1,
-  6 + 2,
-  5 + 2,
-  6 + 3,
-  4 + 1,
-  5 + 2,
-  5 + 2,
-  6 + 3,
-  5 + 2,
-  6 + 3,
-  6 + 3,
-  6 + 4
-];
-Tables$1.t33l = [
-  4 + 0,
-  4 + 1,
-  4 + 1,
-  4 + 2,
-  4 + 1,
-  4 + 2,
-  4 + 2,
-  4 + 3,
-  4 + 1,
-  4 + 2,
-  4 + 2,
-  4 + 3,
-  4 + 2,
-  4 + 3,
-  4 + 3,
-  4 + 4
-];
-Tables$1.ht = [
-  new HuffCodeTab(0, 0, null, null),
-  new HuffCodeTab(2, 0, Tables$1.t1HB, Tables$1.t1l),
-  new HuffCodeTab(3, 0, Tables$1.t2HB, Tables$1.t2l),
-  new HuffCodeTab(3, 0, Tables$1.t3HB, Tables$1.t3l),
-  new HuffCodeTab(0, 0, null, null),
-  new HuffCodeTab(4, 0, Tables$1.t5HB, Tables$1.t5l),
-  new HuffCodeTab(4, 0, Tables$1.t6HB, Tables$1.t6l),
-  new HuffCodeTab(6, 0, Tables$1.t7HB, Tables$1.t7l),
-  new HuffCodeTab(6, 0, Tables$1.t8HB, Tables$1.t8l),
-  new HuffCodeTab(6, 0, Tables$1.t9HB, Tables$1.t9l),
-  new HuffCodeTab(8, 0, Tables$1.t10HB, Tables$1.t10l),
-  new HuffCodeTab(8, 0, Tables$1.t11HB, Tables$1.t11l),
-  new HuffCodeTab(8, 0, Tables$1.t12HB, Tables$1.t12l),
-  new HuffCodeTab(16, 0, Tables$1.t13HB, Tables$1.t13l),
-  new HuffCodeTab(0, 0, null, Tables$1.t16_5l),
-  new HuffCodeTab(16, 0, Tables$1.t15HB, Tables$1.t15l),
-  new HuffCodeTab(1, 1, Tables$1.t16HB, Tables$1.t16l),
-  new HuffCodeTab(2, 3, Tables$1.t16HB, Tables$1.t16l),
-  new HuffCodeTab(3, 7, Tables$1.t16HB, Tables$1.t16l),
-  new HuffCodeTab(4, 15, Tables$1.t16HB, Tables$1.t16l),
-  new HuffCodeTab(6, 63, Tables$1.t16HB, Tables$1.t16l),
-  new HuffCodeTab(8, 255, Tables$1.t16HB, Tables$1.t16l),
-  new HuffCodeTab(10, 1023, Tables$1.t16HB, Tables$1.t16l),
-  new HuffCodeTab(13, 8191, Tables$1.t16HB, Tables$1.t16l),
-  new HuffCodeTab(4, 15, Tables$1.t24HB, Tables$1.t24l),
-  new HuffCodeTab(5, 31, Tables$1.t24HB, Tables$1.t24l),
-  new HuffCodeTab(6, 63, Tables$1.t24HB, Tables$1.t24l),
-  new HuffCodeTab(7, 127, Tables$1.t24HB, Tables$1.t24l),
-  new HuffCodeTab(8, 255, Tables$1.t24HB, Tables$1.t24l),
-  new HuffCodeTab(9, 511, Tables$1.t24HB, Tables$1.t24l),
-  new HuffCodeTab(11, 2047, Tables$1.t24HB, Tables$1.t24l),
-  new HuffCodeTab(13, 8191, Tables$1.t24HB, Tables$1.t24l),
-  new HuffCodeTab(0, 0, Tables$1.t32HB, Tables$1.t32l),
-  new HuffCodeTab(0, 0, Tables$1.t33HB, Tables$1.t33l)
-];
-Tables$1.largetbl = [
-  65540,
-  327685,
-  458759,
-  589832,
-  655369,
-  655370,
-  720906,
-  720907,
-  786443,
-  786444,
-  786444,
-  851980,
-  851980,
-  851980,
-  917517,
-  655370,
-  262149,
-  393222,
-  524295,
-  589832,
-  655369,
-  720906,
-  720906,
-  720907,
-  786443,
-  786443,
-  786444,
-  851980,
-  917516,
-  851980,
-  917516,
-  655370,
-  458759,
-  524295,
-  589832,
-  655369,
-  720905,
-  720906,
-  786442,
-  786443,
-  851979,
-  786443,
-  851979,
-  851980,
-  851980,
-  917516,
-  917517,
-  720905,
-  589832,
-  589832,
-  655369,
-  720905,
-  720906,
-  786442,
-  786442,
-  786443,
-  851979,
-  851979,
-  917515,
-  917516,
-  917516,
-  983052,
-  983052,
-  786441,
-  655369,
-  655369,
-  720905,
-  720906,
-  786442,
-  786442,
-  851978,
-  851979,
-  851979,
-  917515,
-  917516,
-  917516,
-  983052,
-  983052,
-  983053,
-  720905,
-  655370,
-  655369,
-  720906,
-  720906,
-  786442,
-  851978,
-  851979,
-  917515,
-  851979,
-  917515,
-  917516,
-  983052,
-  983052,
-  983052,
-  1048588,
-  786441,
-  720906,
-  720906,
-  720906,
-  786442,
-  851978,
-  851979,
-  851979,
-  851979,
-  917515,
-  917516,
-  917516,
-  917516,
-  983052,
-  983052,
-  1048589,
-  786441,
-  720907,
-  720906,
-  786442,
-  786442,
-  851979,
-  851979,
-  851979,
-  917515,
-  917516,
-  983052,
-  983052,
-  983052,
-  983052,
-  1114125,
-  1114125,
-  786442,
-  720907,
-  786443,
-  786443,
-  851979,
-  851979,
-  851979,
-  917515,
-  917515,
-  983051,
-  983052,
-  983052,
-  983052,
-  1048588,
-  1048589,
-  1048589,
-  786442,
-  786443,
-  786443,
-  786443,
-  851979,
-  851979,
-  917515,
-  917515,
-  983052,
-  983052,
-  983052,
-  983052,
-  1048588,
-  983053,
-  1048589,
-  983053,
-  851978,
-  786444,
-  851979,
-  786443,
-  851979,
-  917515,
-  917516,
-  917516,
-  917516,
-  983052,
-  1048588,
-  1048588,
-  1048589,
-  1114125,
-  1114125,
-  1048589,
-  786442,
-  851980,
-  851980,
-  851979,
-  851979,
-  917515,
-  917516,
-  983052,
-  1048588,
-  1048588,
-  1048588,
-  1048588,
-  1048589,
-  1048589,
-  983053,
-  1048589,
-  851978,
-  851980,
-  917516,
-  917516,
-  917516,
-  917516,
-  983052,
-  983052,
-  983052,
-  983052,
-  1114124,
-  1048589,
-  1048589,
-  1048589,
-  1048589,
-  1179661,
-  851978,
-  983052,
-  917516,
-  917516,
-  917516,
-  983052,
-  983052,
-  1048588,
-  1048588,
-  1048589,
-  1179661,
-  1114125,
-  1114125,
-  1114125,
-  1245197,
-  1114125,
-  851978,
-  917517,
-  983052,
-  851980,
-  917516,
-  1048588,
-  1048588,
-  983052,
-  1048589,
-  1048589,
-  1114125,
-  1179661,
-  1114125,
-  1245197,
-  1114125,
-  1048589,
-  851978,
-  655369,
-  655369,
-  655369,
-  720905,
-  720905,
-  786441,
-  786441,
-  786441,
-  851977,
-  851977,
-  851977,
-  851978,
-  851978,
-  851978,
-  851978,
-  655366
-];
-Tables$1.table23 = [
-  65538,
-  262147,
-  458759,
-  262148,
-  327684,
-  458759,
-  393222,
-  458759,
-  524296
-];
-Tables$1.table56 = [
-  65539,
-  262148,
-  458758,
-  524296,
-  262148,
-  327684,
-  524294,
-  589831,
-  458757,
-  524294,
-  589831,
-  655368,
-  524295,
-  524295,
-  589832,
-  655369
-];
-Tables$1.bitrate_table = [
-  [
-    0,
-    8,
-    16,
-    24,
-    32,
-    40,
-    48,
-    56,
-    64,
-    80,
-    96,
-    112,
-    128,
-    144,
-    160,
-    -1
-  ],
-  [
-    0,
-    32,
-    40,
-    48,
-    56,
-    64,
-    80,
-    96,
-    112,
-    128,
-    160,
-    192,
-    224,
-    256,
-    320,
-    -1
-  ],
-  [0, 8, 16, 24, 32, 40, 48, 56, 64, -1, -1, -1, -1, -1, -1, -1]
-];
-Tables$1.samplerate_table = [
-  [22050, 24e3, 16e3, -1],
-  [44100, 48e3, 32e3, -1],
-  [11025, 12e3, 8e3, -1]
-];
-Tables$1.scfsi_band = [0, 6, 11, 16, 21];
-var VbrMode$4 = common.VbrMode;
-var Float = common.Float;
-var Util$1 = common.Util;
-var new_float$3 = common.new_float;
-var new_int$3 = common.new_int;
-var assert$7 = common.assert;
-QuantizePVT.Q_MAX = 256 + 1;
-QuantizePVT.Q_MAX2 = 116;
-QuantizePVT.LARGE_BITS = 1e5;
-QuantizePVT.IXMAX_VAL = 8206;
-function QuantizePVT() {
-  var tak = null;
-  var rv = null;
-  var psy = null;
-  this.setModules = function(_tk, _rv, _psy) {
-    tak = _tk;
-    rv = _rv;
-    psy = _psy;
-  };
-  function POW20(x) {
-    return pow20[x + QuantizePVT.Q_MAX2];
-  }
-  this.IPOW20 = function(x) {
-    return ipow20[x];
-  };
-  var DBL_EPSILON = 2220446049250313e-31;
-  var IXMAX_VAL = QuantizePVT.IXMAX_VAL;
-  var PRECALC_SIZE = IXMAX_VAL + 2;
-  var Q_MAX = QuantizePVT.Q_MAX;
-  var Q_MAX2 = QuantizePVT.Q_MAX2;
-  var NSATHSCALE = 100;
-  this.nr_of_sfb_block = [
-    [
-      [6, 5, 5, 5],
-      [9, 9, 9, 9],
-      [6, 9, 9, 9]
-    ],
-    [
-      [6, 5, 7, 3],
-      [9, 9, 12, 6],
-      [6, 9, 12, 6]
-    ],
-    [
-      [11, 10, 0, 0],
-      [18, 18, 0, 0],
-      [15, 18, 0, 0]
-    ],
-    [
-      [7, 7, 7, 0],
-      [12, 12, 12, 0],
-      [6, 15, 12, 0]
-    ],
-    [
-      [6, 6, 6, 3],
-      [12, 9, 9, 6],
-      [6, 12, 9, 6]
-    ],
-    [
-      [8, 8, 5, 0],
-      [15, 12, 9, 0],
-      [6, 18, 9, 0]
-    ]
-  ];
-  var pretab = [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    2,
-    2,
-    3,
-    3,
-    3,
-    2,
-    0
-  ];
-  this.pretab = pretab;
-  this.sfBandIndex = [
-    new ScaleFac(
-      [
-        0,
-        6,
-        12,
-        18,
-        24,
-        30,
-        36,
-        44,
-        54,
-        66,
-        80,
-        96,
-        116,
-        140,
-        168,
-        200,
-        238,
-        284,
-        336,
-        396,
-        464,
-        522,
-        576
-      ],
-      [0, 4, 8, 12, 18, 24, 32, 42, 56, 74, 100, 132, 174, 192],
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0]
-    ),
-    new ScaleFac(
-      [
-        0,
-        6,
-        12,
-        18,
-        24,
-        30,
-        36,
-        44,
-        54,
-        66,
-        80,
-        96,
-        114,
-        136,
-        162,
-        194,
-        232,
-        278,
-        332,
-        394,
-        464,
-        540,
-        576
-      ],
-      [0, 4, 8, 12, 18, 26, 36, 48, 62, 80, 104, 136, 180, 192],
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0]
-    ),
-    new ScaleFac(
-      [
-        0,
-        6,
-        12,
-        18,
-        24,
-        30,
-        36,
-        44,
-        54,
-        66,
-        80,
-        96,
-        116,
-        140,
-        168,
-        200,
-        238,
-        284,
-        336,
-        396,
-        464,
-        522,
-        576
-      ],
-      [0, 4, 8, 12, 18, 26, 36, 48, 62, 80, 104, 134, 174, 192],
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0]
-    ),
-    new ScaleFac(
-      [
-        0,
-        4,
-        8,
-        12,
-        16,
-        20,
-        24,
-        30,
-        36,
-        44,
-        52,
-        62,
-        74,
-        90,
-        110,
-        134,
-        162,
-        196,
-        238,
-        288,
-        342,
-        418,
-        576
-      ],
-      [0, 4, 8, 12, 16, 22, 30, 40, 52, 66, 84, 106, 136, 192],
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0]
-    ),
-    new ScaleFac(
-      [
-        0,
-        4,
-        8,
-        12,
-        16,
-        20,
-        24,
-        30,
-        36,
-        42,
-        50,
-        60,
-        72,
-        88,
-        106,
-        128,
-        156,
-        190,
-        230,
-        276,
-        330,
-        384,
-        576
-      ],
-      [0, 4, 8, 12, 16, 22, 28, 38, 50, 64, 80, 100, 126, 192],
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0]
-    ),
-    new ScaleFac(
-      [
-        0,
-        4,
-        8,
-        12,
-        16,
-        20,
-        24,
-        30,
-        36,
-        44,
-        54,
-        66,
-        82,
-        102,
-        126,
-        156,
-        194,
-        240,
-        296,
-        364,
-        448,
-        550,
-        576
-      ],
-      [0, 4, 8, 12, 16, 22, 30, 42, 58, 78, 104, 138, 180, 192],
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0]
-    ),
-    new ScaleFac(
-      [
-        0,
-        6,
-        12,
-        18,
-        24,
-        30,
-        36,
-        44,
-        54,
-        66,
-        80,
-        96,
-        116,
-        140,
-        168,
-        200,
-        238,
-        284,
-        336,
-        396,
-        464,
-        522,
-        576
-      ],
-      [
-        0 / 3,
-        12 / 3,
-        24 / 3,
-        36 / 3,
-        54 / 3,
-        78 / 3,
-        108 / 3,
-        144 / 3,
-        186 / 3,
-        240 / 3,
-        312 / 3,
-        402 / 3,
-        522 / 3,
-        576 / 3
-      ],
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0]
-    ),
-    new ScaleFac(
-      [
-        0,
-        6,
-        12,
-        18,
-        24,
-        30,
-        36,
-        44,
-        54,
-        66,
-        80,
-        96,
-        116,
-        140,
-        168,
-        200,
-        238,
-        284,
-        336,
-        396,
-        464,
-        522,
-        576
-      ],
-      [
-        0 / 3,
-        12 / 3,
-        24 / 3,
-        36 / 3,
-        54 / 3,
-        78 / 3,
-        108 / 3,
-        144 / 3,
-        186 / 3,
-        240 / 3,
-        312 / 3,
-        402 / 3,
-        522 / 3,
-        576 / 3
-      ],
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0]
-    ),
-    new ScaleFac(
-      [
-        0,
-        12,
-        24,
-        36,
-        48,
-        60,
-        72,
-        88,
-        108,
-        132,
-        160,
-        192,
-        232,
-        280,
-        336,
-        400,
-        476,
-        566,
-        568,
-        570,
-        572,
-        574,
-        576
-      ],
-      [
-        0 / 3,
-        24 / 3,
-        48 / 3,
-        72 / 3,
-        108 / 3,
-        156 / 3,
-        216 / 3,
-        288 / 3,
-        372 / 3,
-        480 / 3,
-        486 / 3,
-        492 / 3,
-        498 / 3,
-        576 / 3
-      ],
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0]
-    )
-  ];
-  var pow20 = new_float$3(Q_MAX + Q_MAX2 + 1);
-  var ipow20 = new_float$3(Q_MAX);
-  var pow43 = new_float$3(PRECALC_SIZE);
-  var adj43 = new_float$3(PRECALC_SIZE);
-  this.adj43 = adj43;
-  function ATHmdct(gfp, f) {
-    var ath = psy.ATHformula(f, gfp);
-    ath -= NSATHSCALE;
-    ath = Math.pow(10, ath / 10 + gfp.ATHlower);
-    return ath;
-  }
-  function compute_ath(gfp) {
-    var ATH_l = gfp.internal_flags.ATH.l;
-    var ATH_psfb21 = gfp.internal_flags.ATH.psfb21;
-    var ATH_s = gfp.internal_flags.ATH.s;
-    var ATH_psfb12 = gfp.internal_flags.ATH.psfb12;
-    var gfc = gfp.internal_flags;
-    var samp_freq = gfp.out_samplerate;
-    for (var sfb = 0; sfb < Encoder.SBMAX_l; sfb++) {
-      var start2 = gfc.scalefac_band.l[sfb];
-      var end = gfc.scalefac_band.l[sfb + 1];
-      ATH_l[sfb] = Float.MAX_VALUE;
-      for (var i = start2; i < end; i++) {
-        var freq = i * samp_freq / (2 * 576);
-        var ATH_f = ATHmdct(gfp, freq);
-        ATH_l[sfb] = Math.min(ATH_l[sfb], ATH_f);
-      }
-    }
-    for (var sfb = 0; sfb < Encoder.PSFB21; sfb++) {
-      var start2 = gfc.scalefac_band.psfb21[sfb];
-      var end = gfc.scalefac_band.psfb21[sfb + 1];
-      ATH_psfb21[sfb] = Float.MAX_VALUE;
-      for (var i = start2; i < end; i++) {
-        var freq = i * samp_freq / (2 * 576);
-        var ATH_f = ATHmdct(gfp, freq);
-        ATH_psfb21[sfb] = Math.min(ATH_psfb21[sfb], ATH_f);
-      }
-    }
-    for (var sfb = 0; sfb < Encoder.SBMAX_s; sfb++) {
-      var start2 = gfc.scalefac_band.s[sfb];
-      var end = gfc.scalefac_band.s[sfb + 1];
-      ATH_s[sfb] = Float.MAX_VALUE;
-      for (var i = start2; i < end; i++) {
-        var freq = i * samp_freq / (2 * 192);
-        var ATH_f = ATHmdct(gfp, freq);
-        ATH_s[sfb] = Math.min(ATH_s[sfb], ATH_f);
-      }
-      ATH_s[sfb] *= gfc.scalefac_band.s[sfb + 1] - gfc.scalefac_band.s[sfb];
-    }
-    for (var sfb = 0; sfb < Encoder.PSFB12; sfb++) {
-      var start2 = gfc.scalefac_band.psfb12[sfb];
-      var end = gfc.scalefac_band.psfb12[sfb + 1];
-      ATH_psfb12[sfb] = Float.MAX_VALUE;
-      for (var i = start2; i < end; i++) {
-        var freq = i * samp_freq / (2 * 192);
-        var ATH_f = ATHmdct(gfp, freq);
-        ATH_psfb12[sfb] = Math.min(ATH_psfb12[sfb], ATH_f);
-      }
-      ATH_psfb12[sfb] *= gfc.scalefac_band.s[13] - gfc.scalefac_band.s[12];
-    }
-    if (gfp.noATH) {
-      for (var sfb = 0; sfb < Encoder.SBMAX_l; sfb++) {
-        ATH_l[sfb] = 1e-20;
-      }
-      for (var sfb = 0; sfb < Encoder.PSFB21; sfb++) {
-        ATH_psfb21[sfb] = 1e-20;
-      }
-      for (var sfb = 0; sfb < Encoder.SBMAX_s; sfb++) {
-        ATH_s[sfb] = 1e-20;
-      }
-      for (var sfb = 0; sfb < Encoder.PSFB12; sfb++) {
-        ATH_psfb12[sfb] = 1e-20;
-      }
-    }
-    gfc.ATH.floor = 10 * Math.log10(ATHmdct(gfp, -1));
-  }
-  this.iteration_init = function(gfp) {
-    var gfc = gfp.internal_flags;
-    var l3_side = gfc.l3_side;
-    var i;
-    if (gfc.iteration_init_init == 0) {
-      gfc.iteration_init_init = 1;
-      l3_side.main_data_begin = 0;
-      compute_ath(gfp);
-      pow43[0] = 0;
-      for (i = 1; i < PRECALC_SIZE; i++)
-        pow43[i] = Math.pow(i, 4 / 3);
-      for (i = 0; i < PRECALC_SIZE - 1; i++) {
-        adj43[i] = i + 1 - Math.pow(0.5 * (pow43[i] + pow43[i + 1]), 0.75);
-      }
-      adj43[i] = 0.5;
-      for (i = 0; i < Q_MAX; i++)
-        ipow20[i] = Math.pow(2, (i - 210) * -0.1875);
-      for (i = 0; i <= Q_MAX + Q_MAX2; i++) {
-        pow20[i] = Math.pow(2, (i - 210 - Q_MAX2) * 0.25);
-      }
-      tak.huffman_init(gfc);
-      {
-        var bass, alto, treble, sfb21;
-        i = gfp.exp_nspsytune >> 2 & 63;
-        if (i >= 32)
-          i -= 64;
-        bass = Math.pow(10, i / 4 / 10);
-        i = gfp.exp_nspsytune >> 8 & 63;
-        if (i >= 32)
-          i -= 64;
-        alto = Math.pow(10, i / 4 / 10);
-        i = gfp.exp_nspsytune >> 14 & 63;
-        if (i >= 32)
-          i -= 64;
-        treble = Math.pow(10, i / 4 / 10);
-        i = gfp.exp_nspsytune >> 20 & 63;
-        if (i >= 32)
-          i -= 64;
-        sfb21 = treble * Math.pow(10, i / 4 / 10);
-        for (i = 0; i < Encoder.SBMAX_l; i++) {
-          var f;
-          if (i <= 6)
-            f = bass;
-          else if (i <= 13)
-            f = alto;
-          else if (i <= 20)
-            f = treble;
-          else
-            f = sfb21;
-          gfc.nsPsy.longfact[i] = f;
-        }
-        for (i = 0; i < Encoder.SBMAX_s; i++) {
-          var f;
-          if (i <= 5)
-            f = bass;
-          else if (i <= 10)
-            f = alto;
-          else if (i <= 11)
-            f = treble;
-          else
-            f = sfb21;
-          gfc.nsPsy.shortfact[i] = f;
-        }
-      }
-    }
-  };
-  this.on_pe = function(gfp, pe, targ_bits, mean_bits, gr, cbr) {
-    var gfc = gfp.internal_flags;
-    var tbits = 0;
-    var bits;
-    var add_bits = new_int$3(2);
-    var ch;
-    var mb = new MeanBits$1(tbits);
-    var extra_bits = rv.ResvMaxBits(gfp, mean_bits, mb, cbr);
-    tbits = mb.bits;
-    var max_bits = tbits + extra_bits;
-    if (max_bits > LameInternalFlags$1.MAX_BITS_PER_GRANULE) {
-      max_bits = LameInternalFlags$1.MAX_BITS_PER_GRANULE;
-    }
-    for (bits = 0, ch = 0; ch < gfc.channels_out; ++ch) {
-      targ_bits[ch] = Math.min(
-        LameInternalFlags$1.MAX_BITS_PER_CHANNEL,
-        tbits / gfc.channels_out
-      );
-      add_bits[ch] = 0 | targ_bits[ch] * pe[gr][ch] / 700 - targ_bits[ch];
-      if (add_bits[ch] > mean_bits * 3 / 4)
-        add_bits[ch] = mean_bits * 3 / 4;
-      if (add_bits[ch] < 0)
-        add_bits[ch] = 0;
-      if (add_bits[ch] + targ_bits[ch] > LameInternalFlags$1.MAX_BITS_PER_CHANNEL) {
-        add_bits[ch] = Math.max(
-          0,
-          LameInternalFlags$1.MAX_BITS_PER_CHANNEL - targ_bits[ch]
-        );
-      }
-      bits += add_bits[ch];
-    }
-    if (bits > extra_bits) {
-      for (ch = 0; ch < gfc.channels_out; ++ch) {
-        add_bits[ch] = extra_bits * add_bits[ch] / bits;
-      }
-    }
-    for (ch = 0; ch < gfc.channels_out; ++ch) {
-      targ_bits[ch] += add_bits[ch];
-      extra_bits -= add_bits[ch];
-    }
-    for (bits = 0, ch = 0; ch < gfc.channels_out; ++ch) {
-      bits += targ_bits[ch];
-    }
-    if (bits > LameInternalFlags$1.MAX_BITS_PER_GRANULE) {
-      var sum = 0;
-      for (ch = 0; ch < gfc.channels_out; ++ch) {
-        targ_bits[ch] *= LameInternalFlags$1.MAX_BITS_PER_GRANULE;
-        targ_bits[ch] /= bits;
-        sum += targ_bits[ch];
-      }
-    }
-    return max_bits;
-  };
-  this.reduce_side = function(targ_bits, ms_ener_ratio, mean_bits, max_bits) {
-    assert$7(
-      targ_bits[0] + targ_bits[1] <= LameInternalFlags$1.MAX_BITS_PER_GRANULE
-    );
-    var fac = 0.33 * (0.5 - ms_ener_ratio) / 0.5;
-    if (fac < 0)
-      fac = 0;
-    if (fac > 0.5)
-      fac = 0.5;
-    var move_bits = 0 | fac * 0.5 * (targ_bits[0] + targ_bits[1]);
-    if (move_bits > LameInternalFlags$1.MAX_BITS_PER_CHANNEL - targ_bits[0]) {
-      move_bits = LameInternalFlags$1.MAX_BITS_PER_CHANNEL - targ_bits[0];
-    }
-    if (move_bits < 0)
-      move_bits = 0;
-    if (targ_bits[1] >= 125) {
-      if (targ_bits[1] - move_bits > 125) {
-        if (targ_bits[0] < mean_bits)
-          targ_bits[0] += move_bits;
-        targ_bits[1] -= move_bits;
-      } else {
-        targ_bits[0] += targ_bits[1] - 125;
-        targ_bits[1] = 125;
-      }
-    }
-    move_bits = targ_bits[0] + targ_bits[1];
-    if (move_bits > max_bits) {
-      targ_bits[0] = max_bits * targ_bits[0] / move_bits;
-      targ_bits[1] = max_bits * targ_bits[1] / move_bits;
-    }
-    assert$7(targ_bits[0] <= LameInternalFlags$1.MAX_BITS_PER_CHANNEL);
-    assert$7(targ_bits[1] <= LameInternalFlags$1.MAX_BITS_PER_CHANNEL);
-    assert$7(
-      targ_bits[0] + targ_bits[1] <= LameInternalFlags$1.MAX_BITS_PER_GRANULE
-    );
-  };
-  this.athAdjust = function(a, x, athFloor) {
-    var o = 90.30873362;
-    var p2 = 94.82444863;
-    var u = Util$1.FAST_LOG10_X(x, 10);
-    var v = a * a;
-    var w = 0;
-    u -= athFloor;
-    if (v > 1e-20)
-      w = 1 + Util$1.FAST_LOG10_X(v, 10 / o);
-    if (w < 0)
-      w = 0;
-    u *= w;
-    u += athFloor + o - p2;
-    return Math.pow(10, 0.1 * u);
-  };
-  this.calc_xmin = function(gfp, ratio, cod_info, pxmin) {
-    var pxminPos = 0;
-    var gfc = gfp.internal_flags;
-    var gsfb;
-    var j = 0;
-    var ath_over = 0;
-    var ATH2 = gfc.ATH;
-    var xr = cod_info.xr;
-    var enable_athaa_fix = gfp.VBR == VbrMode$4.vbr_mtrh ? 1 : 0;
-    var masking_lower = gfc.masking_lower;
-    if (gfp.VBR == VbrMode$4.vbr_mtrh || gfp.VBR == VbrMode$4.vbr_mt) {
-      masking_lower = 1;
-    }
-    for (gsfb = 0; gsfb < cod_info.psy_lmax; gsfb++) {
-      var en0, xmin;
-      var rh1, rh2;
-      var width, l;
-      if (gfp.VBR == VbrMode$4.vbr_rh || gfp.VBR == VbrMode$4.vbr_mtrh) {
-        xmin = athAdjust(ATH2.adjust, ATH2.l[gsfb], ATH2.floor);
-      } else
-        xmin = ATH2.adjust * ATH2.l[gsfb];
-      width = cod_info.width[gsfb];
-      rh1 = xmin / width;
-      rh2 = DBL_EPSILON;
-      l = width >> 1;
-      en0 = 0;
-      do {
-        var xa, xb;
-        xa = xr[j] * xr[j];
-        en0 += xa;
-        rh2 += xa < rh1 ? xa : rh1;
-        j++;
-        xb = xr[j] * xr[j];
-        en0 += xb;
-        rh2 += xb < rh1 ? xb : rh1;
-        j++;
-      } while (--l > 0);
-      if (en0 > xmin)
-        ath_over++;
-      if (gsfb == Encoder.SBPSY_l) {
-        var x = xmin * gfc.nsPsy.longfact[gsfb];
-        if (rh2 < x) {
-          rh2 = x;
-        }
-      }
-      if (enable_athaa_fix != 0) {
-        xmin = rh2;
-      }
-      if (!gfp.ATHonly) {
-        var e = ratio.en.l[gsfb];
-        if (e > 0) {
-          var x;
-          x = en0 * ratio.thm.l[gsfb] * masking_lower / e;
-          if (enable_athaa_fix != 0)
-            x *= gfc.nsPsy.longfact[gsfb];
-          if (xmin < x)
-            xmin = x;
-        }
-      }
-      if (enable_athaa_fix != 0)
-        pxmin[pxminPos++] = xmin;
-      else
-        pxmin[pxminPos++] = xmin * gfc.nsPsy.longfact[gsfb];
-    }
-    var max_nonzero = 575;
-    if (cod_info.block_type != Encoder.SHORT_TYPE) {
-      var k = 576;
-      while (k-- != 0 && BitStream$1.EQ(xr[k], 0)) {
-        max_nonzero = k;
-      }
-    }
-    cod_info.max_nonzero_coeff = max_nonzero;
-    for (var sfb = cod_info.sfb_smin; gsfb < cod_info.psymax; sfb++, gsfb += 3) {
-      var width, b;
-      var tmpATH;
-      if (gfp.VBR == VbrMode$4.vbr_rh || gfp.VBR == VbrMode$4.vbr_mtrh) {
-        tmpATH = athAdjust(ATH2.adjust, ATH2.s[sfb], ATH2.floor);
-      } else
-        tmpATH = ATH2.adjust * ATH2.s[sfb];
-      width = cod_info.width[gsfb];
-      for (b = 0; b < 3; b++) {
-        var en0 = 0;
-        var xmin;
-        var rh1, rh2;
-        var l = width >> 1;
-        rh1 = tmpATH / width;
-        rh2 = DBL_EPSILON;
-        do {
-          var xa, xb;
-          xa = xr[j] * xr[j];
-          en0 += xa;
-          rh2 += xa < rh1 ? xa : rh1;
-          j++;
-          xb = xr[j] * xr[j];
-          en0 += xb;
-          rh2 += xb < rh1 ? xb : rh1;
-          j++;
-        } while (--l > 0);
-        if (en0 > tmpATH)
-          ath_over++;
-        if (sfb == Encoder.SBPSY_s) {
-          var x = tmpATH * gfc.nsPsy.shortfact[sfb];
-          if (rh2 < x) {
-            rh2 = x;
-          }
-        }
-        if (enable_athaa_fix != 0)
-          xmin = rh2;
-        else
-          xmin = tmpATH;
-        if (!gfp.ATHonly && !gfp.ATHshort) {
-          var e = ratio.en.s[sfb][b];
-          if (e > 0) {
-            var x;
-            x = en0 * ratio.thm.s[sfb][b] * masking_lower / e;
-            if (enable_athaa_fix != 0)
-              x *= gfc.nsPsy.shortfact[sfb];
-            if (xmin < x)
-              xmin = x;
-          }
-        }
-        if (enable_athaa_fix != 0)
-          pxmin[pxminPos++] = xmin;
-        else
-          pxmin[pxminPos++] = xmin * gfc.nsPsy.shortfact[sfb];
-      }
-      if (gfp.useTemporal) {
-        if (pxmin[pxminPos - 3] > pxmin[pxminPos - 3 + 1]) {
-          pxmin[pxminPos - 3 + 1] += (pxmin[pxminPos - 3] - pxmin[pxminPos - 3 + 1]) * gfc.decay;
-        }
-        if (pxmin[pxminPos - 3 + 1] > pxmin[pxminPos - 3 + 2]) {
-          pxmin[pxminPos - 3 + 2] += (pxmin[pxminPos - 3 + 1] - pxmin[pxminPos - 3 + 2]) * gfc.decay;
-        }
-      }
-    }
-    return ath_over;
-  };
-  function StartLine(j) {
-    this.s = j;
-  }
-  this.calc_noise_core = function(cod_info, startline, l, step) {
-    var noise = 0;
-    var j = startline.s;
-    var ix = cod_info.l3_enc;
-    if (j > cod_info.count1) {
-      while (l-- != 0) {
-        var temp;
-        temp = cod_info.xr[j];
-        j++;
-        noise += temp * temp;
-        temp = cod_info.xr[j];
-        j++;
-        noise += temp * temp;
-      }
-    } else if (j > cod_info.big_values) {
-      var ix01 = new_float$3(2);
-      ix01[0] = 0;
-      ix01[1] = step;
-      while (l-- != 0) {
-        var temp;
-        temp = Math.abs(cod_info.xr[j]) - ix01[ix[j]];
-        j++;
-        noise += temp * temp;
-        temp = Math.abs(cod_info.xr[j]) - ix01[ix[j]];
-        j++;
-        noise += temp * temp;
-      }
-    } else {
-      while (l-- != 0) {
-        var temp;
-        temp = Math.abs(cod_info.xr[j]) - pow43[ix[j]] * step;
-        j++;
-        noise += temp * temp;
-        temp = Math.abs(cod_info.xr[j]) - pow43[ix[j]] * step;
-        j++;
-        noise += temp * temp;
-      }
-    }
-    startline.s = j;
-    return noise;
-  };
-  this.calc_noise = function(cod_info, l3_xmin, distort, res, prev_noise) {
-    var distortPos = 0;
-    var l3_xminPos = 0;
-    var sfb;
-    var l;
-    var over = 0;
-    var over_noise_db = 0;
-    var tot_noise_db = 0;
-    var max_noise = -20;
-    var j = 0;
-    var scalefac = cod_info.scalefac;
-    var scalefacPos = 0;
-    res.over_SSD = 0;
-    for (sfb = 0; sfb < cod_info.psymax; sfb++) {
-      var s = cod_info.global_gain - (scalefac[scalefacPos++] + (cod_info.preflag != 0 ? pretab[sfb] : 0) << cod_info.scalefac_scale + 1) - cod_info.subblock_gain[cod_info.window[sfb]] * 8;
-      var noise = 0;
-      if (prev_noise != null && prev_noise.step[sfb] == s) {
-        noise = prev_noise.noise[sfb];
-        j += cod_info.width[sfb];
-        distort[distortPos++] = noise / l3_xmin[l3_xminPos++];
-        noise = prev_noise.noise_log[sfb];
-      } else {
-        var step = POW20(s);
-        l = cod_info.width[sfb] >> 1;
-        if (j + cod_info.width[sfb] > cod_info.max_nonzero_coeff) {
-          var usefullsize;
-          usefullsize = cod_info.max_nonzero_coeff - j + 1;
-          if (usefullsize > 0)
-            l = usefullsize >> 1;
-          else
-            l = 0;
-        }
-        var sl = new StartLine(j);
-        noise = this.calc_noise_core(cod_info, sl, l, step);
-        j = sl.s;
-        if (prev_noise != null) {
-          prev_noise.step[sfb] = s;
-          prev_noise.noise[sfb] = noise;
-        }
-        noise = distort[distortPos++] = noise / l3_xmin[l3_xminPos++];
-        noise = Util$1.FAST_LOG10(Math.max(noise, 1e-20));
-        if (prev_noise != null) {
-          prev_noise.noise_log[sfb] = noise;
-        }
-      }
-      if (prev_noise != null) {
-        prev_noise.global_gain = cod_info.global_gain;
-      }
-      tot_noise_db += noise;
-      if (noise > 0) {
-        var tmp;
-        tmp = Math.max(0 | noise * 10 + 0.5, 1);
-        res.over_SSD += tmp * tmp;
-        over++;
-        over_noise_db += noise;
-      }
-      max_noise = Math.max(max_noise, noise);
-    }
-    res.over_count = over;
-    res.tot_noise = tot_noise_db;
-    res.over_noise = over_noise_db;
-    res.max_noise = max_noise;
-    return over;
-  };
-  this.set_pinfo = function(gfp, cod_info, ratio, gr, ch) {
-    var gfc = gfp.internal_flags;
-    var sfb, sfb2;
-    var l;
-    var en0, en1;
-    var ifqstep = cod_info.scalefac_scale == 0 ? 0.5 : 1;
-    var scalefac = cod_info.scalefac;
-    var l3_xmin = new_float$3(L3Side.SFBMAX);
-    var xfsf = new_float$3(L3Side.SFBMAX);
-    var noise = new CalcNoiseResult();
-    calc_xmin(gfp, ratio, cod_info, l3_xmin);
-    calc_noise(cod_info, l3_xmin, xfsf, noise, null);
-    var j = 0;
-    sfb2 = cod_info.sfb_lmax;
-    if (cod_info.block_type != Encoder.SHORT_TYPE && cod_info.mixed_block_flag == 0) {
-      sfb2 = 22;
-    }
-    for (sfb = 0; sfb < sfb2; sfb++) {
-      var start2 = gfc.scalefac_band.l[sfb];
-      var end = gfc.scalefac_band.l[sfb + 1];
-      var bw = end - start2;
-      for (en0 = 0; j < end; j++)
-        en0 += cod_info.xr[j] * cod_info.xr[j];
-      en0 /= bw;
-      en1 = 1e15;
-      gfc.pinfo.en[gr][ch][sfb] = en1 * en0;
-      gfc.pinfo.xfsf[gr][ch][sfb] = en1 * l3_xmin[sfb] * xfsf[sfb] / bw;
-      if (ratio.en.l[sfb] > 0 && !gfp.ATHonly)
-        en0 = en0 / ratio.en.l[sfb];
-      else
-        en0 = 0;
-      gfc.pinfo.thr[gr][ch][sfb] = en1 * Math.max(en0 * ratio.thm.l[sfb], gfc.ATH.l[sfb]);
-      gfc.pinfo.LAMEsfb[gr][ch][sfb] = 0;
-      if (cod_info.preflag != 0 && sfb >= 11) {
-        gfc.pinfo.LAMEsfb[gr][ch][sfb] = -ifqstep * pretab[sfb];
-      }
-      if (sfb < Encoder.SBPSY_l) {
-        assert$7(scalefac[sfb] >= 0);
-        gfc.pinfo.LAMEsfb[gr][ch][sfb] -= ifqstep * scalefac[sfb];
-      }
-    }
-    if (cod_info.block_type == Encoder.SHORT_TYPE) {
-      sfb2 = sfb;
-      for (sfb = cod_info.sfb_smin; sfb < Encoder.SBMAX_s; sfb++) {
-        var start2 = gfc.scalefac_band.s[sfb];
-        var end = gfc.scalefac_band.s[sfb + 1];
-        var bw = end - start2;
-        for (var i = 0; i < 3; i++) {
-          for (en0 = 0, l = start2; l < end; l++) {
-            en0 += cod_info.xr[j] * cod_info.xr[j];
-            j++;
-          }
-          en0 = Math.max(en0 / bw, 1e-20);
-          en1 = 1e15;
-          gfc.pinfo.en_s[gr][ch][3 * sfb + i] = en1 * en0;
-          gfc.pinfo.xfsf_s[gr][ch][3 * sfb + i] = en1 * l3_xmin[sfb2] * xfsf[sfb2] / bw;
-          if (ratio.en.s[sfb][i] > 0)
-            en0 = en0 / ratio.en.s[sfb][i];
-          else
-            en0 = 0;
-          if (gfp.ATHonly || gfp.ATHshort)
-            en0 = 0;
-          gfc.pinfo.thr_s[gr][ch][3 * sfb + i] = en1 * Math.max(en0 * ratio.thm.s[sfb][i], gfc.ATH.s[sfb]);
-          gfc.pinfo.LAMEsfb_s[gr][ch][3 * sfb + i] = -2 * cod_info.subblock_gain[i];
-          if (sfb < Encoder.SBPSY_s) {
-            gfc.pinfo.LAMEsfb_s[gr][ch][3 * sfb + i] -= ifqstep * scalefac[sfb2];
-          }
-          sfb2++;
-        }
-      }
-    }
-    gfc.pinfo.LAMEqss[gr][ch] = cod_info.global_gain;
-    gfc.pinfo.LAMEmainbits[gr][ch] = cod_info.part2_3_length + cod_info.part2_length;
-    gfc.pinfo.LAMEsfbits[gr][ch] = cod_info.part2_length;
-    gfc.pinfo.over[gr][ch] = noise.over_count;
-    gfc.pinfo.max_noise[gr][ch] = noise.max_noise * 10;
-    gfc.pinfo.over_noise[gr][ch] = noise.over_noise * 10;
-    gfc.pinfo.tot_noise[gr][ch] = noise.tot_noise * 10;
-    gfc.pinfo.over_SSD[gr][ch] = noise.over_SSD;
-  };
-}
-var System$4 = common.System;
-var Arrays$3 = common.Arrays;
-var new_int$2 = common.new_int;
-var assert$6 = common.assert;
-function Takehiro() {
-  var qupvt = null;
-  this.qupvt = null;
-  this.setModules = function(_qupvt) {
-    this.qupvt = _qupvt;
-    qupvt = _qupvt;
-  };
-  function Bits(b) {
-    this.bits = 0 | b;
-  }
-  var subdv_table = [
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 0],
-    [0, 1],
-    [1, 1],
-    [1, 1],
-    [1, 2],
-    [2, 2],
-    [2, 3],
-    [2, 3],
-    [3, 4],
-    [3, 4],
-    [3, 4],
-    [4, 5],
-    [4, 5],
-    [4, 6],
-    [5, 6],
-    [5, 6],
-    [5, 7],
-    [6, 7],
-    [6, 7]
-  ];
-  function quantize_lines_xrpow_01(l, istep, xr, xrPos, ix, ixPos) {
-    var compareval0 = (1 - 0.4054) / istep;
-    l = l >> 1;
-    while (l-- != 0) {
-      ix[ixPos++] = compareval0 > xr[xrPos++] ? 0 : 1;
-      ix[ixPos++] = compareval0 > xr[xrPos++] ? 0 : 1;
-    }
-  }
-  function quantize_lines_xrpow(l, istep, xr, xrPos, ix, ixPos) {
-    l = l >> 1;
-    var remaining = l % 2;
-    l = l >> 1;
-    while (l-- != 0) {
-      var x0, x1, x2, x3;
-      var rx0, rx1, rx2, rx3;
-      x0 = xr[xrPos++] * istep;
-      x1 = xr[xrPos++] * istep;
-      rx0 = 0 | x0;
-      x2 = xr[xrPos++] * istep;
-      rx1 = 0 | x1;
-      x3 = xr[xrPos++] * istep;
-      rx2 = 0 | x2;
-      x0 += qupvt.adj43[rx0];
-      rx3 = 0 | x3;
-      x1 += qupvt.adj43[rx1];
-      ix[ixPos++] = 0 | x0;
-      x2 += qupvt.adj43[rx2];
-      ix[ixPos++] = 0 | x1;
-      x3 += qupvt.adj43[rx3];
-      ix[ixPos++] = 0 | x2;
-      ix[ixPos++] = 0 | x3;
-    }
-    if (remaining != 0) {
-      var x0, x1;
-      var rx0, rx1;
-      x0 = xr[xrPos++] * istep;
-      x1 = xr[xrPos++] * istep;
-      rx0 = 0 | x0;
-      rx1 = 0 | x1;
-      x0 += qupvt.adj43[rx0];
-      x1 += qupvt.adj43[rx1];
-      ix[ixPos++] = 0 | x0;
-      ix[ixPos++] = 0 | x1;
-    }
-  }
-  function quantize_xrpow(xp, pi, istep, codInfo, prevNoise) {
-    var sfb;
-    var sfbmax;
-    var j = 0;
-    var prev_data_use;
-    var accumulate = 0;
-    var accumulate01 = 0;
-    var xpPos = 0;
-    var iData = pi;
-    var iDataPos = 0;
-    var acc_iData = iData;
-    var acc_iDataPos = 0;
-    var acc_xp = xp;
-    var acc_xpPos = 0;
-    prev_data_use = prevNoise != null && codInfo.global_gain == prevNoise.global_gain;
-    if (codInfo.block_type == Encoder.SHORT_TYPE)
-      sfbmax = 38;
-    else
-      sfbmax = 21;
-    for (sfb = 0; sfb <= sfbmax; sfb++) {
-      var step = -1;
-      if (prev_data_use || codInfo.block_type == Encoder.NORM_TYPE) {
-        step = codInfo.global_gain - (codInfo.scalefac[sfb] + (codInfo.preflag != 0 ? qupvt.pretab[sfb] : 0) << codInfo.scalefac_scale + 1) - codInfo.subblock_gain[codInfo.window[sfb]] * 8;
-      }
-      assert$6(codInfo.width[sfb] >= 0);
-      if (prev_data_use && prevNoise.step[sfb] == step) {
-        if (accumulate != 0) {
-          quantize_lines_xrpow(
-            accumulate,
-            istep,
-            acc_xp,
-            acc_xpPos,
-            acc_iData,
-            acc_iDataPos
-          );
-          accumulate = 0;
-        }
-        if (accumulate01 != 0) {
-          quantize_lines_xrpow_01(
-            accumulate01,
-            istep,
-            acc_xp,
-            acc_xpPos,
-            acc_iData,
-            acc_iDataPos
-          );
-          accumulate01 = 0;
-        }
-      } else {
-        var l = codInfo.width[sfb];
-        if (j + codInfo.width[sfb] > codInfo.max_nonzero_coeff) {
-          var usefullsize;
-          usefullsize = codInfo.max_nonzero_coeff - j + 1;
-          Arrays$3.fill(pi, codInfo.max_nonzero_coeff, 576, 0);
-          l = usefullsize;
-          if (l < 0) {
-            l = 0;
-          }
-          sfb = sfbmax + 1;
-        }
-        if (accumulate == 0 && accumulate01 == 0) {
-          acc_iData = iData;
-          acc_iDataPos = iDataPos;
-          acc_xp = xp;
-          acc_xpPos = xpPos;
-        }
-        if (prevNoise != null && prevNoise.sfb_count1 > 0 && sfb >= prevNoise.sfb_count1 && prevNoise.step[sfb] > 0 && step >= prevNoise.step[sfb]) {
-          if (accumulate != 0) {
-            quantize_lines_xrpow(
-              accumulate,
-              istep,
-              acc_xp,
-              acc_xpPos,
-              acc_iData,
-              acc_iDataPos
-            );
-            accumulate = 0;
-            acc_iData = iData;
-            acc_iDataPos = iDataPos;
-            acc_xp = xp;
-            acc_xpPos = xpPos;
-          }
-          accumulate01 += l;
-        } else {
-          if (accumulate01 != 0) {
-            quantize_lines_xrpow_01(
-              accumulate01,
-              istep,
-              acc_xp,
-              acc_xpPos,
-              acc_iData,
-              acc_iDataPos
-            );
-            accumulate01 = 0;
-            acc_iData = iData;
-            acc_iDataPos = iDataPos;
-            acc_xp = xp;
-            acc_xpPos = xpPos;
-          }
-          accumulate += l;
-        }
-        if (l <= 0) {
-          if (accumulate01 != 0) {
-            quantize_lines_xrpow_01(
-              accumulate01,
-              istep,
-              acc_xp,
-              acc_xpPos,
-              acc_iData,
-              acc_iDataPos
-            );
-            accumulate01 = 0;
-          }
-          if (accumulate != 0) {
-            quantize_lines_xrpow(
-              accumulate,
-              istep,
-              acc_xp,
-              acc_xpPos,
-              acc_iData,
-              acc_iDataPos
-            );
-            accumulate = 0;
-          }
-          break;
-        }
-      }
-      if (sfb <= sfbmax) {
-        iDataPos += codInfo.width[sfb];
-        xpPos += codInfo.width[sfb];
-        j += codInfo.width[sfb];
-      }
-    }
-    if (accumulate != 0) {
-      quantize_lines_xrpow(
-        accumulate,
-        istep,
-        acc_xp,
-        acc_xpPos,
-        acc_iData,
-        acc_iDataPos
-      );
-      accumulate = 0;
-    }
-    if (accumulate01 != 0) {
-      quantize_lines_xrpow_01(
-        accumulate01,
-        istep,
-        acc_xp,
-        acc_xpPos,
-        acc_iData,
-        acc_iDataPos
-      );
-      accumulate01 = 0;
-    }
-  }
-  function ix_max(ix, ixPos, endPos) {
-    var max1 = 0;
-    var max2 = 0;
-    do {
-      var x1 = ix[ixPos++];
-      var x2 = ix[ixPos++];
-      if (max1 < x1)
-        max1 = x1;
-      if (max2 < x2)
-        max2 = x2;
-    } while (ixPos < endPos);
-    if (max1 < max2)
-      max1 = max2;
-    return max1;
-  }
-  function count_bit_ESC(ix, ixPos, end, t1, t2, s) {
-    var linbits = Tables$1.ht[t1].xlen * 65536 + Tables$1.ht[t2].xlen;
-    var sum = 0;
-    var sum2;
-    do {
-      var x = ix[ixPos++];
-      var y = ix[ixPos++];
-      if (x != 0) {
-        if (x > 14) {
-          x = 15;
-          sum += linbits;
-        }
-        x *= 16;
-      }
-      if (y != 0) {
-        if (y > 14) {
-          y = 15;
-          sum += linbits;
-        }
-        x += y;
-      }
-      sum += Tables$1.largetbl[x];
-    } while (ixPos < end);
-    sum2 = sum & 65535;
-    sum >>= 16;
-    if (sum > sum2) {
-      sum = sum2;
-      t1 = t2;
-    }
-    s.bits += sum;
-    return t1;
-  }
-  function count_bit_noESC(ix, ixPos, end, s) {
-    var sum1 = 0;
-    var hlen1 = Tables$1.ht[1].hlen;
-    do {
-      var x = ix[ixPos + 0] * 2 + ix[ixPos + 1];
-      ixPos += 2;
-      sum1 += hlen1[x];
-    } while (ixPos < end);
-    s.bits += sum1;
-    return 1;
-  }
-  function count_bit_noESC_from2(ix, ixPos, end, t1, s) {
-    var sum = 0;
-    var sum2;
-    var xlen = Tables$1.ht[t1].xlen;
-    var hlen;
-    if (t1 == 2)
-      hlen = Tables$1.table23;
-    else
-      hlen = Tables$1.table56;
-    do {
-      var x = ix[ixPos + 0] * xlen + ix[ixPos + 1];
-      ixPos += 2;
-      sum += hlen[x];
-    } while (ixPos < end);
-    sum2 = sum & 65535;
-    sum >>= 16;
-    if (sum > sum2) {
-      sum = sum2;
-      t1++;
-    }
-    s.bits += sum;
-    return t1;
-  }
-  function count_bit_noESC_from3(ix, ixPos, end, t1, s) {
-    var sum1 = 0;
-    var sum2 = 0;
-    var sum3 = 0;
-    var xlen = Tables$1.ht[t1].xlen;
-    var hlen1 = Tables$1.ht[t1].hlen;
-    var hlen2 = Tables$1.ht[t1 + 1].hlen;
-    var hlen3 = Tables$1.ht[t1 + 2].hlen;
-    do {
-      var x = ix[ixPos + 0] * xlen + ix[ixPos + 1];
-      ixPos += 2;
-      sum1 += hlen1[x];
-      sum2 += hlen2[x];
-      sum3 += hlen3[x];
-    } while (ixPos < end);
-    var t = t1;
-    if (sum1 > sum2) {
-      sum1 = sum2;
-      t++;
-    }
-    if (sum1 > sum3) {
-      sum1 = sum3;
-      t = t1 + 2;
-    }
-    s.bits += sum1;
-    return t;
-  }
-  var huf_tbl_noESC = [1, 2, 5, 7, 7, 10, 10, 13, 13, 13, 13, 13, 13, 13, 13];
-  function choose_table(ix, ixPos, endPos, s) {
-    var max = ix_max(ix, ixPos, endPos);
-    switch (max) {
-      case 0:
-        return max;
-      case 1:
-        return count_bit_noESC(ix, ixPos, endPos, s);
-      case 2:
-      case 3:
-        return count_bit_noESC_from2(
-          ix,
-          ixPos,
-          endPos,
-          huf_tbl_noESC[max - 1],
-          s
-        );
-      case 4:
-      case 5:
-      case 6:
-      case 7:
-      case 8:
-      case 9:
-      case 10:
-      case 11:
-      case 12:
-      case 13:
-      case 14:
-      case 15:
-        return count_bit_noESC_from3(
-          ix,
-          ixPos,
-          endPos,
-          huf_tbl_noESC[max - 1],
-          s
-        );
-      default:
-        if (max > QuantizePVT.IXMAX_VAL) {
-          s.bits = QuantizePVT.LARGE_BITS;
-          return -1;
-        }
-        max -= 15;
-        var choice2;
-        for (choice2 = 24; choice2 < 32; choice2++) {
-          if (Tables$1.ht[choice2].linmax >= max) {
-            break;
-          }
-        }
-        var choice;
-        for (choice = choice2 - 8; choice < 24; choice++) {
-          if (Tables$1.ht[choice].linmax >= max) {
-            break;
-          }
-        }
-        return count_bit_ESC(ix, ixPos, endPos, choice, choice2, s);
-    }
-  }
-  this.noquant_count_bits = function(gfc, gi, prev_noise) {
-    var ix = gi.l3_enc;
-    var i = Math.min(576, gi.max_nonzero_coeff + 2 >> 1 << 1);
-    if (prev_noise != null)
-      prev_noise.sfb_count1 = 0;
-    for (; i > 1; i -= 2)
-      if ((ix[i - 1] | ix[i - 2]) != 0)
-        break;
-    gi.count1 = i;
-    var a1 = 0;
-    var a2 = 0;
-    for (; i > 3; i -= 4) {
-      var p2;
-      if (((ix[i - 1] | ix[i - 2] | ix[i - 3] | ix[i - 4]) & 2147483647) > 1) {
-        break;
-      }
-      p2 = ((ix[i - 4] * 2 + ix[i - 3]) * 2 + ix[i - 2]) * 2 + ix[i - 1];
-      a1 += Tables$1.t32l[p2];
-      a2 += Tables$1.t33l[p2];
-    }
-    var bits = a1;
-    gi.count1table_select = 0;
-    if (a1 > a2) {
-      bits = a2;
-      gi.count1table_select = 1;
-    }
-    gi.count1bits = bits;
-    gi.big_values = i;
-    if (i == 0)
-      return bits;
-    if (gi.block_type == Encoder.SHORT_TYPE) {
-      a1 = 3 * gfc.scalefac_band.s[3];
-      if (a1 > gi.big_values)
-        a1 = gi.big_values;
-      a2 = gi.big_values;
-    } else if (gi.block_type == Encoder.NORM_TYPE) {
-      a1 = gi.region0_count = gfc.bv_scf[i - 2];
-      a2 = gi.region1_count = gfc.bv_scf[i - 1];
-      a2 = gfc.scalefac_band.l[a1 + a2 + 2];
-      a1 = gfc.scalefac_band.l[a1 + 1];
-      if (a2 < i) {
-        var bi = new Bits(bits);
-        gi.table_select[2] = choose_table(ix, a2, i, bi);
-        bits = bi.bits;
-      }
-    } else {
-      gi.region0_count = 7;
-      gi.region1_count = Encoder.SBMAX_l - 1 - 7 - 1;
-      a1 = gfc.scalefac_band.l[7 + 1];
-      a2 = i;
-      if (a1 > a2) {
-        a1 = a2;
-      }
-    }
-    a1 = Math.min(a1, i);
-    a2 = Math.min(a2, i);
-    if (a1 > 0) {
-      var bi = new Bits(bits);
-      gi.table_select[0] = choose_table(ix, 0, a1, bi);
-      bits = bi.bits;
-    }
-    if (a1 < a2) {
-      var bi = new Bits(bits);
-      gi.table_select[1] = choose_table(ix, a1, a2, bi);
-      bits = bi.bits;
-    }
-    if (gfc.use_best_huffman == 2) {
-      gi.part2_3_length = bits;
-      best_huffman_divide(gfc, gi);
-      bits = gi.part2_3_length;
-    }
-    if (prev_noise != null) {
-      if (gi.block_type == Encoder.NORM_TYPE) {
-        var sfb = 0;
-        while (gfc.scalefac_band.l[sfb] < gi.big_values) {
-          sfb++;
-        }
-        prev_noise.sfb_count1 = sfb;
-      }
-    }
-    return bits;
-  };
-  this.count_bits = function(gfc, xr, gi, prev_noise) {
-    var ix = gi.l3_enc;
-    var w = QuantizePVT.IXMAX_VAL / qupvt.IPOW20(gi.global_gain);
-    if (gi.xrpow_max > w)
-      return QuantizePVT.LARGE_BITS;
-    quantize_xrpow(xr, ix, qupvt.IPOW20(gi.global_gain), gi, prev_noise);
-    if ((gfc.substep_shaping & 2) != 0) {
-      var j = 0;
-      var gain = gi.global_gain + gi.scalefac_scale;
-      var roundfac = 0.634521682242439 / qupvt.IPOW20(gain);
-      for (var sfb = 0; sfb < gi.sfbmax; sfb++) {
-        var width = gi.width[sfb];
-        if (gfc.pseudohalf[sfb] == 0) {
-          j += width;
-        } else {
-          var k;
-          for (k = j, j += width; k < j; ++k) {
-            ix[k] = xr[k] >= roundfac ? ix[k] : 0;
-          }
-        }
-      }
-    }
-    return this.noquant_count_bits(gfc, gi, prev_noise);
-  };
-  function recalc_divide_init(gfc, cod_info, ix, r01_bits, r01_div, r0_tbl, r1_tbl) {
-    var bigv = cod_info.big_values;
-    for (var r0 = 0; r0 <= 7 + 15; r0++) {
-      r01_bits[r0] = QuantizePVT.LARGE_BITS;
-    }
-    for (var r0 = 0; r0 < 16; r0++) {
-      var a1 = gfc.scalefac_band.l[r0 + 1];
-      if (a1 >= bigv)
-        break;
-      var r0bits = 0;
-      var bi = new Bits(r0bits);
-      var r0t = choose_table(ix, 0, a1, bi);
-      r0bits = bi.bits;
-      for (var r1 = 0; r1 < 8; r1++) {
-        var a2 = gfc.scalefac_band.l[r0 + r1 + 2];
-        if (a2 >= bigv)
-          break;
-        var bits = r0bits;
-        bi = new Bits(bits);
-        var r1t = choose_table(ix, a1, a2, bi);
-        bits = bi.bits;
-        if (r01_bits[r0 + r1] > bits) {
-          r01_bits[r0 + r1] = bits;
-          r01_div[r0 + r1] = r0;
-          r0_tbl[r0 + r1] = r0t;
-          r1_tbl[r0 + r1] = r1t;
-        }
-      }
-    }
-  }
-  function recalc_divide_sub(gfc, cod_info2, gi, ix, r01_bits, r01_div, r0_tbl, r1_tbl) {
-    var bigv = cod_info2.big_values;
-    for (var r2 = 2; r2 < Encoder.SBMAX_l + 1; r2++) {
-      var a2 = gfc.scalefac_band.l[r2];
-      if (a2 >= bigv)
-        break;
-      var bits = r01_bits[r2 - 2] + cod_info2.count1bits;
-      if (gi.part2_3_length <= bits)
-        break;
-      var bi = new Bits(bits);
-      var r2t = choose_table(ix, a2, bigv, bi);
-      bits = bi.bits;
-      if (gi.part2_3_length <= bits)
-        continue;
-      gi.assign(cod_info2);
-      gi.part2_3_length = bits;
-      gi.region0_count = r01_div[r2 - 2];
-      gi.region1_count = r2 - 2 - r01_div[r2 - 2];
-      gi.table_select[0] = r0_tbl[r2 - 2];
-      gi.table_select[1] = r1_tbl[r2 - 2];
-      gi.table_select[2] = r2t;
-    }
-  }
-  this.best_huffman_divide = function(gfc, gi) {
-    var cod_info2 = new GrInfo();
-    var ix = gi.l3_enc;
-    var r01_bits = new_int$2(7 + 15 + 1);
-    var r01_div = new_int$2(7 + 15 + 1);
-    var r0_tbl = new_int$2(7 + 15 + 1);
-    var r1_tbl = new_int$2(7 + 15 + 1);
-    if (gi.block_type == Encoder.SHORT_TYPE && gfc.mode_gr == 1)
-      return;
-    cod_info2.assign(gi);
-    if (gi.block_type == Encoder.NORM_TYPE) {
-      recalc_divide_init(gfc, gi, ix, r01_bits, r01_div, r0_tbl, r1_tbl);
-      recalc_divide_sub(
-        gfc,
-        cod_info2,
-        gi,
-        ix,
-        r01_bits,
-        r01_div,
-        r0_tbl,
-        r1_tbl
-      );
-    }
-    var i = cod_info2.big_values;
-    if (i == 0 || (ix[i - 2] | ix[i - 1]) > 1)
-      return;
-    i = gi.count1 + 2;
-    if (i > 576)
-      return;
-    cod_info2.assign(gi);
-    cod_info2.count1 = i;
-    var a1 = 0;
-    var a2 = 0;
-    for (; i > cod_info2.big_values; i -= 4) {
-      var p2 = ((ix[i - 4] * 2 + ix[i - 3]) * 2 + ix[i - 2]) * 2 + ix[i - 1];
-      a1 += Tables$1.t32l[p2];
-      a2 += Tables$1.t33l[p2];
-    }
-    cod_info2.big_values = i;
-    cod_info2.count1table_select = 0;
-    if (a1 > a2) {
-      a1 = a2;
-      cod_info2.count1table_select = 1;
-    }
-    cod_info2.count1bits = a1;
-    if (cod_info2.block_type == Encoder.NORM_TYPE) {
-      recalc_divide_sub(
-        gfc,
-        cod_info2,
-        gi,
-        ix,
-        r01_bits,
-        r01_div,
-        r0_tbl,
-        r1_tbl
-      );
-    } else {
-      cod_info2.part2_3_length = a1;
-      a1 = gfc.scalefac_band.l[7 + 1];
-      if (a1 > i) {
-        a1 = i;
-      }
-      if (a1 > 0) {
-        var bi = new Bits(cod_info2.part2_3_length);
-        cod_info2.table_select[0] = choose_table(ix, 0, a1, bi);
-        cod_info2.part2_3_length = bi.bits;
-      }
-      if (i > a1) {
-        var bi = new Bits(cod_info2.part2_3_length);
-        cod_info2.table_select[1] = choose_table(ix, a1, i, bi);
-        cod_info2.part2_3_length = bi.bits;
-      }
-      if (gi.part2_3_length > cod_info2.part2_3_length)
-        gi.assign(cod_info2);
-    }
-  };
-  var slen1_n = [1, 1, 1, 1, 8, 2, 2, 2, 4, 4, 4, 8, 8, 8, 16, 16];
-  var slen2_n = [1, 2, 4, 8, 1, 2, 4, 8, 2, 4, 8, 2, 4, 8, 4, 8];
-  var slen1_tab = [0, 0, 0, 0, 3, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4];
-  var slen2_tab = [0, 1, 2, 3, 0, 1, 2, 3, 1, 2, 3, 1, 2, 3, 2, 3];
-  Takehiro.slen1_tab = slen1_tab;
-  Takehiro.slen2_tab = slen2_tab;
-  function scfsi_calc(ch, l3_side) {
-    var sfb;
-    var gi = l3_side.tt[1][ch];
-    var g0 = l3_side.tt[0][ch];
-    for (var i = 0; i < Tables$1.scfsi_band.length - 1; i++) {
-      for (sfb = Tables$1.scfsi_band[i]; sfb < Tables$1.scfsi_band[i + 1]; sfb++) {
-        if (g0.scalefac[sfb] != gi.scalefac[sfb] && gi.scalefac[sfb] >= 0)
-          break;
-      }
-      if (sfb == Tables$1.scfsi_band[i + 1]) {
-        for (sfb = Tables$1.scfsi_band[i]; sfb < Tables$1.scfsi_band[i + 1]; sfb++) {
-          gi.scalefac[sfb] = -1;
-        }
-        l3_side.scfsi[ch][i] = 1;
-      }
-    }
-    var s1 = 0;
-    var c1 = 0;
-    for (sfb = 0; sfb < 11; sfb++) {
-      if (gi.scalefac[sfb] == -1)
-        continue;
-      c1++;
-      if (s1 < gi.scalefac[sfb])
-        s1 = gi.scalefac[sfb];
-    }
-    var s2 = 0;
-    var c2 = 0;
-    for (; sfb < Encoder.SBPSY_l; sfb++) {
-      if (gi.scalefac[sfb] == -1)
-        continue;
-      c2++;
-      if (s2 < gi.scalefac[sfb])
-        s2 = gi.scalefac[sfb];
-    }
-    for (var i = 0; i < 16; i++) {
-      if (s1 < slen1_n[i] && s2 < slen2_n[i]) {
-        var c = slen1_tab[i] * c1 + slen2_tab[i] * c2;
-        if (gi.part2_length > c) {
-          gi.part2_length = c;
-          gi.scalefac_compress = i;
-        }
-      }
-    }
-  }
-  this.best_scalefac_store = function(gfc, gr, ch, l3_side) {
-    var gi = l3_side.tt[gr][ch];
-    var sfb, i, j, l;
-    var recalc = 0;
-    j = 0;
-    for (sfb = 0; sfb < gi.sfbmax; sfb++) {
-      var width = gi.width[sfb];
-      j += width;
-      for (l = -width; l < 0; l++) {
-        if (gi.l3_enc[l + j] != 0)
-          break;
-      }
-      if (l == 0)
-        gi.scalefac[sfb] = recalc = -2;
-    }
-    if (gi.scalefac_scale == 0 && gi.preflag == 0) {
-      var s = 0;
-      for (sfb = 0; sfb < gi.sfbmax; sfb++) {
-        if (gi.scalefac[sfb] > 0)
-          s |= gi.scalefac[sfb];
-      }
-      if ((s & 1) == 0 && s != 0) {
-        for (sfb = 0; sfb < gi.sfbmax; sfb++) {
-          if (gi.scalefac[sfb] > 0)
-            gi.scalefac[sfb] >>= 1;
-        }
-        gi.scalefac_scale = recalc = 1;
-      }
-    }
-    if (gi.preflag == 0 && gi.block_type != Encoder.SHORT_TYPE && gfc.mode_gr == 2) {
-      for (sfb = 11; sfb < Encoder.SBPSY_l; sfb++) {
-        if (gi.scalefac[sfb] < qupvt.pretab[sfb] && gi.scalefac[sfb] != -2) {
-          break;
-        }
-      }
-      if (sfb == Encoder.SBPSY_l) {
-        for (sfb = 11; sfb < Encoder.SBPSY_l; sfb++) {
-          if (gi.scalefac[sfb] > 0)
-            gi.scalefac[sfb] -= qupvt.pretab[sfb];
-        }
-        gi.preflag = recalc = 1;
-      }
-    }
-    for (i = 0; i < 4; i++)
-      l3_side.scfsi[ch][i] = 0;
-    if (gfc.mode_gr == 2 && gr == 1 && l3_side.tt[0][ch].block_type != Encoder.SHORT_TYPE && l3_side.tt[1][ch].block_type != Encoder.SHORT_TYPE) {
-      scfsi_calc(ch, l3_side);
-      recalc = 0;
-    }
-    for (sfb = 0; sfb < gi.sfbmax; sfb++) {
-      if (gi.scalefac[sfb] == -2) {
-        gi.scalefac[sfb] = 0;
-      }
-    }
-    if (recalc != 0) {
-      if (gfc.mode_gr == 2) {
-        this.scale_bitcount(gi);
-      } else {
-        this.scale_bitcount_lsf(gfc, gi);
-      }
-    }
-  };
-  function all_scalefactors_not_negative(scalefac, n) {
-    for (var i = 0; i < n; ++i) {
-      if (scalefac[i] < 0)
-        return false;
-    }
-    return true;
-  }
-  var scale_short = [
-    0,
-    18,
-    36,
-    54,
-    54,
-    36,
-    54,
-    72,
-    54,
-    72,
-    90,
-    72,
-    90,
-    108,
-    108,
-    126
-  ];
-  var scale_mixed = [
-    0,
-    18,
-    36,
-    54,
-    51,
-    35,
-    53,
-    71,
-    52,
-    70,
-    88,
-    69,
-    87,
-    105,
-    104,
-    122
-  ];
-  var scale_long = [
-    0,
-    10,
-    20,
-    30,
-    33,
-    21,
-    31,
-    41,
-    32,
-    42,
-    52,
-    43,
-    53,
-    63,
-    64,
-    74
-  ];
-  this.scale_bitcount = function(cod_info) {
-    var k;
-    var sfb;
-    var max_slen1 = 0;
-    var max_slen2 = 0;
-    var tab;
-    var scalefac = cod_info.scalefac;
-    assert$6(all_scalefactors_not_negative(scalefac, cod_info.sfbmax));
-    if (cod_info.block_type == Encoder.SHORT_TYPE) {
-      tab = scale_short;
-      if (cod_info.mixed_block_flag != 0)
-        tab = scale_mixed;
-    } else {
-      tab = scale_long;
-      if (cod_info.preflag == 0) {
-        for (sfb = 11; sfb < Encoder.SBPSY_l; sfb++) {
-          if (scalefac[sfb] < qupvt.pretab[sfb])
-            break;
-        }
-        if (sfb == Encoder.SBPSY_l) {
-          cod_info.preflag = 1;
-          for (sfb = 11; sfb < Encoder.SBPSY_l; sfb++) {
-            scalefac[sfb] -= qupvt.pretab[sfb];
-          }
-        }
-      }
-    }
-    for (sfb = 0; sfb < cod_info.sfbdivide; sfb++) {
-      if (max_slen1 < scalefac[sfb])
-        max_slen1 = scalefac[sfb];
-    }
-    for (; sfb < cod_info.sfbmax; sfb++) {
-      if (max_slen2 < scalefac[sfb])
-        max_slen2 = scalefac[sfb];
-    }
-    cod_info.part2_length = QuantizePVT.LARGE_BITS;
-    for (k = 0; k < 16; k++) {
-      if (max_slen1 < slen1_n[k] && max_slen2 < slen2_n[k] && cod_info.part2_length > tab[k]) {
-        cod_info.part2_length = tab[k];
-        cod_info.scalefac_compress = k;
-      }
-    }
-    return cod_info.part2_length == QuantizePVT.LARGE_BITS;
-  };
-  var max_range_sfac_tab = [
-    [15, 15, 7, 7],
-    [15, 15, 7, 0],
-    [7, 3, 0, 0],
-    [15, 31, 31, 0],
-    [7, 7, 7, 0],
-    [3, 3, 0, 0]
-  ];
-  this.scale_bitcount_lsf = function(gfc, cod_info) {
-    var table_number, row_in_table, partition, nr_sfb, window2;
-    var over;
-    var i, sfb;
-    var max_sfac = new_int$2(4);
-    var scalefac = cod_info.scalefac;
-    if (cod_info.preflag != 0)
-      table_number = 2;
-    else
-      table_number = 0;
-    for (i = 0; i < 4; i++)
-      max_sfac[i] = 0;
-    if (cod_info.block_type == Encoder.SHORT_TYPE) {
-      row_in_table = 1;
-      var partition_table = qupvt.nr_of_sfb_block[table_number][row_in_table];
-      for (sfb = 0, partition = 0; partition < 4; partition++) {
-        nr_sfb = partition_table[partition] / 3;
-        for (i = 0; i < nr_sfb; i++, sfb++) {
-          for (window2 = 0; window2 < 3; window2++) {
-            if (scalefac[sfb * 3 + window2] > max_sfac[partition]) {
-              max_sfac[partition] = scalefac[sfb * 3 + window2];
-            }
-          }
-        }
-      }
-    } else {
-      row_in_table = 0;
-      var partition_table = qupvt.nr_of_sfb_block[table_number][row_in_table];
-      for (sfb = 0, partition = 0; partition < 4; partition++) {
-        nr_sfb = partition_table[partition];
-        for (i = 0; i < nr_sfb; i++, sfb++) {
-          if (scalefac[sfb] > max_sfac[partition]) {
-            max_sfac[partition] = scalefac[sfb];
-          }
-        }
-      }
-    }
-    for (over = false, partition = 0; partition < 4; partition++) {
-      if (max_sfac[partition] > max_range_sfac_tab[table_number][partition]) {
-        over = true;
-      }
-    }
-    if (!over) {
-      var slen1, slen2, slen3, slen4;
-      cod_info.sfb_partition_table = qupvt.nr_of_sfb_block[table_number][row_in_table];
-      for (partition = 0; partition < 4; partition++) {
-        cod_info.slen[partition] = log2tab[max_sfac[partition]];
-      }
-      slen1 = cod_info.slen[0];
-      slen2 = cod_info.slen[1];
-      slen3 = cod_info.slen[2];
-      slen4 = cod_info.slen[3];
-      switch (table_number) {
-        case 0:
-          cod_info.scalefac_compress = (slen1 * 5 + slen2 << 4) + (slen3 << 2) + slen4;
-          break;
-        case 1:
-          cod_info.scalefac_compress = 400 + (slen1 * 5 + slen2 << 2) + slen3;
-          break;
-        case 2:
-          cod_info.scalefac_compress = 500 + slen1 * 3 + slen2;
-          break;
-        default:
-          System$4.err.printf("intensity stereo not implemented yet\n");
-          break;
-      }
-    }
-    if (!over) {
-      assert$6(cod_info.sfb_partition_table != null);
-      cod_info.part2_length = 0;
-      for (partition = 0; partition < 4; partition++) {
-        cod_info.part2_length += cod_info.slen[partition] * cod_info.sfb_partition_table[partition];
-      }
-    }
-    return over;
-  };
-  var log2tab = [0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4];
-  this.huffman_init = function(gfc) {
-    for (var i = 2; i <= 576; i += 2) {
-      var scfb_anz = 0;
-      var bv_index;
-      while (gfc.scalefac_band.l[++scfb_anz] < i)
-        ;
-      bv_index = subdv_table[scfb_anz][0];
-      while (gfc.scalefac_band.l[bv_index + 1] > i)
-        bv_index--;
-      if (bv_index < 0) {
-        bv_index = subdv_table[scfb_anz][0];
-      }
-      gfc.bv_scf[i - 2] = bv_index;
-      bv_index = subdv_table[scfb_anz][1];
-      while (gfc.scalefac_band.l[bv_index + gfc.bv_scf[i - 2] + 2] > i) {
-        bv_index--;
-      }
-      if (bv_index < 0) {
-        bv_index = subdv_table[scfb_anz][1];
-      }
-      gfc.bv_scf[i - 1] = bv_index;
-    }
-  };
-}
-var System$3 = common.System;
-var Arrays$2 = common.Arrays;
-var new_byte$2 = common.new_byte;
-var new_float_n = common.new_float_n;
-var new_int$1 = common.new_int;
-var assert$5 = common.assert;
-BitStream$1.EQ = function(a, b) {
-  return Math.abs(a) > Math.abs(b) ? Math.abs(a - b) <= Math.abs(a) * 1e-6 : Math.abs(a - b) <= Math.abs(b) * 1e-6;
-};
-BitStream$1.NEQ = function(a, b) {
-  return !BitStream$1.EQ(a, b);
-};
-function BitStream$1() {
-  var self2 = this;
-  var CRC16_POLYNOMIAL = 32773;
-  var ga = null;
-  var mpg = null;
-  var ver = null;
-  var vbr = null;
-  this.setModules = function(_ga, _mpg, _ver, _vbr) {
-    ga = _ga;
-    mpg = _mpg;
-    ver = _ver;
-    vbr = _vbr;
-  };
-  var buf = null;
-  var totbit = 0;
-  var bufByteIdx = 0;
-  var bufBitIdx = 0;
-  this.getframebits = function(gfp) {
-    var gfc = gfp.internal_flags;
-    var bit_rate;
-    if (gfc.bitrate_index != 0) {
-      bit_rate = Tables$1.bitrate_table[gfp.version][gfc.bitrate_index];
-    } else
-      bit_rate = gfp.brate;
-    var bytes = 0 | (gfp.version + 1) * 72e3 * bit_rate / gfp.out_samplerate + gfc.padding;
-    return 8 * bytes;
-  };
-  function putheader_bits(gfc) {
-    System$3.arraycopy(
-      gfc.header[gfc.w_ptr].buf,
-      0,
-      buf,
-      bufByteIdx,
-      gfc.sideinfo_len
-    );
-    bufByteIdx += gfc.sideinfo_len;
-    totbit += gfc.sideinfo_len * 8;
-    gfc.w_ptr = gfc.w_ptr + 1 & LameInternalFlags$1.MAX_HEADER_BUF - 1;
-  }
-  function putbits2(gfc, val, j) {
-    while (j > 0) {
-      var k;
-      if (bufBitIdx == 0) {
-        bufBitIdx = 8;
-        bufByteIdx++;
-        assert$5(gfc.header[gfc.w_ptr].write_timing >= totbit);
-        if (gfc.header[gfc.w_ptr].write_timing == totbit) {
-          putheader_bits(gfc);
-        }
-        buf[bufByteIdx] = 0;
-      }
-      k = Math.min(j, bufBitIdx);
-      j -= k;
-      bufBitIdx -= k;
-      buf[bufByteIdx] |= val >> j << bufBitIdx;
-      totbit += k;
-    }
-  }
-  function putbits_noheaders(gfc, val, j) {
-    while (j > 0) {
-      var k;
-      if (bufBitIdx == 0) {
-        bufBitIdx = 8;
-        bufByteIdx++;
-        buf[bufByteIdx] = 0;
-      }
-      k = Math.min(j, bufBitIdx);
-      j -= k;
-      bufBitIdx -= k;
-      buf[bufByteIdx] |= val >> j << bufBitIdx;
-      totbit += k;
-    }
-  }
-  function drain_into_ancillary(gfp, remainingBits) {
-    var gfc = gfp.internal_flags;
-    var i;
-    if (remainingBits >= 8) {
-      putbits2(gfc, 76, 8);
-      remainingBits -= 8;
-    }
-    if (remainingBits >= 8) {
-      putbits2(gfc, 65, 8);
-      remainingBits -= 8;
-    }
-    if (remainingBits >= 8) {
-      putbits2(gfc, 77, 8);
-      remainingBits -= 8;
-    }
-    if (remainingBits >= 8) {
-      putbits2(gfc, 69, 8);
-      remainingBits -= 8;
-    }
-    if (remainingBits >= 32) {
-      var version2 = ver.getLameShortVersion();
-      if (remainingBits >= 32) {
-        for (i = 0; i < version2.length && remainingBits >= 8; ++i) {
-          remainingBits -= 8;
-          putbits2(gfc, version2.charAt(i), 8);
-        }
-      }
-    }
-    for (; remainingBits >= 1; remainingBits -= 1) {
-      putbits2(gfc, gfc.ancillary_flag, 1);
-      gfc.ancillary_flag ^= !gfp.disable_reservoir ? 1 : 0;
-    }
-  }
-  function writeheader(gfc, val, j) {
-    var ptr = gfc.header[gfc.h_ptr].ptr;
-    while (j > 0) {
-      var k = Math.min(j, 8 - (ptr & 7));
-      j -= k;
-      gfc.header[gfc.h_ptr].buf[ptr >> 3] |= val >> j << 8 - (ptr & 7) - k;
-      ptr += k;
-    }
-    gfc.header[gfc.h_ptr].ptr = ptr;
-  }
-  function CRC_update(value, crc) {
-    value <<= 8;
-    for (var i = 0; i < 8; i++) {
-      value <<= 1;
-      crc <<= 1;
-      if (((crc ^ value) & 65536) != 0)
-        crc ^= CRC16_POLYNOMIAL;
-    }
-    return crc;
-  }
-  this.CRC_writeheader = function(gfc, header) {
-    var crc = 65535;
-    crc = CRC_update(header[2] & 255, crc);
-    crc = CRC_update(header[3] & 255, crc);
-    for (var i = 6; i < gfc.sideinfo_len; i++) {
-      crc = CRC_update(header[i] & 255, crc);
-    }
-    header[4] = byte(crc >> 8);
-    header[5] = byte(crc & 255);
-  };
-  function encodeSideInfo2(gfp, bitsPerFrame) {
-    var gfc = gfp.internal_flags;
-    var l3_side;
-    var gr, ch;
-    l3_side = gfc.l3_side;
-    gfc.header[gfc.h_ptr].ptr = 0;
-    Arrays$2.fill(gfc.header[gfc.h_ptr].buf, 0, gfc.sideinfo_len, 0);
-    if (gfp.out_samplerate < 16e3)
-      writeheader(gfc, 4094, 12);
-    else
-      writeheader(gfc, 4095, 12);
-    writeheader(gfc, gfp.version, 1);
-    writeheader(gfc, 4 - 3, 2);
-    writeheader(gfc, !gfp.error_protection ? 1 : 0, 1);
-    writeheader(gfc, gfc.bitrate_index, 4);
-    writeheader(gfc, gfc.samplerate_index, 2);
-    writeheader(gfc, gfc.padding, 1);
-    writeheader(gfc, gfp.extension, 1);
-    writeheader(gfc, gfp.mode.ordinal(), 2);
-    writeheader(gfc, gfc.mode_ext, 2);
-    writeheader(gfc, gfp.copyright, 1);
-    writeheader(gfc, gfp.original, 1);
-    writeheader(gfc, gfp.emphasis, 2);
-    if (gfp.error_protection) {
-      writeheader(gfc, 0, 16);
-    }
-    if (gfp.version == 1) {
-      assert$5(l3_side.main_data_begin >= 0);
-      writeheader(gfc, l3_side.main_data_begin, 9);
-      if (gfc.channels_out == 2)
-        writeheader(gfc, l3_side.private_bits, 3);
-      else
-        writeheader(gfc, l3_side.private_bits, 5);
-      for (ch = 0; ch < gfc.channels_out; ch++) {
-        var band;
-        for (band = 0; band < 4; band++) {
-          writeheader(gfc, l3_side.scfsi[ch][band], 1);
-        }
-      }
-      for (gr = 0; gr < 2; gr++) {
-        for (ch = 0; ch < gfc.channels_out; ch++) {
-          var gi = l3_side.tt[gr][ch];
-          writeheader(gfc, gi.part2_3_length + gi.part2_length, 12);
-          writeheader(gfc, gi.big_values / 2, 9);
-          writeheader(gfc, gi.global_gain, 8);
-          writeheader(gfc, gi.scalefac_compress, 4);
-          if (gi.block_type != Encoder.NORM_TYPE) {
-            writeheader(gfc, 1, 1);
-            writeheader(gfc, gi.block_type, 2);
-            writeheader(gfc, gi.mixed_block_flag, 1);
-            if (gi.table_select[0] == 14)
-              gi.table_select[0] = 16;
-            writeheader(gfc, gi.table_select[0], 5);
-            if (gi.table_select[1] == 14)
-              gi.table_select[1] = 16;
-            writeheader(gfc, gi.table_select[1], 5);
-            writeheader(gfc, gi.subblock_gain[0], 3);
-            writeheader(gfc, gi.subblock_gain[1], 3);
-            writeheader(gfc, gi.subblock_gain[2], 3);
-          } else {
-            writeheader(gfc, 0, 1);
-            if (gi.table_select[0] == 14)
-              gi.table_select[0] = 16;
-            writeheader(gfc, gi.table_select[0], 5);
-            if (gi.table_select[1] == 14)
-              gi.table_select[1] = 16;
-            writeheader(gfc, gi.table_select[1], 5);
-            if (gi.table_select[2] == 14)
-              gi.table_select[2] = 16;
-            writeheader(gfc, gi.table_select[2], 5);
-            assert$5(gi.region0_count >= 0 && gi.region0_count < 16);
-            assert$5(gi.region1_count >= 0 && gi.region1_count < 8);
-            writeheader(gfc, gi.region0_count, 4);
-            writeheader(gfc, gi.region1_count, 3);
-          }
-          writeheader(gfc, gi.preflag, 1);
-          writeheader(gfc, gi.scalefac_scale, 1);
-          writeheader(gfc, gi.count1table_select, 1);
-        }
-      }
-    } else {
-      assert$5(l3_side.main_data_begin >= 0);
-      writeheader(gfc, l3_side.main_data_begin, 8);
-      writeheader(gfc, l3_side.private_bits, gfc.channels_out);
-      gr = 0;
-      for (ch = 0; ch < gfc.channels_out; ch++) {
-        var gi = l3_side.tt[gr][ch];
-        writeheader(gfc, gi.part2_3_length + gi.part2_length, 12);
-        writeheader(gfc, gi.big_values / 2, 9);
-        writeheader(gfc, gi.global_gain, 8);
-        writeheader(gfc, gi.scalefac_compress, 9);
-        if (gi.block_type != Encoder.NORM_TYPE) {
-          writeheader(gfc, 1, 1);
-          writeheader(gfc, gi.block_type, 2);
-          writeheader(gfc, gi.mixed_block_flag, 1);
-          if (gi.table_select[0] == 14)
-            gi.table_select[0] = 16;
-          writeheader(gfc, gi.table_select[0], 5);
-          if (gi.table_select[1] == 14)
-            gi.table_select[1] = 16;
-          writeheader(gfc, gi.table_select[1], 5);
-          writeheader(gfc, gi.subblock_gain[0], 3);
-          writeheader(gfc, gi.subblock_gain[1], 3);
-          writeheader(gfc, gi.subblock_gain[2], 3);
-        } else {
-          writeheader(gfc, 0, 1);
-          if (gi.table_select[0] == 14)
-            gi.table_select[0] = 16;
-          writeheader(gfc, gi.table_select[0], 5);
-          if (gi.table_select[1] == 14)
-            gi.table_select[1] = 16;
-          writeheader(gfc, gi.table_select[1], 5);
-          if (gi.table_select[2] == 14)
-            gi.table_select[2] = 16;
-          writeheader(gfc, gi.table_select[2], 5);
-          assert$5(gi.region0_count >= 0 && gi.region0_count < 16);
-          assert$5(gi.region1_count >= 0 && gi.region1_count < 8);
-          writeheader(gfc, gi.region0_count, 4);
-          writeheader(gfc, gi.region1_count, 3);
-        }
-        writeheader(gfc, gi.scalefac_scale, 1);
-        writeheader(gfc, gi.count1table_select, 1);
-      }
-    }
-    if (gfp.error_protection) {
-      CRC_writeheader(gfc, gfc.header[gfc.h_ptr].buf);
-    }
-    {
-      var old = gfc.h_ptr;
-      assert$5(gfc.header[old].ptr == gfc.sideinfo_len * 8);
-      gfc.h_ptr = old + 1 & LameInternalFlags$1.MAX_HEADER_BUF - 1;
-      gfc.header[gfc.h_ptr].write_timing = gfc.header[old].write_timing + bitsPerFrame;
-      if (gfc.h_ptr == gfc.w_ptr) {
-        System$3.err.println("Error: MAX_HEADER_BUF too small in bitstream.c \n");
-      }
-    }
-  }
-  function huffman_coder_count1(gfc, gi) {
-    var h2 = Tables$1.ht[gi.count1table_select + 32];
-    var i;
-    var bits = 0;
-    var ix = gi.big_values;
-    var xr = gi.big_values;
-    assert$5(gi.count1table_select < 2);
-    for (i = (gi.count1 - gi.big_values) / 4; i > 0; --i) {
-      var huffbits = 0;
-      var p2 = 0;
-      var v;
-      v = gi.l3_enc[ix + 0];
-      if (v != 0) {
-        p2 += 8;
-        if (gi.xr[xr + 0] < 0)
-          huffbits++;
-      }
-      v = gi.l3_enc[ix + 1];
-      if (v != 0) {
-        p2 += 4;
-        huffbits *= 2;
-        if (gi.xr[xr + 1] < 0)
-          huffbits++;
-      }
-      v = gi.l3_enc[ix + 2];
-      if (v != 0) {
-        p2 += 2;
-        huffbits *= 2;
-        if (gi.xr[xr + 2] < 0)
-          huffbits++;
-      }
-      v = gi.l3_enc[ix + 3];
-      if (v != 0) {
-        p2++;
-        huffbits *= 2;
-        if (gi.xr[xr + 3] < 0)
-          huffbits++;
-      }
-      ix += 4;
-      xr += 4;
-      putbits2(gfc, huffbits + h2.table[p2], h2.hlen[p2]);
-      bits += h2.hlen[p2];
-    }
-    return bits;
-  }
-  function Huffmancode(gfc, tableindex, start2, end, gi) {
-    var h2 = Tables$1.ht[tableindex];
-    var bits = 0;
-    if (tableindex == 0)
-      return bits;
-    for (var i = start2; i < end; i += 2) {
-      var cbits = 0;
-      var xbits = 0;
-      var linbits = h2.xlen;
-      var xlen = h2.xlen;
-      var ext = 0;
-      var x1 = gi.l3_enc[i];
-      var x2 = gi.l3_enc[i + 1];
-      if (x1 != 0) {
-        if (gi.xr[i] < 0)
-          ext++;
-        cbits--;
-      }
-      if (tableindex > 15) {
-        if (x1 > 14) {
-          var linbits_x1 = x1 - 15;
-          assert$5(linbits_x1 <= h2.linmax);
-          ext |= linbits_x1 << 1;
-          xbits = linbits;
-          x1 = 15;
-        }
-        if (x2 > 14) {
-          var linbits_x2 = x2 - 15;
-          assert$5(linbits_x2 <= h2.linmax);
-          ext <<= linbits;
-          ext |= linbits_x2;
-          xbits += linbits;
-          x2 = 15;
-        }
-        xlen = 16;
-      }
-      if (x2 != 0) {
-        ext <<= 1;
-        if (gi.xr[i + 1] < 0)
-          ext++;
-        cbits--;
-      }
-      x1 = x1 * xlen + x2;
-      xbits -= cbits;
-      cbits += h2.hlen[x1];
-      putbits2(gfc, h2.table[x1], cbits);
-      putbits2(gfc, ext, xbits);
-      bits += cbits + xbits;
-    }
-    return bits;
-  }
-  function ShortHuffmancodebits(gfc, gi) {
-    var region1Start = 3 * gfc.scalefac_band.s[3];
-    if (region1Start > gi.big_values)
-      region1Start = gi.big_values;
-    var bits = Huffmancode(gfc, gi.table_select[0], 0, region1Start, gi);
-    bits += Huffmancode(
-      gfc,
-      gi.table_select[1],
-      region1Start,
-      gi.big_values,
-      gi
-    );
-    return bits;
-  }
-  function LongHuffmancodebits(gfc, gi) {
-    var bigvalues, bits;
-    var region1Start, region2Start;
-    bigvalues = gi.big_values;
-    var i = gi.region0_count + 1;
-    assert$5(i < gfc.scalefac_band.l.length);
-    region1Start = gfc.scalefac_band.l[i];
-    i += gi.region1_count + 1;
-    assert$5(i < gfc.scalefac_band.l.length);
-    region2Start = gfc.scalefac_band.l[i];
-    if (region1Start > bigvalues)
-      region1Start = bigvalues;
-    if (region2Start > bigvalues)
-      region2Start = bigvalues;
-    bits = Huffmancode(gfc, gi.table_select[0], 0, region1Start, gi);
-    bits += Huffmancode(gfc, gi.table_select[1], region1Start, region2Start, gi);
-    bits += Huffmancode(gfc, gi.table_select[2], region2Start, bigvalues, gi);
-    return bits;
-  }
-  function writeMainData(gfp) {
-    var gr;
-    var ch;
-    var sfb;
-    var data_bits;
-    var tot_bits = 0;
-    var gfc = gfp.internal_flags;
-    var l3_side = gfc.l3_side;
-    if (gfp.version == 1) {
-      for (gr = 0; gr < 2; gr++) {
-        for (ch = 0; ch < gfc.channels_out; ch++) {
-          var gi = l3_side.tt[gr][ch];
-          var slen1 = Takehiro.slen1_tab[gi.scalefac_compress];
-          var slen2 = Takehiro.slen2_tab[gi.scalefac_compress];
-          data_bits = 0;
-          for (sfb = 0; sfb < gi.sfbdivide; sfb++) {
-            if (gi.scalefac[sfb] == -1)
-              continue;
-            putbits2(gfc, gi.scalefac[sfb], slen1);
-            data_bits += slen1;
-          }
-          for (; sfb < gi.sfbmax; sfb++) {
-            if (gi.scalefac[sfb] == -1)
-              continue;
-            putbits2(gfc, gi.scalefac[sfb], slen2);
-            data_bits += slen2;
-          }
-          assert$5(data_bits == gi.part2_length);
-          if (gi.block_type == Encoder.SHORT_TYPE) {
-            data_bits += ShortHuffmancodebits(gfc, gi);
-          } else {
-            data_bits += LongHuffmancodebits(gfc, gi);
-          }
-          data_bits += huffman_coder_count1(gfc, gi);
-          assert$5(data_bits == gi.part2_3_length + gi.part2_length);
-          tot_bits += data_bits;
-        }
-      }
-    } else {
-      gr = 0;
-      for (ch = 0; ch < gfc.channels_out; ch++) {
-        var gi = l3_side.tt[gr][ch];
-        var i;
-        var sfb_partition;
-        var scale_bits = 0;
-        assert$5(gi.sfb_partition_table != null);
-        data_bits = 0;
-        sfb = 0;
-        sfb_partition = 0;
-        if (gi.block_type == Encoder.SHORT_TYPE) {
-          for (; sfb_partition < 4; sfb_partition++) {
-            var sfbs = gi.sfb_partition_table[sfb_partition] / 3;
-            var slen = gi.slen[sfb_partition];
-            for (i = 0; i < sfbs; i++, sfb++) {
-              putbits2(gfc, Math.max(gi.scalefac[sfb * 3 + 0], 0), slen);
-              putbits2(gfc, Math.max(gi.scalefac[sfb * 3 + 1], 0), slen);
-              putbits2(gfc, Math.max(gi.scalefac[sfb * 3 + 2], 0), slen);
-              scale_bits += 3 * slen;
-            }
-          }
-          data_bits += ShortHuffmancodebits(gfc, gi);
-        } else {
-          for (; sfb_partition < 4; sfb_partition++) {
-            var sfbs = gi.sfb_partition_table[sfb_partition];
-            var slen = gi.slen[sfb_partition];
-            for (i = 0; i < sfbs; i++, sfb++) {
-              putbits2(gfc, Math.max(gi.scalefac[sfb], 0), slen);
-              scale_bits += slen;
-            }
-          }
-          data_bits += LongHuffmancodebits(gfc, gi);
-        }
-        data_bits += huffman_coder_count1(gfc, gi);
-        assert$5(data_bits == gi.part2_3_length);
-        assert$5(scale_bits == gi.part2_length);
-        tot_bits += scale_bits + data_bits;
-      }
-    }
-    return tot_bits;
-  }
-  function TotalBytes() {
-    this.total = 0;
-  }
-  function compute_flushbits(gfp, total_bytes_output) {
-    var gfc = gfp.internal_flags;
-    var flushbits, remaining_headers;
-    var bitsPerFrame;
-    var last_ptr, first_ptr;
-    first_ptr = gfc.w_ptr;
-    last_ptr = gfc.h_ptr - 1;
-    if (last_ptr == -1)
-      last_ptr = LameInternalFlags$1.MAX_HEADER_BUF - 1;
-    flushbits = gfc.header[last_ptr].write_timing - totbit;
-    total_bytes_output.total = flushbits;
-    if (flushbits >= 0) {
-      remaining_headers = 1 + last_ptr - first_ptr;
-      if (last_ptr < first_ptr) {
-        remaining_headers = 1 + last_ptr - first_ptr + LameInternalFlags$1.MAX_HEADER_BUF;
-      }
-      flushbits -= remaining_headers * 8 * gfc.sideinfo_len;
-    }
-    bitsPerFrame = self2.getframebits(gfp);
-    flushbits += bitsPerFrame;
-    total_bytes_output.total += bitsPerFrame;
-    if (total_bytes_output.total % 8 != 0) {
-      total_bytes_output.total = 1 + total_bytes_output.total / 8;
-    } else
-      total_bytes_output.total = total_bytes_output.total / 8;
-    total_bytes_output.total += bufByteIdx + 1;
-    if (flushbits < 0) {
-      System$3.err.println("strange error flushing buffer ... \n");
-    }
-    return flushbits;
-  }
-  this.flush_bitstream = function(gfp) {
-    var gfc = gfp.internal_flags;
-    var l3_side;
-    var flushbits;
-    var last_ptr = gfc.h_ptr - 1;
-    if (last_ptr == -1)
-      last_ptr = LameInternalFlags$1.MAX_HEADER_BUF - 1;
-    l3_side = gfc.l3_side;
-    if ((flushbits = compute_flushbits(gfp, new TotalBytes())) < 0)
-      return;
-    drain_into_ancillary(gfp, flushbits);
-    assert$5(gfc.header[last_ptr].write_timing + this.getframebits(gfp) == totbit);
-    gfc.ResvSize = 0;
-    l3_side.main_data_begin = 0;
-    if (gfc.findReplayGain) {
-      var RadioGain = ga.GetTitleGain(gfc.rgdata);
-      assert$5(NEQ(RadioGain, GainAnalysis.GAIN_NOT_ENOUGH_SAMPLES));
-      gfc.RadioGain = Math.floor(RadioGain * 10 + 0.5) | 0;
-    }
-    if (gfc.findPeakSample) {
-      gfc.noclipGainChange = Math.ceil(Math.log10(gfc.PeakSample / 32767) * 20 * 10) | 0;
-      if (gfc.noclipGainChange > 0) {
-        if (EQ(gfp.scale, 1) || EQ(gfp.scale, 0)) {
-          gfc.noclipScale = Math.floor(32767 / gfc.PeakSample * 100) / 100;
-        } else {
-          gfc.noclipScale = -1;
-        }
-      } else {
-        gfc.noclipScale = -1;
-      }
-    }
-  };
-  this.add_dummy_byte = function(gfp, val, n) {
-    var gfc = gfp.internal_flags;
-    var i;
-    while (n-- > 0) {
-      putbits_noheaders(gfc, val, 8);
-      for (i = 0; i < LameInternalFlags$1.MAX_HEADER_BUF; ++i) {
-        gfc.header[i].write_timing += 8;
-      }
-    }
-  };
-  this.format_bitstream = function(gfp) {
-    var gfc = gfp.internal_flags;
-    var l3_side;
-    l3_side = gfc.l3_side;
-    var bitsPerFrame = this.getframebits(gfp);
-    drain_into_ancillary(gfp, l3_side.resvDrain_pre);
-    encodeSideInfo2(gfp, bitsPerFrame);
-    var bits = 8 * gfc.sideinfo_len;
-    bits += writeMainData(gfp);
-    drain_into_ancillary(gfp, l3_side.resvDrain_post);
-    bits += l3_side.resvDrain_post;
-    l3_side.main_data_begin += (bitsPerFrame - bits) / 8;
-    if (compute_flushbits(gfp, new TotalBytes()) != gfc.ResvSize) {
-      System$3.err.println("Internal buffer inconsistency. flushbits <> ResvSize");
-    }
-    if (l3_side.main_data_begin * 8 != gfc.ResvSize) {
-      System$3.err.printf(
-        "bit reservoir error: \nl3_side.main_data_begin: %d \nResvoir size:             %d \nresv drain (post)         %d \nresv drain (pre)          %d \nheader and sideinfo:      %d \ndata bits:                %d \ntotal bits:               %d (remainder: %d) \nbitsperframe:             %d \n",
-        8 * l3_side.main_data_begin,
-        gfc.ResvSize,
-        l3_side.resvDrain_post,
-        l3_side.resvDrain_pre,
-        8 * gfc.sideinfo_len,
-        bits - l3_side.resvDrain_post - 8 * gfc.sideinfo_len,
-        bits,
-        bits % 8,
-        bitsPerFrame
-      );
-      System$3.err.println(
-        "This is a fatal error.  It has several possible causes:"
-      );
-      System$3.err.println(
-        "90%%  LAME compiled with buggy version of gcc using advanced optimizations"
-      );
-      System$3.err.println(" 9%%  Your system is overclocked");
-      System$3.err.println(" 1%%  bug in LAME encoding library");
-      gfc.ResvSize = l3_side.main_data_begin * 8;
-    }
-    if (totbit > 1e9) {
-      var i;
-      for (i = 0; i < LameInternalFlags$1.MAX_HEADER_BUF; ++i) {
-        gfc.header[i].write_timing -= totbit;
-      }
-      totbit = 0;
-    }
-    return 0;
-  };
-  this.copy_buffer = function(gfc, buffer, bufferPos, size2, mp3data) {
-    var minimum = bufByteIdx + 1;
-    if (minimum <= 0)
-      return 0;
-    if (size2 != 0 && minimum > size2) {
-      return -1;
-    }
-    System$3.arraycopy(buf, 0, buffer, bufferPos, minimum);
-    bufByteIdx = -1;
-    bufBitIdx = 0;
-    if (mp3data != 0) {
-      var crc = new_int$1(1);
-      crc[0] = gfc.nMusicCRC;
-      vbr.updateMusicCRC(crc, buffer, bufferPos, minimum);
-      gfc.nMusicCRC = crc[0];
-      if (minimum > 0) {
-        gfc.VBR_seek_table.nBytesWritten += minimum;
-      }
-      if (gfc.decode_on_the_fly) {
-        var pcm_buf = new_float_n([2, 1152]);
-        var mp3_in = minimum;
-        var samples_out = -1;
-        var i;
-        while (samples_out != 0) {
-          samples_out = mpg.hip_decode1_unclipped(
-            gfc.hip,
-            buffer,
-            bufferPos,
-            mp3_in,
-            pcm_buf[0],
-            pcm_buf[1]
-          );
-          mp3_in = 0;
-          if (samples_out == -1) {
-            samples_out = 0;
-          }
-          if (samples_out > 0) {
-            if (gfc.findPeakSample) {
-              for (i = 0; i < samples_out; i++) {
-                if (pcm_buf[0][i] > gfc.PeakSample) {
-                  gfc.PeakSample = pcm_buf[0][i];
-                } else if (-pcm_buf[0][i] > gfc.PeakSample) {
-                  gfc.PeakSample = -pcm_buf[0][i];
-                }
-              }
-              if (gfc.channels_out > 1) {
-                for (i = 0; i < samples_out; i++) {
-                  if (pcm_buf[1][i] > gfc.PeakSample) {
-                    gfc.PeakSample = pcm_buf[1][i];
-                  } else if (-pcm_buf[1][i] > gfc.PeakSample) {
-                    gfc.PeakSample = -pcm_buf[1][i];
-                  }
-                }
-              }
-            }
-            if (gfc.findReplayGain) {
-              if (ga.AnalyzeSamples(
-                gfc.rgdata,
-                pcm_buf[0],
-                0,
-                pcm_buf[1],
-                0,
-                samples_out,
-                gfc.channels_out
-              ) == GainAnalysis.GAIN_ANALYSIS_ERROR) {
-                return -6;
-              }
-            }
-          }
-        }
-      }
-    }
-    return minimum;
-  };
-  this.init_bit_stream_w = function(gfc) {
-    buf = new_byte$2(Lame$1.LAME_MAXMP3BUFFER);
-    gfc.h_ptr = gfc.w_ptr = 0;
-    gfc.header[gfc.h_ptr].write_timing = 0;
-    bufByteIdx = -1;
-    bufBitIdx = 0;
-    totbit = 0;
-  };
-}
-var System$2 = common.System;
-var VbrMode$3 = common.VbrMode;
-var ShortBlock$1 = common.ShortBlock;
-var new_float$2 = common.new_float;
-var new_int_n = common.new_int_n;
-var new_short_n = common.new_short_n;
-var assert$4 = common.assert;
-function Lame$1() {
-  var self2 = this;
-  var LAME_MAXALBUMART = 128 * 1024;
-  Lame$1.V9 = 410;
-  Lame$1.V8 = 420;
-  Lame$1.V7 = 430;
-  Lame$1.V6 = 440;
-  Lame$1.V5 = 450;
-  Lame$1.V4 = 460;
-  Lame$1.V3 = 470;
-  Lame$1.V2 = 480;
-  Lame$1.V1 = 490;
-  Lame$1.V0 = 500;
-  Lame$1.R3MIX = 1e3;
-  Lame$1.STANDARD = 1001;
-  Lame$1.EXTREME = 1002;
-  Lame$1.INSANE = 1003;
-  Lame$1.STANDARD_FAST = 1004;
-  Lame$1.EXTREME_FAST = 1005;
-  Lame$1.MEDIUM = 1006;
-  Lame$1.MEDIUM_FAST = 1007;
-  var LAME_MAXMP3BUFFER = 16384 + LAME_MAXALBUMART;
-  Lame$1.LAME_MAXMP3BUFFER = LAME_MAXMP3BUFFER;
-  var ga;
-  var bs;
-  var p2;
-  var qupvt;
-  var qu;
-  var psy = new PsyModel();
-  var vbr;
-  var id3;
-  var mpglib;
-  this.enc = new Encoder();
-  this.setModules = function(_ga, _bs, _p, _qupvt, _qu, _vbr, _ver, _id3, _mpglib) {
-    ga = _ga;
-    bs = _bs;
-    p2 = _p;
-    qupvt = _qupvt;
-    qu = _qu;
-    vbr = _vbr;
-    id3 = _id3;
-    mpglib = _mpglib;
-    this.enc.setModules(bs, psy, qupvt, vbr);
-  };
-  function PSY() {
-    this.mask_adjust = 0;
-    this.mask_adjust_short = 0;
-    this.bo_l_weight = new_float$2(Encoder.SBMAX_l);
-    this.bo_s_weight = new_float$2(Encoder.SBMAX_s);
-  }
-  function LowPassHighPass() {
-    this.lowerlimit = 0;
-  }
-  function BandPass(bitrate, lPass) {
-    this.lowpass = lPass;
-  }
-  var LAME_ID = 4294479419;
-  function lame_init_old(gfp) {
-    var gfc;
-    gfp.class_id = LAME_ID;
-    gfc = gfp.internal_flags = new LameInternalFlags$1();
-    gfp.mode = MPEGMode.NOT_SET;
-    gfp.original = 1;
-    gfp.in_samplerate = 44100;
-    gfp.num_channels = 2;
-    gfp.num_samples = -1;
-    gfp.bWriteVbrTag = true;
-    gfp.quality = -1;
-    gfp.short_blocks = null;
-    gfc.subblock_gain = -1;
-    gfp.lowpassfreq = 0;
-    gfp.highpassfreq = 0;
-    gfp.lowpasswidth = -1;
-    gfp.highpasswidth = -1;
-    gfp.VBR = VbrMode$3.vbr_off;
-    gfp.VBR_q = 4;
-    gfp.ATHcurve = -1;
-    gfp.VBR_mean_bitrate_kbps = 128;
-    gfp.VBR_min_bitrate_kbps = 0;
-    gfp.VBR_max_bitrate_kbps = 0;
-    gfp.VBR_hard_min = 0;
-    gfc.VBR_min_bitrate = 1;
-    gfc.VBR_max_bitrate = 13;
-    gfp.quant_comp = -1;
-    gfp.quant_comp_short = -1;
-    gfp.msfix = -1;
-    gfc.resample_ratio = 1;
-    gfc.OldValue[0] = 180;
-    gfc.OldValue[1] = 180;
-    gfc.CurrentStep[0] = 4;
-    gfc.CurrentStep[1] = 4;
-    gfc.masking_lower = 1;
-    gfc.nsPsy.attackthre = -1;
-    gfc.nsPsy.attackthre_s = -1;
-    gfp.scale = -1;
-    gfp.athaa_type = -1;
-    gfp.ATHtype = -1;
-    gfp.athaa_loudapprox = -1;
-    gfp.athaa_sensitivity = 0;
-    gfp.useTemporal = null;
-    gfp.interChRatio = -1;
-    gfc.mf_samples_to_encode = Encoder.ENCDELAY + Encoder.POSTDELAY;
-    gfp.encoder_padding = 0;
-    gfc.mf_size = Encoder.ENCDELAY - Encoder.MDCTDELAY;
-    gfp.findReplayGain = false;
-    gfp.decode_on_the_fly = false;
-    gfc.decode_on_the_fly = false;
-    gfc.findReplayGain = false;
-    gfc.findPeakSample = false;
-    gfc.RadioGain = 0;
-    gfc.AudiophileGain = 0;
-    gfc.noclipGainChange = 0;
-    gfc.noclipScale = -1;
-    gfp.preset = 0;
-    gfp.write_id3tag_automatic = true;
-    return 0;
-  }
-  this.lame_init = function() {
-    var gfp = new LameGlobalFlags();
-    lame_init_old(gfp);
-    gfp.lame_allocated_gfp = 1;
-    return gfp;
-  };
-  function filter_coef(x) {
-    if (x > 1)
-      return 0;
-    if (x <= 0)
-      return 1;
-    return Math.cos(Math.PI / 2 * x);
-  }
-  this.nearestBitrateFullIndex = function(bitrate) {
-    var full_bitrate_table = [
-      8,
-      16,
-      24,
-      32,
-      40,
-      48,
-      56,
-      64,
-      80,
-      96,
-      112,
-      128,
-      160,
-      192,
-      224,
-      256,
-      320
-    ];
-    var lower_range = 0;
-    var lower_range_kbps = 0;
-    var upper_range = 0;
-    var upper_range_kbps = 0;
-    upper_range_kbps = full_bitrate_table[16];
-    upper_range = 16;
-    lower_range_kbps = full_bitrate_table[16];
-    lower_range = 16;
-    for (var b = 0; b < 16; b++) {
-      if (Math.max(bitrate, full_bitrate_table[b + 1]) != bitrate) {
-        upper_range_kbps = full_bitrate_table[b + 1];
-        upper_range = b + 1;
-        lower_range_kbps = full_bitrate_table[b];
-        lower_range = b;
-        break;
-      }
-    }
-    if (upper_range_kbps - bitrate > bitrate - lower_range_kbps) {
-      return lower_range;
-    }
-    return upper_range;
-  };
-  function optimum_samplefreq(lowpassfreq, input_samplefreq) {
-    var suggested_samplefreq = 44100;
-    if (input_samplefreq >= 48e3)
-      suggested_samplefreq = 48e3;
-    else if (input_samplefreq >= 44100)
-      suggested_samplefreq = 44100;
-    else if (input_samplefreq >= 32e3)
-      suggested_samplefreq = 32e3;
-    else if (input_samplefreq >= 24e3)
-      suggested_samplefreq = 24e3;
-    else if (input_samplefreq >= 22050)
-      suggested_samplefreq = 22050;
-    else if (input_samplefreq >= 16e3)
-      suggested_samplefreq = 16e3;
-    else if (input_samplefreq >= 12e3)
-      suggested_samplefreq = 12e3;
-    else if (input_samplefreq >= 11025)
-      suggested_samplefreq = 11025;
-    else if (input_samplefreq >= 8e3)
-      suggested_samplefreq = 8e3;
-    if (lowpassfreq == -1)
-      return suggested_samplefreq;
-    if (lowpassfreq <= 15960)
-      suggested_samplefreq = 44100;
-    if (lowpassfreq <= 15250)
-      suggested_samplefreq = 32e3;
-    if (lowpassfreq <= 11220)
-      suggested_samplefreq = 24e3;
-    if (lowpassfreq <= 9970)
-      suggested_samplefreq = 22050;
-    if (lowpassfreq <= 7230)
-      suggested_samplefreq = 16e3;
-    if (lowpassfreq <= 5420)
-      suggested_samplefreq = 12e3;
-    if (lowpassfreq <= 4510)
-      suggested_samplefreq = 11025;
-    if (lowpassfreq <= 3970)
-      suggested_samplefreq = 8e3;
-    if (input_samplefreq < suggested_samplefreq) {
-      if (input_samplefreq > 44100) {
-        return 48e3;
-      }
-      if (input_samplefreq > 32e3) {
-        return 44100;
-      }
-      if (input_samplefreq > 24e3) {
-        return 32e3;
-      }
-      if (input_samplefreq > 22050) {
-        return 24e3;
-      }
-      if (input_samplefreq > 16e3) {
-        return 22050;
-      }
-      if (input_samplefreq > 12e3) {
-        return 16e3;
-      }
-      if (input_samplefreq > 11025) {
-        return 12e3;
-      }
-      if (input_samplefreq > 8e3) {
-        return 11025;
-      }
-      return 8e3;
-    }
-    return suggested_samplefreq;
-  }
-  function SmpFrqIndex(sample_freq, gpf) {
-    switch (sample_freq) {
-      case 44100:
-        gpf.version = 1;
-        return 0;
-      case 48e3:
-        gpf.version = 1;
-        return 1;
-      case 32e3:
-        gpf.version = 1;
-        return 2;
-      case 22050:
-        gpf.version = 0;
-        return 0;
-      case 24e3:
-        gpf.version = 0;
-        return 1;
-      case 16e3:
-        gpf.version = 0;
-        return 2;
-      case 11025:
-        gpf.version = 0;
-        return 0;
-      case 12e3:
-        gpf.version = 0;
-        return 1;
-      case 8e3:
-        gpf.version = 0;
-        return 2;
-      default:
-        gpf.version = 0;
-        return -1;
-    }
-  }
-  function FindNearestBitrate(bRate, version2, samplerate) {
-    if (samplerate < 16e3)
-      version2 = 2;
-    var bitrate = Tables$1.bitrate_table[version2][1];
-    for (var i = 2; i <= 14; i++) {
-      if (Tables$1.bitrate_table[version2][i] > 0) {
-        if (Math.abs(Tables$1.bitrate_table[version2][i] - bRate) < Math.abs(bitrate - bRate)) {
-          bitrate = Tables$1.bitrate_table[version2][i];
-        }
-      }
-    }
-    return bitrate;
-  }
-  function BitrateIndex(bRate, version2, samplerate) {
-    if (samplerate < 16e3)
-      version2 = 2;
-    for (var i = 0; i <= 14; i++) {
-      if (Tables$1.bitrate_table[version2][i] > 0) {
-        if (Tables$1.bitrate_table[version2][i] == bRate) {
-          return i;
-        }
-      }
-    }
-    return -1;
-  }
-  function optimum_bandwidth(lh, bitrate) {
-    var freq_map = [
-      new BandPass(8, 2e3),
-      new BandPass(16, 3700),
-      new BandPass(24, 3900),
-      new BandPass(32, 5500),
-      new BandPass(40, 7e3),
-      new BandPass(48, 7500),
-      new BandPass(56, 1e4),
-      new BandPass(64, 11e3),
-      new BandPass(80, 13500),
-      new BandPass(96, 15100),
-      new BandPass(112, 15600),
-      new BandPass(128, 17e3),
-      new BandPass(160, 17500),
-      new BandPass(192, 18600),
-      new BandPass(224, 19400),
-      new BandPass(256, 19700),
-      new BandPass(320, 20500)
-    ];
-    var table_index = self2.nearestBitrateFullIndex(bitrate);
-    lh.lowerlimit = freq_map[table_index].lowpass;
-  }
-  function lame_init_params_ppflt(gfp) {
-    var gfc = gfp.internal_flags;
-    var lowpass_band = 32;
-    var highpass_band = -1;
-    if (gfc.lowpass1 > 0) {
-      var minband = 999;
-      for (var band = 0; band <= 31; band++) {
-        var freq = band / 31;
-        if (freq >= gfc.lowpass2) {
-          lowpass_band = Math.min(lowpass_band, band);
-        }
-        if (gfc.lowpass1 < freq && freq < gfc.lowpass2) {
-          minband = Math.min(minband, band);
-        }
-      }
-      if (minband == 999) {
-        gfc.lowpass1 = (lowpass_band - 0.75) / 31;
-      } else {
-        gfc.lowpass1 = (minband - 0.75) / 31;
-      }
-      gfc.lowpass2 = lowpass_band / 31;
-    }
-    if (gfc.highpass2 > 0) {
-      if (gfc.highpass2 < 0.9 * (0.75 / 31)) {
-        gfc.highpass1 = 0;
-        gfc.highpass2 = 0;
-        System$2.err.println(
-          "Warning: highpass filter disabled.  highpass frequency too small\n"
-        );
-      }
-    }
-    if (gfc.highpass2 > 0) {
-      var maxband = -1;
-      for (var band = 0; band <= 31; band++) {
-        var freq = band / 31;
-        if (freq <= gfc.highpass1) {
-          highpass_band = Math.max(highpass_band, band);
-        }
-        if (gfc.highpass1 < freq && freq < gfc.highpass2) {
-          maxband = Math.max(maxband, band);
-        }
-      }
-      gfc.highpass1 = highpass_band / 31;
-      if (maxband == -1) {
-        gfc.highpass2 = (highpass_band + 0.75) / 31;
-      } else {
-        gfc.highpass2 = (maxband + 0.75) / 31;
-      }
-    }
-    for (var band = 0; band < 32; band++) {
-      var fc1, fc2;
-      var freq = band / 31;
-      if (gfc.highpass2 > gfc.highpass1) {
-        fc1 = filter_coef(
-          (gfc.highpass2 - freq) / (gfc.highpass2 - gfc.highpass1 + 1e-20)
-        );
-      } else {
-        fc1 = 1;
-      }
-      if (gfc.lowpass2 > gfc.lowpass1) {
-        fc2 = filter_coef(
-          (freq - gfc.lowpass1) / (gfc.lowpass2 - gfc.lowpass1 + 1e-20)
-        );
-      } else {
-        fc2 = 1;
-      }
-      gfc.amp_filter[band] = fc1 * fc2;
-    }
-  }
-  function lame_init_qval(gfp) {
-    var gfc = gfp.internal_flags;
-    switch (gfp.quality) {
-      default:
-      case 9:
-        gfc.psymodel = 0;
-        gfc.noise_shaping = 0;
-        gfc.noise_shaping_amp = 0;
-        gfc.noise_shaping_stop = 0;
-        gfc.use_best_huffman = 0;
-        gfc.full_outer_loop = 0;
-        break;
-      case 8:
-        gfp.quality = 7;
-      case 7:
-        gfc.psymodel = 1;
-        gfc.noise_shaping = 0;
-        gfc.noise_shaping_amp = 0;
-        gfc.noise_shaping_stop = 0;
-        gfc.use_best_huffman = 0;
-        gfc.full_outer_loop = 0;
-        break;
-      case 6:
-        gfc.psymodel = 1;
-        if (gfc.noise_shaping == 0)
-          gfc.noise_shaping = 1;
-        gfc.noise_shaping_amp = 0;
-        gfc.noise_shaping_stop = 0;
-        if (gfc.subblock_gain == -1)
-          gfc.subblock_gain = 1;
-        gfc.use_best_huffman = 0;
-        gfc.full_outer_loop = 0;
-        break;
-      case 5:
-        gfc.psymodel = 1;
-        if (gfc.noise_shaping == 0)
-          gfc.noise_shaping = 1;
-        gfc.noise_shaping_amp = 0;
-        gfc.noise_shaping_stop = 0;
-        if (gfc.subblock_gain == -1)
-          gfc.subblock_gain = 1;
-        gfc.use_best_huffman = 0;
-        gfc.full_outer_loop = 0;
-        break;
-      case 4:
-        gfc.psymodel = 1;
-        if (gfc.noise_shaping == 0)
-          gfc.noise_shaping = 1;
-        gfc.noise_shaping_amp = 0;
-        gfc.noise_shaping_stop = 0;
-        if (gfc.subblock_gain == -1)
-          gfc.subblock_gain = 1;
-        gfc.use_best_huffman = 1;
-        gfc.full_outer_loop = 0;
-        break;
-      case 3:
-        gfc.psymodel = 1;
-        if (gfc.noise_shaping == 0)
-          gfc.noise_shaping = 1;
-        gfc.noise_shaping_amp = 1;
-        gfc.noise_shaping_stop = 1;
-        if (gfc.subblock_gain == -1)
-          gfc.subblock_gain = 1;
-        gfc.use_best_huffman = 1;
-        gfc.full_outer_loop = 0;
-        break;
-      case 2:
-        gfc.psymodel = 1;
-        if (gfc.noise_shaping == 0)
-          gfc.noise_shaping = 1;
-        if (gfc.substep_shaping == 0)
-          gfc.substep_shaping = 2;
-        gfc.noise_shaping_amp = 1;
-        gfc.noise_shaping_stop = 1;
-        if (gfc.subblock_gain == -1)
-          gfc.subblock_gain = 1;
-        gfc.use_best_huffman = 1;
-        gfc.full_outer_loop = 0;
-        break;
-      case 1:
-        gfc.psymodel = 1;
-        if (gfc.noise_shaping == 0)
-          gfc.noise_shaping = 1;
-        if (gfc.substep_shaping == 0)
-          gfc.substep_shaping = 2;
-        gfc.noise_shaping_amp = 2;
-        gfc.noise_shaping_stop = 1;
-        if (gfc.subblock_gain == -1)
-          gfc.subblock_gain = 1;
-        gfc.use_best_huffman = 1;
-        gfc.full_outer_loop = 0;
-        break;
-      case 0:
-        gfc.psymodel = 1;
-        if (gfc.noise_shaping == 0)
-          gfc.noise_shaping = 1;
-        if (gfc.substep_shaping == 0)
-          gfc.substep_shaping = 2;
-        gfc.noise_shaping_amp = 2;
-        gfc.noise_shaping_stop = 1;
-        if (gfc.subblock_gain == -1)
-          gfc.subblock_gain = 1;
-        gfc.use_best_huffman = 1;
-        gfc.full_outer_loop = 0;
-        break;
-    }
-  }
-  function lame_init_bitstream(gfp) {
-    var gfc = gfp.internal_flags;
-    gfp.frameNum = 0;
-    if (gfp.write_id3tag_automatic) {
-      id3.id3tag_write_v2(gfp);
-    }
-    gfc.bitrate_stereoMode_Hist = new_int_n([16, 4 + 1]);
-    gfc.bitrate_blockType_Hist = new_int_n([16, 4 + 1 + 1]);
-    gfc.PeakSample = 0;
-    if (gfp.bWriteVbrTag)
-      vbr.InitVbrTag(gfp);
-  }
-  this.lame_init_params = function(gfp) {
-    var gfc = gfp.internal_flags;
-    gfc.Class_ID = 0;
-    if (gfc.ATH == null)
-      gfc.ATH = new ATH();
-    if (gfc.PSY == null)
-      gfc.PSY = new PSY();
-    if (gfc.rgdata == null)
-      gfc.rgdata = new ReplayGain();
-    gfc.channels_in = gfp.num_channels;
-    if (gfc.channels_in == 1)
-      gfp.mode = MPEGMode.MONO;
-    gfc.channels_out = gfp.mode == MPEGMode.MONO ? 1 : 2;
-    gfc.mode_ext = Encoder.MPG_MD_MS_LR;
-    if (gfp.mode == MPEGMode.MONO)
-      gfp.force_ms = false;
-    if (gfp.VBR == VbrMode$3.vbr_off && gfp.VBR_mean_bitrate_kbps != 128 && gfp.brate == 0) {
-      gfp.brate = gfp.VBR_mean_bitrate_kbps;
-    }
-    if (gfp.VBR == VbrMode$3.vbr_off || gfp.VBR == VbrMode$3.vbr_mtrh || gfp.VBR == VbrMode$3.vbr_mt)
-      ;
-    else {
-      gfp.free_format = false;
-    }
-    if (gfp.VBR == VbrMode$3.vbr_off && gfp.brate == 0) {
-      if (BitStream$1.EQ(gfp.compression_ratio, 0))
-        gfp.compression_ratio = 11.025;
-    }
-    if (gfp.VBR == VbrMode$3.vbr_off && gfp.compression_ratio > 0) {
-      if (gfp.out_samplerate == 0) {
-        gfp.out_samplerate = map2MP3Frequency(int(0.97 * gfp.in_samplerate));
-      }
-      gfp.brate = 0 | gfp.out_samplerate * 16 * gfc.channels_out / (1e3 * gfp.compression_ratio);
-      gfc.samplerate_index = SmpFrqIndex(gfp.out_samplerate, gfp);
-      if (!gfp.free_format) {
-        gfp.brate = FindNearestBitrate(
-          gfp.brate,
-          gfp.version,
-          gfp.out_samplerate
-        );
-      }
-    }
-    if (gfp.out_samplerate != 0) {
-      if (gfp.out_samplerate < 16e3) {
-        gfp.VBR_mean_bitrate_kbps = Math.max(gfp.VBR_mean_bitrate_kbps, 8);
-        gfp.VBR_mean_bitrate_kbps = Math.min(gfp.VBR_mean_bitrate_kbps, 64);
-      } else if (gfp.out_samplerate < 32e3) {
-        gfp.VBR_mean_bitrate_kbps = Math.max(gfp.VBR_mean_bitrate_kbps, 8);
-        gfp.VBR_mean_bitrate_kbps = Math.min(gfp.VBR_mean_bitrate_kbps, 160);
-      } else {
-        gfp.VBR_mean_bitrate_kbps = Math.max(gfp.VBR_mean_bitrate_kbps, 32);
-        gfp.VBR_mean_bitrate_kbps = Math.min(gfp.VBR_mean_bitrate_kbps, 320);
-      }
-    }
-    if (gfp.lowpassfreq == 0) {
-      var lowpass = 16e3;
-      switch (gfp.VBR) {
-        case VbrMode$3.vbr_off: {
-          var lh = new LowPassHighPass();
-          optimum_bandwidth(lh, gfp.brate);
-          lowpass = lh.lowerlimit;
-          break;
-        }
-        case VbrMode$3.vbr_abr: {
-          var lh = new LowPassHighPass();
-          optimum_bandwidth(lh, gfp.VBR_mean_bitrate_kbps);
-          lowpass = lh.lowerlimit;
-          break;
-        }
-        case VbrMode$3.vbr_rh: {
-          var x = [
-            19500,
-            19e3,
-            18600,
-            18e3,
-            17500,
-            16e3,
-            15600,
-            14900,
-            12500,
-            1e4,
-            3950
-          ];
-          if (gfp.VBR_q >= 0 && gfp.VBR_q <= 9) {
-            var a = x[gfp.VBR_q];
-            var b = x[gfp.VBR_q + 1];
-            var m = gfp.VBR_q_frac;
-            lowpass = linear_int(a, b, m);
-          } else {
-            lowpass = 19500;
-          }
-          break;
-        }
-        default: {
-          var x = [
-            19500,
-            19e3,
-            18500,
-            18e3,
-            17500,
-            16500,
-            15500,
-            14500,
-            12500,
-            9500,
-            3950
-          ];
-          if (gfp.VBR_q >= 0 && gfp.VBR_q <= 9) {
-            var a = x[gfp.VBR_q];
-            var b = x[gfp.VBR_q + 1];
-            var m = gfp.VBR_q_frac;
-            lowpass = linear_int(a, b, m);
-          } else {
-            lowpass = 19500;
-          }
-        }
-      }
-      if (gfp.mode == MPEGMode.MONO && (gfp.VBR == VbrMode$3.vbr_off || gfp.VBR == VbrMode$3.vbr_abr)) {
-        lowpass *= 1.5;
-      }
-      gfp.lowpassfreq = lowpass | 0;
-    }
-    if (gfp.out_samplerate == 0) {
-      if (2 * gfp.lowpassfreq > gfp.in_samplerate) {
-        gfp.lowpassfreq = gfp.in_samplerate / 2;
-      }
-      gfp.out_samplerate = optimum_samplefreq(
-        gfp.lowpassfreq | 0,
-        gfp.in_samplerate
-      );
-    }
-    gfp.lowpassfreq = Math.min(20500, gfp.lowpassfreq);
-    gfp.lowpassfreq = Math.min(gfp.out_samplerate / 2, gfp.lowpassfreq);
-    if (gfp.VBR == VbrMode$3.vbr_off) {
-      gfp.compression_ratio = gfp.out_samplerate * 16 * gfc.channels_out / (1e3 * gfp.brate);
-    }
-    if (gfp.VBR == VbrMode$3.vbr_abr) {
-      gfp.compression_ratio = gfp.out_samplerate * 16 * gfc.channels_out / (1e3 * gfp.VBR_mean_bitrate_kbps);
-    }
-    if (!gfp.bWriteVbrTag) {
-      gfp.findReplayGain = false;
-      gfp.decode_on_the_fly = false;
-      gfc.findPeakSample = false;
-    }
-    gfc.findReplayGain = gfp.findReplayGain;
-    gfc.decode_on_the_fly = gfp.decode_on_the_fly;
-    if (gfc.decode_on_the_fly)
-      gfc.findPeakSample = true;
-    if (gfc.findReplayGain) {
-      if (ga.InitGainAnalysis(gfc.rgdata, gfp.out_samplerate) == GainAnalysis.INIT_GAIN_ANALYSIS_ERROR) {
-        gfp.internal_flags = null;
-        return -6;
-      }
-    }
-    if (gfc.decode_on_the_fly && !gfp.decode_only) {
-      if (gfc.hip != null) {
-        mpglib.hip_decode_exit(gfc.hip);
-      }
-      gfc.hip = mpglib.hip_decode_init();
-    }
-    gfc.mode_gr = gfp.out_samplerate <= 24e3 ? 1 : 2;
-    gfp.framesize = 576 * gfc.mode_gr;
-    gfp.encoder_delay = Encoder.ENCDELAY;
-    gfc.resample_ratio = gfp.in_samplerate / gfp.out_samplerate;
-    switch (gfp.VBR) {
-      case VbrMode$3.vbr_mt:
-      case VbrMode$3.vbr_rh:
-      case VbrMode$3.vbr_mtrh:
-        {
-          var cmp = [5.7, 6.5, 7.3, 8.2, 10, 11.9, 13, 14, 15, 16.5];
-          gfp.compression_ratio = cmp[gfp.VBR_q];
-        }
-        break;
-      case VbrMode$3.vbr_abr:
-        gfp.compression_ratio = gfp.out_samplerate * 16 * gfc.channels_out / (1e3 * gfp.VBR_mean_bitrate_kbps);
-        break;
-      default:
-        gfp.compression_ratio = gfp.out_samplerate * 16 * gfc.channels_out / (1e3 * gfp.brate);
-        break;
-    }
-    if (gfp.mode == MPEGMode.NOT_SET) {
-      gfp.mode = MPEGMode.JOINT_STEREO;
-    }
-    if (gfp.highpassfreq > 0) {
-      gfc.highpass1 = 2 * gfp.highpassfreq;
-      if (gfp.highpasswidth >= 0) {
-        gfc.highpass2 = 2 * (gfp.highpassfreq + gfp.highpasswidth);
-      } else {
-        gfc.highpass2 = (1 + 0) * 2 * gfp.highpassfreq;
-      }
-      gfc.highpass1 /= gfp.out_samplerate;
-      gfc.highpass2 /= gfp.out_samplerate;
-    } else {
-      gfc.highpass1 = 0;
-      gfc.highpass2 = 0;
+  async removeAllListeners() {
+    this.listeners = {};
+    for (const listener in this.windowListeners) {
+      this.removeWindowListener(this.windowListeners[listener]);
     }
-    if (gfp.lowpassfreq > 0) {
-      gfc.lowpass2 = 2 * gfp.lowpassfreq;
-      if (gfp.lowpasswidth >= 0) {
-        gfc.lowpass1 = 2 * (gfp.lowpassfreq - gfp.lowpasswidth);
-        if (gfc.lowpass1 < 0)
-          gfc.lowpass1 = 0;
-      } else {
-        gfc.lowpass1 = (1 - 0) * 2 * gfp.lowpassfreq;
-      }
-      gfc.lowpass1 /= gfp.out_samplerate;
-      gfc.lowpass2 /= gfp.out_samplerate;
-    } else {
-      gfc.lowpass1 = 0;
-      gfc.lowpass2 = 0;
-    }
-    lame_init_params_ppflt(gfp);
-    gfc.samplerate_index = SmpFrqIndex(gfp.out_samplerate, gfp);
-    if (gfc.samplerate_index < 0) {
-      gfp.internal_flags = null;
-      return -1;
-    }
-    if (gfp.VBR == VbrMode$3.vbr_off) {
-      if (gfp.free_format) {
-        gfc.bitrate_index = 0;
-      } else {
-        gfp.brate = FindNearestBitrate(
-          gfp.brate,
-          gfp.version,
-          gfp.out_samplerate
-        );
-        gfc.bitrate_index = BitrateIndex(
-          gfp.brate,
-          gfp.version,
-          gfp.out_samplerate
-        );
-        if (gfc.bitrate_index <= 0) {
-          gfp.internal_flags = null;
-          return -1;
-        }
-      }
-    } else {
-      gfc.bitrate_index = 1;
-    }
-    if (gfp.analysis)
-      gfp.bWriteVbrTag = false;
-    if (gfc.pinfo != null)
-      gfp.bWriteVbrTag = false;
-    bs.init_bit_stream_w(gfc);
-    var j = gfc.samplerate_index + 3 * gfp.version + 6 * (gfp.out_samplerate < 16e3 ? 1 : 0);
-    for (var i = 0; i < Encoder.SBMAX_l + 1; i++) {
-      gfc.scalefac_band.l[i] = qupvt.sfBandIndex[j].l[i];
-    }
-    for (var i = 0; i < Encoder.PSFB21 + 1; i++) {
-      var size2 = (gfc.scalefac_band.l[22] - gfc.scalefac_band.l[21]) / Encoder.PSFB21;
-      var start2 = gfc.scalefac_band.l[21] + i * size2;
-      gfc.scalefac_band.psfb21[i] = start2;
-    }
-    gfc.scalefac_band.psfb21[Encoder.PSFB21] = 576;
-    for (var i = 0; i < Encoder.SBMAX_s + 1; i++) {
-      gfc.scalefac_band.s[i] = qupvt.sfBandIndex[j].s[i];
-    }
-    for (var i = 0; i < Encoder.PSFB12 + 1; i++) {
-      var size2 = (gfc.scalefac_band.s[13] - gfc.scalefac_band.s[12]) / Encoder.PSFB12;
-      var start2 = gfc.scalefac_band.s[12] + i * size2;
-      gfc.scalefac_band.psfb12[i] = start2;
-    }
-    gfc.scalefac_band.psfb12[Encoder.PSFB12] = 192;
-    if (gfp.version == 1) {
-      gfc.sideinfo_len = gfc.channels_out == 1 ? 4 + 17 : 4 + 32;
-    } else
-      gfc.sideinfo_len = gfc.channels_out == 1 ? 4 + 9 : 4 + 17;
-    if (gfp.error_protection)
-      gfc.sideinfo_len += 2;
-    lame_init_bitstream(gfp);
-    gfc.Class_ID = LAME_ID;
-    {
-      var k;
-      for (k = 0; k < 19; k++) {
-        gfc.nsPsy.pefirbuf[k] = 700 * gfc.mode_gr * gfc.channels_out;
-      }
-      if (gfp.ATHtype == -1)
-        gfp.ATHtype = 4;
-    }
-    assert$4(gfp.VBR_q <= 9);
-    assert$4(gfp.VBR_q >= 0);
-    switch (gfp.VBR) {
-      case VbrMode$3.vbr_mt:
-        gfp.VBR = VbrMode$3.vbr_mtrh;
-      case VbrMode$3.vbr_mtrh: {
-        if (gfp.useTemporal == null) {
-          gfp.useTemporal = false;
-        }
-        p2.apply_preset(gfp, 500 - gfp.VBR_q * 10, 0);
-        if (gfp.quality < 0)
-          gfp.quality = LAME_DEFAULT_QUALITY;
-        if (gfp.quality < 5)
-          gfp.quality = 0;
-        if (gfp.quality > 5)
-          gfp.quality = 5;
-        gfc.PSY.mask_adjust = gfp.maskingadjust;
-        gfc.PSY.mask_adjust_short = gfp.maskingadjust_short;
-        if (gfp.experimentalY)
-          gfc.sfb21_extra = false;
-        else
-          gfc.sfb21_extra = gfp.out_samplerate > 44e3;
-        gfc.iteration_loop = new VBRNewIterationLoop(qu);
-        break;
-      }
-      case VbrMode$3.vbr_rh: {
-        p2.apply_preset(gfp, 500 - gfp.VBR_q * 10, 0);
-        gfc.PSY.mask_adjust = gfp.maskingadjust;
-        gfc.PSY.mask_adjust_short = gfp.maskingadjust_short;
-        if (gfp.experimentalY)
-          gfc.sfb21_extra = false;
-        else
-          gfc.sfb21_extra = gfp.out_samplerate > 44e3;
-        if (gfp.quality > 6)
-          gfp.quality = 6;
-        if (gfp.quality < 0)
-          gfp.quality = LAME_DEFAULT_QUALITY;
-        gfc.iteration_loop = new VBROldIterationLoop(qu);
-        break;
-      }
-      default: {
-        var vbrmode;
-        gfc.sfb21_extra = false;
-        if (gfp.quality < 0)
-          gfp.quality = LAME_DEFAULT_QUALITY;
-        vbrmode = gfp.VBR;
-        if (vbrmode == VbrMode$3.vbr_off)
-          gfp.VBR_mean_bitrate_kbps = gfp.brate;
-        p2.apply_preset(gfp, gfp.VBR_mean_bitrate_kbps, 0);
-        gfp.VBR = vbrmode;
-        gfc.PSY.mask_adjust = gfp.maskingadjust;
-        gfc.PSY.mask_adjust_short = gfp.maskingadjust_short;
-        if (vbrmode == VbrMode$3.vbr_off) {
-          gfc.iteration_loop = new CBRNewIterationLoop(qu);
-        } else {
-          gfc.iteration_loop = new ABRIterationLoop(qu);
-        }
-        break;
-      }
-    }
-    assert$4(gfp.scale >= 0);
-    if (gfp.VBR != VbrMode$3.vbr_off) {
-      gfc.VBR_min_bitrate = 1;
-      gfc.VBR_max_bitrate = 14;
-      if (gfp.out_samplerate < 16e3)
-        gfc.VBR_max_bitrate = 8;
-      if (gfp.VBR_min_bitrate_kbps != 0) {
-        gfp.VBR_min_bitrate_kbps = FindNearestBitrate(
-          gfp.VBR_min_bitrate_kbps,
-          gfp.version,
-          gfp.out_samplerate
-        );
-        gfc.VBR_min_bitrate = BitrateIndex(
-          gfp.VBR_min_bitrate_kbps,
-          gfp.version,
-          gfp.out_samplerate
-        );
-        if (gfc.VBR_min_bitrate < 0)
-          return -1;
-      }
-      if (gfp.VBR_max_bitrate_kbps != 0) {
-        gfp.VBR_max_bitrate_kbps = FindNearestBitrate(
-          gfp.VBR_max_bitrate_kbps,
-          gfp.version,
-          gfp.out_samplerate
-        );
-        gfc.VBR_max_bitrate = BitrateIndex(
-          gfp.VBR_max_bitrate_kbps,
-          gfp.version,
-          gfp.out_samplerate
-        );
-        if (gfc.VBR_max_bitrate < 0)
-          return -1;
-      }
-      gfp.VBR_min_bitrate_kbps = Tables$1.bitrate_table[gfp.version][gfc.VBR_min_bitrate];
-      gfp.VBR_max_bitrate_kbps = Tables$1.bitrate_table[gfp.version][gfc.VBR_max_bitrate];
-      gfp.VBR_mean_bitrate_kbps = Math.min(
-        Tables$1.bitrate_table[gfp.version][gfc.VBR_max_bitrate],
-        gfp.VBR_mean_bitrate_kbps
-      );
-      gfp.VBR_mean_bitrate_kbps = Math.max(
-        Tables$1.bitrate_table[gfp.version][gfc.VBR_min_bitrate],
-        gfp.VBR_mean_bitrate_kbps
-      );
-    }
-    if (gfp.tune) {
-      gfc.PSY.mask_adjust += gfp.tune_value_a;
-      gfc.PSY.mask_adjust_short += gfp.tune_value_a;
-    }
-    lame_init_qval(gfp);
-    assert$4(gfp.scale >= 0);
-    if (gfp.athaa_type < 0)
-      gfc.ATH.useAdjust = 3;
-    else
-      gfc.ATH.useAdjust = gfp.athaa_type;
-    gfc.ATH.aaSensitivityP = Math.pow(10, gfp.athaa_sensitivity / -10);
-    if (gfp.short_blocks == null) {
-      gfp.short_blocks = ShortBlock$1.short_block_allowed;
-    }
-    if (gfp.short_blocks == ShortBlock$1.short_block_allowed && (gfp.mode == MPEGMode.JOINT_STEREO || gfp.mode == MPEGMode.STEREO)) {
-      gfp.short_blocks = ShortBlock$1.short_block_coupled;
-    }
-    if (gfp.quant_comp < 0)
-      gfp.quant_comp = 1;
-    if (gfp.quant_comp_short < 0)
-      gfp.quant_comp_short = 0;
-    if (gfp.msfix < 0)
-      gfp.msfix = 0;
-    gfp.exp_nspsytune = gfp.exp_nspsytune | 1;
-    if (gfp.internal_flags.nsPsy.attackthre < 0) {
-      gfp.internal_flags.nsPsy.attackthre = PsyModel.NSATTACKTHRE;
-    }
-    if (gfp.internal_flags.nsPsy.attackthre_s < 0) {
-      gfp.internal_flags.nsPsy.attackthre_s = PsyModel.NSATTACKTHRE_S;
-    }
-    assert$4(gfp.scale >= 0);
-    if (gfp.scale < 0)
-      gfp.scale = 1;
-    if (gfp.ATHtype < 0)
-      gfp.ATHtype = 4;
-    if (gfp.ATHcurve < 0)
-      gfp.ATHcurve = 4;
-    if (gfp.athaa_loudapprox < 0)
-      gfp.athaa_loudapprox = 2;
-    if (gfp.interChRatio < 0)
-      gfp.interChRatio = 0;
-    if (gfp.useTemporal == null)
-      gfp.useTemporal = true;
-    gfc.slot_lag = gfc.frac_SpF = 0;
-    if (gfp.VBR == VbrMode$3.vbr_off) {
-      gfc.slot_lag = gfc.frac_SpF = (gfp.version + 1) * 72e3 * gfp.brate % gfp.out_samplerate | 0;
-    }
-    qupvt.iteration_init(gfp);
-    psy.psymodel_init(gfp);
-    assert$4(gfp.scale >= 0);
-    return 0;
-  };
-  function update_inbuffer_size(gfc, nsamples) {
-    if (gfc.in_buffer_0 == null || gfc.in_buffer_nsamples < nsamples) {
-      gfc.in_buffer_0 = new_float$2(nsamples);
-      gfc.in_buffer_1 = new_float$2(nsamples);
-      gfc.in_buffer_nsamples = nsamples;
-    }
-  }
-  this.lame_encode_flush = function(gfp, mp3buffer, mp3bufferPos, mp3buffer_size) {
-    var gfc = gfp.internal_flags;
-    var buffer = new_short_n([2, 1152]);
-    var imp3 = 0;
-    var mp3count;
-    var mp3buffer_size_remaining;
-    var end_padding;
-    var frames_left;
-    var samples_to_encode = gfc.mf_samples_to_encode - Encoder.POSTDELAY;
-    var mf_needed = calcNeeded(gfp);
-    if (gfc.mf_samples_to_encode < 1) {
-      return 0;
-    }
-    mp3count = 0;
-    if (gfp.in_samplerate != gfp.out_samplerate) {
-      samples_to_encode += 16 * gfp.out_samplerate / gfp.in_samplerate;
-    }
-    end_padding = gfp.framesize - samples_to_encode % gfp.framesize;
-    if (end_padding < 576)
-      end_padding += gfp.framesize;
-    gfp.encoder_padding = end_padding;
-    frames_left = (samples_to_encode + end_padding) / gfp.framesize;
-    while (frames_left > 0 && imp3 >= 0) {
-      var bunch = mf_needed - gfc.mf_size;
-      var frame_num = gfp.frameNum;
-      bunch *= gfp.in_samplerate;
-      bunch /= gfp.out_samplerate;
-      if (bunch > 1152)
-        bunch = 1152;
-      if (bunch < 1)
-        bunch = 1;
-      mp3buffer_size_remaining = mp3buffer_size - mp3count;
-      if (mp3buffer_size == 0)
-        mp3buffer_size_remaining = 0;
-      imp3 = this.lame_encode_buffer(
-        gfp,
-        buffer[0],
-        buffer[1],
-        bunch,
-        mp3buffer,
-        mp3bufferPos,
-        mp3buffer_size_remaining
-      );
-      mp3bufferPos += imp3;
-      mp3count += imp3;
-      frames_left -= frame_num != gfp.frameNum ? 1 : 0;
-    }
-    gfc.mf_samples_to_encode = 0;
-    if (imp3 < 0) {
-      return imp3;
-    }
-    mp3buffer_size_remaining = mp3buffer_size - mp3count;
-    if (mp3buffer_size == 0)
-      mp3buffer_size_remaining = 0;
-    bs.flush_bitstream(gfp);
-    imp3 = bs.copy_buffer(
-      gfc,
-      mp3buffer,
-      mp3bufferPos,
-      mp3buffer_size_remaining,
-      1
-    );
-    if (imp3 < 0) {
-      return imp3;
-    }
-    mp3bufferPos += imp3;
-    mp3count += imp3;
-    mp3buffer_size_remaining = mp3buffer_size - mp3count;
-    if (mp3buffer_size == 0)
-      mp3buffer_size_remaining = 0;
-    if (gfp.write_id3tag_automatic) {
-      id3.id3tag_write_v1(gfp);
-      imp3 = bs.copy_buffer(
-        gfc,
-        mp3buffer,
-        mp3bufferPos,
-        mp3buffer_size_remaining,
-        0
-      );
-      if (imp3 < 0) {
-        return imp3;
-      }
-      mp3count += imp3;
-    }
-    return mp3count;
-  };
-  this.lame_encode_buffer = function(gfp, buffer_l, buffer_r, nsamples, mp3buf, mp3bufPos, mp3buf_size) {
-    var gfc = gfp.internal_flags;
-    var in_buffer = [null, null];
-    if (gfc.Class_ID != LAME_ID)
-      return -3;
-    if (nsamples == 0)
-      return 0;
-    update_inbuffer_size(gfc, nsamples);
-    in_buffer[0] = gfc.in_buffer_0;
-    in_buffer[1] = gfc.in_buffer_1;
-    for (var i = 0; i < nsamples; i++) {
-      in_buffer[0][i] = buffer_l[i];
-      if (gfc.channels_in > 1)
-        in_buffer[1][i] = buffer_r[i];
-    }
-    return lame_encode_buffer_sample(
-      gfp,
-      in_buffer[0],
-      in_buffer[1],
-      nsamples,
-      mp3buf,
-      mp3bufPos,
-      mp3buf_size
-    );
-  };
-  function calcNeeded(gfp) {
-    var mf_needed = Encoder.BLKSIZE + gfp.framesize - Encoder.FFTOFFSET;
-    mf_needed = Math.max(mf_needed, 512 + gfp.framesize - 32);
-    return mf_needed;
-  }
-  function lame_encode_buffer_sample(gfp, buffer_l, buffer_r, nsamples, mp3buf, mp3bufPos, mp3buf_size) {
-    var gfc = gfp.internal_flags;
-    var mp3size = 0;
-    var ret;
-    var i;
-    var ch;
-    var mf_needed;
-    var mp3out;
-    var mfbuf = [null, null];
-    var in_buffer = [null, null];
-    if (gfc.Class_ID != LAME_ID)
-      return -3;
-    if (nsamples == 0)
-      return 0;
-    mp3out = bs.copy_buffer(gfc, mp3buf, mp3bufPos, mp3buf_size, 0);
-    if (mp3out < 0)
-      return mp3out;
-    mp3bufPos += mp3out;
-    mp3size += mp3out;
-    in_buffer[0] = buffer_l;
-    in_buffer[1] = buffer_r;
-    if (BitStream$1.NEQ(gfp.scale, 0) && BitStream$1.NEQ(gfp.scale, 1)) {
-      for (i = 0; i < nsamples; ++i) {
-        in_buffer[0][i] *= gfp.scale;
-        if (gfc.channels_out == 2)
-          in_buffer[1][i] *= gfp.scale;
-      }
-    }
-    if (BitStream$1.NEQ(gfp.scale_left, 0) && BitStream$1.NEQ(gfp.scale_left, 1)) {
-      for (i = 0; i < nsamples; ++i) {
-        in_buffer[0][i] *= gfp.scale_left;
-      }
-    }
-    if (BitStream$1.NEQ(gfp.scale_right, 0) && BitStream$1.NEQ(gfp.scale_right, 1)) {
-      for (i = 0; i < nsamples; ++i) {
-        in_buffer[1][i] *= gfp.scale_right;
-      }
-    }
-    if (gfp.num_channels == 2 && gfc.channels_out == 1) {
-      for (i = 0; i < nsamples; ++i) {
-        in_buffer[0][i] = 0.5 * (in_buffer[0][i] + in_buffer[1][i]);
-        in_buffer[1][i] = 0;
-      }
-    }
-    mf_needed = calcNeeded(gfp);
-    mfbuf[0] = gfc.mfbuf[0];
-    mfbuf[1] = gfc.mfbuf[1];
-    var in_bufferPos = 0;
-    while (nsamples > 0) {
-      var in_buffer_ptr = [null, null];
-      var n_in = 0;
-      var n_out = 0;
-      in_buffer_ptr[0] = in_buffer[0];
-      in_buffer_ptr[1] = in_buffer[1];
-      var inOut = new InOut();
-      fill_buffer(gfp, mfbuf, in_buffer_ptr, in_bufferPos, nsamples, inOut);
-      n_in = inOut.n_in;
-      n_out = inOut.n_out;
-      if (gfc.findReplayGain && !gfc.decode_on_the_fly) {
-        if (ga.AnalyzeSamples(
-          gfc.rgdata,
-          mfbuf[0],
-          gfc.mf_size,
-          mfbuf[1],
-          gfc.mf_size,
-          n_out,
-          gfc.channels_out
-        ) == GainAnalysis.GAIN_ANALYSIS_ERROR) {
-          return -6;
-        }
-      }
-      nsamples -= n_in;
-      in_bufferPos += n_in;
-      if (gfc.channels_out == 2)
-        ;
-      gfc.mf_size += n_out;
-      assert$4(gfc.mf_size <= LameInternalFlags$1.MFSIZE);
-      if (gfc.mf_samples_to_encode < 1) {
-        gfc.mf_samples_to_encode = Encoder.ENCDELAY + Encoder.POSTDELAY;
-      }
-      gfc.mf_samples_to_encode += n_out;
-      if (gfc.mf_size >= mf_needed) {
-        var buf_size = mp3buf_size - mp3size;
-        if (mp3buf_size == 0)
-          buf_size = 0;
-        ret = lame_encode_frame(
-          gfp,
-          mfbuf[0],
-          mfbuf[1],
-          mp3buf,
-          mp3bufPos,
-          buf_size
-        );
-        if (ret < 0)
-          return ret;
-        mp3bufPos += ret;
-        mp3size += ret;
-        gfc.mf_size -= gfp.framesize;
-        gfc.mf_samples_to_encode -= gfp.framesize;
-        for (ch = 0; ch < gfc.channels_out; ch++) {
-          for (i = 0; i < gfc.mf_size; i++) {
-            mfbuf[ch][i] = mfbuf[ch][i + gfp.framesize];
-          }
-        }
-      }
-    }
-    return mp3size;
-  }
-  function lame_encode_frame(gfp, inbuf_l, inbuf_r, mp3buf, mp3bufPos, mp3buf_size) {
-    var ret = self2.enc.lame_encode_mp3_frame(
-      gfp,
-      inbuf_l,
-      inbuf_r,
-      mp3buf,
-      mp3bufPos,
-      mp3buf_size
-    );
-    gfp.frameNum++;
-    return ret;
-  }
-  function InOut() {
-    this.n_in = 0;
-    this.n_out = 0;
-  }
-  function NumUsed() {
-    this.num_used = 0;
-  }
-  function gcd(i, j) {
-    return j != 0 ? gcd(j, i % j) : i;
-  }
-  function blackman(x, fcn, l) {
-    var wcn = Math.PI * fcn;
-    x /= l;
-    if (x < 0)
-      x = 0;
-    if (x > 1)
-      x = 1;
-    var x2 = x - 0.5;
-    var bkwn = 0.42 - 0.5 * Math.cos(2 * x * Math.PI) + 0.08 * Math.cos(4 * x * Math.PI);
-    if (Math.abs(x2) < 1e-9)
-      return wcn / Math.PI;
-    else
-      return bkwn * Math.sin(l * wcn * x2) / (Math.PI * l * x2);
-  }
-  function fill_buffer_resample(gfp, outbuf, outbufPos, desired_len, inbuf, in_bufferPos, len, num_used, ch) {
-    var gfc = gfp.internal_flags;
-    var i;
-    var j = 0;
-    var k;
-    var bpc = gfp.out_samplerate / gcd(gfp.out_samplerate, gfp.in_samplerate);
-    if (bpc > LameInternalFlags$1.BPC)
-      bpc = LameInternalFlags$1.BPC;
-    var intratio = Math.abs(gfc.resample_ratio - Math.floor(0.5 + gfc.resample_ratio)) < 1e-4 ? 1 : 0;
-    var fcn = 1 / gfc.resample_ratio;
-    if (fcn > 1)
-      fcn = 1;
-    var filter_l = 31;
-    if (filter_l % 2 == 0)
-      --filter_l;
-    filter_l += intratio;
-    var BLACKSIZE = filter_l + 1;
-    if (gfc.fill_buffer_resample_init == 0) {
-      gfc.inbuf_old[0] = new_float$2(BLACKSIZE);
-      gfc.inbuf_old[1] = new_float$2(BLACKSIZE);
-      for (i = 0; i <= 2 * bpc; ++i)
-        gfc.blackfilt[i] = new_float$2(BLACKSIZE);
-      gfc.itime[0] = 0;
-      gfc.itime[1] = 0;
-      for (j = 0; j <= 2 * bpc; j++) {
-        var sum = 0;
-        var offset = (j - bpc) / (2 * bpc);
-        for (i = 0; i <= filter_l; i++) {
-          sum += gfc.blackfilt[j][i] = blackman(i - offset, fcn, filter_l);
-        }
-        for (i = 0; i <= filter_l; i++)
-          gfc.blackfilt[j][i] /= sum;
-      }
-      gfc.fill_buffer_resample_init = 1;
-    }
-    var inbuf_old = gfc.inbuf_old[ch];
-    for (k = 0; k < desired_len; k++) {
-      var time0;
-      var joff;
-      time0 = k * gfc.resample_ratio;
-      j = 0 | Math.floor(time0 - gfc.itime[ch]);
-      if (filter_l + j - filter_l / 2 >= len)
-        break;
-      var offset = time0 - gfc.itime[ch] - (j + 0.5 * (filter_l % 2));
-      joff = 0 | Math.floor(offset * 2 * bpc + bpc + 0.5);
-      var xvalue = 0;
-      for (i = 0; i <= filter_l; ++i) {
-        var j2 = 0 | i + j - filter_l / 2;
-        var y;
-        y = j2 < 0 ? inbuf_old[BLACKSIZE + j2] : inbuf[in_bufferPos + j2];
-        xvalue += y * gfc.blackfilt[joff][i];
-      }
-      outbuf[outbufPos + k] = xvalue;
-    }
-    num_used.num_used = Math.min(len, filter_l + j - filter_l / 2);
-    gfc.itime[ch] += num_used.num_used - k * gfc.resample_ratio;
-    if (num_used.num_used >= BLACKSIZE) {
-      for (i = 0; i < BLACKSIZE; i++) {
-        inbuf_old[i] = inbuf[in_bufferPos + num_used.num_used + i - BLACKSIZE];
-      }
-    } else {
-      var n_shift = BLACKSIZE - num_used.num_used;
-      for (i = 0; i < n_shift; ++i) {
-        inbuf_old[i] = inbuf_old[i + num_used.num_used];
-      }
-      for (j = 0; i < BLACKSIZE; ++i, ++j) {
-        inbuf_old[i] = inbuf[in_bufferPos + j];
-      }
-      assert$4(j == num_used.num_used);
-    }
-    return k;
-  }
-  function fill_buffer(gfp, mfbuf, in_buffer, in_bufferPos, nsamples, io) {
-    var gfc = gfp.internal_flags;
-    if (gfc.resample_ratio < 0.9999 || gfc.resample_ratio > 1.0001) {
-      for (var ch = 0; ch < gfc.channels_out; ch++) {
-        var numUsed = new NumUsed();
-        io.n_out = fill_buffer_resample(
-          gfp,
-          mfbuf[ch],
-          gfc.mf_size,
-          gfp.framesize,
-          in_buffer[ch],
-          in_bufferPos,
-          nsamples,
-          numUsed,
-          ch
-        );
-        io.n_in = numUsed.num_used;
-      }
-    } else {
-      io.n_out = Math.min(gfp.framesize, nsamples);
-      io.n_in = io.n_out;
-      for (var i = 0; i < io.n_out; ++i) {
-        mfbuf[0][gfc.mf_size + i] = in_buffer[0][in_bufferPos + i];
-        if (gfc.channels_out == 2) {
-          mfbuf[1][gfc.mf_size + i] = in_buffer[1][in_bufferPos + i];
-        }
-      }
-    }
-  }
-}
-var VbrMode$2 = common.VbrMode;
-function Presets() {
-  function VBRPresets(qual, comp, compS, y, shThreshold, shThresholdS, adj, adjShort, lower, curve, sens, inter, joint, mod, fix) {
-    this.vbr_q = qual;
-    this.quant_comp = comp;
-    this.quant_comp_s = compS;
-    this.expY = y;
-    this.st_lrm = shThreshold;
-    this.st_s = shThresholdS;
-    this.masking_adj = adj;
-    this.masking_adj_short = adjShort;
-    this.ath_lower = lower;
-    this.ath_curve = curve;
-    this.ath_sensitivity = sens;
-    this.interch = inter;
-    this.safejoint = joint;
-    this.sfb21mod = mod;
-    this.msfix = fix;
-  }
-  function ABRPresets(kbps, comp, compS, joint, fix, shThreshold, shThresholdS, bass, sc, mask, lower, curve, interCh, sfScale) {
-    this.quant_comp = comp;
-    this.quant_comp_s = compS;
-    this.safejoint = joint;
-    this.nsmsfix = fix;
-    this.st_lrm = shThreshold;
-    this.st_s = shThresholdS;
-    this.nsbass = bass;
-    this.scale = sc;
-    this.masking_adj = mask;
-    this.ath_lower = lower;
-    this.ath_curve = curve;
-    this.interch = interCh;
-    this.sfscale = sfScale;
-  }
-  var lame;
-  this.setModules = function(_lame) {
-    lame = _lame;
-  };
-  var vbr_old_switch_map = [
-    new VBRPresets(
-      0,
-      9,
-      9,
-      0,
-      5.2,
-      125,
-      -4.2,
-      -6.3,
-      4.8,
-      1,
-      0,
-      0,
-      2,
-      21,
-      0.97
-    ),
-    new VBRPresets(
-      1,
-      9,
-      9,
-      0,
-      5.3,
-      125,
-      -3.6,
-      -5.6,
-      4.5,
-      1.5,
-      0,
-      0,
-      2,
-      21,
-      1.35
-    ),
-    new VBRPresets(
-      2,
-      9,
-      9,
-      0,
-      5.6,
-      125,
-      -2.2,
-      -3.5,
-      2.8,
-      2,
-      0,
-      0,
-      2,
-      21,
-      1.49
-    ),
-    new VBRPresets(
-      3,
-      9,
-      9,
-      1,
-      5.8,
-      130,
-      -1.8,
-      -2.8,
-      2.6,
-      3,
-      -4,
-      0,
-      2,
-      20,
-      1.64
-    ),
-    new VBRPresets(
-      4,
-      9,
-      9,
-      1,
-      6,
-      135,
-      -0.7,
-      -1.1,
-      1.1,
-      3.5,
-      -8,
-      0,
-      2,
-      0,
-      1.79
-    ),
-    new VBRPresets(
-      5,
-      9,
-      9,
-      1,
-      6.4,
-      140,
-      0.5,
-      0.4,
-      -7.5,
-      4,
-      -12,
-      2e-4,
-      0,
-      0,
-      1.95
-    ),
-    new VBRPresets(
-      6,
-      9,
-      9,
-      1,
-      6.6,
-      145,
-      0.67,
-      0.65,
-      -14.7,
-      6.5,
-      -19,
-      4e-4,
-      0,
-      0,
-      2.3
-    ),
-    new VBRPresets(
-      7,
-      9,
-      9,
-      1,
-      6.6,
-      145,
-      0.8,
-      0.75,
-      -19.7,
-      8,
-      -22,
-      6e-4,
-      0,
-      0,
-      2.7
-    ),
-    new VBRPresets(
-      8,
-      9,
-      9,
-      1,
-      6.6,
-      145,
-      1.2,
-      1.15,
-      -27.5,
-      10,
-      -23,
-      7e-4,
-      0,
-      0,
-      0
-    ),
-    new VBRPresets(
-      9,
-      9,
-      9,
-      1,
-      6.6,
-      145,
-      1.6,
-      1.6,
-      -36,
-      11,
-      -25,
-      8e-4,
-      0,
-      0,
-      0
-    ),
-    new VBRPresets(
-      10,
-      9,
-      9,
-      1,
-      6.6,
-      145,
-      2,
-      2,
-      -36,
-      12,
-      -25,
-      8e-4,
-      0,
-      0,
-      0
-    )
-  ];
-  var vbr_psy_switch_map = [
-    new VBRPresets(
-      0,
-      9,
-      9,
-      0,
-      4.2,
-      25,
-      -7,
-      -4,
-      7.5,
-      1,
-      0,
-      0,
-      2,
-      26,
-      0.97
-    ),
-    new VBRPresets(
-      1,
-      9,
-      9,
-      0,
-      4.2,
-      25,
-      -5.6,
-      -3.6,
-      4.5,
-      1.5,
-      0,
-      0,
-      2,
-      21,
-      1.35
-    ),
-    new VBRPresets(2, 9, 9, 0, 4.2, 25, -4.4, -1.8, 2, 2, 0, 0, 2, 18, 1.49),
-    new VBRPresets(
-      3,
-      9,
-      9,
-      1,
-      4.2,
-      25,
-      -3.4,
-      -1.25,
-      1.1,
-      3,
-      -4,
-      0,
-      2,
-      15,
-      1.64
-    ),
-    new VBRPresets(4, 9, 9, 1, 4.2, 25, -2.2, 0.1, 0, 3.5, -8, 0, 2, 0, 1.79),
-    new VBRPresets(
-      5,
-      9,
-      9,
-      1,
-      4.2,
-      25,
-      -1,
-      1.65,
-      -7.7,
-      4,
-      -12,
-      2e-4,
-      0,
-      0,
-      1.95
-    ),
-    new VBRPresets(
-      6,
-      9,
-      9,
-      1,
-      4.2,
-      25,
-      -0,
-      2.47,
-      -7.7,
-      6.5,
-      -19,
-      4e-4,
-      0,
-      0,
-      2
-    ),
-    new VBRPresets(
-      7,
-      9,
-      9,
-      1,
-      4.2,
-      25,
-      0.5,
-      2,
-      -14.5,
-      8,
-      -22,
-      6e-4,
-      0,
-      0,
-      2
-    ),
-    new VBRPresets(
-      8,
-      9,
-      9,
-      1,
-      4.2,
-      25,
-      1,
-      2.4,
-      -22,
-      10,
-      -23,
-      7e-4,
-      0,
-      0,
-      2
-    ),
-    new VBRPresets(
-      9,
-      9,
-      9,
-      1,
-      4.2,
-      25,
-      1.5,
-      2.95,
-      -30,
-      11,
-      -25,
-      8e-4,
-      0,
-      0,
-      2
-    ),
-    new VBRPresets(
-      10,
-      9,
-      9,
-      1,
-      4.2,
-      25,
-      2,
-      2.95,
-      -36,
-      12,
-      -30,
-      8e-4,
-      0,
-      0,
-      2
-    )
-  ];
-  function apply_vbr_preset(gfp, a, enforce) {
-    var vbr_preset = gfp.VBR == VbrMode$2.vbr_rh ? vbr_old_switch_map : vbr_psy_switch_map;
-    var x = gfp.VBR_q_frac;
-    var p2 = vbr_preset[a];
-    var q = vbr_preset[a + 1];
-    var set2 = p2;
-    p2.st_lrm = p2.st_lrm + x * (q.st_lrm - p2.st_lrm);
-    p2.st_s = p2.st_s + x * (q.st_s - p2.st_s);
-    p2.masking_adj = p2.masking_adj + x * (q.masking_adj - p2.masking_adj);
-    p2.masking_adj_short = p2.masking_adj_short + x * (q.masking_adj_short - p2.masking_adj_short);
-    p2.ath_lower = p2.ath_lower + x * (q.ath_lower - p2.ath_lower);
-    p2.ath_curve = p2.ath_curve + x * (q.ath_curve - p2.ath_curve);
-    p2.ath_sensitivity = p2.ath_sensitivity + x * (q.ath_sensitivity - p2.ath_sensitivity);
-    p2.interch = p2.interch + x * (q.interch - p2.interch);
-    p2.msfix = p2.msfix + x * (q.msfix - p2.msfix);
-    lame_set_VBR_q(gfp, set2.vbr_q);
-    if (enforce != 0)
-      gfp.quant_comp = set2.quant_comp;
-    else if (!(Math.abs(gfp.quant_comp - -1) > 0)) {
-      gfp.quant_comp = set2.quant_comp;
-    }
-    if (enforce != 0)
-      gfp.quant_comp_short = set2.quant_comp_s;
-    else if (!(Math.abs(gfp.quant_comp_short - -1) > 0)) {
-      gfp.quant_comp_short = set2.quant_comp_s;
-    }
-    if (set2.expY != 0) {
-      gfp.experimentalY = set2.expY != 0;
-    }
-    if (enforce != 0)
-      gfp.internal_flags.nsPsy.attackthre = set2.st_lrm;
-    else if (!(Math.abs(gfp.internal_flags.nsPsy.attackthre - -1) > 0)) {
-      gfp.internal_flags.nsPsy.attackthre = set2.st_lrm;
-    }
-    if (enforce != 0)
-      gfp.internal_flags.nsPsy.attackthre_s = set2.st_s;
-    else if (!(Math.abs(gfp.internal_flags.nsPsy.attackthre_s - -1) > 0)) {
-      gfp.internal_flags.nsPsy.attackthre_s = set2.st_s;
-    }
-    if (enforce != 0)
-      gfp.maskingadjust = set2.masking_adj;
-    else if (!(Math.abs(gfp.maskingadjust - 0) > 0)) {
-      gfp.maskingadjust = set2.masking_adj;
-    }
-    if (enforce != 0)
-      gfp.maskingadjust_short = set2.masking_adj_short;
-    else if (!(Math.abs(gfp.maskingadjust_short - 0) > 0)) {
-      gfp.maskingadjust_short = set2.masking_adj_short;
-    }
-    if (enforce != 0)
-      gfp.ATHlower = -set2.ath_lower / 10;
-    else if (!(Math.abs(-gfp.ATHlower * 10 - 0) > 0)) {
-      gfp.ATHlower = -set2.ath_lower / 10;
-    }
-    if (enforce != 0)
-      gfp.ATHcurve = set2.ath_curve;
-    else if (!(Math.abs(gfp.ATHcurve - -1) > 0))
-      gfp.ATHcurve = set2.ath_curve;
-    if (enforce != 0)
-      gfp.athaa_sensitivity = set2.ath_sensitivity;
-    else if (!(Math.abs(gfp.athaa_sensitivity - -1) > 0)) {
-      gfp.athaa_sensitivity = set2.ath_sensitivity;
-    }
-    if (set2.interch > 0) {
-      if (enforce != 0)
-        gfp.interChRatio = set2.interch;
-      else if (!(Math.abs(gfp.interChRatio - -1) > 0)) {
-        gfp.interChRatio = set2.interch;
-      }
-    }
-    if (set2.safejoint > 0) {
-      gfp.exp_nspsytune = gfp.exp_nspsytune | set2.safejoint;
-    }
-    if (set2.sfb21mod > 0) {
-      gfp.exp_nspsytune = gfp.exp_nspsytune | set2.sfb21mod << 20;
-    }
-    if (enforce != 0)
-      gfp.msfix = set2.msfix;
-    else if (!(Math.abs(gfp.msfix - -1) > 0))
-      gfp.msfix = set2.msfix;
-    if (enforce == 0) {
-      gfp.VBR_q = a;
-      gfp.VBR_q_frac = x;
-    }
-  }
-  var abr_switch_map = [
-    new ABRPresets(
-      8,
-      9,
-      9,
-      0,
-      0,
-      6.6,
-      145,
-      0,
-      0.95,
-      0,
-      -30,
-      11,
-      12e-4,
-      1
-    ),
-    new ABRPresets(
-      16,
-      9,
-      9,
-      0,
-      0,
-      6.6,
-      145,
-      0,
-      0.95,
-      0,
-      -25,
-      11,
-      1e-3,
-      1
-    ),
-    new ABRPresets(
-      24,
-      9,
-      9,
-      0,
-      0,
-      6.6,
-      145,
-      0,
-      0.95,
-      0,
-      -20,
-      11,
-      1e-3,
-      1
-    ),
-    new ABRPresets(
-      32,
-      9,
-      9,
-      0,
-      0,
-      6.6,
-      145,
-      0,
-      0.95,
-      0,
-      -15,
-      11,
-      1e-3,
-      1
-    ),
-    new ABRPresets(
-      40,
-      9,
-      9,
-      0,
-      0,
-      6.6,
-      145,
-      0,
-      0.95,
-      0,
-      -10,
-      11,
-      9e-4,
-      1
-    ),
-    new ABRPresets(
-      48,
-      9,
-      9,
-      0,
-      0,
-      6.6,
-      145,
-      0,
-      0.95,
-      0,
-      -10,
-      11,
-      9e-4,
-      1
-    ),
-    new ABRPresets(
-      56,
-      9,
-      9,
-      0,
-      0,
-      6.6,
-      145,
-      0,
-      0.95,
-      0,
-      -6,
-      11,
-      8e-4,
-      1
-    ),
-    new ABRPresets(
-      64,
-      9,
-      9,
-      0,
-      0,
-      6.6,
-      145,
-      0,
-      0.95,
-      0,
-      -2,
-      11,
-      8e-4,
-      1
-    ),
-    new ABRPresets(
-      80,
-      9,
-      9,
-      0,
-      0,
-      6.6,
-      145,
-      0,
-      0.95,
-      0,
-      0,
-      8,
-      7e-4,
-      1
-    ),
-    new ABRPresets(
-      96,
-      9,
-      9,
-      0,
-      2.5,
-      6.6,
-      145,
-      0,
-      0.95,
-      0,
-      1,
-      5.5,
-      6e-4,
-      1
-    ),
-    new ABRPresets(
-      112,
-      9,
-      9,
-      0,
-      2.25,
-      6.6,
-      145,
-      0,
-      0.95,
-      0,
-      2,
-      4.5,
-      5e-4,
-      1
-    ),
-    new ABRPresets(
-      128,
-      9,
-      9,
-      0,
-      1.95,
-      6.4,
-      140,
-      0,
-      0.95,
-      0,
-      3,
-      4,
-      2e-4,
-      1
-    ),
-    new ABRPresets(
-      160,
-      9,
-      9,
-      1,
-      1.79,
-      6,
-      135,
-      0,
-      0.95,
-      -2,
-      5,
-      3.5,
-      0,
-      1
-    ),
-    new ABRPresets(
-      192,
-      9,
-      9,
-      1,
-      1.49,
-      5.6,
-      125,
-      0,
-      0.97,
-      -4,
-      7,
-      3,
-      0,
-      0
-    ),
-    new ABRPresets(
-      224,
-      9,
-      9,
-      1,
-      1.25,
-      5.2,
-      125,
-      0,
-      0.98,
-      -6,
-      9,
-      2,
-      0,
-      0
-    ),
-    new ABRPresets(
-      256,
-      9,
-      9,
-      1,
-      0.97,
-      5.2,
-      125,
-      0,
-      1,
-      -8,
-      10,
-      1,
-      0,
-      0
-    ),
-    new ABRPresets(
-      320,
-      9,
-      9,
-      1,
-      0.9,
-      5.2,
-      125,
-      0,
-      1,
-      -10,
-      12,
-      0,
-      0,
-      0
-    )
-  ];
-  function apply_abr_preset(gfp, preset, enforce) {
-    var actual_bitrate = preset;
-    var r = lame.nearestBitrateFullIndex(preset);
-    gfp.VBR = VbrMode$2.vbr_abr;
-    gfp.VBR_mean_bitrate_kbps = actual_bitrate;
-    gfp.VBR_mean_bitrate_kbps = Math.min(gfp.VBR_mean_bitrate_kbps, 320);
-    gfp.VBR_mean_bitrate_kbps = Math.max(gfp.VBR_mean_bitrate_kbps, 8);
-    gfp.brate = gfp.VBR_mean_bitrate_kbps;
-    if (gfp.VBR_mean_bitrate_kbps > 320) {
-      gfp.disable_reservoir = true;
-    }
-    if (abr_switch_map[r].safejoint > 0) {
-      gfp.exp_nspsytune = gfp.exp_nspsytune | 2;
-    }
-    if (abr_switch_map[r].sfscale > 0) {
-      gfp.internal_flags.noise_shaping = 2;
-    }
-    if (Math.abs(abr_switch_map[r].nsbass) > 0) {
-      var k = int(abr_switch_map[r].nsbass * 4);
-      if (k < 0)
-        k += 64;
-      gfp.exp_nspsytune = gfp.exp_nspsytune | k << 2;
-    }
-    if (enforce != 0)
-      gfp.quant_comp = abr_switch_map[r].quant_comp;
-    else if (!(Math.abs(gfp.quant_comp - -1) > 0)) {
-      gfp.quant_comp = abr_switch_map[r].quant_comp;
-    }
-    if (enforce != 0)
-      gfp.quant_comp_short = abr_switch_map[r].quant_comp_s;
-    else if (!(Math.abs(gfp.quant_comp_short - -1) > 0)) {
-      gfp.quant_comp_short = abr_switch_map[r].quant_comp_s;
-    }
-    if (enforce != 0)
-      gfp.msfix = abr_switch_map[r].nsmsfix;
-    else if (!(Math.abs(gfp.msfix - -1) > 0)) {
-      gfp.msfix = abr_switch_map[r].nsmsfix;
-    }
-    if (enforce != 0) {
-      gfp.internal_flags.nsPsy.attackthre = abr_switch_map[r].st_lrm;
-    } else if (!(Math.abs(gfp.internal_flags.nsPsy.attackthre - -1) > 0)) {
-      gfp.internal_flags.nsPsy.attackthre = abr_switch_map[r].st_lrm;
-    }
-    if (enforce != 0) {
-      gfp.internal_flags.nsPsy.attackthre_s = abr_switch_map[r].st_s;
-    } else if (!(Math.abs(gfp.internal_flags.nsPsy.attackthre_s - -1) > 0)) {
-      gfp.internal_flags.nsPsy.attackthre_s = abr_switch_map[r].st_s;
-    }
-    if (enforce != 0)
-      gfp.scale = abr_switch_map[r].scale;
-    else if (!(Math.abs(gfp.scale - -1) > 0)) {
-      gfp.scale = abr_switch_map[r].scale;
-    }
-    if (enforce != 0)
-      gfp.maskingadjust = abr_switch_map[r].masking_adj;
-    else if (!(Math.abs(gfp.maskingadjust - 0) > 0)) {
-      gfp.maskingadjust = abr_switch_map[r].masking_adj;
-    }
-    if (abr_switch_map[r].masking_adj > 0) {
-      if (enforce != 0) {
-        gfp.maskingadjust_short = abr_switch_map[r].masking_adj * 0.9;
-      } else if (!(Math.abs(gfp.maskingadjust_short - 0) > 0)) {
-        gfp.maskingadjust_short = abr_switch_map[r].masking_adj * 0.9;
-      }
-    } else {
-      if (enforce != 0) {
-        gfp.maskingadjust_short = abr_switch_map[r].masking_adj * 1.1;
-      } else if (!(Math.abs(gfp.maskingadjust_short - 0) > 0)) {
-        gfp.maskingadjust_short = abr_switch_map[r].masking_adj * 1.1;
-      }
-    }
-    if (enforce != 0)
-      gfp.ATHlower = -abr_switch_map[r].ath_lower / 10;
-    else if (!(Math.abs(-gfp.ATHlower * 10 - 0) > 0)) {
-      gfp.ATHlower = -abr_switch_map[r].ath_lower / 10;
-    }
-    if (enforce != 0)
-      gfp.ATHcurve = abr_switch_map[r].ath_curve;
-    else if (!(Math.abs(gfp.ATHcurve - -1) > 0)) {
-      gfp.ATHcurve = abr_switch_map[r].ath_curve;
-    }
-    if (enforce != 0)
-      gfp.interChRatio = abr_switch_map[r].interch;
-    else if (!(Math.abs(gfp.interChRatio - -1) > 0)) {
-      gfp.interChRatio = abr_switch_map[r].interch;
-    }
-    return preset;
-  }
-  this.apply_preset = function(gfp, preset, enforce) {
-    switch (preset) {
-      case Lame$1.R3MIX: {
-        preset = Lame$1.V3;
-        gfp.VBR = VbrMode$2.vbr_mtrh;
-        break;
-      }
-      case Lame$1.MEDIUM: {
-        preset = Lame$1.V4;
-        gfp.VBR = VbrMode$2.vbr_rh;
-        break;
-      }
-      case Lame$1.MEDIUM_FAST: {
-        preset = Lame$1.V4;
-        gfp.VBR = VbrMode$2.vbr_mtrh;
-        break;
-      }
-      case Lame$1.STANDARD: {
-        preset = Lame$1.V2;
-        gfp.VBR = VbrMode$2.vbr_rh;
-        break;
-      }
-      case Lame$1.STANDARD_FAST: {
-        preset = Lame$1.V2;
-        gfp.VBR = VbrMode$2.vbr_mtrh;
-        break;
-      }
-      case Lame$1.EXTREME: {
-        preset = Lame$1.V0;
-        gfp.VBR = VbrMode$2.vbr_rh;
-        break;
-      }
-      case Lame$1.EXTREME_FAST: {
-        preset = Lame$1.V0;
-        gfp.VBR = VbrMode$2.vbr_mtrh;
-        break;
-      }
-      case Lame$1.INSANE: {
-        preset = 320;
-        gfp.preset = preset;
-        apply_abr_preset(gfp, preset, enforce);
-        gfp.VBR = VbrMode$2.vbr_off;
-        return preset;
-      }
-    }
-    gfp.preset = preset;
-    {
-      switch (preset) {
-        case Lame$1.V9:
-          apply_vbr_preset(gfp, 9, enforce);
-          return preset;
-        case Lame$1.V8:
-          apply_vbr_preset(gfp, 8, enforce);
-          return preset;
-        case Lame$1.V7:
-          apply_vbr_preset(gfp, 7, enforce);
-          return preset;
-        case Lame$1.V6:
-          apply_vbr_preset(gfp, 6, enforce);
-          return preset;
-        case Lame$1.V5:
-          apply_vbr_preset(gfp, 5, enforce);
-          return preset;
-        case Lame$1.V4:
-          apply_vbr_preset(gfp, 4, enforce);
-          return preset;
-        case Lame$1.V3:
-          apply_vbr_preset(gfp, 3, enforce);
-          return preset;
-        case Lame$1.V2:
-          apply_vbr_preset(gfp, 2, enforce);
-          return preset;
-        case Lame$1.V1:
-          apply_vbr_preset(gfp, 1, enforce);
-          return preset;
-        case Lame$1.V0:
-          apply_vbr_preset(gfp, 0, enforce);
-          return preset;
-      }
-    }
-    if (preset >= 8 && preset <= 320) {
-      return apply_abr_preset(gfp, preset, enforce);
-    }
-    gfp.preset = 0;
-    return preset;
-  };
-  function lame_set_VBR_q(gfp, VBR_q) {
-    var ret = 0;
-    if (VBR_q < 0) {
-      ret = -1;
-      VBR_q = 0;
-    }
-    if (VBR_q > 9) {
-      ret = -1;
-      VBR_q = 9;
-    }
-    gfp.VBR_q = VBR_q;
-    gfp.VBR_q_frac = 0;
-    return ret;
-  }
-}
-function VBRQuantize() {
-  this.setModules = function(_qupvt, _tk) {
-  };
-}
-function CalcNoiseResult$1() {
-  this.over_noise = 0;
-  this.tot_noise = 0;
-  this.max_noise = 0;
-  this.over_count = 0;
-  this.over_SSD = 0;
-  this.bits = 0;
-}
-var new_float$1 = common.new_float;
-var new_int = common.new_int;
-function CalcNoiseData() {
-  this.global_gain = 0;
-  this.sfb_count1 = 0;
-  this.step = new_int(39);
-  this.noise = new_float$1(39);
-  this.noise_log = new_float$1(39);
-}
-var System$1 = common.System;
-var VbrMode$1 = common.VbrMode;
-var Util = common.Util;
-var Arrays$1 = common.Arrays;
-var new_float = common.new_float;
-var assert$3 = common.assert;
-function Quantize() {
-  var bs;
-  this.rv = null;
-  var rv;
-  this.qupvt = null;
-  var qupvt;
-  var vbr = new VBRQuantize();
-  var tk;
-  this.setModules = function(_bs, _rv, _qupvt, _tk) {
-    bs = _bs;
-    rv = _rv;
-    this.rv = _rv;
-    qupvt = _qupvt;
-    this.qupvt = _qupvt;
-    tk = _tk;
-    vbr.setModules(qupvt, tk);
-  };
-  this.ms_convert = function(l3_side, gr) {
-    for (var i = 0; i < 576; ++i) {
-      var l = l3_side.tt[gr][0].xr[i];
-      var r = l3_side.tt[gr][1].xr[i];
-      l3_side.tt[gr][0].xr[i] = (l + r) * (Util.SQRT2 * 0.5);
-      l3_side.tt[gr][1].xr[i] = (l - r) * (Util.SQRT2 * 0.5);
-    }
-  };
-  function init_xrpow_core(cod_info, xrpow, upper, sum) {
-    sum = 0;
-    for (var i = 0; i <= upper; ++i) {
-      var tmp = Math.abs(cod_info.xr[i]);
-      sum += tmp;
-      xrpow[i] = Math.sqrt(tmp * Math.sqrt(tmp));
-      if (xrpow[i] > cod_info.xrpow_max)
-        cod_info.xrpow_max = xrpow[i];
-    }
-    return sum;
-  }
-  this.init_xrpow = function(gfc, cod_info, xrpow) {
-    var sum = 0;
-    var upper = 0 | cod_info.max_nonzero_coeff;
-    cod_info.xrpow_max = 0;
-    Arrays$1.fill(xrpow, upper, 576, 0);
-    sum = init_xrpow_core(cod_info, xrpow, upper, sum);
-    if (sum > 1e-20) {
-      var j = 0;
-      if ((gfc.substep_shaping & 2) != 0)
-        j = 1;
-      for (var i = 0; i < cod_info.psymax; i++)
-        gfc.pseudohalf[i] = j;
-      return true;
-    }
-    Arrays$1.fill(cod_info.l3_enc, 0, 576, 0);
-    return false;
-  };
-  function psfb21_analogsilence(gfc, cod_info) {
-    var ath = gfc.ATH;
-    var xr = cod_info.xr;
-    if (cod_info.block_type != Encoder.SHORT_TYPE) {
-      var stop = false;
-      for (var gsfb = Encoder.PSFB21 - 1; gsfb >= 0 && !stop; gsfb--) {
-        var start2 = gfc.scalefac_band.psfb21[gsfb];
-        var end = gfc.scalefac_band.psfb21[gsfb + 1];
-        var ath21 = qupvt.athAdjust(ath.adjust, ath.psfb21[gsfb], ath.floor);
-        if (gfc.nsPsy.longfact[21] > 1e-12)
-          ath21 *= gfc.nsPsy.longfact[21];
-        for (var j = end - 1; j >= start2; j--) {
-          if (Math.abs(xr[j]) < ath21)
-            xr[j] = 0;
-          else {
-            stop = true;
-            break;
-          }
-        }
-      }
-    } else {
-      for (var block = 0; block < 3; block++) {
-        var stop = false;
-        for (var gsfb = Encoder.PSFB12 - 1; gsfb >= 0 && !stop; gsfb--) {
-          var start2 = gfc.scalefac_band.s[12] * 3 + (gfc.scalefac_band.s[13] - gfc.scalefac_band.s[12]) * block + (gfc.scalefac_band.psfb12[gsfb] - gfc.scalefac_band.psfb12[0]);
-          var end = start2 + (gfc.scalefac_band.psfb12[gsfb + 1] - gfc.scalefac_band.psfb12[gsfb]);
-          var ath12 = qupvt.athAdjust(ath.adjust, ath.psfb12[gsfb], ath.floor);
-          if (gfc.nsPsy.shortfact[12] > 1e-12)
-            ath12 *= gfc.nsPsy.shortfact[12];
-          for (var j = end - 1; j >= start2; j--) {
-            if (Math.abs(xr[j]) < ath12)
-              xr[j] = 0;
-            else {
-              stop = true;
-              break;
-            }
-          }
-        }
-      }
-    }
-  }
-  this.init_outer_loop = function(gfc, cod_info) {
-    cod_info.part2_3_length = 0;
-    cod_info.big_values = 0;
-    cod_info.count1 = 0;
-    cod_info.global_gain = 210;
-    cod_info.scalefac_compress = 0;
-    cod_info.table_select[0] = 0;
-    cod_info.table_select[1] = 0;
-    cod_info.table_select[2] = 0;
-    cod_info.subblock_gain[0] = 0;
-    cod_info.subblock_gain[1] = 0;
-    cod_info.subblock_gain[2] = 0;
-    cod_info.subblock_gain[3] = 0;
-    cod_info.region0_count = 0;
-    cod_info.region1_count = 0;
-    cod_info.preflag = 0;
-    cod_info.scalefac_scale = 0;
-    cod_info.count1table_select = 0;
-    cod_info.part2_length = 0;
-    cod_info.sfb_lmax = Encoder.SBPSY_l;
-    cod_info.sfb_smin = Encoder.SBPSY_s;
-    cod_info.psy_lmax = gfc.sfb21_extra ? Encoder.SBMAX_l : Encoder.SBPSY_l;
-    cod_info.psymax = cod_info.psy_lmax;
-    cod_info.sfbmax = cod_info.sfb_lmax;
-    cod_info.sfbdivide = 11;
-    for (var sfb = 0; sfb < Encoder.SBMAX_l; sfb++) {
-      cod_info.width[sfb] = gfc.scalefac_band.l[sfb + 1] - gfc.scalefac_band.l[sfb];
-      cod_info.window[sfb] = 3;
-    }
-    if (cod_info.block_type == Encoder.SHORT_TYPE) {
-      var ixwork = new_float(576);
-      cod_info.sfb_smin = 0;
-      cod_info.sfb_lmax = 0;
-      if (cod_info.mixed_block_flag != 0) {
-        cod_info.sfb_smin = 3;
-        cod_info.sfb_lmax = gfc.mode_gr * 2 + 4;
-      }
-      cod_info.psymax = cod_info.sfb_lmax + 3 * ((gfc.sfb21_extra ? Encoder.SBMAX_s : Encoder.SBPSY_s) - cod_info.sfb_smin);
-      cod_info.sfbmax = cod_info.sfb_lmax + 3 * (Encoder.SBPSY_s - cod_info.sfb_smin);
-      cod_info.sfbdivide = cod_info.sfbmax - 18;
-      cod_info.psy_lmax = cod_info.sfb_lmax;
-      var ix = gfc.scalefac_band.l[cod_info.sfb_lmax];
-      System$1.arraycopy(cod_info.xr, 0, ixwork, 0, 576);
-      for (var sfb = cod_info.sfb_smin; sfb < Encoder.SBMAX_s; sfb++) {
-        var start2 = gfc.scalefac_band.s[sfb];
-        var end = gfc.scalefac_band.s[sfb + 1];
-        for (var window2 = 0; window2 < 3; window2++) {
-          for (var l = start2; l < end; l++) {
-            cod_info.xr[ix++] = ixwork[3 * l + window2];
-          }
-        }
-      }
-      var j = cod_info.sfb_lmax;
-      for (var sfb = cod_info.sfb_smin; sfb < Encoder.SBMAX_s; sfb++) {
-        cod_info.width[j] = cod_info.width[j + 1] = cod_info.width[j + 2] = gfc.scalefac_band.s[sfb + 1] - gfc.scalefac_band.s[sfb];
-        cod_info.window[j] = 0;
-        cod_info.window[j + 1] = 1;
-        cod_info.window[j + 2] = 2;
-        j += 3;
-      }
-    }
-    cod_info.count1bits = 0;
-    cod_info.sfb_partition_table = qupvt.nr_of_sfb_block[0][0];
-    cod_info.slen[0] = 0;
-    cod_info.slen[1] = 0;
-    cod_info.slen[2] = 0;
-    cod_info.slen[3] = 0;
-    cod_info.max_nonzero_coeff = 575;
-    Arrays$1.fill(cod_info.scalefac, 0);
-    psfb21_analogsilence(gfc, cod_info);
-  };
-  function BinSearchDirection(ordinal) {
-    this.ordinal = ordinal;
-  }
-  BinSearchDirection.BINSEARCH_NONE = new BinSearchDirection(0);
-  BinSearchDirection.BINSEARCH_UP = new BinSearchDirection(1);
-  BinSearchDirection.BINSEARCH_DOWN = new BinSearchDirection(2);
-  function bin_search_StepSize(gfc, cod_info, desired_rate, ch, xrpow) {
-    var nBits;
-    var CurrentStep = gfc.CurrentStep[ch];
-    var flagGoneOver = false;
-    var start2 = gfc.OldValue[ch];
-    var Direction = BinSearchDirection.BINSEARCH_NONE;
-    cod_info.global_gain = start2;
-    desired_rate -= cod_info.part2_length;
-    for (; ; ) {
-      var step;
-      nBits = tk.count_bits(gfc, xrpow, cod_info, null);
-      if (CurrentStep == 1 || nBits == desired_rate)
-        break;
-      if (nBits > desired_rate) {
-        if (Direction == BinSearchDirection.BINSEARCH_DOWN)
-          flagGoneOver = true;
-        if (flagGoneOver)
-          CurrentStep /= 2;
-        Direction = BinSearchDirection.BINSEARCH_UP;
-        step = CurrentStep;
-      } else {
-        if (Direction == BinSearchDirection.BINSEARCH_UP)
-          flagGoneOver = true;
-        if (flagGoneOver)
-          CurrentStep /= 2;
-        Direction = BinSearchDirection.BINSEARCH_DOWN;
-        step = -CurrentStep;
-      }
-      cod_info.global_gain += step;
-      if (cod_info.global_gain < 0) {
-        cod_info.global_gain = 0;
-        flagGoneOver = true;
-      }
-      if (cod_info.global_gain > 255) {
-        cod_info.global_gain = 255;
-        flagGoneOver = true;
-      }
-    }
-    assert$3(cod_info.global_gain >= 0);
-    assert$3(cod_info.global_gain < 256);
-    while (nBits > desired_rate && cod_info.global_gain < 255) {
-      cod_info.global_gain++;
-      nBits = tk.count_bits(gfc, xrpow, cod_info, null);
-    }
-    gfc.CurrentStep[ch] = start2 - cod_info.global_gain >= 4 ? 4 : 2;
-    gfc.OldValue[ch] = cod_info.global_gain;
-    cod_info.part2_3_length = nBits;
-    return nBits;
-  }
-  this.trancate_smallspectrums = function(gfc, gi, l3_xmin, work) {
-    var distort = new_float(L3Side$1.SFBMAX);
-    if ((gfc.substep_shaping & 4) == 0 && gi.block_type == Encoder.SHORT_TYPE || (gfc.substep_shaping & 128) != 0) {
-      return;
-    }
-    qupvt.calc_noise(gi, l3_xmin, distort, new CalcNoiseResult$1(), null);
-    for (var j = 0; j < 576; j++) {
-      var xr = 0;
-      if (gi.l3_enc[j] != 0)
-        xr = Math.abs(gi.xr[j]);
-      work[j] = xr;
-    }
-    var j = 0;
-    var sfb = 8;
-    if (gi.block_type == Encoder.SHORT_TYPE)
-      sfb = 6;
-    do {
-      var allowedNoise, trancateThreshold;
-      var nsame, start2;
-      var width = gi.width[sfb];
-      j += width;
-      if (distort[sfb] >= 1)
-        continue;
-      Arrays$1.sort(work, j - width, width);
-      if (BitStream.EQ(work[j - 1], 0))
-        continue;
-      allowedNoise = (1 - distort[sfb]) * l3_xmin[sfb];
-      trancateThreshold = 0;
-      start2 = 0;
-      do {
-        var noise;
-        for (nsame = 1; start2 + nsame < width; nsame++) {
-          if (BitStream.NEQ(
-            work[start2 + j - width],
-            work[start2 + j + nsame - width]
-          )) {
-            break;
-          }
-        }
-        noise = work[start2 + j - width] * work[start2 + j - width] * nsame;
-        if (allowedNoise < noise) {
-          if (start2 != 0)
-            trancateThreshold = work[start2 + j - width - 1];
-          break;
-        }
-        allowedNoise -= noise;
-        start2 += nsame;
-      } while (start2 < width);
-      if (BitStream.EQ(trancateThreshold, 0))
-        continue;
-      do {
-        if (Math.abs(gi.xr[j - width]) <= trancateThreshold) {
-          gi.l3_enc[j - width] = 0;
-        }
-      } while (--width > 0);
-    } while (++sfb < gi.psymax);
-    gi.part2_3_length = tk.noquant_count_bits(gfc, gi, null);
-  };
-  function loop_break(cod_info) {
-    for (var sfb = 0; sfb < cod_info.sfbmax; sfb++) {
-      if (cod_info.scalefac[sfb] + cod_info.subblock_gain[cod_info.window[sfb]] == 0) {
-        return false;
-      }
-    }
-    return true;
-  }
-  function penalties(noise) {
-    return Util.FAST_LOG10(0.368 + 0.632 * noise * noise * noise);
-  }
-  function get_klemm_noise(distort, gi) {
-    var klemm_noise = 1e-37;
-    for (var sfb = 0; sfb < gi.psymax; sfb++) {
-      klemm_noise += penalties(distort[sfb]);
-    }
-    return Math.max(1e-20, klemm_noise);
-  }
-  function quant_compare(quant_comp, best, calc, gi, distort) {
-    var better;
-    switch (quant_comp) {
-      default:
-      case 9: {
-        if (best.over_count > 0) {
-          better = calc.over_SSD <= best.over_SSD;
-          if (calc.over_SSD == best.over_SSD)
-            better = calc.bits < best.bits;
-        } else {
-          better = calc.max_noise < 0 && calc.max_noise * 10 + calc.bits <= best.max_noise * 10 + best.bits;
-        }
-        break;
-      }
-      case 0:
-        better = calc.over_count < best.over_count || calc.over_count == best.over_count && calc.over_noise < best.over_noise || calc.over_count == best.over_count && BitStream.EQ(calc.over_noise, best.over_noise) && calc.tot_noise < best.tot_noise;
-        break;
-      case 8:
-        calc.max_noise = get_klemm_noise(distort, gi);
-      case 1:
-        better = calc.max_noise < best.max_noise;
-        break;
-      case 2:
-        better = calc.tot_noise < best.tot_noise;
-        break;
-      case 3:
-        better = calc.tot_noise < best.tot_noise && calc.max_noise < best.max_noise;
-        break;
-      case 4:
-        better = calc.max_noise <= 0 && best.max_noise > 0.2 || calc.max_noise <= 0 && best.max_noise < 0 && best.max_noise > calc.max_noise - 0.2 && calc.tot_noise < best.tot_noise || calc.max_noise <= 0 && best.max_noise > 0 && best.max_noise > calc.max_noise - 0.2 && calc.tot_noise < best.tot_noise + best.over_noise || calc.max_noise > 0 && best.max_noise > -0.05 && best.max_noise > calc.max_noise - 0.1 && calc.tot_noise + calc.over_noise < best.tot_noise + best.over_noise || calc.max_noise > 0 && best.max_noise > -0.1 && best.max_noise > calc.max_noise - 0.15 && calc.tot_noise + calc.over_noise + calc.over_noise < best.tot_noise + best.over_noise + best.over_noise;
-        break;
-      case 5:
-        better = calc.over_noise < best.over_noise || BitStream.EQ(calc.over_noise, best.over_noise) && calc.tot_noise < best.tot_noise;
-        break;
-      case 6:
-        better = calc.over_noise < best.over_noise || BitStream.EQ(calc.over_noise, best.over_noise) && (calc.max_noise < best.max_noise || BitStream.EQ(calc.max_noise, best.max_noise) && calc.tot_noise <= best.tot_noise);
-        break;
-      case 7:
-        better = calc.over_count < best.over_count || calc.over_noise < best.over_noise;
-        break;
-    }
-    if (best.over_count == 0) {
-      better = better && calc.bits < best.bits;
-    }
-    return better;
-  }
-  function amp_scalefac_bands(gfp, cod_info, distort, xrpow, bRefine) {
-    var gfc = gfp.internal_flags;
-    var ifqstep34;
-    if (cod_info.scalefac_scale == 0) {
-      ifqstep34 = 1.2968395546510096;
-    } else {
-      ifqstep34 = 1.6817928305074292;
-    }
-    var trigger2 = 0;
-    for (var sfb = 0; sfb < cod_info.sfbmax; sfb++) {
-      if (trigger2 < distort[sfb])
-        trigger2 = distort[sfb];
-    }
-    var noise_shaping_amp = gfc.noise_shaping_amp;
-    if (noise_shaping_amp == 3) {
-      if (bRefine)
-        noise_shaping_amp = 2;
-      else
-        noise_shaping_amp = 1;
-    }
-    switch (noise_shaping_amp) {
-      case 2:
-        break;
-      case 1:
-        if (trigger2 > 1)
-          trigger2 = Math.pow(trigger2, 0.5);
-        else
-          trigger2 *= 0.95;
-        break;
-      case 0:
-      default:
-        if (trigger2 > 1)
-          trigger2 = 1;
-        else
-          trigger2 *= 0.95;
-        break;
-    }
-    var j = 0;
-    for (var sfb = 0; sfb < cod_info.sfbmax; sfb++) {
-      var width = cod_info.width[sfb];
-      var l;
-      j += width;
-      if (distort[sfb] < trigger2)
-        continue;
-      if ((gfc.substep_shaping & 2) != 0) {
-        gfc.pseudohalf[sfb] = gfc.pseudohalf[sfb] == 0 ? 1 : 0;
-        if (gfc.pseudohalf[sfb] == 0 && gfc.noise_shaping_amp == 2)
-          return;
-      }
-      cod_info.scalefac[sfb]++;
-      for (l = -width; l < 0; l++) {
-        xrpow[j + l] *= ifqstep34;
-        if (xrpow[j + l] > cod_info.xrpow_max)
-          cod_info.xrpow_max = xrpow[j + l];
-      }
-      if (gfc.noise_shaping_amp == 2)
-        return;
-    }
-  }
-  function inc_scalefac_scale(cod_info, xrpow) {
-    var ifqstep34 = 1.2968395546510096;
-    var j = 0;
-    for (var sfb = 0; sfb < cod_info.sfbmax; sfb++) {
-      var width = cod_info.width[sfb];
-      var s = cod_info.scalefac[sfb];
-      if (cod_info.preflag != 0)
-        s += qupvt.pretab[sfb];
-      j += width;
-      if ((s & 1) != 0) {
-        s++;
-        for (var l = -width; l < 0; l++) {
-          xrpow[j + l] *= ifqstep34;
-          if (xrpow[j + l] > cod_info.xrpow_max) {
-            cod_info.xrpow_max = xrpow[j + l];
-          }
-        }
-      }
-      cod_info.scalefac[sfb] = s >> 1;
-    }
-    cod_info.preflag = 0;
-    cod_info.scalefac_scale = 1;
-  }
-  function inc_subblock_gain(gfc, cod_info, xrpow) {
-    var sfb;
-    var scalefac = cod_info.scalefac;
-    for (sfb = 0; sfb < cod_info.sfb_lmax; sfb++) {
-      if (scalefac[sfb] >= 16)
-        return true;
-    }
-    for (var window2 = 0; window2 < 3; window2++) {
-      var s1 = 0;
-      var s2 = 0;
-      for (sfb = cod_info.sfb_lmax + window2; sfb < cod_info.sfbdivide; sfb += 3) {
-        if (s1 < scalefac[sfb])
-          s1 = scalefac[sfb];
-      }
-      for (; sfb < cod_info.sfbmax; sfb += 3) {
-        if (s2 < scalefac[sfb])
-          s2 = scalefac[sfb];
-      }
-      if (s1 < 16 && s2 < 8)
-        continue;
-      if (cod_info.subblock_gain[window2] >= 7)
-        return true;
-      cod_info.subblock_gain[window2]++;
-      var j = gfc.scalefac_band.l[cod_info.sfb_lmax];
-      for (sfb = cod_info.sfb_lmax + window2; sfb < cod_info.sfbmax; sfb += 3) {
-        var amp;
-        var width = cod_info.width[sfb];
-        var s = scalefac[sfb];
-        s = s - (4 >> cod_info.scalefac_scale);
-        if (s >= 0) {
-          scalefac[sfb] = s;
-          j += width * 3;
-          continue;
-        }
-        scalefac[sfb] = 0;
-        {
-          var gain = 210 + (s << cod_info.scalefac_scale + 1);
-          amp = qupvt.IPOW20(gain);
-        }
-        j += width * (window2 + 1);
-        for (var l = -width; l < 0; l++) {
-          xrpow[j + l] *= amp;
-          if (xrpow[j + l] > cod_info.xrpow_max) {
-            cod_info.xrpow_max = xrpow[j + l];
-          }
-        }
-        j += width * (3 - window2 - 1);
-      }
-      {
-        var amp = qupvt.IPOW20(202);
-        j += cod_info.width[sfb] * (window2 + 1);
-        for (var l = -cod_info.width[sfb]; l < 0; l++) {
-          xrpow[j + l] *= amp;
-          if (xrpow[j + l] > cod_info.xrpow_max) {
-            cod_info.xrpow_max = xrpow[j + l];
-          }
-        }
-      }
-    }
-    return false;
-  }
-  function balance_noise(gfp, cod_info, distort, xrpow, bRefine) {
-    var gfc = gfp.internal_flags;
-    amp_scalefac_bands(gfp, cod_info, distort, xrpow, bRefine);
-    var status = loop_break(cod_info);
-    if (status)
-      return false;
-    if (gfc.mode_gr == 2)
-      status = tk.scale_bitcount(cod_info);
-    else
-      status = tk.scale_bitcount_lsf(gfc, cod_info);
-    if (!status)
-      return true;
-    if (gfc.noise_shaping > 1) {
-      Arrays$1.fill(gfc.pseudohalf, 0);
-      if (cod_info.scalefac_scale == 0) {
-        inc_scalefac_scale(cod_info, xrpow);
-        status = false;
-      } else {
-        if (cod_info.block_type == Encoder.SHORT_TYPE && gfc.subblock_gain > 0) {
-          status = inc_subblock_gain(gfc, cod_info, xrpow) || loop_break(cod_info);
-        }
-      }
-    }
-    if (!status) {
-      if (gfc.mode_gr == 2)
-        status = tk.scale_bitcount(cod_info);
-      else
-        status = tk.scale_bitcount_lsf(gfc, cod_info);
-    }
-    return !status;
-  }
-  this.outer_loop = function(gfp, cod_info, l3_xmin, xrpow, ch, targ_bits) {
-    var gfc = gfp.internal_flags;
-    var cod_info_w = new GrInfo();
-    var save_xrpow = new_float(576);
-    var distort = new_float(L3Side$1.SFBMAX);
-    var best_noise_info = new CalcNoiseResult$1();
-    var better;
-    var prev_noise = new CalcNoiseData();
-    var best_part2_3_length = 9999999;
-    var bEndOfSearch = false;
-    var bRefine = false;
-    var best_ggain_pass1 = 0;
-    bin_search_StepSize(gfc, cod_info, targ_bits, ch, xrpow);
-    if (gfc.noise_shaping == 0) {
-      return 100;
-    }
-    qupvt.calc_noise(cod_info, l3_xmin, distort, best_noise_info, prev_noise);
-    best_noise_info.bits = cod_info.part2_3_length;
-    cod_info_w.assign(cod_info);
-    var age = 0;
-    System$1.arraycopy(xrpow, 0, save_xrpow, 0, 576);
-    while (!bEndOfSearch) {
-      do {
-        var noise_info = new CalcNoiseResult$1();
-        var search_limit;
-        var maxggain = 255;
-        if ((gfc.substep_shaping & 2) != 0) {
-          search_limit = 20;
-        } else {
-          search_limit = 3;
-        }
-        if (gfc.sfb21_extra) {
-          if (distort[cod_info_w.sfbmax] > 1)
-            break;
-          if (cod_info_w.block_type == Encoder.SHORT_TYPE && (distort[cod_info_w.sfbmax + 1] > 1 || distort[cod_info_w.sfbmax + 2] > 1)) {
-            break;
-          }
-        }
-        if (!balance_noise(gfp, cod_info_w, distort, xrpow, bRefine))
-          break;
-        if (cod_info_w.scalefac_scale != 0)
-          maxggain = 254;
-        var huff_bits = targ_bits - cod_info_w.part2_length;
-        if (huff_bits <= 0)
-          break;
-        while ((cod_info_w.part2_3_length = tk.count_bits(
-          gfc,
-          xrpow,
-          cod_info_w,
-          prev_noise
-        )) > huff_bits && cod_info_w.global_gain <= maxggain) {
-          cod_info_w.global_gain++;
-        }
-        if (cod_info_w.global_gain > maxggain)
-          break;
-        if (best_noise_info.over_count == 0) {
-          while ((cod_info_w.part2_3_length = tk.count_bits(
-            gfc,
-            xrpow,
-            cod_info_w,
-            prev_noise
-          )) > best_part2_3_length && cod_info_w.global_gain <= maxggain) {
-            cod_info_w.global_gain++;
-          }
-          if (cod_info_w.global_gain > maxggain)
-            break;
-        }
-        qupvt.calc_noise(cod_info_w, l3_xmin, distort, noise_info, prev_noise);
-        noise_info.bits = cod_info_w.part2_3_length;
-        if (cod_info.block_type != Encoder.SHORT_TYPE) {
-          better = gfp.quant_comp;
-        } else
-          better = gfp.quant_comp_short;
-        better = quant_compare(
-          better,
-          best_noise_info,
-          noise_info,
-          cod_info_w,
-          distort
-        ) ? 1 : 0;
-        if (better != 0) {
-          best_part2_3_length = cod_info.part2_3_length;
-          best_noise_info = noise_info;
-          cod_info.assign(cod_info_w);
-          age = 0;
-          System$1.arraycopy(xrpow, 0, save_xrpow, 0, 576);
-        } else {
-          if (gfc.full_outer_loop == 0) {
-            if (++age > search_limit && best_noise_info.over_count == 0)
-              break;
-            if (gfc.noise_shaping_amp == 3 && bRefine && age > 30)
-              break;
-            if (gfc.noise_shaping_amp == 3 && bRefine && cod_info_w.global_gain - best_ggain_pass1 > 15) {
-              break;
-            }
-          }
-        }
-      } while (cod_info_w.global_gain + cod_info_w.scalefac_scale < 255);
-      if (gfc.noise_shaping_amp == 3) {
-        if (!bRefine) {
-          cod_info_w.assign(cod_info);
-          System$1.arraycopy(save_xrpow, 0, xrpow, 0, 576);
-          age = 0;
-          best_ggain_pass1 = cod_info_w.global_gain;
-          bRefine = true;
-        } else {
-          bEndOfSearch = true;
-        }
-      } else {
-        bEndOfSearch = true;
-      }
-    }
-    assert$3(cod_info.global_gain + cod_info.scalefac_scale <= 255);
-    if (gfp.VBR == VbrMode$1.vbr_rh || gfp.VBR == VbrMode$1.vbr_mtrh) {
-      System$1.arraycopy(save_xrpow, 0, xrpow, 0, 576);
-    } else if ((gfc.substep_shaping & 1) != 0) {
-      trancate_smallspectrums(gfc, cod_info, l3_xmin, xrpow);
-    }
-    return best_noise_info.over_count;
-  };
-  this.iteration_finish_one = function(gfc, gr, ch) {
-    var l3_side = gfc.l3_side;
-    var cod_info = l3_side.tt[gr][ch];
-    tk.best_scalefac_store(gfc, gr, ch, l3_side);
-    if (gfc.use_best_huffman == 1)
-      tk.best_huffman_divide(gfc, cod_info);
-    rv.ResvAdjust(gfc, cod_info);
-  };
-  this.VBR_encode_granule = function(gfp, cod_info, l3_xmin, xrpow, ch, min_bits, max_bits) {
-    var gfc = gfp.internal_flags;
-    var bst_cod_info = new GrInfo();
-    var bst_xrpow = new_float(576);
-    var Max_bits = max_bits;
-    var real_bits = max_bits + 1;
-    var this_bits = (max_bits + min_bits) / 2;
-    var dbits;
-    var over;
-    var found = 0;
-    var sfb21_extra = gfc.sfb21_extra;
-    assert$3(Max_bits <= LameInternalFlags.MAX_BITS_PER_CHANNEL);
-    Arrays$1.fill(bst_cod_info.l3_enc, 0);
-    do {
-      if (this_bits > Max_bits - 42)
-        gfc.sfb21_extra = false;
-      else
-        gfc.sfb21_extra = sfb21_extra;
-      over = outer_loop(gfp, cod_info, l3_xmin, xrpow, ch, this_bits);
-      if (over <= 0) {
-        found = 1;
-        real_bits = cod_info.part2_3_length;
-        bst_cod_info.assign(cod_info);
-        System$1.arraycopy(xrpow, 0, bst_xrpow, 0, 576);
-        max_bits = real_bits - 32;
-        dbits = max_bits - min_bits;
-        this_bits = (max_bits + min_bits) / 2;
-      } else {
-        min_bits = this_bits + 32;
-        dbits = max_bits - min_bits;
-        this_bits = (max_bits + min_bits) / 2;
-        if (found != 0) {
-          found = 2;
-          cod_info.assign(bst_cod_info);
-          System$1.arraycopy(bst_xrpow, 0, xrpow, 0, 576);
-        }
-      }
-    } while (dbits > 12);
-    gfc.sfb21_extra = sfb21_extra;
-    if (found == 2) {
-      System$1.arraycopy(bst_cod_info.l3_enc, 0, cod_info.l3_enc, 0, 576);
-    }
-    assert$3(cod_info.part2_3_length <= Max_bits);
-  };
-  this.get_framebits = function(gfp, frameBits) {
-    var gfc = gfp.internal_flags;
-    gfc.bitrate_index = gfc.VBR_min_bitrate;
-    var bitsPerFrame = bs.getframebits(gfp);
-    gfc.bitrate_index = 1;
-    bitsPerFrame = bs.getframebits(gfp);
-    for (var i = 1; i <= gfc.VBR_max_bitrate; i++) {
-      gfc.bitrate_index = i;
-      var mb = new MeanBits(bitsPerFrame);
-      frameBits[i] = rv.ResvFrameBegin(gfp, mb);
-      bitsPerFrame = mb.bits;
-    }
-  };
-  this.VBR_old_prepare = function(gfp, pe, ms_ener_ratio, ratio, l3_xmin, frameBits, min_bits, max_bits, bands) {
-    var gfc = gfp.internal_flags;
-    var masking_lower_db;
-    var adjust = 0;
-    var analog_silence = 1;
-    var bits = 0;
-    gfc.bitrate_index = gfc.VBR_max_bitrate;
-    var avg = rv.ResvFrameBegin(gfp, new MeanBits(0)) / gfc.mode_gr;
-    get_framebits(gfp, frameBits);
-    for (var gr = 0; gr < gfc.mode_gr; gr++) {
-      var mxb = qupvt.on_pe(gfp, pe, max_bits[gr], avg, gr, 0);
-      if (gfc.mode_ext == Encoder.MPG_MD_MS_LR) {
-        ms_convert(gfc.l3_side, gr);
-        qupvt.reduce_side(max_bits[gr], ms_ener_ratio[gr], avg, mxb);
-      }
-      for (var ch = 0; ch < gfc.channels_out; ++ch) {
-        var cod_info = gfc.l3_side.tt[gr][ch];
-        if (cod_info.block_type != Encoder.SHORT_TYPE) {
-          adjust = 1.28 / (1 + Math.exp(3.5 - pe[gr][ch] / 300)) - 0.05;
-          masking_lower_db = gfc.PSY.mask_adjust - adjust;
-        } else {
-          adjust = 2.56 / (1 + Math.exp(3.5 - pe[gr][ch] / 300)) - 0.14;
-          masking_lower_db = gfc.PSY.mask_adjust_short - adjust;
-        }
-        gfc.masking_lower = Math.pow(10, masking_lower_db * 0.1);
-        init_outer_loop(gfc, cod_info);
-        bands[gr][ch] = qupvt.calc_xmin(
-          gfp,
-          ratio[gr][ch],
-          cod_info,
-          l3_xmin[gr][ch]
-        );
-        if (bands[gr][ch] != 0)
-          analog_silence = 0;
-        min_bits[gr][ch] = 126;
-        bits += max_bits[gr][ch];
-      }
-    }
-    for (var gr = 0; gr < gfc.mode_gr; gr++) {
-      for (var ch = 0; ch < gfc.channels_out; ch++) {
-        if (bits > frameBits[gfc.VBR_max_bitrate]) {
-          max_bits[gr][ch] *= frameBits[gfc.VBR_max_bitrate];
-          max_bits[gr][ch] /= bits;
-        }
-        if (min_bits[gr][ch] > max_bits[gr][ch]) {
-          min_bits[gr][ch] = max_bits[gr][ch];
-        }
-      }
-    }
-    return analog_silence;
-  };
-  this.bitpressure_strategy = function(gfc, l3_xmin, min_bits, max_bits) {
-    for (var gr = 0; gr < gfc.mode_gr; gr++) {
-      for (var ch = 0; ch < gfc.channels_out; ch++) {
-        var gi = gfc.l3_side.tt[gr][ch];
-        var pxmin = l3_xmin[gr][ch];
-        var pxminPos = 0;
-        for (var sfb = 0; sfb < gi.psy_lmax; sfb++) {
-          pxmin[pxminPos++] *= 1 + 0.029 * sfb * sfb / Encoder.SBMAX_l / Encoder.SBMAX_l;
-        }
-        if (gi.block_type == Encoder.SHORT_TYPE) {
-          for (var sfb = gi.sfb_smin; sfb < Encoder.SBMAX_s; sfb++) {
-            pxmin[pxminPos++] *= 1 + 0.029 * sfb * sfb / Encoder.SBMAX_s / Encoder.SBMAX_s;
-            pxmin[pxminPos++] *= 1 + 0.029 * sfb * sfb / Encoder.SBMAX_s / Encoder.SBMAX_s;
-            pxmin[pxminPos++] *= 1 + 0.029 * sfb * sfb / Encoder.SBMAX_s / Encoder.SBMAX_s;
-          }
-        }
-        max_bits[gr][ch] = 0 | Math.max(min_bits[gr][ch], 0.9 * max_bits[gr][ch]);
-      }
-    }
-  };
-  this.VBR_new_prepare = function(gfp, pe, ratio, l3_xmin, frameBits, max_bits) {
-    var gfc = gfp.internal_flags;
-    var analog_silence = 1;
-    var avg = 0;
-    var bits = 0;
-    var maximum_framebits;
-    if (!gfp.free_format) {
-      gfc.bitrate_index = gfc.VBR_max_bitrate;
-      var mb = new MeanBits(avg);
-      rv.ResvFrameBegin(gfp, mb);
-      avg = mb.bits;
-      get_framebits(gfp, frameBits);
-      maximum_framebits = frameBits[gfc.VBR_max_bitrate];
-    } else {
-      gfc.bitrate_index = 0;
-      var mb = new MeanBits(avg);
-      maximum_framebits = rv.ResvFrameBegin(gfp, mb);
-      avg = mb.bits;
-      frameBits[0] = maximum_framebits;
-    }
-    for (var gr = 0; gr < gfc.mode_gr; gr++) {
-      qupvt.on_pe(gfp, pe, max_bits[gr], avg, gr, 0);
-      if (gfc.mode_ext == Encoder.MPG_MD_MS_LR) {
-        ms_convert(gfc.l3_side, gr);
-      }
-      for (var ch = 0; ch < gfc.channels_out; ++ch) {
-        var cod_info = gfc.l3_side.tt[gr][ch];
-        gfc.masking_lower = Math.pow(10, gfc.PSY.mask_adjust * 0.1);
-        init_outer_loop(gfc, cod_info);
-        if (qupvt.calc_xmin(gfp, ratio[gr][ch], cod_info, l3_xmin[gr][ch]) != 0) {
-          analog_silence = 0;
-        }
-        bits += max_bits[gr][ch];
-      }
-    }
-    for (var gr = 0; gr < gfc.mode_gr; gr++) {
-      for (var ch = 0; ch < gfc.channels_out; ch++) {
-        if (bits > maximum_framebits) {
-          max_bits[gr][ch] *= maximum_framebits;
-          max_bits[gr][ch] /= bits;
-        }
-      }
-    }
-    return analog_silence;
-  };
-  this.calc_target_bits = function(gfp, pe, ms_ener_ratio, targ_bits, analog_silence_bits, max_frame_bits) {
-    var gfc = gfp.internal_flags;
-    var l3_side = gfc.l3_side;
-    var res_factor;
-    var gr;
-    var ch;
-    var totbits;
-    var mean_bits = 0;
-    gfc.bitrate_index = gfc.VBR_max_bitrate;
-    var mb = new MeanBits(mean_bits);
-    max_frame_bits[0] = rv.ResvFrameBegin(gfp, mb);
-    mean_bits = mb.bits;
-    gfc.bitrate_index = 1;
-    mean_bits = bs.getframebits(gfp) - gfc.sideinfo_len * 8;
-    analog_silence_bits[0] = mean_bits / (gfc.mode_gr * gfc.channels_out);
-    mean_bits = gfp.VBR_mean_bitrate_kbps * gfp.framesize * 1e3;
-    if ((gfc.substep_shaping & 1) != 0)
-      mean_bits *= 1.09;
-    mean_bits /= gfp.out_samplerate;
-    mean_bits -= gfc.sideinfo_len * 8;
-    mean_bits /= gfc.mode_gr * gfc.channels_out;
-    res_factor = 0.93 + 0.07 * (11 - gfp.compression_ratio) / (11 - 5.5);
-    if (res_factor < 0.9)
-      res_factor = 0.9;
-    if (res_factor > 1)
-      res_factor = 1;
-    for (gr = 0; gr < gfc.mode_gr; gr++) {
-      var sum = 0;
-      for (ch = 0; ch < gfc.channels_out; ch++) {
-        targ_bits[gr][ch] = int(res_factor * mean_bits);
-        if (pe[gr][ch] > 700) {
-          var add_bits = int((pe[gr][ch] - 700) / 1.4);
-          var cod_info = l3_side.tt[gr][ch];
-          targ_bits[gr][ch] = int(res_factor * mean_bits);
-          if (cod_info.block_type == Encoder.SHORT_TYPE) {
-            if (add_bits < mean_bits / 2)
-              add_bits = mean_bits / 2;
-          }
-          if (add_bits > mean_bits * 3 / 2)
-            add_bits = mean_bits * 3 / 2;
-          else if (add_bits < 0)
-            add_bits = 0;
-          targ_bits[gr][ch] += add_bits;
-        }
-        if (targ_bits[gr][ch] > LameInternalFlags.MAX_BITS_PER_CHANNEL) {
-          targ_bits[gr][ch] = LameInternalFlags.MAX_BITS_PER_CHANNEL;
-        }
-        sum += targ_bits[gr][ch];
-      }
-      if (sum > LameInternalFlags.MAX_BITS_PER_GRANULE) {
-        for (ch = 0; ch < gfc.channels_out; ++ch) {
-          targ_bits[gr][ch] *= LameInternalFlags.MAX_BITS_PER_GRANULE;
-          targ_bits[gr][ch] /= sum;
-        }
-      }
-    }
-    if (gfc.mode_ext == Encoder.MPG_MD_MS_LR) {
-      for (gr = 0; gr < gfc.mode_gr; gr++) {
-        qupvt.reduce_side(
-          targ_bits[gr],
-          ms_ener_ratio[gr],
-          mean_bits * gfc.channels_out,
-          LameInternalFlags.MAX_BITS_PER_GRANULE
-        );
-      }
-    }
-    totbits = 0;
-    for (gr = 0; gr < gfc.mode_gr; gr++) {
-      for (ch = 0; ch < gfc.channels_out; ch++) {
-        if (targ_bits[gr][ch] > LameInternalFlags.MAX_BITS_PER_CHANNEL) {
-          targ_bits[gr][ch] = LameInternalFlags.MAX_BITS_PER_CHANNEL;
-        }
-        totbits += targ_bits[gr][ch];
-      }
-    }
-    if (totbits > max_frame_bits[0]) {
-      for (gr = 0; gr < gfc.mode_gr; gr++) {
-        for (ch = 0; ch < gfc.channels_out; ch++) {
-          targ_bits[gr][ch] *= max_frame_bits[0];
-          targ_bits[gr][ch] /= totbits;
-        }
-      }
-    }
-  };
-}
-var assert$2 = common.assert;
-function Reservoir() {
-  var bs;
-  this.setModules = function(_bs) {
-    bs = _bs;
-  };
-  this.ResvFrameBegin = function(gfp, mean_bits) {
-    var gfc = gfp.internal_flags;
-    var maxmp3buf;
-    var l3_side = gfc.l3_side;
-    var frameLength = bs.getframebits(gfp);
-    mean_bits.bits = (frameLength - gfc.sideinfo_len * 8) / gfc.mode_gr;
-    var resvLimit = 8 * 256 * gfc.mode_gr - 8;
-    if (gfp.brate > 320) {
-      maxmp3buf = 8 * int(gfp.brate * 1e3 / (gfp.out_samplerate / 1152) / 8 + 0.5);
-    } else {
-      maxmp3buf = 8 * 1440;
-      if (gfp.strict_ISO) {
-        maxmp3buf = 8 * int(32e4 / (gfp.out_samplerate / 1152) / 8 + 0.5);
-      }
-    }
-    gfc.ResvMax = maxmp3buf - frameLength;
-    if (gfc.ResvMax > resvLimit)
-      gfc.ResvMax = resvLimit;
-    if (gfc.ResvMax < 0 || gfp.disable_reservoir)
-      gfc.ResvMax = 0;
-    var fullFrameBits = mean_bits.bits * gfc.mode_gr + Math.min(gfc.ResvSize, gfc.ResvMax);
-    if (fullFrameBits > maxmp3buf)
-      fullFrameBits = maxmp3buf;
-    assert$2(gfc.ResvMax % 8 == 0);
-    assert$2(gfc.ResvMax >= 0);
-    l3_side.resvDrain_pre = 0;
-    if (gfc.pinfo != null) {
-      gfc.pinfo.mean_bits = mean_bits.bits / 2;
-      gfc.pinfo.resvsize = gfc.ResvSize;
-    }
-    return fullFrameBits;
-  };
-  this.ResvMaxBits = function(gfp, mean_bits, targ_bits, cbr) {
-    var gfc = gfp.internal_flags;
-    var add_bits;
-    var ResvSize = gfc.ResvSize;
-    var ResvMax = gfc.ResvMax;
-    if (cbr != 0)
-      ResvSize += mean_bits;
-    if ((gfc.substep_shaping & 1) != 0)
-      ResvMax *= 0.9;
-    targ_bits.bits = mean_bits;
-    if (ResvSize * 10 > ResvMax * 9) {
-      add_bits = ResvSize - ResvMax * 9 / 10;
-      targ_bits.bits += add_bits;
-      gfc.substep_shaping |= 128;
-    } else {
-      add_bits = 0;
-      gfc.substep_shaping &= 127;
-      if (!gfp.disable_reservoir && (gfc.substep_shaping & 1) == 0) {
-        targ_bits.bits -= 0.1 * mean_bits;
-      }
-    }
-    var extra_bits = ResvSize < gfc.ResvMax * 6 / 10 ? ResvSize : gfc.ResvMax * 6 / 10;
-    extra_bits -= add_bits;
-    if (extra_bits < 0)
-      extra_bits = 0;
-    return extra_bits;
-  };
-  this.ResvAdjust = function(gfc, gi) {
-    gfc.ResvSize -= gi.part2_3_length + gi.part2_length;
-  };
-  this.ResvFrameEnd = function(gfc, mean_bits) {
-    var over_bits;
-    var l3_side = gfc.l3_side;
-    gfc.ResvSize += mean_bits * gfc.mode_gr;
-    var stuffingBits = 0;
-    l3_side.resvDrain_post = 0;
-    l3_side.resvDrain_pre = 0;
-    if ((over_bits = gfc.ResvSize % 8) != 0)
-      stuffingBits += over_bits;
-    over_bits = gfc.ResvSize - stuffingBits - gfc.ResvMax;
-    if (over_bits > 0) {
-      stuffingBits += over_bits;
-    }
-    {
-      var mdb_bytes = Math.min(l3_side.main_data_begin * 8, stuffingBits) / 8;
-      l3_side.resvDrain_pre += 8 * mdb_bytes;
-      stuffingBits -= 8 * mdb_bytes;
-      gfc.ResvSize -= 8 * mdb_bytes;
-      l3_side.main_data_begin -= mdb_bytes;
-    }
-    l3_side.resvDrain_post += stuffingBits;
-    gfc.ResvSize -= stuffingBits;
-  };
-}
-function Version() {
-  var LAME_URL = "http://www.mp3dev.org/";
-  var LAME_MAJOR_VERSION = 3;
-  var LAME_MINOR_VERSION = 98;
-  var LAME_PATCH_VERSION = 4;
-  var PSY_MAJOR_VERSION = 0;
-  var PSY_MINOR_VERSION = 93;
-  this.getLameVersion = function() {
-    return LAME_MAJOR_VERSION + "." + LAME_MINOR_VERSION + "." + LAME_PATCH_VERSION;
-  };
-  this.getLameShortVersion = function() {
-    return LAME_MAJOR_VERSION + "." + LAME_MINOR_VERSION + "." + LAME_PATCH_VERSION;
-  };
-  this.getLameVeryShortVersion = function() {
-    return "LAME" + LAME_MAJOR_VERSION + "." + LAME_MINOR_VERSION + "r";
-  };
-  this.getPsyVersion = function() {
-    return PSY_MAJOR_VERSION + "." + PSY_MINOR_VERSION;
-  };
-  this.getLameUrl = function() {
-    return LAME_URL;
-  };
-  this.getLameOsBitness = function() {
-    return "32bits";
-  };
-}
-var System = common.System;
-var VbrMode = common.VbrMode;
-var ShortBlock = common.ShortBlock;
-var Arrays = common.Arrays;
-var new_byte$1 = common.new_byte;
-var assert$1 = common.assert;
-VBRTag.NUMTOCENTRIES = 100;
-VBRTag.MAXFRAMESIZE = 2880;
-function VBRTag() {
-  var lame;
-  var bs;
-  var v;
-  this.setModules = function(_lame, _bs, _v) {
-    lame = _lame;
-    bs = _bs;
-    v = _v;
-  };
-  var FRAMES_FLAG = 1;
-  var BYTES_FLAG = 2;
-  var TOC_FLAG = 4;
-  var VBR_SCALE_FLAG = 8;
-  var NUMTOCENTRIES = VBRTag.NUMTOCENTRIES;
-  var MAXFRAMESIZE = VBRTag.MAXFRAMESIZE;
-  var VBRHEADERSIZE = NUMTOCENTRIES + 4 + 4 + 4 + 4 + 4;
-  var LAMEHEADERSIZE = VBRHEADERSIZE + 9 + 1 + 1 + 8 + 1 + 1 + 3 + 1 + 1 + 2 + 4 + 2 + 2;
-  var XING_BITRATE1 = 128;
-  var XING_BITRATE2 = 64;
-  var XING_BITRATE25 = 32;
-  var ISO_8859_1 = null;
-  var VBRTag0 = "Xing";
-  var VBRTag1 = "Info";
-  var crc16Lookup = [
-    0,
-    49345,
-    49537,
-    320,
-    49921,
-    960,
-    640,
-    49729,
-    50689,
-    1728,
-    1920,
-    51009,
-    1280,
-    50625,
-    50305,
-    1088,
-    52225,
-    3264,
-    3456,
-    52545,
-    3840,
-    53185,
-    52865,
-    3648,
-    2560,
-    51905,
-    52097,
-    2880,
-    51457,
-    2496,
-    2176,
-    51265,
-    55297,
-    6336,
-    6528,
-    55617,
-    6912,
-    56257,
-    55937,
-    6720,
-    7680,
-    57025,
-    57217,
-    8e3,
-    56577,
-    7616,
-    7296,
-    56385,
-    5120,
-    54465,
-    54657,
-    5440,
-    55041,
-    6080,
-    5760,
-    54849,
-    53761,
-    4800,
-    4992,
-    54081,
-    4352,
-    53697,
-    53377,
-    4160,
-    61441,
-    12480,
-    12672,
-    61761,
-    13056,
-    62401,
-    62081,
-    12864,
-    13824,
-    63169,
-    63361,
-    14144,
-    62721,
-    13760,
-    13440,
-    62529,
-    15360,
-    64705,
-    64897,
-    15680,
-    65281,
-    16320,
-    16e3,
-    65089,
-    64001,
-    15040,
-    15232,
-    64321,
-    14592,
-    63937,
-    63617,
-    14400,
-    10240,
-    59585,
-    59777,
-    10560,
-    60161,
-    11200,
-    10880,
-    59969,
-    60929,
-    11968,
-    12160,
-    61249,
-    11520,
-    60865,
-    60545,
-    11328,
-    58369,
-    9408,
-    9600,
-    58689,
-    9984,
-    59329,
-    59009,
-    9792,
-    8704,
-    58049,
-    58241,
-    9024,
-    57601,
-    8640,
-    8320,
-    57409,
-    40961,
-    24768,
-    24960,
-    41281,
-    25344,
-    41921,
-    41601,
-    25152,
-    26112,
-    42689,
-    42881,
-    26432,
-    42241,
-    26048,
-    25728,
-    42049,
-    27648,
-    44225,
-    44417,
-    27968,
-    44801,
-    28608,
-    28288,
-    44609,
-    43521,
-    27328,
-    27520,
-    43841,
-    26880,
-    43457,
-    43137,
-    26688,
-    30720,
-    47297,
-    47489,
-    31040,
-    47873,
-    31680,
-    31360,
-    47681,
-    48641,
-    32448,
-    32640,
-    48961,
-    32e3,
-    48577,
-    48257,
-    31808,
-    46081,
-    29888,
-    30080,
-    46401,
-    30464,
-    47041,
-    46721,
-    30272,
-    29184,
-    45761,
-    45953,
-    29504,
-    45313,
-    29120,
-    28800,
-    45121,
-    20480,
-    37057,
-    37249,
-    20800,
-    37633,
-    21440,
-    21120,
-    37441,
-    38401,
-    22208,
-    22400,
-    38721,
-    21760,
-    38337,
-    38017,
-    21568,
-    39937,
-    23744,
-    23936,
-    40257,
-    24320,
-    40897,
-    40577,
-    24128,
-    23040,
-    39617,
-    39809,
-    23360,
-    39169,
-    22976,
-    22656,
-    38977,
-    34817,
-    18624,
-    18816,
-    35137,
-    19200,
-    35777,
-    35457,
-    19008,
-    19968,
-    36545,
-    36737,
-    20288,
-    36097,
-    19904,
-    19584,
-    35905,
-    17408,
-    33985,
-    34177,
-    17728,
-    34561,
-    18368,
-    18048,
-    34369,
-    33281,
-    17088,
-    17280,
-    33601,
-    16640,
-    33217,
-    32897,
-    16448
-  ];
-  function addVbr(v2, bitrate) {
-    v2.nVbrNumFrames++;
-    v2.sum += bitrate;
-    v2.seen++;
-    if (v2.seen < v2.want) {
-      return;
-    }
-    if (v2.pos < v2.size) {
-      v2.bag[v2.pos] = v2.sum;
-      v2.pos++;
-      v2.seen = 0;
-    }
-    if (v2.pos == v2.size) {
-      for (var i = 1; i < v2.size; i += 2) {
-        v2.bag[i / 2] = v2.bag[i];
-      }
-      v2.want *= 2;
-      v2.pos /= 2;
-    }
-  }
-  function xingSeekTable(v2, t) {
-    if (v2.pos <= 0)
-      return;
-    for (var i = 1; i < NUMTOCENTRIES; ++i) {
-      var j = i / NUMTOCENTRIES;
-      var act;
-      var sum;
-      var indx = 0 | Math.floor(j * v2.pos);
-      if (indx > v2.pos - 1)
-        indx = v2.pos - 1;
-      act = v2.bag[indx];
-      sum = v2.sum;
-      var seek_point = 0 | 256 * act / sum;
-      if (seek_point > 255)
-        seek_point = 255;
-      t[i] = 255 & seek_point;
-    }
-  }
-  this.addVbrFrame = function(gfp) {
-    var gfc = gfp.internal_flags;
-    var kbps = Tables.bitrate_table[gfp.version][gfc.bitrate_index];
-    assert$1(gfc.VBR_seek_table.bag != null);
-    addVbr(gfc.VBR_seek_table, kbps);
-  };
-  function extractInteger(buf, bufPos) {
-    var x = buf[bufPos + 0] & 255;
-    x <<= 8;
-    x |= buf[bufPos + 1] & 255;
-    x <<= 8;
-    x |= buf[bufPos + 2] & 255;
-    x <<= 8;
-    x |= buf[bufPos + 3] & 255;
-    return x;
-  }
-  function createInteger(buf, bufPos, value) {
-    buf[bufPos + 0] = 255 & (value >> 24 & 255);
-    buf[bufPos + 1] = 255 & (value >> 16 & 255);
-    buf[bufPos + 2] = 255 & (value >> 8 & 255);
-    buf[bufPos + 3] = 255 & (value & 255);
-  }
-  function createShort(buf, bufPos, value) {
-    buf[bufPos + 0] = 255 & (value >> 8 & 255);
-    buf[bufPos + 1] = 255 & (value & 255);
-  }
-  function isVbrTag(buf, bufPos) {
-    return new String(buf, bufPos, VBRTag0.length(), ISO_8859_1).equals(VBRTag0) || new String(buf, bufPos, VBRTag1.length(), ISO_8859_1).equals(VBRTag1);
+    this.windowListeners = {};
   }
-  function shiftInBitsValue(x, n, v2) {
-    return 255 & (x << n | v2 & ~(-1 << n));
-  }
-  function setLameTagFrameHeader(gfp, buffer) {
-    var gfc = gfp.internal_flags;
-    buffer[0] = shiftInBitsValue(buffer[0], 8, 255);
-    buffer[1] = shiftInBitsValue(buffer[1], 3, 7);
-    buffer[1] = shiftInBitsValue(
-      buffer[1],
-      1,
-      gfp.out_samplerate < 16e3 ? 0 : 1
-    );
-    buffer[1] = shiftInBitsValue(buffer[1], 1, gfp.version);
-    buffer[1] = shiftInBitsValue(buffer[1], 2, 4 - 3);
-    buffer[1] = shiftInBitsValue(buffer[1], 1, !gfp.error_protection ? 1 : 0);
-    buffer[2] = shiftInBitsValue(buffer[2], 4, gfc.bitrate_index);
-    buffer[2] = shiftInBitsValue(buffer[2], 2, gfc.samplerate_index);
-    buffer[2] = shiftInBitsValue(buffer[2], 1, 0);
-    buffer[2] = shiftInBitsValue(buffer[2], 1, gfp.extension);
-    buffer[3] = shiftInBitsValue(buffer[3], 2, gfp.mode.ordinal());
-    buffer[3] = shiftInBitsValue(buffer[3], 2, gfc.mode_ext);
-    buffer[3] = shiftInBitsValue(buffer[3], 1, gfp.copyright);
-    buffer[3] = shiftInBitsValue(buffer[3], 1, gfp.original);
-    buffer[3] = shiftInBitsValue(buffer[3], 2, gfp.emphasis);
-    buffer[0] = 255;
-    var abyte = 255 & (buffer[1] & 241);
-    var bitrate;
-    if (gfp.version == 1) {
-      bitrate = XING_BITRATE1;
-    } else {
-      if (gfp.out_samplerate < 16e3)
-        bitrate = XING_BITRATE25;
-      else
-        bitrate = XING_BITRATE2;
-    }
-    if (gfp.VBR == VbrMode.vbr_off)
-      bitrate = gfp.brate;
-    var bbyte;
-    if (gfp.free_format)
-      bbyte = 0;
-    else {
-      bbyte = 255 & 16 * lame.BitrateIndex(bitrate, gfp.version, gfp.out_samplerate);
+  notifyListeners(eventName, data2) {
+    const listeners = this.listeners[eventName];
+    if (listeners) {
+      listeners.forEach((listener) => listener(data2));
     }
-    if (gfp.version == 1) {
-      buffer[1] = 255 & (abyte | 10);
-      abyte = 255 & (buffer[2] & 13);
-      buffer[2] = 255 & (bbyte | abyte);
-    } else {
-      buffer[1] = 255 & (abyte | 2);
-      abyte = 255 & (buffer[2] & 13);
-      buffer[2] = 255 & (bbyte | abyte);
-    }
   }
-  this.getVbrTag = function(buf) {
-    var pTagData = new VBRTagData();
-    var bufPos = 0;
-    pTagData.flags = 0;
-    var hId = buf[bufPos + 1] >> 3 & 1;
-    var hSrIndex = buf[bufPos + 2] >> 2 & 3;
-    var hMode = buf[bufPos + 3] >> 6 & 3;
-    var hBitrate = buf[bufPos + 2] >> 4 & 15;
-    hBitrate = Tables.bitrate_table[hId][hBitrate];
-    if (buf[bufPos + 1] >> 4 == 14) {
-      pTagData.samprate = Tables.samplerate_table[2][hSrIndex];
-    } else
-      pTagData.samprate = Tables.samplerate_table[hId][hSrIndex];
-    if (hId != 0) {
-      if (hMode != 3)
-        bufPos += 32 + 4;
-      else
-        bufPos += 17 + 4;
-    } else {
-      if (hMode != 3)
-        bufPos += 17 + 4;
-      else
-        bufPos += 9 + 4;
-    }
-    if (!isVbrTag(buf, bufPos))
-      return null;
-    bufPos += 4;
-    pTagData.hId = hId;
-    var head_flags = pTagData.flags = extractInteger(buf, bufPos);
-    bufPos += 4;
-    if ((head_flags & FRAMES_FLAG) != 0) {
-      pTagData.frames = extractInteger(buf, bufPos);
-      bufPos += 4;
-    }
-    if ((head_flags & BYTES_FLAG) != 0) {
-      pTagData.bytes = extractInteger(buf, bufPos);
-      bufPos += 4;
-    }
-    if ((head_flags & TOC_FLAG) != 0) {
-      if (pTagData.toc != null) {
-        for (var i = 0; i < NUMTOCENTRIES; i++) {
-          pTagData.toc[i] = buf[bufPos + i];
-        }
-      }
-      bufPos += NUMTOCENTRIES;
-    }
-    pTagData.vbrScale = -1;
-    if ((head_flags & VBR_SCALE_FLAG) != 0) {
-      pTagData.vbrScale = extractInteger(buf, bufPos);
-      bufPos += 4;
-    }
-    pTagData.headersize = (hId + 1) * 72e3 * hBitrate / pTagData.samprate;
-    bufPos += 21;
-    var encDelay = buf[bufPos + 0] << 4;
-    encDelay += buf[bufPos + 1] >> 4;
-    var encPadding = (buf[bufPos + 1] & 15) << 8;
-    encPadding += buf[bufPos + 2] & 255;
-    if (encDelay < 0 || encDelay > 3e3)
-      encDelay = -1;
-    if (encPadding < 0 || encPadding > 3e3)
-      encPadding = -1;
-    pTagData.encDelay = encDelay;
-    pTagData.encPadding = encPadding;
-    return pTagData;
-  };
-  this.InitVbrTag = function(gfp) {
-    var gfc = gfp.internal_flags;
-    var kbps_header;
-    if (gfp.version == 1) {
-      kbps_header = XING_BITRATE1;
-    } else {
-      if (gfp.out_samplerate < 16e3)
-        kbps_header = XING_BITRATE25;
-      else
-        kbps_header = XING_BITRATE2;
-    }
-    if (gfp.VBR == VbrMode.vbr_off)
-      kbps_header = gfp.brate;
-    var totalFrameSize = (gfp.version + 1) * 72e3 * kbps_header / gfp.out_samplerate;
-    var headerSize = gfc.sideinfo_len + LAMEHEADERSIZE;
-    gfc.VBR_seek_table.TotalFrameSize = totalFrameSize;
-    if (totalFrameSize < headerSize || totalFrameSize > MAXFRAMESIZE) {
-      gfp.bWriteVbrTag = false;
-      return;
-    }
-    gfc.VBR_seek_table.nVbrNumFrames = 0;
-    gfc.VBR_seek_table.nBytesWritten = 0;
-    gfc.VBR_seek_table.sum = 0;
-    gfc.VBR_seek_table.seen = 0;
-    gfc.VBR_seek_table.want = 1;
-    gfc.VBR_seek_table.pos = 0;
-    if (gfc.VBR_seek_table.bag == null) {
-      gfc.VBR_seek_table.bag = new int[400]();
-      gfc.VBR_seek_table.size = 400;
-    }
-    var buffer = new_byte$1(MAXFRAMESIZE);
-    setLameTagFrameHeader(gfp, buffer);
-    var n = gfc.VBR_seek_table.TotalFrameSize;
-    for (var i = 0; i < n; ++i) {
-      bs.add_dummy_byte(gfp, buffer[i] & 255, 1);
-    }
-  };
-  function crcUpdateLookup(value, crc) {
-    var tmp = crc ^ value;
-    crc = crc >> 8 ^ crc16Lookup[tmp & 255];
-    return crc;
+  hasListeners(eventName) {
+    return !!this.listeners[eventName].length;
   }
-  this.updateMusicCRC = function(crc, buffer, bufferPos, size2) {
-    for (var i = 0; i < size2; ++i) {
-      crc[0] = crcUpdateLookup(buffer[bufferPos + i], crc[0]);
-    }
-  };
-  function putLameVBR(gfp, musicLength, streamBuffer, streamBufferPos, crc) {
-    var gfc = gfp.internal_flags;
-    var bytesWritten = 0;
-    var encDelay = gfp.encoder_delay;
-    var encPadding = gfp.encoder_padding;
-    var quality = 100 - 10 * gfp.VBR_q - gfp.quality;
-    var version2 = v.getLameVeryShortVersion();
-    var vbr;
-    var revision = 0;
-    var revMethod;
-    var vbrTypeTranslator = [1, 5, 3, 2, 4, 0, 3];
-    var lowpass = 0 | (gfp.lowpassfreq / 100 + 0.5 > 255 ? 255 : gfp.lowpassfreq / 100 + 0.5);
-    var peakSignalAmplitude = 0;
-    var radioReplayGain = 0;
-    var audiophileReplayGain = 0;
-    var noiseShaping = gfp.internal_flags.noise_shaping;
-    var stereoMode = 0;
-    var nonOptimal = 0;
-    var sourceFreq = 0;
-    var misc = 0;
-    var musicCRC = 0;
-    var expNPsyTune = (gfp.exp_nspsytune & 1) != 0;
-    var safeJoint = (gfp.exp_nspsytune & 2) != 0;
-    var noGapMore = false;
-    var noGapPrevious = false;
-    var noGapCount = gfp.internal_flags.nogap_total;
-    var noGapCurr = gfp.internal_flags.nogap_current;
-    var athType = gfp.ATHtype;
-    var flags = 0;
-    var abrBitrate;
-    switch (gfp.VBR) {
-      case vbr_abr:
-        abrBitrate = gfp.VBR_mean_bitrate_kbps;
-        break;
-      case vbr_off:
-        abrBitrate = gfp.brate;
-        break;
-      default:
-        abrBitrate = gfp.VBR_min_bitrate_kbps;
-    }
-    if (gfp.VBR.ordinal() < vbrTypeTranslator.length) {
-      vbr = vbrTypeTranslator[gfp.VBR.ordinal()];
-    } else
-      vbr = 0;
-    revMethod = 16 * revision + vbr;
-    if (gfc.findReplayGain) {
-      if (gfc.RadioGain > 510)
-        gfc.RadioGain = 510;
-      if (gfc.RadioGain < -510)
-        gfc.RadioGain = -510;
-      radioReplayGain = 8192;
-      radioReplayGain |= 3072;
-      if (gfc.RadioGain >= 0) {
-        radioReplayGain |= gfc.RadioGain;
-      } else {
-        radioReplayGain |= 512;
-        radioReplayGain |= -gfc.RadioGain;
+  registerWindowListener(windowEventName, pluginEventName) {
+    this.windowListeners[pluginEventName] = {
+      registered: false,
+      windowEventName,
+      pluginEventName,
+      handler: (event) => {
+        this.notifyListeners(pluginEventName, event);
       }
-    }
-    if (gfc.findPeakSample) {
-      peakSignalAmplitude = Math.abs(
-        0 | gfc.PeakSample / 32767 * Math.pow(2, 23) + 0.5
-      );
-    }
-    if (noGapCount != -1) {
-      if (noGapCurr > 0)
-        noGapPrevious = true;
-      if (noGapCurr < noGapCount - 1)
-        noGapMore = true;
-    }
-    flags = athType + ((expNPsyTune ? 1 : 0) << 4) + ((safeJoint ? 1 : 0) << 5) + ((noGapMore ? 1 : 0) << 6) + ((noGapPrevious ? 1 : 0) << 7);
-    if (quality < 0)
-      quality = 0;
-    switch (gfp.mode) {
-      case MONO:
-        stereoMode = 0;
-        break;
-      case STEREO:
-        stereoMode = 1;
-        break;
-      case DUAL_CHANNEL:
-        stereoMode = 2;
-        break;
-      case JOINT_STEREO:
-        if (gfp.force_ms)
-          stereoMode = 4;
-        else
-          stereoMode = 3;
-        break;
-      case NOT_SET:
-      default:
-        stereoMode = 7;
-        break;
-    }
-    if (gfp.in_samplerate <= 32e3)
-      sourceFreq = 0;
-    else if (gfp.in_samplerate == 48e3)
-      sourceFreq = 2;
-    else if (gfp.in_samplerate > 48e3)
-      sourceFreq = 3;
-    else {
-      sourceFreq = 1;
-    }
-    if (gfp.short_blocks == ShortBlock.short_block_forced || gfp.short_blocks == ShortBlock.short_block_dispensed || gfp.lowpassfreq == -1 && gfp.highpassfreq == -1 || gfp.scale_left < gfp.scale_right || gfp.scale_left > gfp.scale_right || gfp.disable_reservoir && gfp.brate < 320 || gfp.noATH || gfp.ATHonly || athType == 0 || gfp.in_samplerate <= 32e3) {
-      nonOptimal = 1;
-    }
-    misc = noiseShaping + (stereoMode << 2) + (nonOptimal << 5) + (sourceFreq << 6);
-    musicCRC = gfc.nMusicCRC;
-    createInteger(streamBuffer, streamBufferPos + bytesWritten, quality);
-    bytesWritten += 4;
-    for (var j = 0; j < 9; j++) {
-      streamBuffer[streamBufferPos + bytesWritten + j] = 255 & version2.charAt(j);
-    }
-    bytesWritten += 9;
-    streamBuffer[streamBufferPos + bytesWritten] = 255 & revMethod;
-    bytesWritten++;
-    streamBuffer[streamBufferPos + bytesWritten] = 255 & lowpass;
-    bytesWritten++;
-    createInteger(
-      streamBuffer,
-      streamBufferPos + bytesWritten,
-      peakSignalAmplitude
-    );
-    bytesWritten += 4;
-    createShort(streamBuffer, streamBufferPos + bytesWritten, radioReplayGain);
-    bytesWritten += 2;
-    createShort(
-      streamBuffer,
-      streamBufferPos + bytesWritten,
-      audiophileReplayGain
-    );
-    bytesWritten += 2;
-    streamBuffer[streamBufferPos + bytesWritten] = 255 & flags;
-    bytesWritten++;
-    if (abrBitrate >= 255)
-      streamBuffer[streamBufferPos + bytesWritten] = 255;
-    else
-      streamBuffer[streamBufferPos + bytesWritten] = 255 & abrBitrate;
-    bytesWritten++;
-    streamBuffer[streamBufferPos + bytesWritten] = 255 & encDelay >> 4;
-    streamBuffer[streamBufferPos + bytesWritten + 1] = 255 & (encDelay << 4) + (encPadding >> 8);
-    streamBuffer[streamBufferPos + bytesWritten + 2] = 255 & encPadding;
-    bytesWritten += 3;
-    streamBuffer[streamBufferPos + bytesWritten] = 255 & misc;
-    bytesWritten++;
-    streamBuffer[streamBufferPos + bytesWritten++] = 0;
-    createShort(streamBuffer, streamBufferPos + bytesWritten, gfp.preset);
-    bytesWritten += 2;
-    createInteger(streamBuffer, streamBufferPos + bytesWritten, musicLength);
-    bytesWritten += 4;
-    createShort(streamBuffer, streamBufferPos + bytesWritten, musicCRC);
-    bytesWritten += 2;
-    for (var i = 0; i < bytesWritten; i++) {
-      crc = crcUpdateLookup(streamBuffer[streamBufferPos + i], crc);
-    }
-    createShort(streamBuffer, streamBufferPos + bytesWritten, crc);
-    bytesWritten += 2;
-    return bytesWritten;
-  }
-  function skipId3v2(fpStream) {
-    fpStream.seek(0);
-    var id3v2Header = new_byte$1(10);
-    fpStream.readFully(id3v2Header);
-    var id3v2TagSize;
-    if (!new String(id3v2Header, "ISO-8859-1").startsWith("ID3")) {
-      id3v2TagSize = ((id3v2Header[6] & 127) << 21 | (id3v2Header[7] & 127) << 14 | (id3v2Header[8] & 127) << 7 | id3v2Header[9] & 127) + id3v2Header.length;
-    } else {
-      id3v2TagSize = 0;
-    }
-    return id3v2TagSize;
-  }
-  this.getLameTagFrame = function(gfp, buffer) {
-    var gfc = gfp.internal_flags;
-    if (!gfp.bWriteVbrTag) {
-      return 0;
-    }
-    if (gfc.Class_ID != Lame.LAME_ID) {
-      return 0;
-    }
-    if (gfc.VBR_seek_table.pos <= 0) {
-      return 0;
-    }
-    if (buffer.length < gfc.VBR_seek_table.TotalFrameSize) {
-      return gfc.VBR_seek_table.TotalFrameSize;
-    }
-    Arrays.fill(buffer, 0, gfc.VBR_seek_table.TotalFrameSize, 0);
-    setLameTagFrameHeader(gfp, buffer);
-    var toc = new_byte$1(NUMTOCENTRIES);
-    if (gfp.free_format) {
-      for (var i = 1; i < NUMTOCENTRIES; ++i)
-        toc[i] = 255 & 255 * i / 100;
-    } else {
-      xingSeekTable(gfc.VBR_seek_table, toc);
-    }
-    var streamIndex = gfc.sideinfo_len;
-    if (gfp.error_protection)
-      streamIndex -= 2;
-    if (gfp.VBR == VbrMode.vbr_off) {
-      buffer[streamIndex++] = 255 & VBRTag1.charAt(0);
-      buffer[streamIndex++] = 255 & VBRTag1.charAt(1);
-      buffer[streamIndex++] = 255 & VBRTag1.charAt(2);
-      buffer[streamIndex++] = 255 & VBRTag1.charAt(3);
-    } else {
-      buffer[streamIndex++] = 255 & VBRTag0.charAt(0);
-      buffer[streamIndex++] = 255 & VBRTag0.charAt(1);
-      buffer[streamIndex++] = 255 & VBRTag0.charAt(2);
-      buffer[streamIndex++] = 255 & VBRTag0.charAt(3);
-    }
-    createInteger(
-      buffer,
-      streamIndex,
-      FRAMES_FLAG + BYTES_FLAG + TOC_FLAG + VBR_SCALE_FLAG
-    );
-    streamIndex += 4;
-    createInteger(buffer, streamIndex, gfc.VBR_seek_table.nVbrNumFrames);
-    streamIndex += 4;
-    var streamSize = gfc.VBR_seek_table.nBytesWritten + gfc.VBR_seek_table.TotalFrameSize;
-    createInteger(buffer, streamIndex, 0 | streamSize);
-    streamIndex += 4;
-    System.arraycopy(toc, 0, buffer, streamIndex, toc.length);
-    streamIndex += toc.length;
-    if (gfp.error_protection) {
-      bs.CRC_writeheader(gfc, buffer);
-    }
-    var crc = 0;
-    for (var i = 0; i < streamIndex; i++)
-      crc = crcUpdateLookup(buffer[i], crc);
-    streamIndex += putLameVBR(gfp, streamSize, buffer, streamIndex, crc);
-    return gfc.VBR_seek_table.TotalFrameSize;
-  };
-  this.putVbrTag = function(gfp, stream) {
-    var gfc = gfp.internal_flags;
-    if (gfc.VBR_seek_table.pos <= 0)
-      return -1;
-    stream.seek(stream.length());
-    if (stream.length() == 0)
-      return -1;
-    var id3v2TagSize = skipId3v2(stream);
-    stream.seek(id3v2TagSize);
-    var buffer = new_byte$1(MAXFRAMESIZE);
-    var bytes = getLameTagFrame(gfp, buffer);
-    if (bytes > buffer.length) {
-      return -1;
-    }
-    if (bytes < 1) {
-      return 0;
-    }
-    stream.write(buffer, 0, bytes);
-    return 0;
-  };
-}
-var new_byte = common.new_byte;
-var assert = common.assert;
-function GetAudio() {
-  this.setModules = function(parse2, mpg2) {
-  };
-}
-function Parse() {
-  this.setModules = function(ver2, id32, pre2) {
-  };
-}
-function MPGLib() {
-}
-function ID3Tag() {
-  this.setModules = function(_bits, _ver) {
-  };
-}
-function Mp3Encoder$1(channels, samplerate, kbps) {
-  if (arguments.length != 3) {
-    console.error("WARN: Mp3Encoder(channels, samplerate, kbps) not specified");
-    channels = 1;
-    samplerate = 44100;
-    kbps = 128;
-  }
-  var lame = new Lame$1();
-  var gaud = new GetAudio();
-  var ga = new GainAnalysis$1();
-  var bs = new BitStream$1();
-  var p2 = new Presets();
-  var qupvt = new QuantizePVT();
-  var qu = new Quantize();
-  var vbr = new VBRTag();
-  var ver = new Version();
-  var id3 = new ID3Tag();
-  var rv = new Reservoir();
-  var tak = new Takehiro();
-  var parse = new Parse();
-  var mpg = new MPGLib();
-  lame.setModules(ga, bs, p2, qupvt, qu, vbr, ver, id3, mpg);
-  bs.setModules(ga, mpg, ver, vbr);
-  id3.setModules(bs, ver);
-  p2.setModules(lame);
-  qu.setModules(bs, rv, qupvt, tak);
-  qupvt.setModules(tak, rv, lame.enc.psy);
-  rv.setModules(bs);
-  tak.setModules(qupvt);
-  vbr.setModules(lame, bs, ver);
-  gaud.setModules(parse, mpg);
-  parse.setModules(ver, id3, p2);
-  var gfp = lame.lame_init();
-  gfp.num_channels = channels;
-  gfp.in_samplerate = samplerate;
-  gfp.brate = kbps;
-  gfp.mode = MPEGMode.STEREO;
-  gfp.quality = 3;
-  gfp.bWriteVbrTag = false;
-  gfp.disable_reservoir = true;
-  gfp.write_id3tag_automatic = false;
-  lame.lame_init_params(gfp);
-  var maxSamples = 1152;
-  var mp3buf_size = 0 | 1.25 * maxSamples + 7200;
-  var mp3buf = new_byte(mp3buf_size);
-  this.encodeBuffer = function(left, right) {
-    if (channels == 1) {
-      right = left;
-    }
-    assert(left.length == right.length);
-    if (left.length > maxSamples) {
-      maxSamples = left.length;
-      mp3buf_size = 0 | 1.25 * maxSamples + 7200;
-      mp3buf = new_byte(mp3buf_size);
-    }
-    var _sz = lame.lame_encode_buffer(
-      gfp,
-      left,
-      right,
-      left.length,
-      mp3buf,
-      0,
-      mp3buf_size
-    );
-    return new Int8Array(mp3buf.subarray(0, _sz));
-  };
-  this.flush = function() {
-    var _sz = lame.lame_encode_flush(gfp, mp3buf, 0, mp3buf_size);
-    return new Int8Array(mp3buf.subarray(0, _sz));
-  };
-}
-function fourccToInt(fourcc) {
-  return fourcc.charCodeAt(0) << 24 | fourcc.charCodeAt(1) << 16 | fourcc.charCodeAt(2) << 8 | fourcc.charCodeAt(3);
-}
-fourccToInt("RIFF");
-fourccToInt("WAVE");
-fourccToInt("fmt ");
-fourccToInt("data");
-class Mp3Encoder {
-  constructor(config) {
-    this.bitRate = config.bitRate;
-    this.sampleRate = config.sampleRate;
-    this.dataBuffer = [];
-    this.encoder = new Mp3Encoder$1(1, this.sampleRate, this.bitRate);
-  }
-  encode(arrayBuffer) {
-    const maxSamples = 1152;
-    const samples = this._convertBuffer(arrayBuffer);
-    let remaining = samples.length;
-    for (let i = 0; remaining >= 0; i += maxSamples) {
-      const left = samples.subarray(i, i + maxSamples);
-      const buffer = this.encoder.encodeBuffer(left);
-      this.dataBuffer.push(new Int8Array(buffer));
-      remaining -= maxSamples;
-    }
-  }
-  finish() {
-    this.dataBuffer.push(this.encoder.flush());
-    const blob = new Blob(this.dataBuffer, { type: "audio/mp3" });
-    this.dataBuffer = [];
-    return {
-      id: Date.now(),
-      blob,
-      url: URL.createObjectURL(blob)
     };
   }
-  _floatTo16BitPCM(input, output) {
-    for (let i = 0; i < input.length; i++) {
-      const s = Math.max(-1, Math.min(1, input[i]));
-      output[i] = s < 0 ? s * 32768 : s * 32767;
+  unimplemented(msg = "not implemented") {
+    return new Capacitor.Exception(msg, ExceptionCode.Unimplemented);
+  }
+  unavailable(msg = "not available") {
+    return new Capacitor.Exception(msg, ExceptionCode.Unavailable);
+  }
+  async removeListener(eventName, listenerFunc) {
+    const listeners = this.listeners[eventName];
+    if (!listeners) {
+      return;
+    }
+    const index = listeners.indexOf(listenerFunc);
+    this.listeners[eventName].splice(index, 1);
+    if (!this.listeners[eventName].length) {
+      this.removeWindowListener(this.windowListeners[eventName]);
     }
   }
-  _convertBuffer(arrayBuffer) {
-    const data = new Float32Array(arrayBuffer);
-    const out = new Int16Array(arrayBuffer.length);
-    this._floatTo16BitPCM(data, out);
-    return out;
+  addWindowListener(handle) {
+    window.addEventListener(handle.windowEventName, handle.handler);
+    handle.registered = true;
+  }
+  removeWindowListener(handle) {
+    if (!handle) {
+      return;
+    }
+    window.removeEventListener(handle.windowEventName, handle.handler);
+    handle.registered = false;
   }
 }
+const encode = (str) => encodeURIComponent(str).replace(/%(2[346B]|5E|60|7C)/g, decodeURIComponent).replace(/[()]/g, escape);
+const decode = (str) => str.replace(/(%[\dA-F]{2})+/gi, decodeURIComponent);
+class CapacitorCookiesPluginWeb extends WebPlugin {
+  async getCookies() {
+    const cookies = document.cookie;
+    const cookieMap = {};
+    cookies.split(";").forEach((cookie) => {
+      if (cookie.length <= 0)
+        return;
+      let [key, value] = cookie.replace(/=/, "CAP_COOKIE").split("CAP_COOKIE");
+      key = decode(key).trim();
+      value = decode(value).trim();
+      cookieMap[key] = value;
+    });
+    return cookieMap;
+  }
+  async setCookie(options2) {
+    try {
+      const encodedKey = encode(options2.key);
+      const encodedValue = encode(options2.value);
+      const expires = `; expires=${(options2.expires || "").replace("expires=", "")}`;
+      const path = (options2.path || "/").replace("path=", "");
+      const domain = options2.url != null && options2.url.length > 0 ? `domain=${options2.url}` : "";
+      document.cookie = `${encodedKey}=${encodedValue || ""}${expires}; path=${path}; ${domain};`;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+  async deleteCookie(options2) {
+    try {
+      document.cookie = `${options2.key}=; Max-Age=0`;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+  async clearCookies() {
+    try {
+      const cookies = document.cookie.split(";") || [];
+      for (const cookie of cookies) {
+        document.cookie = cookie.replace(/^ +/, "").replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
+      }
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+  async clearAllCookies() {
+    try {
+      await this.clearCookies();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+}
+registerPlugin("CapacitorCookies", {
+  web: () => new CapacitorCookiesPluginWeb()
+});
+const readBlobAsBase64 = async (blob) => new Promise((resolve3, reject) => {
+  const reader = new FileReader();
+  reader.onload = () => {
+    const base64String = reader.result;
+    resolve3(base64String.indexOf(",") >= 0 ? base64String.split(",")[1] : base64String);
+  };
+  reader.onerror = (error) => reject(error);
+  reader.readAsDataURL(blob);
+});
+const normalizeHttpHeaders = (headers = {}) => {
+  const originalKeys = Object.keys(headers);
+  const loweredKeys = Object.keys(headers).map((k) => k.toLocaleLowerCase());
+  const normalized = loweredKeys.reduce((acc, key, index) => {
+    acc[key] = headers[originalKeys[index]];
+    return acc;
+  }, {});
+  return normalized;
+};
+const buildUrlParams = (params, shouldEncode = true) => {
+  if (!params)
+    return null;
+  const output = Object.entries(params).reduce((accumulator, entry) => {
+    const [key, value] = entry;
+    let encodedValue;
+    let item;
+    if (Array.isArray(value)) {
+      item = "";
+      value.forEach((str) => {
+        encodedValue = shouldEncode ? encodeURIComponent(str) : str;
+        item += `${key}=${encodedValue}&`;
+      });
+      item.slice(0, -1);
+    } else {
+      encodedValue = shouldEncode ? encodeURIComponent(value) : value;
+      item = `${key}=${encodedValue}`;
+    }
+    return `${accumulator}&${item}`;
+  }, "");
+  return output.substr(1);
+};
+const buildRequestInit = (options2, extra = {}) => {
+  const output = Object.assign({ method: options2.method || "GET", headers: options2.headers }, extra);
+  const headers = normalizeHttpHeaders(options2.headers);
+  const type = headers["content-type"] || "";
+  if (typeof options2.data === "string") {
+    output.body = options2.data;
+  } else if (type.includes("application/x-www-form-urlencoded")) {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(options2.data || {})) {
+      params.set(key, value);
+    }
+    output.body = params.toString();
+  } else if (type.includes("multipart/form-data")) {
+    const form = new FormData();
+    if (options2.data instanceof FormData) {
+      options2.data.forEach((value, key) => {
+        form.append(key, value);
+      });
+    } else {
+      for (const key of Object.keys(options2.data)) {
+        form.append(key, options2.data[key]);
+      }
+    }
+    output.body = form;
+    const headers2 = new Headers(output.headers);
+    headers2.delete("content-type");
+    output.headers = headers2;
+  } else if (type.includes("application/json") || typeof options2.data === "object") {
+    output.body = JSON.stringify(options2.data);
+  }
+  return output;
+};
+class CapacitorHttpPluginWeb extends WebPlugin {
+  async request(options2) {
+    const requestInit = buildRequestInit(options2, options2.webFetchExtra);
+    const urlParams = buildUrlParams(options2.params, options2.shouldEncodeUrlParams);
+    const url = urlParams ? `${options2.url}?${urlParams}` : options2.url;
+    const response = await fetch(url, requestInit);
+    const contentType = response.headers.get("content-type") || "";
+    let { responseType = "text" } = response.ok ? options2 : {};
+    if (contentType.includes("application/json")) {
+      responseType = "json";
+    }
+    let data2;
+    let blob;
+    switch (responseType) {
+      case "arraybuffer":
+      case "blob":
+        blob = await response.blob();
+        data2 = await readBlobAsBase64(blob);
+        break;
+      case "json":
+        data2 = await response.json();
+        break;
+      case "document":
+      case "text":
+      default:
+        data2 = await response.text();
+    }
+    const headers = {};
+    response.headers.forEach((value, key) => {
+      headers[key] = value;
+    });
+    return {
+      data: data2,
+      headers,
+      status: response.status,
+      url: response.url
+    };
+  }
+  async get(options2) {
+    return this.request(Object.assign(Object.assign({}, options2), { method: "GET" }));
+  }
+  async post(options2) {
+    return this.request(Object.assign(Object.assign({}, options2), { method: "POST" }));
+  }
+  async put(options2) {
+    return this.request(Object.assign(Object.assign({}, options2), { method: "PUT" }));
+  }
+  async patch(options2) {
+    return this.request(Object.assign(Object.assign({}, options2), { method: "PATCH" }));
+  }
+  async delete(options2) {
+    return this.request(Object.assign(Object.assign({}, options2), { method: "DELETE" }));
+  }
+}
+registerPlugin("CapacitorHttp", {
+  web: () => new CapacitorHttpPluginWeb()
+});
+const VoiceRecorder = registerPlugin("VoiceRecorder", {
+  web: () => Promise.resolve().then(function() {
+    return web;
+  }).then((m) => new m.VoiceRecorderWeb())
+});
 class Recorder {
   constructor(options2 = {}) {
     this.beforeRecording = options2.beforeRecording;
@@ -26387,32 +17726,55 @@ class Recorder {
     this.duration = 0;
     this.volume = 0;
     this._duration = 0;
+    this.timerInterval = -1;
   }
-  start() {
-    const constraints = {
-      video: false,
-      audio: {
-        channelCount: 1,
-        echoCancellation: false
-      }
-    };
+  startTimer() {
+    this.timerInterval = setInterval(() => this.duration++, 1e3);
+  }
+  stopTimer() {
+    clearInterval(this.timerInterval);
+  }
+  async start() {
+    let res = await VoiceRecorder.canDeviceVoiceRecord();
+    if (!res.value) {
+      return this._micError("No recording device available!");
+    }
+    const audioRequest = await VoiceRecorder.requestAudioRecordingPermission();
+    if (!audioRequest.value) {
+      return this._micError("Recording permission not granted!");
+    }
+    res = await VoiceRecorder.startRecording();
+    this.startTimer();
     this.beforeRecording && this.beforeRecording("start recording");
-    navigator.mediaDevices.getUserMedia(constraints).then(this._micCaptured.bind(this)).catch(this._micError.bind(this));
     this.isPause = false;
     this.isRecording = true;
-    if (!this.lameEncoder) {
-      this.lameEncoder = new Mp3Encoder(this.encoderOptions);
-    }
   }
-  stop() {
-    this.stream.getTracks().forEach((track2) => track2.stop());
-    this.input.disconnect();
-    this.processor.disconnect();
-    this.context.close();
-    let record = null;
-    record = this.lameEncoder.finish();
-    record.duration = this.duration;
+  b64toBlob(b64Data, contentType = "", sliceSize = 512) {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+    const blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  }
+  async stop() {
+    this.stopTimer();
+    const res = await VoiceRecorder.stopRecording();
+    const base64Sound = res.value.recordDataBase64;
+    const mimeType = res.value.mimeType;
+    const record = {
+      blob: this.b64toBlob(base64Sound, mimeType),
+      duration: res.value.msDuration
+    };
     this.records.push(record);
+    console.log("added to recording");
     this._duration = 0;
     this.duration = 0;
     this.isPause = false;
@@ -26423,13 +17785,13 @@ class Recorder {
     this.stream.getTracks().forEach((track2) => track2.stop());
     this.input.disconnect();
     this.processor.disconnect();
-    this._duration = this.duration;
+    this._duration = this.duration * 1e3;
     this.isPause = true;
     this.pauseRecording && this.pauseRecording("pause recording");
   }
   _micCaptured(stream) {
     this.context = new (window.AudioContext || window.webkitAudioContext)();
-    this.duration = this._duration;
+    this.duration = this._duration * 1e3;
     this.input = this.context.createMediaStreamSource(stream);
     this.processor = this.context.createScriptProcessor(this.bufferSize, 1, 1);
     this.stream = stream;
@@ -26509,6 +17871,7 @@ const _sfc_main$a = {
     showEmojis: { type: Boolean, required: true },
     showFooter: { type: Boolean, required: true },
     acceptedFiles: { type: String, required: true },
+    captureFiles: { type: String, required: true },
     textareaActionEnabled: { type: Boolean, required: true },
     textareaAutoFocus: { type: Boolean, required: true },
     userTagsEnabled: { type: Boolean, required: true },
@@ -27024,7 +18387,7 @@ const _hoisted_3$8 = { class: "vac-dot-audio-record-time" };
 const _hoisted_4$8 = ["placeholder"];
 const _hoisted_5$6 = { class: "vac-icon-textarea" };
 const _hoisted_6$3 = { key: 1 };
-const _hoisted_7$3 = ["accept"];
+const _hoisted_7$3 = ["accept", "capture"];
 function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_room_emojis = resolveComponent("room-emojis");
   const _component_room_users_tag = resolveComponent("room-users-tag");
@@ -27071,8 +18434,8 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
       renderList(_ctx.$slots, (i, name) => {
         return {
           name,
-          fn: withCtx((data) => [
-            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+          fn: withCtx((data2) => [
+            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
           ])
         };
       })
@@ -27085,8 +18448,8 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
       renderList(_ctx.$slots, (i, name) => {
         return {
           name,
-          fn: withCtx((data) => [
-            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+          fn: withCtx((data2) => [
+            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
           ])
         };
       })
@@ -27202,6 +18565,7 @@ function _sfc_render$a(_ctx, _cache, $props, $setup, $data, $options) {
           type: "file",
           multiple: "",
           accept: $props.acceptedFiles,
+          capture: $props.captureFiles,
           style: { "display": "none" },
           onChange: _cache[21] || (_cache[21] = ($event) => $options.onFileChange($event.target.files))
         }, null, 40, _hoisted_7$3)) : createCommentVNode("", true),
@@ -27309,8 +18673,8 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
       renderList(_ctx.$slots, (idx, name) => {
         return {
           name,
-          fn: withCtx((data) => [
-            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+          fn: withCtx((data2) => [
+            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
           ])
         };
       })
@@ -27448,11 +18812,11 @@ const _sfc_main$7 = {
     }
   },
   mounted() {
-    const ref = this.$refs["imageRef" + this.index];
-    if (ref) {
+    const ref2 = this.$refs["imageRef" + this.index];
+    if (ref2) {
       this.imageResponsive = {
-        maxHeight: ref.clientWidth - 18,
-        loaderTop: ref.clientHeight / 2 - 9
+        maxHeight: ref2.clientWidth - 18,
+        loaderTop: ref2.clientHeight / 2 - 9
       };
     }
   },
@@ -27507,8 +18871,8 @@ function _sfc_render$7(_ctx, _cache, $props, $setup, $data, $options) {
         renderList(_ctx.$slots, (idx, name) => {
           return {
             name,
-            fn: withCtx((data) => [
-              renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+            fn: withCtx((data2) => [
+              renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
             ])
           };
         })
@@ -27622,8 +18986,8 @@ function _sfc_render$6(_ctx, _cache, $props, $setup, $data, $options) {
           renderList(_ctx.$slots, (idx, name) => {
             return {
               name,
-              fn: withCtx((data) => [
-                renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+              fn: withCtx((data2) => [
+                renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
               ])
             };
           })
@@ -27823,8 +19187,8 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
                 renderList(_ctx.$slots, (idx, name) => {
                   return {
                     name,
-                    fn: withCtx((data) => [
-                      renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                    fn: withCtx((data2) => [
+                      renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
                     ])
                   };
                 })
@@ -28209,8 +19573,8 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
           renderList(_ctx.$slots, (idx, name) => {
             return {
               name,
-              fn: withCtx((data) => [
-                renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+              fn: withCtx((data2) => [
+                renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
               ])
             };
           })
@@ -28264,8 +19628,8 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
               renderList(_ctx.$slots, (i, name) => {
                 return {
                   name,
-                  fn: withCtx((data) => [
-                    renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                  fn: withCtx((data2) => [
+                    renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
                   ])
                 };
               })
@@ -28284,8 +19648,8 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
               renderList(_ctx.$slots, (idx, name) => {
                 return {
                   name,
-                  fn: withCtx((data) => [
-                    renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                  fn: withCtx((data2) => [
+                    renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
                   ])
                 };
               })
@@ -28303,8 +19667,8 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
               renderList(_ctx.$slots, (i, name) => {
                 return {
                   name,
-                  fn: withCtx((data) => [
-                    renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                  fn: withCtx((data2) => [
+                    renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
                   ])
                 };
               })
@@ -28319,8 +19683,8 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
                 renderList(_ctx.$slots, (i, name) => {
                   return {
                     name,
-                    fn: withCtx((data) => [
-                      renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                    fn: withCtx((data2) => [
+                      renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
                     ])
                   };
                 })
@@ -28362,8 +19726,8 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
               renderList(_ctx.$slots, (i, name) => {
                 return {
                   name,
-                  fn: withCtx((data) => [
-                    renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                  fn: withCtx((data2) => [
+                    renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
                   ])
                 };
               })
@@ -28432,6 +19796,7 @@ const _sfc_main$2 = {
     showNewMessagesDivider: { type: Boolean, required: true },
     showFooter: { type: Boolean, required: true },
     acceptedFiles: { type: String, required: true },
+    captureFiles: { type: String, required: true },
     textFormatting: { type: Object, required: true },
     linkOptions: { type: Object, required: true },
     loadingRooms: { type: Boolean, required: true },
@@ -28630,10 +19995,10 @@ const _sfc_main$2 = {
         (message) => message._id !== messageId
       );
     },
-    onMessageAdded({ message, index, ref }) {
+    onMessageAdded({ message, index, ref: ref2 }) {
       if (index !== this.messages.length - 1)
         return;
-      const autoScrollOffset = ref.offsetHeight + 60;
+      const autoScrollOffset = ref2.offsetHeight + 60;
       setTimeout(() => {
         const scrolledUp = this.getBottomScroll(this.$refs.scrollContainer) > autoScrollOffset;
         if (message.senderId === this.currentUserId) {
@@ -28813,8 +20178,8 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
       renderList(_ctx.$slots, (i, name) => {
         return {
           name,
-          fn: withCtx((data) => [
-            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+          fn: withCtx((data2) => [
+            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
           ])
         };
       })
@@ -28832,8 +20197,8 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
         renderList(_ctx.$slots, (idx, name) => {
           return {
             name,
-            fn: withCtx((data) => [
-              renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+            fn: withCtx((data2) => [
+              renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
             ])
           };
         })
@@ -28864,8 +20229,8 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
               renderList(_ctx.$slots, (idx, name) => {
                 return {
                   name,
-                  fn: withCtx((data) => [
-                    renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                  fn: withCtx((data2) => [
+                    renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
                   ])
                 };
               })
@@ -28911,8 +20276,8 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
                     renderList(_ctx.$slots, (idx, name) => {
                       return {
                         name,
-                        fn: withCtx((data) => [
-                          renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                        fn: withCtx((data2) => [
+                          renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
                         ])
                       };
                     })
@@ -28961,6 +20326,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
       "show-emojis": $props.showEmojis,
       "show-footer": $props.showFooter,
       "accepted-files": $props.acceptedFiles,
+      "capture-files": $props.captureFiles,
       "textarea-action-enabled": $props.textareaActionEnabled,
       "textarea-auto-focus": $props.textareaAutoFocus,
       "user-tags-enabled": $props.userTagsEnabled,
@@ -28983,12 +20349,12 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
       renderList(_ctx.$slots, (idx, name) => {
         return {
           name,
-          fn: withCtx((data) => [
-            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+          fn: withCtx((data2) => [
+            renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data2)))
           ])
         };
       })
-    ]), 1032, ["room", "room-id", "room-message", "text-messages", "show-send-icon", "show-files", "show-audio", "show-emojis", "show-footer", "accepted-files", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "templates-text", "text-formatting", "link-options", "audio-bit-rate", "audio-sample-rate", "init-reply-message", "init-edit-message", "dropped-files", "emoji-data-source"])
+    ]), 1032, ["room", "room-id", "room-message", "text-messages", "show-send-icon", "show-files", "show-audio", "show-emojis", "show-footer", "accepted-files", "capture-files", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "templates-text", "text-formatting", "link-options", "audio-bit-rate", "audio-sample-rate", "init-reply-message", "init-edit-message", "dropped-files", "emoji-data-source"])
   ], 544)), [
     [vShow, $props.isMobile && !$props.showRoomsList || !$props.isMobile || $props.singleRoom]
   ]);
@@ -29140,12 +20506,14 @@ const defaultThemeStyles = {
       background: "#fff",
       backgroundMe: "#ccf2cf",
       color: "#0a0a0a",
+      colorMe: "#0a0a0a",
       colorStarted: "#9ca6af",
       backgroundDeleted: "#dadfe2",
       backgroundSelected: "#c2dcf2",
       colorDeleted: "#757e85",
       colorUsername: "#9ca6af",
       colorTimestamp: "#828c94",
+      colorTimestampMe: "#828c94",
       backgroundDate: "#e5effa",
       colorDate: "#505a62",
       backgroundSystem: "#e5effa",
@@ -29411,11 +20779,13 @@ const cssThemeVars = ({
     "--chat-message-color-deleted": message.colorDeleted,
     "--chat-message-color-username": message.colorUsername,
     "--chat-message-color-timestamp": message.colorTimestamp,
+    "--chat-message-color-timestamp-me": message.colorTimestampMe,
     "--chat-message-bg-color-date": message.backgroundDate,
     "--chat-message-color-date": message.colorDate,
     "--chat-message-bg-color-system": message.backgroundSystem,
     "--chat-message-color-system": message.colorSystem,
     "--chat-message-color": message.color,
+    "--chat-message-color-me": message.colorMe,
     "--chat-message-bg-color-media": message.backgroundMedia,
     "--chat-message-bg-color-reply": message.backgroundReply,
     "--chat-message-color-reply-username": message.colorReplyUsername,
@@ -29482,7 +20852,7 @@ const cssThemeVars = ({
     "--chat-icon-color-audio-confirm": icons.audioConfirm
   };
 };
-var _style_0 = '.vac-fade-spinner-enter-from{opacity:0}.vac-fade-spinner-enter-active{transition:opacity .8s}.vac-fade-spinner-leave-active{transition:opacity .2s;opacity:0}.vac-fade-image-enter-from{opacity:0}.vac-fade-image-enter-active{transition:opacity 1s}.vac-fade-image-leave-active{transition:opacity .5s;opacity:0}.vac-fade-message-enter-from{opacity:0}.vac-fade-message-enter-active{transition:opacity .5s}.vac-fade-message-leave-active{transition:opacity .2s;opacity:0}.vac-slide-left-enter-active,.vac-slide-right-enter-active{transition:all .3s ease;transition-property:transform,opacity}.vac-slide-left-leave-active,.vac-slide-right-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)!important;transition-property:transform,opacity}.vac-slide-left-enter-from,.vac-slide-left-leave-to{transform:translate(10px);opacity:0}.vac-slide-right-enter-from,.vac-slide-right-leave-to{transform:translate(-10px);opacity:0}.vac-slide-up-enter-active{transition:all .3s ease}.vac-slide-up-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)}.vac-slide-up-enter-from,.vac-slide-up-leave-to{transform:translateY(10px);opacity:0}.vac-bounce-enter-active{animation:vac-bounce-in .5s}.vac-bounce-leave-active{animation:vac-bounce-in .3s reverse}@keyframes vac-bounce-in{0%{transform:scale(0)}50%{transform:scale(1.05)}to{transform:scale(1)}}.vac-fade-preview-enter{opacity:0}.vac-fade-preview-enter-active{transition:opacity .1s}.vac-fade-preview-leave-active{transition:opacity .2s;opacity:0}.vac-bounce-preview-enter-active{animation:vac-bounce-image-in .4s}.vac-bounce-preview-leave-active{animation:vac-bounce-image-in .3s reverse}@keyframes vac-bounce-image-in{0%{transform:scale(.6)}to{transform:scale(1)}}.vac-menu-list{border-radius:4px;display:block;cursor:pointer;background:var(--chat-dropdown-bg-color);padding:6px 0}.vac-menu-list :hover{background:var(--chat-dropdown-bg-color-hover);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-list :not(:hover){transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-item{-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-flex:1;-ms-flex:1 1 100%;flex:1 1 100%;min-height:30px;padding:5px 16px;position:relative;white-space:nowrap;line-height:30px}.vac-menu-options{position:absolute;right:10px;top:20px;z-index:9999;min-width:150px;display:inline-block;border-radius:4px;font-size:14px;color:var(--chat-color);overflow-y:auto;overflow-x:hidden;contain:content;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-app-border{border:var(--chat-border-style)}.vac-app-border-t{border-top:var(--chat-border-style)}.vac-app-border-r{border-right:var(--chat-border-style)}.vac-app-border-b{border-bottom:var(--chat-border-style)}.vac-app-box-shadow{transition:all .5s;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-item-clickable{cursor:pointer}.vac-vertical-center{display:flex;align-items:center;height:100%}.vac-vertical-center .vac-vertical-container{width:100%;text-align:center}.vac-svg-button{max-height:30px;display:flex;cursor:pointer;transition:all .2s}.vac-svg-button:hover{transform:scale(1.1);opacity:.7}.vac-avatar{background-size:cover;background-position:center center;background-repeat:no-repeat;background-color:#ddd;height:42px;width:42px;min-height:42px;min-width:42px;margin-right:15px;border-radius:50%}.vac-blur-loading{filter:blur(3px)}.vac-badge-counter{height:13px;width:auto;min-width:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:3px;font-size:11px;font-weight:500}.vac-text-ellipsis{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-text-bold{font-weight:700}.vac-text-italic{font-style:italic}.vac-text-strike{text-decoration:line-through}.vac-text-underline{text-decoration:underline}.vac-text-inline-code{display:inline-block;font-size:12px;color:var(--chat-markdown-color);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:2px 0;padding:2px 3px}.vac-text-multiline-code{display:block;font-size:12px;color:var(--chat-markdown-color-multi);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:4px 0;padding:7px}.vac-text-tag{color:var(--chat-message-color-tag);cursor:pointer}.vac-file-container{display:flex;align-content:center;justify-content:center;flex-wrap:wrap;text-align:center;background:var(--chat-bg-color-input);border:var(--chat-border-style-input);border-radius:4px;padding:10px}.vac-file-container svg{height:28px;width:28px}.vac-file-container .vac-text-extension{font-size:12px;color:var(--chat-message-color-file-extension);margin-top:-2px}.vac-card-window{width:100%;display:block;max-width:100%;background:var(--chat-content-bg-color);color:var(--chat-color);overflow-wrap:break-word;white-space:normal;border:var(--chat-container-border);border-radius:var(--chat-container-border-radius);box-shadow:var(--chat-container-box-shadow);-webkit-tap-highlight-color:transparent}.vac-card-window *{font-family:inherit}.vac-card-window a{color:#0d579c;font-weight:500}.vac-card-window .vac-chat-container{height:100%;display:flex}.vac-card-window .vac-chat-container input{min-width:10px}.vac-card-window .vac-chat-container textarea,.vac-card-window .vac-chat-container input[type=text],.vac-card-window .vac-chat-container input[type=search]{-webkit-appearance:none}.vac-media-preview{position:fixed;top:0;left:0;z-index:99;width:100vw;height:100vh;display:flex;align-items:center;background-color:#000c;outline:none}.vac-media-preview .vac-media-preview-container{height:calc(100% - 140px);width:calc(100% - 80px);padding:70px 40px;margin:0 auto}.vac-media-preview .vac-image-preview{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}.vac-media-preview video{width:100%;height:100%}.vac-media-preview .vac-svg-button{position:absolute;top:30px;right:30px;transform:scale(1.4)}@media only screen and (max-width: 768px){.vac-media-preview .vac-svg-button{top:20px;right:20px;transform:scale(1.2)}.vac-media-preview .vac-media-preview-container{width:calc(100% - 40px);padding:70px 20px}}.vac-col-messages{position:relative;height:100%;flex:1;overflow:hidden;display:flex;flex-flow:column}.vac-col-messages .vac-container-center{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.vac-col-messages .vac-room-empty{font-size:14px;color:#9ca6af;font-style:italic;line-height:20px;white-space:pre-line}.vac-col-messages .vac-room-empty div{padding:0 10%}.vac-col-messages .vac-container-scroll{background:var(--chat-content-bg-color);flex:1;overflow-y:auto;margin-right:1px;margin-top:65px;-webkit-overflow-scrolling:touch}.vac-col-messages .vac-container-scroll.vac-scroll-smooth{scroll-behavior:smooth}.vac-col-messages .vac-messages-container{padding:0 5px 5px}.vac-col-messages .vac-text-started{font-size:14px;color:var(--chat-message-color-started);font-style:italic;text-align:center;margin-top:25px;margin-bottom:20px}.vac-col-messages .vac-icon-scroll{position:absolute;bottom:80px;right:20px;padding:8px;background:var(--chat-bg-scroll-icon);border-radius:50%;box-shadow:0 1px 1px -1px #0003,0 1px 1px #00000024,0 1px 2px #0000001f;display:flex;cursor:pointer;z-index:10}.vac-col-messages .vac-icon-scroll svg{height:25px;width:25px}.vac-col-messages .vac-messages-count{position:absolute;top:-8px;left:11px;background-color:var(--chat-message-bg-color-scroll-counter);color:var(--chat-message-color-scroll-counter)}.vac-col-messages .vac-messages-hidden{opacity:0}@media only screen and (max-width: 768px){.vac-col-messages .vac-container-scroll{margin-top:50px}.vac-col-messages .vac-text-started{margin-top:20px}.vac-col-messages .vac-icon-scroll{bottom:70px}}.vac-room-header{position:absolute;display:flex;align-items:center;height:64px;width:100%;z-index:10;margin-right:1px;background:var(--chat-header-bg-color);border-top-right-radius:var(--chat-container-border-radius)}.vac-room-header .vac-room-wrapper{display:flex;align-items:center;min-width:0;height:100%;width:100%;padding:0 16px}.vac-room-header .vac-toggle-button{margin-right:15px}.vac-room-header .vac-toggle-button svg{height:26px;width:26px}.vac-room-header .vac-rotate-icon{transform:rotate(180deg)!important}.vac-room-header .vac-rotate-icon-init{transform:rotate(360deg)}.vac-room-header .vac-info-wrapper,.vac-room-header .vac-room-selection{display:flex;align-items:center;min-width:0;width:100%;height:100%}.vac-room-header .vac-room-selection .vac-selection-button{padding:8px 16px;color:var(--chat-color-button);background-color:var(--chat-bg-color-button);border-radius:4px;margin-right:10px;cursor:pointer;transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-button:hover{opacity:.7}.vac-room-header .vac-room-selection .vac-selection-button:active{opacity:.9}.vac-room-header .vac-room-selection .vac-selection-button .vac-selection-button-count{margin-left:6px;opacity:.9}.vac-room-header .vac-room-selection .vac-selection-cancel{display:flex;align-items:center;margin-left:auto;white-space:nowrap;color:var(--chat-color-button-clear);transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-cancel:hover{opacity:.7}.vac-room-header .vac-room-name{font-size:17px;font-weight:500;line-height:22px;color:var(--chat-header-color-name)}.vac-room-header .vac-room-info{font-size:13px;line-height:18px;color:var(--chat-header-color-info)}.vac-room-header .vac-room-options{margin-left:auto}@media only screen and (max-width: 768px){.vac-room-header{height:50px}.vac-room-header .vac-room-wrapper{padding:0 10px}.vac-room-header .vac-room-name{font-size:16px;line-height:22px}.vac-room-header .vac-room-info{font-size:12px;line-height:16px}.vac-room-header .vac-avatar{height:37px;width:37px;min-height:37px;min-width:37px}}.vac-room-footer{width:100%;border-bottom-right-radius:4px;z-index:10}.vac-box-footer{display:flex;position:relative;background:var(--chat-footer-bg-color);padding:10px 8px}.vac-textarea{max-height:300px;overflow-y:auto;height:20px;width:100%;line-height:20px;outline:0;resize:none;border-radius:20px;padding:12px 16px;box-sizing:content-box;font-size:16px;background:var(--chat-bg-color-input);color:var(--chat-color);caret-color:var(--chat-color-caret);border:var(--chat-border-style-input)}.vac-textarea::placeholder{color:var(--chat-color-placeholder);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-textarea-outline{border:1px solid var(--chat-border-color-input-selected);box-shadow:inset 0 0 0 1px var(--chat-border-color-input-selected)}.vac-icon-textarea,.vac-icon-textarea-left{display:flex;align-items:center}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea{margin-left:5px}.vac-icon-textarea-left{display:flex;align-items:center;margin-right:5px}.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea-left .vac-icon-microphone{fill:var(--chat-icon-color-microphone);margin:0 7px}.vac-icon-textarea-left .vac-dot-audio-record{height:15px;width:15px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-record);animation:vac-scaling .8s ease-in-out infinite alternate}@keyframes vac-scaling{0%{transform:scale(1);opacity:.4}to{transform:scale(1.1);opacity:1}}.vac-icon-textarea-left .vac-dot-audio-record-time{font-size:16px;color:var(--chat-color);margin-left:8px;width:45px}.vac-icon-textarea-left .vac-icon-audio-stop,.vac-icon-textarea-left .vac-icon-audio-confirm{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop svg,.vac-icon-textarea-left .vac-icon-audio-confirm svg{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop{margin-right:20px}.vac-icon-textarea-left .vac-icon-audio-stop #vac-icon-close-outline{fill:var(--chat-icon-color-audio-cancel)}.vac-icon-textarea-left .vac-icon-audio-confirm{margin-right:3px;margin-left:12px}.vac-icon-textarea-left .vac-icon-audio-confirm #vac-icon-checkmark{fill:var(--chat-icon-color-audio-confirm)}.vac-send-disabled,.vac-send-disabled svg{cursor:none!important;pointer-events:none!important;transform:none!important}@media only screen and (max-width: 768px){.vac-room-footer{width:100%}.vac-box-footer{padding:7px 2px 7px 7px}.vac-box-footer.vac-box-footer-border{border-top:var(--chat-border-style-input)}.vac-textarea{padding:7px;line-height:18px}.vac-textarea::placeholder{color:transparent}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 5px!important}}@media only screen and (max-height: 768px){.vac-textarea{max-height:120px}}.vac-emojis-container{width:calc(100% - 16px);padding:10px 8px;background:var(--chat-footer-bg-color);display:flex;align-items:center;overflow:auto}.vac-emojis-container .vac-emoji-element{padding:0 8px;font-size:30px;border-radius:4px;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-emojis-container .vac-emoji-element-active{background:var(--chat-footer-bg-color-tag-active)}@media only screen and (max-width: 768px){.vac-emojis-container{width:calc(100% - 10px);padding:7px 5px}.vac-emojis-container .vac-emoji-element{padding:0 7px;font-size:26px}}.vac-reply-container{display:flex;padding:10px 10px 0;background:var(--chat-footer-bg-color);align-items:center;width:calc(100% - 20px)}.vac-reply-container .vac-reply-box{width:100%;overflow:hidden;background:var(--chat-footer-bg-color-reply);border-radius:4px;padding:8px 10px}.vac-reply-container .vac-reply-info{overflow:hidden}.vac-reply-container .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-container .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content);white-space:pre-line}.vac-reply-container .vac-icon-reply{margin-left:10px}.vac-reply-container .vac-icon-reply svg{height:20px;width:20px}.vac-reply-container .vac-image-reply{max-height:100px;max-width:200px;margin:4px 10px 0 0;border-radius:4px}.vac-reply-container .vac-audio-reply{margin-right:10px}.vac-reply-container .vac-file-container{max-width:80px}@media only screen and (max-width: 768px){.vac-reply-container{padding:5px 8px;width:calc(100% - 16px)}}.vac-room-files-container{display:flex;align-items:center;padding:10px 6px 0;background:var(--chat-footer-bg-color)}.vac-room-files-container .vac-files-box{display:flex;overflow:auto;width:calc(100% - 30px)}.vac-room-files-container video{height:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-files-container .vac-icon-close{margin-left:auto}.vac-room-files-container .vac-icon-close svg{height:20px;width:20px}@media only screen and (max-width: 768px){.vac-files-container{padding:6px 4px 4px 2px}}.vac-room-file-container{display:flex;position:relative;margin:0 4px}.vac-room-file-container .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:100px;width:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-file-container .vac-file-container{height:80px;width:80px}.vac-room-file-container .vac-icon-remove{position:absolute;top:6px;left:6px;z-index:10}.vac-room-file-container .vac-icon-remove svg{height:20px;width:20px;border-radius:50%}.vac-room-file-container .vac-icon-remove:before{content:" ";position:absolute;width:100%;height:100%;background:rgba(0,0,0,.5);border-radius:50%;z-index:-1}.vac-tags-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-tags-container .vac-tags-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-tags-container .vac-tags-box-active{background:var(--chat-footer-bg-color-tag-active)}.vac-tags-container .vac-tags-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-tags-container .vac-tags-avatar{height:34px;width:34px;min-height:34px;min-width:34px}.vac-tags-container .vac-tags-username{font-size:14px}@media only screen and (max-width: 768px){.vac-tags-container .vac-tags-box{height:50px}.vac-tags-container .vac-tags-info{padding:0 12px}}.vac-template-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-template-container .vac-template-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-template-container .vac-template-active{background:var(--chat-footer-bg-color-tag-active)}.vac-template-container .vac-template-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-template-container .vac-template-tag{font-size:14px;font-weight:700;margin-right:10px}.vac-template-container .vac-template-text{font-size:14px}@media only screen and (max-width: 768px){.vac-template-container .vac-template-box{height:50px}.vac-template-container .vac-template-info{padding:0 12px}}.vac-rooms-container{display:flex;flex-flow:column;flex:0 0 25%;min-width:260px;max-width:500px;position:relative;background:var(--chat-sidemenu-bg-color);height:100%;border-top-left-radius:var(--chat-container-border-radius);border-bottom-left-radius:var(--chat-container-border-radius)}.vac-rooms-container.vac-rooms-container-full{flex:0 0 100%;max-width:100%}.vac-rooms-container .vac-rooms-empty{font-size:14px;color:#9ca6af;font-style:italic;text-align:center;margin:40px 0;line-height:20px;white-space:pre-line}.vac-rooms-container .vac-room-list{flex:1;position:relative;max-width:100%;cursor:pointer;padding:0 10px 5px;overflow-y:auto}.vac-rooms-container .vac-room-item{border-radius:8px;align-items:center;display:flex;flex:1 1 100%;margin-bottom:5px;padding:0 14px;position:relative;min-height:71px;transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-rooms-container .vac-room-item:hover{background:var(--chat-sidemenu-bg-color-hover)}.vac-rooms-container .vac-room-selected{color:var(--chat-sidemenu-color-active)!important;background:var(--chat-sidemenu-bg-color-active)!important}.vac-rooms-container .vac-room-selected:hover{background:var(--chat-sidemenu-bg-color-active)!important}@media only screen and (max-width: 768px){.vac-rooms-container .vac-room-list{padding:0 7px 5px}.vac-rooms-container .vac-room-item{min-height:60px;padding:0 8px}}.vac-room-container{display:flex;flex:1;align-items:center;width:100%}.vac-room-container .vac-name-container{flex:1}.vac-room-container .vac-title-container{display:flex;align-items:center;line-height:25px}.vac-room-container .vac-state-circle{width:9px;height:9px;border-radius:50%;background-color:var(--chat-room-color-offline);margin-right:6px;transition:.3s}.vac-room-container .vac-state-online{background-color:var(--chat-room-color-online)}.vac-room-container .vac-room-name{flex:1;color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-text-date{margin-left:5px;font-size:11px;color:var(--chat-room-color-timestamp)}.vac-room-container .vac-text-last{display:flex;align-items:center;font-size:12px;line-height:19px;color:var(--chat-room-color-message)}.vac-room-container .vac-message-new{color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-icon-check{display:flex;vertical-align:middle;height:14px;width:14px;margin-top:-2px;margin-right:2px}.vac-room-container .vac-icon-microphone{height:15px;width:15px;vertical-align:middle;margin:-3px 1px 0 -2px;fill:var(--chat-room-color-message)}.vac-room-container .vac-room-options-container{display:flex;margin-left:auto}.vac-room-container .vac-room-badge{background-color:var(--chat-room-bg-color-badge);color:var(--chat-room-color-badge);margin-left:5px}.vac-room-container .vac-list-room-options{height:19px;width:19px;align-items:center;margin-left:5px}.vac-box-empty{margin-top:10px}@media only screen and (max-width: 768px){.vac-box-empty{margin-top:7px}}.vac-box-search{position:sticky;display:flex;align-items:center;height:64px;padding:0 15px}.vac-box-search .vac-icon-search{display:flex;position:absolute;left:30px}.vac-box-search .vac-icon-search svg{width:18px;height:18px}.vac-box-search .vac-input{height:38px;width:100%;background:var(--chat-bg-color-input);color:var(--chat-color);font-size:15px;outline:0;caret-color:var(--chat-color-caret);padding:10px 10px 10px 40px;border:1px solid var(--chat-sidemenu-border-color-search);border-radius:20px}.vac-box-search .vac-input::placeholder{color:var(--chat-color-placeholder)}.vac-box-search .vac-add-icon{margin-left:auto;padding-left:10px}@media only screen and (max-width: 768px){.vac-box-search{height:58px}}.vac-message-wrapper .vac-card-info{border-radius:4px;text-align:center;margin:10px auto;font-size:12px;padding:4px;display:block;overflow-wrap:break-word;position:relative;white-space:normal;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-card-date{max-width:150px;font-weight:500;text-transform:uppercase;color:var(--chat-message-color-date);background-color:var(--chat-message-bg-color-date)}.vac-message-wrapper .vac-card-system{max-width:250px;padding:8px 4px;color:var(--chat-message-color-system);background-color:var(--chat-message-bg-color-system)}.vac-message-wrapper .vac-line-new{color:var(--chat-message-color-new-messages);position:relative;text-align:center;font-size:13px;padding:10px 0}.vac-message-wrapper .vac-line-new:after,.vac-message-wrapper .vac-line-new:before{border-top:1px solid var(--chat-message-color-new-messages);content:"";left:0;position:absolute;top:50%;width:calc(50% - 60px)}.vac-message-wrapper .vac-line-new:before{left:auto;right:0}.vac-message-wrapper .vac-message-box{display:flex;flex:0 0 50%;max-width:50%;justify-content:flex-start;line-height:1.4}.vac-message-wrapper .vac-avatar{height:28px;width:28px;min-height:28px;min-width:28px;margin:0 0 2px;align-self:flex-end}.vac-message-wrapper .vac-avatar-current-offset{margin-right:28px}.vac-message-wrapper .vac-avatar-offset{margin-left:28px}.vac-message-wrapper .vac-failure-container{position:relative;align-self:flex-end;height:20px;width:20px;margin:0 0 2px -4px;border-radius:50%;background-color:#f44336}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:6px}.vac-message-wrapper .vac-failure-container .vac-failure-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:15px;font-weight:700}.vac-message-wrapper .vac-message-container{position:relative;padding:2px 10px;align-items:end;min-width:100px;box-sizing:content-box}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-offset-current{margin-left:50%;justify-content:flex-end}.vac-message-wrapper .vac-message-card{background-color:var(--chat-message-bg-color);color:var(--chat-message-color);border-radius:8px;font-size:14px;padding:6px 9px 3px;white-space:pre-line;max-width:100%;-webkit-transition-property:box-shadow,opacity;transition-property:box-shadow,opacity;transition:box-shadow .28s cubic-bezier(.4,0,.2,1);will-change:box-shadow;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-message-highlight{box-shadow:0 1px 2px -1px #0000001a,0 1px 2px -1px #0000001c,0 1px 5px -1px #0000001c}.vac-message-wrapper .vac-message-current{background-color:var(--chat-message-bg-color-me)!important}.vac-message-wrapper .vac-message-deleted{color:var(--chat-message-color-deleted)!important;font-size:13px!important;font-style:italic!important;background-color:var(--chat-message-bg-color-deleted)!important}.vac-message-wrapper .vac-message-selected{background-color:var(--chat-message-bg-color-selected)!important;transition:background-color .2s}.vac-message-wrapper .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:250px;width:250px;max-width:100%;border-radius:4px;margin:4px auto 5px;transition:.4s filter linear}.vac-message-wrapper .vac-text-username{font-size:13px;color:var(--chat-message-color-username);margin-bottom:2px}.vac-message-wrapper .vac-username-reply{margin-bottom:5px}.vac-message-wrapper .vac-text-timestamp{font-size:10px;color:var(--chat-message-color-timestamp);text-align:right}.vac-message-wrapper .vac-progress-time{float:left;margin:-2px 0 0 40px;color:var(--chat-color);font-size:12px}.vac-message-wrapper .vac-icon-edited{-webkit-box-align:center;align-items:center;display:-webkit-inline-box;display:inline-flex;justify-content:center;letter-spacing:normal;line-height:1;text-indent:0;vertical-align:middle;margin:0 4px 2px}.vac-message-wrapper .vac-icon-edited svg{height:12px;width:12px}.vac-message-wrapper .vac-icon-check{height:14px;width:14px;vertical-align:middle;margin:-3px -3px 0 3px}@media only screen and (max-width: 768px){.vac-message-wrapper .vac-message-container{padding:2px 3px 1px}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-message-box{flex:0 0 80%;max-width:80%}.vac-message-wrapper .vac-avatar{height:25px;width:25px;min-height:25px;min-width:25px;margin:0 6px 1px 0}.vac-message-wrapper .vac-avatar.vac-avatar-current{margin:0 0 1px 6px}.vac-message-wrapper .vac-avatar-current-offset{margin-right:31px}.vac-message-wrapper .vac-avatar-offset{margin-left:31px}.vac-message-wrapper .vac-failure-container{margin-left:2px}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:0}.vac-message-wrapper .vac-offset-current{margin-left:20%}.vac-message-wrapper .vac-progress-time{margin-left:37px}}.vac-audio-player{display:flex;margin:8px 0 5px}.vac-audio-player .vac-svg-button{max-width:18px;margin-left:7px}@media only screen and (max-width: 768px){.vac-audio-player{margin:4px 0 0}.vac-audio-player .vac-svg-button{max-width:16px;margin-left:5px}}.vac-player-bar{display:flex;align-items:center;max-width:calc(100% - 18px);margin-right:7px;margin-left:20px}.vac-player-bar .vac-player-progress{width:190px}.vac-player-bar .vac-player-progress .vac-line-container{position:relative;height:4px;border-radius:5px;background-color:var(--chat-message-bg-color-audio-line)}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-progress{position:absolute;height:inherit;background-color:var(--chat-message-bg-color-audio-progress);border-radius:inherit}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{position:absolute;top:-5px;margin-left:-7px;height:14px;width:14px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-progress-selector);transition:transform .25s}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot__active{transform:scale(1.2)}@media only screen and (max-width: 768px){.vac-player-bar{margin-right:5px}.vac-player-bar .vac-player-progress .vac-line-container{height:3px}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{height:12px;width:12px;top:-5px;margin-left:-5px}}.vac-message-actions-wrapper .vac-options-container{position:absolute;top:2px;right:10px;height:40px;width:70px;overflow:hidden;border-top-right-radius:8px}.vac-message-actions-wrapper .vac-blur-container{position:absolute;height:100%;width:100%;left:8px;bottom:10px;background:var(--chat-message-bg-color);filter:blur(3px);border-bottom-left-radius:8px}.vac-message-actions-wrapper .vac-options-me{background:var(--chat-message-bg-color-me)}.vac-message-actions-wrapper .vac-message-options{background:var(--chat-icon-bg-dropdown-message);border-radius:50%;position:absolute;top:7px;right:7px}.vac-message-actions-wrapper .vac-message-options svg{height:17px;width:17px;padding:5px;margin:-5px}.vac-message-actions-wrapper .vac-message-emojis{position:absolute;top:6px;right:30px}.vac-message-actions-wrapper .vac-menu-options{right:15px}.vac-message-actions-wrapper .vac-menu-left{right:-118px}@media only screen and (max-width: 768px){.vac-message-actions-wrapper .vac-options-container{right:3px}.vac-message-actions-wrapper .vac-menu-left{right:-50px}}.vac-message-files-container .vac-file-wrapper{position:relative;width:fit-content}.vac-message-files-container .vac-file-wrapper .vac-file-container{height:60px;width:60px;margin:3px 0 5px;cursor:pointer;transition:all .6s}.vac-message-files-container .vac-file-wrapper .vac-file-container:hover{opacity:.85}.vac-message-files-container .vac-file-wrapper .vac-file-container svg{height:30px;width:30px}.vac-message-files-container .vac-file-wrapper .vac-file-container.vac-file-container-progress{background-color:#0000004d}.vac-message-file-container{position:relative;z-index:0}.vac-message-file-container .vac-message-image-container{cursor:pointer}.vac-message-file-container .vac-image-buttons{position:absolute;width:100%;height:100%;border-radius:4px;background:linear-gradient(to bottom,rgba(0,0,0,0) 55%,rgba(0,0,0,.02) 60%,rgba(0,0,0,.05) 65%,rgba(0,0,0,.1) 70%,rgba(0,0,0,.2) 75%,rgba(0,0,0,.3) 80%,rgba(0,0,0,.5) 85%,rgba(0,0,0,.6) 90%,rgba(0,0,0,.7) 95%,rgba(0,0,0,.8) 100%)}.vac-message-file-container .vac-image-buttons svg{height:26px;width:26px}.vac-message-file-container .vac-image-buttons .vac-button-view,.vac-message-file-container .vac-image-buttons .vac-button-download{position:absolute;bottom:6px;left:7px}.vac-message-file-container .vac-image-buttons :first-child{left:40px}.vac-message-file-container .vac-image-buttons .vac-button-view{max-width:18px;bottom:8px}.vac-message-file-container .vac-video-container{width:350px;max-width:100%;margin:4px auto 5px;cursor:pointer}.vac-message-file-container .vac-video-container video{width:100%;height:100%;border-radius:4px}.vac-button-reaction{display:inline-flex;align-items:center;border:var(--chat-message-border-style-reaction);outline:none;background:var(--chat-message-bg-color-reaction);border-radius:4px;margin:4px 2px 0;transition:.3s;padding:0 5px;font-size:18px;line-height:23px}.vac-button-reaction span{font-size:11px;font-weight:500;min-width:7px;color:var(--chat-message-color-reaction-counter)}.vac-button-reaction:hover{border:var(--chat-message-border-style-reaction-hover);background:var(--chat-message-bg-color-reaction-hover);cursor:pointer}.vac-button-reaction.vac-reaction-me{border:var(--chat-message-border-style-reaction-me);background:var(--chat-message-bg-color-reaction-me)}.vac-button-reaction.vac-reaction-me span{color:var(--chat-message-color-reaction-counter-me)}.vac-button-reaction.vac-reaction-me:hover{border:var(--chat-message-border-style-reaction-hover-me);background:var(--chat-message-bg-color-reaction-hover-me)}.vac-reply-message{background:var(--chat-message-bg-color-reply);border-radius:4px;margin:-1px -5px 8px;padding:8px 10px}.vac-reply-message .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-message .vac-image-reply-container{width:70px}.vac-reply-message .vac-image-reply-container .vac-message-image-reply{height:70px;width:70px;margin:4px auto 3px}.vac-reply-message .vac-video-reply-container{width:200px;max-width:100%}.vac-reply-message .vac-video-reply-container video{width:100%;height:100%;border-radius:4px}.vac-reply-message .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content)}.vac-reply-message .vac-file-container{height:60px;width:60px}.vac-emoji-wrapper{position:relative;display:flex}.vac-emoji-wrapper .vac-emoji-reaction svg{height:19px;width:19px}.vac-emoji-wrapper .vac-emoji-picker{position:absolute;z-index:9999;bottom:32px;right:10px;width:300px;padding-top:4px;overflow:scroll;box-sizing:border-box;border-radius:.5rem;background:var(--chat-emoji-bg-color);box-shadow:0 1px 2px -2px #0000001a,0 1px 2px -1px #0000001a,0 1px 2px 1px #0000001a;scrollbar-width:none}.vac-emoji-wrapper .vac-emoji-picker::-webkit-scrollbar{display:none}.vac-emoji-wrapper .vac-emoji-picker.vac-picker-reaction{position:fixed;top:initial;right:initial}.vac-emoji-wrapper .vac-emoji-picker emoji-picker{height:100%;width:100%;--emoji-size: 1.2rem;--background: var(--chat-emoji-bg-color);--emoji-padding: .4rem;--border-color: var(--chat-sidemenu-border-color-search);--button-hover-background: var(--chat-sidemenu-bg-color-hover);--button-active-background: var(--chat-sidemenu-bg-color-hover)}.vac-format-message-wrapper .vac-format-container{display:inline}.vac-format-message-wrapper .vac-icon-deleted{height:14px;width:14px;vertical-align:middle;margin:-2px 2px 0 0;fill:var(--chat-message-color-deleted)}.vac-format-message-wrapper .vac-icon-deleted.vac-icon-deleted-room{margin:-3px 1px 0 0;fill:var(--chat-room-color-message)}.vac-format-message-wrapper .vac-image-link-container{background-color:var(--chat-message-bg-color-media);padding:8px;margin:2px auto;border-radius:4px}.vac-format-message-wrapper .vac-image-link{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:contain;background-position:center center!important;background-repeat:no-repeat!important;height:150px;width:150px;max-width:100%;border-radius:4px;margin:0 auto}.vac-format-message-wrapper .vac-image-link-message{max-width:166px;font-size:12px}.vac-loader-wrapper.vac-container-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-loader-wrapper.vac-container-top{padding:21px}.vac-loader-wrapper.vac-container-top #vac-circle{height:20px;width:20px}.vac-loader-wrapper #vac-circle{margin:auto;height:28px;width:28px;border:3px rgba(0,0,0,.25) solid;border-top:3px var(--chat-color-spinner) solid;border-right:3px var(--chat-color-spinner) solid;border-bottom:3px var(--chat-color-spinner) solid;border-radius:50%;-webkit-animation:vac-spin 1s infinite linear;animation:vac-spin 1s infinite linear}@media only screen and (max-width: 768px){.vac-loader-wrapper #vac-circle{height:24px;width:24px}.vac-loader-wrapper.vac-container-top{padding:18px}.vac-loader-wrapper.vac-container-top #vac-circle{height:16px;width:16px}}@-webkit-keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}@keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}#vac-icon-search{fill:var(--chat-icon-color-search)}#vac-icon-add{fill:var(--chat-icon-color-add)}#vac-icon-toggle{fill:var(--chat-icon-color-toggle)}#vac-icon-menu{fill:var(--chat-icon-color-menu)}#vac-icon-close{fill:var(--chat-icon-color-close)}#vac-icon-close-image{fill:var(--chat-icon-color-close-image)}#vac-icon-file{fill:var(--chat-icon-color-file)}#vac-icon-paperclip{fill:var(--chat-icon-color-paperclip)}#vac-icon-close-outline{fill:var(--chat-icon-color-close-outline)}#vac-icon-close-outline-preview{fill:var(--chat-icon-color-close-preview)}#vac-icon-send{fill:var(--chat-icon-color-send)}#vac-icon-send-disabled{fill:var(--chat-icon-color-send-disabled)}#vac-icon-emoji{fill:var(--chat-icon-color-emoji)}#vac-icon-emoji-reaction{fill:var(--chat-icon-color-emoji-reaction)}#vac-icon-document{fill:var(--chat-icon-color-document)}#vac-icon-pencil{fill:var(--chat-icon-color-pencil)}#vac-icon-checkmark,#vac-icon-double-checkmark{fill:var(--chat-icon-color-checkmark)}#vac-icon-checkmark-seen,#vac-icon-double-checkmark-seen{fill:var(--chat-icon-color-checkmark-seen)}#vac-icon-eye{fill:var(--chat-icon-color-eye)}#vac-icon-dropdown-message{fill:var(--chat-icon-color-dropdown-message)}#vac-icon-dropdown-room{fill:var(--chat-icon-color-dropdown-room)}#vac-icon-dropdown-scroll{fill:var(--chat-icon-color-dropdown-scroll)}#vac-icon-audio-play{fill:var(--chat-icon-color-audio-play)}#vac-icon-audio-pause{fill:var(--chat-icon-color-audio-pause)}.vac-progress-wrapper{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-progress-wrapper circle{transition:stroke-dashoffset .35s;transform:rotate(-90deg);transform-origin:50% 50%}.vac-progress-wrapper .vac-progress-content{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:-1;margin-top:-2px;background-color:#000000b3;border-radius:50%}.vac-progress-wrapper .vac-progress-content .vac-progress-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:700;color:#fff}.vac-progress-wrapper .vac-progress-content .vac-progress-text .vac-progress-pourcent{font-size:9px;font-weight:400}\n';
+var _style_0 = '.vac-fade-spinner-enter-from{opacity:0}.vac-fade-spinner-enter-active{transition:opacity .8s}.vac-fade-spinner-leave-active{transition:opacity .2s;opacity:0}.vac-fade-image-enter-from{opacity:0}.vac-fade-image-enter-active{transition:opacity 1s}.vac-fade-image-leave-active{transition:opacity .5s;opacity:0}.vac-fade-message-enter-from{opacity:0}.vac-fade-message-enter-active{transition:opacity .5s}.vac-fade-message-leave-active{transition:opacity .2s;opacity:0}.vac-slide-left-enter-active,.vac-slide-right-enter-active{transition:all .3s ease;transition-property:transform,opacity}.vac-slide-left-leave-active,.vac-slide-right-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)!important;transition-property:transform,opacity}.vac-slide-left-enter-from,.vac-slide-left-leave-to{transform:translate(10px);opacity:0}.vac-slide-right-enter-from,.vac-slide-right-leave-to{transform:translate(-10px);opacity:0}.vac-slide-up-enter-active{transition:all .3s ease}.vac-slide-up-leave-active{transition:all .2s cubic-bezier(1,.5,.8,1)}.vac-slide-up-enter-from,.vac-slide-up-leave-to{transform:translateY(10px);opacity:0}.vac-bounce-enter-active{animation:vac-bounce-in .5s}.vac-bounce-leave-active{animation:vac-bounce-in .3s reverse}@keyframes vac-bounce-in{0%{transform:scale(0)}50%{transform:scale(1.05)}to{transform:scale(1)}}.vac-fade-preview-enter{opacity:0}.vac-fade-preview-enter-active{transition:opacity .1s}.vac-fade-preview-leave-active{transition:opacity .2s;opacity:0}.vac-bounce-preview-enter-active{animation:vac-bounce-image-in .4s}.vac-bounce-preview-leave-active{animation:vac-bounce-image-in .3s reverse}@keyframes vac-bounce-image-in{0%{transform:scale(.6)}to{transform:scale(1)}}.vac-menu-list{border-radius:4px;display:block;cursor:pointer;background:var(--chat-dropdown-bg-color);padding:6px 0}.vac-menu-list :hover{background:var(--chat-dropdown-bg-color-hover);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-list :not(:hover){transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-menu-item{-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-flex:1;-ms-flex:1 1 100%;flex:1 1 100%;min-height:30px;padding:5px 16px;position:relative;white-space:nowrap;line-height:30px}.vac-menu-options{position:absolute;right:10px;top:20px;z-index:9999;min-width:150px;display:inline-block;border-radius:4px;font-size:14px;color:var(--chat-color);overflow-y:auto;overflow-x:hidden;contain:content;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-app-border{border:var(--chat-border-style)}.vac-app-border-t{border-top:var(--chat-border-style)}.vac-app-border-r{border-right:var(--chat-border-style)}.vac-app-border-b{border-bottom:var(--chat-border-style)}.vac-app-box-shadow{transition:all .5s;box-shadow:0 2px 2px -4px #0000001a,0 2px 2px 1px #0000001f,0 1px 8px 1px #0000001f}.vac-item-clickable{cursor:pointer}.vac-vertical-center{display:flex;align-items:center;height:100%}.vac-vertical-center .vac-vertical-container{width:100%;text-align:center}.vac-svg-button{max-height:30px;display:flex;cursor:pointer;transition:all .2s}.vac-svg-button:hover{transform:scale(1.1);opacity:.7}.vac-avatar{background-size:cover;background-position:center center;background-repeat:no-repeat;background-color:#ddd;height:42px;width:42px;min-height:42px;min-width:42px;margin-right:15px;border-radius:50%}.vac-blur-loading{filter:blur(3px)}.vac-badge-counter{height:13px;width:auto;min-width:13px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:3px;font-size:11px;font-weight:500}.vac-text-ellipsis{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-text-bold{font-weight:700}.vac-text-italic{font-style:italic}.vac-text-strike{text-decoration:line-through}.vac-text-underline{text-decoration:underline}.vac-text-inline-code{display:inline-block;font-size:12px;color:var(--chat-markdown-color);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:2px 0;padding:2px 3px}.vac-text-multiline-code{display:block;font-size:12px;color:var(--chat-markdown-color-multi);background:var(--chat-markdown-bg);border:1px solid var(--chat-markdown-border);border-radius:3px;margin:4px 0;padding:7px}.vac-text-tag{color:var(--chat-message-color-tag);cursor:pointer}.vac-file-container{display:flex;align-content:center;justify-content:center;flex-wrap:wrap;text-align:center;background:var(--chat-bg-color-input);border:var(--chat-border-style-input);border-radius:4px;padding:10px}.vac-file-container svg{height:28px;width:28px}.vac-file-container .vac-text-extension{font-size:12px;color:var(--chat-message-color-file-extension);margin-top:-2px}.vac-card-window{width:100%;display:block;max-width:100%;background:var(--chat-content-bg-color);color:var(--chat-color);overflow-wrap:break-word;white-space:normal;border:var(--chat-container-border);border-radius:var(--chat-container-border-radius);box-shadow:var(--chat-container-box-shadow);-webkit-tap-highlight-color:transparent}.vac-card-window *{font-family:inherit}.vac-card-window a{color:#0d579c;font-weight:500}.vac-card-window .vac-chat-container{height:100%;display:flex}.vac-card-window .vac-chat-container input{min-width:10px}.vac-card-window .vac-chat-container textarea,.vac-card-window .vac-chat-container input[type=text],.vac-card-window .vac-chat-container input[type=search]{-webkit-appearance:none}.vac-media-preview{position:fixed;top:0;left:0;z-index:99;width:100vw;height:100vh;display:flex;align-items:center;background-color:#000c;outline:none}.vac-media-preview .vac-media-preview-container{height:calc(100% - 140px);width:calc(100% - 80px);padding:70px 40px;margin:0 auto}.vac-media-preview .vac-image-preview{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}.vac-media-preview video{width:100%;height:100%}.vac-media-preview .vac-svg-button{position:absolute;top:30px;right:30px;transform:scale(1.4)}@media only screen and (max-width: 768px){.vac-media-preview .vac-svg-button{top:20px;right:20px;transform:scale(1.2)}.vac-media-preview .vac-media-preview-container{width:calc(100% - 40px);padding:70px 20px}}.vac-col-messages{position:relative;height:100%;flex:1;overflow:hidden;display:flex;flex-flow:column}.vac-col-messages .vac-container-center{height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.vac-col-messages .vac-room-empty{font-size:14px;color:#9ca6af;font-style:italic;line-height:20px;white-space:pre-line}.vac-col-messages .vac-room-empty div{padding:0 10%}.vac-col-messages .vac-container-scroll{background:var(--chat-content-bg-color);flex:1;overflow-y:auto;margin-right:1px;margin-top:65px;-webkit-overflow-scrolling:touch}.vac-col-messages .vac-container-scroll.vac-scroll-smooth{scroll-behavior:smooth}.vac-col-messages .vac-messages-container{padding:0 5px 5px}.vac-col-messages .vac-text-started{font-size:14px;color:var(--chat-message-color-started);font-style:italic;text-align:center;margin-top:25px;margin-bottom:20px}.vac-col-messages .vac-icon-scroll{position:absolute;bottom:80px;right:20px;padding:8px;background:var(--chat-bg-scroll-icon);border-radius:50%;box-shadow:0 1px 1px -1px #0003,0 1px 1px #00000024,0 1px 2px #0000001f;display:flex;cursor:pointer;z-index:10}.vac-col-messages .vac-icon-scroll svg{height:25px;width:25px}.vac-col-messages .vac-messages-count{position:absolute;top:-8px;left:11px;background-color:var(--chat-message-bg-color-scroll-counter);color:var(--chat-message-color-scroll-counter)}.vac-col-messages .vac-messages-hidden{opacity:0}@media only screen and (max-width: 768px){.vac-col-messages .vac-container-scroll{margin-top:50px}.vac-col-messages .vac-text-started{margin-top:20px}.vac-col-messages .vac-icon-scroll{bottom:70px}}.vac-room-header{position:absolute;display:flex;align-items:center;height:64px;width:100%;z-index:10;margin-right:1px;background:var(--chat-header-bg-color);border-top-right-radius:var(--chat-container-border-radius)}.vac-room-header .vac-room-wrapper{display:flex;align-items:center;min-width:0;height:100%;width:100%;padding:0 16px}.vac-room-header .vac-toggle-button{margin-right:15px}.vac-room-header .vac-toggle-button svg{height:26px;width:26px}.vac-room-header .vac-rotate-icon{transform:rotate(180deg)!important}.vac-room-header .vac-rotate-icon-init{transform:rotate(360deg)}.vac-room-header .vac-info-wrapper,.vac-room-header .vac-room-selection{display:flex;align-items:center;min-width:0;width:100%;height:100%}.vac-room-header .vac-room-selection .vac-selection-button{padding:8px 16px;color:var(--chat-color-button);background-color:var(--chat-bg-color-button);border-radius:4px;margin-right:10px;cursor:pointer;transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-button:hover{opacity:.7}.vac-room-header .vac-room-selection .vac-selection-button:active{opacity:.9}.vac-room-header .vac-room-selection .vac-selection-button .vac-selection-button-count{margin-left:6px;opacity:.9}.vac-room-header .vac-room-selection .vac-selection-cancel{display:flex;align-items:center;margin-left:auto;white-space:nowrap;color:var(--chat-color-button-clear);transition:all .2s}.vac-room-header .vac-room-selection .vac-selection-cancel:hover{opacity:.7}.vac-room-header .vac-room-name{font-size:17px;font-weight:500;line-height:22px;color:var(--chat-header-color-name)}.vac-room-header .vac-room-info{font-size:13px;line-height:18px;color:var(--chat-header-color-info)}.vac-room-header .vac-room-options{margin-left:auto}@media only screen and (max-width: 768px){.vac-room-header{height:50px}.vac-room-header .vac-room-wrapper{padding:0 10px}.vac-room-header .vac-room-name{font-size:16px;line-height:22px}.vac-room-header .vac-room-info{font-size:12px;line-height:16px}.vac-room-header .vac-avatar{height:37px;width:37px;min-height:37px;min-width:37px}}.vac-room-footer{width:100%;border-bottom-right-radius:4px;z-index:10}.vac-box-footer{display:flex;position:relative;background:var(--chat-footer-bg-color);padding:10px 8px}.vac-textarea{max-height:300px;overflow-y:auto;height:20px;width:100%;line-height:20px;outline:0;resize:none;border-radius:20px;padding:12px 16px;box-sizing:content-box;font-size:16px;background:var(--chat-bg-color-input);color:var(--chat-color);caret-color:var(--chat-color-caret);border:var(--chat-border-style-input)}.vac-textarea::placeholder{color:var(--chat-color-placeholder);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vac-textarea-outline{border:1px solid var(--chat-border-color-input-selected);box-shadow:inset 0 0 0 1px var(--chat-border-color-input-selected)}.vac-icon-textarea,.vac-icon-textarea-left{display:flex;align-items:center}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea{margin-left:5px}.vac-icon-textarea-left{display:flex;align-items:center;margin-right:5px}.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 7px}.vac-icon-textarea-left .vac-icon-microphone{fill:var(--chat-icon-color-microphone);margin:0 7px}.vac-icon-textarea-left .vac-dot-audio-record{height:15px;width:15px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-record);animation:vac-scaling .8s ease-in-out infinite alternate}@keyframes vac-scaling{0%{transform:scale(1);opacity:.4}to{transform:scale(1.1);opacity:1}}.vac-icon-textarea-left .vac-dot-audio-record-time{font-size:16px;color:var(--chat-color);margin-left:8px;width:45px}.vac-icon-textarea-left .vac-icon-audio-stop,.vac-icon-textarea-left .vac-icon-audio-confirm{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop svg,.vac-icon-textarea-left .vac-icon-audio-confirm svg{min-height:28px;min-width:28px}.vac-icon-textarea-left .vac-icon-audio-stop{margin-right:20px}.vac-icon-textarea-left .vac-icon-audio-stop #vac-icon-close-outline{fill:var(--chat-icon-color-audio-cancel)}.vac-icon-textarea-left .vac-icon-audio-confirm{margin-right:3px;margin-left:12px}.vac-icon-textarea-left .vac-icon-audio-confirm #vac-icon-checkmark{fill:var(--chat-icon-color-audio-confirm)}.vac-send-disabled,.vac-send-disabled svg{cursor:none!important;pointer-events:none!important;transform:none!important}@media only screen and (max-width: 768px){.vac-room-footer{width:100%}.vac-box-footer{padding:7px 2px 7px 7px}.vac-box-footer.vac-box-footer-border{border-top:var(--chat-border-style-input)}.vac-textarea{padding:7px;line-height:18px}.vac-textarea::placeholder{color:transparent}.vac-icon-textarea svg,.vac-icon-textarea .vac-wrapper,.vac-icon-textarea-left svg,.vac-icon-textarea-left .vac-wrapper{margin:0 5px!important}}@media only screen and (max-height: 768px){.vac-textarea{max-height:120px}}.vac-emojis-container{width:calc(100% - 16px);padding:10px 8px;background:var(--chat-footer-bg-color);display:flex;align-items:center;overflow:auto}.vac-emojis-container .vac-emoji-element{padding:0 8px;font-size:30px;border-radius:4px;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-emojis-container .vac-emoji-element-active{background:var(--chat-footer-bg-color-tag-active)}@media only screen and (max-width: 768px){.vac-emojis-container{width:calc(100% - 10px);padding:7px 5px}.vac-emojis-container .vac-emoji-element{padding:0 7px;font-size:26px}}.vac-reply-container{display:flex;padding:10px 10px 0;background:var(--chat-footer-bg-color);align-items:center;width:calc(100% - 20px)}.vac-reply-container .vac-reply-box{width:100%;overflow:hidden;background:var(--chat-footer-bg-color-reply);border-radius:4px;padding:8px 10px}.vac-reply-container .vac-reply-info{overflow:hidden}.vac-reply-container .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-container .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content);white-space:pre-line}.vac-reply-container .vac-icon-reply{margin-left:10px}.vac-reply-container .vac-icon-reply svg{height:20px;width:20px}.vac-reply-container .vac-image-reply{max-height:100px;max-width:200px;margin:4px 10px 0 0;border-radius:4px}.vac-reply-container .vac-audio-reply{margin-right:10px}.vac-reply-container .vac-file-container{max-width:80px}@media only screen and (max-width: 768px){.vac-reply-container{padding:5px 8px;width:calc(100% - 16px)}}.vac-room-files-container{display:flex;align-items:center;padding:10px 6px 0;background:var(--chat-footer-bg-color)}.vac-room-files-container .vac-files-box{display:flex;overflow:auto;width:calc(100% - 30px)}.vac-room-files-container video{height:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-files-container .vac-icon-close{margin-left:auto}.vac-room-files-container .vac-icon-close svg{height:20px;width:20px}@media only screen and (max-width: 768px){.vac-files-container{padding:6px 4px 4px 2px}}.vac-room-file-container{display:flex;position:relative;margin:0 4px}.vac-room-file-container .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:100px;width:100px;border:var(--chat-border-style-input);border-radius:4px}.vac-room-file-container .vac-file-container{height:80px;width:80px}.vac-room-file-container .vac-icon-remove{position:absolute;top:6px;left:6px;z-index:10}.vac-room-file-container .vac-icon-remove svg{height:20px;width:20px;border-radius:50%}.vac-room-file-container .vac-icon-remove:before{content:" ";position:absolute;width:100%;height:100%;background:rgba(0,0,0,.5);border-radius:50%;z-index:-1}.vac-tags-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-tags-container .vac-tags-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-tags-container .vac-tags-box-active{background:var(--chat-footer-bg-color-tag-active)}.vac-tags-container .vac-tags-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-tags-container .vac-tags-avatar{height:34px;width:34px;min-height:34px;min-width:34px}.vac-tags-container .vac-tags-username{font-size:14px}@media only screen and (max-width: 768px){.vac-tags-container .vac-tags-box{height:50px}.vac-tags-container .vac-tags-info{padding:0 12px}}.vac-template-container{display:flex;flex-direction:column;align-items:center;width:100%}.vac-template-container .vac-template-box{display:flex;width:100%;height:54px;overflow:hidden;cursor:pointer;background:var(--chat-footer-bg-color-tag);transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-template-container .vac-template-active{background:var(--chat-footer-bg-color-tag-active)}.vac-template-container .vac-template-info{display:flex;overflow:hidden;padding:0 20px;align-items:center}.vac-template-container .vac-template-tag{font-size:14px;font-weight:700;margin-right:10px}.vac-template-container .vac-template-text{font-size:14px}@media only screen and (max-width: 768px){.vac-template-container .vac-template-box{height:50px}.vac-template-container .vac-template-info{padding:0 12px}}.vac-rooms-container{display:flex;flex-flow:column;flex:0 0 25%;min-width:260px;max-width:500px;position:relative;background:var(--chat-sidemenu-bg-color);height:100%;border-top-left-radius:var(--chat-container-border-radius);border-bottom-left-radius:var(--chat-container-border-radius)}.vac-rooms-container.vac-rooms-container-full{flex:0 0 100%;max-width:100%}.vac-rooms-container .vac-rooms-empty{font-size:14px;color:#9ca6af;font-style:italic;text-align:center;margin:40px 0;line-height:20px;white-space:pre-line}.vac-rooms-container .vac-room-list{flex:1;position:relative;max-width:100%;cursor:pointer;padding:0 10px 5px;overflow-y:auto}.vac-rooms-container .vac-room-item{border-radius:8px;align-items:center;display:flex;flex:1 1 100%;margin-bottom:5px;padding:0 14px;position:relative;min-height:71px;transition:background-color .3s cubic-bezier(.25,.8,.5,1)}.vac-rooms-container .vac-room-item:hover{background:var(--chat-sidemenu-bg-color-hover)}.vac-rooms-container .vac-room-selected{color:var(--chat-sidemenu-color-active)!important;background:var(--chat-sidemenu-bg-color-active)!important}.vac-rooms-container .vac-room-selected:hover{background:var(--chat-sidemenu-bg-color-active)!important}@media only screen and (max-width: 768px){.vac-rooms-container .vac-room-list{padding:0 7px 5px}.vac-rooms-container .vac-room-item{min-height:60px;padding:0 8px}}.vac-room-container{display:flex;flex:1;align-items:center;width:100%}.vac-room-container .vac-name-container{flex:1}.vac-room-container .vac-title-container{display:flex;align-items:center;line-height:25px}.vac-room-container .vac-state-circle{width:9px;height:9px;border-radius:50%;background-color:var(--chat-room-color-offline);margin-right:6px;transition:.3s}.vac-room-container .vac-state-online{background-color:var(--chat-room-color-online)}.vac-room-container .vac-room-name{flex:1;color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-text-date{margin-left:5px;font-size:11px;color:var(--chat-room-color-timestamp)}.vac-room-container .vac-text-last{display:flex;align-items:center;font-size:12px;line-height:19px;color:var(--chat-room-color-message)}.vac-room-container .vac-message-new{color:var(--chat-room-color-username);font-weight:500}.vac-room-container .vac-icon-check{display:flex;vertical-align:middle;height:14px;width:14px;margin-top:-2px;margin-right:2px}.vac-room-container .vac-icon-microphone{height:15px;width:15px;vertical-align:middle;margin:-3px 1px 0 -2px;fill:var(--chat-room-color-message)}.vac-room-container .vac-room-options-container{display:flex;margin-left:auto}.vac-room-container .vac-room-badge{background-color:var(--chat-room-bg-color-badge);color:var(--chat-room-color-badge);margin-left:5px}.vac-room-container .vac-list-room-options{height:19px;width:19px;align-items:center;margin-left:5px}.vac-box-empty{margin-top:10px}@media only screen and (max-width: 768px){.vac-box-empty{margin-top:7px}}.vac-box-search{position:sticky;display:flex;align-items:center;height:64px;padding:0 15px}.vac-box-search .vac-icon-search{display:flex;position:absolute;left:30px}.vac-box-search .vac-icon-search svg{width:18px;height:18px}.vac-box-search .vac-input{height:38px;width:100%;background:var(--chat-bg-color-input);color:var(--chat-color);font-size:15px;outline:0;caret-color:var(--chat-color-caret);padding:10px 10px 10px 40px;border:1px solid var(--chat-sidemenu-border-color-search);border-radius:20px}.vac-box-search .vac-input::placeholder{color:var(--chat-color-placeholder)}.vac-box-search .vac-add-icon{margin-left:auto;padding-left:10px}@media only screen and (max-width: 768px){.vac-box-search{height:58px}}.vac-message-wrapper .vac-card-info{border-radius:4px;text-align:center;margin:10px auto;font-size:12px;padding:4px;display:block;overflow-wrap:break-word;position:relative;white-space:normal;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-card-date{max-width:150px;font-weight:500;text-transform:uppercase;color:var(--chat-message-color-date);background-color:var(--chat-message-bg-color-date)}.vac-message-wrapper .vac-card-system{max-width:250px;padding:8px 4px;color:var(--chat-message-color-system);background-color:var(--chat-message-bg-color-system)}.vac-message-wrapper .vac-line-new{color:var(--chat-message-color-new-messages);position:relative;text-align:center;font-size:13px;padding:10px 0}.vac-message-wrapper .vac-line-new:after,.vac-message-wrapper .vac-line-new:before{border-top:1px solid var(--chat-message-color-new-messages);content:"";left:0;position:absolute;top:50%;width:calc(50% - 60px)}.vac-message-wrapper .vac-line-new:before{left:auto;right:0}.vac-message-wrapper .vac-message-box{display:flex;flex:0 0 50%;max-width:50%;justify-content:flex-start;line-height:1.4}.vac-message-wrapper .vac-avatar{height:28px;width:28px;min-height:28px;min-width:28px;margin:0 0 2px;align-self:flex-end}.vac-message-wrapper .vac-avatar-current-offset{margin-right:28px}.vac-message-wrapper .vac-avatar-offset{margin-left:28px}.vac-message-wrapper .vac-failure-container{position:relative;align-self:flex-end;height:20px;width:20px;margin:0 0 2px -4px;border-radius:50%;background-color:#f44336}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:6px}.vac-message-wrapper .vac-failure-container .vac-failure-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:15px;font-weight:700}.vac-message-wrapper .vac-message-container{position:relative;padding:2px 10px;align-items:end;min-width:100px;box-sizing:content-box}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-offset-current{margin-left:50%;justify-content:flex-end}.vac-message-wrapper .vac-message-card{background-color:var(--chat-message-bg-color);color:var(--chat-message-color);border-radius:8px;font-size:14px;padding:6px 9px 3px;white-space:pre-line;max-width:100%;-webkit-transition-property:box-shadow,opacity;transition-property:box-shadow,opacity;transition:box-shadow .28s cubic-bezier(.4,0,.2,1);will-change:box-shadow;box-shadow:0 1px 1px -1px #0000001a,0 1px 1px -1px #0000001c,0 1px 2px -1px #0000001c}.vac-message-wrapper .vac-message-highlight{box-shadow:0 1px 2px -1px #0000001a,0 1px 2px -1px #0000001c,0 1px 5px -1px #0000001c}.vac-message-wrapper .vac-message-current{background-color:var(--chat-message-bg-color-me)!important}.vac-message-wrapper .vac-message-deleted{color:var(--chat-message-color-deleted)!important;font-size:13px!important;font-style:italic!important;background-color:var(--chat-message-bg-color-deleted)!important}.vac-message-wrapper .vac-message-selected{background-color:var(--chat-message-bg-color-selected)!important;transition:background-color .2s}.vac-message-wrapper .vac-message-image{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;height:250px;width:250px;max-width:100%;border-radius:4px;margin:4px auto 5px;transition:.4s filter linear}.vac-message-wrapper .vac-text-username{font-size:13px;color:var(--chat-message-color-username);margin-bottom:2px}.vac-message-wrapper .vac-username-reply{margin-bottom:5px}.vac-message-wrapper .vac-text-timestamp{font-size:10px;color:var(--chat-message-color-timestamp);text-align:right}.vac-message-wrapper .vac-message-current{color:var(--chat-message-color-me)!important;background-color:var(--chat-message-bg-color-me)!important}.vac-message-wrapper .vac-message-current .vac-text-timestamp{color:var(--chat-message-color-timestamp-me)!important}.vac-message-wrapper .vac-progress-time{float:left;margin:-2px 0 0 40px;color:var(--chat-color);font-size:12px}.vac-message-wrapper .vac-icon-edited{-webkit-box-align:center;align-items:center;display:-webkit-inline-box;display:inline-flex;justify-content:center;letter-spacing:normal;line-height:1;text-indent:0;vertical-align:middle;margin:0 4px 2px}.vac-message-wrapper .vac-icon-edited svg{height:12px;width:12px}.vac-message-wrapper .vac-icon-check{height:14px;width:14px;vertical-align:middle;margin:-3px -3px 0 3px}@media only screen and (max-width: 768px){.vac-message-wrapper .vac-message-container{padding:2px 3px 1px}.vac-message-wrapper .vac-message-container-offset{margin-top:10px}.vac-message-wrapper .vac-message-box{flex:0 0 80%;max-width:80%}.vac-message-wrapper .vac-avatar{height:25px;width:25px;min-height:25px;min-width:25px;margin:0 6px 1px 0}.vac-message-wrapper .vac-avatar.vac-avatar-current{margin:0 0 1px 6px}.vac-message-wrapper .vac-avatar-current-offset{margin-right:31px}.vac-message-wrapper .vac-avatar-offset{margin-left:31px}.vac-message-wrapper .vac-failure-container{margin-left:2px}.vac-message-wrapper .vac-failure-container.vac-failure-container-avatar{margin-right:0}.vac-message-wrapper .vac-offset-current{margin-left:20%}.vac-message-wrapper .vac-progress-time{margin-left:37px}}.vac-audio-player{display:flex;margin:8px 0 5px}.vac-audio-player .vac-svg-button{max-width:18px;margin-left:7px}@media only screen and (max-width: 768px){.vac-audio-player{margin:4px 0 0}.vac-audio-player .vac-svg-button{max-width:16px;margin-left:5px}}.vac-player-bar{display:flex;align-items:center;max-width:calc(100% - 18px);margin-right:7px;margin-left:20px}.vac-player-bar .vac-player-progress{width:190px}.vac-player-bar .vac-player-progress .vac-line-container{position:relative;height:4px;border-radius:5px;background-color:var(--chat-message-bg-color-audio-line)}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-progress{position:absolute;height:inherit;background-color:var(--chat-message-bg-color-audio-progress);border-radius:inherit}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{position:absolute;top:-5px;margin-left:-7px;height:14px;width:14px;border-radius:50%;background-color:var(--chat-message-bg-color-audio-progress-selector);transition:transform .25s}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot__active{transform:scale(1.2)}@media only screen and (max-width: 768px){.vac-player-bar{margin-right:5px}.vac-player-bar .vac-player-progress .vac-line-container{height:3px}.vac-player-bar .vac-player-progress .vac-line-container .vac-line-dot{height:12px;width:12px;top:-5px;margin-left:-5px}}.vac-message-actions-wrapper .vac-options-container{position:absolute;top:2px;right:10px;height:40px;width:70px;overflow:hidden;border-top-right-radius:8px}.vac-message-actions-wrapper .vac-blur-container{position:absolute;height:100%;width:100%;left:8px;bottom:10px;background:var(--chat-message-bg-color);filter:blur(3px);border-bottom-left-radius:8px}.vac-message-actions-wrapper .vac-options-me{color:var(--chat-message-color-me);background:var(--chat-message-bg-color-me)}.vac-message-actions-wrapper .vac-message-options{background:var(--chat-icon-bg-dropdown-message);border-radius:50%;position:absolute;top:7px;right:7px}.vac-message-actions-wrapper .vac-message-options svg{height:17px;width:17px;padding:5px;margin:-5px}.vac-message-actions-wrapper .vac-message-emojis{position:absolute;top:6px;right:30px}.vac-message-actions-wrapper .vac-menu-options{right:15px}.vac-message-actions-wrapper .vac-menu-left{right:-118px}@media only screen and (max-width: 768px){.vac-message-actions-wrapper .vac-options-container{right:3px}.vac-message-actions-wrapper .vac-menu-left{right:-50px}}.vac-message-files-container .vac-file-wrapper{position:relative;width:fit-content}.vac-message-files-container .vac-file-wrapper .vac-file-container{height:60px;width:60px;margin:3px 0 5px;cursor:pointer;transition:all .6s}.vac-message-files-container .vac-file-wrapper .vac-file-container:hover{opacity:.85}.vac-message-files-container .vac-file-wrapper .vac-file-container svg{height:30px;width:30px}.vac-message-files-container .vac-file-wrapper .vac-file-container.vac-file-container-progress{background-color:#0000004d}.vac-message-file-container{position:relative;z-index:0}.vac-message-file-container .vac-message-image-container{cursor:pointer}.vac-message-file-container .vac-image-buttons{position:absolute;width:100%;height:100%;border-radius:4px;background:linear-gradient(to bottom,rgba(0,0,0,0) 55%,rgba(0,0,0,.02) 60%,rgba(0,0,0,.05) 65%,rgba(0,0,0,.1) 70%,rgba(0,0,0,.2) 75%,rgba(0,0,0,.3) 80%,rgba(0,0,0,.5) 85%,rgba(0,0,0,.6) 90%,rgba(0,0,0,.7) 95%,rgba(0,0,0,.8) 100%)}.vac-message-file-container .vac-image-buttons svg{height:26px;width:26px}.vac-message-file-container .vac-image-buttons .vac-button-view,.vac-message-file-container .vac-image-buttons .vac-button-download{position:absolute;bottom:6px;left:7px}.vac-message-file-container .vac-image-buttons :first-child{left:40px}.vac-message-file-container .vac-image-buttons .vac-button-view{max-width:18px;bottom:8px}.vac-message-file-container .vac-video-container{width:350px;max-width:100%;margin:4px auto 5px;cursor:pointer}.vac-message-file-container .vac-video-container video{width:100%;height:100%;border-radius:4px}.vac-button-reaction{display:inline-flex;align-items:center;border:var(--chat-message-border-style-reaction);outline:none;background:var(--chat-message-bg-color-reaction);border-radius:4px;margin:4px 2px 0;transition:.3s;padding:0 5px;font-size:18px;line-height:23px}.vac-button-reaction span{font-size:11px;font-weight:500;min-width:7px;color:var(--chat-message-color-reaction-counter)}.vac-button-reaction:hover{border:var(--chat-message-border-style-reaction-hover);background:var(--chat-message-bg-color-reaction-hover);cursor:pointer}.vac-button-reaction.vac-reaction-me{border:var(--chat-message-border-style-reaction-me);background:var(--chat-message-bg-color-reaction-me)}.vac-button-reaction.vac-reaction-me span{color:var(--chat-message-color-reaction-counter-me)}.vac-button-reaction.vac-reaction-me:hover{border:var(--chat-message-border-style-reaction-hover-me);background:var(--chat-message-bg-color-reaction-hover-me)}.vac-reply-message{background:var(--chat-message-bg-color-reply);border-radius:4px;margin:-1px -5px 8px;padding:8px 10px}.vac-reply-message .vac-reply-username{color:var(--chat-message-color-reply-username);font-size:12px;line-height:15px;margin-bottom:2px}.vac-reply-message .vac-image-reply-container{width:70px}.vac-reply-message .vac-image-reply-container .vac-message-image-reply{height:70px;width:70px;margin:4px auto 3px}.vac-reply-message .vac-video-reply-container{width:200px;max-width:100%}.vac-reply-message .vac-video-reply-container video{width:100%;height:100%;border-radius:4px}.vac-reply-message .vac-reply-content{font-size:12px;color:var(--chat-message-color-reply-content)}.vac-reply-message .vac-file-container{height:60px;width:60px}.vac-emoji-wrapper{position:relative;display:flex}.vac-emoji-wrapper .vac-emoji-reaction svg{height:19px;width:19px}.vac-emoji-wrapper .vac-emoji-picker{position:absolute;z-index:9999;bottom:32px;right:10px;width:300px;padding-top:4px;overflow:scroll;box-sizing:border-box;border-radius:.5rem;background:var(--chat-emoji-bg-color);box-shadow:0 1px 2px -2px #0000001a,0 1px 2px -1px #0000001a,0 1px 2px 1px #0000001a;scrollbar-width:none}.vac-emoji-wrapper .vac-emoji-picker::-webkit-scrollbar{display:none}.vac-emoji-wrapper .vac-emoji-picker.vac-picker-reaction{position:fixed;top:initial;right:initial}.vac-emoji-wrapper .vac-emoji-picker emoji-picker{height:100%;width:100%;--emoji-size: 1.2rem;--background: var(--chat-emoji-bg-color);--emoji-padding: .4rem;--border-color: var(--chat-sidemenu-border-color-search);--button-hover-background: var(--chat-sidemenu-bg-color-hover);--button-active-background: var(--chat-sidemenu-bg-color-hover)}.vac-format-message-wrapper .vac-format-container{display:inline}.vac-format-message-wrapper .vac-icon-deleted{height:14px;width:14px;vertical-align:middle;margin:-2px 2px 0 0;fill:var(--chat-message-color-deleted)}.vac-format-message-wrapper .vac-icon-deleted.vac-icon-deleted-room{margin:-3px 1px 0 0;fill:var(--chat-room-color-message)}.vac-format-message-wrapper .vac-image-link-container{background-color:var(--chat-message-bg-color-media);padding:8px;margin:2px auto;border-radius:4px}.vac-format-message-wrapper .vac-image-link{position:relative;background-color:var(--chat-message-bg-color-image)!important;background-size:contain;background-position:center center!important;background-repeat:no-repeat!important;height:150px;width:150px;max-width:100%;border-radius:4px;margin:0 auto}.vac-format-message-wrapper .vac-image-link-message{max-width:166px;font-size:12px}.vac-loader-wrapper.vac-container-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-loader-wrapper.vac-container-top{padding:21px}.vac-loader-wrapper.vac-container-top #vac-circle{height:20px;width:20px}.vac-loader-wrapper #vac-circle{margin:auto;height:28px;width:28px;border:3px rgba(0,0,0,.25) solid;border-top:3px var(--chat-color-spinner) solid;border-right:3px var(--chat-color-spinner) solid;border-bottom:3px var(--chat-color-spinner) solid;border-radius:50%;-webkit-animation:vac-spin 1s infinite linear;animation:vac-spin 1s infinite linear}@media only screen and (max-width: 768px){.vac-loader-wrapper #vac-circle{height:24px;width:24px}.vac-loader-wrapper.vac-container-top{padding:18px}.vac-loader-wrapper.vac-container-top #vac-circle{height:16px;width:16px}}@-webkit-keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}@keyframes vac-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0)}to{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}#vac-icon-search{fill:var(--chat-icon-color-search)}#vac-icon-add{fill:var(--chat-icon-color-add)}#vac-icon-toggle{fill:var(--chat-icon-color-toggle)}#vac-icon-menu{fill:var(--chat-icon-color-menu)}#vac-icon-close{fill:var(--chat-icon-color-close)}#vac-icon-close-image{fill:var(--chat-icon-color-close-image)}#vac-icon-file{fill:var(--chat-icon-color-file)}#vac-icon-paperclip{fill:var(--chat-icon-color-paperclip)}#vac-icon-close-outline{fill:var(--chat-icon-color-close-outline)}#vac-icon-close-outline-preview{fill:var(--chat-icon-color-close-preview)}#vac-icon-send{fill:var(--chat-icon-color-send)}#vac-icon-send-disabled{fill:var(--chat-icon-color-send-disabled)}#vac-icon-emoji{fill:var(--chat-icon-color-emoji)}#vac-icon-emoji-reaction{fill:var(--chat-icon-color-emoji-reaction)}#vac-icon-document{fill:var(--chat-icon-color-document)}#vac-icon-pencil{fill:var(--chat-icon-color-pencil)}#vac-icon-checkmark,#vac-icon-double-checkmark{fill:var(--chat-icon-color-checkmark)}#vac-icon-checkmark-seen,#vac-icon-double-checkmark-seen{fill:var(--chat-icon-color-checkmark-seen)}#vac-icon-eye{fill:var(--chat-icon-color-eye)}#vac-icon-dropdown-message{fill:var(--chat-icon-color-dropdown-message)}#vac-icon-dropdown-room{fill:var(--chat-icon-color-dropdown-room)}#vac-icon-dropdown-scroll{fill:var(--chat-icon-color-dropdown-scroll)}#vac-icon-audio-play{fill:var(--chat-icon-color-audio-play)}#vac-icon-audio-pause{fill:var(--chat-icon-color-audio-pause)}.vac-progress-wrapper{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9}.vac-progress-wrapper circle{transition:stroke-dashoffset .35s;transform:rotate(-90deg);transform-origin:50% 50%}.vac-progress-wrapper .vac-progress-content{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:-1;margin-top:-2px;background-color:#000000b3;border-radius:50%}.vac-progress-wrapper .vac-progress-content .vac-progress-text{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:700;color:#fff}.vac-progress-wrapper .vac-progress-content .vac-progress-text .vac-progress-pourcent{font-size:9px;font-weight:400}\n';
 const _sfc_main = {
   name: "ChatContainer",
   components: {
@@ -29570,6 +20940,7 @@ const _sfc_main = {
     roomMessage: { type: String, default: "" },
     scrollDistance: { type: Number, default: 60 },
     acceptedFiles: { type: String, default: "*" },
+    captureFiles: { type: String, default: void 0 },
     templatesText: { type: [Array, String], default: () => [] },
     mediaPreviewEnabled: { type: [Boolean, String], default: true },
     usernameOptions: {
@@ -29951,8 +21322,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         renderList($data.slots, (el) => {
           return {
             name: el.slot,
-            fn: withCtx((data) => [
-              renderSlot(_ctx.$slots, el.slot, normalizeProps(guardReactiveProps(data)))
+            fn: withCtx((data2) => [
+              renderSlot(_ctx.$slots, el.slot, normalizeProps(guardReactiveProps(data2)))
             ])
           };
         })
@@ -29992,6 +21363,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         "emojis-suggestion-enabled": $options.emojisSuggestionEnabledCasted,
         "scroll-distance": $props.scrollDistance,
         "accepted-files": $props.acceptedFiles,
+        "capture-files": $props.captureFiles,
         "templates-text": $options.templatesTextCasted,
         "username-options": $options.usernameOptionsCasted,
         "emoji-data-source": $props.emojiDataSource,
@@ -30014,12 +21386,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         renderList($data.slots, (el) => {
           return {
             name: el.slot,
-            fn: withCtx((data) => [
-              renderSlot(_ctx.$slots, el.slot, normalizeProps(guardReactiveProps(data)))
+            fn: withCtx((data2) => [
+              renderSlot(_ctx.$slots, el.slot, normalizeProps(guardReactiveProps(data2)))
             ])
           };
         })
-      ]), 1032, ["current-user-id", "rooms", "room-id", "load-first-room", "messages", "room-message", "messages-loaded", "menu-actions", "message-actions", "message-selection-actions", "auto-scroll", "show-send-icon", "show-files", "show-audio", "audio-bit-rate", "audio-sample-rate", "show-emojis", "show-reaction-emojis", "show-new-messages-divider", "show-footer", "text-messages", "single-room", "show-rooms-list", "text-formatting", "link-options", "is-mobile", "loading-rooms", "room-info-enabled", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "scroll-distance", "accepted-files", "templates-text", "username-options", "emoji-data-source", "onToggleRoomsList", "onRoomInfo", "onFetchMessages", "onSendMessage", "onEditMessage", "onDeleteMessage", "onOpenFile", "onOpenUserTag", "onOpenFailedMessage", "onMenuActionHandler", "onMessageActionHandler", "onMessageSelectionActionHandler", "onSendMessageReaction", "onTypingMessage", "onTextareaActionHandler"])
+      ]), 1032, ["current-user-id", "rooms", "room-id", "load-first-room", "messages", "room-message", "messages-loaded", "menu-actions", "message-actions", "message-selection-actions", "auto-scroll", "show-send-icon", "show-files", "show-audio", "audio-bit-rate", "audio-sample-rate", "show-emojis", "show-reaction-emojis", "show-new-messages-divider", "show-footer", "text-messages", "single-room", "show-rooms-list", "text-formatting", "link-options", "is-mobile", "loading-rooms", "room-info-enabled", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "scroll-distance", "accepted-files", "capture-files", "templates-text", "username-options", "emoji-data-source", "onToggleRoomsList", "onRoomInfo", "onFetchMessages", "onSendMessage", "onEditMessage", "onDeleteMessage", "onOpenFile", "onOpenUserTag", "onOpenFailedMessage", "onMenuActionHandler", "onMessageActionHandler", "onMessageSelectionActionHandler", "onSendMessageReaction", "onTypingMessage", "onTextareaActionHandler"])
     ]),
     createVNode(Transition, {
       name: "vac-fade-preview",
@@ -30034,8 +21406,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
           renderList($data.slots, (el) => {
             return {
               name: el.slot,
-              fn: withCtx((data) => [
-                renderSlot(_ctx.$slots, el.slot, normalizeProps(guardReactiveProps(data)))
+              fn: withCtx((data2) => [
+                renderSlot(_ctx.$slots, el.slot, normalizeProps(guardReactiveProps(data2)))
               ])
             };
           })
@@ -30053,4 +21425,764 @@ function register() {
     customElements.define(PACKAGE_NAME, VueAdvancedChat);
   }
 }
+var getBlobDuration$1 = {};
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    "default": obj
+  };
+}
+var interopRequireDefault = _interopRequireDefault;
+var runtime = { exports: {} };
+(function(module) {
+  var runtime2 = function(exports) {
+    var Op = Object.prototype;
+    var hasOwn2 = Op.hasOwnProperty;
+    var defineProperty = Object.defineProperty || function(obj, key, desc) {
+      obj[key] = desc.value;
+    };
+    var undefined$1;
+    var $Symbol = typeof Symbol === "function" ? Symbol : {};
+    var iteratorSymbol = $Symbol.iterator || "@@iterator";
+    var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+    var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+    function define(obj, key, value) {
+      Object.defineProperty(obj, key, {
+        value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+      return obj[key];
+    }
+    try {
+      define({}, "");
+    } catch (err) {
+      define = function(obj, key, value) {
+        return obj[key] = value;
+      };
+    }
+    function wrap(innerFn, outerFn, self2, tryLocsList) {
+      var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+      var generator = Object.create(protoGenerator.prototype);
+      var context = new Context(tryLocsList || []);
+      defineProperty(generator, "_invoke", { value: makeInvokeMethod(innerFn, self2, context) });
+      return generator;
+    }
+    exports.wrap = wrap;
+    function tryCatch(fn, obj, arg) {
+      try {
+        return { type: "normal", arg: fn.call(obj, arg) };
+      } catch (err) {
+        return { type: "throw", arg: err };
+      }
+    }
+    var GenStateSuspendedStart = "suspendedStart";
+    var GenStateSuspendedYield = "suspendedYield";
+    var GenStateExecuting = "executing";
+    var GenStateCompleted = "completed";
+    var ContinueSentinel = {};
+    function Generator() {
+    }
+    function GeneratorFunction() {
+    }
+    function GeneratorFunctionPrototype() {
+    }
+    var IteratorPrototype = {};
+    define(IteratorPrototype, iteratorSymbol, function() {
+      return this;
+    });
+    var getProto2 = Object.getPrototypeOf;
+    var NativeIteratorPrototype = getProto2 && getProto2(getProto2(values([])));
+    if (NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn2.call(NativeIteratorPrototype, iteratorSymbol)) {
+      IteratorPrototype = NativeIteratorPrototype;
+    }
+    var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype);
+    GeneratorFunction.prototype = GeneratorFunctionPrototype;
+    defineProperty(Gp, "constructor", { value: GeneratorFunctionPrototype, configurable: true });
+    defineProperty(
+      GeneratorFunctionPrototype,
+      "constructor",
+      { value: GeneratorFunction, configurable: true }
+    );
+    GeneratorFunction.displayName = define(
+      GeneratorFunctionPrototype,
+      toStringTagSymbol,
+      "GeneratorFunction"
+    );
+    function defineIteratorMethods(prototype) {
+      ["next", "throw", "return"].forEach(function(method) {
+        define(prototype, method, function(arg) {
+          return this._invoke(method, arg);
+        });
+      });
+    }
+    exports.isGeneratorFunction = function(genFun) {
+      var ctor = typeof genFun === "function" && genFun.constructor;
+      return ctor ? ctor === GeneratorFunction || (ctor.displayName || ctor.name) === "GeneratorFunction" : false;
+    };
+    exports.mark = function(genFun) {
+      if (Object.setPrototypeOf) {
+        Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+      } else {
+        genFun.__proto__ = GeneratorFunctionPrototype;
+        define(genFun, toStringTagSymbol, "GeneratorFunction");
+      }
+      genFun.prototype = Object.create(Gp);
+      return genFun;
+    };
+    exports.awrap = function(arg) {
+      return { __await: arg };
+    };
+    function AsyncIterator(generator, PromiseImpl) {
+      function invoke(method, arg, resolve3, reject) {
+        var record = tryCatch(generator[method], generator, arg);
+        if (record.type === "throw") {
+          reject(record.arg);
+        } else {
+          var result = record.arg;
+          var value = result.value;
+          if (value && typeof value === "object" && hasOwn2.call(value, "__await")) {
+            return PromiseImpl.resolve(value.__await).then(function(value2) {
+              invoke("next", value2, resolve3, reject);
+            }, function(err) {
+              invoke("throw", err, resolve3, reject);
+            });
+          }
+          return PromiseImpl.resolve(value).then(function(unwrapped) {
+            result.value = unwrapped;
+            resolve3(result);
+          }, function(error) {
+            return invoke("throw", error, resolve3, reject);
+          });
+        }
+      }
+      var previousPromise;
+      function enqueue(method, arg) {
+        function callInvokeWithMethodAndArg() {
+          return new PromiseImpl(function(resolve3, reject) {
+            invoke(method, arg, resolve3, reject);
+          });
+        }
+        return previousPromise = previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+      }
+      defineProperty(this, "_invoke", { value: enqueue });
+    }
+    defineIteratorMethods(AsyncIterator.prototype);
+    define(AsyncIterator.prototype, asyncIteratorSymbol, function() {
+      return this;
+    });
+    exports.AsyncIterator = AsyncIterator;
+    exports.async = function(innerFn, outerFn, self2, tryLocsList, PromiseImpl) {
+      if (PromiseImpl === void 0)
+        PromiseImpl = Promise;
+      var iter = new AsyncIterator(
+        wrap(innerFn, outerFn, self2, tryLocsList),
+        PromiseImpl
+      );
+      return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function(result) {
+        return result.done ? result.value : iter.next();
+      });
+    };
+    function makeInvokeMethod(innerFn, self2, context) {
+      var state2 = GenStateSuspendedStart;
+      return function invoke(method, arg) {
+        if (state2 === GenStateExecuting) {
+          throw new Error("Generator is already running");
+        }
+        if (state2 === GenStateCompleted) {
+          if (method === "throw") {
+            throw arg;
+          }
+          return doneResult();
+        }
+        context.method = method;
+        context.arg = arg;
+        while (true) {
+          var delegate = context.delegate;
+          if (delegate) {
+            var delegateResult = maybeInvokeDelegate(delegate, context);
+            if (delegateResult) {
+              if (delegateResult === ContinueSentinel)
+                continue;
+              return delegateResult;
+            }
+          }
+          if (context.method === "next") {
+            context.sent = context._sent = context.arg;
+          } else if (context.method === "throw") {
+            if (state2 === GenStateSuspendedStart) {
+              state2 = GenStateCompleted;
+              throw context.arg;
+            }
+            context.dispatchException(context.arg);
+          } else if (context.method === "return") {
+            context.abrupt("return", context.arg);
+          }
+          state2 = GenStateExecuting;
+          var record = tryCatch(innerFn, self2, context);
+          if (record.type === "normal") {
+            state2 = context.done ? GenStateCompleted : GenStateSuspendedYield;
+            if (record.arg === ContinueSentinel) {
+              continue;
+            }
+            return {
+              value: record.arg,
+              done: context.done
+            };
+          } else if (record.type === "throw") {
+            state2 = GenStateCompleted;
+            context.method = "throw";
+            context.arg = record.arg;
+          }
+        }
+      };
+    }
+    function maybeInvokeDelegate(delegate, context) {
+      var methodName = context.method;
+      var method = delegate.iterator[methodName];
+      if (method === undefined$1) {
+        context.delegate = null;
+        if (methodName === "throw" && delegate.iterator["return"]) {
+          context.method = "return";
+          context.arg = undefined$1;
+          maybeInvokeDelegate(delegate, context);
+          if (context.method === "throw") {
+            return ContinueSentinel;
+          }
+        }
+        if (methodName !== "return") {
+          context.method = "throw";
+          context.arg = new TypeError(
+            "The iterator does not provide a '" + methodName + "' method"
+          );
+        }
+        return ContinueSentinel;
+      }
+      var record = tryCatch(method, delegate.iterator, context.arg);
+      if (record.type === "throw") {
+        context.method = "throw";
+        context.arg = record.arg;
+        context.delegate = null;
+        return ContinueSentinel;
+      }
+      var info = record.arg;
+      if (!info) {
+        context.method = "throw";
+        context.arg = new TypeError("iterator result is not an object");
+        context.delegate = null;
+        return ContinueSentinel;
+      }
+      if (info.done) {
+        context[delegate.resultName] = info.value;
+        context.next = delegate.nextLoc;
+        if (context.method !== "return") {
+          context.method = "next";
+          context.arg = undefined$1;
+        }
+      } else {
+        return info;
+      }
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+    defineIteratorMethods(Gp);
+    define(Gp, toStringTagSymbol, "Generator");
+    define(Gp, iteratorSymbol, function() {
+      return this;
+    });
+    define(Gp, "toString", function() {
+      return "[object Generator]";
+    });
+    function pushTryEntry(locs) {
+      var entry = { tryLoc: locs[0] };
+      if (1 in locs) {
+        entry.catchLoc = locs[1];
+      }
+      if (2 in locs) {
+        entry.finallyLoc = locs[2];
+        entry.afterLoc = locs[3];
+      }
+      this.tryEntries.push(entry);
+    }
+    function resetTryEntry(entry) {
+      var record = entry.completion || {};
+      record.type = "normal";
+      delete record.arg;
+      entry.completion = record;
+    }
+    function Context(tryLocsList) {
+      this.tryEntries = [{ tryLoc: "root" }];
+      tryLocsList.forEach(pushTryEntry, this);
+      this.reset(true);
+    }
+    exports.keys = function(val) {
+      var object = Object(val);
+      var keys = [];
+      for (var key in object) {
+        keys.push(key);
+      }
+      keys.reverse();
+      return function next2() {
+        while (keys.length) {
+          var key2 = keys.pop();
+          if (key2 in object) {
+            next2.value = key2;
+            next2.done = false;
+            return next2;
+          }
+        }
+        next2.done = true;
+        return next2;
+      };
+    };
+    function values(iterable) {
+      if (iterable) {
+        var iteratorMethod = iterable[iteratorSymbol];
+        if (iteratorMethod) {
+          return iteratorMethod.call(iterable);
+        }
+        if (typeof iterable.next === "function") {
+          return iterable;
+        }
+        if (!isNaN(iterable.length)) {
+          var i = -1, next2 = function next3() {
+            while (++i < iterable.length) {
+              if (hasOwn2.call(iterable, i)) {
+                next3.value = iterable[i];
+                next3.done = false;
+                return next3;
+              }
+            }
+            next3.value = undefined$1;
+            next3.done = true;
+            return next3;
+          };
+          return next2.next = next2;
+        }
+      }
+      return { next: doneResult };
+    }
+    exports.values = values;
+    function doneResult() {
+      return { value: undefined$1, done: true };
+    }
+    Context.prototype = {
+      constructor: Context,
+      reset: function(skipTempReset) {
+        this.prev = 0;
+        this.next = 0;
+        this.sent = this._sent = undefined$1;
+        this.done = false;
+        this.delegate = null;
+        this.method = "next";
+        this.arg = undefined$1;
+        this.tryEntries.forEach(resetTryEntry);
+        if (!skipTempReset) {
+          for (var name in this) {
+            if (name.charAt(0) === "t" && hasOwn2.call(this, name) && !isNaN(+name.slice(1))) {
+              this[name] = undefined$1;
+            }
+          }
+        }
+      },
+      stop: function() {
+        this.done = true;
+        var rootEntry = this.tryEntries[0];
+        var rootRecord = rootEntry.completion;
+        if (rootRecord.type === "throw") {
+          throw rootRecord.arg;
+        }
+        return this.rval;
+      },
+      dispatchException: function(exception) {
+        if (this.done) {
+          throw exception;
+        }
+        var context = this;
+        function handle(loc, caught) {
+          record.type = "throw";
+          record.arg = exception;
+          context.next = loc;
+          if (caught) {
+            context.method = "next";
+            context.arg = undefined$1;
+          }
+          return !!caught;
+        }
+        for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+          var entry = this.tryEntries[i];
+          var record = entry.completion;
+          if (entry.tryLoc === "root") {
+            return handle("end");
+          }
+          if (entry.tryLoc <= this.prev) {
+            var hasCatch = hasOwn2.call(entry, "catchLoc");
+            var hasFinally = hasOwn2.call(entry, "finallyLoc");
+            if (hasCatch && hasFinally) {
+              if (this.prev < entry.catchLoc) {
+                return handle(entry.catchLoc, true);
+              } else if (this.prev < entry.finallyLoc) {
+                return handle(entry.finallyLoc);
+              }
+            } else if (hasCatch) {
+              if (this.prev < entry.catchLoc) {
+                return handle(entry.catchLoc, true);
+              }
+            } else if (hasFinally) {
+              if (this.prev < entry.finallyLoc) {
+                return handle(entry.finallyLoc);
+              }
+            } else {
+              throw new Error("try statement without catch or finally");
+            }
+          }
+        }
+      },
+      abrupt: function(type, arg) {
+        for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+          var entry = this.tryEntries[i];
+          if (entry.tryLoc <= this.prev && hasOwn2.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) {
+            var finallyEntry = entry;
+            break;
+          }
+        }
+        if (finallyEntry && (type === "break" || type === "continue") && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc) {
+          finallyEntry = null;
+        }
+        var record = finallyEntry ? finallyEntry.completion : {};
+        record.type = type;
+        record.arg = arg;
+        if (finallyEntry) {
+          this.method = "next";
+          this.next = finallyEntry.finallyLoc;
+          return ContinueSentinel;
+        }
+        return this.complete(record);
+      },
+      complete: function(record, afterLoc) {
+        if (record.type === "throw") {
+          throw record.arg;
+        }
+        if (record.type === "break" || record.type === "continue") {
+          this.next = record.arg;
+        } else if (record.type === "return") {
+          this.rval = this.arg = record.arg;
+          this.method = "return";
+          this.next = "end";
+        } else if (record.type === "normal" && afterLoc) {
+          this.next = afterLoc;
+        }
+        return ContinueSentinel;
+      },
+      finish: function(finallyLoc) {
+        for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+          var entry = this.tryEntries[i];
+          if (entry.finallyLoc === finallyLoc) {
+            this.complete(entry.completion, entry.afterLoc);
+            resetTryEntry(entry);
+            return ContinueSentinel;
+          }
+        }
+      },
+      "catch": function(tryLoc) {
+        for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+          var entry = this.tryEntries[i];
+          if (entry.tryLoc === tryLoc) {
+            var record = entry.completion;
+            if (record.type === "throw") {
+              var thrown = record.arg;
+              resetTryEntry(entry);
+            }
+            return thrown;
+          }
+        }
+        throw new Error("illegal catch attempt");
+      },
+      delegateYield: function(iterable, resultName, nextLoc) {
+        this.delegate = {
+          iterator: values(iterable),
+          resultName,
+          nextLoc
+        };
+        if (this.method === "next") {
+          this.arg = undefined$1;
+        }
+        return ContinueSentinel;
+      }
+    };
+    return exports;
+  }(
+    module.exports
+  );
+  try {
+    regeneratorRuntime = runtime2;
+  } catch (accidentalStrictMode) {
+    if (typeof globalThis === "object") {
+      globalThis.regeneratorRuntime = runtime2;
+    } else {
+      Function("r", "regeneratorRuntime = r")(runtime2);
+    }
+  }
+})(runtime);
+var regenerator = runtime.exports;
+function asyncGeneratorStep(gen, resolve3, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+  if (info.done) {
+    resolve3(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+function _asyncToGenerator(fn) {
+  return function() {
+    var self2 = this, args = arguments;
+    return new Promise(function(resolve3, reject) {
+      var gen = fn.apply(self2, args);
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve3, reject, _next, _throw, "next", value);
+      }
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve3, reject, _next, _throw, "throw", err);
+      }
+      _next(void 0);
+    });
+  };
+}
+var asyncToGenerator = _asyncToGenerator;
+(function(exports) {
+  var _interopRequireDefault2 = interopRequireDefault;
+  Object.defineProperty(exports, "__esModule", { value: true }), exports.default = getBlobDuration2;
+  var _regenerator = _interopRequireDefault2(regenerator), _asyncToGenerator2 = _interopRequireDefault2(asyncToGenerator);
+  function getBlobDuration2(e) {
+    return _getBlobDuration.apply(this, arguments);
+  }
+  function _getBlobDuration() {
+    return (_getBlobDuration = (0, _asyncToGenerator2.default)(_regenerator.default.mark(function e(r) {
+      var t, n;
+      return _regenerator.default.wrap(function(e2) {
+        for (; ; )
+          switch (e2.prev = e2.next) {
+            case 0:
+              return t = document.createElement("video"), n = new Promise(function(e3, r2) {
+                t.addEventListener("loadedmetadata", function() {
+                  t.duration === 1 / 0 ? (t.currentTime = Number.MAX_SAFE_INTEGER, t.ontimeupdate = function() {
+                    t.ontimeupdate = null, e3(t.duration), t.currentTime = 0;
+                  }) : e3(t.duration);
+                }), t.onerror = function(e4) {
+                  return r2(e4.target.error);
+                };
+              }), t.src = "string" == typeof r || r instanceof String ? r : window.URL.createObjectURL(r), e2.abrupt("return", n);
+            case 4:
+            case "end":
+              return e2.stop();
+          }
+      }, e);
+    }))).apply(this, arguments);
+  }
+})(getBlobDuration$1);
+var getBlobDuration = /* @__PURE__ */ getDefaultExportFromCjs(getBlobDuration$1);
+const successResponse = () => ({ value: true });
+const failureResponse = () => ({ value: false });
+const missingPermissionError = () => new Error("MISSING_PERMISSION");
+const alreadyRecordingError = () => new Error("ALREADY_RECORDING");
+const deviceCannotVoiceRecordError = () => new Error("DEVICE_CANNOT_VOICE_RECORD");
+const failedToRecordError = () => new Error("FAILED_TO_RECORD");
+const emptyRecordingError = () => new Error("EMPTY_RECORDING");
+const recordingHasNotStartedError = () => new Error("RECORDING_HAS_NOT_STARTED");
+const failedToFetchRecordingError = () => new Error("FAILED_TO_FETCH_RECORDING");
+const couldNotQueryPermissionStatusError = () => new Error("COULD_NOT_QUERY_PERMISSION_STATUS");
+const possibleMimeTypes = ["audio/aac", "audio/webm;codecs=opus", "audio/mp4", "audio/webm", "audio/ogg;codecs=opus"];
+const neverResolvingPromise = () => new Promise(() => void 0);
+class VoiceRecorderImpl {
+  constructor() {
+    this.mediaRecorder = null;
+    this.chunks = [];
+    this.pendingResult = neverResolvingPromise();
+  }
+  static async canDeviceVoiceRecord() {
+    var _a;
+    if (((_a = navigator === null || navigator === void 0 ? void 0 : navigator.mediaDevices) === null || _a === void 0 ? void 0 : _a.getUserMedia) == null || VoiceRecorderImpl.getSupportedMimeType() == null) {
+      return failureResponse();
+    } else {
+      return successResponse();
+    }
+  }
+  async startRecording() {
+    if (this.mediaRecorder != null) {
+      throw alreadyRecordingError();
+    }
+    const deviceCanRecord = await VoiceRecorderImpl.canDeviceVoiceRecord();
+    if (!deviceCanRecord.value) {
+      throw deviceCannotVoiceRecordError();
+    }
+    const havingPermission = await VoiceRecorderImpl.hasAudioRecordingPermission().catch(() => successResponse());
+    if (!havingPermission.value) {
+      throw missingPermissionError();
+    }
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(this.onSuccessfullyStartedRecording.bind(this)).catch(this.onFailedToStartRecording.bind(this));
+    return successResponse();
+  }
+  async stopRecording() {
+    if (this.mediaRecorder == null) {
+      throw recordingHasNotStartedError();
+    }
+    try {
+      this.mediaRecorder.stop();
+      this.mediaRecorder.stream.getTracks().forEach((track2) => track2.stop());
+      return this.pendingResult;
+    } catch (ignore) {
+      throw failedToFetchRecordingError();
+    } finally {
+      this.prepareInstanceForNextOperation();
+    }
+  }
+  static async hasAudioRecordingPermission() {
+    return navigator.permissions.query({ name: "microphone" }).then((result) => ({ value: result.state === "granted" })).catch(() => {
+      throw couldNotQueryPermissionStatusError();
+    });
+  }
+  static async requestAudioRecordingPermission() {
+    const havingPermission = await VoiceRecorderImpl.hasAudioRecordingPermission().catch(() => failureResponse());
+    if (havingPermission.value) {
+      return successResponse();
+    }
+    return navigator.mediaDevices.getUserMedia({ audio: true }).then(() => successResponse()).catch(() => failureResponse());
+  }
+  pauseRecording() {
+    if (this.mediaRecorder == null) {
+      throw recordingHasNotStartedError();
+    } else if (this.mediaRecorder.state === "recording") {
+      this.mediaRecorder.pause();
+      return Promise.resolve(successResponse());
+    } else {
+      return Promise.resolve(failureResponse());
+    }
+  }
+  resumeRecording() {
+    if (this.mediaRecorder == null) {
+      throw recordingHasNotStartedError();
+    } else if (this.mediaRecorder.state === "paused") {
+      this.mediaRecorder.resume();
+      return Promise.resolve(successResponse());
+    } else {
+      return Promise.resolve(failureResponse());
+    }
+  }
+  getCurrentStatus() {
+    if (this.mediaRecorder == null) {
+      return Promise.resolve({ status: "NONE" });
+    } else if (this.mediaRecorder.state === "recording") {
+      return Promise.resolve({ status: "RECORDING" });
+    } else if (this.mediaRecorder.state === "paused") {
+      return Promise.resolve({ status: "PAUSED" });
+    } else {
+      return Promise.resolve({ status: "NONE" });
+    }
+  }
+  static getSupportedMimeType() {
+    if ((MediaRecorder === null || MediaRecorder === void 0 ? void 0 : MediaRecorder.isTypeSupported) == null)
+      return null;
+    const foundSupportedType = possibleMimeTypes.find((type) => MediaRecorder.isTypeSupported(type));
+    return foundSupportedType !== null && foundSupportedType !== void 0 ? foundSupportedType : null;
+  }
+  onSuccessfullyStartedRecording(stream) {
+    this.pendingResult = new Promise((resolve3, reject) => {
+      this.mediaRecorder = new MediaRecorder(stream);
+      this.mediaRecorder.onerror = () => {
+        this.prepareInstanceForNextOperation();
+        reject(failedToRecordError());
+      };
+      this.mediaRecorder.onstop = async () => {
+        const mimeType = VoiceRecorderImpl.getSupportedMimeType();
+        if (mimeType == null) {
+          this.prepareInstanceForNextOperation();
+          reject(failedToFetchRecordingError());
+          return;
+        }
+        const blobVoiceRecording = new Blob(this.chunks, { "type": mimeType });
+        if (blobVoiceRecording.size <= 0) {
+          this.prepareInstanceForNextOperation();
+          reject(emptyRecordingError());
+          return;
+        }
+        const recordDataBase64 = await VoiceRecorderImpl.blobToBase64(blobVoiceRecording);
+        const recordingDuration = await getBlobDuration(blobVoiceRecording);
+        this.prepareInstanceForNextOperation();
+        resolve3({ value: { recordDataBase64, mimeType, msDuration: recordingDuration * 1e3 } });
+      };
+      this.mediaRecorder.ondataavailable = (event) => this.chunks.push(event.data);
+      this.mediaRecorder.start();
+    });
+  }
+  onFailedToStartRecording() {
+    this.prepareInstanceForNextOperation();
+    throw failedToRecordError();
+  }
+  static blobToBase64(blob) {
+    return new Promise((resolve3) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const recordingResult = String(reader.result);
+        const splitResult = recordingResult.split("base64,");
+        const toResolve = splitResult.length > 1 ? splitResult[1] : recordingResult;
+        resolve3(toResolve.trim());
+      };
+      reader.readAsDataURL(blob);
+    });
+  }
+  prepareInstanceForNextOperation() {
+    if (this.mediaRecorder != null && this.mediaRecorder.state === "recording") {
+      try {
+        this.mediaRecorder.stop();
+      } catch (ignore) {
+      }
+    }
+    this.pendingResult = neverResolvingPromise();
+    this.mediaRecorder = null;
+    this.chunks = [];
+  }
+}
+class VoiceRecorderWeb extends WebPlugin {
+  constructor() {
+    super(...arguments);
+    this.voiceRecorderInstance = new VoiceRecorderImpl();
+  }
+  canDeviceVoiceRecord() {
+    return VoiceRecorderImpl.canDeviceVoiceRecord();
+  }
+  hasAudioRecordingPermission() {
+    return VoiceRecorderImpl.hasAudioRecordingPermission();
+  }
+  requestAudioRecordingPermission() {
+    return VoiceRecorderImpl.requestAudioRecordingPermission();
+  }
+  startRecording() {
+    return this.voiceRecorderInstance.startRecording();
+  }
+  stopRecording() {
+    return this.voiceRecorderInstance.stopRecording();
+  }
+  pauseRecording() {
+    return this.voiceRecorderInstance.pauseRecording();
+  }
+  resumeRecording() {
+    return this.voiceRecorderInstance.resumeRecording();
+  }
+  getCurrentStatus() {
+    return this.voiceRecorderInstance.getCurrentStatus();
+  }
+}
+var web = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  VoiceRecorderWeb
+}, Symbol.toStringTag, { value: "Module" }));
 export { VueAdvancedChat, register };

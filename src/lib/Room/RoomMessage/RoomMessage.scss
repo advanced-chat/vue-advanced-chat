@@ -186,6 +186,15 @@
 		text-align: right;
 	}
 
+	.vac-message-current {
+		.vac-text-timestamp {
+			color: var(--chat-message-color-timestamp-me) !important;
+		}
+
+		color: var(--chat-message-color-me) !important;
+		background-color: var(--chat-message-bg-color-me) !important;
+	}
+
 	.vac-progress-time {
 		float: left;
 		margin: -2px 0 0 40px;

@@ -100,13 +100,13 @@
 					'min-height': `20px`,
 					'padding-left': `12px`
 				}"
-				@input="onChangeInput"
-				@keydown.esc="escapeTextarea"
-				@keydown.enter.exact.prevent="selectItem"
-				@paste="onPasteImage"
-				@keydown.tab.exact.prevent=""
-				@keydown.tab="selectItem"
-				@keydown.up="updateActiveUpOrDown($event, -1)"
+        @input="onChangeInput"
+        @keydown.esc="escapeTextarea"
+        @keydown.enter.exact.prevent="selectItem"
+        @paste="onPasteImage"
+        @keydown.tab.exact.prevent=""
+        @keydown.tab="selectItem"
+        @keydown.up="updateActiveUpOrDown($event, -1)"
 				@keydown.down="updateActiveUpOrDown($event, 1)"
 			/>
 
@@ -157,13 +157,13 @@
 					</slot>
 				</div>
 
-				<input
-					v-if="showFiles"
-					ref="file"
-					type="file"
-					multiple
-					:accept="acceptedFiles"
-					:capture="captureFiles"
+        <input
+          v-if="showFiles"
+          ref="file"
+          type="file"
+          multiple
+          :accept="acceptedFiles"
+          :capture="captureFiles"
 					style="display: none"
 					@change="onFileChange($event.target.files)"
 				/>
@@ -222,20 +222,20 @@ export default {
 		clickOutside: vClickOutside
 	},
 
-	props: {
-		room: { type: Object, required: true },
-		roomId: { type: [String, Number], required: true },
-		roomMessage: { type: String, default: null },
-		textFormatting: { type: Object, required: true },
-		linkOptions: { type: Object, required: true },
-		textMessages: { type: Object, required: true },
-		showSendIcon: { type: Boolean, required: true },
-		showFiles: { type: Boolean, required: true },
-		showAudio: { type: Boolean, required: true },
-		showEmojis: { type: Boolean, required: true },
-		showFooter: { type: Boolean, required: true },
-		acceptedFiles: { type: String, required: true },
-		captureFiles: { type: String, required: true },
+  props: {
+    room: { type: Object, required: true },
+    roomId: { type: [String, Number], required: true },
+    roomMessage: { type: String, default: null },
+    textFormatting: { type: Object, required: true },
+    linkOptions: { type: Object, required: true },
+    textMessages: { type: Object, required: true },
+    showSendIcon: { type: Boolean, required: true },
+    showFiles: { type: Boolean, required: true },
+    showAudio: { type: Boolean, required: true },
+    showEmojis: { type: Boolean, required: true },
+    showFooter: { type: Boolean, required: true },
+    acceptedFiles: { type: String, required: true },
+    captureFiles: { type: String, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
 		textareaAutoFocus: { type: Boolean, required: true },
 		userTagsEnabled: { type: Boolean, required: true },
