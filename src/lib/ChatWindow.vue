@@ -84,6 +84,7 @@
 				@send-message-reaction="sendMessageReaction"
 				@typing-message="typingMessage"
 				@textarea-action-handler="textareaActionHandler"
+        @message-reaction-click="messageReactionClick"
 			>
 				<template v-for="el in slots" #[el.slot]="data">
 					<slot :name="el.slot" v-bind="data" />
@@ -227,7 +228,8 @@ export default {
 		'add-room',
 		'search-room',
 		'room-action-handler',
-		'message-selection-action-handler'
+		'message-selection-action-handler',
+    'message-reaction-click'
 	],
 
 	data() {
@@ -550,6 +552,14 @@ export default {
 				roomId: this.room.roomId
 			})
 		},
+
+    messageReactionClick(messageReaction) {
+      this.$emit('message-reaction-click', {
+        ...messageReaction,
+        roomId: this.room.roomId
+      })
+    },
+
 		typingMessage(message) {
 			this.$emit('typing-message', {
 				message,

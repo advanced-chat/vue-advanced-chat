@@ -53,7 +53,6 @@
 
 	.vac-message-box {
 		display: flex;
-		flex: 0 0 50%;
 		max-width: 50%;
 		justify-content: flex-start;
 		line-height: 1.4;
@@ -118,9 +117,14 @@
 		margin-top: 10px;
 	}
 
-	.vac-offset-current {
-		margin-left: 50%;
-		justify-content: flex-end;
+	.vac-message-box-container {
+		display: flex;
+		&.vac-offset-current{
+			justify-content: flex-end;
+		}
+		&:not(.vac-offset-current){
+			justify-content: flex-start;
+		}
 	}
 
 	.vac-message-card {
@@ -232,7 +236,6 @@
 		}
 
 		.vac-message-box {
-			flex: 0 0 80%;
 			max-width: 80%;
 		}
 

@@ -1,40 +1,37 @@
-.vac-button-reaction {
-	display: inline-flex;
-	align-items: center;
-	border: var(--chat-message-border-style-reaction);
-	outline: none;
-	background: var(--chat-message-bg-color-reaction);
-	border-radius: 4px;
-	margin: 4px 2px 0;
-	transition: 0.3s;
-	padding: 0 5px;
-	font-size: 18px;
-	line-height: 23px;
+.vac-message-reactions-container{
+  display: flex;
 
-	span {
-		font-size: 11px;
-		font-weight: 500;
-		min-width: 7px;
-		color: var(--chat-message-color-reaction-counter);
-	}
+  &.message-me {
+    margin-right: 6px;
+    justify-content: end;
+  }
 
-	&:hover {
-		border: var(--chat-message-border-style-reaction-hover);
-		background: var(--chat-message-bg-color-reaction-hover);
-		cursor: pointer;
-	}
+  &:not(.message-me) {
+    justify-content: start;
+    margin-left: 6px;
+  }
 
-	&.vac-reaction-me {
-		border: var(--chat-message-border-style-reaction-me);
-		background: var(--chat-message-bg-color-reaction-me);
+  .vac-reactions-container {
+    display: flex;
+    background-color: var(--chat-message-bg-color);
+    box-shadow: 0 1px 0 rgba(0,0,0,.07),0 0 3px rgba(0,0,0,.04);
+    border-radius: 50px;
+    align-items: end;
+    width: max-content;
+    cursor: pointer;
+    .vac-reactions {
+      user-select: none;
+      font-size: 16px;
+      margin: 0 2px;
+    }
 
-		span {
-			color: var(--chat-message-color-reaction-counter-me);
-		}
-
-		&:hover {
-			border: var(--chat-message-border-style-reaction-hover-me);
-			background: var(--chat-message-bg-color-reaction-hover-me);
-		}
-	}
+    .reaction-counter {
+      font-family: Segoe UI, Helvetica Neue, Helvetica, Lucida Grande, Arial, Ubuntu, Cantarell, Fira Sans, sans-serif;
+      color: var(--chat-header-color-name);
+      text-align: center;
+      margin: 0 3px;
+      padding-right: 3px;
+      user-select: none;
+    }
+  }
 }

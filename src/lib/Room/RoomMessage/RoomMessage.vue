@@ -34,6 +34,7 @@
 
     <div
         v-else
+        :class="{ 'vac-offset-current': message.senderId === currentUserId }"
         class="vac-message-box-container"
     >
       <label v-if="messageSelectionEnabled && !message.system" class="checkbox-message-container">
@@ -41,7 +42,6 @@
       </label>
       <div
         class="vac-message-box"
-        :class="{ 'vac-offset-current': message.senderId === currentUserId }"
       >
         <slot :name="'message_' + message._id">
           <slot
@@ -206,7 +206,7 @@
             <message-reactions
               :current-user-id="currentUserId"
               :message="message"
-              @send-message-reaction="sendMessageReaction"
+              @message-reaction-click="messageReactionClick"
             />
           </div>
           <slot :name="'message-failure_' + message._id">
@@ -295,7 +295,8 @@ export default {
 		'message-action-handler',
 		'send-message-reaction',
 		'select-message',
-		'unselect-message'
+		'unselect-message',
+    'message-reaction-click'
 	],
 
 	data() {
@@ -440,6 +441,14 @@ export default {
 			})
 			this.messageHover = false
 		},
+
+    messageReactionClick() {
+      this.$emit('message-reaction-click', {
+        messageId: this.message._id,
+        userId: this.currentUserId
+      })
+    },
+
 		selectMessage() {
       if (!this.messageSelectionEnabled || this.message.system) {
           return
