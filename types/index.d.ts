@@ -170,6 +170,7 @@ export interface Props {
 	theme?: 'light' | 'dark'
 	'accepted-files'?: string
 	'capture-files'?: string
+	'multiple-files'?: boolean
 	styles?: Record<string, Record<string, string>>
 }
 

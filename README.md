@@ -265,7 +265,8 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `theme`(26)                         | `light` / `dark` | -        | `light`                                                                                                           |
 | `accepted-files`(27)                | String           | -        | `*`                                                                                                               |
 | `capture-files`(28)                 | String           | -        | `''`                                                                                                              |
-| `styles`(29)                        | [String, Object] | -        | (26)                                                                                                              |
+| `multiple-files`(29)                 | Boolean           | -        | `true`                                                                                                              |
+| `styles`(30)                        | [String, Object] | -        | (26)                                                                                                              |
 | `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                              |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
@@ -487,7 +488,9 @@ Example: set `accepted-files="image/png, image/jpeg, application/pdf"` to allow 
 
 **(28)** `capture-files` can be used to enable direct capturing of photos and videos on mobile browsers, as opposed to just uploading existing photos and videos which are already on the device. See [here](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/capture) for more information and recognized values. By default, the attribute is omitted and mobile browsers will only offer the gallery to choose photos and videos. Note: this only affects file attachments. Audio messages are always recorded using the device's microphone.
 
-**(29)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
+**(29)** `multiple-files` can be used to define whether multiple file selections will be accepted. By default this is true.
+
+**(30)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
 
 ```javascript
 styles="{

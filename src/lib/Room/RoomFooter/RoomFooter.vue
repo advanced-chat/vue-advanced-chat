@@ -161,7 +161,7 @@
 					v-if="showFiles"
 					ref="file"
 					type="file"
-					multiple
+					:multiple="multipleFiles ? true : null"
 					:accept="acceptedFiles"
 					:capture="captureFiles"
 					style="display: none"
@@ -235,6 +235,7 @@ export default {
 		showEmojis: { type: Boolean, required: true },
 		showFooter: { type: Boolean, required: true },
 		acceptedFiles: { type: String, required: true },
+		multipleFiles: { type: Boolean, default: true },
 		captureFiles: { type: String, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
 		textareaAutoFocus: { type: Boolean, required: true },
