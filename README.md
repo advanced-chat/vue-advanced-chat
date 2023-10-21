@@ -787,6 +787,7 @@ Example:
 | `custom-action-icon`                        | Add a custom icon inside the footer                               |
 | `rooms-header`                              | Add a template on top of rooms list (above the search bar)        |
 | `room-list-item_{{ROOM_ID}}`                | Replace the template of the room list items                       |
+| `room-list-info_{{ROOM_ID}}`                | Replace the info of room list items                               |
 | `room-list-avatar_{{ROOM_ID}}`              | Replace the avatar of room list items                             |
 | `room-list-options_{{ROOM_ID}}`             | Replace the template of the list room options                     |
 | `room-list-options-icon_{{ROOM_ID}}`        | Replace the room list options dropdown icon                       |
