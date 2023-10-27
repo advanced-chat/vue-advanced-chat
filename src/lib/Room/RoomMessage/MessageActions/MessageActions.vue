@@ -3,7 +3,7 @@
 		<div
 			class="vac-options-container"
 			:style="{
-				display: hoverAudioProgress ? 'none' : 'initial',
+				display: hoverAudioProgress || !messageHover ? 'none' : 'initial',
 				width:
 					filteredMessageActions.length && showReactionEmojis ? '70px' : '45px'
 			}"

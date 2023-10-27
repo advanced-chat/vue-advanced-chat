@@ -75,6 +75,7 @@
 						}"
               @mouseover="onHoverMessage"
               @mouseleave="onLeaveMessage"
+              @mousemove="messageHover = !isSelectingContent"
             >
               <div
                 v-if="showUsername"
@@ -108,9 +109,7 @@
               </message-reply>
 
               <format-message
-                v-if="
-								!!message.deleted || !message.files || !message.files.length
-							"
+                v-if="!!message.deleted || !message.files || !message.files.length"
                 :message-id="message._id"
                 :content="message.content"
                 :deleted="!!message.deleted"
@@ -119,6 +118,8 @@
                 :text-messages="textMessages"
                 :link-options="linkOptions"
                 @open-user-tag="openUserTag"
+                @mousedown="startContentSelection"
+                @mouseup="endContentSelection"
               >
                 <template v-for="(idx, name) in $slots" #[name]="data">
                   <slot :name="name" v-bind="data" />
@@ -191,7 +192,7 @@
                 :hover-message-id="hoverMessageId"
                 :hover-audio-progress="hoverAudioProgress"
                 :emoji-data-source="emojiDataSource"
-                @update-message-hover="messageHover = $event"
+                @update-message-hover="messageHover = !isSelectingContent && $event"
                 @update-options-opened="optionsOpened = $event"
                 @update-emoji-opened="emojiOpened = $event"
                 @message-action-handler="messageActionHandler"
@@ -303,6 +304,7 @@ export default {
 		return {
 			hoverMessageId: null,
 			messageHover: false,
+      isSelectingContent: false,
 			optionsOpened: false,
 			emojiOpened: false,
 			newMessage: {},
@@ -403,7 +405,7 @@ export default {
 	methods: {
 		onHoverMessage() {
 			if (!this.messageSelectionEnabled) {
-				this.messageHover = true
+				this.messageHover = !this.isSelectingContent && true
 				if (this.canEditMessage()) this.hoverMessageId = this.message._id
 			}
 		},
@@ -458,7 +460,17 @@ export default {
         return
       }
       this.$emit('select-message', this.message)
-		}
+		},
+
+    startContentSelection() {
+      this.isSelectingContent = true
+      this.resetMessageHover()
+    },
+
+    endContentSelection() {
+      this.hoverMessageId = this.message._id
+      this.isSelectingContent = false
+    }
 	}
 }
 </script>

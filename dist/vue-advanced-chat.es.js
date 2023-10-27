@@ -33310,7 +33310,7 @@ function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
     createBaseVNode("div", {
       class: "vac-options-container",
       style: normalizeStyle({
-        display: $props.hoverAudioProgress ? "none" : "initial",
+        display: $props.hoverAudioProgress || !$props.messageHover ? "none" : "initial",
         width: $options.filteredMessageActions.length && $props.showReactionEmojis ? "70px" : "45px"
       })
     }, [
@@ -33561,6 +33561,7 @@ const _sfc_main$3 = {
     return {
       hoverMessageId: null,
       messageHover: false,
+      isSelectingContent: false,
       optionsOpened: false,
       emojiOpened: false,
       newMessage: {},
@@ -33637,7 +33638,7 @@ const _sfc_main$3 = {
   methods: {
     onHoverMessage() {
       if (!this.messageSelectionEnabled) {
-        this.messageHover = true;
+        this.messageHover = !this.isSelectingContent && true;
         if (this.canEditMessage())
           this.hoverMessageId = this.message._id;
       }
@@ -33691,6 +33692,14 @@ const _sfc_main$3 = {
         return;
       }
       this.$emit("select-message", this.message);
+    },
+    startContentSelection() {
+      this.isSelectingContent = true;
+      this.resetMessageHover();
+    },
+    endContentSelection() {
+      this.hoverMessageId = this.message._id;
+      this.isSelectingContent = false;
     }
   }
 };
@@ -33763,7 +33772,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     id: $props.message._id,
     ref: "message",
     class: normalizeClass(["vac-message-wrapper", { "vac-selection-enabled": $props.messageSelectionEnabled, "message-selected": $options.isMessageSelected, "message-system": $props.message.system }]),
-    onClick: _cache[8] || (_cache[8] = (...args) => $options.selectMessage && $options.selectMessage(...args))
+    onClick: _cache[9] || (_cache[9] = (...args) => $options.selectMessage && $options.selectMessage(...args))
   }, [
     $options.showDate ? (openBlock(), createElementBlock("div", _hoisted_2$2, [
       createBaseVNode("div", _hoisted_3$2, toDisplayString($props.message.date), 1)
@@ -33824,7 +33833,8 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
                 "vac-message-selected": $options.isMessageSelected
               }]),
               onMouseover: _cache[5] || (_cache[5] = (...args) => $options.onHoverMessage && $options.onHoverMessage(...args)),
-              onMouseleave: _cache[6] || (_cache[6] = (...args) => $options.onLeaveMessage && $options.onLeaveMessage(...args))
+              onMouseleave: _cache[6] || (_cache[6] = (...args) => $options.onLeaveMessage && $options.onLeaveMessage(...args)),
+              onMousemove: _cache[7] || (_cache[7] = ($event) => $data.messageHover = !$data.isSelectingContent)
             }, [
               $options.showUsername ? (openBlock(), createElementBlock("div", {
                 key: 0,
@@ -33866,7 +33876,9 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
                 "text-formatting": $props.textFormatting,
                 "text-messages": $props.textMessages,
                 "link-options": $props.linkOptions,
-                onOpenUserTag: $options.openUserTag
+                onOpenUserTag: $options.openUserTag,
+                onMousedown: $options.startContentSelection,
+                onMouseup: $options.endContentSelection
               }, createSlots({ _: 2 }, [
                 renderList(_ctx.$slots, (idx, name) => {
                   return {
@@ -33876,7 +33888,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
                     ])
                   };
                 })
-              ]), 1032, ["message-id", "content", "deleted", "users", "text-formatting", "text-messages", "link-options", "onOpenUserTag"])) : !$options.isAudio || $props.message.files.length > 1 ? (openBlock(), createBlock(_component_message_files, {
+              ]), 1032, ["message-id", "content", "deleted", "users", "text-formatting", "text-messages", "link-options", "onOpenUserTag", "onMousedown", "onMouseup"])) : !$options.isAudio || $props.message.files.length > 1 ? (openBlock(), createBlock(_component_message_files, {
                 key: 4,
                 "current-user-id": $props.currentUserId,
                 message: $props.message,
@@ -33940,7 +33952,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
                 "hover-message-id": $data.hoverMessageId,
                 "hover-audio-progress": $data.hoverAudioProgress,
                 "emoji-data-source": $props.emojiDataSource,
-                onUpdateMessageHover: _cache[2] || (_cache[2] = ($event) => $data.messageHover = $event),
+                onUpdateMessageHover: _cache[2] || (_cache[2] = ($event) => $data.messageHover = !$data.isSelectingContent && $event),
                 onUpdateOptionsOpened: _cache[3] || (_cache[3] = ($event) => $data.optionsOpened = $event),
                 onUpdateEmojiOpened: _cache[4] || (_cache[4] = ($event) => $data.emojiOpened = $event),
                 onMessageActionHandler: $options.messageActionHandler,
@@ -33968,7 +33980,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
               class: normalizeClass(["vac-failure-container vac-svg-button", {
                 "vac-failure-container-avatar": $props.message.avatar && $props.message.senderId === $props.currentUserId
               }]),
-              onClick: _cache[7] || (_cache[7] = ($event) => _ctx.$emit("open-failed-message", { message: $props.message }))
+              onClick: _cache[8] || (_cache[8] = ($event) => _ctx.$emit("open-failed-message", { message: $props.message }))
             }, _hoisted_16, 2)) : createCommentVNode("", true)
           ]),
           $props.message.senderId === $props.currentUserId ? renderSlot(_ctx.$slots, "message-avatar_" + $props.message._id, { key: 2 }, () => [
