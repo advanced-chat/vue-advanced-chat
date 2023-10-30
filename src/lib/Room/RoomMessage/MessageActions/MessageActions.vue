@@ -1,5 +1,5 @@
 <template>
-	<div class="vac-message-actions-wrapper">
+	<div class="vac-message-actions-wrapper" :style="{ display: message.deleted ? 'none' : '' }">
 		<div
 			class="vac-options-container"
 			:style="{
