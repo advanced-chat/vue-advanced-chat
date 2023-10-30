@@ -516,21 +516,21 @@ export default {
 			this.fileDialog = true
 			this.focusTextarea()
 
-			Array.from(files).forEach(async file => {
+			for (const file of Array.from(files)) {
 				const fileURL = URL.createObjectURL(file)
 				const typeIndex = file.name.lastIndexOf('.')
-
+        const fileType = file?.type.length ? file.type : 'text/plain'
+        const hasExtension = typeIndex !== -1
 				this.files.push({
 					loading: true,
-					name: file.name.substring(0, typeIndex),
+					name: hasExtension ? file.name.substring(0, typeIndex) : file.name,
 					size: file.size,
-					type: file.type,
-					extension: file.name.substring(typeIndex + 1),
+					type: fileType,
+					extension: hasExtension ? file.name.substring(typeIndex + 1) : '',
 					localUrl: fileURL
 				})
 
 				const blobFile = await fetch(fileURL).then(res => res.blob())
-
 				let loadedFile = this.files.find(file => file.localUrl === fileURL)
 
 				if (loadedFile) {
@@ -538,9 +538,9 @@ export default {
 					loadedFile.loading = false
 					delete loadedFile.loading
 				}
-			})
+			}
 
-			setTimeout(() => (this.fileDialog = false), 500)
+      setTimeout(() => (this.fileDialog = false), 500)
 		},
 		removeFile(index) {
 			this.files.splice(index, 1)
