@@ -37,10 +37,10 @@
 			</slot>
 		</div>
 
-		<div v-if="!loadingRooms" id="rooms-list" class="vac-room-list">
+		<div v-if="!loadingRooms && roomsToDisplay.length" id="rooms-list" class="vac-room-list">
 			<transition-group name="rooms">
 				<div
-					v-for="fRoom in filteredRooms"
+					v-for="fRoom in roomsToDisplay"
 					:id="fRoom.roomId"
 					:key="fRoom.roomId"
 					class="vac-room-item"
@@ -72,6 +72,15 @@
 				</div>
 			</transition>
 		</div>
+		<transition name="vac-fade-message">
+			<!--
+				I only want to show this label when there is a non
+				empty query AND when it matches no room.
+			-->
+			<div class="no-rooms-found-message" v-if="roomsQuery.length && !filteredRooms.length">
+				{{ roomsNotFoundMessage }}
+			</div>
+		</transition>
 	</div>
 </template>
 
@@ -106,7 +115,8 @@ export default {
 		room: { type: Object, required: true },
 		customSearchRoomEnabled: { type: [Boolean, String], default: false },
 		roomActions: { type: Array, required: true },
-		scrollDistance: { type: Number, required: true }
+		scrollDistance: { type: Number, required: true },
+		roomsNotFoundMessage: { type: String, required: true }
 	},
 
 	emits: [
@@ -120,11 +130,22 @@ export default {
 
 	data() {
 		return {
-			filteredRooms: this.rooms || [],
+			filteredRooms: [],
 			observer: null,
 			showLoader: true,
 			loadingMoreRooms: false,
-			selectedRoomId: ''
+			selectedRoomId: '',
+			roomsQuery: '',
+		}
+	},
+
+	computed: {
+		roomsToDisplay: function() {
+			if (this.roomsQuery.length) {
+				return this.filteredRooms;
+			}
+
+			return this.rooms;
 		}
 	},
 
@@ -132,7 +153,6 @@ export default {
 		rooms: {
 			deep: true,
 			handler(newVal, oldVal) {
-				this.filteredRooms = newVal
 				if (newVal.length !== oldVal.length || this.roomsLoaded) {
 					this.loadingMoreRooms = false
 				}
@@ -194,6 +214,7 @@ export default {
 			if (this.customSearchRoomEnabled) {
 				this.$emit('search-room', ev.target.value)
 			} else {
+				this.roomsQuery = ev.target.value;
 				this.filteredRooms = filteredItems(
 					this.rooms,
 					'roomName',

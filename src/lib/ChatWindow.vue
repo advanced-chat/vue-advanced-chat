@@ -18,6 +18,7 @@
 				:link-options="linkOptionsCasted"
 				:is-mobile="isMobile"
 				:scroll-distance="scrollDistance"
+				:rooms-not-found-message="roomsNotFoundMessage"
 				@fetch-room="fetchRoom"
 				@fetch-more-rooms="fetchMoreRooms"
 				@loading-more-rooms="loadingMoreRooms = $event"
@@ -206,7 +207,8 @@ export default {
 			type: [Object, String],
 			default: () => ({ minUsers: 3, currentUser: false })
 		},
-		emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: undefined },
+		roomsNotFoundMessage: { type: String, default: '' }
 	},
 
 	emits: [
@@ -229,7 +231,7 @@ export default {
 		'search-room',
 		'room-action-handler',
 		'message-selection-action-handler',
-    'message-reaction-click'
+		'message-reaction-click',
 	],
 
 	data() {
