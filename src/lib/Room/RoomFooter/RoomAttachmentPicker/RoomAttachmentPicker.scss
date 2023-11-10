@@ -1,0 +1,27 @@
+.room-attachment-picker-wrapper {
+	position: relative;
+
+	.vac-menu-options {
+		position: absolute;
+		right: 0px;
+		top: unset;
+		bottom: 32px;
+		z-index: 9999;
+
+		.vac-menu-item {
+			display: flex;
+			align-items: center;
+
+			i {
+				margin-right: .5rem;
+				font-size: 1.3rem;
+			}
+		}
+	}
+
+	@media only screen and (max-width: 768px) {
+		.vac-options-container {
+			right: 3px;
+		}
+	}
+}

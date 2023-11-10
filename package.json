@@ -65,6 +65,7 @@
 		"vue-loader": "^16.8.3"
 	},
 	"dependencies": {
+		"bootstrap-icons": "^1.11.1",
 		"emoji-picker-element": "1.12.1",
 		"micromark": "^3.1.0",
 		"micromark-extension-gfm": "^2.0.1"

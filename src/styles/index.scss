@@ -2,6 +2,7 @@
 @import 'menu';
 @import 'helper';
 @import 'markdown';
+@import 'bootstrap-icons/font/bootstrap-icons.scss';
 
 @import '../lib/ChatWindow';
 
@@ -11,6 +12,7 @@
 @import '../lib/Room/RoomHeader/RoomHeader';
 
 @import '../lib/Room/RoomFooter/RoomFooter';
+@import '../lib/Room/RoomFooter/RoomAttachmentPicker/RoomAttachmentPicker';
 @import '../lib/Room/RoomFooter/RoomEmojis/RoomEmojis';
 @import '../lib/Room/RoomFooter/RoomMessageReply/RoomMessageReply';
 @import '../lib/Room/RoomFooter/RoomFiles/RoomFiles';

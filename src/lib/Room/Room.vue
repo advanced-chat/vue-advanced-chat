@@ -155,11 +155,13 @@
 			:init-edit-message="initEditMessage"
 			:dropped-files="droppedFiles"
 			:emoji-data-source="emojiDataSource"
+      :attachment-options="attachmentOptions"
 			@update-edited-message-id="editedMessageId = $event"
 			@edit-message="$emit('edit-message', $event)"
 			@send-message="$emit('send-message', $event)"
 			@typing-message="$emit('typing-message', $event)"
 			@textarea-action-handler="$emit('textarea-action-handler', $event)"
+      @attachment-picker-handler="$emit('attachment-picker-handler', $event)"
 		>
 			<template v-for="(idx, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
@@ -224,7 +226,8 @@ export default {
 		scrollDistance: { type: Number, required: true },
 		templatesText: { type: Array, default: null },
 		usernameOptions: { type: Object, required: true },
-		emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: undefined },
+    attachmentOptions: { type: Array, required: true }
 	},
 
 	emits: [
@@ -243,7 +246,8 @@ export default {
 		'open-user-tag',
 		'open-failed-message',
 		'textarea-action-handler',
-    'message-reaction-click'
+    'message-reaction-click',
+    'attachment-picker-handler'
 	],
 
 	data() {

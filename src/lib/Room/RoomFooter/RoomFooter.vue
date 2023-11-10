@@ -141,11 +141,17 @@
 					</slot>
 				</div>
 
-				<div v-if="showFiles" class="vac-svg-button" @click="launchFilePicker">
-					<slot name="paperclip-icon">
-						<svg-icon name="paperclip" />
-					</slot>
-				</div>
+        <room-attachment-picker
+          v-if="showFiles"
+          :attachment-options="attachmentOptions"
+          @attachment-picker-handler="attachmentPickerHandler"
+        >
+          <template #paperclip-icon>
+            <slot name="paperclip-icon">
+              <svg-icon name="paperclip" />
+            </slot>
+          </template>
+        </room-attachment-picker>
 
 				<div
 					v-if="textareaActionEnabled"
@@ -196,6 +202,7 @@ import RoomFiles from './RoomFiles/RoomFiles'
 import RoomMessageReply from './RoomMessageReply/RoomMessageReply'
 import RoomUsersTag from './RoomUsersTag/RoomUsersTag'
 import RoomEmojis from './RoomEmojis/RoomEmojis'
+import RoomAttachmentPicker from './RoomAttachmentPicker/RoomAttachmentPicker'
 import RoomTemplatesText from './RoomTemplatesText/RoomTemplatesText'
 
 import vClickOutside from '../../../utils/on-click-outside'
@@ -215,7 +222,8 @@ export default {
 		RoomMessageReply,
 		RoomUsersTag,
 		RoomEmojis,
-		RoomTemplatesText
+		RoomTemplatesText,
+    RoomAttachmentPicker
 	},
 
 	directives: {
@@ -246,7 +254,8 @@ export default {
 		initReplyMessage: { type: Object, default: null },
 		initEditMessage: { type: Object, default: null },
 		droppedFiles: { type: Array, default: null },
-		emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: undefined },
+    attachmentOptions: { type: Array, required: true }
 	},
 
 	emits: [
@@ -254,7 +263,8 @@ export default {
 		'send-message',
 		'update-edited-message-id',
 		'textarea-action-handler',
-		'typing-message'
+		'typing-message',
+    'attachment-picker-handler'
 	],
 
 	data() {
@@ -512,6 +522,16 @@ export default {
 			this.$refs.file.value = ''
 			this.$refs.file.click()
 		},
+    attachmentPickerHandler(option) {
+      this.$refs.file.accept = option.accepts ?? this.acceptedFiles
+      if (option.capture || this.captureFiles) {
+        this.$refs.file.capture = option.capture ?? this.captureFiles
+      } else {
+        this.$refs.file.removeAttribute('capture')
+      }
+      this.launchFilePicker()
+      this.$emit('attachment-picker-handler', option)
+    },
 		async onFileChange(files) {
 			this.fileDialog = true
 			this.focusTextarea()
