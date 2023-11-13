@@ -12348,7 +12348,7 @@ const _hoisted_7$6 = {
   key: 1,
   class: "vac-text-ellipsis"
 };
-const _hoisted_8$4 = {
+const _hoisted_8$5 = {
   key: 3,
   class: "vac-text-ellipsis"
 };
@@ -12430,7 +12430,7 @@ function _sfc_render$n(_ctx, _cache, $props, $setup, $data, $options) {
               };
             })
           ]), 1032, ["message-id", "room-id", "content", "deleted", "users", "text-messages", "text-formatting", "link-options"])) : createCommentVNode("", true),
-          !$props.room.lastMessage && $options.typingUsers ? (openBlock(), createElementBlock("div", _hoisted_8$4, toDisplayString($options.typingUsers), 1)) : createCommentVNode("", true),
+          !$props.room.lastMessage && $options.typingUsers ? (openBlock(), createElementBlock("div", _hoisted_8$5, toDisplayString($options.typingUsers), 1)) : createCommentVNode("", true),
           createBaseVNode("div", _hoisted_9$4, [
             $props.room.unreadCount ? (openBlock(), createElementBlock("div", _hoisted_10$4, toDisplayString($props.room.unreadCount), 1)) : createCommentVNode("", true),
             renderSlot(_ctx.$slots, "room-list-options_" + $props.room.roomId, {}, () => [
@@ -12863,7 +12863,7 @@ const _hoisted_4$d = /* @__PURE__ */ createBaseVNode("span", { class: "x-icon va
 const _hoisted_5$9 = { class: "vac-selection-count-container" };
 const _hoisted_6$5 = { class: "vac-selection-button-count" };
 const _hoisted_7$5 = ["id"];
-const _hoisted_8$3 = ["title", "onClick"];
+const _hoisted_8$4 = ["title", "onClick"];
 const _hoisted_9$3 = /* @__PURE__ */ createBaseVNode("span", null, [
   /* @__PURE__ */ createBaseVNode("svg", {
     viewBox: "0 0 24 24",
@@ -12936,7 +12936,7 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
                     class: "vac-item-clickable forward-messages",
                     title: action.title,
                     onClick: ($event) => $options.messageSelectionActionHandler(action)
-                  }, _hoisted_10$3, 8, _hoisted_8$3)) : (openBlock(), createElementBlock("div", {
+                  }, _hoisted_10$3, 8, _hoisted_8$4)) : (openBlock(), createElementBlock("div", {
                     key: 1,
                     class: "vac-selection-button",
                     onClick: ($event) => $options.messageSelectionActionHandler(action)
@@ -16308,7 +16308,7 @@ const _hoisted_7$4 = {
   controls: "",
   class: "vac-image-reply"
 };
-const _hoisted_8$2 = ["src"];
+const _hoisted_8$3 = ["src"];
 const _hoisted_9$2 = {
   key: 3,
   class: "vac-image-reply vac-file-container"
@@ -16347,7 +16347,7 @@ function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
           }, null, 8, _hoisted_6$4)) : $options.isVideo ? (openBlock(), createElementBlock("video", _hoisted_7$4, [
             createBaseVNode("source", {
               src: $options.firstFile.url
-            }, null, 8, _hoisted_8$2)
+            }, null, 8, _hoisted_8$3)
           ])) : $options.isAudio ? (openBlock(), createBlock(_component_audio_player, {
             key: 2,
             src: $options.firstFile.url,
@@ -32924,7 +32924,7 @@ const _hoisted_7$2 = {
   key: 3,
   class: "vac-file-container"
 };
-const _hoisted_8$1 = { class: "vac-text-ellipsis" };
+const _hoisted_8$2 = { class: "vac-text-ellipsis" };
 const _hoisted_9$1 = {
   key: 0,
   class: "vac-text-ellipsis vac-text-extension"
@@ -32970,7 +32970,7 @@ function _sfc_render$9(_ctx, _cache, $props, $setup, $data, $options) {
           createVNode(_component_svg_icon, { name: "file" })
         ])
       ]),
-      createBaseVNode("div", _hoisted_8$1, toDisplayString($options.firstFile.name), 1),
+      createBaseVNode("div", _hoisted_8$2, toDisplayString($options.firstFile.name), 1),
       $options.firstFile.extension ? (openBlock(), createElementBlock("div", _hoisted_9$1, toDisplayString($options.firstFile.extension), 1)) : createCommentVNode("", true)
     ])) : createCommentVNode("", true),
     createBaseVNode("div", _hoisted_10$1, [
@@ -33852,7 +33852,7 @@ const _hoisted_6$1 = {
   class: "checkbox-message-container"
 };
 const _hoisted_7$1 = { class: "vac-message-box" };
-const _hoisted_8 = {
+const _hoisted_8$1 = {
   key: 1,
   class: "vac-avatar-offset"
 };
@@ -33948,7 +33948,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
               style: normalizeStyle({ "background-image": `url('${$props.message.avatar}')` })
             }, null, 4)) : createCommentVNode("", true)
           ]) : createCommentVNode("", true),
-          $options.hasSenderUserAvatar && !$props.message.avatar ? (openBlock(), createElementBlock("div", _hoisted_8)) : createCommentVNode("", true),
+          $options.hasSenderUserAvatar && !$props.message.avatar ? (openBlock(), createElementBlock("div", _hoisted_8$1)) : createCommentVNode("", true),
           createBaseVNode("div", {
             class: normalizeClass(["vac-message-container", {
               "vac-message-container-offset": $options.messageOffset
@@ -34147,7 +34147,8 @@ const _sfc_main$2 = {
     loadFirstRoom: { type: Boolean, required: true },
     messages: { type: Array, required: true },
     roomMessage: { type: String, default: null },
-    messagesLoaded: { type: Boolean, required: true },
+    messagesLoadedTop: { type: Boolean, required: true },
+    messagesLoadedBottom: { type: Boolean, required: true },
     menuActions: { type: Array, required: true },
     messageActions: { type: Array, required: true },
     messageSelectionActions: { type: Array, required: true },
@@ -34186,7 +34187,8 @@ const _sfc_main$2 = {
     "send-message",
     "delete-message",
     "message-action-handler",
-    "fetch-messages",
+    "fetch-messages-top",
+    "fetch-messages-bottom",
     "send-message-reaction",
     "typing-message",
     "open-file",
@@ -34201,10 +34203,8 @@ const _sfc_main$2 = {
       editedMessageId: null,
       initReplyMessage: null,
       initEditMessage: null,
-      loadingMessages: false,
+      isLoadingInitialMessages: false,
       observer: null,
-      showLoader: true,
-      loadingMoreMessages: false,
       scrollIcon: false,
       scrollMessagesCount: 0,
       newMessages: [],
@@ -34218,17 +34218,17 @@ const _sfc_main$2 = {
       return this.rooms.find((room) => room.roomId === this.roomId) || {};
     },
     showNoMessages() {
-      return this.roomId && !this.messages.length && !this.loadingMessages && !this.loadingRooms;
+      return this.roomId && !this.messages.length && !this.isLoadingInitialMessages && !this.loadingRooms;
     },
     showNoRoom() {
       const noRoomSelected = !this.rooms.length && !this.loadingRooms || !this.roomId && !this.loadFirstRoom;
       if (noRoomSelected) {
-        this.updateLoadingMessages(false);
+        this.updateIsLoadingInitialMessages(false);
       }
       return noRoomSelected;
     },
     showMessagesStarted() {
-      return this.messages.length && this.messagesLoaded;
+      return this.messages.length && this.messagesLoadedTop;
     }
   },
   watch: {
@@ -34252,42 +34252,53 @@ const _sfc_main$2 = {
         if ((oldVal == null ? void 0 : oldVal.length) === (newVal == null ? void 0 : newVal.length) - 1) {
           this.newMessages = [];
         }
-        setTimeout(() => this.loadingMoreMessages = false);
+        if ((oldVal == null ? void 0 : oldVal.length) === 0 && (newVal == null ? void 0 : newVal.length) > 0) {
+          this.updateIsLoadingInitialMessages(false);
+        }
       }
     },
-    messagesLoaded(val) {
+    messagesLoadedTop(val) {
       if (val)
-        this.updateLoadingMessages(false);
+        this.updateIsLoadingInitialMessages(false);
+    },
+    messagesLoadedBottom(val) {
+      if (val)
+        this.updateIsLoadingInitialMessages(false);
     }
   },
   mounted() {
     this.newMessages = [];
   },
   methods: {
-    updateLoadingMessages(val) {
-      this.loadingMessages = val;
+    updateIsLoadingInitialMessages(val) {
+      this.isLoadingInitialMessages = val;
       if (!val) {
         setTimeout(() => this.initIntersectionObserver());
       }
     },
     initIntersectionObserver() {
       if (this.observer) {
-        this.showLoader = true;
         this.observer.disconnect();
       }
-      const loader = this.$el.querySelector("#infinite-loader-messages");
-      if (loader) {
+      const loaderTop = this.$el.querySelector("#infinite-loader-messages-top");
+      const loaderBottom = this.$el.querySelector("#infinite-loader-messages-bottom");
+      if (loaderTop || loaderBottom) {
         const options = {
           root: this.$el.querySelector("#messages-list"),
           rootMargin: `${this.scrollDistance}px`,
           threshold: 0
         };
         this.observer = new IntersectionObserver((entries) => {
-          if (entries[0].isIntersecting) {
-            this.loadMoreMessages();
-          }
+          entries.forEach((entry) => {
+            const isTop = entry.target.id === "infinite-loader-messages-top";
+            const scrollDirection = isTop ? "top" : "bottom";
+            if (entry.isIntersecting) {
+              this.loadMoreMessages(scrollDirection);
+            }
+          });
         }, options);
-        this.observer.observe(loader);
+        loaderBottom && this.observer.observe(loaderBottom);
+        loaderTop && this.observer.observe(loaderTop);
       }
     },
     preventTopScroll() {
@@ -34332,7 +34343,7 @@ const _sfc_main$2 = {
       }
     },
     onRoomChanged() {
-      this.updateLoadingMessages(true);
+      this.updateIsLoadingInitialMessages(true);
       this.scrollIcon = false;
       this.scrollMessagesCount = 0;
       this.resetMessageSelection();
@@ -34347,7 +34358,7 @@ const _sfc_main$2 = {
           unwatch();
           setTimeout(() => {
             element2.scrollTo({ top: element2.scrollHeight });
-            this.updateLoadingMessages(false);
+            this.updateIsLoadingInitialMessages(false);
           });
         }
       );
@@ -34375,6 +34386,9 @@ const _sfc_main$2 = {
           scrolledUp = this.getBottomScroll(scrollContainer) > autoScrollOffset;
         }
         if (message.senderId === this.currentUserId) {
+          if (message._id !== message.indexId) {
+            return;
+          }
           if (scrolledUp) {
             if (this.autoScroll.send.newAfterScrollUp) {
               this.scrollToBottom();
@@ -34411,21 +34425,22 @@ const _sfc_main$2 = {
         this.scrollMessagesCount = 0;
       this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount;
     },
-    loadMoreMessages() {
-      if (this.loadingMessages)
+    loadMoreMessages(scrollDirection) {
+      if (this.isLoadingInitialMessages)
         return;
       setTimeout(
         () => {
-          if (this.loadingMoreMessages)
-            return;
-          if (this.messagesLoaded || !this.roomId) {
-            this.loadingMoreMessages = false;
-            this.showLoader = false;
+          const isScrollingTop = scrollDirection === "top";
+          const shouldStopLoadingTop = isScrollingTop && (this.messagesLoadedTop || !this.roomId);
+          const shouldStopLoadingBottom = !isScrollingTop && (this.messagesLoadedBottom || !this.roomId);
+          if (shouldStopLoadingTop || shouldStopLoadingBottom) {
             return;
           }
-          this.preventTopScroll();
-          this.$emit("fetch-messages");
-          this.loadingMoreMessages = true;
+          const scrollEventName = isScrollingTop ? "fetch-messages-top" : "fetch-messages-bottom";
+          if (isScrollingTop) {
+            this.preventTopScroll();
+          }
+          this.$emit(scrollEventName);
         },
         500
       );
@@ -34506,10 +34521,14 @@ const _hoisted_4$1 = {
 };
 const _hoisted_5$1 = {
   key: 0,
-  id: "infinite-loader-messages"
+  id: "infinite-loader-messages-top"
 };
-const _hoisted_6 = { key: 2 };
-const _hoisted_7 = {
+const _hoisted_6 = {
+  key: 1,
+  id: "infinite-loader-messages-bottom"
+};
+const _hoisted_7 = { key: 2 };
+const _hoisted_8 = {
   key: 0,
   class: "vac-badge-counter vac-messages-count"
 };
@@ -34569,7 +34588,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
       onScroll: _cache[5] || (_cache[5] = (...args) => $options.onContainerScroll && $options.onContainerScroll(...args))
     }, [
       createVNode(_component_loader, {
-        show: $data.loadingMessages,
+        show: $data.isLoadingInitialMessages,
         type: "messages"
       }, createSlots({ _: 2 }, [
         renderList(_ctx.$slots, (idx, name) => {
@@ -34583,7 +34602,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
       ]), 1032, ["show"]),
       createBaseVNode("div", _hoisted_2$1, [
         createBaseVNode("div", {
-          class: normalizeClass({ "vac-messages-hidden": $data.loadingMessages })
+          class: normalizeClass({ "vac-messages-hidden": $data.isLoadingInitialMessages })
         }, [
           createVNode(Transition, { name: "vac-fade-message" }, {
             default: withCtx(() => [
@@ -34598,7 +34617,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
             ]),
             _: 3
           }),
-          $props.messages.length && !$props.messagesLoaded ? (openBlock(), createElementBlock("div", _hoisted_5$1, [
+          $props.messages.length && !$props.messagesLoadedTop ? (openBlock(), createElementBlock("div", _hoisted_5$1, [
             createVNode(_component_loader, {
               show: true,
               infinite: true,
@@ -34665,11 +34684,27 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
               }), 128))
             ]),
             _: 3
-          }))
+          })),
+          $props.messages.length && !$props.messagesLoadedBottom ? (openBlock(), createElementBlock("div", _hoisted_6, [
+            createVNode(_component_loader, {
+              show: true,
+              infinite: true,
+              type: "infinite-messages"
+            }, createSlots({ _: 2 }, [
+              renderList(_ctx.$slots, (idx, name) => {
+                return {
+                  name,
+                  fn: withCtx((data) => [
+                    renderSlot(_ctx.$slots, name, normalizeProps(guardReactiveProps(data)))
+                  ])
+                };
+              })
+            ]), 1024)
+          ])) : createCommentVNode("", true)
         ], 2)
       ])
     ], 544),
-    !$data.loadingMessages ? (openBlock(), createElementBlock("div", _hoisted_6, [
+    !$data.isLoadingInitialMessages ? (openBlock(), createElementBlock("div", _hoisted_7, [
       createVNode(Transition, { name: "vac-bounce" }, {
         default: withCtx(() => [
           $data.scrollIcon ? (openBlock(), createElementBlock("div", {
@@ -34679,7 +34714,7 @@ function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
           }, [
             createVNode(Transition, { name: "vac-bounce" }, {
               default: withCtx(() => [
-                $data.scrollMessagesCount ? (openBlock(), createElementBlock("div", _hoisted_7, toDisplayString($data.scrollMessagesCount), 1)) : createCommentVNode("", true)
+                $data.scrollMessagesCount ? (openBlock(), createElementBlock("div", _hoisted_8, toDisplayString($data.scrollMessagesCount), 1)) : createCommentVNode("", true)
               ]),
               _: 1
             }),
@@ -35268,7 +35303,8 @@ const _sfc_main = {
     roomId: { type: String, default: null },
     loadFirstRoom: { type: [Boolean, String], default: true },
     messages: { type: [Array, String], default: () => [] },
-    messagesLoaded: { type: [Boolean, String], default: false },
+    messagesLoadedTop: { type: [Boolean, String], default: false },
+    messagesLoadedBottom: { type: [Boolean, String], default: false },
     roomActions: { type: [Array, String], default: () => [] },
     menuActions: { type: [Array, String], default: () => [] },
     messageActions: {
@@ -35341,6 +35377,8 @@ const _sfc_main = {
     "toggle-rooms-list",
     "room-info",
     "fetch-messages",
+    "fetch-messages-top",
+    "fetch-messages-bottom",
     "send-message",
     "edit-message",
     "delete-message",
@@ -35414,8 +35452,11 @@ const _sfc_main = {
     loadFirstRoomCasted() {
       return this.castBoolean(this.loadFirstRoom);
     },
-    messagesLoadedCasted() {
-      return this.castBoolean(this.messagesLoaded);
+    messagesLoadedTopCasted() {
+      return this.castBoolean(this.messagesLoadedTop);
+    },
+    messagesLoadedBottomCasted() {
+      return this.castBoolean(this.messagesLoadedBottom);
     },
     showSearchCasted() {
       return this.castBoolean(this.showSearch);
@@ -35590,6 +35631,7 @@ const _sfc_main = {
     fetchRoom({ room }) {
       this.room = room;
       this.fetchMessages({ reset: true });
+      this.fetchMessagesTop({ reset: true });
       if (this.isMobile)
         this.showRoomsList = false;
     },
@@ -35607,6 +35649,12 @@ const _sfc_main = {
     },
     fetchMessages(options) {
       this.$emit("fetch-messages", { room: this.room, options });
+    },
+    fetchMessagesTop(options) {
+      this.$emit("fetch-messages-top", { room: this.room, options });
+    },
+    fetchMessagesBottom(options) {
+      this.$emit("fetch-messages-bottom", { room: this.room, options });
     },
     sendMessage(message) {
       this.$emit("send-message", { ...message, roomId: this.room.roomId });
@@ -35740,7 +35788,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         "load-first-room": $options.loadFirstRoomCasted,
         messages: $options.messagesCasted,
         "room-message": $props.roomMessage,
-        "messages-loaded": $options.messagesLoadedCasted,
+        "messages-loaded-top": $options.messagesLoadedTopCasted,
+        "messages-loaded-bottom": $options.messagesLoadedBottomCasted,
         "menu-actions": $options.menuActionsCasted,
         "message-actions": $options.messageActionsCasted,
         "message-selection-actions": $options.messageSelectionActionsCasted,
@@ -35776,6 +35825,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         onToggleRoomsList: $options.toggleRoomsList,
         onRoomInfo: $options.roomInfo,
         onFetchMessages: $options.fetchMessages,
+        onFetchMessagesTop: $options.fetchMessagesTop,
+        onFetchMessagesBottom: $options.fetchMessagesBottom,
         onSendMessage: $options.sendMessage,
         onEditMessage: $options.editMessage,
         onDeleteMessage: $options.deleteMessage,
@@ -35799,7 +35850,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             ])
           };
         })
-      ]), 1032, ["current-user-id", "rooms", "room-id", "load-first-room", "messages", "room-message", "messages-loaded", "menu-actions", "message-actions", "message-selection-actions", "auto-scroll", "show-send-icon", "show-files", "show-audio", "audio-bit-rate", "audio-sample-rate", "show-emojis", "show-reaction-emojis", "show-new-messages-divider", "show-footer", "text-messages", "single-room", "show-rooms-list", "text-formatting", "link-options", "is-mobile", "loading-rooms", "room-info-enabled", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "scroll-distance", "accepted-files", "capture-files", "templates-text", "username-options", "emoji-data-source", "attachment-options", "onToggleRoomsList", "onRoomInfo", "onFetchMessages", "onSendMessage", "onEditMessage", "onDeleteMessage", "onOpenFile", "onOpenUserTag", "onOpenFailedMessage", "onMenuActionHandler", "onMessageActionHandler", "onMessageSelectionActionHandler", "onSendMessageReaction", "onTypingMessage", "onTextareaActionHandler", "onMessageReactionClick", "onAttachmentPickerHandler"])
+      ]), 1032, ["current-user-id", "rooms", "room-id", "load-first-room", "messages", "room-message", "messages-loaded-top", "messages-loaded-bottom", "menu-actions", "message-actions", "message-selection-actions", "auto-scroll", "show-send-icon", "show-files", "show-audio", "audio-bit-rate", "audio-sample-rate", "show-emojis", "show-reaction-emojis", "show-new-messages-divider", "show-footer", "text-messages", "single-room", "show-rooms-list", "text-formatting", "link-options", "is-mobile", "loading-rooms", "room-info-enabled", "textarea-action-enabled", "textarea-auto-focus", "user-tags-enabled", "emojis-suggestion-enabled", "scroll-distance", "accepted-files", "capture-files", "templates-text", "username-options", "emoji-data-source", "attachment-options", "onToggleRoomsList", "onRoomInfo", "onFetchMessages", "onFetchMessagesTop", "onFetchMessagesBottom", "onSendMessage", "onEditMessage", "onDeleteMessage", "onOpenFile", "onOpenUserTag", "onOpenFailedMessage", "onMenuActionHandler", "onMessageActionHandler", "onMessageSelectionActionHandler", "onSendMessageReaction", "onTypingMessage", "onTextareaActionHandler", "onMessageReactionClick", "onAttachmentPickerHandler"])
     ]),
     createVNode(Transition, {
       name: "vac-fade-preview",

@@ -44,13 +44,13 @@
 			class="vac-container-scroll"
 			@scroll="onContainerScroll"
 		>
-			<loader :show="loadingMessages" type="messages">
+			<loader :show="isLoadingInitialMessages" type="messages">
 				<template v-for="(idx, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</loader>
 			<div class="vac-messages-container">
-				<div :class="{ 'vac-messages-hidden': loadingMessages }">
+				<div :class="{ 'vac-messages-hidden': isLoadingInitialMessages }">
 					<transition name="vac-fade-message">
 						<div>
 							<div v-if="showNoMessages" class="vac-text-started">
@@ -64,8 +64,8 @@
 						</div>
 					</transition>
 					<div
-						v-if="messages.length && !messagesLoaded"
-						id="infinite-loader-messages"
+						v-if="messages.length && !messagesLoadedTop"
+						id="infinite-loader-messages-top"
 					>
 						<loader :show="true" :infinite="true" type="infinite-messages">
 							<template v-for="(idx, name) in $slots" #[name]="data">
@@ -109,10 +109,20 @@
 							</room-message>
 						</div>
 					</transition-group>
+          <div
+						v-if="messages.length && !messagesLoadedBottom"
+						id="infinite-loader-messages-bottom"
+					>
+						<loader :show="true" :infinite="true" type="infinite-messages">
+							<template v-for="(idx, name) in $slots" #[name]="data">
+								<slot :name="name" v-bind="data" />
+							</template>
+						</loader>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div v-if="!loadingMessages">
+		<div v-if="!isLoadingInitialMessages">
 			<transition name="vac-bounce">
 				<div v-if="scrollIcon" class="vac-icon-scroll" @click="scrollToBottom">
 					<transition name="vac-bounce">
@@ -199,7 +209,8 @@ export default {
 		loadFirstRoom: { type: Boolean, required: true },
 		messages: { type: Array, required: true },
 		roomMessage: { type: String, default: null },
-		messagesLoaded: { type: Boolean, required: true },
+		messagesLoadedTop: { type: Boolean, required: true },
+		messagesLoadedBottom: { type: Boolean, required: true },
 		menuActions: { type: Array, required: true },
 		messageActions: { type: Array, required: true },
 		messageSelectionActions: { type: Array, required: true },
@@ -239,7 +250,8 @@ export default {
 		'send-message',
 		'delete-message',
 		'message-action-handler',
-		'fetch-messages',
+		'fetch-messages-top',
+		'fetch-messages-bottom',
 		'send-message-reaction',
 		'typing-message',
 		'open-file',
@@ -255,10 +267,8 @@ export default {
 			editedMessageId: null,
 			initReplyMessage: null,
 			initEditMessage: null,
-			loadingMessages: false,
+			isLoadingInitialMessages: false,
 			observer: null,
-			showLoader: true,
-			loadingMoreMessages: false,
 			scrollIcon: false,
 			scrollMessagesCount: 0,
 			newMessages: [],
@@ -276,7 +286,7 @@ export default {
 			return (
 				this.roomId &&
 				!this.messages.length &&
-				!this.loadingMessages &&
+				!this.isLoadingInitialMessages &&
 				!this.loadingRooms
 			)
 		},
@@ -286,12 +296,12 @@ export default {
 				(!this.roomId && !this.loadFirstRoom)
 
 			if (noRoomSelected) {
-				this.updateLoadingMessages(false)
+				this.updateIsLoadingInitialMessages(false)
 			}
 			return noRoomSelected
 		},
 		showMessagesStarted() {
-			return this.messages.length && this.messagesLoaded
+			return this.messages.length && this.messagesLoadedTop
 		}
 	},
 
@@ -320,11 +330,16 @@ export default {
 				if (oldVal?.length === newVal?.length - 1) {
 					this.newMessages = []
 				}
-				setTimeout(() => (this.loadingMoreMessages = false))
+        if (oldVal?.length === 0 && newVal?.length > 0) {
+          this.updateIsLoadingInitialMessages(false)
+        }
 			}
 		},
-		messagesLoaded(val) {
-			if (val) this.updateLoadingMessages(false)
+		messagesLoadedTop(val) {
+			if (val) this.updateIsLoadingInitialMessages(false)
+		},
+    messagesLoadedBottom(val) {
+			if (val) this.updateIsLoadingInitialMessages(false)
 		}
 	},
 
@@ -333,8 +348,8 @@ export default {
 	},
 
 	methods: {
-		updateLoadingMessages(val) {
-			this.loadingMessages = val
+		updateIsLoadingInitialMessages(val) {
+			this.isLoadingInitialMessages = val
 
 			if (!val) {
 				setTimeout(() => this.initIntersectionObserver())
@@ -342,13 +357,13 @@ export default {
 		},
 		initIntersectionObserver() {
 			if (this.observer) {
-				this.showLoader = true
 				this.observer.disconnect()
 			}
 
-			const loader = this.$el.querySelector('#infinite-loader-messages')
+			const loaderTop = this.$el.querySelector('#infinite-loader-messages-top')
+			const loaderBottom = this.$el.querySelector('#infinite-loader-messages-bottom')
 
-			if (loader) {
+			if (loaderTop || loaderBottom) {
 				const options = {
 					root: this.$el.querySelector('#messages-list'),
 					rootMargin: `${this.scrollDistance}px`,
@@ -356,12 +371,18 @@ export default {
 				}
 
 				this.observer = new IntersectionObserver(entries => {
-					if (entries[0].isIntersecting) {
-						this.loadMoreMessages()
-					}
+          entries.forEach(entry => {
+            const isTop = entry.target.id === 'infinite-loader-messages-top'
+            const scrollDirection = isTop ? 'top' : 'bottom'
+
+            if (entry.isIntersecting) {
+              this.loadMoreMessages(scrollDirection)
+            }
+          })
 				}, options)
 
-				this.observer.observe(loader)
+				loaderBottom && this.observer.observe(loaderBottom)
+				loaderTop && this.observer.observe(loaderTop)
 			}
 		},
 		preventTopScroll() {
@@ -411,7 +432,7 @@ export default {
 			}
 		},
 		onRoomChanged() {
-			this.updateLoadingMessages(true)
+			this.updateIsLoadingInitialMessages(true)
 			this.scrollIcon = false
 			this.scrollMessagesCount = 0
 			this.resetMessageSelection()
@@ -428,7 +449,7 @@ export default {
 
 					setTimeout(() => {
 						element.scrollTo({ top: element.scrollHeight })
-						this.updateLoadingMessages(false)
+						this.updateIsLoadingInitialMessages(false)
 					})
 				}
 			)
@@ -459,6 +480,10 @@ export default {
 				}
 
 				if (message.senderId === this.currentUserId) {
+          if (message._id !== message.indexId) {
+            return
+          }
+
 					if (scrolledUp) {
 						if (this.autoScroll.send.newAfterScrollUp) {
 							this.scrollToBottom()
@@ -494,22 +519,27 @@ export default {
 			if (bottomScroll < 60) this.scrollMessagesCount = 0
 			this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount
 		},
-		loadMoreMessages() {
-			if (this.loadingMessages) return
+		loadMoreMessages(scrollDirection) {
+      if (this.isLoadingInitialMessages) return
 
 			setTimeout(
 				() => {
-					if (this.loadingMoreMessages) return
+          const isScrollingTop = scrollDirection === 'top'
 
-					if (this.messagesLoaded || !this.roomId) {
-						this.loadingMoreMessages = false
-						this.showLoader = false
+          const shouldStopLoadingTop = isScrollingTop && (this.messagesLoadedTop || !this.roomId)
+          const shouldStopLoadingBottom = !isScrollingTop && (this.messagesLoadedBottom || !this.roomId)
+
+					if (shouldStopLoadingTop || shouldStopLoadingBottom) {
 						return
 					}
 
-					this.preventTopScroll()
-					this.$emit('fetch-messages')
-					this.loadingMoreMessages = true
+          const scrollEventName = isScrollingTop ? 'fetch-messages-top' : 'fetch-messages-bottom'
+
+          if (isScrollingTop) {
+            this.preventTopScroll()
+          }
+
+					this.$emit(scrollEventName)
 				},
 				// prevent scroll bouncing speed
 				500
