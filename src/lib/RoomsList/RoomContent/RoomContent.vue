@@ -76,6 +76,9 @@
 						{{ typingUsers }}
 					</div>
 					<div class="vac-room-options-container">
+            <div v-if="room?.isMentionedCurrentUser" class="vac-room-mention">
+              @
+            </div>
 						<div
 							v-if="room.unreadCount"
 							class="vac-badge-counter vac-room-badge"

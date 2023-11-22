@@ -255,7 +255,8 @@ export default {
 		initEditMessage: { type: Object, default: null },
 		droppedFiles: { type: Array, default: null },
 		emojiDataSource: { type: String, default: undefined },
-    attachmentOptions: { type: Array, required: true }
+    attachmentOptions: { type: Array, required: true },
+    currentUserId: { type: String, default: '' }
 	},
 
 	emits: [
