@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/antoine92190/vue-advanced-chat/actions/workflows/build.yml"><img src="https://img.shields.io/github/actions/workflow/status/antoine92190/vue-advanced-chat/build.yml?branch=master"></a>
+  <a href="https://github.com/advanced-chat/vue-advanced-chat/actions/workflows/build.yml"><img src="https://img.shields.io/github/actions/workflow/status/advanced-chat/vue-advanced-chat/build.yml?branch=master"></a>
   <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/dm/vue-advanced-chat.svg"></a>
   <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/bundlephobia/minzip/vue-advanced-chat"></a>
   <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/v/vue-advanced-chat.svg"></a>
@@ -852,8 +852,8 @@ You can find the source code to implement a full featured chat app using Firebas
 To test it using your own Firebase project:
 
 - Setup Cloud Firestore (to store users and rooms) and Realtime Database (to store users online status)
-- Clone this repository: `git clone https://github.com/antoine92190/vue-advanced-chat.git`
-- Inside `demo/src/firestore/index.js` file, replace the line `const config = ...` by your own Firebase config
+- Clone this repository: `git clone https://github.com/advanced-chat/vue-advanced-chat.git`
+- Inside `demo/src/database/index.js` file, replace the line `const config = ...` by your own Firebase config
 - Go inside `demo` folder and run `npm run serve`
 
 ### Data structure
@@ -913,7 +913,7 @@ messages: {
 
 <br>
 
-## [Contributing](https://github.com/antoine92190/vue-advanced-chat/blob/master/.github/CONTRIBUTING.md)
+## [Contributing](https://github.com/advanced-chat/vue-advanced-chat/blob/master/.github/CONTRIBUTING.md)
 
 Your help is always appreciated :rocket:
 
