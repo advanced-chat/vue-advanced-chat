@@ -15,7 +15,7 @@
 						class="vac-state-circle"
 						:class="{ 'vac-state-online': userStatus === 'online' }"
 					/>
-					<slot :name="'room-list-info_' + room.roomId"></slot>
+					<slot :name="'room-list-info_' + room.roomId">
 						<div class="vac-room-name vac-text-ellipsis">
 							{{ room.roomName }}
 						</div>
