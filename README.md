@@ -101,15 +101,15 @@ compilerOptions: {
 }
 ```
 
-Demo: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/main
+Demo: https://github.com/advanced-chat/vue-advanced-chat-sandbox/tree/main
 
 ### React
 
-Demo: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/react
+Demo: https://github.com/advanced-chat/vue-advanced-chat-sandbox/tree/react
 
 ### Angular / Ionic
 
-Demo: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/angular
+Demo: https://github.com/advanced-chat/vue-advanced-chat-sandbox/tree/angular
 
 <br>
 

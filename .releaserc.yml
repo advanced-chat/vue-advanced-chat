@@ -1,0 +1,21 @@
+plugins:
+  - "@semantic-release/commit-analyzer"
+  - "@semantic-release/release-notes-generator"
+  - - "@semantic-release/changelog"
+    - changelogFile: "CHANGELOG.md"
+  - - "@semantic-release/npm"
+    - npmPublish: true
+  - - "@semantic-release/github"
+    - assets:
+        - "dist/**"
+        - "LICENSE"
+# enable this when GITHUB_TOKEN with the appropriate permissions is available
+#  - - "@semantic-release/git"
+#    - assets:
+#        - "CHANGELOG.md"
+#      message: "chore(release): prepare ${nextRelease.version} [skip ci]"
+
+branches:
+  - name: "main"
+
+tagFormat: ${version}
