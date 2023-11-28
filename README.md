@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/advanced-chat/vue-advanced-chat/actions/workflows/build.yml"><img src="https://img.shields.io/github/actions/workflow/status/advanced-chat/vue-advanced-chat/build.yml?branch=master"></a>
+  <a href="https://github.com/advanced-chat/vue-advanced-chat/actions/workflows/release.yml"><img src="https://img.shields.io/github/actions/workflow/status/advanced-chat/vue-advanced-chat/release.yml?branch=main"></a>
   <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/dm/vue-advanced-chat.svg"></a>
   <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/bundlephobia/minzip/vue-advanced-chat"></a>
   <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/v/vue-advanced-chat.svg"></a>
