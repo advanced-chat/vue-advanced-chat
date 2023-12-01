@@ -9,11 +9,6 @@ plugins:
     - assets:
         - "dist/**"
         - "LICENSE"
-# enable this when GITHUB_TOKEN with the appropriate permissions is available
-#  - - "@semantic-release/git"
-#    - assets:
-#        - "CHANGELOG.md"
-#      message: "chore(release): prepare ${nextRelease.version} [skip ci]"
 
 branches:
   - name: "main"
