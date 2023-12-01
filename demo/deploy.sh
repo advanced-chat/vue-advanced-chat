@@ -10,6 +10,6 @@ git init
 git add -A
 git commit -m 'deploy'
 
-git push -f git@github.com:antoine92190/vue-advanced-chat.git main:gh-pages
+git push -f git@github.com:advanced-chat/vue-advanced-chat.git main:gh-pages
 
 cd -

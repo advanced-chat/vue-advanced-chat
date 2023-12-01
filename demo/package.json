@@ -13,7 +13,7 @@
 		"reset": "rm -rf node_modules && rm -rf package-lock.json && npm i",
 		"reset-all": "npm run reset && cd .. && npm run reset",
 		"gpages": "sh deploy.sh",
-		"latest": "npm i https://github.com/antoine92190/vue-advanced-chat/tarball/master"
+		"latest": "npm i https://github.com/advanced-chat/vue-advanced-chat/tarball/master"
 	},
 	"dependencies": {
 		"firebase": "9.4.0",
