@@ -44,10 +44,23 @@
 					:id="fRoom.roomId"
 					:key="fRoom.roomId"
 					class="vac-room-item"
-					:class="{ 'vac-room-selected': selectedRoomId === fRoom.roomId }"
+					:class="{
+              'vac-room-selected': selectedRoomId === fRoom.roomId && !fRoom.call,
+              'vac-ongoing-call': fRoom.call
+            }"
 					@click="openRoom(fRoom)"
 				>
+          <room-call-content
+            v-if="fRoom.call"
+						:current-user-id="currentUserId"
+            :room="fRoom"
+						:text-messages="textMessages"
+            @accept-call="$emit('accept-call', $event)"
+            @hang-up-call="$emit('hang-up-call', $event)"
+            @return-to-call="$emit('return-to-call', $event)"
+          />
 					<room-content
+            v-else
 						:current-user-id="currentUserId"
 						:room="fRoom"
 						:text-formatting="textFormatting"
@@ -89,6 +102,7 @@ import Loader from '../../components/Loader/Loader'
 
 import RoomsSearch from './RoomsSearch/RoomsSearch'
 import RoomContent from './RoomContent/RoomContent'
+import RoomCallContent from './RoomCallContent/RoomCallContent'
 
 import filteredItems from '../../utils/filter-items'
 
@@ -97,7 +111,8 @@ export default {
 	components: {
 		Loader,
 		RoomsSearch,
-		RoomContent
+		RoomContent,
+    RoomCallContent
 	},
 
 	props: {
@@ -125,7 +140,10 @@ export default {
 		'room-action-handler',
 		'loading-more-rooms',
 		'fetch-room',
-		'fetch-more-rooms'
+		'fetch-more-rooms',
+    'accept-call',
+    'hang-up-call',
+    'return-to-call'
 	],
 
 	data() {

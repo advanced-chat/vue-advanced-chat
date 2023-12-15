@@ -267,6 +267,7 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `capture-files`(28)                 | String           | -        | `''`                                                                                                              |
 | `styles`(29)                        | [String, Object] | -        | (26)                                                                                                              |
 | `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                              |
+| `call`(31)                          | String           | -        |                                             |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -508,6 +509,8 @@ styles="{
 }"
 ```
 
+**(31)** `call` indicates the current ongoing call. If set, the chat interface will change to display call-related ui elements.
+
 ## Props data structure
 
 Your props must follow a specific structure to display rooms and messages correctly:
@@ -670,6 +673,9 @@ messages="[
 | `toggle-rooms-list`                   | `{ opened }`                                                               | Clicked on the toggle icon inside a room header |
 | `textarea-action-handler`(10)         | `{ roomId, message }`                                                      | Clicked on custom icon inside the footer        |
 | `typing-message`                      | `{ roomId, message }`                                                      | Started typing a message                        |
+| `accept-call`                         | `{ roomCall }`                                                             | Clicked on the "accept call" button when incoming call is ringing                        |
+| `hang-up-call`                        | `{ roomCall }`                                                             | Clicked on the "hang-up call" button when incoming call is ringing or on an ongoing call  |
+| `return-to-call`                      | -                                                                          | Clicked on the "return to call" indicator (shown below room header on web)  |
 
 **(1)** `fetch-messages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`.<br>
 **(1)** `fetch-messages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top.

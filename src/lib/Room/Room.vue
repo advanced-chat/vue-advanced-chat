@@ -27,11 +27,13 @@
 			:message-selection-enabled="messageSelectionEnabled"
 			:message-selection-actions="messageSelectionActions"
 			:selected-messages-total="selectedMessages.length"
+      :call="call"
 			@toggle-rooms-list="$emit('toggle-rooms-list')"
 			@room-info="$emit('room-info')"
 			@menu-action-handler="$emit('menu-action-handler', $event)"
 			@message-selection-action-handler="messageSelectionActionHandler"
 			@cancel-message-selection="messageSelectionEnabled = false"
+      @return-to-call="$emit('return-to-call', $event)"
 		>
 			<template v-for="(i, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
@@ -42,6 +44,7 @@
 			id="messages-list"
 			ref="scrollContainer"
 			class="vac-container-scroll"
+      :class="{ 'vac-room-call-ongoing': isCallInProgress }"
 			@scroll="onContainerScroll"
 		>
 			<loader :show="isLoadingInitialMessages" type="messages">
@@ -239,7 +242,8 @@ export default {
 		templatesText: { type: Array, default: null },
 		usernameOptions: { type: Object, required: true },
 		emojiDataSource: { type: String, default: undefined },
-    attachmentOptions: { type: Array, required: true }
+    attachmentOptions: { type: Array, required: true },
+    call: { type: Object, required: true }
 	},
 
 	emits: [
@@ -260,7 +264,8 @@ export default {
 		'open-failed-message',
 		'textarea-action-handler',
     'message-reaction-click',
-    'attachment-picker-handler'
+    'attachment-picker-handler',
+    'return-to-call'
 	],
 
 	data() {
@@ -303,7 +308,10 @@ export default {
 		},
 		showMessagesStarted() {
 			return this.messages.length && this.messagesLoadedTop
-		}
+		},
+    isCallInProgress() {
+      return this.call && this.call.isInProgress
+    }
 	},
 
 	watch: {

@@ -1,0 +1,75 @@
+.vac-room-call-container {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	width: 100%;
+
+  .vac-room-info-container {
+    flex: 1;
+    display: flex;
+  }
+
+  .vac-name-container {
+		flex: 1;
+	}
+
+  .vac-title-container {
+		display: flex;
+		align-items: center;
+		line-height: 25px;
+	}
+
+  .vac-room-name {
+		flex: 1;
+		color: white;
+		font-weight: 500;
+	}
+
+  .vac-text-last {
+		display: flex;
+		align-items: center;
+		font-size: 12px;
+		line-height: 19px;
+		color: #6c7278;
+	}
+
+  &.vac-room-call-pending {
+    .vac-avatar {
+      box-shadow: 0 0 0 0 white;
+      animation: pulse 1.5s infinite;
+    }
+  }
+}
+
+.vac-call-actions {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 1rem 0;  
+
+  a.btn {
+    text-decoration: none;
+    color: white !important;
+  }
+
+  .btn.btn-danger {
+    background: var(--bs-danger) !important;
+    padding: 1rem !important;
+    border-radius: 50% !important;
+    line-height: 0 !important;
+  }
+}
+
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0rem var(--bs-primary);
+  }
+  70% {
+    box-shadow: 0 0 0 0.5rem rgba(255, 255, 255, 0.521);
+  }
+  100% {
+    box-shadow: 0 0 0 0rem var(--bs-primary);
+  }
+}

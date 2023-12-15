@@ -39,6 +39,10 @@
 		&.vac-scroll-smooth {
 			scroll-behavior: smooth;
 		}
+
+		&.vac-room-call-ongoing {
+			margin-top: calc(65px + 16px + 1rem) !important;
+		}
 	}
 
 	.vac-messages-container {
@@ -88,6 +92,10 @@
 	@media only screen and (max-width: 768px) {
 		.vac-container-scroll {
 			margin-top: 50px;
+			
+			&.vac-room-call-ongoing {
+				margin-top: calc(50px + 16px + 1rem) !important;
+			}
 		}
 
 		.vac-text-started {

@@ -137,4 +137,34 @@
 			min-width: 37px;
 		}
 	}
+
+	.vac-room-call-ongoing {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		top: 64px;
+		height: 16px;
+		padding: 0.5rem;
+		width: 100%;
+		z-index: 10;
+		border-top-right-radius: var(--chat-container-border-radius);
+		background: var(--bs-primary);
+		cursor: pointer;
+
+		.vac-room-call-ongoing-title {
+			font-weight: 700;
+			margin-right: 0.5rem;
+			color: white;
+		}
+
+		.vac-room-call-ongoing-duration {
+			font-weight: 400;
+			color: #d1d1d1;
+		}
+
+		@media only screen and (max-width: 768px) {
+			top: 50px;
+		}
+	}
 }

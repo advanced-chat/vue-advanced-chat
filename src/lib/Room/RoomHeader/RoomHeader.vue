@@ -20,7 +20,7 @@
                </span>
                 {{ textMessages.COUNT_SELECT_MESSAGE }}
               </div>
-          </div>
+            </div>
 						<div
 							v-for="action in messageSelectionActions"
 							:id="action.name"
@@ -120,6 +120,16 @@
 					</slot>
 				</template>
 			</div>
+      <div v-if="isCallInProgress" class="vac-room-call-ongoing" @click="returnToCallClick">
+        <div class="vac-room-call-ongoing-info">
+          <span class="vac-room-call-ongoing-title">
+            {{ textMessages.ROOM_CALL_RETURN_TO_CALL ?? textMessages.ROOM_CALL_JOIN }}
+          </span>
+          <span class="vac-room-call-ongoing-duration">
+            {{ callDuration ?? '--:--' }}
+          </span>
+        </div>
+      </div>
 		</slot>
 	</div>
 </template>
@@ -151,7 +161,8 @@ export default {
 		room: { type: Object, required: true },
 		messageSelectionEnabled: { type: Boolean, required: true },
 		messageSelectionActions: { type: Array, required: true },
-		selectedMessagesTotal: { type: Number, required: true }
+		selectedMessagesTotal: { type: Number, required: true },
+    call: { type: Object, required: true }
 	},
 
 	emits: [
@@ -159,13 +170,16 @@ export default {
 		'room-info',
 		'menu-action-handler',
 		'cancel-message-selection',
-		'message-selection-action-handler'
+		'message-selection-action-handler',
+    'return-to-call'
 	],
 
 	data() {
 		return {
 			menuOpened: false,
-			messageSelectionAnimationEnded: true
+			messageSelectionAnimationEnded: true,
+      callInterval: null,
+      callDuration: null
 		}
 	},
 
@@ -189,7 +203,10 @@ export default {
 			}
 
 			return text
-		}
+		},
+    isCallInProgress() {
+      return this.call && this.call.isInProgress
+    }
 	},
 
 	watch: {
@@ -201,8 +218,20 @@ export default {
 					this.messageSelectionAnimationEnded = true
 				}, 300)
 			}
-		}
+		},
+    isCallInProgress(value) {
+      if (value) {
+        this.setupCallDurationUpdate()
+      } else {
+        clearInterval(this.callInterval)
+      }
+    }
 	},
+  mounted() {
+    if (this.isCallInProgress) {
+      this.setupCallDurationUpdate()
+    }
+  },
 
 	methods: {
 		menuActionHandler(action) {
@@ -214,7 +243,24 @@ export default {
 		},
 		messageSelectionActionHandler(action) {
 			this.$emit('message-selection-action-handler', action)
-		}
+		},
+    returnToCallClick() {
+      this.$emit('return-to-call')
+    },
+    updateCallDuration() {
+      if (!this.call) return
+      const duration = (new Date() - new Date(this.call.startedAt)) / 1000
+      const minutes = String(Math.floor(duration / 60)).padStart(2, '0')
+      const seconds = String(Math.floor(duration % 60)).padStart(2, '0')
+      this.callDuration = `${minutes}:${seconds}`
+    },
+    setupCallDurationUpdate() {
+      this.updateCallDuration()
+
+      this.callInterval = setInterval(() => {
+        this.updateCallDuration()
+      }, 1000)
+    }
 	}
 }
 </script>
