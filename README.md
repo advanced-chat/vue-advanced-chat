@@ -267,6 +267,7 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `capture-files`(28)                 | String           | -        | `''`                                                                                                              |
 | `multiple-files`(29)                 | Boolean           | -        | `true`                                                                                                              |
 | `styles`(30)                        | [String, Object] | -        | (26)                                                                                                              |
+| `show-audio`(31)                        | Boolean | -        | `true`                                                                                                              |
 | `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                              |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
@@ -491,6 +492,8 @@ Example: set `accepted-files="image/png, image/jpeg, application/pdf"` to allow 
 **(29)** `multiple-files` can be used to define whether multiple file selections will be accepted. By default this is true.
 
 **(30)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
+
+**(31)** `show-audio` can be used to enable or disable audio icon 
 
 ```javascript
 styles="{
