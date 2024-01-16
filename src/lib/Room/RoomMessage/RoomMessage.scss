@@ -411,4 +411,84 @@
 			padding-bottom: 2px;
 		}
 	}
+
+	.vac-message-dynamic {
+		&.vac-message-dynamic-pos-center {
+			text-align: center;
+
+			.vac-message-container {
+				max-width: 50%;
+				margin: 15px auto;
+			}
+
+			.vac-message-loading {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+		}
+
+		.vac-message-card {
+			color: var(--chat-message-color-system);
+			background-color: var(--chat-message-bg-color-system);
+			border-radius: 4px;
+		}
+
+		&.vac-message-dynamic-highlight:not(.vac-message-loading) {
+			.vac-message-card {
+				animation: border-pulse 1.5s 3;
+			}
+		}
+
+		.vac-message-dynamic-title {
+			font-size: 16px;
+			margin-bottom: 5px;
+			font-weight: bold;
+		}
+	}
+
+	.vac-message-loading {
+		cursor: progress;
+
+		.vac-message-loading-item {
+			background-color: gray;
+			animation: pulse 1.5s infinite;
+			border-radius: 2px;
+			height: 10px;
+
+			&:not(:last-child) {
+				margin-right: 5px;
+				margin-bottom: 5px;
+			}
+		}
+	}
+}
+
+@keyframes pulse {
+	0% {
+		opacity: 0.2;
+	}
+
+	50% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0.2;
+	}
+}
+
+
+@keyframes border-pulse {
+	0% {
+		box-shadow: 0 0 0 4px transparent;
+	}
+	
+	50% {
+		box-shadow: 0 0 0 1px var(--chat-message-bg-color-me);
+	}
+
+	100% {
+		box-shadow: 0 0 0 4px transparent;
+	}
 }

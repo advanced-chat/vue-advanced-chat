@@ -1,7 +1,9 @@
 <template>
 	<div
-:id="message._id" ref="message"
-       class="vac-message-wrapper" :class="{'vac-selection-enabled': messageSelectionEnabled, 'message-selected' : isMessageSelected, 'message-system': message.system}" @click="selectMessage"
+    :id="message._id" ref="message"
+    class="vac-message-wrapper"
+    :class="{'vac-selection-enabled': messageSelectionEnabled, 'message-selected' : isMessageSelected, 'message-system': message.system}"
+    @click="selectMessage"
   >
 		<div v-if="showDate" class="vac-card-date-container">
       <div class="vac-card-info vac-card-date">
@@ -9,8 +11,12 @@
       </div>
 		</div>
 
-		<div v-if="newMessage._id === message._id" class="vac-line-new">
-			{{ textMessages.NEW_MESSAGES }}
+		<div v-if="newMessage._id === message._id">
+      <slot name="line-new">
+        <div class="vac-line-new">
+          {{ textMessages.NEW_MESSAGES }}
+        </div>
+      </slot>
 		</div>
 
 		<div v-if="message.system" class="vac-card-info vac-card-system">
@@ -31,11 +37,62 @@
 				</format-message>
 			</slot>
 		</div>
-
     <div
-        v-else
-        :class="{ 'vac-offset-current': message.senderId === currentUserId }"
-        class="vac-message-box-container"
+      v-else-if="message.dynamic"
+      class="vac-message-dynamic vac-message-box-container"
+      :class="[
+        `vac-message-dynamic-pos-${message.dynamic.position ?? 'center'}`,
+        `vac-message-dynamic-${message.dynamic.type ?? 'info'}`
+      ]"
+    >
+      <label v-if="messageSelectionEnabled && !message.system" class="checkbox-message-container">
+        <div class="checkbox" :class="{ 'selected': isMessageSelected }" />
+      </label>
+
+      <div class="vac-message-container">
+        <div class="vac-message-card">
+          <div
+            v-if="message.dynamic.title"
+            class="vac-message-dynamic-title"
+          >
+            <span>{{ message.dynamic.title }}</span>
+          </div>
+
+          <div
+            v-if="message.loading"
+            class="vac-message-loading"
+          >
+            <div class="vac-message-loading-item" style="width: 93%;" />
+            <div class="vac-message-loading-item" style="width: 98%;" />
+            <div class="vac-message-loading-item" style="width: 91%;" />
+            <div class="vac-message-loading-item" style="width: 95%;" />
+            <div class="vac-message-loading-item" style="width: 78%;" />
+          </div>
+
+          <format-message
+            v-else-if="!!message.deleted || !message.files || !message.files.length"
+            :message-id="message._id"
+            :content="message.content"
+            :deleted="!!message.deleted"
+            :users="roomUsers"
+            :text-formatting="textFormatting"
+            :text-messages="textMessages"
+            :link-options="linkOptions"
+            @open-user-tag="openUserTag"
+            @mousedown="startContentSelection"
+            @mouseup="endContentSelection"
+          >
+            <template v-for="(idx, name) in $slots" #[name]="data">
+              <slot :name="name" v-bind="data" />
+            </template>
+          </format-message>
+        </div>
+      </div>
+    </div>
+    <div
+      v-else
+      :class="{ 'vac-offset-current': message.senderId === currentUserId }"
+      class="vac-message-box-container"
     >
       <label v-if="messageSelectionEnabled && !message.system" class="checkbox-message-container">
         <div class="checkbox" :class="{ 'selected': isMessageSelected }" />
@@ -67,12 +124,12 @@
             <div
               class="vac-message-card"
               :class="{
-							'vac-message-highlight': isMessageHover,
-							'vac-message-current': message.senderId === currentUserId,
-							'vac-message-deleted': message.deleted,
-							'vac-item-clickable': messageSelectionEnabled,
-							'vac-message-selected': isMessageSelected
-						}"
+                'vac-message-highlight': isMessageHover,
+                'vac-message-current': message.senderId === currentUserId,
+                'vac-message-deleted': message.deleted,
+                'vac-item-clickable': messageSelectionEnabled,
+                'vac-message-selected': isMessageSelected
+              }"
               @mouseover="onHoverMessage"
               @mouseleave="onLeaveMessage"
               @mousemove="messageHover = !isSelectingContent"

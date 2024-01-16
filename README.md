@@ -648,6 +648,9 @@ messages="[
 ]"
 ```
 
+#### Dynamic messages
+In your message object, you may provide a `dynamic` property. This will allow you to display messages with a different aspect than the default one, useful for "unusual" messages.
+
 <br>
 
 ## Events API
@@ -842,6 +845,7 @@ Example:
 | `audio-check-icon`                          | Replace the audio recorder confirm icon                           |
 | `audio-pause-icon_{{MESSAGE_ID}}`           | Replace the message audio pause icon                              |
 | `audio-play-icon_{{MESSAGE_ID}}`            | Replace the message audio play icon                               |
+| `line-new`                                  | Replace the new messages divider                                  |
 
 <br>
 
