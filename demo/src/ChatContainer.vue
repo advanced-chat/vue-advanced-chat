@@ -1,32 +1,50 @@
 <template>
 	<div class="window-container" :class="{ 'window-mobile': isDevice }">
 		<form v-if="addNewRoom" @submit.prevent="createRoom">
-			<input v-model="addRoomUsername" type="text" placeholder="Add username" />
+			<input
+				v-model="addRoomUsername"
+				type="text"
+				placeholder="Add username"
+			/>
 			<button type="submit" :disabled="disableForm || !addRoomUsername">
 				Create Room
 			</button>
-			<button class="button-cancel" @click="addNewRoom = false">Cancel</button>
+			<button class="button-cancel" @click="addNewRoom = false">
+				Cancel
+			</button>
 		</form>
 
 		<form v-if="inviteRoomId" @submit.prevent="addRoomUser">
-			<input v-model="invitedUsername" type="text" placeholder="Add username" />
+			<input
+				v-model="invitedUsername"
+				type="text"
+				placeholder="Add username"
+			/>
 			<button type="submit" :disabled="disableForm || !invitedUsername">
 				Add User
 			</button>
-			<button class="button-cancel" @click="inviteRoomId = null">Cancel</button>
+			<button class="button-cancel" @click="inviteRoomId = null">
+				Cancel
+			</button>
 		</form>
 
 		<form v-if="removeRoomId" @submit.prevent="deleteRoomUser">
 			<select v-model="removeUserId">
 				<option default value="">Select User</option>
-				<option v-for="user in removeUsers" :key="user._id" :value="user._id">
+				<option
+					v-for="user in removeUsers"
+					:key="user._id"
+					:value="user._id"
+				>
 					{{ user.username }}
 				</option>
 			</select>
 			<button type="submit" :disabled="disableForm || !removeUserId">
 				Remove User
 			</button>
-			<button class="button-cancel" @click="removeRoomId = null">Cancel</button>
+			<button class="button-cancel" @click="removeRoomId = null">
+				Cancel
+			</button>
 		</form>
 
 		<vue-advanced-chat
@@ -61,7 +79,9 @@
 			"
 			@send-message-reaction="sendMessageReaction($event.detail[0])"
 			@typing-message="typingMessage($event.detail[0])"
-			@toggle-rooms-list="$emit('show-demo-options', $event.detail[0].opened)"
+			@toggle-rooms-list="
+				$emit('show-demo-options', $event.detail[0].opened)
+			"
 		>
 			<!-- <div
 				v-for="message in messages"
@@ -75,14 +95,14 @@
 </template>
 
 <script>
-import * as firestoreService from '@/database/firestore'
-import * as firebaseService from '@/database/firebase'
-import * as storageService from '@/database/storage'
+// import * as firestoreService from '@/database/firestore'
+// import * as firebaseService from '@/database/firebase'
+// import * as storageService from '@/database/storage'
 import { parseTimestamp, formatTimestamp } from '@/utils/dates'
 import logoAvatar from '@/assets/logo.png'
 
-import { register } from 'vue-advanced-chat'
-// import { register } from './../../dist/vue-advanced-chat.es.js'
+// import { register } from 'vue-advanced-chat'
+import { register } from './../../dist/vue-advanced-chat.es.js'
 // import { register } from './../../src/lib/index.js'
 register()
 
@@ -135,7 +155,9 @@ export default {
 				{ name: 'removeUser', title: 'Remove User' },
 				{ name: 'deleteRoom', title: 'Delete Room' }
 			],
-			messageSelectionActions: [{ name: 'deleteMessages', title: 'Delete' }],
+			messageSelectionActions: [
+				{ name: 'deleteMessages', title: 'Delete' }
+			],
 			// eslint-disable-next-line vue/no-unused-properties
 			styles: { container: { borderRadius: '4px' } },
 			templatesText: [
@@ -161,7 +183,9 @@ export default {
 			return this.rooms.slice(0, this.roomsLoadedCount)
 		},
 		screenHeight() {
-			return this.isDevice ? window.innerHeight + 'px' : 'calc(100vh - 80px)'
+			return this.isDevice
+				? window.innerHeight + 'px'
+				: 'calc(100vh - 80px)'
 		}
 	},
 
@@ -169,7 +193,7 @@ export default {
 		this.addCss()
 
 		this.fetchRooms()
-		firebaseService.updateUserOnlineStatus(this.currentUserId)
+		// firebaseService.updateUserOnlineStatus(this.currentUserId)
 	},
 
 	methods: {
@@ -214,16 +238,17 @@ export default {
 				return
 			}
 
-			const query = firestoreService.roomsQuery(
-				this.currentUserId,
-				this.roomsPerPage,
-				this.startRooms
-			)
+			// const query = firestoreService.roomsQuery(
+			// 	this.currentUserId,
+			// 	this.roomsPerPage,
+			// 	this.startRooms
+			// )
 
-			const { data, docs } = await firestoreService.getRooms(query)
+			// const { data, docs } = await firestoreService.getRooms(query)
 			// this.incrementDbCounter('Fetch Rooms', data.length)
 
-			this.roomsLoaded = data.length === 0 || data.length < this.roomsPerPage
+			this.roomsLoaded =
+				data.length === 0 || data.length < this.roomsPerPage
 
 			if (this.startRooms) this.endRooms = this.startRooms
 			this.startRooms = docs[docs.length - 1]
@@ -231,7 +256,9 @@ export default {
 			const roomUserIds = []
 			data.forEach(room => {
 				room.users.forEach(userId => {
-					const foundUser = this.allUsers.find(user => user?._id === userId)
+					const foundUser = this.allUsers.find(
+						user => user?._id === userId
+					)
 					if (!foundUser && roomUserIds.indexOf(userId) === -1) {
 						roomUserIds.push(userId)
 					}
@@ -252,7 +279,9 @@ export default {
 				roomList[room.id] = { ...room, users: [] }
 
 				room.users.forEach(userId => {
-					const foundUser = this.allUsers.find(user => user?._id === userId)
+					const foundUser = this.allUsers.find(
+						user => user?._id === userId
+					)
 					if (foundUser) roomList[room.id].users.push(foundUser)
 				})
 			})
@@ -267,7 +296,8 @@ export default {
 				)
 
 				room.roomName =
-					roomContacts.map(user => user.username).join(', ') || 'Myself'
+					roomContacts.map(user => user.username).join(', ') ||
+					'Myself'
 
 				const roomAvatar =
 					roomContacts.length === 1 && roomContacts[0].avatar
@@ -308,7 +338,10 @@ export default {
 				messages => {
 					// this.incrementDbCounter('Listen Last Room Message', messages.length)
 					messages.forEach(message => {
-						const lastMessage = this.formatLastMessage(message, room)
+						const lastMessage = this.formatLastMessage(
+							message,
+							room
+						)
 						const roomIndex = this.rooms.findIndex(
 							r => room.roomId === r.roomId
 						)
@@ -318,7 +351,9 @@ export default {
 					if (this.loadingLastMessageByRoom < this.rooms.length) {
 						this.loadingLastMessageByRoom++
 
-						if (this.loadingLastMessageByRoom === this.rooms.length) {
+						if (
+							this.loadingLastMessageByRoom === this.rooms.length
+						) {
 							this.loadingRooms = false
 							this.roomsLoadedCount = this.rooms.length
 						}
@@ -340,7 +375,8 @@ export default {
 
 			const username =
 				message.sender_id !== this.currentUserId
-					? room.users.find(user => message.sender_id === user._id)?.username
+					? room.users.find(user => message.sender_id === user._id)
+							?.username
 					: ''
 
 			return {
@@ -355,7 +391,10 @@ export default {
 					),
 					username: username,
 					distributed: true,
-					seen: message.sender_id === this.currentUserId ? message.seen : null,
+					seen:
+						message.sender_id === this.currentUserId
+							? message.seen
+							: null,
 					new:
 						message.sender_id !== this.currentUserId &&
 						(!message.seen || !message.seen[this.currentUserId])
@@ -377,69 +416,82 @@ export default {
 
 			this.selectedRoom = room.roomId
 
-			firestoreService
-				.getMessages(room.roomId, this.messagesPerPage, this.lastLoadedMessage)
-				.then(({ data, docs }) => {
-					// this.incrementDbCounter('Fetch Room Messages', messages.length)
-					if (this.selectedRoom !== room.roomId) return
+			// firestoreService
+			// 	.getMessages(
+			// 		room.roomId,
+			// 		this.messagesPerPage,
+			// 		this.lastLoadedMessage
+			// 	)
+			// 	.then(({ data, docs }) => {
+			// 		// this.incrementDbCounter('Fetch Room Messages', messages.length)
+			// 		if (this.selectedRoom !== room.roomId) return
 
-					if (data.length === 0 || data.length < this.messagesPerPage) {
-						setTimeout(() => {
-							this.messagesLoaded = true
-						}, 0)
-					}
+			// 		if (
+			// 			data.length === 0 ||
+			// 			data.length < this.messagesPerPage
+			// 		) {
+			// 			setTimeout(() => {
+			// 				this.messagesLoaded = true
+			// 			}, 0)
+			// 		}
 
-					if (options.reset) this.messages = []
+			// 		if (options.reset) this.messages = []
 
-					data.forEach(message => {
-						const formattedMessage = this.formatMessage(room, message)
-						this.messages.unshift(formattedMessage)
-					})
+			// 		data.forEach(message => {
+			// 			const formattedMessage = this.formatMessage(
+			// 				room,
+			// 				message
+			// 			)
+			// 			this.messages.unshift(formattedMessage)
+			// 		})
 
-					if (this.lastLoadedMessage) {
-						this.previousLastLoadedMessage = this.lastLoadedMessage
-					}
-					this.lastLoadedMessage = docs[docs.length - 1]
+			// 		if (this.lastLoadedMessage) {
+			// 			this.previousLastLoadedMessage = this.lastLoadedMessage
+			// 		}
+			// 		this.lastLoadedMessage = docs[docs.length - 1]
 
-					this.listenMessages(room)
-				})
+			// 		this.listenMessages(room)
+			// 	})
 		},
 
 		listenMessages(room) {
-			const listener = firestoreService.listenMessages(
-				room.roomId,
-				this.lastLoadedMessage,
-				this.previousLastLoadedMessage,
-				messages => {
-					messages.forEach(message => {
-						const formattedMessage = this.formatMessage(room, message)
-						const messageIndex = this.messages.findIndex(
-							m => m._id === message.id
-						)
-
-						if (messageIndex === -1) {
-							this.messages = this.messages.concat([formattedMessage])
-						} else {
-							this.messages[messageIndex] = formattedMessage
-							this.messages = [...this.messages]
-						}
-
-						this.markMessagesSeen(room, message)
-					})
-				}
-			)
-			this.listeners.push(listener)
+			// const listener = firestoreService.listenMessages(
+			// 	room.roomId,
+			// 	this.lastLoadedMessage,
+			// 	this.previousLastLoadedMessage,
+			// 	messages => {
+			// 		messages.forEach(message => {
+			// 			const formattedMessage = this.formatMessage(
+			// 				room,
+			// 				message
+			// 			)
+			// 			const messageIndex = this.messages.findIndex(
+			// 				m => m._id === message.id
+			// 			)
+			// 			if (messageIndex === -1) {
+			// 				this.messages = this.messages.concat([
+			// 					formattedMessage
+			// 				])
+			// 			} else {
+			// 				this.messages[messageIndex] = formattedMessage
+			// 				this.messages = [...this.messages]
+			// 			}
+			// 			this.markMessagesSeen(room, message)
+			// 		})
+			// 	}
+			// )
+			// this.listeners.push(listener)
 		},
 
 		markMessagesSeen(room, message) {
-			if (
-				message.sender_id !== this.currentUserId &&
-				(!message.seen || !message.seen[this.currentUserId])
-			) {
-				firestoreService.updateMessage(room.roomId, message.id, {
-					[`seen.${this.currentUserId}`]: new Date()
-				})
-			}
+			// if (
+			// 	message.sender_id !== this.currentUserId &&
+			// 	(!message.seen || !message.seen[this.currentUserId])
+			// ) {
+			// 	firestoreService.updateMessage(room.roomId, message.id, {
+			// 		[`seen.${this.currentUserId}`]: new Date()
+			// 	})
+			// }
 		},
 
 		formatMessage(room, message) {
@@ -452,8 +504,9 @@ export default {
 					seconds: message.timestamp.seconds,
 					timestamp: parseTimestamp(message.timestamp, 'HH:mm'),
 					date: parseTimestamp(message.timestamp, 'DD MMMM YYYY'),
-					username: room.users.find(user => message.sender_id === user._id)
-						?.username,
+					username: room.users.find(
+						user => message.sender_id === user._id
+					)?.username,
 					// avatar: senderUser ? senderUser.avatar : null,
 					distributed: true
 				}
@@ -494,48 +547,60 @@ export default {
 				}
 			}
 
-			const { id } = await firestoreService.addMessage(roomId, message)
+			// const { id } = await firestoreService.addMessage(roomId, message)
 
-			if (files) {
-				for (let index = 0; index < files.length; index++) {
-					await this.uploadFile({ file: files[index], messageId: id, roomId })
-				}
-			}
+			// if (files) {
+			// 	for (let index = 0; index < files.length; index++) {
+			// 		await this.uploadFile({
+			// 			file: files[index],
+			// 			messageId: id,
+			// 			roomId
+			// 		})
+			// 	}
+			// }
 
-			firestoreService.updateRoom(roomId, { lastUpdated: new Date() })
+			// firestoreService.updateRoom(roomId, { lastUpdated: new Date() })
 		},
 
 		async editMessage({ messageId, newContent, roomId, files }) {
 			const newMessage = { edited: new Date() }
 			newMessage.content = newContent
 
-			if (files) {
-				newMessage.files = this.formattedFiles(files)
-			} else {
-				newMessage.files = firestoreService.deleteDbField
-			}
+			// if (files) {
+			// 	newMessage.files = this.formattedFiles(files)
+			// } else {
+			// 	newMessage.files = firestoreService.deleteDbField
+			// }
 
-			await firestoreService.updateMessage(roomId, messageId, newMessage)
+			// await firestoreService.updateMessage(roomId, messageId, newMessage)
 
 			if (files) {
 				for (let index = 0; index < files.length; index++) {
 					if (files[index]?.blob) {
-						await this.uploadFile({ file: files[index], messageId, roomId })
+						await this.uploadFile({
+							file: files[index],
+							messageId,
+							roomId
+						})
 					}
 				}
 			}
 		},
 
 		async deleteMessage({ message, roomId }) {
-			await firestoreService.updateMessage(roomId, message._id, {
-				deleted: new Date()
-			})
+			// await firestoreService.updateMessage(roomId, message._id, {
+			// 	deleted: new Date()
+			// })
 
 			const { files } = message
 
 			if (files) {
 				files.forEach(file => {
-					storageService.deleteFile(this.currentUserId, message._id, file)
+					storageService.deleteFile(
+						this.currentUserId,
+						message._id,
+						file
+					)
 				})
 			}
 		},
@@ -553,13 +618,20 @@ export default {
 					file,
 					type,
 					progress => {
-						this.updateFileProgress(messageId, file.localUrl, progress)
+						this.updateFileProgress(
+							messageId,
+							file.localUrl,
+							progress
+						)
 					},
 					_error => {
 						resolve(false)
 					},
 					async url => {
-						const message = await firestoreService.getMessage(roomId, messageId)
+						const message = await firestoreService.getMessage(
+							roomId,
+							messageId
+						)
 
 						message.files.forEach(f => {
 							if (f.url === file.localUrl) {
@@ -567,9 +639,13 @@ export default {
 							}
 						})
 
-						await firestoreService.updateMessage(roomId, messageId, {
-							files: message.files
-						})
+						await firestoreService.updateMessage(
+							roomId,
+							messageId,
+							{
+								files: message.files
+							}
+						)
 						resolve(true)
 					}
 				)
@@ -577,7 +653,9 @@ export default {
 		},
 
 		updateFileProgress(messageId, fileUrl, progress) {
-			const message = this.messages.find(message => message._id === messageId)
+			const message = this.messages.find(
+				message => message._id === messageId
+			)
 
 			if (!message || !message.files) return
 
@@ -620,7 +698,8 @@ export default {
 					const userId1 = room.users[0]._id
 					const userId2 = room.users[1]._id
 					if (
-						(userId1 === user._id || userId1 === this.currentUserId) &&
+						(userId1 === user._id ||
+							userId1 === this.currentUserId) &&
 						(userId2 === user._id || userId2 === this.currentUserId)
 					) {
 						roomId = room.roomId
@@ -668,7 +747,9 @@ export default {
 		async loadRoom(query) {
 			query.forEach(async room => {
 				if (this.loadingRooms) return
-				await firestoreService.updateRoom(room.id, { lastUpdated: new Date() })
+				await firestoreService.updateRoom(room.id, {
+					lastUpdated: new Date()
+				})
 				this.roomId = room.id
 				this.fetchRooms()
 			})
@@ -743,27 +824,28 @@ export default {
 		listenUsersOnlineStatus(rooms) {
 			rooms.forEach(room => {
 				room.users.forEach(user => {
-					const listener = firebaseService.firebaseListener(
-						firebaseService.userStatusRef(user._id),
-						snapshot => {
-							if (!snapshot || !snapshot.val()) return
+					console.log(user)
+					// const listener = firebaseService.firebaseListener(
+					// 	firebaseService.userStatusRef(user._id),
+					// 	snapshot => {
+					// 		if (!snapshot || !snapshot.val()) return
 
-							const lastChanged = formatTimestamp(
-								new Date(snapshot.val().lastChanged),
-								new Date(snapshot.val().lastChanged)
-							)
+					// 		const lastChanged = formatTimestamp(
+					// 			new Date(snapshot.val().lastChanged),
+					// 			new Date(snapshot.val().lastChanged)
+					// 		)
 
-							user.status = { ...snapshot.val(), lastChanged }
+					// 		user.status = { ...snapshot.val(), lastChanged }
 
-							const roomIndex = this.rooms.findIndex(
-								r => room.roomId === r.roomId
-							)
+					// 		const roomIndex = this.rooms.findIndex(
+					// 			r => room.roomId === r.roomId
+					// 		)
 
-							this.rooms[roomIndex] = room
-							this.rooms = [...this.rooms]
-						}
-					)
-					this.roomsListeners.push(listener)
+					// 		this.rooms[roomIndex] = room
+					// 		this.rooms = [...this.rooms]
+					// 	}
+					// )
+					// this.roomsListeners.push(listener)
 				})
 			})
 		},
@@ -814,7 +896,9 @@ export default {
 		removeUser(roomId) {
 			this.resetForms()
 			this.removeRoomId = roomId
-			this.removeUsers = this.rooms.find(room => room.roomId === roomId).users
+			this.removeUsers = this.rooms.find(
+				room => room.roomId === roomId
+			).users
 		},
 
 		async deleteRoomUser() {
@@ -836,7 +920,9 @@ export default {
 				room.users.find(user => user._id === 'SGmFnBZB4xxMv9V4CVlW') ||
 				room.users.find(user => user._id === '6jMsIXUrBHBj7o2cRlau')
 			) {
-				return alert('Nope, for demo purposes you cannot delete this room')
+				return alert(
+					'Nope, for demo purposes you cannot delete this room'
+				)
 			}
 
 			firestoreService.getMessages(roomId).then(({ data }) => {
@@ -844,7 +930,11 @@ export default {
 					firestoreService.deleteMessage(roomId, message.id)
 					if (message.files) {
 						message.files.forEach(file => {
-							storageService.deleteFile(this.currentUserId, message.id, file)
+							storageService.deleteFile(
+								this.currentUserId,
+								message.id,
+								file
+							)
 						})
 					}
 				})

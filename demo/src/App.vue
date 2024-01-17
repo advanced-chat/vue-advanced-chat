@@ -1,304 +1,173 @@
 <template>
-	<div>
-		<div
-			class="app-container"
-			:class="{ 'app-mobile': isDevice, 'app-mobile-dark': theme === 'dark' }"
+	<div class="wrapper">
+		<h1>Display this</h1>
+		<vue-advanced-chat
+			id="chatWindow"
+			:current-user-id="currentUserId"
+			:rooms="JSON.stringify(rooms)"
+			:messages="JSON.stringify(messages)"
+			:single-room="true"
+			:messages-loaded="messagesLoaded"
+			:show-audio="false"
+			:show-files="false"
+			:show-emojis="false"
+			:show-reaction-emojis="false"
+			:styles="JSON.stringify(chatStyles)"
+			:text-messages="JSON.stringify(textMessages)"
+			:message-actions="JSON.stringify(messageActions)"
+			@fetch-messages="fetchMessages($event.detail[0])"
+			@send-message="sendMessage($event.detail[0])"
 		>
-			<!-- <div>
-				<button @click="resetData">
-					Clear Data
-				</button>
-				<button :disabled="updatingData" @click="addData">
-					Add Data
-				</button>
-			</div> -->
-			<span
-				v-if="showOptions"
-				class="user-logged"
-				:class="{ 'user-logged-dark': theme === 'dark' }"
-			>
-				Logged as
-			</span>
-			<select v-if="showOptions" v-model="currentUserId">
-				<option v-for="user in users" :key="user._id" :value="user._id">
-					{{ user.username }}
-				</option>
-			</select>
-
-			<div v-if="showOptions" class="button-theme">
-				<button class="button-light" @click="theme = 'light'">
-					Light
-				</button>
-				<button class="button-dark" @click="theme = 'dark'">
-					Dark
-				</button>
-				<button class="button-github">
-					<a href="https://github.com/advanced-chat/vue-advanced-chat">
-						<img src="@/assets/github.svg" />
-					</a>
-				</button>
+			<div slot="room-header" class="roomHeader">
+				<div class="headingWrapper">
+					<div class="roomAvatar" />
+					<div class="textEllipsis">
+						<div class="roomName textEllipsis">{{ aiName }}</div>
+					</div>
+				</div>
+				<div class="closeButton" />
 			</div>
 
-			<chat-container
-				v-if="showChat"
-				:current-user-id="currentUserId"
-				:theme="theme"
-				:is-device="isDevice"
-				@show-demo-options="showDemoOptions = $event"
-			/>
-
-			<!-- <div class="version-container">
-				v1.0.0
-			</div> -->
-		</div>
+			<div
+				slot="spinner-icon-infinite-messages"
+				class="loadingMessageContainer"
+			>
+				{{ aiName }}
+			</div>
+		</vue-advanced-chat>
 	</div>
 </template>
 
 <script>
-import * as firestoreService from '@/database/firestore'
-import * as storageService from '@/database/storage'
-
-import ChatContainer from './ChatContainer'
-
+import { register } from './../../dist/vue-advanced-chat.es.js'
+register()
 export default {
-	components: {
-		ChatContainer
-	},
-
+	setup() {},
 	data() {
 		return {
-			theme: 'light',
-			showChat: true,
-			users: [
+			isChatVisibile: false,
+			messagesLoaded: true,
+			windowWidth: window.innerWidth,
+			currentUserId: '1234',
+			chat: {},
+			rooms: [
 				{
-					_id: '6R0MijpK6M4AIrwaaCY2',
-					username: 'Luke',
-					avatar: 'https://66.media.tumblr.com/avatar_c6a8eae4303e_512.pnj'
-				},
-				{
-					_id: 'SGmFnBZB4xxMv9V4CVlW',
-					username: 'Leia',
-					avatar: 'https://media.glamour.com/photos/5695e9d716d0dc3747eea3ef/master/w_1600,c_limit/beauty-2015-12-princess-leia-1-main.jpg'
-				},
-				{
-					_id: '6jMsIXUrBHBj7o2cRlau',
-					username: 'Yoda',
-					avatar:
-						'https://vignette.wikia.nocookie.net/teamavatarone/images/4/45/Yoda.jpg/revision/latest?cb=20130224160049'
+					roomId: '1',
+					users: [
+						{ _id: '1234', username: 'John Doe' },
+						{ _id: '4321', username: 'Warenwissen Helfer' }
+					]
 				}
 			],
-			currentUserId: '6R0MijpK6M4AIrwaaCY2',
-			isDevice: false,
-			showDemoOptions: true,
-			updatingData: false
+			messages: [],
+			chatStyles: {
+				message: {
+					background: '#72BA5B',
+					color: '#ffffff',
+					backgroundMe: '#616e7e'
+				}
+			},
+			messageActions: [], // need empty array to remove default set of options
+			textMessages: {
+				ROOMS_EMPTY: 'Aucune conversation',
+				ROOM_EMPTY: 'Aucune conversation sélectionnée',
+				NEW_MESSAGES: 'Neue Nachrichten',
+				MESSAGE_DELETED: 'Ce message a été supprimé',
+				MESSAGES_EMPTY: 'Aucun message',
+				CONVERSATION_STARTED: 'Das Gespräch begann am:',
+				TYPE_MESSAGE: 'Schreibe deine Nachricht',
+				SEARCH: 'Rechercher',
+				IS_ONLINE: 'est en ligne',
+				LAST_SEEN: 'dernière connexion ',
+				IS_TYPING: 'est en train de taper...',
+				CANCEL_SELECT_MESSAGE: 'Annuler Sélection'
+			},
+			aiName: 'Warenwissen Helfer'
 		}
 	},
-
-	computed: {
-		showOptions() {
-			return !this.isDevice || this.showDemoOptions
-		}
-	},
-
-	watch: {
-		currentUserId() {
-			this.showChat = false
-			setTimeout(() => (this.showChat = true), 150)
-		}
-	},
-
-	mounted() {
-		this.isDevice = window.innerWidth < 500
-		window.addEventListener('resize', ev => {
-			if (ev.isTrusted) this.isDevice = window.innerWidth < 500
-		})
-	},
-
 	methods: {
-		resetData() {
-			firestoreService.getAllRooms().then(({ data }) => {
-				data.forEach(async room => {
-					await firestoreService.getMessages(room.id).then(({ data }) => {
-						data.forEach(message => {
-							firestoreService.deleteMessage(room.id, message.id)
-							if (message.files) {
-								message.files.forEach(file => {
-									storageService.deleteFile(
-										this.currentUserId,
-										message.id,
-										file
-									)
-								})
-							}
-						})
-					})
-
-					firestoreService.deleteRoom(room.id)
-				})
-			})
-
-			firestoreService.getAllUsers().then(({ data }) => {
-				data.forEach(user => {
-					firestoreService.deleteUser(user.id)
-				})
-			})
+		async fetchMessages({ options }) {
+			console.log(options)
+			if (options?.reset) {
+				this.messages = await this.addMessages(true)
+			} else {
+				this.messages = await this.addMessages()
+			}
 		},
-		async addData() {
-			this.updatingData = true
+		async refactorMessages(messages) {
+			let newMessages = []
+			for (let msg of messages) {
+				console.log(msg)
+				newMessages.push({
+					_id: msg.id,
+					content: msg.content[0].text.value,
+					senderId:
+						msg.role === 'assistant' ? '4322' : this.currentUserId,
+					timestamp: new Date(msg.created_at)
+						.toString()
+						.substring(16, 21),
+					date: new Date(msg.created_at).toDateString()
+				})
+			}
+			return newMessages
+		},
+		async addMessages(reset = false) {
+			let messages = []
+			if (reset || !this.chat.thread_id) {
+				messages = [
+					{
+						_id: this.messages.length + 1,
+						content: `Frage mich etwas zu Biowaren!`,
+						senderId: '4322',
+						username: this.aiName,
+						timestamp: new Date().toString().substring(16, 21),
+						date: new Date().toDateString()
+					}
+				]
+			} else {
+				const { data } = await this.$http.get(
+					'/ai-chat/chat/' + this.chat.thread_id
+				)
+				console.log(data)
+				this.messages = await this.refactorMessages(data)
+			}
+			console.log(reset)
+			this.messagesLoaded = true
 
-			const user1 = this.users[0]
-			await firestoreService.addIdentifiedUser(user1._id, user1)
-
-			const user2 = this.users[1]
-			await firestoreService.addIdentifiedUser(user2._id, user2)
-
-			const user3 = this.users[2]
-			await firestoreService.addIdentifiedUser(user3._id, user3)
-
-			await firestoreService.addRoom({
-				users: [user1._id, user2._id],
-				lastUpdated: new Date()
+			return messages
+		},
+		async sendMessage(message) {
+			this.messages = [
+				...this.messages,
+				{
+					_id: this.messages.length,
+					content: message.content,
+					senderId: this.currentUserId,
+					timestamp: new Date().toString().substring(16, 21),
+					date: new Date().toDateString()
+				}
+			]
+			this.messagesLoaded = false
+			const { data } = await this.$http.post('/ai-chat/chat', {
+				message: message.content,
+				chat: this.chat
 			})
-			await firestoreService.addRoom({
-				users: [user1._id, user3._id],
-				lastUpdated: new Date()
-			})
-			await firestoreService.addRoom({
-				users: [user2._id, user3._id],
-				lastUpdated: new Date()
-			})
-			await firestoreService.addRoom({
-				users: [user1._id, user2._id, user3._id],
-				lastUpdated: new Date()
-			})
 
-			this.updatingData = false
-			location.reload()
+			this.chat = data.chat
+			this.messages = await this.refactorMessages(data.messages)
+
+			this.messagesLoaded = true
+		},
+		getChatWindowHeight() {
+			if (this.windowWidth > 991) {
+				return 'calc(100vh - 3rem)'
+			}
+
+			return '100vh'
+		},
+		onResize() {
+			this.windowWidth = window.innerWidth
 		}
 	}
 }
 </script>
-
-<style lang="scss">
-body {
-	background: #fafafa;
-	margin: 0;
-}
-
-input {
-	-webkit-appearance: none;
-}
-
-.app-container {
-	font-family: 'Quicksand', sans-serif;
-	padding: 20px 30px 30px;
-}
-
-.app-mobile {
-	padding: 0;
-
-	&.app-mobile-dark {
-		background: #131415;
-	}
-
-	.user-logged {
-		margin: 10px 5px 0 10px;
-	}
-
-	select {
-		margin: 10px 0;
-	}
-
-	.button-theme {
-		margin: 10px 10px 0 0;
-
-		.button-github {
-			height: 23px;
-
-			img {
-				height: 23px;
-			}
-		}
-	}
-}
-
-.user-logged {
-	font-size: 12px;
-	margin-right: 5px;
-	margin-top: 10px;
-
-	&.user-logged-dark {
-		color: #fff;
-	}
-}
-
-select {
-	height: 20px;
-	outline: none;
-	border: 1px solid #e0e2e4;
-	border-radius: 4px;
-	background: #fff;
-	margin-bottom: 20px;
-}
-
-.button-theme {
-	float: right;
-	display: flex;
-	align-items: center;
-
-	.button-light {
-		background: #fff;
-		border: 1px solid #46484e;
-		color: #46484e;
-	}
-
-	.button-dark {
-		background: #1c1d21;
-		border: 1px solid #1c1d21;
-	}
-
-	button {
-		color: #fff;
-		outline: none;
-		cursor: pointer;
-		border-radius: 4px;
-		padding: 6px 12px;
-		margin-left: 10px;
-		border: none;
-		font-size: 14px;
-		transition: 0.3s;
-		vertical-align: middle;
-
-		&.button-github {
-			height: 30px;
-			background: none;
-			padding: 0;
-			margin-left: 20px;
-
-			img {
-				height: 30px;
-			}
-		}
-
-		&:hover {
-			opacity: 0.8;
-		}
-
-		&:active {
-			opacity: 0.6;
-		}
-
-		@media only screen and (max-width: 768px) {
-			padding: 3px 6px;
-			font-size: 13px;
-		}
-	}
-}
-
-.version-container {
-	padding-top: 20px;
-	text-align: right;
-	font-size: 14px;
-	color: grey;
-}
-</style>
