@@ -15,6 +15,7 @@
 			:styles="JSON.stringify(chatStyles)"
 			:text-messages="JSON.stringify(textMessages)"
 			:message-actions="JSON.stringify(messageActions)"
+			:is-waiting-for-reply="isWaitingForReply"
 			@fetch-messages="fetchMessages($event.detail[0])"
 			@send-message="sendMessage($event.detail[0])"
 		>
@@ -29,7 +30,7 @@
 			</div>
 
 			<div
-				slot="spinner-icon-infinite-messages"
+				slot="spinner-icon-waiting-for-reply"
 				class="loadingMessageContainer"
 			>
 				{{ aiName }}
@@ -82,7 +83,8 @@ export default {
 				IS_TYPING: 'est en train de taper...',
 				CANCEL_SELECT_MESSAGE: 'Annuler Sélection'
 			},
-			aiName: 'Warenwissen Helfer'
+			aiName: 'Warenwissen Helfer',
+			isWaitingForReply: false
 		}
 	},
 	methods: {
@@ -148,6 +150,7 @@ export default {
 				}
 			]
 			this.messagesLoaded = false
+			this.isWaitingForReply = true
 			const { data } = await this.$http.post('/ai-chat/chat', {
 				message: message.content,
 				chat: this.chat
@@ -157,6 +160,7 @@ export default {
 			this.messages = await this.refactorMessages(data.messages)
 
 			this.messagesLoaded = true
+			this.isWaitingForReply = false
 		},
 		getChatWindowHeight() {
 			if (this.windowWidth > 991) {

@@ -108,6 +108,16 @@
 							</room-message>
 						</div>
 					</transition-group>
+					<div
+						v-if="isWaitingForReply"
+						id="waiting-for-reply"
+					>
+						<loader :show="true" :infinite="true" type="waiting-for-reply">
+							<template v-for="(idx, name) in $slots" #[name]="data">
+								<slot :name="name" v-bind="data" />
+							</template>
+						</loader>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -225,7 +235,8 @@ export default {
 		scrollDistance: { type: Number, required: true },
 		templatesText: { type: Array, default: null },
 		usernameOptions: { type: Object, required: true },
-		emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: undefined },
+		isWaitingForReply: { type: Boolean, default: false }
 	},
 
 	emits: [

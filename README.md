@@ -269,6 +269,7 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `styles`(30)                        | [String, Object] | -        | (26)                                                                                                              |
 | `show-audio`(31)                        | Boolean | -        | `true`                                                                                                              |
 | `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                              |
+| `is-waiting-for-reply`              | Boolean           | -        | false                                                                                                            |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -815,6 +816,7 @@ Example:
 | `spinner-icon-infinite-rooms`               | Replace the loading spinner icon to load more rooms               |
 | `spinner-icon-messages`                     | Replace the loading spinner icon in a room                        |
 | `spinner-icon-infinite-messages`            | Replace the loading spinner icon to load more messages            |
+| `spinner-icon-waiting-for-reply`                         | To Place a loading or anything at bottom of chat area             |
 | `spinner-icon-room-file`                    | Replace the loading spinner icon to load heavy files              |
 | `spinner-icon-message-file_{{MESSAGE_ID}}`  | Replace the loading spinner icon in a message containing an image |
 | `scroll-icon`                               | Replace the scroll to newest message icon                         |

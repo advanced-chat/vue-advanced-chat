@@ -32,6 +32,12 @@
 			>
 				<div id="vac-circle" />
 			</slot>
+			<slot
+				v-if="type === 'waiting-for-reply'"
+				name="spinner-icon-waiting-for-reply"
+			>
+				<div id="vac-circle" />
+			</slot>
 		</div>
 	</transition>
 </template>
