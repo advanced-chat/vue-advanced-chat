@@ -31,7 +31,7 @@
 	"scripts": {
 		"serve": "vue-cli-service serve",
 		"build": "npm run clean:lib && npm run build:lib && npm run build:wc",
-		"clean:lib": "rm -rf dist/*.js && rm -rf dist/*.map && rm -rf dist/*.css && rm -rf dist/*.html",
+		"clean:lib": "del /Q dist\\*.js && del /Q dist\\*.map && del /Q dist\\*.css && del /Q dist\\*.html",
 		"build:lib": "vue-cli-service build --target lib --no-clean --name vue-advanced-chat ./src/lib/index.js",
 		"build:wc": "vue-cli-service build --target wc --no-clean --name vue-advanced-chat ./src/lib/ChatWindow.vue",
 		"prepublish": "npm run lint && npm run test && npm run build",
