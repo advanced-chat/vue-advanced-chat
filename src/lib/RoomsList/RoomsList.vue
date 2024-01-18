@@ -79,7 +79,7 @@ import Loader from '../../components/Loader/Loader'
 import RoomsSearch from './RoomsSearch/RoomsSearch'
 import RoomContent from './RoomContent/RoomContent'
 
-import filteredItems from '../../utils/filter-items'
+import { filterMultipleItems } from '../../utils/filter-items'
 
 export default {
 	name: 'RoomsList',
@@ -192,9 +192,9 @@ export default {
 			if (this.customSearchRoomEnabled) {
 				this.$emit('search-room', ev.target.value)
 			} else {
-				this.filteredRooms = filteredItems(
+				this.filteredRooms = filterMultipleItems(
 					this.rooms,
-					'roomName',
+					['roomName', 'roomId'],
 					ev.target.value
 				)
 			}
