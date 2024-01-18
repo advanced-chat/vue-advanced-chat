@@ -9,6 +9,7 @@
 				:rooms-loaded="roomsLoaded"
 				:room="room"
 				:room-actions="roomActions"
+				:custom-search-room-enabled="customSearchRoomEnabled"
 				:text-messages="t"
 				:show-search="showSearch"
 				:show-add-room="showAddRoom"
@@ -21,6 +22,7 @@
 				@fetch-more-rooms="fetchMoreRooms"
 				@loading-more-rooms="loadingMoreRooms = $event"
 				@add-room="addRoom"
+				@search-room="searchRoom"
 				@room-action-handler="roomActionHandler"
 			>
 				<template v-for="(i, name) in $scopedSlots" #[name]="data">
@@ -164,6 +166,7 @@ export default {
 		showAddRoom: { type: Boolean, default: true },
 		showSendIcon: { type: Boolean, default: true },
 		showFiles: { type: Boolean, default: true },
+		customSearchRoomEnabled: { type: [Boolean, String], default: false },
 		showAudio: { type: Boolean, default: true },
 		audioBitRate: { type: Number, default: 128 },
 		audioSampleRate: { type: Number, default: 44100 },
@@ -220,6 +223,7 @@ export default {
 		'textarea-action-handler',
 		'fetch-more-rooms',
 		'add-room',
+		'search-room',
 		'room-action-handler',
 		'message-selection-action-handler'
 	],
@@ -359,6 +363,9 @@ export default {
 		},
 		addRoom() {
 			this.$emit('add-room')
+		},
+		searchRoom(val) {
+			this.$emit('search-room', { value: val, roomId: this.room.roomId })
 		},
 		fetchMessages(options) {
 			this.$emit('fetch-messages', { room: this.room, options })
