@@ -46,6 +46,10 @@
 	}
 }
 
+#waiting-for-reply .vac-loader-wrapper.vac-container-top {
+	padding: 12px;
+}
+
 @-webkit-keyframes vac-spin {
 	from {
 		-webkit-transform: rotate(0deg);
