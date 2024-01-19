@@ -26228,8 +26228,8 @@ function _objectSpread2(target) {
   }
   return target;
 }
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"84e4ed10-vue-loader-template"}!./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/RoomsList/RoomsList.vue?vue&type=template&id=e7effa46&
-var RoomsListvue_type_template_id_e7effa46_render = function render() {
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"84e4ed10-vue-loader-template"}!./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/lib/RoomsList/RoomsList.vue?vue&type=template&id=2b37a136&
+var RoomsListvue_type_template_id_2b37a136_render = function render() {
   var _vm = this,
     _c = _vm._self._c;
   return _c('div', {
@@ -26350,9 +26350,9 @@ var RoomsListvue_type_template_id_e7effa46_render = function render() {
     })], null, true)
   })], 1) : _vm._e()])], 2) : _vm._e()], 2);
 };
-var RoomsListvue_type_template_id_e7effa46_staticRenderFns = [];
+var RoomsListvue_type_template_id_2b37a136_staticRenderFns = [];
 
-// CONCATENATED MODULE: ./src/lib/RoomsList/RoomsList.vue?vue&type=template&id=e7effa46&
+// CONCATENATED MODULE: ./src/lib/RoomsList/RoomsList.vue?vue&type=template&id=2b37a136&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"84e4ed10-vue-loader-template"}!./node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Loader/Loader.vue?vue&type=template&id=2c0ab9be&
 var Loadervue_type_template_id_2c0ab9be_render = function render() {
@@ -27527,6 +27527,24 @@ var RoomContent_component = normalizeComponent(
     return formatString(v[prop]).includes(formatString(val));
   });
 });
+function filterMultipleItems(items) {
+  var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ['roomName'];
+  var val = arguments.length > 2 ? arguments[2] : undefined;
+  var startsWith = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  if (!val || val === '') return items;
+  return items.filter(function (v) {
+    return props.some(function (prop) {
+      if (typeof v[prop] === 'string') {
+        if (startsWith) return formatString(v[prop]).startsWith(formatString(val));
+        return formatString(v[prop]).includes(formatString(val));
+      } else if (typeof v[prop] === 'number') {
+        return String(v[prop]).startsWith(formatString(val));
+      } else {
+        return v[prop] === val;
+      }
+    });
+  });
+}
 function formatString(string) {
   return string.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
@@ -27676,10 +27694,11 @@ function formatString(string) {
       }
     },
     searchRoom: function searchRoom(ev) {
+      console.log('searchRoom');
       if (this.customSearchRoomEnabled) {
         this.$emit('search-room', ev.target.value);
       } else {
-        this.filteredRooms = filter_items(this.rooms, 'roomName', ev.target.value);
+        this.filteredRooms = filterMultipleItems(this.rooms, ['roomName', 'roomId'], ev.target.value);
       }
     },
     openRoom: function openRoom(room) {
@@ -27713,8 +27732,8 @@ function formatString(string) {
 
 var RoomsList_component = normalizeComponent(
   RoomsList_RoomsListvue_type_script_lang_js_,
-  RoomsListvue_type_template_id_e7effa46_render,
-  RoomsListvue_type_template_id_e7effa46_staticRenderFns,
+  RoomsListvue_type_template_id_2b37a136_render,
+  RoomsListvue_type_template_id_2b37a136_staticRenderFns,
   false,
   null,
   null,
