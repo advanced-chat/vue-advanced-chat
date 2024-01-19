@@ -30,7 +30,7 @@
 		"eslint-plugin-vue": "8.0.3",
 		"node-sass": "8.0.0",
 		"sass": "1.56.1",
-		"vite": "2.9.16",
+		"vite": "2.9.17",
 		"vue-loader": "16.8.3"
 	}
 }
