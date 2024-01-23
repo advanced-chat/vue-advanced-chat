@@ -2,7 +2,10 @@
 	<div
 		v-show="showRoomsList"
 		class="vac-rooms-container"
-		:class="{ 'vac-rooms-container-full': isMobile, 'vac-app-border-r': !isMobile }"
+		:class="{
+			'vac-rooms-container-full': isMobile,
+			'vac-app-border-r': !isMobile
+		}"
 	>
 		<slot name="rooms-header" />
 
@@ -76,7 +79,7 @@ import Loader from '../../components/Loader/Loader'
 import RoomsSearch from './RoomsSearch/RoomsSearch'
 import RoomContent from './RoomContent/RoomContent'
 
-import filteredItems from '../../utils/filter-items'
+import { filterMultipleItems } from '../../utils/filter-items'
 
 export default {
 	name: 'RoomsList',
@@ -96,6 +99,7 @@ export default {
 		linkOptions: { type: Object, required: true },
 		isMobile: { type: Boolean, required: true },
 		rooms: { type: Array, required: true },
+		customSearchRoomEnabled: { type: [Boolean, String], default: false },
 		loadingRooms: { type: Boolean, required: true },
 		roomsLoaded: { type: Boolean, required: true },
 		room: { type: Object, required: true },
@@ -105,6 +109,7 @@ export default {
 
 	emits: [
 		'add-room',
+		'search-room',
 		'room-action-handler',
 		'loading-more-rooms',
 		'fetch-room',
@@ -184,11 +189,15 @@ export default {
 			}
 		},
 		searchRoom(ev) {
-			this.filteredRooms = filteredItems(
-				this.rooms,
-				'roomName',
-				ev.target.value
-			)
+			if (this.customSearchRoomEnabled) {
+				this.$emit('search-room', ev.target.value)
+			} else {
+				this.filteredRooms = filterMultipleItems(
+					this.rooms,
+					['roomName', 'roomId'],
+					ev.target.value
+				)
+			}
 		},
 		openRoom(room) {
 			if (room.roomId === this.room.roomId && !this.isMobile) return

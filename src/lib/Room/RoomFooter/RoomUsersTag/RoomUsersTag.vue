@@ -3,7 +3,6 @@
 		<div
 			v-if="filteredUsersTag.length"
 			class="vac-tags-container"
-			:style="{ bottom: `${footerHeight}px` }"
 		>
 			<div
 				v-for="(user, index) in filteredUsersTag"
@@ -43,12 +42,6 @@ export default {
 	data() {
 		return {
 			activeItem: null
-		}
-	},
-
-	computed: {
-		footerHeight() {
-			return document.getElementById('room-footer').clientHeight
 		}
 	},
 
