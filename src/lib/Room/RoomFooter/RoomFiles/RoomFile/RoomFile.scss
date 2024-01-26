@@ -15,6 +15,25 @@
 		border-radius: 4px;
 	}
 
+	.vac-optiwork-file {
+		@extend .vac-message-image;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		padding: 5px;
+	}
+
+	.vac-optiwork-file-icon {
+		font-size: 30px;
+	}
+
+	.vac-optiwork-file-name {
+		font-size: smaller;
+		text-align: center;
+		color: #3b3b3b;
+	}
+
 	.vac-file-container {
 		height: 80px;
 		width: 80px;
@@ -42,4 +61,48 @@
 			z-index: -1;
 		}
 	}
+}
+
+/**
+* Optiwork drive colors for each type
+* of file, check palette-optidrive.scss
+*/
+.icon-file-doc {
+    color: #4e8df5;
+}
+
+.icon-file-spreadsheat {
+    color: #20a464;
+}
+
+.icon-file-presentation {
+    color: #e03303;
+}
+
+.icon-file-pdf {
+    color: #dc3545;
+}
+
+.icon-file-image {
+    color: #c49011;
+}
+
+.icon-file-audio {
+    color: #6f42c1;
+}
+
+.icon-file-play {
+    color: #9a252b;
+}
+
+.icon-file-archive {
+    color: #6c757d;
+}
+
+.icon-file-zip {
+    color: #056562;
+}
+
+.icon-file-code {
+    color: #08c4c4;
 }

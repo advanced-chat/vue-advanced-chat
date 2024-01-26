@@ -266,8 +266,10 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `accepted-files`(27)                | String           | -        | `*`                                                                                                               |
 | `capture-files`(28)                 | String           | -        | `''`                                                                                                              |
 | `styles`(29)                        | [String, Object] | -        | (26)                                                                                                              |
-| `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                              |
+| `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                                 |
 | `call`(31)                          | String           | -        |                                             |
+| `external-files`(32)                  | Array            | `false`  |      `[]`                                   |
+| `allow-sending-external-files`(33)    | Boolean          | `false`  |      `null`                                 |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -511,6 +513,13 @@ styles="{
 
 **(31)** `call` indicates the current ongoing call. If set, the chat interface will change to display call-related ui elements.
 
+**(32)** `externalFiles` array of files attached from a external source that it's not user computer. It's used by Optiwork Chat to store files attached from Optiwork Drive.
+
+**(33)** `allow-sending-external-files` indicates whether VAC should or not send external files in a message. There are 3 possible values for this prop: `true`, `false` or `null`:
+- If set to `true` VAC will always send external files without asking user permission;
+- When set to `false` VAC will prevent sending external files. If user is sending external files in a message and this prop is set to `false` the file list will the cleaned (This use case can be clarified if you read `request-permission-to-send-external-files` event documentation);
+- When set to `null` VAC will emit the event `request-permission-to-send-external-files` each time a external file is sent;
+
 ## Props data structure
 
 Your props must follow a specific structure to display rooms and messages correctly:
@@ -675,10 +684,12 @@ In your message object, you may provide a `dynamic` property. This will allow yo
 | `room-info` (9)                       | `room`                                                                     | Clicked the room header bar                     |
 | `toggle-rooms-list`                   | `{ opened }`                                                               | Clicked on the toggle icon inside a room header |
 | `textarea-action-handler`(10)         | `{ roomId, message }`                                                      | Clicked on custom icon inside the footer        |
-| `typing-message`                      | `{ roomId, message }`                                                      | Started typing a message                        |
-| `accept-call`                         | `{ roomCall }`                                                             | Clicked on the "accept call" button when incoming call is ringing                        |
-| `hang-up-call`                        | `{ roomCall }`                                                             | Clicked on the "hang-up call" button when incoming call is ringing or on an ongoing call  |
-| `return-to-call`                      | -                                                                          | Clicked on the "return to call" indicator (shown below room header on web)  |
+| `typing-message`(11)                  | `{ roomId, message }`                                                      | Started typing a message                        |
+| `accept-call`(12)                     | `{ roomCall }`                                                             | Clicked on the "accept call" button when incoming call is ringing                        |
+| `hang-up-call`(13)                    | `{ roomCall }`                                                             | Clicked on the "hang-up call" button when incoming call is ringing or on an ongoing call  |
+| `return-to-call`(14)                  | -                                                                          | Clicked on the "return to call" indicator (shown below room header on web)  |
+| `external-files-removed`(15)          | `[{ file }]`                                                               | Removes one or an array of external files from attachment list |
+| `request-permission-to-send-external-files`(16) | `{ room }`                                                       | When user sends a message with external files attached |
 
 **(1)** `fetch-messages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`.<br>
 **(1)** `fetch-messages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top.
@@ -764,6 +775,10 @@ messageSelectionActionHandler({ roomId, action, message }) {
 
 **(12)** `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked.
 
+**(15)** `external-files-removed` is emitted when user removes a external file, or all of them, from attachment list (happens if user clicks in one of "close buttons" featured by image below):
+![](./docs/remove-external-file.png)
+
+**(16)** `request-permission-to-send-external-files` event emitted when user sends a message with external files attached. This event is used by Optiwork Chat to request user permission to send external files, this event "works" together with `allow-sending-external-files` prop.
 <br>
 
 ## Named Slots
