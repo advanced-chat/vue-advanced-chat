@@ -23,15 +23,18 @@
         </i>
         <i v-else class="vac-text-last" style="color: #cccccc;">
           <span class="vac-call-timer">
-            {{ callDuration ?? '--:--' }}
+            {{ callDuration ?? textMessages.ROOM_CALL_ONGOING }}
           </span>
         </i>
       </div>
     </div>
 
     <div class="vac-call-actions">
-      <a v-if="!isCurrentUserCaller && !isCallInProgress && !isCurrentUserInCall" class="btn" role="button" href="#" @click.stop="acceptCall()">
+      <a v-if="!isCurrentUserCaller && !isCurrentUserInCall" class="btn" role="button" href="#" @click.stop="acceptCall()">
         <i class="bi bi-telephone-fill" style="margin-right: 1rem;" />
+      </a>
+      <a v-else-if="isCallInProgress && !isCurrentUserInCall" class="btn" role="button" href="#" @click.stop="returnToCall()">
+        <i class="bi bi-box-arrow-right" style="margin-right: 1rem;" />
       </a>
       <a v-else-if="isCallInProgress && isCurrentUserInCall" class="btn" role="button" href="#" @click.stop="returnToCall()">
         <i class="bi bi-box-arrow-up-right" style="margin-right: 1rem;" />
@@ -50,7 +53,8 @@ export default {
   props: {
     currentUserId: { type: [String, Number], required: true },
     room: { type: Object, required: true },
-    textMessages: { type: Object, default: () => {} }
+    textMessages: { type: Object, default: () => {} },
+    call: { type: Object, required: true }
   },
 
   emits: [
@@ -69,16 +73,16 @@ export default {
 
   computed: {
     isCurrentUserCaller() {
-      return this.currentUserId === String(this.room.call.userId)
+      return this.call && this.currentUserId === String(this.call.userId)
     },
     isCallPending() {
-      return this.room.call.status === 0
+      return this.call && this.call.statusPending
     },
     isCallInProgress() {
-      return this.room.call && this.room.call.status === 1
+      return this.call && this.call.statusInProgress
     },
     isCurrentUserInCall() {
-      return this.room.call.isCurrentUserInCall
+      return this.call?.isCurrentUserInCall
     },
     callStatusClass() {
       if (this.isCallInProgress) {
@@ -107,11 +111,11 @@ export default {
 
   methods: {
     acceptCall() {
-      this.$emit('accept-call', this.room.call)
+      this.$emit('accept-call', this.call)
     },
 
     hangUpCall() {
-      this.$emit('hang-up-call', this.room.call)
+      this.$emit('hang-up-call', this.call)
     },
 
     returnToCall() {
@@ -123,7 +127,9 @@ export default {
     },
 
     updateCallDuration() {
-      const duration = (new Date() - new Date(this.room.call.startedAt)) / 1000
+      if (!this.call) return
+
+      const duration = (new Date() - new Date(this.call.startedAt)) / 1000
       const minutes = String(Math.floor(duration / 60)).padStart(2, '0')
       const seconds = String(Math.floor(duration % 60)).padStart(2, '0')
       this.callDuration = `${minutes}:${seconds}`

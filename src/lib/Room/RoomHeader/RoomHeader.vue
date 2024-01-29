@@ -122,8 +122,11 @@
 			</div>
       <div v-if="isCallInProgress" class="vac-room-call-ongoing" @click="returnToCallClick">
         <div class="vac-room-call-ongoing-info">
-          <span class="vac-room-call-ongoing-title">
-            {{ textMessages.ROOM_CALL_RETURN_TO_CALL ?? textMessages.ROOM_CALL_JOIN }}
+          <span v-if="isAttendenceAccepted" class="vac-room-call-ongoing-title">
+            {{ textMessages.ROOM_CALL_RETURN_TO_CALL }}
+          </span>
+          <span v-if="isAttendencePending || isAttendenceDeclined" class="vac-room-call-ongoing-title">
+            {{ textMessages.ROOM_CALL_JOIN }}
           </span>
           <span class="vac-room-call-ongoing-duration">
             {{ callDuration ?? '--:--' }}
@@ -205,7 +208,22 @@ export default {
 			return text
 		},
     isCallInProgress() {
-      return this.call && this.call.isInProgress
+      return this.call && this.call.statusInProgress
+    },
+    isAttendencePending() {
+      return this.call && this.call.attendence.statusPending
+    },
+    isAttendenceAccepted() {
+      return this.call && this.call.attendence.statusAccepted
+    },
+    isAttendenceDeclined() {
+      return this.call && this.call.attendence.statusDeclined
+    },
+    isAttendenceMissed() {
+      return this.call && this.call.attendence.statusMissed
+    },
+    isAttendenceCallEnded() {
+      return this.call && this.call.attendence.statusCallEnded
     }
 	},
 

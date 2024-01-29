@@ -8,6 +8,7 @@
 				:loading-rooms="loadingRoomsCasted"
 				:rooms-loaded="roomsLoadedCasted"
 				:room="room"
+				:call="callCasted"
 				:room-actions="roomActionsCasted"
 				:custom-search-room-enabled="customSearchRoomEnabled"
 				:text-messages="t"

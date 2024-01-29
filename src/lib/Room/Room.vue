@@ -27,13 +27,13 @@
 			:message-selection-enabled="messageSelectionEnabled"
 			:message-selection-actions="messageSelectionActions"
 			:selected-messages-total="selectedMessages.length"
-      		:call="call"
+      :call="call"
 			@toggle-rooms-list="$emit('toggle-rooms-list')"
 			@room-info="$emit('room-info')"
 			@menu-action-handler="$emit('menu-action-handler', $event)"
 			@message-selection-action-handler="messageSelectionActionHandler"
 			@cancel-message-selection="messageSelectionEnabled = false"
-      		@return-to-call="$emit('return-to-call', $event)"
+      @return-to-call="$emit('return-to-call', $event)"
 		>
 			<template v-for="(i, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
@@ -104,7 +104,7 @@
 								@send-message-reaction="sendMessageReaction"
 								@select-message="selectMessage"
 								@unselect-message="unselectMessage"
-                				@message-reaction-click="messageReactionClick"
+                @message-reaction-click="messageReactionClick"
 							>
 								<template v-for="(idx, name) in $slots" #[name]="data">
 									<slot :name="name" v-bind="data" />
@@ -112,7 +112,7 @@
 							</room-message>
 						</div>
 					</transition-group>
-          			<div
+        <div
 						v-if="messages.length && !messagesLoadedBottom"
 						id="infinite-loader-messages-bottom"
 					>
@@ -146,7 +146,7 @@
 		<room-footer
 			:room="room"
 			:room-id="roomId"
-      		:current-user-id="currentUserId"
+      :current-user-id="currentUserId"
 			:room-message="roomMessage"
 			:text-messages="textMessages"
 			:show-send-icon="showSendIcon"
@@ -177,7 +177,7 @@
 			@send-message="$emit('send-message', $event)"
 			@typing-message="$emit('typing-message', $event)"
 			@textarea-action-handler="$emit('textarea-action-handler', $event)"
-      		@attachment-picker-handler="$emit('attachment-picker-handler', $event)"
+      @attachment-picker-handler="$emit('attachment-picker-handler', $event)"
 			@request-permission-to-send-external-files="$emit('request-permission-to-send-external-files', $event)"
 			@external-files-removed="$emit('external-files-removed', $event)"
 		>
@@ -249,7 +249,7 @@ export default {
 		attachmentOptions: { type: Array, required: true },
 		call: { type: Object, required: true },
 		externalFiles: { type: Array, required: false },
-		allowSendingExternalFiles: { type: Boolean, default: null },
+		allowSendingExternalFiles: { type: Boolean, default: null }
 	},
 
 	emits: [
@@ -317,9 +317,9 @@ export default {
 		showMessagesStarted() {
 			return this.messages.length && this.messagesLoadedTop
 		},
-		isCallInProgress() {
-			return this.call && this.call.isInProgress
-		}
+    isCallInProgress() {
+      return this.call && this.call.statusInProgress
+    }
 	},
 
 	watch: {
