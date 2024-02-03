@@ -55,7 +55,7 @@
 							<span>{{ message.fileId }}</span>
 						</div>
 						<div
-							v-if="roomUsers.length > 2 && message.senderId !== currentUserId"
+							v-if="message.senderId !== currentUserId"
 							class="vac-text-username"
 							:class="{
 								'vac-username-reply': !message.deleted && message.replyMessage
