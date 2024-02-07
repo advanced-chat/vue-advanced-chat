@@ -25,6 +25,7 @@
 						height: `${emojiPickerHeight}px`,
 						top: emojiReaction ? (positionTop ? emojiPickerHeight.toString() : `${emojiPickerTop}px`) : '',
 						right: emojiPickerRight,
+            left: emojiReaction ? 'unset' : '0',
 						display: emojiPickerTop || !emojiReaction ? 'initial' : 'none'
 					}"
 				>

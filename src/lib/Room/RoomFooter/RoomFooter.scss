@@ -7,7 +7,7 @@
 .vac-box-footer {
 	display: flex;
 	position: relative;
-	background: var(--chat-footer-bg-color);
+	background: transparent;
 	padding: 10px 8px 10px;
 }
 
@@ -19,8 +19,9 @@
 	line-height: 20px;
 	outline: 0;
 	resize: none;
-	border-radius: 20px;
+	border-radius: 10px;
 	padding: 12px 16px;
+	padding-left: 4rem;
 	box-sizing: content-box;
 	font-size: 16px;
 	background: var(--chat-bg-color-input);
@@ -46,6 +47,7 @@
 	display: flex;
 	align-items: center;
 
+	i,
 	svg,
 	.vac-wrapper {
 		margin: 0 7px;
@@ -61,15 +63,24 @@
 	align-items: center;
 	margin-right: 5px;
 
+	i,
 	svg,
 	.vac-wrapper {
 		margin: 0 7px;
 	}
+}
 
-	.vac-icon-microphone {
-		fill: var(--chat-icon-color-microphone);
-		margin: 0 7px;
-	}
+.vac-icon-microphone {
+	fill: var(--chat-icon-color-microphone);
+	margin: 0 7px;
+}
+
+.vac-audio-recorder-container {
+	width: 100%;
+	min-height: 44px;
+	display: flex;
+	justify-content: end;
+	align-items: center;
 
 	.vac-dot-audio-record {
 		height: 15px;
@@ -94,7 +105,7 @@
 		font-size: 16px;
 		color: var(--chat-color);
 		margin-left: 8px;
-		width: 45px;
+		width: 50px;
 	}
 
 	$audio-icon-size: 28px;
@@ -103,7 +114,7 @@
 	.vac-icon-audio-confirm {
 		min-height: $audio-icon-size;
 		min-width: $audio-icon-size;
-
+		i,
 		svg {
 			min-height: $audio-icon-size;
 			min-width: $audio-icon-size;
@@ -135,6 +146,47 @@
 	transform: none !important;
 }
 
+.vac-emoji-picker {
+	position: absolute;
+	left: 4rem;
+}
+
+.vac-icon-textarea-highlitght {
+	position: absolute;
+	left: 4rem;
+	top: 50%;
+	transform: translateY(-50%);
+	pointer-events: none;
+
+	i {
+		color: #5c578f;
+	}
+}
+
+.vac-room-footer-highlight {
+	.vac-textarea {
+		padding-left: 2.8rem;
+	}
+
+	--chat-icon-color-send: #7367f0;
+	--chat-icon-color-send-disabled: #5c578f;
+
+	.vac-box-footer:before {
+		content: '';
+		position: absolute;
+		display: block;
+		top: 50%;
+		transform: translateY(-50%);
+		left: 42px;
+		right: 50px;
+		height: 44px;
+		border: 1px solid #7367f0;
+		border-radius: 10px;
+		animation: border-pulse 1.5s infinite;
+		pointer-events: none;
+	}
+}
+
 @media only screen and (max-width: 768px) {
 	.vac-room-footer {
 		width: 100%;
@@ -148,8 +200,17 @@
 		}
 	}
 
+	.vac-room-footer-highlight {
+		.vac-box-footer:before {
+			left: 37px;
+			right: 40px;
+			height: 33px;
+		}
+	}
+
 	.vac-textarea {
 		padding: 7px;
+		padding-left: 4rem;
 		line-height: 18px;
 
 		&::placeholder {
@@ -159,6 +220,7 @@
 
 	.vac-icon-textarea,
 	.vac-icon-textarea-left {
+		i,
 		svg,
 		.vac-wrapper {
 			margin: 0 5px !important;
@@ -169,5 +231,18 @@
 @media only screen and (max-height: 768px) {
 	.vac-textarea {
 		max-height: 120px;
+	}
+}
+
+
+@keyframes border-pulse {
+	0% {
+		box-shadow: 0 0 0 0 rgba(115, 103, 240, 0.4);
+	}
+	70% {
+		box-shadow: 0 0 0 12px rgba(115, 103, 240, 0);
+	}
+	100% {
+		box-shadow: 0 0 0 5px rgba(115, 103, 240, 0);
 	}
 }

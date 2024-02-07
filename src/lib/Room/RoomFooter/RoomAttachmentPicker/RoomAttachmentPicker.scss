@@ -1,12 +1,28 @@
 .room-attachment-picker-wrapper {
 	position: relative;
 
+	.vac-open-attachment-list-icon {
+		transition: all .3s ease-in-out;
+		font-size: 1.5rem;
+		color: var(--chat-icon-color-paperclip);
+	}
+
 	.vac-menu-options {
 		position: absolute;
 		right: 0px;
 		top: unset;
 		bottom: 32px;
 		z-index: 9999;
+
+		&.vac-menu-left {
+			right: 10px;
+			left: unset;
+		}
+	
+		&.vac-menu-right {
+			left: 10px;
+			right: unset;
+		}
 
 		.vac-menu-item {
 			display: flex;

@@ -2,7 +2,10 @@
   <div class="room-attachment-picker-wrapper">
     <div class="vac-svg-button" @click="openOptions">
       <slot name="paperclip-icon">
-        <svg-icon name="paperclip" />
+        <i
+          ref="openOptionsIcon"
+          class="bi bi-plus-lg vac-open-attachment-list-icon"
+        />
       </slot>
     </div>
 
@@ -11,11 +14,12 @@
         v-if="optionsOpened"
         ref="menuOptions"
         v-click-outside="closeOptions"
-        class="vac-menu-options vac-menu-left"
+        class="vac-menu-options vac-menu-right"
       >
         <div class="vac-menu-list">
           <div v-for="option in attachmentOptions" :key="option.name">
-            <div class="vac-menu-item" @click="attachmentOptionHandler(option)">
+            <hr v-if="option.divider" class="vac-menu-item-divider" />
+            <div v-else class="vac-menu-item" @click="attachmentOptionHandler(option)">
               <i class="bi" :class="`bi-${option.icon ?? 'file-earmark'}`" :style="{color: option.color}" />
               {{ option.title }}
             </div>
@@ -28,14 +32,9 @@
 
 <script>
 import vClickOutside from '../../../../utils/on-click-outside'
-import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
 
 export default {
   name: 'RoomAttachmentPicker',
-
-  components: {
-    SvgIcon
-  },
 
   directives: {
 		clickOutside: vClickOutside
@@ -56,12 +55,18 @@ export default {
   methods: {
     openOptions() {
       this.optionsOpened = true
+      this.$nextTick(() => {
+        this.$refs.openOptionsIcon.style.rotate = '135deg'
+      })
     },
     closeOptions() {
       this.optionsOpened = false
+      this.$nextTick(() => {
+        this.$refs.openOptionsIcon.style.rotate = '0deg'
+      })
     },
     attachmentOptionHandler(option) {
-      this.optionsOpened = false
+      this.closeOptions()
       this.$emit('attachment-picker-handler', option)
     }
   }

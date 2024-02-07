@@ -268,8 +268,9 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `styles`(29)                        | [String, Object] | -        | (26)                                                                                                              |
 | `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                                 |
 | `call`(31)                          | String           | -        |                                             |
-| `external-files`(32)                  | Array            | `false`  |      `[]`                                   |
-| `allow-sending-external-files`(33)    | Boolean          | `false`  |      `null`                                 |
+| `textarea-hightlight`               | Boolean          | -        |                                             |  
+| `external-files`(32)                | Array            | `false`  |      `[]`                                   |
+| `allow-sending-external-files`(33)  | Boolean          | `false`  |      `null`                                 |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -513,6 +514,7 @@ styles="{
 
 **(31)** `call` indicates the current ongoing call. If set, the chat interface will change to display call-related ui elements.
 
+**(32)** `textarea-highlight`
 **(32)** `externalFiles` array of files attached from a external source that it's not user computer. It's used by Optiwork Chat to store files attached from Optiwork Drive.
 
 **(33)** `allow-sending-external-files` indicates whether VAC should or not send external files in a message. There are 3 possible values for this prop: `true`, `false` or `null`:

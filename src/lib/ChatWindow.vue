@@ -75,8 +75,9 @@
 				:templates-text="templatesTextCasted"
 				:username-options="usernameOptionsCasted"
 				:emoji-data-source="emojiDataSource"
-				:attachment-options="attachmentOptionsCasted"
-				:call="callCasted"
+        :attachment-options="attachmentOptionsCasted"
+        :call="callCasted"
+        :textarea-highlight="textareaHighlightCasted"
 				:external-files="externalFilesCasted"
 				:allow-sending-external-files="allowSendingExternalFiles"
 				@toggle-rooms-list="toggleRoomsList"
@@ -225,10 +226,11 @@ export default {
 		},
 		emojiDataSource: { type: String, default: undefined },
 		roomsNotFoundMessage: { type: String, default: '' },
-		attachmentOptions: { type: Array, default: () => [] },
-		call: { type: [Object, String], default: () => ({}) },
+    attachmentOptions: { type: Array, default: () => [] },
+    call: { type: [Object, String], default: () => ({}) },
+    textareaHighlight: { type: Boolean, default: false },
 		externalFiles: { type: Array, default: () => [] },
-		allowSendingExternalFiles: { type: Boolean, default: null },
+		allowSendingExternalFiles: { type: Boolean, default: null }
 	},
 
 	emits: [
@@ -259,7 +261,7 @@ export default {
 		'hang-up-call',
 		'return-to-call',
 		'request-permission-to-send-external-files',
-		'external-files-removed',
+		'external-files-removed'
 	],
 
 	data() {
@@ -411,15 +413,18 @@ export default {
 		usernameOptionsCasted() {
 			return this.castObject(this.usernameOptions)
 		},
-		attachmentOptionsCasted() {
-			return this.castArray(this.attachmentOptions)
-		},
-		callCasted() {
-			return this.castObject(this.call)
-		},
+    attachmentOptionsCasted() {
+      return this.castArray(this.attachmentOptions)
+    },
+    callCasted() {
+      return this.castObject(this.call)
+    },
+    textareaHighlightCasted() {
+      return this.castBoolean(this.textareaHighlight)
+    },
 		externalFilesCasted() {
 			return this.castArray(this.externalFiles)
-		},
+		}
 	},
 
 	watch: {
@@ -640,7 +645,7 @@ export default {
 
 		returnToCallHandler(call) {
 			this.$emit('return-to-call', call)
-		},
+		}
 	}
 }
 </script>

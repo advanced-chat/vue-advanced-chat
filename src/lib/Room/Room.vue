@@ -146,7 +146,7 @@
 		<room-footer
 			:room="room"
 			:room-id="roomId"
-      :current-user-id="currentUserId"
+			:current-user-id="currentUserId"
 			:room-message="roomMessage"
 			:text-messages="textMessages"
 			:show-send-icon="showSendIcon"
@@ -170,6 +170,7 @@
 			:dropped-files="droppedFiles"
 			:emoji-data-source="emojiDataSource"
 			:attachment-options="attachmentOptions"
+      :textarea-highlight="textareaHighlight"
 			:external-files="externalFiles"
 			:allow-sending-external-files="allowSendingExternalFiles"
 			@update-edited-message-id="editedMessageId = $event"
@@ -246,8 +247,9 @@ export default {
 		templatesText: { type: Array, default: null },
 		usernameOptions: { type: Object, required: true },
 		emojiDataSource: { type: String, default: undefined },
-		attachmentOptions: { type: Array, required: true },
-		call: { type: Object, required: true },
+    attachmentOptions: { type: Array, required: true },
+    call: { type: Object, required: true },
+    textareaHighlight: { type: Boolean, default: false },
 		externalFiles: { type: Array, required: false },
 		allowSendingExternalFiles: { type: Boolean, default: null }
 	},
@@ -273,7 +275,7 @@ export default {
 		'attachment-picker-handler',
 		'return-to-call',
 		'request-permission-to-send-external-files',
-		'external-files-removed',
+		'external-files-removed'
 	],
 
 	data() {
@@ -365,29 +367,29 @@ export default {
 	},
 
 	methods: {
-		updateIsLoadingInitialMessages(val) {
-			this.isLoadingInitialMessages = val
+    updateIsLoadingInitialMessages(val) {
+      this.isLoadingInitialMessages = val
 
-			if (!val) {
-				setTimeout(() => this.initIntersectionObserver())
-			}
-		},
-		initIntersectionObserver() {
-			if (this.observer) {
-				this.observer.disconnect()
-			}
+      if (!val) {
+        setTimeout(() => this.initIntersectionObserver())
+      }
+    },
+    initIntersectionObserver() {
+      if (this.observer) {
+        this.observer.disconnect()
+      }
 
-			const loaderTop = this.$el.querySelector('#infinite-loader-messages-top')
-			const loaderBottom = this.$el.querySelector('#infinite-loader-messages-bottom')
+      const loaderTop = this.$el.querySelector('#infinite-loader-messages-top')
+      const loaderBottom = this.$el.querySelector('#infinite-loader-messages-bottom')
 
-			if (loaderTop || loaderBottom) {
-				const options = {
-					root: this.$el.querySelector('#messages-list'),
-					rootMargin: `${this.scrollDistance}px`,
-					threshold: 0
-				}
+      if (loaderTop || loaderBottom) {
+        const options = {
+          root: this.$el.querySelector('#messages-list'),
+          rootMargin: `${this.scrollDistance}px`,
+          threshold: 0
+        }
 
-				this.observer = new IntersectionObserver(entries => {
+        this.observer = new IntersectionObserver(entries => {
           entries.forEach(entry => {
             const isTop = entry.target.id === 'infinite-loader-messages-top'
             const scrollDirection = isTop ? 'top' : 'bottom'
@@ -396,159 +398,159 @@ export default {
               this.loadMoreMessages(scrollDirection)
             }
           })
-				}, options)
+        }, options)
 
-				loaderBottom && this.observer.observe(loaderBottom)
-				loaderTop && this.observer.observe(loaderTop)
-			}
-		},
-		preventTopScroll() {
-			const container = this.$refs.scrollContainer
-			const prevScrollHeight = container.scrollHeight
+        loaderBottom && this.observer.observe(loaderBottom)
+        loaderTop && this.observer.observe(loaderTop)
+      }
+    },
+    preventTopScroll() {
+      const container = this.$refs.scrollContainer
+      const prevScrollHeight = container.scrollHeight
 
-			const observer = new ResizeObserver(_ => {
-				if (container.scrollHeight !== prevScrollHeight) {
-					if (this.$refs.scrollContainer) {
-						this.$refs.scrollContainer.scrollTo({
-							top: container.scrollHeight - prevScrollHeight
-						})
-						observer.disconnect()
-					}
-				}
-			})
+      const observer = new ResizeObserver(_ => {
+        if (container.scrollHeight !== prevScrollHeight) {
+          if (this.$refs.scrollContainer) {
+            this.$refs.scrollContainer.scrollTo({
+              top: container.scrollHeight - prevScrollHeight
+            })
+            observer.disconnect()
+          }
+        }
+      })
 
-			for (var i = 0; i < container.children.length; i++) {
-				observer.observe(container.children[i])
-			}
-		},
-		touchStart(touchEvent) {
-			if (this.singleRoom) return
+      for (var i = 0; i < container.children.length; i++) {
+        observer.observe(container.children[i])
+      }
+    },
+    touchStart(touchEvent) {
+      if (this.singleRoom) return
 
-			if (touchEvent.changedTouches.length === 1) {
-				const posXStart = touchEvent.changedTouches[0].clientX
-				const posYStart = touchEvent.changedTouches[0].clientY
+      if (touchEvent.changedTouches.length === 1) {
+        const posXStart = touchEvent.changedTouches[0].clientX
+        const posYStart = touchEvent.changedTouches[0].clientY
 
-				addEventListener(
-					'touchend',
-					touchEvent => this.touchEnd(touchEvent, posXStart, posYStart),
-					{ once: true }
-				)
-			}
-		},
-		touchEnd(touchEvent, posXStart, posYStart) {
-			if (touchEvent.changedTouches.length === 1) {
-				const posXEnd = touchEvent.changedTouches[0].clientX
-				const posYEnd = touchEvent.changedTouches[0].clientY
+        addEventListener(
+          'touchend',
+          touchEvent => this.touchEnd(touchEvent, posXStart, posYStart),
+          { once: true }
+        )
+      }
+    },
+    touchEnd(touchEvent, posXStart, posYStart) {
+      if (touchEvent.changedTouches.length === 1) {
+        const posXEnd = touchEvent.changedTouches[0].clientX
+        const posYEnd = touchEvent.changedTouches[0].clientY
 
-				const swippedRight = posXEnd - posXStart > 100
-				const swippedVertically = Math.abs(posYEnd - posYStart) > 50
+        const swippedRight = posXEnd - posXStart > 100
+        const swippedVertically = Math.abs(posYEnd - posYStart) > 50
 
-				if (swippedRight && !swippedVertically) {
-					this.$emit('toggle-rooms-list')
-				}
-			}
-		},
-		onRoomChanged() {
-			this.updateIsLoadingInitialMessages(true)
-			this.scrollIcon = false
-			this.scrollMessagesCount = 0
-			this.resetMessageSelection()
+        if (swippedRight && !swippedVertically) {
+          this.$emit('toggle-rooms-list')
+        }
+      }
+    },
+    onRoomChanged() {
+      this.updateIsLoadingInitialMessages(true)
+      this.scrollIcon = false
+      this.scrollMessagesCount = 0
+      this.resetMessageSelection()
 
-			const unwatch = this.$watch(
-				() => this.messages,
-				val => {
-					if (!val || !val.length) return
+      const unwatch = this.$watch(
+        () => this.messages,
+        val => {
+          if (!val || !val.length) return
 
-					const element = this.$refs.scrollContainer
-					if (!element) return
+          const element = this.$refs.scrollContainer
+          if (!element) return
 
-					unwatch()
+          unwatch()
 
-					setTimeout(() => {
-						element.scrollTo({ top: element.scrollHeight })
-						this.updateIsLoadingInitialMessages(false)
-					})
-				}
-			)
-		},
-		resetMessageSelection() {
-			this.messageSelectionEnabled = false
-			this.selectedMessages = []
-		},
-		selectMessage(message) {
-			this.selectedMessages.push(message)
-		},
-		unselectMessage(messageId) {
-			this.selectedMessages = this.selectedMessages.filter(
-				message => message._id !== messageId
-			)
-		},
-		onMessageAdded({ message, index, ref }) {
-			if (index !== this.messages.length - 1) return
+          setTimeout(() => {
+            element.scrollTo({ top: element.scrollHeight })
+            this.updateIsLoadingInitialMessages(false)
+          })
+        }
+      )
+    },
+    resetMessageSelection() {
+      this.messageSelectionEnabled = false
+      this.selectedMessages = []
+    },
+    selectMessage(message) {
+      this.selectedMessages.push(message)
+    },
+    unselectMessage(messageId) {
+      this.selectedMessages = this.selectedMessages.filter(
+        message => message._id !== messageId
+      )
+    },
+    onMessageAdded({ message, index, ref }) {
+      if (index !== this.messages.length - 1) return
 
-			const autoScrollOffset = ref.offsetHeight + 60
+      const autoScrollOffset = ref.offsetHeight + 60
 
-			setTimeout(() => {
-				const scrollContainer = this.$refs.scrollContainer
-				let scrolledUp = false
+      setTimeout(() => {
+        const scrollContainer = this.$refs.scrollContainer
+        let scrolledUp = false
 
-				if (scrollContainer) {
-					scrolledUp = this.getBottomScroll(scrollContainer) > autoScrollOffset
-				}
+        if (scrollContainer) {
+          scrolledUp = this.getBottomScroll(scrollContainer) > autoScrollOffset
+        }
 
-				if (message.senderId === this.currentUserId) {
+        if (message.senderId === this.currentUserId) {
           if (message._id !== message.indexId) {
             return
           }
 
-					if (scrolledUp) {
-						if (this.autoScroll.send.newAfterScrollUp) {
-							this.scrollToBottom()
-						}
-					} else {
-						if (this.autoScroll.send.new) {
-							this.scrollToBottom()
-						}
-					}
-				} else {
-					if (scrolledUp) {
-						if (this.autoScroll.receive.newAfterScrollUp) {
-							this.scrollToBottom()
-						} else {
-							this.scrollIcon = true
-							this.scrollMessagesCount++
-						}
-					} else {
-						if (this.autoScroll.receive.new) {
-							this.scrollToBottom()
-						} else {
-							this.scrollIcon = true
-							this.scrollMessagesCount++
-						}
-					}
-				}
-			})
-		},
-		onContainerScroll(e) {
-			if (!e.target) return
+          if (scrolledUp) {
+            if (this.autoScroll.send.newAfterScrollUp) {
+              this.scrollToBottom()
+            }
+          } else {
+            if (this.autoScroll.send.new) {
+              this.scrollToBottom()
+            }
+          }
+        } else {
+          if (scrolledUp) {
+            if (this.autoScroll.receive.newAfterScrollUp) {
+              this.scrollToBottom()
+            } else {
+              this.scrollIcon = true
+              this.scrollMessagesCount++
+            }
+          } else {
+            if (this.autoScroll.receive.new) {
+              this.scrollToBottom()
+            } else {
+              this.scrollIcon = true
+              this.scrollMessagesCount++
+            }
+          }
+        }
+      })
+    },
+    onContainerScroll(e) {
+      if (!e.target) return
 
-			const bottomScroll = this.getBottomScroll(e.target)
-			if (bottomScroll < 60) this.scrollMessagesCount = 0
-			this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount
-		},
-		loadMoreMessages(scrollDirection) {
+      const bottomScroll = this.getBottomScroll(e.target)
+      if (bottomScroll < 60) this.scrollMessagesCount = 0
+      this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount
+    },
+    loadMoreMessages(scrollDirection) {
       if (this.isLoadingInitialMessages) return
 
-			setTimeout(
-				() => {
+      setTimeout(
+        () => {
           const isScrollingTop = scrollDirection === 'top'
 
           const shouldStopLoadingTop = isScrollingTop && (this.messagesLoadedTop || !this.roomId)
           const shouldStopLoadingBottom = !isScrollingTop && (this.messagesLoadedBottom || !this.roomId)
 
-					if (shouldStopLoadingTop || shouldStopLoadingBottom) {
-						return
-					}
+          if (shouldStopLoadingTop || shouldStopLoadingBottom) {
+            return
+          }
 
           const scrollEventName = isScrollingTop ? 'fetch-messages-top' : 'fetch-messages-bottom'
 
@@ -556,76 +558,76 @@ export default {
             this.preventTopScroll()
           }
 
-					this.$emit(scrollEventName)
-				},
-				// prevent scroll bouncing speed
-				500
-			)
-		},
-		messageActionHandler({ action, message }) {
-			switch (action.name) {
-				case 'replyMessage':
-					this.initReplyMessage = message
-					setTimeout(() => {
-						this.initReplyMessage = null
-					})
-					return
-				case 'editMessage':
-					this.initEditMessage = message
-					setTimeout(() => {
-						this.initEditMessage = null
-					})
-					return
-				case 'deleteMessage':
-					return this.$emit('delete-message', message)
-				case 'selectMessages':
-					this.selectedMessages = [message]
-					this.messageSelectionEnabled = true
-					return
-				default:
-					return this.$emit('message-action-handler', { action, message })
-			}
-		},
-		messageSelectionActionHandler(action) {
-			this.$emit('message-selection-action-handler', {
-				action,
-				messages: this.selectedMessages
-			})
-			this.resetMessageSelection()
-		},
-		sendMessageReaction(messageReaction) {
-			this.$emit('send-message-reaction', messageReaction)
-		},
+          this.$emit(scrollEventName)
+        },
+        // prevent scroll bouncing speed
+        500
+      )
+    },
+    messageActionHandler({ action, message }) {
+      switch (action.name) {
+        case 'replyMessage':
+          this.initReplyMessage = message
+          setTimeout(() => {
+            this.initReplyMessage = null
+          })
+          return
+        case 'editMessage':
+          this.initEditMessage = message
+          setTimeout(() => {
+            this.initEditMessage = null
+          })
+          return
+        case 'deleteMessage':
+          return this.$emit('delete-message', message)
+        case 'selectMessages':
+          this.selectedMessages = [message]
+          this.messageSelectionEnabled = true
+          return
+        default:
+          return this.$emit('message-action-handler', { action, message })
+      }
+    },
+    messageSelectionActionHandler(action) {
+      this.$emit('message-selection-action-handler', {
+        action,
+        messages: this.selectedMessages
+      })
+      this.resetMessageSelection()
+    },
+    sendMessageReaction(messageReaction) {
+      this.$emit('send-message-reaction', messageReaction)
+    },
 
     messageReactionClick(messageReaction) {
       this.$emit('message-reaction-click', messageReaction)
     },
 
-		getBottomScroll(element) {
-			const { scrollHeight, clientHeight, scrollTop } = element
-			return scrollHeight - clientHeight - scrollTop
-		},
-		scrollToBottom() {
-			setTimeout(() => {
-				const element = this.$refs.scrollContainer
-				if (element) {
-					element.classList.add('vac-scroll-smooth')
-					element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
-					setTimeout(() => element.classList.remove('vac-scroll-smooth'))
-				}
-			}, 50)
-		},
-		openFile({ message, file }) {
-			this.$emit('open-file', { message, file })
-		},
-		openUserTag(user) {
-			this.$emit('open-user-tag', user)
-		},
-		onDropFiles(event) {
-			if (this.showFiles) {
-				this.droppedFiles = event.dataTransfer.files
-			}
-		}
-	}
+    getBottomScroll(element) {
+      const { scrollHeight, clientHeight, scrollTop } = element
+      return scrollHeight - clientHeight - scrollTop
+    },
+    scrollToBottom() {
+      setTimeout(() => {
+        const element = this.$refs.scrollContainer
+        if (element) {
+          element.classList.add('vac-scroll-smooth')
+          element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
+          setTimeout(() => element.classList.remove('vac-scroll-smooth'))
+        }
+      }, 50)
+    },
+    openFile({ message, file }) {
+      this.$emit('open-file', { message, file })
+    },
+    openUserTag(user) {
+      this.$emit('open-user-tag', user)
+    },
+    onDropFiles(event) {
+      if (this.showFiles) {
+        this.droppedFiles = event.dataTransfer.files
+      }
+    }
+  }
 }
 </script>

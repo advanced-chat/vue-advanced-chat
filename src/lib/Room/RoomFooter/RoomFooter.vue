@@ -4,7 +4,8 @@
 		id="room-footer"
 		class="vac-room-footer"
 		:class="{
-			'vac-app-box-shadow': shadowFooter
+			'vac-app-box-shadow': shadowFooter,
+      'vac-room-footer-highlight': textareaHighlight,
 		}"
 	>
 		<room-emojis
@@ -57,137 +58,152 @@
 			class="vac-box-footer"
 			:class="{ 'vac-box-footer-border': !files.length }"
 		>
-			<div v-if="showAudio && !files.length" class="vac-icon-textarea-left">
-				<template v-if="isRecording">
-					<div class="vac-svg-button vac-icon-audio-stop" @click="stopRecorder">
-						<slot name="audio-stop-icon">
-							<svg-icon name="close-outline" />
-						</slot>
-					</div>
-
-					<div class="vac-dot-audio-record" />
-
-					<div class="vac-dot-audio-record-time">
-						{{ recordedTime }}
-					</div>
-
-					<div
-						class="vac-svg-button vac-icon-audio-confirm"
-						@click="toggleRecorder(false)"
-					>
-						<slot name="audio-check-icon">
-							<svg-icon name="checkmark" />
-						</slot>
-					</div>
-				</template>
-
-				<div v-else class="vac-svg-button" @click="toggleRecorder(true)">
-					<slot name="microphone-icon">
-						<svg-icon name="microphone" class="vac-icon-microphone" />
-					</slot>
-				</div>
-			</div>
-
-			<textarea
-				id="roomTextarea"
-				ref="roomTextarea"
-				:placeholder="textMessages.TYPE_MESSAGE"
-				class="vac-textarea"
-				:class="{
-					'vac-textarea-outline': editedMessage._id
-				}"
-				:style="{
-					'min-height': `20px`,
-					'padding-left': `12px`
-				}"
-				@input="onChangeInput"
-				@keydown.esc="escapeTextarea"
-				@keydown.enter.exact.prevent="selectItem"
-				@paste="onPasteImage"
-				@keydown.tab.exact.prevent=""
-				@keydown.tab="selectItem"
-				@keydown.up="updateActiveUpOrDown($event, -1)"
-				@keydown.down="updateActiveUpOrDown($event, 1)"
-			/>
-
-			<div class="vac-icon-textarea">
-				<div
-					v-if="editedMessage._id"
-					class="vac-svg-button"
-					@click="resetMessage"
-				>
-					<slot name="edit-close-icon">
-						<svg-icon name="close-outline" />
-					</slot>
-				</div>
-
-				<div v-if="showEmojis" v-click-outside="() => (emojiOpened = false)">
-					<slot
-						name="emoji-picker"
-						v-bind="{ emojiOpened }"
-						:add-emoji="addEmoji"
-					>
-						<emoji-picker-container
-							:emoji-opened="emojiOpened"
-							:position-top="true"
-							:emoji-data-source="emojiDataSource"
-							@add-emoji="addEmoji"
-							@open-emoji="emojiOpened = $event"
-						>
-							<template #emoji-picker-icon>
-								<slot name="emoji-picker-icon" />
-							</template>
-						</emoji-picker-container>
-					</slot>
-				</div>
-
+      <div v-if="!isRecording && !textareaHighlight" class="vac-icon-textarea-left">
         <room-attachment-picker
           v-if="showFiles"
           :attachment-options="attachmentOptions"
           @attachment-picker-handler="attachmentPickerHandler"
         >
           <template #paperclip-icon>
-            <slot name="paperclip-icon">
-              <svg-icon name="paperclip" />
-            </slot>
+            <slot name="paperclip-icon" />
           </template>
         </room-attachment-picker>
+      </div>
 
-				<div
-					v-if="textareaActionEnabled"
-					class="vac-svg-button"
-					@click="textareaActionHandler"
-				>
-					<slot name="custom-action-icon">
-						<svg-icon name="deleted" />
-					</slot>
-				</div>
+      <div v-if="textareaHighlight" class="vac-icon-textarea-left">
+        <i
+          class="bi bi-x-lg"
+          style="cursor: pointer; color: #5c578f;"
+          @click="$emit('attachment-picker-handler', { cancel: true })"
+        />
+      </div>
 
-				<input
-					v-if="showFiles"
-					ref="file"
-					type="file"
-					multiple
-					:accept="acceptedFiles"
-					:capture="captureFiles"
-					style="display: none"
-					@change="onFileChange($event.target.files)"
-				/>
+      <div v-if="textareaHighlight" class="vac-icon-textarea-highlitght">
+        <i class="bi bi-magic" />
+      </div>
 
-				<div
-					v-if="showSendIcon"
-					class="vac-svg-button"
-					:class="{ 'vac-send-disabled': isMessageEmpty }"
-					@click="sendMessage"
-				>
-					<slot name="send-icon">
-						<svg-icon
-							name="send"
-							:param="isMessageEmpty || isFileLoading ? 'disabled' : ''"
-						/>
-					</slot>
-				</div>
-			</div>
+      <div v-if="isRecording" class="vac-audio-recorder-container">
+        <div class="vac-svg-button vac-icon-audio-stop" @click="stopRecorder">
+          <slot name="audio-stop-icon">
+            <svg-icon name="close-outline" />
+          </slot>
+        </div>
+
+        <div class="vac-dot-audio-record" />
+
+        <div class="vac-dot-audio-record-time">
+          {{ recordedTime }}
+        </div>
+
+        <div
+          class="vac-svg-button vac-icon-audio-confirm"
+          @click="toggleRecorder(false)"
+        >
+          <slot name="audio-check-icon">
+            <svg-icon name="checkmark" />
+          </slot>
+        </div>
+      </div>
+
+      <textarea
+        v-if="!isRecording"
+        id="roomTextarea"
+        ref="roomTextarea"
+        :placeholder="textareaHighlight ? textMessages.TYPE_HIGHLIGHT_MESSAGE: textMessages.TYPE_MESSAGE"
+        class="vac-textarea"
+        :class="{
+          'vac-textarea-outline': editedMessage._id,
+          'vac-textarea-highlight': textareaHighlight,
+        }"
+        @input="onChangeInput"
+        @keydown.esc="escapeTextarea"
+        @keydown.enter.exact.prevent="selectItem"
+        @paste="onPasteImage"
+        @keydown.tab.exact.prevent=""
+        @keydown.tab="selectItem"
+        @keydown.up="updateActiveUpOrDown($event, -1)"
+        @keydown.down="updateActiveUpOrDown($event, 1)"
+        @keydown.ctrl.i="onCtrlIKeydown"
+      />
+
+      <div v-if="!isRecording" class="vac-icon-textarea">
+        <div
+          v-if="editedMessage._id"
+          class="vac-svg-button"
+          @click="resetMessage"
+        >
+          <slot name="edit-close-icon">
+            <svg-icon name="close-outline" />
+          </slot>
+        </div>
+
+        <div
+          v-if="!isRecording && showEmojis && !textareaHighlight"
+          v-click-outside="() => (emojiOpened = false)"
+          class="vac-emoji-picker"
+        >
+          <slot
+            name="emoji-picker"
+            v-bind="{ emojiOpened }"
+            :add-emoji="addEmoji"
+          >
+            <emoji-picker-container
+              :emoji-opened="emojiOpened"
+              :position-top="true"
+              :emoji-data-source="emojiDataSource"
+              @add-emoji="addEmoji"
+              @open-emoji="emojiOpened = $event"
+            >
+              <template #emoji-picker-icon>
+                <slot name="emoji-picker-icon" />
+              </template>
+            </emoji-picker-container>
+          </slot>
+        </div>
+
+        <div
+          v-if="textareaActionEnabled"
+          class="vac-svg-button"
+          @click="textareaActionHandler"
+        >
+          <slot name="custom-action-icon">
+            <svg-icon name="deleted" />
+          </slot>
+        </div>
+
+        <input
+          v-if="showFiles"
+          ref="file"
+          type="file"
+          multiple
+          :accept="acceptedFiles"
+          :capture="captureFiles"
+          style="display: none"
+          @change="onFileChange($event.target.files)"
+        />
+
+        <div v-if="(showAudio && isMessageEmpty) && !textareaHighlight">
+          <div class="vac-svg-button" @click="toggleRecorder(true)">
+            <slot name="microphone-icon">
+              <svg-icon name="microphone" class="vac-icon-microphone" />
+            </slot>
+          </div>
+        </div>
+
+        <div
+          v-if="(showSendIcon && !isMessageEmpty) || textareaHighlight"
+          class="vac-svg-button"
+          :class="{ 'vac-send-disabled': isMessageEmpty }"
+          @click="sendMessage"
+        >
+          <slot name="send-icon">
+            <svg-icon
+              name="send"
+              :param="isMessageEmpty || isFileLoading ? 'disabled' : ''"
+            />
+          </slot>
+        </div>
+      </div>
 		</div>
 	</div>
 </template>
@@ -215,8 +231,8 @@ import { detectMobile } from '../../../utils/mobile-detection'
 /**
  * Constants defined on File model on Chat backend
  */
-const SOURCE_USER_FILE_SYSTEM = 'SOURCE_USER_FILE_SYSTEM';
-const SOURCE_OPTIWORK_DRIVE = 'SOURCE_OPTIWORK_DRIVE';
+const SOURCE_USER_FILE_SYSTEM = 'SOURCE_USER_FILE_SYSTEM'
+const SOURCE_OPTIWORK_DRIVE = 'SOURCE_OPTIWORK_DRIVE'
 
 export default {
 	name: 'RoomFooter',
@@ -229,7 +245,7 @@ export default {
 		RoomUsersTag,
 		RoomEmojis,
 		RoomTemplatesText,
-    	RoomAttachmentPicker
+		RoomAttachmentPicker
 	},
 
 	directives: {
@@ -261,10 +277,11 @@ export default {
 		initEditMessage: { type: Object, default: null },
 		droppedFiles: { type: Array, default: null },
 		emojiDataSource: { type: String, default: undefined },
-		attachmentOptions: { type: Array, required: true },
-		currentUserId: { type: String, default: '' },
+    attachmentOptions: { type: Array, required: true },
+    currentUserId: { type: String, default: '' },
+    textareaHighlight: { type: Boolean, default: false },
 		externalFiles: { type: Array, default: [] },
-		allowSendingExternalFiles: { type: Boolean, default: null },
+		allowSendingExternalFiles: { type: Boolean, default: null }
 	},
 
 	emits: [
@@ -273,9 +290,9 @@ export default {
 		'update-edited-message-id',
 		'textarea-action-handler',
 		'typing-message',
-    	'attachment-picker-handler',
+    'attachment-picker-handler',
 		'request-permission-to-send-external-files',
-		'external-files-removed',
+		'external-files-removed'
 	],
 
 	data() {
@@ -364,18 +381,18 @@ export default {
 		},
 		externalFiles(val) {
 			if (val.length) {
-				this.files = this.mergeFiles(this.files, val);
-				return;
+				this.files = this.mergeFiles(this.files, val)
+				return
 			}
 		},
 		allowSendingExternalFiles(val) {
 			if (val == 'true') {
-				this.sendMessage();
-				return;
+				this.sendMessage()
+				return
 			}
 			if (val == 'false') {
-				this.resetMessage();
-				return;
+				this.resetMessage()
+				return
 			}
 			/**
 			 * any other value means user not allow nor
@@ -432,8 +449,8 @@ export default {
 		mergeFiles(files, externalFiles) {
 			const newExternalFiles = externalFiles.filter(
 				customFile => !files.some(file => file.id === customFile.id)
-			);
-			return [...files, ...newExternalFiles];
+			)
+			return [...files, ...newExternalFiles]
 		},
 		getTextareaRef() {
 			return this.$refs.roomTextarea
@@ -476,11 +493,18 @@ export default {
 			el.style.height = el.scrollHeight - padding * 2 + 'px'
 		},
 		escapeTextarea() {
-			if (this.filteredEmojis.length) this.filteredEmojis = []
-			else if (this.filteredUsersTag.length) this.filteredUsersTag = []
-			else if (this.filteredTemplatesText.length) {
+			if (this.filteredEmojis.length) {
+        this.filteredEmojis = []
+      } else if (this.filteredUsersTag.length) {
+        this.filteredUsersTag = []
+      } else if (this.filteredTemplatesText.length) {
 				this.filteredTemplatesText = []
-			} else this.resetMessage()
+			} else {
+        this.resetMessage()
+      }
+      this.$emit('attachment-picker-handler', {
+        cancel: true
+      })
 		},
 		onPasteImage(pasteEvent) {
 			const items = pasteEvent.clipboardData?.items
@@ -506,6 +530,10 @@ export default {
 				event.preventDefault()
 			}
 		},
+    onCtrlIKeydown() {
+      const aiOption = this.attachmentOptions.find(option => option.command === 'ai')
+      this.$emit('attachment-picker-handler', aiOption)
+    },
 		selectItem() {
 			if (this.filteredEmojis.length) {
 				this.selectEmojiItem = true
@@ -561,6 +589,10 @@ export default {
 			this.$refs.file.click()
 		},
 		attachmentPickerHandler(option) {
+			if (option.command) {
+        this.$emit('attachment-picker-handler', option)
+        return
+      }
 			this.$refs.file.accept = option.accepts ?? this.acceptedFiles
 			if (option.capture || this.captureFiles) {
 				this.$refs.file.capture = option.capture ?? this.captureFiles
@@ -588,7 +620,7 @@ export default {
 					type: fileType,
 					extension: hasExtension ? file.name.substring(typeIndex + 1) : '',
 					localUrl: fileURL,
-					source: SOURCE_USER_FILE_SYSTEM,
+					source: SOURCE_USER_FILE_SYSTEM
 				})
 
 				const blobFile = await fetch(fileURL).then(res => res.blob())
@@ -601,7 +633,7 @@ export default {
 				}
 			}
 
-      	setTimeout(() => (this.fileDialog = false), 500)
+			setTimeout(() => (this.fileDialog = false), 500)
 	},
 		removeFile(index) {
 			const removedFile = this.files[index]
@@ -630,7 +662,7 @@ export default {
 						type: record.blob.type,
 						audio: true,
 						localUrl: URL.createObjectURL(record.blob),
-						source: SOURCE_USER_FILE_SYSTEM,
+						source: SOURCE_USER_FILE_SYSTEM
 					})
 
 					this.recorder = this.initRecorder()
@@ -659,21 +691,21 @@ export default {
 			 * external files, in this case request user
 			 * permission
 			 */
-			const mustRequestUserToSendExternalFiles = this.allowSendingExternalFiles === null;
-			const hasExternalFiles = this.externalFiles.length > 0;
+			const mustRequestUserToSendExternalFiles = this.allowSendingExternalFiles === null
+			const hasExternalFiles = this.externalFiles.length > 0
 			if (hasExternalFiles && mustRequestUserToSendExternalFiles) {
-				this.$emit('request-permission-to-send-external-files', { ...this.room });
-				return;
+				this.$emit('request-permission-to-send-external-files', { ...this.room })
+				return
 			}
 
 			/**
 			 * false means user decline sending external files,
 			 * in this case reset message
 			 */
-			const userDeclineSendingExternalFiles = this.allowSendingExternalFiles === false;
+			const userDeclineSendingExternalFiles = this.allowSendingExternalFiles === false
 			if (hasExternalFiles && userDeclineSendingExternalFiles) {
-				this.resetMessage();
-				return;
+				this.resetMessage()
+				return
 			}
 
 			let message = this.message.trim()
@@ -714,6 +746,9 @@ export default {
 				})
 			}
 
+      this.$emit('attachment-picker-handler', {
+        cancel: true
+      })
 			this.resetMessage(true)
 		},
 		editMessage(message) {
@@ -899,7 +934,7 @@ export default {
 			this.files = []
 			this.emojiOpened = false
 			this.preventKeyboardFromClosing()
-			this.$emit('external-files-removed', this.externalFiles);
+			this.$emit('external-files-removed', this.externalFiles)
 
 			if (this.textareaAutoFocus || !initRoom) {
 				setTimeout(() => this.focusTextarea(disableMobileFocus))
