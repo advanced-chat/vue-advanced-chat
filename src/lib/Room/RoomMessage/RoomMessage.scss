@@ -54,7 +54,8 @@
 	.vac-message-box {
 		display: flex;
 		flex: 0 0 50%;
-		max-width: 50%;
+		// max-width: 50%;
+		max-width: 70%;
 		justify-content: flex-start;
 		line-height: 1.4;
 	}
@@ -115,7 +116,8 @@
 	}
 
 	.vac-offset-current {
-		margin-left: 50%;
+		// margin-left: 50%;
+		margin-left: 30%;
 		justify-content: flex-end;
 	}
 
