@@ -46,6 +46,8 @@ export interface Room {
 	roomId: string
 	roomName: string
 	avatar: string
+	verified: boolean
+	official: boolean
 	users: RoomUser[]
 	unreadCount?: number
 	index?: StringNumber | Date
