@@ -176,7 +176,7 @@ export default {
 		showFiles: { type: [Boolean, String], default: true },
 		showAudio: { type: [Boolean, String], default: true },
 		audioBitRate: { type: Number, default: 128 },
-		audioSampleRate: { type: Number, default: 44100 },
+		audioSampleRate: { type: Number, default: new (window.AudioContext || window.webkitAudioContext)().sampleRate },
 		showEmojis: { type: [Boolean, String], default: true },
 		showReactionEmojis: { type: [Boolean, String], default: true },
 		showNewMessagesDivider: { type: [Boolean, String], default: true },
