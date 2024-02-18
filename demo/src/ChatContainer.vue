@@ -172,6 +172,11 @@ export default {
 		firebaseService.updateUserOnlineStatus(this.currentUserId)
 	},
 
+  beforeDestroy() {
+    this.fetchRooms()
+    firebaseService.updateUserOnlineStatus(this.currentUserId)
+  },
+
 	methods: {
 		async addCss() {
 			if (import.meta.env.MODE === 'development') {
