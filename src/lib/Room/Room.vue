@@ -532,7 +532,7 @@ export default {
 					this.messageSelectionEnabled = true
 					return
 				default:
-					return this.$emit('message-action-handler', { action, message })
+					return this.$emit('message-action-handler', { action, message, methodCallback: this.messageActionHandler })
 			}
 		},
 		messageSelectionActionHandler(action) {
