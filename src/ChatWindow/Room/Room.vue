@@ -131,6 +131,7 @@
 			v-if="!room.removedRoomStatus"
 			ref="roomFooter"
 			class="vac-room-footer"
+			style="background-color: white; overflow-y: scroll;"
 		>
 			<room-message-reply
 				:room="room"
