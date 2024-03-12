@@ -1,6 +1,9 @@
 <template>
 	<div class="vac-card-window" :style="[{ height }, cssVars]">
-		<div class="vac-chat-container">
+		<div
+			class="vac-chat-container"
+			:style="{ 'pointer-events': showMediaPreview ? 'none' : 'auto' }"
+		>
 			<rooms-list
 				v-if="!singleRoom"
 				:current-user-id="currentUserId"
