@@ -1239,6 +1239,7 @@ export default {
 		max-height: 200px;
 		overflow-y: auto;
 	}
+	
 	.vac-media-file {
 		display: flex;
 		justify-content: center;
