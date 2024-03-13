@@ -131,7 +131,6 @@
 			v-if="!room.removedRoomStatus"
 			ref="roomFooter"
 			class="vac-room-footer"
-			style="background-color: white; overflow-y: scroll;"
 		>
 			<room-message-reply
 				:room="room"
@@ -153,6 +152,7 @@
 			<room-users-tag
 				:filtered-users-tag="filteredUsersTag"
 				@select-user-tag="selectUserTag($event)"
+				style="background-color: white; overflow-y: scroll;"
 			/>
 
 			<div
