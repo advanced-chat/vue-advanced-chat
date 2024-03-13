@@ -149,11 +149,13 @@
 				@select-emoji="selectEmoji($event)"
 			/>
 
-			<room-users-tag
-				:filtered-users-tag="filteredUsersTag"
-				@select-user-tag="selectUserTag($event)"
-				style="background-color: white; overflow-y: scroll;"
-			/>
+			<div class="filtered-users-container">
+				<room-users-tag
+					:filtered-users-tag="filteredUsersTag"
+					@select-user-tag="selectUserTag($event)"
+					style="background-color: white;"
+				/>
+			</div>
 
 			<div
 				class="vac-box-footer"
@@ -1233,7 +1235,10 @@ export default {
 		left: 16px;
 		top: 18px;
 	}
-
+	.filtered-users-container {
+		max-height: 200px;
+		overflow-y: auto;
+	}
 	.vac-media-file {
 		display: flex;
 		justify-content: center;
