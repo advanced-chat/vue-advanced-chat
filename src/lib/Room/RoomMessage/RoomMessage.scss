@@ -191,7 +191,10 @@
 	.vac-text-timestamp {
 		font-size: 10px;
 		color: var(--chat-message-color-timestamp);
-		text-align: right;
+
+		display: flex;
+		align-items: center;
+		justify-content: end;
 	}
 
 	.vac-progress-time {
@@ -211,7 +214,7 @@
 		line-height: 1;
 		text-indent: 0;
 		vertical-align: middle;
-		margin: 0 4px 2px;
+		margin: 0 4px;
 
 		svg {
 			height: 12px;

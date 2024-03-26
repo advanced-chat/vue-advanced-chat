@@ -223,7 +223,7 @@
                   class="vac-icon-edited"
                 >
                   <slot :name="'pencil-icon_' + message._id">
-                    <svg-icon name="pencil" />
+                    {{ textMessages.MESSAGE_EDITED }}
                   </slot>
                 </div>
                 <span>{{ message.timestamp }}</span>
