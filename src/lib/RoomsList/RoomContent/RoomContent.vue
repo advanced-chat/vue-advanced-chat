@@ -42,33 +42,45 @@
 							/>
 						</slot>
 					</span>
-					<div
-						v-if="room.lastMessage && !room.lastMessage.deleted && isAudio"
-						class="vac-text-ellipsis"
-					>
-						<slot :name="'microphone-icon_' + room.roomId">
-							<svg-icon name="microphone" class="vac-icon-microphone" />
-						</slot>
-						{{ formattedDuration }}
-					</div>
-					<format-message
-						v-else-if="room.lastMessage"
-						:message-id="room.lastMessage._id"
-						:room-id="room.roomId"
-						:room-list="true"
-						:content="getLastMessage"
-						:deleted="!!room.lastMessage.deleted && !typingUsers"
-						:users="room.users"
-						:text-messages="textMessages"
-						:linkify="false"
-						:text-formatting="textFormatting"
-						:link-options="linkOptions"
-						:single-line="true"
-					>
-						<template v-for="(idx, name) in $slots" #[name]="data">
-							<slot :name="name" v-bind="data" />
-						</template>
-					</format-message>
+					<template v-if="room.draftMessage && !room.unreadCount && !isRoomSelected">
+						<div class="vac-format-message-wrapper vac-text-ellipsis">
+							<div class="vac-format-container vac-text-ellipsis">
+								<span class="draft-message vac-text-ellipsis">
+									<span class="draft-message-label"> {{translate('Draft')}}: </span> {{ room.draftMessage }}
+								</span>
+							</div>
+						</div>
+					</template>
+					<template v-else-if="room.lastMessage">
+						<div
+							v-if="!room.lastMessage.deleted && isAudio"
+							class="vac-text-ellipsis"
+						>
+							<slot :name="'microphone-icon_' + room.roomId">
+								<svg-icon name="microphone" class="vac-icon-microphone" />
+							</slot>
+							{{ formattedDuration }}
+						</div>
+						<format-message
+							v-else
+							:message-id="room.lastMessage._id"
+							:room-id="room.roomId"
+							:room-list="true"
+							:content="getLastMessage"
+							:deleted="!!room.lastMessage.deleted && !typingUsers"
+							:users="room.users"
+							:text-messages="textMessages"
+							:linkify="false"
+							:text-formatting="textFormatting"
+							:link-options="linkOptions"
+							:single-line="true"
+							:draft-message="room.draftMessage"
+						>
+							<template v-for="(idx, name) in $slots" #[name]="data">
+								<slot :name="name" v-bind="data" />
+							</template>
+						</format-message>
+					</template>
 					<div
 						v-if="!room.lastMessage && typingUsers"
 						class="vac-text-ellipsis"
@@ -76,15 +88,17 @@
 						{{ typingUsers }}
 					</div>
 					<div class="vac-room-options-container">
-            <div v-if="room?.isMentionedCurrentUser" class="vac-room-mention">
-              @
-            </div>
+						<div v-if="room?.isMentionedCurrentUser" class="vac-room-mention">
+						@
+						</div>
 						<div
 							v-if="room.unreadCount"
 							class="vac-badge-counter vac-room-badge"
 						>
 							{{ room.unreadCount }}
 						</div>
+						<i v-if="room.isPinned" class="vac-pinned-icon bi bi-pin-angle-fill"></i>
+						<i v-if="room.isMuted" class="vac-muted-icon bi bi-bell-slash-fill"></i>
 						<slot :name="'room-list-options_' + room.roomId">
 							<div
 								v-if="roomActions.length"
@@ -146,7 +160,8 @@ export default {
 		textFormatting: { type: Object, required: true },
 		linkOptions: { type: Object, required: true },
 		textMessages: { type: Object, required: true },
-		roomActions: { type: Array, required: true }
+		roomActions: { type: Array, required: true },
+		selectedRoomId: { type: String, required: false }
 	},
 
 	emits: ['room-action-handler'],
@@ -218,6 +233,9 @@ export default {
 			return this.room.lastMessage.files
 				? isAudioFile(this.room.lastMessage.files[0])
 				: false
+		},
+		isRoomSelected() {
+			return this.selectedRoomId === this.room.roomId
 		}
 	},
 
@@ -228,6 +246,13 @@ export default {
 		},
 		closeRoomMenu() {
 			this.roomMenuOpened = null
+		},
+		translate(key) {
+			if (typeof __ == 'function') {
+				return __(key);
+			}
+			console.warn('No translation function found');
+			return key;
 		}
 	}
 }

@@ -536,6 +536,7 @@ rooms="[
     avatar: 'assets/imgs/people.png',
     unreadCount: 4,
     index: 3,
+    draftMessage: 'I would say that it`s a great ideia',
     lastMessage: {
       _id: 'xyz',
       content: 'Last message received',
@@ -581,6 +582,9 @@ rooms="[
   - `lastChanged` is the date when `state` was last modified.
 
 - `typingUsers` is an array of all the users who are currently writing a message
+- `draftMessage` is a string that holds a message that was written but not sent, it's shown when user switches to another VAC room
+
+![](./docs/message-draft.png)
 
 ### Messages prop
 
@@ -691,7 +695,8 @@ In your message object, you may provide a `dynamic` property. This will allow yo
 | `hang-up-call`(13)                    | `{ roomCall }`                                                             | Clicked on the "hang-up call" button when incoming call is ringing or on an ongoing call  |
 | `return-to-call`(14)                  | -                                                                          | Clicked on the "return to call" indicator (shown below room header on web)  |
 | `external-files-removed`(15)          | `[{ file }]`                                                               | Removes one or an array of external files from attachment list |
-| `request-permission-to-send-external-files`(16) | `{ room }`                                                       | When user sends a message with external files attached |
+| `request-permission-to-send-external-files`(16) | `{ room }`                                                       | Sends a message with external files attached |
+| `new-draft-message`(17)               | `{ roomId[string], draftMessageContent[string] }`                                  | Has content on input message and switches to another VAC room |
 
 **(1)** `fetch-messages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`.<br>
 **(1)** `fetch-messages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top.
@@ -778,9 +783,12 @@ messageSelectionActionHandler({ roomId, action, message }) {
 **(12)** `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked.
 
 **(15)** `external-files-removed` is emitted when user removes a external file, or all of them, from attachment list (happens if user clicks in one of "close buttons" featured by image below):
+
 ![](./docs/remove-external-file.png)
 
 **(16)** `request-permission-to-send-external-files` event emitted when user sends a message with external files attached. This event is used by Optiwork Chat to request user permission to send external files, this event "works" together with `allow-sending-external-files` prop.
+
+**(17)** `new-draft-message` event emitted when user types a message on textarea and switches to another room without sending that content as a new message.
 <br>
 
 ## Named Slots

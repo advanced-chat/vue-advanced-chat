@@ -51,7 +51,10 @@ export interface Room {
 	index?: StringNumber | Date
 	lastMessage?: LastMessage
 	typingUsers?: string[]
-	roomInfo?: string
+	roomInfo?: string,
+	draftMessage?: string,
+	isPinned: boolean,
+	isMuted: boolean
 }
 
 export interface MessageReactions {

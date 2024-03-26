@@ -45,9 +45,9 @@
 					:key="fRoom.roomId"
 					class="vac-room-item"
 					:class="{
-              'vac-room-selected': selectedRoomId === fRoom.roomId && !shouldShowCallContent(fRoom),
-              'vac-ongoing-call': shouldShowCallContent(fRoom)
-            }"
+						'vac-room-selected': selectedRoomId === fRoom.roomId && !shouldShowCallContent(fRoom),
+						'vac-ongoing-call': shouldShowCallContent(fRoom)
+            		}"
 					@click="openRoom(fRoom)"
 				>
           <room-call-content
@@ -67,6 +67,7 @@
 						:text-formatting="textFormatting"
 						:link-options="linkOptions"
 						:text-messages="textMessages"
+						:selected-room-id="selectedRoomId"
 						:room-actions="roomActions"
 						@room-action-handler="$emit('room-action-handler', $event)"
 					>

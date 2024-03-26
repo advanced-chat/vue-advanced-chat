@@ -5,7 +5,7 @@
 		class="vac-room-footer"
 		:class="{
 			'vac-app-box-shadow': shadowFooter,
-      'vac-room-footer-highlight': textareaHighlight,
+      		'vac-room-footer-highlight': textareaHighlight,
 		}"
 	>
 		<room-emojis
@@ -277,9 +277,9 @@ export default {
 		initEditMessage: { type: Object, default: null },
 		droppedFiles: { type: Array, default: null },
 		emojiDataSource: { type: String, default: undefined },
-    attachmentOptions: { type: Array, required: true },
-    currentUserId: { type: String, default: '' },
-    textareaHighlight: { type: Boolean, default: false },
+		attachmentOptions: { type: Array, required: true },
+		currentUserId: { type: String, default: '' },
+		textareaHighlight: { type: Boolean, default: false },
 		externalFiles: { type: Array, default: [] },
 		allowSendingExternalFiles: { type: Boolean, default: null }
 	},
@@ -290,9 +290,10 @@ export default {
 		'update-edited-message-id',
 		'textarea-action-handler',
 		'typing-message',
-    'attachment-picker-handler',
+    	'attachment-picker-handler',
 		'request-permission-to-send-external-files',
-		'external-files-removed'
+		'external-files-removed',
+		'new-draft-message',
 	],
 
 	data() {
@@ -344,12 +345,22 @@ export default {
 	},
 
 	watch: {
-		roomId() {
+		roomId(roomIdNew, roomIdOld) {
+			/**
+			 * If roomId changes it means user switched
+			 * from one room to another, so save the
+			 * message as a draft.
+			 */
+			this.$emit('new-draft-message', {
+				roomId: roomIdOld,
+				content: this.message
+			});
+
 			this.resetMessage(true, true)
 
-			if (this.roomMessage) {
-				this.message = this.roomMessage
-				setTimeout(() => this.onChangeInput())
+			if (this.roomMessage || this.room.draftMessage) {
+				this.message = this.roomMessage || this.room.draftMessage
+				setTimeout(() => this.onChangeInput(false))
 			}
 		},
 		message(val) {
@@ -471,12 +482,15 @@ export default {
 				})
 			}
 		},
-		onChangeInput() {
+		onChangeInput(shouldEmitTypingEvent=true) {
 			if (this.getTextareaRef()?.value || this.getTextareaRef()?.value === '') {
 				this.message = this.getTextareaRef()?.value
 			}
 			this.keepKeyboardOpen = true
 			this.resizeTextarea()
+			if (!shouldEmitTypingEvent) {
+				return;
+			}
 			this.$emit('typing-message', this.message)
 		},
 		resizeTextarea() {
@@ -746,9 +760,9 @@ export default {
 				})
 			}
 
-      this.$emit('attachment-picker-handler', {
-        cancel: true
-      })
+			this.$emit('attachment-picker-handler', {
+				cancel: true
+			})
 			this.resetMessage(true)
 		},
 		editMessage(message) {
