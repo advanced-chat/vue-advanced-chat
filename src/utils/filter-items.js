@@ -8,13 +8,9 @@ export default (items, prop, val, startsWith = false) => {
 	if (Array.isArray(prop)) {
 		return items.filter(v => {
 			if (startsWith) {
-				return prop.reduce((acc, searchField) => {
-					return acc || formatString(v[searchField]).startsWith(formatString(val))
-				}, false);
+				return prop.some(searchField => formatString(v[searchField]).startsWith(formatString(val)))
 			}
-			return prop.reduce((acc, searchField) => {
-				return acc || formatString(v[searchField]).includes(formatString(val))
-			}, false);
+			return prop.some(searchField => formatString(v[searchField]).includes(formatString(val)))
 		})
 	}
 
