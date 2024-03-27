@@ -6,17 +6,17 @@ export default (items, prop, val, startsWith = false) => {
 	 * in all the fields, e.g. prop = ['roomName', 'email']
 	 */
 	if (Array.isArray(prop)) {
-		return items.filter(v => {
+		return items.filter(item => {
 			if (startsWith) {
-				return prop.some(searchField => formatString(v[searchField]).startsWith(formatString(val)))
+				return prop.some(searchField => formatString(item[searchField]).startsWith(formatString(val)))
 			}
-			return prop.some(searchField => formatString(v[searchField]).includes(formatString(val)))
+			return prop.some(searchField => formatString(item[searchField]).includes(formatString(val)))
 		})
 	}
 
-	return items.filter(v => {
-		if (startsWith) return formatString(v[prop]).startsWith(formatString(val))
-		return formatString(v[prop]).includes(formatString(val))
+	return items.filter(item => {
+		if (startsWith) return formatString(item[prop]).startsWith(formatString(val))
+		return formatString(item[prop]).includes(formatString(val))
 	})
 }
 
