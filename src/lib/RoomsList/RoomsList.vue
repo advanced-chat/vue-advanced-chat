@@ -238,7 +238,7 @@ export default {
 				this.roomsQuery = ev.target.value
 				this.filteredRooms = filteredItems(
 					this.rooms,
-					'roomName',
+					['roomName', 'email'],
 					ev.target.value
 				)
 			}
