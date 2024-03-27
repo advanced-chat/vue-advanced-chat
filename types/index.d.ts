@@ -14,6 +14,7 @@ export interface RoomUser {
 	username: string
 	avatar: string
 	status: UserStatus
+	isInRoom?: boolean
 }
 
 export interface MessageFile {

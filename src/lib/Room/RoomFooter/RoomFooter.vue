@@ -867,7 +867,7 @@ export default {
 				'username',
 				query,
 				true
-			).filter(user => user._id !== this.currentUserId)
+			).filter(user => user._id !== this.currentUserId && user.isInRoom)
 		},
 		selectUserTag(user, editMode = false) {
 			this.selectUsersTagItem = false
