@@ -537,6 +537,7 @@ rooms="[
     unreadCount: 4,
     index: 3,
     draftMessage: 'I would say that it`s a great ideia',
+    email: 'fulaninho@optidata.cloud',
     lastMessage: {
       _id: 'xyz',
       content: 'Last message received',
@@ -585,6 +586,8 @@ rooms="[
 - `draftMessage` is a string that holds a message that was written but not sent, it's shown when user switches to another VAC room
 
 ![](./docs/message-draft.png)
+
+- `email` is a string that stores the user email for individual rooms (the ones that are not groups), if a room is a group, `email` will hold a empty string: `''`. This field is used to support rooms filtering by user email.
 
 ### Messages prop
 

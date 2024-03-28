@@ -55,7 +55,8 @@ export interface Room {
 	roomInfo?: string,
 	draftMessage?: string,
 	isPinned: boolean,
-	isMuted: boolean
+	isMuted: boolean,
+	email: string,
 }
 
 export interface MessageReactions {
