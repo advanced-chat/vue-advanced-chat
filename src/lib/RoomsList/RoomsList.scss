@@ -97,4 +97,20 @@
 	.vac-ongoing-call {
 		background-color: var(--bs-primary) !important;
 	}
+
+	.vac-rooms-archived {
+		border-radius: 8px;
+		align-items: center;
+		display: flex;
+		flex: 1 1 100%;
+		margin-bottom: 5px;
+		padding: 0 14px;
+		position: relative;
+		min-height: 71px;
+		transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+
+		&:hover {
+			background: var(--chat-sidemenu-bg-color-hover);
+		}
+	}
 }

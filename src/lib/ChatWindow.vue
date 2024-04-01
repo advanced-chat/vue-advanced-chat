@@ -20,6 +20,7 @@
 				:is-mobile="isMobile"
 				:scroll-distance="scrollDistance"
 				:rooms-not-found-message="roomsNotFoundMessage"
+        :show-archived-rooms="showArchivedRoomsCasted"
 				@fetch-room="fetchRoom"
 				@fetch-more-rooms="fetchMoreRooms"
 				@loading-more-rooms="loadingMoreRooms = $event"
@@ -29,6 +30,7 @@
 				@accept-call="acceptCallHandler"
 				@hang-up-call="hangUpCallHandler"
 				@return-to-call="returnToCallHandler"
+        @click-archived-rooms="clickArchivedRoomsHandler"
 			>
 				<template v-for="el in slots" #[el.slot]="data">
 					<slot :name="el.slot" v-bind="data" />
@@ -231,7 +233,8 @@ export default {
     call: { type: [Object, String], default: () => ({}) },
     textareaHighlight: { type: Boolean, default: false },
 		externalFiles: { type: Array, default: () => [] },
-		allowSendingExternalFiles: { type: Boolean, default: null }
+		allowSendingExternalFiles: { type: Boolean, default: null },
+    showArchivedRooms: { type: Boolean, default: false }
 	},
 
 	emits: [
@@ -262,7 +265,8 @@ export default {
 		'hang-up-call',
 		'return-to-call',
 		'request-permission-to-send-external-files',
-		'external-files-removed'
+		'external-files-removed',
+    'click-archived-rooms'
 	],
 
 	data() {
@@ -425,7 +429,10 @@ export default {
     },
 		externalFilesCasted() {
 			return this.castArray(this.externalFiles)
-		}
+		},
+    showArchivedRoomsCasted() {
+      return this.castBoolean(this.showArchivedRooms)
+    }
 	},
 
 	watch: {
@@ -597,6 +604,9 @@ export default {
     },
     hangUpCallHandler(call) {
       this.$emit('hang-up-call', call)
+    },
+    clickArchivedRoomsHandler() {
+      this.$emit('click-archived-rooms')
     },
 		messageActionHandler(ev) {
 			this.$emit('message-action-handler', {

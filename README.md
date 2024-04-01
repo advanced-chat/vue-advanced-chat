@@ -271,6 +271,7 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `textarea-hightlight`               | Boolean          | -        |                                             |  
 | `external-files`(32)                | Array            | `false`  |      `[]`                                   |
 | `allow-sending-external-files`(33)  | Boolean          | `false`  |      `null`                                 |
+| `show-archived-rooms`(34)           | Boolean          | `false`  |      `false`                                 |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -522,6 +523,8 @@ styles="{
 - When set to `false` VAC will prevent sending external files. If user is sending external files in a message and this prop is set to `false` the file list will the cleaned (This use case can be clarified if you read `request-permission-to-send-external-files` event documentation);
 - When set to `null` VAC will emit the event `request-permission-to-send-external-files` each time a external file is sent;
 
+**(34)** `show-archived-rooms` indicates whether the room list should display archived rooms only or not.
+
 ## Props data structure
 
 Your props must follow a specific structure to display rooms and messages correctly:
@@ -698,8 +701,9 @@ In your message object, you may provide a `dynamic` property. This will allow yo
 | `hang-up-call`(13)                    | `{ roomCall }`                                                             | Clicked on the "hang-up call" button when incoming call is ringing or on an ongoing call  |
 | `return-to-call`(14)                  | -                                                                          | Clicked on the "return to call" indicator (shown below room header on web)  |
 | `external-files-removed`(15)          | `[{ file }]`                                                               | Removes one or an array of external files from attachment list |
-| `request-permission-to-send-external-files`(16) | `{ room }`                                                       | Sends a message with external files attached |
-| `new-draft-message`(17)               | `{ roomId[string], draftMessageContent[string] }`                                  | Has content on input message and switches to another VAC room |
+| `request-permission-to-send-external-files`(16) | `{ room }`                                                       | Sends a message with external files attached    |
+| `new-draft-message`(17)               | `{ roomId[string], draftMessageContent[string] }`                          | Has content on input message and switches to another VAC room |
+| `click-archived-rooms`(18)            | -                                                                          | Clicked on the "Archived" button                |
 
 **(1)** `fetch-messages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`.<br>
 **(1)** `fetch-messages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top.
@@ -792,6 +796,8 @@ messageSelectionActionHandler({ roomId, action, message }) {
 **(16)** `request-permission-to-send-external-files` event emitted when user sends a message with external files attached. This event is used by Optiwork Chat to request user permission to send external files, this event "works" together with `allow-sending-external-files` prop.
 
 **(17)** `new-draft-message` event emitted when user types a message on textarea and switches to another room without sending that content as a new message.
+
+**(18)** `click-archived-rooms` is emitted when user clicks on the "Archived" button to show archived rooms.
 <br>
 
 ## Named Slots
