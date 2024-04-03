@@ -13164,9 +13164,10 @@ const _sfc_main$l = {
       if (!this.call)
         return;
       const duration = (new Date() - new Date(this.call.startedAt)) / 1e3;
-      const minutes = String(Math.floor(duration / 60)).padStart(2, "0");
+      const hours = String(Math.floor(duration / 3600)).padStart(2, "0");
+      const minutes = String(Math.floor(duration % 3600 / 60)).padStart(2, "0");
       const seconds = String(Math.floor(duration % 60)).padStart(2, "0");
-      this.callDuration = `${minutes}:${seconds}`;
+      this.callDuration = `${hours}:${minutes}:${seconds}`;
     },
     setupCallDurationUpdate() {
       this.updateCallDuration();
@@ -13252,7 +13253,11 @@ const _hoisted_22$1 = {
   key: 1,
   class: "vac-room-call-ongoing-title"
 };
-const _hoisted_23$1 = { class: "vac-room-call-ongoing-duration" };
+const _hoisted_23$1 = {
+  key: 2,
+  class: "vac-room-call-ongoing-title"
+};
+const _hoisted_24$1 = { class: "vac-room-call-ongoing-duration" };
 function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   const _directive_click_outside = resolveDirective("click-outside");
@@ -13370,8 +13375,8 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
         }, [
           createBaseVNode("div", _hoisted_20$1, [
             $options.isAttendenceAccepted ? (openBlock(), createElementBlock("span", _hoisted_21$1, toDisplayString($props.textMessages.ROOM_CALL_RETURN_TO_CALL), 1)) : createCommentVNode("", true),
-            $options.isAttendencePending || $options.isAttendenceDeclined ? (openBlock(), createElementBlock("span", _hoisted_22$1, toDisplayString($props.textMessages.ROOM_CALL_JOIN), 1)) : createCommentVNode("", true),
-            createBaseVNode("span", _hoisted_23$1, toDisplayString((_a = $data.callDuration) != null ? _a : "--:--"), 1)
+            $options.isAttendencePending || $options.isAttendenceDeclined ? (openBlock(), createElementBlock("span", _hoisted_22$1, toDisplayString($props.textMessages.ROOM_CALL_JOIN), 1)) : (openBlock(), createElementBlock("span", _hoisted_23$1, toDisplayString($props.textMessages.ROOM_CALL_ONGOING), 1)),
+            createBaseVNode("span", _hoisted_24$1, toDisplayString((_a = $data.callDuration) != null ? _a : "--:--"), 1)
           ])
         ])) : createCommentVNode("", true)
       ];

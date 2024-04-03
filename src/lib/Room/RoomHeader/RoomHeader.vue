@@ -128,6 +128,9 @@
           <span v-if="isAttendencePending || isAttendenceDeclined" class="vac-room-call-ongoing-title">
             {{ textMessages.ROOM_CALL_JOIN }}
           </span>
+          <span v-else class="vac-room-call-ongoing-title">
+            {{ textMessages.ROOM_CALL_ONGOING }}
+          </span>
           <span class="vac-room-call-ongoing-duration">
             {{ callDuration ?? '--:--' }}
           </span>
@@ -268,9 +271,10 @@ export default {
     updateCallDuration() {
       if (!this.call) return
       const duration = (new Date() - new Date(this.call.startedAt)) / 1000
-      const minutes = String(Math.floor(duration / 60)).padStart(2, '0')
+      const hours = String(Math.floor(duration / 3600)).padStart(2, '0')
+      const minutes = String(Math.floor((duration % 3600) / 60)).padStart(2, '0')
       const seconds = String(Math.floor(duration % 60)).padStart(2, '0')
-      this.callDuration = `${minutes}:${seconds}`
+      this.callDuration = `${hours}:${minutes}:${seconds}`
     },
     setupCallDurationUpdate() {
       this.updateCallDuration()
