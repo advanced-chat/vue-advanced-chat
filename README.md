@@ -704,6 +704,7 @@ In your message object, you may provide a `dynamic` property. This will allow yo
 | `request-permission-to-send-external-files`(16) | `{ room }`                                                       | Sends a message with external files attached    |
 | `new-draft-message`(17)               | `{ roomId[string], draftMessageContent[string] }`                          | Has content on input message and switches to another VAC room |
 | `click-archived-rooms`(18)            | -                                                                          | Clicked on the "Archived" button                |
+| `click-message-username`(19)                  | `{ user }`                                                                 | Clicked on message username                     |
 
 **(1)** `fetch-messages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`.<br>
 **(1)** `fetch-messages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top.
@@ -798,6 +799,11 @@ messageSelectionActionHandler({ roomId, action, message }) {
 **(17)** `new-draft-message` event emitted when user types a message on textarea and switches to another room without sending that content as a new message.
 
 **(18)** `click-archived-rooms` is emitted when user clicks on the "Archived" button to show archived rooms.
+
+**(19)** `click-message-username` is emitted when user clicks in the user name displayed in a message (username is displayed in a message only in groups).
+
+![](./docs/username-on-message.png)
+
 <br>
 
 ## Named Slots
