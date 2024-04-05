@@ -122,11 +122,14 @@
 			</div>
       <div v-if="isCallInProgress" class="vac-room-call-ongoing" @click="returnToCallClick">
         <div class="vac-room-call-ongoing-info">
-          <span v-if="isAttendenceAccepted" class="vac-room-call-ongoing-title">
+          <span v-if="isAttendanceAccepted" class="vac-room-call-ongoing-title">
             {{ textMessages.ROOM_CALL_RETURN_TO_CALL }}
           </span>
-          <span v-if="isAttendencePending || isAttendenceDeclined" class="vac-room-call-ongoing-title">
+          <span v-else-if="isAttendancePending || isAttendanceDeclined" class="vac-room-call-ongoing-title">
             {{ textMessages.ROOM_CALL_JOIN }}
+          </span>
+          <span v-else class="vac-room-call-ongoing-title">
+            {{ textMessages.ROOM_CALL_ONGOING }}
           </span>
           <span class="vac-room-call-ongoing-duration">
             {{ callDuration ?? '--:--' }}
@@ -210,20 +213,20 @@ export default {
     isCallInProgress() {
       return this.call && this.call.statusInProgress
     },
-    isAttendencePending() {
-      return this.call && this.call.attendence.statusPending
+    isAttendancePending() {
+      return this.call && this.call.attendance.statusPending
     },
-    isAttendenceAccepted() {
-      return this.call && this.call.attendence.statusAccepted
+    isAttendanceAccepted() {
+      return this.call && this.call.attendance.statusAccepted
     },
-    isAttendenceDeclined() {
-      return this.call && this.call.attendence.statusDeclined
+    isAttendanceDeclined() {
+      return this.call && this.call.attendance.statusDeclined
     },
-    isAttendenceMissed() {
-      return this.call && this.call.attendence.statusMissed
+    isAttendanceMissed() {
+      return this.call && this.call.attendance.statusMissed
     },
-    isAttendenceCallEnded() {
-      return this.call && this.call.attendence.statusCallEnded
+    isAttendanceCallEnded() {
+      return this.call && this.call.attendance.statusCallEnded
     }
 	},
 
@@ -268,9 +271,10 @@ export default {
     updateCallDuration() {
       if (!this.call) return
       const duration = (new Date() - new Date(this.call.startedAt)) / 1000
-      const minutes = String(Math.floor(duration / 60)).padStart(2, '0')
+      const hours = String(Math.floor(duration / 3600)).padStart(2, '0')
+      const minutes = String(Math.floor((duration % 3600) / 60)).padStart(2, '0')
       const seconds = String(Math.floor(duration % 60)).padStart(2, '0')
-      this.callDuration = `${minutes}:${seconds}`
+      this.callDuration = `${hours}:${minutes}:${seconds}`
     },
     setupCallDurationUpdate() {
       this.updateCallDuration()

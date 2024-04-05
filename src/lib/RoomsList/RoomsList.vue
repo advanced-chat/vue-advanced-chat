@@ -278,7 +278,7 @@ export default {
     },
     shouldShowCallContent: function(room) {
       const hasCallEnded = room.call && room.call.statusEnded
-      const canAcceptCall = room.call && !room.call.attendence.statusCallEnded && !room.call.attendence.statusDeclined
+      const canAcceptCall = room.call && !room.call.attendance.statusCallEnded && !room.call.attendance.statusDeclined
 
       return !hasCallEnded && canAcceptCall
     }
