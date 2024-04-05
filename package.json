@@ -1,6 +1,6 @@
 {
 	"name": "vue-advanced-chat",
-	"version": "2.0.7",
+	"version": "2.0.9",
 	"license": "MIT",
 	"description": "A beautiful chat rooms component made with Vue.js - compatible with Vue, React & Angular",
 	"author": {
@@ -20,12 +20,12 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/antoine92190/vue-advanced-chat.git"
+		"url": "git+https://github.com/advanced-chat/vue-advanced-chat.git"
 	},
 	"bugs": {
-		"url": "https://github.com/antoine92190/vue-advanced-chat/issues"
+		"url": "https://github.com/advanced-chat/vue-advanced-chat/issues"
 	},
-	"homepage": "https://github.com/antoine92190/vue-advanced-chat#readme",
+	"homepage": "https://github.com/advanced-chat/vue-advanced-chat#readme",
 	"main": "./dist/vue-advanced-chat.umd.js",
 	"module": "./dist/vue-advanced-chat.es.js",
 	"unpkg": "./dist/vue-advanced-chat.umd.js",
@@ -48,6 +48,9 @@
 	],
 	"devDependencies": {
 		"@babel/core": "7.12.16",
+		"@semantic-release/changelog": "^6.0.3",
+		"@semantic-release/git": "^10.0.1",
+		"@semantic-release/github": "^9.2.1",
 		"@typescript-eslint/eslint-plugin": "5.4.0",
 		"@typescript-eslint/parser": "5.4.0",
 		"@vitejs/plugin-vue": "1.10.2",
@@ -59,8 +62,9 @@
 		"eslint-plugin-vue": "8.0.3",
 		"node-sass": "8.0.0",
 		"sass": "1.56.1",
+		"semantic-release": "^22.0.5",
 		"typescript": "4.6.x",
-		"vite": "^2.9.14",
+		"vite": "2.9.16",
 		"vue": "3.2.37",
 		"vue-loader": "^16.8.3"
 	},

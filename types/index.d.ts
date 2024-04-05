@@ -77,6 +77,7 @@ export interface Message {
 	distributed?: boolean
 	seen?: boolean
 	deleted?: boolean
+  edited?: boolean
 	failure?: boolean
 	disableActions?: boolean
 	disableReactions?: boolean
@@ -175,6 +176,7 @@ export interface Props {
 	theme?: 'light' | 'dark'
 	'accepted-files'?: string
 	'capture-files'?: string
+	'multiple-files'?: boolean
 	styles?: Record<string, Record<string, string>>
 }
 

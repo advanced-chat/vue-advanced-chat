@@ -171,16 +171,16 @@
           </slot>
         </div>
 
-        <input
-          v-if="showFiles"
-          ref="file"
-          type="file"
-          multiple
-          :accept="acceptedFiles"
-          :capture="captureFiles"
-          style="display: none"
-          @change="onFileChange($event.target.files)"
-        />
+		<input
+			v-if="showFiles"
+			ref="file"
+			type="file"
+			:multiple="multipleFiles ? true : null"
+			:accept="acceptedFiles"
+			:capture="captureFiles"
+			style="display: none"
+			@change="onFileChange($event.target.files)"
+		/>
 
         <div v-if="(showAudio && isMessageEmpty) && !textareaHighlight">
           <div class="vac-svg-button" @click="toggleRecorder(true)">
@@ -265,6 +265,7 @@ export default {
 		showEmojis: { type: Boolean, required: true },
 		showFooter: { type: Boolean, required: true },
 		acceptedFiles: { type: String, required: true },
+		multipleFiles: { type: Boolean, default: true },
 		captureFiles: { type: String, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
 		textareaAutoFocus: { type: Boolean, required: true },

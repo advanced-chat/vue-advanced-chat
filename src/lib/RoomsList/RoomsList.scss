@@ -29,7 +29,6 @@
 		flex: 1;
 		position: relative;
 		max-width: 100%;
-		cursor: pointer;
 		padding: 0 10px 5px;
 		overflow-y: auto;
 	}
@@ -47,6 +46,10 @@
 
 		&:hover {
 			background: var(--chat-sidemenu-bg-color-hover);
+		}
+
+		&:not(.vac-room-selected) {
+			cursor: pointer;
 		}
 	}
 
