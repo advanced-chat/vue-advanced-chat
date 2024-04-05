@@ -12885,7 +12885,7 @@ const _sfc_main$m = {
     },
     shouldShowCallContent: function(room) {
       const hasCallEnded = room.call && room.call.statusEnded;
-      const canAcceptCall = room.call && !room.call.attendence.statusCallEnded && !room.call.attendence.statusDeclined;
+      const canAcceptCall = room.call && !room.call.attendance.statusCallEnded && !room.call.attendance.statusDeclined;
       return !hasCallEnded && canAcceptCall;
     }
   }
@@ -13107,20 +13107,20 @@ const _sfc_main$l = {
     isCallInProgress() {
       return this.call && this.call.statusInProgress;
     },
-    isAttendencePending() {
-      return this.call && this.call.attendence.statusPending;
+    isAttendancePending() {
+      return this.call && this.call.attendance.statusPending;
     },
-    isAttendenceAccepted() {
-      return this.call && this.call.attendence.statusAccepted;
+    isAttendanceAccepted() {
+      return this.call && this.call.attendance.statusAccepted;
     },
-    isAttendenceDeclined() {
-      return this.call && this.call.attendence.statusDeclined;
+    isAttendanceDeclined() {
+      return this.call && this.call.attendance.statusDeclined;
     },
-    isAttendenceMissed() {
-      return this.call && this.call.attendence.statusMissed;
+    isAttendanceMissed() {
+      return this.call && this.call.attendance.statusMissed;
     },
-    isAttendenceCallEnded() {
-      return this.call && this.call.attendence.statusCallEnded;
+    isAttendanceCallEnded() {
+      return this.call && this.call.attendance.statusCallEnded;
     }
   },
   watch: {
@@ -13164,9 +13164,10 @@ const _sfc_main$l = {
       if (!this.call)
         return;
       const duration = (new Date() - new Date(this.call.startedAt)) / 1e3;
-      const minutes = String(Math.floor(duration / 60)).padStart(2, "0");
+      const hours = String(Math.floor(duration / 3600)).padStart(2, "0");
+      const minutes = String(Math.floor(duration % 3600 / 60)).padStart(2, "0");
       const seconds = String(Math.floor(duration % 60)).padStart(2, "0");
-      this.callDuration = `${minutes}:${seconds}`;
+      this.callDuration = `${hours}:${minutes}:${seconds}`;
     },
     setupCallDurationUpdate() {
       this.updateCallDuration();
@@ -13252,7 +13253,11 @@ const _hoisted_22$1 = {
   key: 1,
   class: "vac-room-call-ongoing-title"
 };
-const _hoisted_23$1 = { class: "vac-room-call-ongoing-duration" };
+const _hoisted_23$1 = {
+  key: 2,
+  class: "vac-room-call-ongoing-title"
+};
+const _hoisted_24$1 = { class: "vac-room-call-ongoing-duration" };
 function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_svg_icon = resolveComponent("svg-icon");
   const _directive_click_outside = resolveDirective("click-outside");
@@ -13369,9 +13374,9 @@ function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
           onClick: _cache[4] || (_cache[4] = (...args) => $options.returnToCallClick && $options.returnToCallClick(...args))
         }, [
           createBaseVNode("div", _hoisted_20$1, [
-            $options.isAttendenceAccepted ? (openBlock(), createElementBlock("span", _hoisted_21$1, toDisplayString($props.textMessages.ROOM_CALL_RETURN_TO_CALL), 1)) : createCommentVNode("", true),
-            $options.isAttendencePending || $options.isAttendenceDeclined ? (openBlock(), createElementBlock("span", _hoisted_22$1, toDisplayString($props.textMessages.ROOM_CALL_JOIN), 1)) : createCommentVNode("", true),
-            createBaseVNode("span", _hoisted_23$1, toDisplayString((_a = $data.callDuration) != null ? _a : "--:--"), 1)
+            $options.isAttendanceAccepted ? (openBlock(), createElementBlock("span", _hoisted_21$1, toDisplayString($props.textMessages.ROOM_CALL_RETURN_TO_CALL), 1)) : createCommentVNode("", true),
+            $options.isAttendancePending || $options.isAttendanceDeclined ? (openBlock(), createElementBlock("span", _hoisted_22$1, toDisplayString($props.textMessages.ROOM_CALL_JOIN), 1)) : (openBlock(), createElementBlock("span", _hoisted_23$1, toDisplayString($props.textMessages.ROOM_CALL_ONGOING), 1)),
+            createBaseVNode("span", _hoisted_24$1, toDisplayString((_a = $data.callDuration) != null ? _a : "--:--"), 1)
           ])
         ])) : createCommentVNode("", true)
       ];
