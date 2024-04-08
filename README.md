@@ -265,15 +265,14 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `theme`(26)                         | `light` / `dark` | -        | `light`                                                                                                           |
 | `accepted-files`(27)                | String           | -        | `*`                                                                                                               |
 | `capture-files`(28)                 | String           | -        | `''`                                                                                                              |
-| `multiple-files`(29)                | Boolean          | -        | `true`                                                                                                            |
-| `styles`(30)                        | [String, Object] | -        | (26)                                                                                                              |
-| `show-audio`(31)                    | Boolean          | -        | `true`                                                                                                            |
-| `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                              |
-| `call`(32)                          | String           | -        |                                                                                                                   |
-| `textarea-hightlight`               | Boolean          | -        |                                                                                                                   |  
-| `external-files`(33)                | Array            | `false`  |      `[]`                                                                                                         |
-| `allow-sending-external-files`(34)  | Boolean          | `false`  |      `null`                                                                                                       |
-| `show-archived-rooms`(35)           | Boolean          | `false`  |      `false`                                                                                                      |
+| `styles`(29)                        | [String, Object] | -        | (26)                                                                                                              |
+| `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                                 |
+| `call`(31)                          | String           | -        |                                             |
+| `textarea-hightlight`               | Boolean          | -        |                                             |  
+| `external-files`(32)                | Array            | `false`  |      `[]`                                   |
+| `allow-sending-external-files`(33)  | Boolean          | `false`  |      `null`                                 |
+| `show-archived-rooms`(34)           | Boolean          | `false`  |      `false`                                |
+| `max-message-rows`(35)              | Number           | `false`  |      `0`                                    |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -530,6 +529,8 @@ styles="{
 
 **(35)** `show-archived-rooms` indicates whether the room list should display archived rooms only or not.
 
+**(35)** `max-message-rows` indicates the maximum number of rows a message can have before being truncated. When the message has more rows, the content is truncated and a "Read more" button is shown. If set to `0` messages will never be truncated. 
+
 ## Props data structure
 
 Your props must follow a specific structure to display rooms and messages correctly:
@@ -709,7 +710,8 @@ In your message object, you may provide a `dynamic` property. This will allow yo
 | `request-permission-to-send-external-files`(16) | `{ room }`                                                       | Sends a message with external files attached    |
 | `new-draft-message`(17)               | `{ roomId[string], draftMessageContent[string] }`                          | Has content on input message and switches to another VAC room |
 | `click-archived-rooms`(18)            | -                                                                          | Clicked on the "Archived" button                |
-| `click-message-username`(19)                  | `{ user }`                                                                 | Clicked on message username                     |
+| `message-reply-click`(19)             | -                                                                          | Clicked in some message reply                   |
+| `click-message-username`(20)          | `{ user }`                                                                 | Clicked on message username                     |
 
 **(1)** `fetch-messages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`.<br>
 **(1)** `fetch-messages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top.
@@ -805,7 +807,9 @@ messageSelectionActionHandler({ roomId, action, message }) {
 
 **(18)** `click-archived-rooms` is emitted when user clicks on the "Archived" button to show archived rooms.
 
-**(19)** `click-message-username` is emitted when user clicks in the user name displayed in a message (username is displayed in a message only in groups).
+**(19)** `message-reply-click` is emitted when the user clicks in some message reply.
+
+**(20)** `click-message-username` is emitted when user clicks in the user name displayed in a message (username is displayed in a message only in groups).
 
 ![](./docs/username-on-message.png)
 

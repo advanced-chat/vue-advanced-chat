@@ -83,6 +83,7 @@
 				:textarea-highlight="textareaHighlightCasted"
 				:external-files="externalFilesCasted"
 				:allow-sending-external-files="allowSendingExternalFiles"
+        :max-message-rows="maxMessageRows"
 				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
@@ -106,6 +107,7 @@
 				@request-permission-to-send-external-files="$emit('request-permission-to-send-external-files', $event)"
 				@external-files-removed="$emit('external-files-removed', $event)"
 				@new-draft-message="$emit('new-draft-message', $event)"
+        @message-reply-click="$emit('message-reply-click', $event)"
 				@click-message-username="$emit('click-message-username', $event)"
 			>
 				<template v-for="el in slots" #[el.slot]="data">
@@ -237,7 +239,8 @@ export default {
     textareaHighlight: { type: Boolean, default: false },
 		externalFiles: { type: Array, default: () => [] },
 		allowSendingExternalFiles: { type: Boolean, default: null },
-    showArchivedRooms: { type: Boolean, default: false }
+    showArchivedRooms: { type: Boolean, default: false },
+    maxMessageRows: { type: Number, default: 0 }
 	},
 
 	emits: [
@@ -269,7 +272,10 @@ export default {
 		'return-to-call',
 		'request-permission-to-send-external-files',
 		'external-files-removed',
-    'click-archived-rooms'
+    'new-draft-message',
+    'click-archived-rooms',
+    'message-reply-click',
+    'click-message-username'
 	],
 
 	data() {
