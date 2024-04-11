@@ -37,8 +37,8 @@ export default {
   name: 'RoomAttachmentPicker',
 
   directives: {
-		clickOutside: vClickOutside
-	},
+    clickOutside: vClickOutside
+  },
 
   props: {
     attachmentOptions: { type: Array, required: true }

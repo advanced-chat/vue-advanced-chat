@@ -1,8 +1,8 @@
 .vac-room-call-container {
-	display: flex;
-	flex: 1;
-	align-items: center;
-	width: 100%;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  width: 100%;
 
   .vac-room-info-container {
     flex: 1;
@@ -10,28 +10,28 @@
   }
 
   .vac-name-container {
-		flex: 1;
-	}
+    flex: 1;
+  }
 
   .vac-title-container {
-		display: flex;
-		align-items: center;
-		line-height: 25px;
-	}
+    display: flex;
+    align-items: center;
+    line-height: 25px;
+  }
 
   .vac-room-name {
-		flex: 1;
-		color: white;
-		font-weight: 500;
-	}
+    flex: 1;
+    color: white;
+    font-weight: 500;
+  }
 
   .vac-text-last {
-		display: flex;
-		align-items: center;
-		font-size: 12px;
-		line-height: 19px;
-		color: #6c7278;
-	}
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    line-height: 19px;
+    color: #6c7278;
+  }
 
   &.vac-room-call-pending {
     .vac-avatar {

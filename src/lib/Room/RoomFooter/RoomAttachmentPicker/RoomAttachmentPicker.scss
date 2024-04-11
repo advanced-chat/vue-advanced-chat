@@ -1,43 +1,43 @@
 .room-attachment-picker-wrapper {
-	position: relative;
+  position: relative;
 
-	.vac-open-attachment-list-icon {
-		transition: all .3s ease-in-out;
-		font-size: 1.5rem;
-		color: var(--chat-icon-color-paperclip);
-	}
+  .vac-open-attachment-list-icon {
+    transition: all .3s ease-in-out;
+    font-size: 1.5rem;
+    color: var(--chat-icon-color-paperclip);
+  }
 
-	.vac-menu-options {
-		position: absolute;
-		right: 0px;
-		top: unset;
-		bottom: 32px;
-		z-index: 9999;
+  .vac-menu-options {
+    position: absolute;
+    right: 0px;
+    top: unset;
+    bottom: 32px;
+    z-index: 9999;
 
-		&.vac-menu-left {
-			right: 10px;
-			left: unset;
-		}
-	
-		&.vac-menu-right {
-			left: 10px;
-			right: unset;
-		}
+    &.vac-menu-left {
+      right: 10px;
+      left: unset;
+    }
+  
+    &.vac-menu-right {
+      left: 10px;
+      right: unset;
+    }
 
-		.vac-menu-item {
-			display: flex;
-			align-items: center;
+    .vac-menu-item {
+      display: flex;
+      align-items: center;
 
-			i {
-				margin-right: .5rem;
-				font-size: 1.3rem;
-			}
-		}
-	}
+      i {
+        margin-right: .5rem;
+        font-size: 1.3rem;
+      }
+    }
+  }
 
-	@media only screen and (max-width: 768px) {
-		.vac-options-container {
-			right: 3px;
-		}
-	}
+  @media only screen and (max-width: 768px) {
+    .vac-options-container {
+      right: 3px;
+    }
+  }
 }

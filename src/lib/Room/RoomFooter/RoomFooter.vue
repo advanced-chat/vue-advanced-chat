@@ -1,63 +1,63 @@
 <template>
-	<div
-		v-show="Object.keys(room).length && showFooter"
-		id="room-footer"
-		class="vac-room-footer"
-		:class="{
-			'vac-app-box-shadow': shadowFooter,
-      		'vac-room-footer-highlight': textareaHighlight,
-		}"
-	>
-		<room-emojis
-			:filtered-emojis="filteredEmojis"
-			:select-item="selectEmojiItem"
-			:active-up-or-down="activeUpOrDownEmojis"
-			@select-emoji="selectEmoji($event)"
-			@activate-item="activeUpOrDownEmojis = 0"
-		/>
+  <div
+    v-show="Object.keys(room).length && showFooter"
+    id="room-footer"
+    class="vac-room-footer"
+    :class="{
+      'vac-app-box-shadow': shadowFooter,
+          'vac-room-footer-highlight': textareaHighlight,
+    }"
+  >
+    <room-emojis
+      :filtered-emojis="filteredEmojis"
+      :select-item="selectEmojiItem"
+      :active-up-or-down="activeUpOrDownEmojis"
+      @select-emoji="selectEmoji($event)"
+      @activate-item="activeUpOrDownEmojis = 0"
+    />
 
-		<room-users-tag
-			:filtered-users-tag="filteredUsersTag"
-			:select-item="selectUsersTagItem"
-			:active-up-or-down="activeUpOrDownUsersTag"
-			@select-user-tag="selectUserTag($event)"
-			@activate-item="activeUpOrDownUsersTag = 0"
-		/>
+    <room-users-tag
+      :filtered-users-tag="filteredUsersTag"
+      :select-item="selectUsersTagItem"
+      :active-up-or-down="activeUpOrDownUsersTag"
+      @select-user-tag="selectUserTag($event)"
+      @activate-item="activeUpOrDownUsersTag = 0"
+    />
 
-		<room-templates-text
-			:filtered-templates-text="filteredTemplatesText"
-			:select-item="selectTemplatesTextItem"
-			:active-up-or-down="activeUpOrDownTemplatesText"
-			@select-template-text="selectTemplateText($event)"
-			@activate-item="activeUpOrDownTemplatesText = 0"
-		/>
+    <room-templates-text
+      :filtered-templates-text="filteredTemplatesText"
+      :select-item="selectTemplatesTextItem"
+      :active-up-or-down="activeUpOrDownTemplatesText"
+      @select-template-text="selectTemplateText($event)"
+      @activate-item="activeUpOrDownTemplatesText = 0"
+    />
 
-		<room-message-reply
-			:room="room"
-			:message-reply="messageReply"
-			:text-formatting="textFormatting"
-			:link-options="linkOptions"
-			@reset-message="resetMessage"
-		>
-			<template v-for="(i, name) in $slots" #[name]="data">
-				<slot :name="name" v-bind="data" />
-			</template>
-		</room-message-reply>
+    <room-message-reply
+      :room="room"
+      :message-reply="messageReply"
+      :text-formatting="textFormatting"
+      :link-options="linkOptions"
+      @reset-message="resetMessage"
+    >
+      <template v-for="(i, name) in $slots" #[name]="data">
+        <slot :name="name" v-bind="data" />
+      </template>
+    </room-message-reply>
 
-		<room-files
-			:files="files"
-			@remove-file="removeFile"
-			@reset-message="resetMessage"
-		>
-			<template v-for="(i, name) in $slots" #[name]="data">
-				<slot :name="name" v-bind="data" />
-			</template>
-		</room-files>
+    <room-files
+      :files="files"
+      @remove-file="removeFile"
+      @reset-message="resetMessage"
+    >
+      <template v-for="(i, name) in $slots" #[name]="data">
+        <slot :name="name" v-bind="data" />
+      </template>
+    </room-files>
 
-		<div
-			class="vac-box-footer"
-			:class="{ 'vac-box-footer-border': !files.length }"
-		>
+    <div
+      class="vac-box-footer"
+      :class="{ 'vac-box-footer-border': !files.length }"
+    >
       <div v-if="!isRecording && !textareaHighlight" class="vac-icon-textarea-left">
         <room-attachment-picker
           v-if="showFiles"
@@ -171,16 +171,16 @@
           </slot>
         </div>
 
-		<input
-			v-if="showFiles"
-			ref="file"
-			type="file"
-			:multiple="multipleFiles ? true : null"
-			:accept="acceptedFiles"
-			:capture="captureFiles"
-			style="display: none"
-			@change="onFileChange($event.target.files)"
-		/>
+    <input
+      v-if="showFiles"
+      ref="file"
+      type="file"
+      :multiple="multipleFiles ? true : null"
+      :accept="acceptedFiles"
+      :capture="captureFiles"
+      style="display: none"
+      @change="onFileChange($event.target.files)"
+    />
 
         <div v-if="(showAudio && isMessageEmpty) && !textareaHighlight">
           <div class="vac-svg-button" @click="toggleRecorder(true)">
@@ -204,8 +204,8 @@
           </slot>
         </div>
       </div>
-		</div>
-	</div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -235,750 +235,748 @@ const SOURCE_USER_FILE_SYSTEM = 'SOURCE_USER_FILE_SYSTEM'
 const SOURCE_OPTIWORK_DRIVE = 'SOURCE_OPTIWORK_DRIVE'
 
 export default {
-	name: 'RoomFooter',
+  name: 'RoomFooter',
 
-	components: {
-		SvgIcon,
-		EmojiPickerContainer,
-		RoomFiles,
-		RoomMessageReply,
-		RoomUsersTag,
-		RoomEmojis,
-		RoomTemplatesText,
-		RoomAttachmentPicker
-	},
+  components: {
+    SvgIcon,
+    EmojiPickerContainer,
+    RoomFiles,
+    RoomMessageReply,
+    RoomUsersTag,
+    RoomEmojis,
+    RoomTemplatesText,
+    RoomAttachmentPicker
+  },
 
-	directives: {
-		clickOutside: vClickOutside
-	},
+  directives: {
+    clickOutside: vClickOutside
+  },
 
-	props: {
-		room: { type: Object, required: true },
-		roomId: { type: [String, Number], required: true },
-		roomMessage: { type: String, default: null },
-		textFormatting: { type: Object, required: true },
-		linkOptions: { type: Object, required: true },
-		textMessages: { type: Object, required: true },
-		showSendIcon: { type: Boolean, required: true },
-		showFiles: { type: Boolean, required: true },
-		showAudio: { type: Boolean, required: true },
-		showEmojis: { type: Boolean, required: true },
-		showFooter: { type: Boolean, required: true },
-		acceptedFiles: { type: String, required: true },
-		multipleFiles: { type: Boolean, default: true },
-		captureFiles: { type: String, required: true },
-		textareaActionEnabled: { type: Boolean, required: true },
-		textareaAutoFocus: { type: Boolean, required: true },
-		userTagsEnabled: { type: Boolean, required: true },
-		emojisSuggestionEnabled: { type: Boolean, required: true },
-		templatesText: { type: Array, default: null },
-		audioBitRate: { type: Number, required: true },
-		audioSampleRate: { type: Number, required: true },
-		initReplyMessage: { type: Object, default: null },
-		initEditMessage: { type: Object, default: null },
-		droppedFiles: { type: Array, default: null },
-		emojiDataSource: { type: String, default: undefined },
-		attachmentOptions: { type: Array, required: true },
-		currentUserId: { type: String, default: '' },
-		textareaHighlight: { type: Boolean, default: false },
-		externalFiles: { type: Array, default: [] },
-		allowSendingExternalFiles: { type: Boolean, default: null }
-	},
+  props: {
+    room: { type: Object, required: true },
+    roomId: { type: [String, Number], required: true },
+    roomMessage: { type: String, default: null },
+    textFormatting: { type: Object, required: true },
+    linkOptions: { type: Object, required: true },
+    textMessages: { type: Object, required: true },
+    showSendIcon: { type: Boolean, required: true },
+    showFiles: { type: Boolean, required: true },
+    showAudio: { type: Boolean, required: true },
+    showEmojis: { type: Boolean, required: true },
+    showFooter: { type: Boolean, required: true },
+    acceptedFiles: { type: String, required: true },
+    multipleFiles: { type: Boolean, default: true },
+    captureFiles: { type: String, required: true },
+    textareaActionEnabled: { type: Boolean, required: true },
+    textareaAutoFocus: { type: Boolean, required: true },
+    userTagsEnabled: { type: Boolean, required: true },
+    emojisSuggestionEnabled: { type: Boolean, required: true },
+    templatesText: { type: Array, default: null },
+    audioBitRate: { type: Number, required: true },
+    audioSampleRate: { type: Number, required: true },
+    initReplyMessage: { type: Object, default: null },
+    initEditMessage: { type: Object, default: null },
+    droppedFiles: { type: Array, default: null },
+    emojiDataSource: { type: String, default: undefined },
+    attachmentOptions: { type: Array, required: true },
+    currentUserId: { type: String, default: '' },
+    textareaHighlight: { type: Boolean, default: false },
+    externalFiles: { type: Array, default: [] },
+    allowSendingExternalFiles: { type: Boolean, default: null }
+  },
 
-	emits: [
-		'edit-message',
-		'send-message',
-		'update-edited-message-id',
-		'textarea-action-handler',
-		'typing-message',
-    	'attachment-picker-handler',
-		'request-permission-to-send-external-files',
-		'external-files-removed',
-		'new-draft-message',
-	],
+  emits: [
+    'edit-message',
+    'send-message',
+    'update-edited-message-id',
+    'textarea-action-handler',
+    'typing-message',
+    'attachment-picker-handler',
+    'request-permission-to-send-external-files',
+    'external-files-removed',
+    'new-draft-message'
+  ],
 
-	data() {
-		return {
-			message: '',
-			editedMessage: {},
-			messageReply: null,
-			cursorRangePosition: null,
-			files: [],
-			fileDialog: false,
-			selectUsersTagItem: null,
-			selectEmojiItem: null,
-			selectTemplatesTextItem: null,
-			format: 'mp3',
-			activeUpOrDownEmojis: null,
-			activeUpOrDownUsersTag: null,
-			activeUpOrDownTemplatesText: null,
-			emojisDB: new Database({ dataSource: this.emojiDataSource }),
-			emojiOpened: false,
-			keepKeyboardOpen: false,
-			filteredEmojis: [],
-			filteredUsersTag: [],
-			selectedUsersTag: [],
-			filteredTemplatesText: [],
-			recorder: this.initRecorder(),
-			isRecording: false
-		}
-	},
+  data() {
+    return {
+      message: '',
+      editedMessage: {},
+      messageReply: null,
+      cursorRangePosition: null,
+      files: [],
+      fileDialog: false,
+      selectUsersTagItem: null,
+      selectEmojiItem: null,
+      selectTemplatesTextItem: null,
+      format: 'mp3',
+      activeUpOrDownEmojis: null,
+      activeUpOrDownUsersTag: null,
+      activeUpOrDownTemplatesText: null,
+      emojisDB: new Database({ dataSource: this.emojiDataSource }),
+      emojiOpened: false,
+      keepKeyboardOpen: false,
+      filteredEmojis: [],
+      filteredUsersTag: [],
+      selectedUsersTag: [],
+      filteredTemplatesText: [],
+      recorder: this.initRecorder(),
+      isRecording: false
+    }
+  },
 
-	computed: {
-		isMessageEmpty() {
-			return !this.files.length && !this.message.trim()
-		},
-		isFileLoading() {
-			return this.files.some(e => e.loading)
-		},
-		recordedTime() {
-			return new Date(this.recorder.duration * 1000).toISOString().substr(14, 5)
-		},
-		shadowFooter() {
-			return (
-				!!this.filteredEmojis.length ||
-				!!this.filteredUsersTag.length ||
-				!!this.filteredTemplatesText.length ||
-				!!this.files.length ||
-				!!this.messageReply
-			)
-		}
-	},
+  computed: {
+    isMessageEmpty() {
+      return !this.files.length && !this.message.trim()
+    },
+    isFileLoading() {
+      return this.files.some(e => e.loading)
+    },
+    recordedTime() {
+      return new Date(this.recorder.duration * 1000).toISOString().substr(14, 5)
+    },
+    shadowFooter() {
+      return (
+        !!this.filteredEmojis.length ||
+        !!this.filteredUsersTag.length ||
+        !!this.filteredTemplatesText.length ||
+        !!this.files.length ||
+        !!this.messageReply
+      )
+    }
+  },
 
-	watch: {
-		roomId(roomIdNew, roomIdOld) {
-			/**
-			 * If roomId changes it means user switched
-			 * from one room to another, so save the
-			 * message as a draft.
-			 */
-			this.$emit('new-draft-message', {
-				roomId: roomIdOld,
-				content: this.message
-			});
+  watch: {
+    roomId(roomIdNew, roomIdOld) {
+      /**
+       * If roomId changes it means user switched
+       * from one room to another, so save the
+       * message as a draft.
+       */
+      this.$emit('new-draft-message', {
+        roomId: roomIdOld,
+        content: this.message
+      })
 
-			this.resetMessage(true, true)
+      this.resetMessage(true, true)
 
-			if (this.roomMessage || this.room.draftMessage) {
-				this.message = this.roomMessage || this.room.draftMessage
-				setTimeout(() => this.onChangeInput(false))
-			}
-		},
-		message(val) {
-			this.getTextareaRef().value = val
-		},
-		roomMessage: {
-			immediate: true,
-			handler(val) {
-				if (val) this.message = this.roomMessage
-			}
-		},
-		editedMessage(val) {
-			this.$emit('update-edited-message-id', val._id)
-		},
-		initReplyMessage(val) {
-			if (val) {
-				this.replyMessage(val)
-			}
-		},
-		initEditMessage(val) {
-			if (val) {
-				this.editMessage(val)
-			}
-		},
-		droppedFiles(val) {
-			if (val) {
-				this.onFileChange(val)
-			}
-		},
-		externalFiles(val) {
-			if (val.length) {
-				this.files = this.mergeFiles(this.files, val)
-				return
-			}
-		},
-		allowSendingExternalFiles(val) {
-			if (val == 'true') {
-				this.sendMessage()
-				return
-			}
-			if (val == 'false') {
-				this.resetMessage()
-				return
-			}
-			/**
-			 * any other value means user not allow nor
-			 * decline sending custom files, in this
-			 * case does nothing.
-			 */
-		}
-	},
+      if (this.roomMessage || this.room.draftMessage) {
+        this.message = this.roomMessage || this.room.draftMessage
+        setTimeout(() => this.onChangeInput(false))
+      }
+    },
+    message(val) {
+      this.getTextareaRef().value = val
+    },
+    roomMessage: {
+      immediate: true,
+      handler(val) {
+        if (val) this.message = this.roomMessage
+      }
+    },
+    editedMessage(val) {
+      this.$emit('update-edited-message-id', val._id)
+    },
+    initReplyMessage(val) {
+      if (val) {
+        this.replyMessage(val)
+      }
+    },
+    initEditMessage(val) {
+      if (val) {
+        this.editMessage(val)
+      }
+    },
+    droppedFiles(val) {
+      if (val) {
+        this.onFileChange(val)
+      }
+    },
+    externalFiles(val) {
+      if (val.length) {
+        this.files = this.mergeFiles(this.files, val)
+      }
+    },
+    allowSendingExternalFiles(val) {
+      if (val == 'true') {
+        this.sendMessage()
+        return
+      }
+      if (val == 'false') {
+        this.resetMessage()
+      }
+      /**
+       * any other value means user not allow nor
+       * decline sending custom files, in this
+       * case does nothing.
+       */
+    }
+  },
 
-	mounted() {
-		const isMobile = detectMobile()
-		let isComposed = true
+  mounted() {
+    const isMobile = detectMobile()
+    let isComposed = true
 
-		this.getTextareaRef().addEventListener('keyup', e => {
-			if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
-				if (isMobile) {
-					this.message = this.message + '\n'
-					setTimeout(() => this.onChangeInput())
-				} else if (
-					isComposed &&
-					!this.filteredEmojis.length &&
-					!this.filteredUsersTag.length &&
-					!this.filteredTemplatesText.length
-				) {
-					this.sendMessage()
-				}
-			}
-			isComposed = !e.isComposing
+    this.getTextareaRef().addEventListener('keyup', e => {
+      if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
+        if (isMobile) {
+          this.message = this.message + '\n'
+          setTimeout(() => this.onChangeInput())
+        } else if (
+          isComposed &&
+          !this.filteredEmojis.length &&
+          !this.filteredUsersTag.length &&
+          !this.filteredTemplatesText.length
+        ) {
+          this.sendMessage()
+        }
+      }
+      isComposed = !e.isComposing
 
-			setTimeout(() => {
-				this.updateFooterLists()
-			}, 60)
-		})
+      setTimeout(() => {
+        this.updateFooterLists()
+      }, 60)
+    })
 
-		this.getTextareaRef().addEventListener('click', () => {
-			if (isMobile) this.keepKeyboardOpen = true
-			this.updateFooterLists()
-		})
+    this.getTextareaRef().addEventListener('click', () => {
+      if (isMobile) this.keepKeyboardOpen = true
+      this.updateFooterLists()
+    })
 
-		this.getTextareaRef().addEventListener('blur', () => {
-			setTimeout(() => {
-				this.resetFooterList()
-			}, 100)
+    this.getTextareaRef().addEventListener('blur', () => {
+      setTimeout(() => {
+        this.resetFooterList()
+      }, 100)
 
-			if (isMobile) setTimeout(() => (this.keepKeyboardOpen = false))
-		})
-	},
+      if (isMobile) setTimeout(() => (this.keepKeyboardOpen = false))
+    })
+  },
 
-	beforeUnmount() {
-		this.stopRecorder()
-	},
+  beforeUnmount() {
+    this.stopRecorder()
+  },
 
-	methods: {
-		mergeFiles(files, externalFiles) {
-			const newExternalFiles = externalFiles.filter(
-				customFile => !files.some(file => file.id === customFile.id)
-			)
-			return [...files, ...newExternalFiles]
-		},
-		getTextareaRef() {
-			return this.$refs.roomTextarea
-		},
-		focusTextarea(disableMobileFocus) {
-			if (detectMobile() && disableMobileFocus) return
-			if (!this.getTextareaRef()) return
-			this.getTextareaRef().focus()
+  methods: {
+    mergeFiles(files, externalFiles) {
+      const newExternalFiles = externalFiles.filter(
+        customFile => !files.some(file => file.id === customFile.id)
+      )
+      return [...files, ...newExternalFiles]
+    },
+    getTextareaRef() {
+      return this.$refs.roomTextarea
+    },
+    focusTextarea(disableMobileFocus) {
+      if (detectMobile() && disableMobileFocus) return
+      if (!this.getTextareaRef()) return
+      this.getTextareaRef().focus()
 
-			if (this.cursorRangePosition) {
-				setTimeout(() => {
-					const offset = detectChrome() ? 0 : 1
-					this.getTextareaRef().setSelectionRange(
-						this.cursorRangePosition + offset,
-						this.cursorRangePosition + offset
-					)
-					this.cursorRangePosition = null
-				})
-			}
-		},
-		onChangeInput(shouldEmitTypingEvent=true) {
-			if (this.getTextareaRef()?.value || this.getTextareaRef()?.value === '') {
-				this.message = this.getTextareaRef()?.value
-			}
-			this.keepKeyboardOpen = true
-			this.resizeTextarea()
-			if (!shouldEmitTypingEvent) {
-				return;
-			}
-			this.$emit('typing-message', this.message)
-		},
-		resizeTextarea() {
-			const el = this.getTextareaRef()
+      if (this.cursorRangePosition) {
+        setTimeout(() => {
+          const offset = detectChrome() ? 0 : 1
+          this.getTextareaRef().setSelectionRange(
+            this.cursorRangePosition + offset,
+            this.cursorRangePosition + offset
+          )
+          this.cursorRangePosition = null
+        })
+      }
+    },
+    onChangeInput(shouldEmitTypingEvent = true) {
+      if (this.getTextareaRef()?.value || this.getTextareaRef()?.value === '') {
+        this.message = this.getTextareaRef()?.value
+      }
+      this.keepKeyboardOpen = true
+      this.resizeTextarea()
+      if (!shouldEmitTypingEvent) {
+        return
+      }
+      this.$emit('typing-message', this.message)
+    },
+    resizeTextarea() {
+      const el = this.getTextareaRef()
 
-			if (!el) return
+      if (!el) return
 
-			const padding = window
-				.getComputedStyle(el, null)
-				.getPropertyValue('padding-top')
-				.replace('px', '')
+      const padding = window
+        .getComputedStyle(el, null)
+        .getPropertyValue('padding-top')
+        .replace('px', '')
 
-			el.style.height = 0
-			el.style.height = el.scrollHeight - padding * 2 + 'px'
-		},
-		escapeTextarea() {
-			if (this.filteredEmojis.length) {
+      el.style.height = 0
+      el.style.height = el.scrollHeight - padding * 2 + 'px'
+    },
+    escapeTextarea() {
+      if (this.filteredEmojis.length) {
         this.filteredEmojis = []
       } else if (this.filteredUsersTag.length) {
         this.filteredUsersTag = []
       } else if (this.filteredTemplatesText.length) {
-				this.filteredTemplatesText = []
-			} else {
+        this.filteredTemplatesText = []
+      } else {
         this.resetMessage()
       }
       this.$emit('attachment-picker-handler', {
         cancel: true
       })
-		},
-		onPasteImage(pasteEvent) {
-			const items = pasteEvent.clipboardData?.items
+    },
+    onPasteImage(pasteEvent) {
+      const items = pasteEvent.clipboardData?.items
 
-			if (items) {
-				Array.from(items).forEach(item => {
-					if (item.type.includes('image')) {
-						const blob = item.getAsFile()
-						this.onFileChange([blob])
-					}
-				})
-			}
-		},
-		updateActiveUpOrDown(event, direction) {
-			if (this.filteredEmojis.length) {
-				this.activeUpOrDownEmojis = direction
-				event.preventDefault()
-			} else if (this.filteredUsersTag.length) {
-				this.activeUpOrDownUsersTag = direction
-				event.preventDefault()
-			} else if (this.filteredTemplatesText.length) {
-				this.activeUpOrDownTemplatesText = direction
-				event.preventDefault()
-			}
-		},
+      if (items) {
+        Array.from(items).forEach(item => {
+          if (item.type.includes('image')) {
+            const blob = item.getAsFile()
+            this.onFileChange([blob])
+          }
+        })
+      }
+    },
+    updateActiveUpOrDown(event, direction) {
+      if (this.filteredEmojis.length) {
+        this.activeUpOrDownEmojis = direction
+        event.preventDefault()
+      } else if (this.filteredUsersTag.length) {
+        this.activeUpOrDownUsersTag = direction
+        event.preventDefault()
+      } else if (this.filteredTemplatesText.length) {
+        this.activeUpOrDownTemplatesText = direction
+        event.preventDefault()
+      }
+    },
     onCtrlIKeydown() {
       const aiOption = this.attachmentOptions.find(option => option.command === 'ai')
       this.$emit('attachment-picker-handler', aiOption)
     },
-		selectItem() {
-			if (this.filteredEmojis.length) {
-				this.selectEmojiItem = true
-			} else if (this.filteredUsersTag.length) {
-				this.selectUsersTagItem = true
-			} else if (this.filteredTemplatesText.length) {
-				this.selectTemplatesTextItem = true
-			}
-		},
-		selectEmoji(emoji) {
-			this.selectEmojiItem = false
+    selectItem() {
+      if (this.filteredEmojis.length) {
+        this.selectEmojiItem = true
+      } else if (this.filteredUsersTag.length) {
+        this.selectUsersTagItem = true
+      } else if (this.filteredTemplatesText.length) {
+        this.selectTemplatesTextItem = true
+      }
+    },
+    selectEmoji(emoji) {
+      this.selectEmojiItem = false
 
-			if (!emoji) return
+      if (!emoji) return
 
-			const { position, endPosition } = this.getCharPosition(':')
+      const { position, endPosition } = this.getCharPosition(':')
 
-			this.message =
-				this.message.substr(0, position - 1) +
-				emoji +
-				this.message.substr(endPosition, this.message.length - 1)
+      this.message =
+        this.message.substr(0, position - 1) +
+        emoji +
+        this.message.substr(endPosition, this.message.length - 1)
 
-			this.cursorRangePosition = position
-			this.focusTextarea()
-		},
-		selectTemplateText(template) {
-			this.selectTemplatesTextItem = false
+      this.cursorRangePosition = position
+      this.focusTextarea()
+    },
+    selectTemplateText(template) {
+      this.selectTemplatesTextItem = false
 
-			if (!template) return
+      if (!template) return
 
-			const { position, endPosition } = this.getCharPosition('/')
+      const { position, endPosition } = this.getCharPosition('/')
 
-			const space = this.message.substr(endPosition, endPosition).length
-				? ''
-				: ' '
+      const space = this.message.substr(endPosition, endPosition).length
+        ? ''
+        : ' '
 
-			this.message =
-				this.message.substr(0, position - 1) +
-				template.text +
-				space +
-				this.message.substr(endPosition, this.message.length - 1)
+      this.message =
+        this.message.substr(0, position - 1) +
+        template.text +
+        space +
+        this.message.substr(endPosition, this.message.length - 1)
 
-			this.cursorRangePosition =
-				position + template.text.length + space.length + 1
+      this.cursorRangePosition =
+        position + template.text.length + space.length + 1
 
-			this.focusTextarea()
-		},
-		addEmoji(emoji) {
-			this.message += emoji.unicode
-			this.focusTextarea(true)
-		},
-		launchFilePicker() {
-			this.$refs.file.value = ''
-			this.$refs.file.click()
-		},
-		attachmentPickerHandler(option) {
-			if (option.command) {
+      this.focusTextarea()
+    },
+    addEmoji(emoji) {
+      this.message += emoji.unicode
+      this.focusTextarea(true)
+    },
+    launchFilePicker() {
+      this.$refs.file.value = ''
+      this.$refs.file.click()
+    },
+    attachmentPickerHandler(option) {
+      if (option.command) {
         this.$emit('attachment-picker-handler', option)
         return
       }
-			this.$refs.file.accept = option.accepts ?? this.acceptedFiles
-			if (option.capture || this.captureFiles) {
-				this.$refs.file.capture = option.capture ?? this.captureFiles
-			} else {
-				this.$refs.file.removeAttribute('capture')
-			}
-			if (option.launchFilePicker) {
-				this.launchFilePicker()
-			}
-			this.$emit('attachment-picker-handler', option)
-		},
-		async onFileChange(files) {
-			this.fileDialog = true
-			this.focusTextarea()
+      this.$refs.file.accept = option.accepts ?? this.acceptedFiles
+      if (option.capture || this.captureFiles) {
+        this.$refs.file.capture = option.capture ?? this.captureFiles
+      } else {
+        this.$refs.file.removeAttribute('capture')
+      }
+      if (option.launchFilePicker) {
+        this.launchFilePicker()
+      }
+      this.$emit('attachment-picker-handler', option)
+    },
+    async onFileChange(files) {
+      this.fileDialog = true
+      this.focusTextarea()
 
-			for (const file of Array.from(files)) {
-				const fileURL = URL.createObjectURL(file)
-				const typeIndex = file.name.lastIndexOf('.')
-				const fileType = file?.type.length ? file.type : 'text/plain'
-				const hasExtension = typeIndex !== -1
-				this.files.push({
-					loading: true,
-					name: hasExtension ? file.name.substring(0, typeIndex) : file.name,
-					size: file.size,
-					type: fileType,
-					extension: hasExtension ? file.name.substring(typeIndex + 1) : '',
-					localUrl: fileURL,
-					source: SOURCE_USER_FILE_SYSTEM
-				})
+      for (const file of Array.from(files)) {
+        const fileURL = URL.createObjectURL(file)
+        const typeIndex = file.name.lastIndexOf('.')
+        const fileType = file?.type.length ? file.type : 'text/plain'
+        const hasExtension = typeIndex !== -1
+        this.files.push({
+          loading: true,
+          name: hasExtension ? file.name.substring(0, typeIndex) : file.name,
+          size: file.size,
+          type: fileType,
+          extension: hasExtension ? file.name.substring(typeIndex + 1) : '',
+          localUrl: fileURL,
+          source: SOURCE_USER_FILE_SYSTEM
+        })
 
-				const blobFile = await fetch(fileURL).then(res => res.blob())
-				let loadedFile = this.files.find(file => file.localUrl === fileURL)
+        const blobFile = await fetch(fileURL).then(res => res.blob())
+        let loadedFile = this.files.find(file => file.localUrl === fileURL)
 
-				if (loadedFile) {
-					loadedFile.blob = blobFile
-					loadedFile.loading = false
-					delete loadedFile.loading
-				}
-			}
+        if (loadedFile) {
+          loadedFile.blob = blobFile
+          loadedFile.loading = false
+          delete loadedFile.loading
+        }
+      }
 
-			setTimeout(() => (this.fileDialog = false), 500)
-	},
-		removeFile(index) {
-			const removedFile = this.files[index]
-			this.files.splice(index, 1)
-			this.focusTextarea()
-			if (removedFile.source === SOURCE_OPTIWORK_DRIVE) {
-				this.$emit('external-files-removed', [removedFile])
-			}
-		},
-		toggleRecorder(recording) {
-			this.isRecording = recording
+      setTimeout(() => (this.fileDialog = false), 500)
+    },
+    removeFile(index) {
+      const removedFile = this.files[index]
+      this.files.splice(index, 1)
+      this.focusTextarea()
+      if (removedFile.source === SOURCE_OPTIWORK_DRIVE) {
+        this.$emit('external-files-removed', [removedFile])
+      }
+    },
+    toggleRecorder(recording) {
+      this.isRecording = recording
 
-			if (!this.recorder.isRecording) {
-				setTimeout(() => this.recorder.start(), 200)
-			} else {
-				try {
-					this.recorder.stop()
+      if (!this.recorder.isRecording) {
+        setTimeout(() => this.recorder.start(), 200)
+      } else {
+        try {
+          this.recorder.stop()
 
-					const record = this.recorder.records[0]
+          const record = this.recorder.records[0]
 
-					this.files.push({
-						blob: record.blob,
-						name: `audio.${this.format}`,
-						size: record.blob.size,
-						duration: record.duration,
-						type: record.blob.type,
-						audio: true,
-						localUrl: URL.createObjectURL(record.blob),
-						source: SOURCE_USER_FILE_SYSTEM
-					})
+          this.files.push({
+            blob: record.blob,
+            name: `audio.${this.format}`,
+            size: record.blob.size,
+            duration: record.duration,
+            type: record.blob.type,
+            audio: true,
+            localUrl: URL.createObjectURL(record.blob),
+            source: SOURCE_USER_FILE_SYSTEM
+          })
 
-					this.recorder = this.initRecorder()
-					this.sendMessage()
-				} catch {
-					setTimeout(() => this.stopRecorder(), 100)
-				}
-			}
-		},
-		stopRecorder() {
-			if (this.recorder.isRecording) {
-				try {
-					this.recorder.stop()
-					this.recorder = this.initRecorder()
-				} catch {
-					setTimeout(() => this.stopRecorder(), 100)
-				}
-			}
-		},
-		textareaActionHandler() {
-			this.$emit('textarea-action-handler', this.message)
-		},
-		sendMessage() {
-			/**
-			 * null means user not allow nor decline sending
-			 * external files, in this case request user
-			 * permission
-			 */
-			const mustRequestUserToSendExternalFiles = this.allowSendingExternalFiles === null
-			const hasExternalFiles = this.externalFiles.length > 0
-			if (hasExternalFiles && mustRequestUserToSendExternalFiles) {
-				this.$emit('request-permission-to-send-external-files', { ...this.room })
-				return
-			}
+          this.recorder = this.initRecorder()
+          this.sendMessage()
+        } catch {
+          setTimeout(() => this.stopRecorder(), 100)
+        }
+      }
+    },
+    stopRecorder() {
+      if (this.recorder.isRecording) {
+        try {
+          this.recorder.stop()
+          this.recorder = this.initRecorder()
+        } catch {
+          setTimeout(() => this.stopRecorder(), 100)
+        }
+      }
+    },
+    textareaActionHandler() {
+      this.$emit('textarea-action-handler', this.message)
+    },
+    sendMessage() {
+      /**
+       * null means user not allow nor decline sending
+       * external files, in this case request user
+       * permission
+       */
+      const mustRequestUserToSendExternalFiles = this.allowSendingExternalFiles === null
+      const hasExternalFiles = this.externalFiles.length > 0
+      if (hasExternalFiles && mustRequestUserToSendExternalFiles) {
+        this.$emit('request-permission-to-send-external-files', { ...this.room })
+        return
+      }
 
-			/**
-			 * false means user decline sending external files,
-			 * in this case reset message
-			 */
-			const userDeclineSendingExternalFiles = this.allowSendingExternalFiles === false
-			if (hasExternalFiles && userDeclineSendingExternalFiles) {
-				this.resetMessage()
-				return
-			}
+      /**
+       * false means user decline sending external files,
+       * in this case reset message
+       */
+      const userDeclineSendingExternalFiles = this.allowSendingExternalFiles === false
+      if (hasExternalFiles && userDeclineSendingExternalFiles) {
+        this.resetMessage()
+        return
+      }
 
-			let message = this.message.trim()
+      let message = this.message.trim()
 
-			if (!this.files.length && !message) return
+      if (!this.files.length && !message) return
 
-			if (this.isFileLoading) return
+      if (this.isFileLoading) return
 
-			this.selectedUsersTag.forEach(user => {
-				message = message.replace(
-					`@${user.username}`,
-					`<usertag>${user._id}</usertag>`
-				)
-			})
+      this.selectedUsersTag.forEach(user => {
+        message = message.replace(
+          `@${user.username}`,
+          `<usertag>${user._id}</usertag>`
+        )
+      })
 
-			const files = this.files.length ? this.files : null
+      const files = this.files.length ? this.files : null
 
-			if (this.editedMessage._id) {
-				if (
-					this.editedMessage.content !== message ||
-					this.editedMessage.files?.length ||
-					this.files.length
-				) {
-					this.$emit('edit-message', {
-						messageId: this.editedMessage._id,
-						newContent: message,
-						files: files,
-						replyMessage: this.messageReply,
-						usersTag: this.selectedUsersTag
-					})
-				}
-			} else {
-				this.$emit('send-message', {
-					content: message,
-					files: files,
-					replyMessage: this.messageReply,
-					usersTag: this.selectedUsersTag
-				})
-			}
+      if (this.editedMessage._id) {
+        if (
+          this.editedMessage.content !== message ||
+          this.editedMessage.files?.length ||
+          this.files.length
+        ) {
+          this.$emit('edit-message', {
+            messageId: this.editedMessage._id,
+            newContent: message,
+            files: files,
+            replyMessage: this.messageReply,
+            usersTag: this.selectedUsersTag
+          })
+        }
+      } else {
+        this.$emit('send-message', {
+          content: message,
+          files: files,
+          replyMessage: this.messageReply,
+          usersTag: this.selectedUsersTag
+        })
+      }
 
-			this.$emit('attachment-picker-handler', {
-				cancel: true
-			})
-			this.resetMessage(true)
-		},
-		editMessage(message) {
-			this.resetMessage()
+      this.$emit('attachment-picker-handler', {
+        cancel: true
+      })
+      this.resetMessage(true)
+    },
+    editMessage(message) {
+      this.resetMessage()
 
-			this.editedMessage = { ...message }
+      this.editedMessage = { ...message }
 
-			let messageContent = message.content
-			const initialContent = messageContent
+      let messageContent = message.content
+      const initialContent = messageContent
 
-			const firstTag = '<usertag>'
-			const secondTag = '</usertag>'
+      const firstTag = '<usertag>'
+      const secondTag = '</usertag>'
 
-			const usertags = [
-				...messageContent.matchAll(new RegExp(firstTag, 'gi'))
-			].map(a => a.index)
+      const usertags = [
+        ...messageContent.matchAll(new RegExp(firstTag, 'gi'))
+      ].map(a => a.index)
 
-			usertags.forEach(index => {
-				const userId = initialContent.substring(
-					index + firstTag.length,
-					initialContent.indexOf(secondTag, index)
-				)
+      usertags.forEach(index => {
+        const userId = initialContent.substring(
+          index + firstTag.length,
+          initialContent.indexOf(secondTag, index)
+        )
 
-				const user = this.room.users.find(user => user._id === userId)
+        const user = this.room.users.find(user => user._id === userId)
 
-				messageContent = messageContent.replace(
-					`${firstTag}${userId}${secondTag}`,
-					`@${user?.username || 'unknown'}`
-				)
+        messageContent = messageContent.replace(
+          `${firstTag}${userId}${secondTag}`,
+          `@${user?.username || 'unknown'}`
+        )
 
-				this.selectUserTag(user, true)
-			})
+        this.selectUserTag(user, true)
+      })
 
-			this.message = messageContent
+      this.message = messageContent
 
-			if (message.files) {
-				this.files = [...message.files]
-			}
+      if (message.files) {
+        this.files = [...message.files]
+      }
 
-			setTimeout(() => this.resizeTextarea())
-		},
-		replyMessage(message) {
-			this.editedMessage = {}
-			this.messageReply = message
-			this.focusTextarea()
-		},
-		updateFooterLists() {
-			this.updateFooterList('@')
-			this.updateFooterList(':')
-			this.updateFooterList('/')
-		},
-		updateFooterList(tagChar) {
-			if (!this.getTextareaRef()) return
+      setTimeout(() => this.resizeTextarea())
+    },
+    replyMessage(message) {
+      this.editedMessage = {}
+      this.messageReply = message
+      this.focusTextarea()
+    },
+    updateFooterLists() {
+      this.updateFooterList('@')
+      this.updateFooterList(':')
+      this.updateFooterList('/')
+    },
+    updateFooterList(tagChar) {
+      if (!this.getTextareaRef()) return
 
-			if (tagChar === ':' && !this.emojisSuggestionEnabled) {
-				return
-			}
+      if (tagChar === ':' && !this.emojisSuggestionEnabled) {
+        return
+      }
 
-			if (tagChar === '@' && (!this.userTagsEnabled || !this.room.users)) {
-				return
-			}
+      if (tagChar === '@' && (!this.userTagsEnabled || !this.room.users)) {
+        return
+      }
 
-			if (tagChar === '/' && !this.templatesText) {
-				return
-			}
+      if (tagChar === '/' && !this.templatesText) {
+        return
+      }
 
-			const textareaCursorPosition = this.getTextareaRef().selectionStart
+      const textareaCursorPosition = this.getTextareaRef().selectionStart
 
-			let position = textareaCursorPosition
+      let position = textareaCursorPosition
 
-			while (
-				position > 0 &&
-				this.message.charAt(position - 1) !== tagChar &&
-				// eslint-disable-next-line no-unmodified-loop-condition
-				(this.message.charAt(position - 1) !== ' ' || tagChar !== ':')
-			) {
-				position--
-			}
+      while (
+        position > 0 &&
+        this.message.charAt(position - 1) !== tagChar &&
+        // eslint-disable-next-line no-unmodified-loop-condition
+        (this.message.charAt(position - 1) !== ' ' || tagChar !== ':')
+      ) {
+        position--
+      }
 
-			const beforeTag = this.message.charAt(position - 2)
-			const notLetterNumber = !beforeTag.match(/^[0-9a-zA-Z]+$/)
+      const beforeTag = this.message.charAt(position - 2)
+      const notLetterNumber = !beforeTag.match(/^[0-9a-zA-Z]+$/)
 
-			if (
-				this.message.charAt(position - 1) === tagChar &&
-				(!beforeTag || beforeTag === ' ' || notLetterNumber)
-			) {
-				const query = this.message.substring(position, textareaCursorPosition)
-				if (tagChar === ':') {
-					this.updateEmojis(query)
-				} else if (tagChar === '@') {
-					this.updateShowUsersTag(query)
-				} else if (tagChar === '/') {
-					this.updateShowTemplatesText(query)
-				}
-			} else {
-				this.resetFooterList(tagChar)
-			}
-		},
-		updateShowUsersTag(query) {
-			this.filteredUsersTag = filteredItems(
-				this.room.users,
-				'username',
-				query,
-				true
-			).filter(user => user._id !== this.currentUserId && user.isInRoom)
-		},
-		selectUserTag(user, editMode = false) {
-			this.selectUsersTagItem = false
+      if (
+        this.message.charAt(position - 1) === tagChar &&
+        (!beforeTag || beforeTag === ' ' || notLetterNumber)
+      ) {
+        const query = this.message.substring(position, textareaCursorPosition)
+        if (tagChar === ':') {
+          this.updateEmojis(query)
+        } else if (tagChar === '@') {
+          this.updateShowUsersTag(query)
+        } else if (tagChar === '/') {
+          this.updateShowTemplatesText(query)
+        }
+      } else {
+        this.resetFooterList(tagChar)
+      }
+    },
+    updateShowUsersTag(query) {
+      this.filteredUsersTag = filteredItems(
+        this.room.users,
+        'username',
+        query,
+        true
+      ).filter(user => user._id !== this.currentUserId && user.isInRoom)
+    },
+    selectUserTag(user, editMode = false) {
+      this.selectUsersTagItem = false
 
-			if (!user) return
+      if (!user) return
 
-			const { position, endPosition } = this.getCharPosition('@')
+      const { position, endPosition } = this.getCharPosition('@')
 
-			const space = this.message.substr(endPosition, endPosition).length
-				? ''
-				: ' '
+      const space = this.message.substr(endPosition, endPosition).length
+        ? ''
+        : ' '
 
-			this.message =
-				this.message.substr(0, position) +
-				user.username +
-				space +
-				this.message.substr(endPosition, this.message.length - 1)
+      this.message =
+        this.message.substr(0, position) +
+        user.username +
+        space +
+        this.message.substr(endPosition, this.message.length - 1)
 
-			this.selectedUsersTag = [...this.selectedUsersTag, { ...user }]
+      this.selectedUsersTag = [...this.selectedUsersTag, { ...user }]
 
-			if (!editMode) {
-				this.cursorRangePosition =
-					position + user.username.length + space.length + 1
-			}
+      if (!editMode) {
+        this.cursorRangePosition =
+          position + user.username.length + space.length + 1
+      }
 
-			this.focusTextarea()
-		},
-		updateShowTemplatesText(query) {
-			this.filteredTemplatesText = filteredItems(
-				this.templatesText,
-				'tag',
-				query,
-				true
-			)
-		},
-		getCharPosition(tagChar) {
-			const cursorPosition = this.getTextareaRef().selectionStart
+      this.focusTextarea()
+    },
+    updateShowTemplatesText(query) {
+      this.filteredTemplatesText = filteredItems(
+        this.templatesText,
+        'tag',
+        query,
+        true
+      )
+    },
+    getCharPosition(tagChar) {
+      const cursorPosition = this.getTextareaRef().selectionStart
 
-			let position = cursorPosition
-			while (position > 0 && this.message.charAt(position - 1) !== tagChar) {
-				position--
-			}
+      let position = cursorPosition
+      while (position > 0 && this.message.charAt(position - 1) !== tagChar) {
+        position--
+      }
 
-			const endPosition = this.getTextareaRef().selectionEnd
+      const endPosition = this.getTextareaRef().selectionEnd
 
-			return { position, endPosition }
-		},
-		async updateEmojis(query) {
-			if (!query) return
+      return { position, endPosition }
+    },
+    async updateEmojis(query) {
+      if (!query) return
 
-			const emojis = await this.emojisDB.getEmojiBySearchQuery(query)
-			this.filteredEmojis = emojis.map(emoji => emoji.unicode)
-		},
-		resetFooterList(tagChar = null) {
-			if (tagChar === ':') {
-				this.filteredEmojis = []
-			} else if (tagChar === '@') {
-				this.filteredUsersTag = []
-			} else if (tagChar === '/') {
-				this.filteredTemplatesText = []
-			} else {
-				this.filteredEmojis = []
-				this.filteredUsersTag = []
-				this.filteredTemplatesText = []
-			}
-		},
-		resetMessage(disableMobileFocus = false, initRoom = false) {
-			if (!initRoom) {
-				this.$emit('typing-message', null)
-			}
+      const emojis = await this.emojisDB.getEmojiBySearchQuery(query)
+      this.filteredEmojis = emojis.map(emoji => emoji.unicode)
+    },
+    resetFooterList(tagChar = null) {
+      if (tagChar === ':') {
+        this.filteredEmojis = []
+      } else if (tagChar === '@') {
+        this.filteredUsersTag = []
+      } else if (tagChar === '/') {
+        this.filteredTemplatesText = []
+      } else {
+        this.filteredEmojis = []
+        this.filteredUsersTag = []
+        this.filteredTemplatesText = []
+      }
+    },
+    resetMessage(disableMobileFocus = false, initRoom = false) {
+      if (!initRoom) {
+        this.$emit('typing-message', null)
+      }
 
-			this.selectedUsersTag = []
-			this.resetFooterList()
-			this.resetTextareaSize()
-			this.message = ''
-			this.editedMessage = {}
-			this.messageReply = null
-			this.files = []
-			this.emojiOpened = false
-			this.preventKeyboardFromClosing()
-			this.$emit('external-files-removed', this.externalFiles)
+      this.selectedUsersTag = []
+      this.resetFooterList()
+      this.resetTextareaSize()
+      this.message = ''
+      this.editedMessage = {}
+      this.messageReply = null
+      this.files = []
+      this.emojiOpened = false
+      this.preventKeyboardFromClosing()
+      this.$emit('external-files-removed', this.externalFiles)
 
-			if (this.textareaAutoFocus || !initRoom) {
-				setTimeout(() => this.focusTextarea(disableMobileFocus))
-			}
-		},
-		resetTextareaSize() {
-			if (this.getTextareaRef()) {
-				this.getTextareaRef().style.height = '20px'
-			}
-		},
-		preventKeyboardFromClosing() {
-			if (this.keepKeyboardOpen) this.getTextareaRef().focus()
-		},
-		initRecorder() {
-			this.isRecording = false
+      if (this.textareaAutoFocus || !initRoom) {
+        setTimeout(() => this.focusTextarea(disableMobileFocus))
+      }
+    },
+    resetTextareaSize() {
+      if (this.getTextareaRef()) {
+        this.getTextareaRef().style.height = '20px'
+      }
+    },
+    preventKeyboardFromClosing() {
+      if (this.keepKeyboardOpen) this.getTextareaRef().focus()
+    },
+    initRecorder() {
+      this.isRecording = false
 
-			return new Recorder({
-				bitRate: Number(this.audioBitRate),
-				sampleRate: Number(this.audioSampleRate),
-				beforeRecording: null,
-				afterRecording: null,
-				pauseRecording: null,
-				micFailed: this.micFailed
-			})
-		},
-		micFailed() {
-			this.isRecording = false
-			this.recorder = this.initRecorder()
-		}
-	}
+      return new Recorder({
+        bitRate: Number(this.audioBitRate),
+        sampleRate: Number(this.audioSampleRate),
+        beforeRecording: null,
+        afterRecording: null,
+        pauseRecording: null,
+        micFailed: this.micFailed
+      })
+    },
+    micFailed() {
+      this.isRecording = false
+      this.recorder = this.initRecorder()
+    }
+  }
 }
 </script>

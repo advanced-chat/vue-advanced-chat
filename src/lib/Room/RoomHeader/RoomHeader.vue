@@ -1,9 +1,9 @@
 <template>
-	<div class="vac-room-header vac-app-border-b">
-		<slot name="room-header">
-			<div class="vac-room-wrapper">
-				<transition name="vac-slide-up">
-					<div v-if="messageSelectionEnabled" class="vac-room-selection">
+  <div class="vac-room-header vac-app-border-b">
+    <slot name="room-header">
+      <div class="vac-room-wrapper">
+        <transition name="vac-slide-up">
+          <div v-if="messageSelectionEnabled" class="vac-room-selection">
             <div
               class="vac-selection-cancel"
               @click="$emit('cancel-message-selection')"
@@ -16,16 +16,16 @@
 
               <div class="vac-selection-count-container">
                <span class="vac-selection-button-count">
-									{{ selectedMessagesTotal }}
+                  {{ selectedMessagesTotal }}
                </span>
                 {{ textMessages.COUNT_SELECT_MESSAGE }}
               </div>
             </div>
-						<div
-							v-for="action in messageSelectionActions"
-							:id="action.name"
-							:key="action.name"
-						>
+            <div
+              v-for="action in messageSelectionActions"
+              :id="action.name"
+              :key="action.name"
+            >
               <div v-if="action.name === 'forwardMessages'" class="vac-item-clickable forward-messages" :title="action.title" @click="messageSelectionActionHandler(action)">
                   <span>
                     <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class="" version="1.1" x="0px" y="0px" enable-background="new 0 0 24 24" xml:space="preserve">
@@ -34,92 +34,92 @@
                   </span>
               </div>
 
-							<div
+              <div
                 v-else
-								class="vac-selection-button"
-								@click="messageSelectionActionHandler(action)"
-							>
-								{{ action.title }}
+                class="vac-selection-button"
+                @click="messageSelectionActionHandler(action)"
+              >
+                {{ action.title }}
               </div>
-						</div>
-					</div>
-				</transition>
-				<template
-					v-if="!messageSelectionEnabled && messageSelectionAnimationEnded"
-				>
-					<div
-						v-if="!singleRoom"
-						class="vac-svg-button vac-toggle-button"
-						:class="{
-							'vac-rotate-icon-init': !isMobile,
-							'vac-rotate-icon': !showRoomsList && !isMobile
-						}"
-						@click="$emit('toggle-rooms-list')"
-					>
-						<slot name="toggle-icon">
-							<svg-icon name="toggle" />
-						</slot>
-					</div>
-					<div
-						class="vac-info-wrapper"
-						:class="{ 'vac-item-clickable': roomInfoEnabled }"
-						@click="$emit('room-info')"
-					>
-						<slot name="room-header-avatar">
-							<div
-								v-if="room.avatar"
-								class="vac-avatar"
-								:style="{ 'background-image': `url('${room.avatar}')` }"
-							/>
-						</slot>
-						<slot name="room-header-info">
-							<div class="vac-text-ellipsis">
-								<div class="vac-room-name vac-text-ellipsis">
-									{{ room.roomName }}
-								</div>
-								<div v-if="typingUsers" class="vac-room-info vac-text-ellipsis">
-									{{ typingUsers }}
-								</div>
-								<div v-else-if="room.roomInfo" class="vac-room-info vac-text-ellipsis">
-									{{ room.roomInfo }}
-								</div>
-								<div v-else class="vac-room-info vac-text-ellipsis">
-									{{ userStatus }}
-								</div>
-							</div>
-						</slot>
-					</div>
-					<slot v-if="room.roomId" name="room-options">
-						<div
-							v-if="menuActions.length"
-							class="vac-svg-button vac-room-options"
-							@click="menuOpened = !menuOpened"
-						>
-							<slot name="menu-icon">
-								<svg-icon name="menu" />
-							</slot>
-						</div>
-						<transition v-if="menuActions.length" name="vac-slide-left">
-							<div
-								v-if="menuOpened"
-								v-click-outside="closeMenu"
-								class="vac-menu-options"
-							>
-								<div class="vac-menu-list">
-									<div v-for="action in menuActions" :key="action.name">
-										<div
-											class="vac-menu-item"
-											@click="menuActionHandler(action)"
-										>
-											{{ action.title }}
-										</div>
-									</div>
-								</div>
-							</div>
-						</transition>
-					</slot>
-				</template>
-			</div>
+            </div>
+          </div>
+        </transition>
+        <template
+          v-if="!messageSelectionEnabled && messageSelectionAnimationEnded"
+        >
+          <div
+            v-if="!singleRoom"
+            class="vac-svg-button vac-toggle-button"
+            :class="{
+              'vac-rotate-icon-init': !isMobile,
+              'vac-rotate-icon': !showRoomsList && !isMobile
+            }"
+            @click="$emit('toggle-rooms-list')"
+          >
+            <slot name="toggle-icon">
+              <svg-icon name="toggle" />
+            </slot>
+          </div>
+          <div
+            class="vac-info-wrapper"
+            :class="{ 'vac-item-clickable': roomInfoEnabled }"
+            @click="$emit('room-info')"
+          >
+            <slot name="room-header-avatar">
+              <div
+                v-if="room.avatar"
+                class="vac-avatar"
+                :style="{ 'background-image': `url('${room.avatar}')` }"
+              />
+            </slot>
+            <slot name="room-header-info">
+              <div class="vac-text-ellipsis">
+                <div class="vac-room-name vac-text-ellipsis">
+                  {{ room.roomName }}
+                </div>
+                <div v-if="typingUsers" class="vac-room-info vac-text-ellipsis">
+                  {{ typingUsers }}
+                </div>
+                <div v-else-if="room.roomInfo" class="vac-room-info vac-text-ellipsis">
+                  {{ room.roomInfo }}
+                </div>
+                <div v-else class="vac-room-info vac-text-ellipsis">
+                  {{ userStatus }}
+                </div>
+              </div>
+            </slot>
+          </div>
+          <slot v-if="room.roomId" name="room-options">
+            <div
+              v-if="menuActions.length"
+              class="vac-svg-button vac-room-options"
+              @click="menuOpened = !menuOpened"
+            >
+              <slot name="menu-icon">
+                <svg-icon name="menu" />
+              </slot>
+            </div>
+            <transition v-if="menuActions.length" name="vac-slide-left">
+              <div
+                v-if="menuOpened"
+                v-click-outside="closeMenu"
+                class="vac-menu-options"
+              >
+                <div class="vac-menu-list">
+                  <div v-for="action in menuActions" :key="action.name">
+                    <div
+                      class="vac-menu-item"
+                      @click="menuActionHandler(action)"
+                    >
+                      {{ action.title }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </transition>
+          </slot>
+        </template>
+      </div>
       <div v-if="isCallInProgress" class="vac-room-call-ongoing" @click="returnToCallClick">
         <div class="vac-room-call-ongoing-info">
           <span v-if="isAttendanceAccepted" class="vac-room-call-ongoing-title">
@@ -136,8 +136,8 @@
           </span>
         </div>
       </div>
-		</slot>
-	</div>
+    </slot>
+  </div>
 </template>
 
 <script>
@@ -147,69 +147,69 @@ import vClickOutside from '../../../utils/on-click-outside'
 import typingText from '../../../utils/typing-text'
 
 export default {
-	name: 'RoomHeader',
-	components: {
-		SvgIcon
-	},
+  name: 'RoomHeader',
+  components: {
+    SvgIcon
+  },
 
-	directives: {
-		clickOutside: vClickOutside
-	},
+  directives: {
+    clickOutside: vClickOutside
+  },
 
-	props: {
-		currentUserId: { type: [String, Number], required: true },
-		textMessages: { type: Object, required: true },
-		singleRoom: { type: Boolean, required: true },
-		showRoomsList: { type: Boolean, required: true },
-		isMobile: { type: Boolean, required: true },
-		roomInfoEnabled: { type: Boolean, required: true },
-		menuActions: { type: Array, required: true },
-		room: { type: Object, required: true },
-		messageSelectionEnabled: { type: Boolean, required: true },
-		messageSelectionActions: { type: Array, required: true },
-		selectedMessagesTotal: { type: Number, required: true },
+  props: {
+    currentUserId: { type: [String, Number], required: true },
+    textMessages: { type: Object, required: true },
+    singleRoom: { type: Boolean, required: true },
+    showRoomsList: { type: Boolean, required: true },
+    isMobile: { type: Boolean, required: true },
+    roomInfoEnabled: { type: Boolean, required: true },
+    menuActions: { type: Array, required: true },
+    room: { type: Object, required: true },
+    messageSelectionEnabled: { type: Boolean, required: true },
+    messageSelectionActions: { type: Array, required: true },
+    selectedMessagesTotal: { type: Number, required: true },
     call: { type: Object, required: true }
-	},
+  },
 
-	emits: [
-		'toggle-rooms-list',
-		'room-info',
-		'menu-action-handler',
-		'cancel-message-selection',
-		'message-selection-action-handler',
+  emits: [
+    'toggle-rooms-list',
+    'room-info',
+    'menu-action-handler',
+    'cancel-message-selection',
+    'message-selection-action-handler',
     'return-to-call'
-	],
+  ],
 
-	data() {
-		return {
-			menuOpened: false,
-			messageSelectionAnimationEnded: true,
+  data() {
+    return {
+      menuOpened: false,
+      messageSelectionAnimationEnded: true,
       callInterval: null,
       callDuration: null
-		}
-	},
+    }
+  },
 
-	computed: {
-		typingUsers() {
-			return typingText(this.room, this.currentUserId, this.textMessages)
-		},
-		userStatus() {
-			if (!this.room.users || this.room.users.length !== 2) return
+  computed: {
+    typingUsers() {
+      return typingText(this.room, this.currentUserId, this.textMessages)
+    },
+    userStatus() {
+      if (!this.room.users || this.room.users.length !== 2) return
 
-			const user = this.room.users.find(u => u._id !== this.currentUserId)
+      const user = this.room.users.find(u => u._id !== this.currentUserId)
 
-			if (!user?.status) return
+      if (!user?.status) return
 
-			let text = ''
+      let text = ''
 
-			if (user.status.state === 'online') {
-				text = this.textMessages.IS_ONLINE
-			} else if (user.status.lastChanged) {
-				text = this.textMessages.LAST_SEEN + user.status.lastChanged
-			}
+      if (user.status.state === 'online') {
+        text = this.textMessages.IS_ONLINE
+      } else if (user.status.lastChanged) {
+        text = this.textMessages.LAST_SEEN + user.status.lastChanged
+      }
 
-			return text
-		},
+      return text
+    },
     isCallInProgress() {
       return this.call && this.call.statusInProgress
     },
@@ -228,18 +228,18 @@ export default {
     isAttendanceCallEnded() {
       return this.call && this.call.attendance.statusCallEnded
     }
-	},
+  },
 
-	watch: {
-		messageSelectionEnabled(val) {
-			if (val) {
-				this.messageSelectionAnimationEnded = false
-			} else {
-				setTimeout(() => {
-					this.messageSelectionAnimationEnded = true
-				}, 300)
-			}
-		},
+  watch: {
+    messageSelectionEnabled(val) {
+      if (val) {
+        this.messageSelectionAnimationEnded = false
+      } else {
+        setTimeout(() => {
+          this.messageSelectionAnimationEnded = true
+        }, 300)
+      }
+    },
     isCallInProgress(value) {
       if (value) {
         this.setupCallDurationUpdate()
@@ -247,24 +247,24 @@ export default {
         clearInterval(this.callInterval)
       }
     }
-	},
+  },
   mounted() {
     if (this.isCallInProgress) {
       this.setupCallDurationUpdate()
     }
   },
 
-	methods: {
-		menuActionHandler(action) {
-			this.closeMenu()
-			this.$emit('menu-action-handler', action)
-		},
-		closeMenu() {
-			this.menuOpened = false
-		},
-		messageSelectionActionHandler(action) {
-			this.$emit('message-selection-action-handler', action)
-		},
+  methods: {
+    menuActionHandler(action) {
+      this.closeMenu()
+      this.$emit('menu-action-handler', action)
+    },
+    closeMenu() {
+      this.menuOpened = false
+    },
+    messageSelectionActionHandler(action) {
+      this.$emit('message-selection-action-handler', action)
+    },
     returnToCallClick() {
       this.$emit('return-to-call')
     },
@@ -283,6 +283,6 @@ export default {
         this.updateCallDuration()
       }, 1000)
     }
-	}
+  }
 }
 </script>

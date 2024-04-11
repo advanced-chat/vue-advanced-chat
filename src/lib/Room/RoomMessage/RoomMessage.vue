@@ -1,42 +1,42 @@
 <template>
-	<div
+  <div
     :id="message._id" ref="message"
     class="vac-message-wrapper"
     :class="{'vac-selection-enabled': messageSelectionEnabled, 'message-selected' : isMessageSelected, 'message-system': message.system}"
     @click="selectMessage"
   >
-		<div v-if="showDate" class="vac-card-date-container">
+    <div v-if="showDate" class="vac-card-date-container">
       <div class="vac-card-info vac-card-date">
         {{ message.date }}
       </div>
-		</div>
+    </div>
 
-		<div v-if="newMessage._id === message._id">
+    <div v-if="newMessage._id === message._id">
       <slot name="line-new">
         <div class="vac-line-new">
           {{ textMessages.NEW_MESSAGES }}
         </div>
       </slot>
-		</div>
+    </div>
 
-		<div v-if="message.system" class="vac-card-info vac-card-system">
-			<slot :name="'message_' + message._id">
-				<format-message
-					:message-id="message._id"
-					:content="message.content"
-					:deleted="!!message.deleted"
-					:users="roomUsers"
-					:text-messages="textMessages"
-					:text-formatting="textFormatting"
-					:link-options="linkOptions"
-					@open-user-tag="openUserTag"
-				>
-					<template v-for="(idx, name) in $slots" #[name]="data">
-						<slot :name="name" v-bind="data" />
-					</template>
-				</format-message>
-			</slot>
-		</div>
+    <div v-if="message.system" class="vac-card-info vac-card-system">
+      <slot :name="'message_' + message._id">
+        <format-message
+          :message-id="message._id"
+          :content="message.content"
+          :deleted="!!message.deleted"
+          :users="roomUsers"
+          :text-messages="textMessages"
+          :text-formatting="textFormatting"
+          :link-options="linkOptions"
+          @open-user-tag="openUserTag"
+        >
+          <template v-for="(idx, name) in $slots" #[name]="data">
+            <slot :name="name" v-bind="data" />
+          </template>
+        </format-message>
+      </slot>
+    </div>
     <div
       v-else-if="message.dynamic"
       class="vac-message-dynamic vac-message-box-container"
@@ -119,8 +119,8 @@
           <div
             class="vac-message-container"
             :class="{
-						'vac-message-container-offset': messageOffset
-					}"
+            'vac-message-container-offset': messageOffset
+          }"
           >
             <div
               class="vac-message-card"
@@ -279,9 +279,9 @@
               v-if="message.failure && message.senderId === currentUserId"
               class="vac-failure-container vac-svg-button"
               :class="{
-							'vac-failure-container-avatar':
-								message.avatar && message.senderId === currentUserId
-						}"
+              'vac-failure-container-avatar':
+                message.avatar && message.senderId === currentUserId
+            }"
               @click="$emit('open-failed-message', { message })"
             >
               <div class="vac-failure-text">!</div>
@@ -321,210 +321,210 @@ import { messagesValidation } from '../../../utils/data-validation'
 import { isAudioFile } from '../../../utils/media-file'
 
 export default {
-	name: 'RoomMessage',
-	components: {
-		SvgIcon,
-		FormatMessage,
-		AudioPlayer,
-		MessageReply,
-		MessageFiles,
-		MessageActions,
-		MessageReactions
-	},
+  name: 'RoomMessage',
+  components: {
+    SvgIcon,
+    FormatMessage,
+    AudioPlayer,
+    MessageReply,
+    MessageFiles,
+    MessageActions,
+    MessageReactions
+  },
 
-	props: {
-		currentUserId: { type: [String, Number], required: true },
-		textMessages: { type: Object, required: true },
-		index: { type: Number, required: true },
-		message: { type: Object, required: true },
-		messages: { type: Array, required: true },
-		editedMessageId: { type: [String, Number], default: null },
-		roomUsers: { type: Array, default: () => [] },
-		messageActions: { type: Array, required: true },
-		newMessages: { type: Array, default: () => [] },
-		showReactionEmojis: { type: Boolean, required: true },
-		showNewMessagesDivider: { type: Boolean, required: true },
-		textFormatting: { type: Object, required: true },
-		linkOptions: { type: Object, required: true },
-		usernameOptions: { type: Object, required: true },
-		messageSelectionEnabled: { type: Boolean, required: true },
-		selectedMessages: { type: Array, default: () => [] },
-		emojiDataSource: { type: String, default: undefined },
+  props: {
+    currentUserId: { type: [String, Number], required: true },
+    textMessages: { type: Object, required: true },
+    index: { type: Number, required: true },
+    message: { type: Object, required: true },
+    messages: { type: Array, required: true },
+    editedMessageId: { type: [String, Number], default: null },
+    roomUsers: { type: Array, default: () => [] },
+    messageActions: { type: Array, required: true },
+    newMessages: { type: Array, default: () => [] },
+    showReactionEmojis: { type: Boolean, required: true },
+    showNewMessagesDivider: { type: Boolean, required: true },
+    textFormatting: { type: Object, required: true },
+    linkOptions: { type: Object, required: true },
+    usernameOptions: { type: Object, required: true },
+    messageSelectionEnabled: { type: Boolean, required: true },
+    selectedMessages: { type: Array, default: () => [] },
+    emojiDataSource: { type: String, default: undefined },
     maxMessageRows: { type: Number, default: 0 }
-	},
+  },
 
-	emits: [
-		'message-added',
-		'open-file',
-		'open-user-tag',
-		'open-failed-message',
-		'message-action-handler',
-		'send-message-reaction',
-		'select-message',
-		'unselect-message',
+  emits: [
+    'message-added',
+    'open-file',
+    'open-user-tag',
+    'open-failed-message',
+    'message-action-handler',
+    'send-message-reaction',
+    'select-message',
+    'unselect-message',
     'message-reaction-click',
     'message-reply-click',
     'click-message-username'
-	],
+  ],
 
-	data() {
-		return {
-			hoverMessageId: null,
-			messageHover: false,
+  data() {
+    return {
+      hoverMessageId: null,
+      messageHover: false,
       isSelectingContent: false,
-			optionsOpened: false,
-			emojiOpened: false,
-			newMessage: {},
-			progressTime: '- : -',
-			hoverAudioProgress: false,
+      optionsOpened: false,
+      emojiOpened: false,
+      newMessage: {},
+      progressTime: '- : -',
+      hoverAudioProgress: false,
       hasTruncatedContent: false
-		}
-	},
+    }
+  },
 
-	computed: {
-		showUsername() {
-			if (
-				!this.usernameOptions.currentUser &&
-				this.message.senderId === this.currentUserId
-			) {
-				return false
-			} else {
-				return this.roomUsers.length >= this.usernameOptions.minUsers
-			}
-		},
-		showDate() {
-			return (
-				this.index > 0 &&
-				this.message.date !== this.messages[this.index - 1].date
-			)
-		},
-		messageOffset() {
-			return (
-				this.index > 0 &&
-				this.message.senderId !== this.messages[this.index - 1].senderId
-			)
-		},
-		isMessageHover() {
-			return (
-				this.editedMessageId === this.message._id ||
-				this.hoverMessageId === this.message._id
-			)
-		},
-		isAudio() {
-			return this.message.files?.some(file => isAudioFile(file))
-		},
-		isCheckmarkVisible() {
-			return (
-				this.message.senderId === this.currentUserId &&
-				!this.message.deleted &&
-				(this.message.saved || this.message.distributed || this.message.seen)
-			)
-		},
-		hasCurrentUserAvatar() {
-			return this.messages.some(
-				message => message.senderId === this.currentUserId && message.avatar
-			)
-		},
-		hasSenderUserAvatar() {
-			return this.messages.some(
-				message => message.senderId !== this.currentUserId && message.avatar
-			)
-		},
-		isMessageSelected() {
-			return (
-				this.messageSelectionEnabled &&
-				!!this.selectedMessages.find(
-					message => message._id === this.message._id
-				)
-			)
-		}
-	},
+  computed: {
+    showUsername() {
+      if (
+        !this.usernameOptions.currentUser &&
+        this.message.senderId === this.currentUserId
+      ) {
+        return false
+      } else {
+        return this.roomUsers.length >= this.usernameOptions.minUsers
+      }
+    },
+    showDate() {
+      return (
+        this.index > 0 &&
+        this.message.date !== this.messages[this.index - 1].date
+      )
+    },
+    messageOffset() {
+      return (
+        this.index > 0 &&
+        this.message.senderId !== this.messages[this.index - 1].senderId
+      )
+    },
+    isMessageHover() {
+      return (
+        this.editedMessageId === this.message._id ||
+        this.hoverMessageId === this.message._id
+      )
+    },
+    isAudio() {
+      return this.message.files?.some(file => isAudioFile(file))
+    },
+    isCheckmarkVisible() {
+      return (
+        this.message.senderId === this.currentUserId &&
+        !this.message.deleted &&
+        (this.message.saved || this.message.distributed || this.message.seen)
+      )
+    },
+    hasCurrentUserAvatar() {
+      return this.messages.some(
+        message => message.senderId === this.currentUserId && message.avatar
+      )
+    },
+    hasSenderUserAvatar() {
+      return this.messages.some(
+        message => message.senderId !== this.currentUserId && message.avatar
+      )
+    },
+    isMessageSelected() {
+      return (
+        this.messageSelectionEnabled &&
+        !!this.selectedMessages.find(
+          message => message._id === this.message._id
+        )
+      )
+    }
+  },
 
-	watch: {
-		newMessages: {
-			immediate: true,
-			deep: true,
-			handler(val) {
-				if (!val.length || !this.showNewMessagesDivider) {
-					this.newMessage = {}
-					return
-				}
+  watch: {
+    newMessages: {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        if (!val.length || !this.showNewMessagesDivider) {
+          this.newMessage = {}
+          return
+        }
 
-				this.newMessage = val.reduce((res, obj) =>
-					obj.index < res.index ? obj : res
-				)
-			}
-		},
-		messageSelectionEnabled() {
-			this.resetMessageHover()
-		}
-	},
+        this.newMessage = val.reduce((res, obj) =>
+          obj.index < res.index ? obj : res
+        )
+      }
+    },
+    messageSelectionEnabled() {
+      this.resetMessageHover()
+    }
+  },
 
-	mounted() {
-		messagesValidation(this.message)
+  mounted() {
+    messagesValidation(this.message)
 
-		this.$emit('message-added', {
-			message: this.message,
-			index: this.index,
-			ref: this.$refs.message
-		})
+    this.$emit('message-added', {
+      message: this.message,
+      index: this.index,
+      ref: this.$refs.message
+    })
 
     this.truncateMessageIfNeeded()
-	},
+  },
 
-	methods: {
-		onHoverMessage() {
-			if (!this.messageSelectionEnabled) {
-				this.messageHover = !this.isSelectingContent && true
-				if (this.canEditMessage()) this.hoverMessageId = this.message._id
-			}
-		},
+  methods: {
+    onHoverMessage() {
+      if (!this.messageSelectionEnabled) {
+        this.messageHover = !this.isSelectingContent && true
+        if (this.canEditMessage()) this.hoverMessageId = this.message._id
+      }
+    },
 
-		canEditMessage() {
-			return !this.message.deleted
-		},
+    canEditMessage() {
+      return !this.message.deleted
+    },
 
-		onLeaveMessage() {
-			if (!this.messageSelectionEnabled) {
-				if (!this.optionsOpened && !this.emojiOpened) this.messageHover = false
-				this.hoverMessageId = null
-			}
-		},
+    onLeaveMessage() {
+      if (!this.messageSelectionEnabled) {
+        if (!this.optionsOpened && !this.emojiOpened) this.messageHover = false
+        this.hoverMessageId = null
+      }
+    },
 
-		resetMessageHover() {
-			this.messageHover = false
-			this.hoverMessageId = null
-		},
+    resetMessageHover() {
+      this.messageHover = false
+      this.hoverMessageId = null
+    },
 
-		openFile(file) {
-			this.$emit('open-file', { message: this.message, file: file })
-		},
+    openFile(file) {
+      this.$emit('open-file', { message: this.message, file: file })
+    },
 
-		openUserTag(user) {
-			this.$emit('open-user-tag', { user })
-		},
+    openUserTag(user) {
+      this.$emit('open-user-tag', { user })
+    },
 
     onClickMessageUsername() {
       const user = this.roomUsers.find(user => user._id === this.message.senderId)
       this.$emit('click-message-username', { user })
     },
 
-		messageActionHandler(action) {
-			this.resetMessageHover()
+    messageActionHandler(action) {
+      this.resetMessageHover()
 
-			setTimeout(() => {
-				this.$emit('message-action-handler', { action, message: this.message })
-			}, 300)
-		},
+      setTimeout(() => {
+        this.$emit('message-action-handler', { action, message: this.message })
+      }, 300)
+    },
 
-		sendMessageReaction({ emoji, reaction }) {
-			this.$emit('send-message-reaction', {
-				messageId: this.message._id,
-				reaction: emoji,
-				remove: reaction && reaction.indexOf(this.currentUserId) !== -1
-			})
-			this.messageHover = false
-		},
+    sendMessageReaction({ emoji, reaction }) {
+      this.$emit('send-message-reaction', {
+        messageId: this.message._id,
+        reaction: emoji,
+        remove: reaction && reaction.indexOf(this.currentUserId) !== -1
+      })
+      this.messageHover = false
+    },
 
     messageReactionClick() {
       this.$emit('message-reaction-click', {
@@ -533,16 +533,16 @@ export default {
       })
     },
 
-		selectMessage() {
+    selectMessage() {
       if (!this.messageSelectionEnabled || this.message.system) {
-          return
+        return
       }
       if (this.isMessageSelected) {
         this.$emit('unselect-message', this.message._id)
         return
       }
       this.$emit('select-message', this.message)
-		},
+    },
 
     startContentSelection() {
       this.isSelectingContent = true
@@ -597,6 +597,6 @@ export default {
         formatWrapper.style.cssText = ''
       })
     }
-	}
+  }
 }
 </script>

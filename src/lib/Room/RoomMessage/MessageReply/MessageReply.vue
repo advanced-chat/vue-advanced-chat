@@ -1,64 +1,64 @@
 <template>
-	<div class="vac-reply-message">
-		<div class="vac-reply-username">
-			{{ replyUsername }}
-		</div>
+  <div class="vac-reply-message">
+    <div class="vac-reply-username">
+      {{ replyUsername }}
+    </div>
 
-		<div v-if="isImage" class="vac-image-reply-container">
-			<div
-				class="vac-message-image vac-message-image-reply"
-				:style="{
-					'background-image': `url('${firstFile.url}')`
-				}"
-			/>
-		</div>
+    <div v-if="isImage" class="vac-image-reply-container">
+      <div
+        class="vac-message-image vac-message-image-reply"
+        :style="{
+          'background-image': `url('${firstFile.url}')`
+        }"
+      />
+    </div>
 
-		<div v-else-if="isVideo" class="vac-video-reply-container">
-			<video controls>
-				<source :src="firstFile.url" />
-			</video>
-		</div>
+    <div v-else-if="isVideo" class="vac-video-reply-container">
+      <video controls>
+        <source :src="firstFile.url" />
+      </video>
+    </div>
 
-		<audio-player
-			v-else-if="isAudio"
-			:src="firstFile.url"
-			:message-selection-enabled="false"
-			@update-progress-time="progressTime = $event"
-			@hover-audio-progress="hoverAudioProgress = $event"
-		>
-			<template v-for="(idx, name) in $slots" #[name]="data">
-				<slot :name="name" v-bind="data" />
-			</template>
-		</audio-player>
+    <audio-player
+      v-else-if="isAudio"
+      :src="firstFile.url"
+      :message-selection-enabled="false"
+      @update-progress-time="progressTime = $event"
+      @hover-audio-progress="hoverAudioProgress = $event"
+    >
+      <template v-for="(idx, name) in $slots" #[name]="data">
+        <slot :name="name" v-bind="data" />
+      </template>
+    </audio-player>
 
-		<div v-else-if="isOtherFile" class="vac-file-container">
-			<div>
-				<slot name="file-icon">
-					<svg-icon name="file" />
-				</slot>
-			</div>
-			<div class="vac-text-ellipsis">
-				{{ firstFile.name }}
-			</div>
-			<div
-				v-if="firstFile.extension"
-				class="vac-text-ellipsis vac-text-extension"
-			>
-				{{ firstFile.extension }}
-			</div>
-		</div>
+    <div v-else-if="isOtherFile" class="vac-file-container">
+      <div>
+        <slot name="file-icon">
+          <svg-icon name="file" />
+        </slot>
+      </div>
+      <div class="vac-text-ellipsis">
+        {{ firstFile.name }}
+      </div>
+      <div
+        v-if="firstFile.extension"
+        class="vac-text-ellipsis vac-text-extension"
+      >
+        {{ firstFile.extension }}
+      </div>
+    </div>
 
-		<div class="vac-reply-content">
-			<format-message
-				:message-id="message.replyMessage._id"
-				:content="message.replyMessage.content"
-				:users="roomUsers"
-				:text-formatting="textFormatting"
-				:link-options="linkOptions"
-				:reply="true"
-			/>
-		</div>
-	</div>
+    <div class="vac-reply-content">
+      <format-message
+        :message-id="message.replyMessage._id"
+        :content="message.replyMessage.content"
+        :users="roomUsers"
+        :text-formatting="textFormatting"
+        :link-options="linkOptions"
+        :reply="true"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -68,50 +68,50 @@ import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
 import AudioPlayer from '../AudioPlayer/AudioPlayer'
 
 import {
-	isAudioFile,
-	isImageFile,
-	isVideoFile
+  isAudioFile,
+  isImageFile,
+  isVideoFile
 } from '../../../../utils/media-file'
 
 export default {
-	name: 'MessageReply',
-	components: { AudioPlayer, SvgIcon, FormatMessage },
+  name: 'MessageReply',
+  components: { AudioPlayer, SvgIcon, FormatMessage },
 
-	props: {
-		message: { type: Object, required: true },
-		textFormatting: { type: Object, required: true },
-		linkOptions: { type: Object, required: true },
-		roomUsers: { type: Array, required: true }
-	},
+  props: {
+    message: { type: Object, required: true },
+    textFormatting: { type: Object, required: true },
+    linkOptions: { type: Object, required: true },
+    roomUsers: { type: Array, required: true }
+  },
 
-	computed: {
-		replyUsername() {
-			const { senderId } = this.message.replyMessage
-			const replyUser = this.roomUsers.find(user => user._id === senderId)
-			return replyUser ? replyUser.username : ''
-		},
-		firstFile() {
-			return this.message.replyMessage?.files?.length
-				? this.message.replyMessage.files[0]
-				: {}
-		},
-		isAudio() {
-			return isAudioFile(this.firstFile)
-		},
-		isImage() {
-			return isImageFile(this.firstFile)
-		},
-		isVideo() {
-			return isVideoFile(this.firstFile)
-		},
-		isOtherFile() {
-			return (
-				this.message.replyMessage.files?.length &&
-				!this.isAudio &&
-				!this.isVideo &&
-				!this.isImage
-			)
-		}
-	}
+  computed: {
+    replyUsername() {
+      const { senderId } = this.message.replyMessage
+      const replyUser = this.roomUsers.find(user => user._id === senderId)
+      return replyUser ? replyUser.username : ''
+    },
+    firstFile() {
+      return this.message.replyMessage?.files?.length
+        ? this.message.replyMessage.files[0]
+        : {}
+    },
+    isAudio() {
+      return isAudioFile(this.firstFile)
+    },
+    isImage() {
+      return isImageFile(this.firstFile)
+    },
+    isVideo() {
+      return isVideoFile(this.firstFile)
+    },
+    isOtherFile() {
+      return (
+        this.message.replyMessage.files?.length &&
+        !this.isAudio &&
+        !this.isVideo &&
+        !this.isImage
+      )
+    }
+  }
 }
 </script>

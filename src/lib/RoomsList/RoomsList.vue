@@ -248,22 +248,22 @@ export default {
       }
     },
     searchRoom(ev) {
-			if (this.customSearchRoomEnabled) {
-				this.$emit('search-room', ev.target.value)
-			} else {
-				this.roomsQuery = ev.target.value
-				this.filteredRooms = filteredItems(
-					this.rooms,
-					['roomName', 'email'],
-					ev.target.value
-				)
-			}
-		},
-		openRoom(room) {
-			if (room.roomId === this.room.roomId && !this.isMobile) return
-			if (!this.isMobile) this.selectedRoomId = room.roomId
-			this.$emit('fetch-room', { room })
-		},
+      if (this.customSearchRoomEnabled) {
+        this.$emit('search-room', ev.target.value)
+      } else {
+        this.roomsQuery = ev.target.value
+        this.filteredRooms = filteredItems(
+          this.rooms,
+          ['roomName', 'email'],
+          ev.target.value
+        )
+      }
+    },
+    openRoom(room) {
+      if (room.roomId === this.room.roomId && !this.isMobile) return
+      if (!this.isMobile) this.selectedRoomId = room.roomId
+      this.$emit('fetch-room', { room })
+    },
     loadMoreRooms() {
       if (this.loadingMoreRooms) return
 
