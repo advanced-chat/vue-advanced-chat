@@ -220,7 +220,7 @@
                 </div>
               </template>
 
-              <a v-if="hasTruncatedContent" href="javascript:void(0)" class="vac-message-see-more" @click="expandMessageContent">
+              <a v-if="hasTruncatedContent && !message.deleted" href="javascript:void(0)" class="vac-message-see-more" @click="expandMessageContent">
                 {{ textMessages.MESSAGE_READ_MORE }}
               </a>
 
@@ -469,18 +469,7 @@ export default {
 			ref: this.$refs.message
 		})
 
-    const shouldTruncate = this.maxMessageRows <= 0 || this.message.replyMessage || !this.$refs.messageBox
-    if (shouldTruncate) {
-      this.hasTruncatedContent = false
-      return
-    }
-
-    this.setMaxMessageRowsStyle()
-
-    const lineHeight = window.getComputedStyle(this.$refs.messageBox).lineHeight
-    const contentRows = Math.ceil(this.$refs.messageBox.clientHeight / parseFloat(lineHeight))
-
-    this.hasTruncatedContent = contentRows > this.maxMessageRows
+    this.truncateMessageIfNeeded()
 	},
 
 	methods: {
@@ -514,10 +503,12 @@ export default {
 		openUserTag(user) {
 			this.$emit('open-user-tag', { user })
 		},
+
     onClickMessageUsername() {
       const user = this.roomUsers.find(user => user._id === this.message.senderId)
       this.$emit('click-message-username', { user })
     },
+
 		messageActionHandler(action) {
 			this.resetMessageHover()
 
@@ -561,6 +552,22 @@ export default {
     endContentSelection() {
       this.hoverMessageId = this.message._id
       this.isSelectingContent = false
+    },
+
+    truncateMessageIfNeeded() {
+      const isFileMessage = this.isAudio || this.message.files.length > 1
+      const shouldTruncate = this.maxMessageRows > 0 && !this.message.replyMessage && this.$refs.messageBox && !isFileMessage && this.message.distributed
+      if (!shouldTruncate) {
+        this.hasTruncatedContent = false
+        return
+      }
+
+      this.setMaxMessageRowsStyle()
+
+      const lineHeight = window.getComputedStyle(this.$refs.messageBox).lineHeight
+      const contentRows = Math.ceil(this.$refs.messageBox.clientHeight / parseFloat(lineHeight))
+
+      this.hasTruncatedContent = contentRows > this.maxMessageRows
     },
 
     setMaxMessageRowsStyle() {
