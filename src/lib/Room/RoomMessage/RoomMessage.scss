@@ -59,7 +59,7 @@
 		line-height: 1.4;
 	}
 
-	$avatar-size: 28px;
+    $avatar-size: var(--chat-message-avatar-size);
 
 	.vac-avatar {
 		height: $avatar-size;

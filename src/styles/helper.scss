@@ -52,10 +52,10 @@
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-color: #ddd;
-	height: 42px;
-	width: 42px;
-	min-height: 42px;
-	min-width: 42px;
+	height: var(--chat-avatar-size);
+	width: var(--chat-avatar-size);
+	min-height: var(--chat-avatar-size);
+	min-width: var(--chat-avatar-size);
 	margin-right: 15px;
 	border-radius: 50%;
 }
