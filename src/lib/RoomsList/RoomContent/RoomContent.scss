@@ -51,6 +51,21 @@
     color: var(--chat-room-color-message);
   }
 
+  .vac-room-divider {
+    padding-top: 5px;
+    padding-bottom: 10px;
+
+    hr {
+      border-style: solid;
+      border-color: var(--chat-room-divider-color);
+      border-top-style: none;
+      border-right-style: none;
+      border-left-style: none;
+      width: 100vw !important;
+      position: absolute;
+    }
+  }
+
   .vac-message-new {
     color: var(--chat-room-color-username);
     font-weight: 500;

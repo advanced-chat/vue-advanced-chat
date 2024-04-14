@@ -121,6 +121,8 @@ export const defaultThemeStyles = {
     },
 
     room: {
+      marginBottom: '5px',
+      dividerColor: 'rgba(0, 0, 0, 0.1)',
       colorUsername: '#0a0a0a',
       colorMessage: '#67717a',
       textLastFontSize: '12px',
@@ -269,6 +271,8 @@ export const defaultThemeStyles = {
     },
 
     room: {
+      marginBottom: '5px',
+      dividerColor: 'rgba(255, 255, 255, 0.1)',
       colorUsername: '#fff',
       colorMessage: '#6c7278',
       colorTimestamp: '#6c7278',
@@ -437,6 +441,7 @@ export const cssThemeVars = ({
     '--chat-room-color-message': room.colorMessage,
     '--chat-room-text-last-font-size': room.textLastFontSize,
     '--chat-room-text-font-family': room.textLastFontFamily,
+    '--chat-room-divider-color': room.dividerColor,
     '--chat-room-color-timestamp': room.colorTimestamp,
     '--chat-room-color-online': room.colorStateOnline,
     '--chat-room-color-offline': room.colorStateOffline,
