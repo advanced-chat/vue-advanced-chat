@@ -917,9 +917,11 @@ button {
 	transition: 0.3s;
 	vertical-align: middle;
 
-	&:hover {
+	@media (hover: hover) {
+&:hover {
 		opacity: 0.8;
 	}
+}
 
 	&:active {
 		opacity: 0.6;

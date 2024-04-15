@@ -10,9 +10,11 @@
 			cursor: pointer;
 			transition: all 0.6s;
 
-			&:hover {
+			@media (hover: hover) {
+&:hover {
 				opacity: 0.85;
 			}
+}
 
 			svg {
 				height: 30px;

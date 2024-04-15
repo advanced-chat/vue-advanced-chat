@@ -59,9 +59,11 @@
       cursor: pointer;
       transition: all 0.2s;
 
-      &:hover {
+      @media (hover: hover) {
+&:hover {
         opacity: 0.7;
       }
+}
 
       &:active {
         opacity: 0.9;
@@ -81,9 +83,11 @@
       color: var(--chat-color-button-clear);
       transition: all 0.2s;
 
-      &:hover {
+      @media (hover: hover) {
+&:hover {
         opacity: 0.7;
       }
+}
     }
   }
 

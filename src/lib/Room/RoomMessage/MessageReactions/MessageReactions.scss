@@ -18,11 +18,13 @@
 		color: var(--chat-message-color-reaction-counter);
 	}
 
-	&:hover {
+	@media (hover: hover) {
+&:hover {
 		border: var(--chat-message-border-style-reaction-hover);
 		background: var(--chat-message-bg-color-reaction-hover);
 		cursor: pointer;
 	}
+}
 
 	&.vac-reaction-me {
 		border: var(--chat-message-border-style-reaction-me);
@@ -32,9 +34,11 @@
 			color: var(--chat-message-color-reaction-counter-me);
 		}
 
-		&:hover {
+		@media (hover: hover) {
+&:hover {
 			border: var(--chat-message-border-style-reaction-hover-me);
 			background: var(--chat-message-bg-color-reaction-hover-me);
 		}
+}
 	}
 }
