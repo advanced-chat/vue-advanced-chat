@@ -58,7 +58,7 @@
 						<slot name="room-header-info">
 							<div class="vac-text-ellipsis">
 								<div class="vac-room-name vac-text-ellipsis">
-									{{ room.roomName }} <Icon v-if="room.verified || room.official" :inline="true" :style="{color: `${room.official ? 'gold' : '#2689d6'}`}" width="14" :icon="icons.verifiedIcon" />
+									{{ room.roomName }} <Icon class="vac-room-verification" v-if="room.verified || room.official" :inline="true" :style="{color: `${room.official ? 'gold' : '#2689d6'}`}" :icon="icons.verifiedIcon" />
 								</div>
 								<div v-if="typingUsers" class="vac-room-info vac-text-ellipsis">
 									{{ typingUsers }}

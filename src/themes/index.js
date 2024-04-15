@@ -6,6 +6,7 @@ const shared = {
     avatarSize: '28px'
   },
   room: {
+    verificationSize: '14px',
     textLastFontFamily: 'inherit',
     textLastFontSize: '12px',
     checkmarkFontSize: '14px',
@@ -13,13 +14,13 @@ const shared = {
     usernameFontSize: 'inherit',
     marginBottom: '5px',
     dateFont: 'inherit',
-    dateFontSize: '11px',
+    dateFontSize: '11px'
   }
 }
 export const defaultThemeStyles = {
   light: {
-    ...shared,
     general: {
+      ...shared.general,
       color: '#0a0a0a',
       colorButtonClear: '#1976d2',
       colorButton: '#fff',
@@ -72,6 +73,7 @@ export const defaultThemeStyles = {
     },
 
     message: {
+      ...shared.message,
       background: '#fff',
       backgroundMe: '#ccf2cf',
       color: '#0a0a0a',
@@ -121,7 +123,7 @@ export const defaultThemeStyles = {
     },
 
     room: {
-      marginBottom: '5px',
+      ...shared.room,
       dividerColor: 'rgba(0, 0, 0, 0.1)',
       colorUsername: '#0a0a0a',
       colorMessage: '#67717a',
@@ -169,9 +171,8 @@ export const defaultThemeStyles = {
     }
   },
   dark: {
-    ...shared,
-
     general: {
+      ...shared.general,
       color: '#fff',
       colorButtonClear: '#fff',
       colorButton: '#fff',
@@ -224,6 +225,7 @@ export const defaultThemeStyles = {
     },
 
     message: {
+      ...shared.message,
       background: '#22242a',
       backgroundMe: '#1f7e80',
       color: '#fff',
@@ -271,7 +273,7 @@ export const defaultThemeStyles = {
     },
 
     room: {
-      marginBottom: '5px',
+      ...shared.room,
       dividerColor: 'rgba(255, 255, 255, 0.1)',
       colorUsername: '#fff',
       colorMessage: '#6c7278',
@@ -441,6 +443,7 @@ export const cssThemeVars = ({
     '--chat-room-color-message': room.colorMessage,
     '--chat-room-text-last-font-size': room.textLastFontSize,
     '--chat-room-text-font-family': room.textLastFontFamily,
+    '--chat-room-verification-size': room.verificationSize,
     '--chat-room-divider-color': room.dividerColor,
     '--chat-room-color-timestamp': room.colorTimestamp,
     '--chat-room-color-online': room.colorStateOnline,

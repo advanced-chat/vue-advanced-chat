@@ -17,8 +17,8 @@
           />
           <div class="vac-room-name vac-text-ellipsis">
             {{ room.roomName }}
-            <Icon v-if="room.verified || room.official" :inline="true"
-                  :style="{color: `${room.official ? 'gold' : '#2689d6'}`}" width="14" :icon="icons.verifiedIcon"
+            <Icon class="vac-room-verification" v-if="room.verified || room.official" :inline="true"
+                  :style="{color: `${room.official ? 'gold' : '#2689d6'}`}" :icon="icons.verifiedIcon"
             />
           </div>
           <div v-if="room.lastMessage" class="vac-text-date">

@@ -33,7 +33,13 @@
     flex: 1;
     color: var(--chat-room-color-username);
     font-weight: 500;
+
+    .vac-room-verification {
+      width: var(--chat-room-verification-size);
+      height: var(--chat-room-verification-size);
+    }
   }
+
 
   .vac-text-date {
     font-family: var(--chat-room-date-font);
