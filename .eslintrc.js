@@ -16,6 +16,7 @@ module.exports = {
 				deepData: true
 			}
 		],
+    'comma-dangle': 'always-multiline',
 		'no-empty-pattern': 'off',
 		'no-unused-vars': 'warn',
 		'valid-typeof': 'off',

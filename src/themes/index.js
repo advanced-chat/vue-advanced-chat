@@ -1,9 +1,12 @@
 const shared = {
   general: {
-    avatarSize: '64px'
+    avatarSize: '64px',
   },
   message: {
-    avatarSize: '28px'
+    radius: '8px',
+    avatarSize: '28px',
+    font: 'inherit',
+    fontSize: '14px',
   },
   room: {
     verificationSize: '14px',
@@ -382,6 +385,8 @@ export const cssThemeVars = ({
     '--chat-dropdown-bg-color-hover': dropdown.backgroundHover,
 
     // message
+    '--chat-message-font': message.font,
+    '--chat-message-font-size': message.fontSize,
     '--chat-message-avatar-size': message.avatarSize,
     '--chat-message-bg-color': message.background,
     '--chat-message-bg-color-me': message.backgroundMe,
@@ -397,6 +402,7 @@ export const cssThemeVars = ({
     '--chat-message-bg-color-system': message.backgroundSystem,
     '--chat-message-color-system': message.colorSystem,
     '--chat-message-color': message.color,
+    '--chat-message-radius': message.radius,
     '--chat-message-color-me': message.colorMe,
     '--chat-message-bg-color-media': message.backgroundMedia,
     '--chat-message-bg-color-reply': message.backgroundReply,

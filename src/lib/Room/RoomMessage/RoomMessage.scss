@@ -121,9 +121,10 @@
 
 	.vac-message-card {
 		background-color: var(--chat-message-bg-color);
+		font-family: var(--chat-message-font);
 		color: var(--chat-message-color);
-		border-radius: 8px;
-		font-size: 14px;
+		border-radius: var(--chat-message-radius);
+		font-size: var(--chat-message-font-size);
 		padding: 6px 9px 3px;
 		white-space: pre-line;
 		max-width: 100%;
