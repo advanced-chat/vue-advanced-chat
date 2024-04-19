@@ -117,3 +117,9 @@
     }
   }
 }
+
+@media only screen and (max-width: 1200px) {
+  .vac-rooms-container {
+    flex: 0 0 35%;
+  }
+}
