@@ -172,6 +172,7 @@ export const defaultThemeStyles = {
 			colorRoomName: '#fff',
 			colorRoomInfo: '#9ca6af',
 			position: 'absolute',
+			width: '100%'
 		},
 
 		footer: {
