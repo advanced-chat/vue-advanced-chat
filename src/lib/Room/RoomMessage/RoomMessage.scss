@@ -120,7 +120,7 @@
 	}
 
 	.vac-message-card {
-		background-color: var(--chat-message-bg-color);
+		background: var(--chat-message-bg-color);
 		color: var(--chat-message-color);
 		border-radius: 8px;
 		font-size: 14px;
@@ -141,7 +141,7 @@
 	}
 
 	.vac-message-current {
-		background-color: var(--chat-message-bg-color-me) !important;
+		background: var(--chat-message-bg-color-me) !important;
 	}
 
 	.vac-message-deleted {
