@@ -5,6 +5,7 @@
         v-if="!singleRoomCasted"
         :current-user-id="currentUserId"
         :rooms="orderedRooms"
+        :custom-search-rooms="customSearchRoomsCasted"
         :loading-rooms="loadingRoomsCasted"
         :rooms-loaded="roomsLoadedCasted"
         :room="room"
@@ -19,7 +20,6 @@
         :link-options="linkOptionsCasted"
         :is-mobile="isMobile"
         :scroll-distance="scrollDistance"
-        :rooms-not-found-message="roomsNotFoundMessage"
         :show-archived-rooms="showArchivedRoomsCasted"
         @fetch-room="fetchRoom"
         @fetch-more-rooms="fetchMoreRooms"
@@ -40,6 +40,7 @@
       <room
         :current-user-id="currentUserId"
         :rooms="roomsCasted"
+        :custom-search-rooms="customSearchRoomsCasted"
         :room-id="room.roomId || ''"
         :load-first-room="loadFirstRoomCasted"
         :messages="messagesCasted"
@@ -159,6 +160,7 @@ export default {
     textMessages: { type: [Object, String], default: () => ({}) },
     currentUserId: { type: String, default: '' },
     rooms: { type: [Array, String], default: () => [] },
+    customSearchRooms: { type: [Array, String], default: () => [] },
     roomsOrder: { type: String, default: 'desc' },
     loadingRooms: { type: [Boolean, String], default: false },
     roomsLoaded: { type: [Boolean, String], default: false },
@@ -233,7 +235,6 @@ export default {
       default: () => ({ minUsers: 3, currentUser: false })
     },
     emojiDataSource: { type: String, default: undefined },
-    roomsNotFoundMessage: { type: String, default: '' },
     attachmentOptions: { type: Array, default: () => [] },
     call: { type: [Object, String], default: () => ({}) },
     textareaHighlight: { type: Boolean, default: false },
@@ -394,6 +395,9 @@ export default {
     roomsCasted() {
       return this.castArray(this.rooms)
     },
+    customSearchRoomsCasted() {
+      return this.castArray(this.customSearchRooms)
+    },
     messagesCasted() {
       return this.castArray(this.messages)
     },
@@ -475,10 +479,6 @@ export default {
           }
         }
       }
-    },
-
-    loadingRoomsCasted(val) {
-      if (val) this.room = {}
     },
 
     roomId: {

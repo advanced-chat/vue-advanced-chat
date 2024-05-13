@@ -46,7 +46,6 @@
 			:menu-actions="JSON.stringify(menuActions)"
 			:message-selection-actions="JSON.stringify(messageSelectionActions)"
 			:templates-text="JSON.stringify(templatesText)"
-			:rooms-not-found-message="'Nenhum conversa encontrada...'"
 			@fetch-more-rooms="fetchMoreRooms"
 			@fetch-messages="fetchMessages($event.detail[0])"
 			@send-message="sendMessage($event.detail[0])"

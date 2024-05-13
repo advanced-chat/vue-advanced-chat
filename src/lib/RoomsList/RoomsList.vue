@@ -31,7 +31,8 @@
       </template>
     </loader>
 
-    <div v-if="!loadingRooms && !rooms.length" class="vac-rooms-empty">
+    <!-- If any of filtered array has no length then show: "no results found" -->
+    <div v-if="!loadingRooms && roomsQuery.length && !this.customSearchRooms.length && !this.filteredRooms.length" class="vac-rooms-empty">
       <slot name="rooms-empty">
         {{ textMessages.ROOMS_EMPTY }}
       </slot>
@@ -94,15 +95,6 @@
         </div>
       </transition>
     </div>
-    <transition name="vac-fade-message">
-      <!--
-        I only want to show this label when there is a non
-        empty query AND when it matches no room.
-      -->
-      <div v-if="roomsQuery.length && !filteredRooms.length" class="no-rooms-found-message">
-        {{ roomsNotFoundMessage }}
-      </div>
-    </transition>
   </div>
 </template>
 
@@ -136,13 +128,13 @@ export default {
     linkOptions: { type: Object, required: true },
     isMobile: { type: Boolean, required: true },
     rooms: { type: Array, required: true },
+    customSearchRooms: { type: Array, required: false, default: () => []},
     loadingRooms: { type: Boolean, required: true },
     roomsLoaded: { type: Boolean, required: true },
     room: { type: Object, required: true },
     customSearchRoomEnabled: { type: [Boolean, String], default: false },
     roomActions: { type: Array, required: true },
     scrollDistance: { type: Number, required: true },
-    roomsNotFoundMessage: { type: String, required: true },
     call: { type: Object, required: true },
     showArchivedRooms: { type: Boolean, required: true }
   },
@@ -173,13 +165,15 @@ export default {
 
   computed: {
     roomsToDisplay: function() {
-      let roomsToReturn = this.roomsQuery.length ? this.filteredRooms : this.rooms
-
-      if (this.showArchivedRooms) {
-        return roomsToReturn.filter(room => room.isArchived)
+      if (!this.roomsQuery.length) {
+        return this.rooms
       }
 
-      return roomsToReturn.filter(room => !room.isArchived)
+      if (this.customSearchRoomEnabled) {
+        return this.customSearchRooms
+      }
+
+      return this.filteredRooms
     },
     hasArchivedRooms: function() {
       return this.rooms.some(room => room.isArchived)
@@ -211,6 +205,8 @@ export default {
           if (!this.loadingRooms) {
             this.showLoader = false
           }
+        } else {
+          this.showLoader = true
         }
       }
     },
@@ -248,10 +244,10 @@ export default {
       }
     },
     searchRoom(ev) {
+      this.roomsQuery = ev.target.value
       if (this.customSearchRoomEnabled) {
         this.$emit('search-room', ev.target.value)
       } else {
-        this.roomsQuery = ev.target.value
         this.filteredRooms = filteredItems(
           this.rooms,
           ['roomName', 'email'],
@@ -260,6 +256,7 @@ export default {
       }
     },
     openRoom(room) {
+      this.roomsQuery = ''
       if (room.roomId === this.room.roomId && !this.isMobile) return
       if (!this.isMobile) this.selectedRoomId = room.roomId
       this.$emit('fetch-room', { room })

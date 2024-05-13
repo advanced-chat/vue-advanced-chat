@@ -6,13 +6,12 @@
     }"
   >
     <template v-if="showSearch">
-      <div v-if="!loadingRooms && rooms.length" class="vac-icon-search">
+      <div class="vac-icon-search">
         <slot name="search-icon">
           <svg-icon name="search" />
         </slot>
       </div>
       <input
-        v-if="!loadingRooms && rooms.length"
         type="search"
         :placeholder="textMessages.SEARCH"
         autocomplete="off"
