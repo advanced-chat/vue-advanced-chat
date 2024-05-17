@@ -555,7 +555,7 @@ export default {
     },
 
     truncateMessageIfNeeded() {
-      const isFileMessage = this.isAudio || this.message.files.length > 1
+      const isFileMessage = this.isAudio || this.message.files?.length > 1
       const shouldTruncate = this.maxMessageRows > 0 && !this.message.replyMessage && this.$refs.messageBox && !isFileMessage && this.message.distributed
       if (!shouldTruncate) {
         this.hasTruncatedContent = false
