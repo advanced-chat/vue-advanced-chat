@@ -5,6 +5,7 @@
         v-if="!singleRoomCasted"
         :current-user-id="currentUserId"
         :rooms="orderedRooms"
+        :archived-rooms="archivedRoomsCasted"
         :custom-search-rooms="customSearchRoomsCasted"
         :loading-rooms="loadingRoomsCasted"
         :rooms-loaded="roomsLoadedCasted"
@@ -40,6 +41,8 @@
       <room
         :current-user-id="currentUserId"
         :rooms="roomsCasted"
+        :archived-rooms="archivedRoomsCasted"
+        :show-archived-rooms="showArchivedRoomsCasted"
         :custom-search-rooms="customSearchRoomsCasted"
         :room-id="room.roomId || ''"
         :load-first-room="loadFirstRoomCasted"
@@ -161,6 +164,7 @@ export default {
     currentUserId: { type: String, default: '' },
     rooms: { type: [Array, String], default: () => [] },
     customSearchRooms: { type: [Array, String], default: () => [] },
+    archivedRooms: { type: Array, default: () => []},
     roomsOrder: { type: String, default: 'desc' },
     loadingRooms: { type: [Boolean, String], default: false },
     roomsLoaded: { type: [Boolean, String], default: false },
@@ -322,6 +326,9 @@ export default {
 
         return aVal > bVal ? -1 : bVal > aVal ? 1 : 0
       })
+    },
+    archivedRoomsCasted() {
+      return this.castArray(this.archivedRooms)
     },
     singleRoomCasted() {
       return this.castBoolean(this.singleRoom)
@@ -485,7 +492,7 @@ export default {
       immediate: true,
       handler(newVal, oldVal) {
         if (newVal && !this.loadingRoomsCasted && this.roomsCasted.length) {
-          const room = this.roomsCasted.find(r => r.roomId === newVal)
+          const room = this.showArchivedRoomsCasted ? this.archivedRoomsCasted.find(r => r.roomId === newVal) : this.roomsCasted.find(r => r.roomId === newVal)
           this.fetchRoom({ room })
         } else if (oldVal && !newVal) {
           this.room = {}
@@ -617,8 +624,8 @@ export default {
     hangUpCallHandler(call) {
       this.$emit('hang-up-call', call)
     },
-    clickArchivedRoomsHandler() {
-      this.$emit('click-archived-rooms')
+    clickArchivedRoomsHandler(event) {
+      this.$emit('click-archived-rooms', event)
     },
     messageActionHandler(ev) {
       this.$emit('message-action-handler', {

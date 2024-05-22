@@ -20,7 +20,7 @@
     color: #9ca6af;
     font-style: italic;
     text-align: center;
-    margin: 40px 0;
+    margin: 30px 15px;
     line-height: 20px;
     white-space: pre-line;
   }
@@ -73,22 +73,29 @@
     }
   }
 
-  .rooms-move,
+  .rooms-move, /* apply transition to moving elements */
   .rooms-enter-active,
-  .rooms-leave-active {
-    transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+  .rooms-leave-active,
+  .rooms-archived-move,
+  .rooms-archived-enter-active,
+  .rooms-archived-leave-active {
+    transition: all 0.5s ease;
   }
 
-  .rooms-enter-from {
-    opacity: 0;
-    transform: translateY(2rem);
-  }
-
+  .rooms-enter-from,
   .rooms-leave-to {
     opacity: 0;
+    transform: translateX(-30px);
   }
 
-  .rooms-leave-active {
+  .rooms-archived-enter-from,
+  .rooms-archived-leave-to {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+
+  .rooms-leave-active,
+  .rooms-archived-leave-active {
     position: absolute;
   }
 
@@ -102,19 +109,21 @@
   }
 
   .vac-rooms-archived {
-    border-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
     align-items: center;
     display: flex;
-    flex: 1 1 100%;
-    margin-bottom: 5px;
-    padding: 0 14px;
-    position: relative;
-    min-height: 71px;
-    transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+    padding: 7px 30px;
+    min-height: 35px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+  }
 
-    &:hover {
-      background: var(--chat-sidemenu-bg-color-hover);
-    }
+  .rooms-archived-icon {
+    font-size: 1.4rem;
+    margin-right: 1rem;
+    color: var(--chat-bg-color-button);
   }
 }
 
