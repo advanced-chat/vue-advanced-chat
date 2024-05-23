@@ -7,7 +7,8 @@
 	.vac-files-box {
 		display: flex;
 		overflow: auto;
-		width: calc(100% - 30px);
+		flex: 1 1 0;
+		width: 0;
 	}
 
 	video {
@@ -17,7 +18,8 @@
 	}
 
 	.vac-icon-close {
-		margin-left: auto;
+		flex: none;
+		margin-left: 5px;
 
 		svg {
 			height: 20px;
