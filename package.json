@@ -4,8 +4,8 @@
     "license": "MIT",
     "description": "A beautiful chat rooms component made with Vue.js - compatible with Vue, React & Angular",
     "author": {
-        "email": "antoindupontdev@gmail.com",
-        "name": "Antoine Dupont"
+        "email": "j4hangir@gmail.com",
+        "name": "j4hangir"
     },
     "types": "./types/vue-advanced-chat.common.d.ts",
     "keywords": [
