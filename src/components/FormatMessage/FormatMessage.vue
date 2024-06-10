@@ -85,6 +85,7 @@ export default {
 		roomList: { type: Boolean, default: false },
 		content: { type: [String, Number], required: true },
 		deleted: { type: Boolean, default: false },
+		edited: { type: String, default: '' },
 		users: { type: Array, default: () => [] },
 		linkify: { type: Boolean, default: true },
 		singleLine: { type: Boolean, default: false },

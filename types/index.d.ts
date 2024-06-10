@@ -73,6 +73,7 @@ export interface Message {
 	distributed?: boolean
 	seen?: boolean
 	deleted?: boolean
+	edited?: string
 	failure?: boolean
 	disableActions?: boolean
 	disableReactions?: boolean
