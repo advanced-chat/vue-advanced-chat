@@ -1,6 +1,7 @@
 export const defaultThemeStyles = {
   light: {
     general: {
+      primary: '#7367f0',
       color: '#0a0a0a',
       colorButtonClear: '#1976d2',
       colorButton: '#fff',
@@ -151,6 +152,7 @@ export const defaultThemeStyles = {
   },
   dark: {
     general: {
+      primary: '#7367f0',
       color: '#fff',
       colorButtonClear: '#fff',
       colorButton: '#fff',
@@ -317,6 +319,7 @@ export const cssThemeVars = ({
 }) => {
   return {
     // general
+    '--chat-primary': general.primary,
     '--chat-color': general.color,
     '--chat-color-button-clear': general.colorButtonClear,
     '--chat-color-button': general.colorButton,

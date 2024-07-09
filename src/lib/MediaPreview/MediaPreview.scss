@@ -38,14 +38,54 @@ $media-preview-width-sm: 20px;
     position: absolute;
     top: 30px;
     right: 30px;
-    transform: scale(1.4);
+  }
+
+  .vac-preview-download-button {
+    position: absolute;
+    display: inline-block;
+    cursor: pointer;
+    z-index: 999;
+
+    top: 25px;
+    right: 80px;
+
+    background-color: var(--chat-primary);
+    color: var(--chat-color-button);
+
+    border-radius: 0.25rem;
+    border: 1px solid transparent;
+
+    padding: 0.5rem 1.125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    font-size: 1rem;
+    transition: all 0.2s;
+
+    &:hover {
+      box-shadow: 0 8px 25px -8px var(--chat-primary);
+    }
+
+    & svg {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      margin-right: 4px;
+
+      & path {
+        fill: var(--chat-color-button) !important;
+      }
+    }
   }
 
   @media only screen and (max-width: 768px) {
     .vac-svg-button {
       top: 20px;
       right: 20px;
-      transform: scale(1.2);
+    }
+
+    .vac-preview-download-button {
+      top: 15px;
+      right: 55px;
     }
 
     .vac-media-preview-container {
