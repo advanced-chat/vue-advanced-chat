@@ -201,6 +201,8 @@ import RoomHeader from './RoomHeader/RoomHeader'
 import RoomFooter from './RoomFooter/RoomFooter'
 import RoomMessage from './RoomMessage/RoomMessage'
 
+import FileUploaderOverlay from '../../utils/uploader-overlay/'
+
 export default {
   name: 'ChatRoom',
   components: {
@@ -290,6 +292,7 @@ export default {
 
   data() {
     return {
+      overlayInitialized: false,
       editedMessageId: null,
       initReplyMessage: null,
       initEditMessage: null,
@@ -465,6 +468,12 @@ export default {
       this.scrollIcon = false
       this.scrollMessagesCount = 0
       this.resetMessageSelection()
+
+      if (!isNaN(parseInt(this.roomId)) && !this.overlayInitialized) {
+        const uploadOverlay = new FileUploaderOverlay()
+        uploadOverlay.init()
+        this.overlayInitialized = true
+      }
 
       const unwatch = this.$watch(
         () => this.messages,
