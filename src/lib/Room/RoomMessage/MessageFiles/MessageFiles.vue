@@ -28,7 +28,7 @@
       <div
         class="vac-file-container"
         :class="{ 'vac-file-container-progress': file.progress >= 0 }"
-        @click="openFile($event, file, 'download')"
+        @click="openFile($event, file)"
       >
         <div class="vac-svg-button">
           <slot name="document-icon">
@@ -89,10 +89,21 @@ export default {
   },
 
   methods: {
-    openFile(event, file, action) {
-      if (!this.messageSelectionEnabled) {
-        event.stopPropagation()
-        this.$emit('open-file', { file, action })
+    openFile(event, file) {
+      if (this.messageSelectionEnabled) {
+        return
+      }
+      event.stopPropagation()
+
+      // determine action based on file type
+      switch (file.type) {
+      case 'application/pdf':
+        this.$emit('open-file', { file, action: 'preview' })
+        break
+
+      default:
+        this.$emit('open-file', { file, action: 'download' })
+        break
       }
     }
   }

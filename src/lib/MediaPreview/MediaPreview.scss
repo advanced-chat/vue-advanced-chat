@@ -19,6 +19,18 @@ $media-preview-width-sm: 20px;
     width: calc(100% - #{$media-preview-width-lg * 2});
     padding: $media-preview-height $media-preview-width-lg;
     margin: 0 auto;
+    
+    .vac-iframe-preview-container {
+      width: 100%;
+      height: 100%;
+      z-index: 999;
+
+      .vac-iframe-preview-pdf {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+    }
   }
 
   .vac-image-preview {

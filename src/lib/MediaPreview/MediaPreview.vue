@@ -22,6 +22,18 @@
           <source :src="file.url" />
         </video>
       </div>
+
+      <div v-else-if="isPdf" class="vac-media-preview-container">
+				<div class="vac-iframe-preview-container">
+          <iframe
+            :src="file.url"
+            title="PDF Viewer"
+            class="vac-iframe-preview-pdf"
+            @load="onIframeFinishedLoading"
+          />
+					<loader :show="isLoadingIframe" type="messages" />
+				</div>
+			</div>
     </transition>
 
     <div class="vac-preview-download-button" @click.stop.prevent="downloadFile($event, file)">
@@ -40,15 +52,17 @@
 </template>
 
 <script>
+
+import Loader from '../../components/Loader/Loader'
 import SvgIcon from '../../components/SvgIcon/SvgIcon'
 
+import { isImageFile, isVideoFile, isPdfFile } from '../../utils/media-file'
 import { translate } from '../../utils/i18n/index'
-
-import { isImageFile, isVideoFile } from '../../utils/media-file'
 
 export default {
   name: 'MediaPreview',
   components: {
+    Loader,
     SvgIcon
   },
 
@@ -58,12 +72,21 @@ export default {
 
   emits: ['close-media-preview'],
 
+  data() {
+    return {
+      isLoadingIframe: true
+    }
+  },
+
   computed: {
     isImage() {
       return isImageFile(this.file)
     },
     isVideo() {
       return isVideoFile(this.file)
+    },
+    isPdf() {
+      return isPdfFile(this.file)
     }
   },
 
@@ -82,6 +105,9 @@ export default {
       event.preventDefault()
       event.stopPropagation()
       window.open(file.downloadUrl, '_self')
+    },
+    onIframeFinishedLoading() {
+      this.isLoadingIframe = false
     }
   }
 }
