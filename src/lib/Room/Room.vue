@@ -585,7 +585,7 @@ export default {
         500
       )
     },
-    messageActionHandler({ action, message }) {
+    async messageActionHandler({ action, message }) {
       switch (action.name) {
       case 'replyMessage':
         this.initReplyMessage = message
@@ -604,6 +604,13 @@ export default {
       case 'selectMessages':
         this.selectedMessages = [message]
         this.messageSelectionEnabled = true
+        return
+      case 'copyMessage':
+        if (!message?.content) {
+          return
+        }
+
+        await navigator.clipboard.writeText(message?.content)
         return
       default:
         return this.$emit('message-action-handler', { action, message })

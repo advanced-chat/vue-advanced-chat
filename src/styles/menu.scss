@@ -5,6 +5,10 @@
   background: var(--chat-dropdown-bg-color);
   padding: 6px 0;
 
+  .vac-action-disabled {
+    pointer-events: none;
+  }
+
   :hover {
     background: var(--chat-dropdown-bg-color-hover);
     transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
