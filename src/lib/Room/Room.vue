@@ -101,6 +101,7 @@
                 @message-action-handler="messageActionHandler"
                 @open-file="openFile"
                 @open-user-tag="openUserTag"
+                @avatar-click="$emit('avatar-click', $event)"
                 @open-failed-message="$emit('open-failed-message', $event)"
                 @send-message-reaction="sendMessageReaction"
                 @select-message="selectMessage"
@@ -287,7 +288,8 @@ export default {
     'external-files-removed',
     'new-draft-message',
     'message-reply-click',
-    'click-message-username'
+    'click-message-username',
+    'avatar-click'
   ],
 
   data() {

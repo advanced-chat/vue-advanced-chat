@@ -109,7 +109,9 @@
             <div
               v-if="message.avatar && !messageSelectionEnabled"
               class="vac-avatar"
+              style="cursor: pointer"
               :style="{ 'background-image': `url('${message.avatar}')` }"
+              @click="onMessageAvatarClicked(message)"
             />
           </slot>
           <div
@@ -364,7 +366,8 @@ export default {
     'unselect-message',
     'message-reaction-click',
     'message-reply-click',
-    'click-message-username'
+    'click-message-username',
+    'avatar-click'
   ],
 
   data() {
@@ -473,6 +476,13 @@ export default {
   },
 
   methods: {
+    onMessageAvatarClicked(msg) {
+      const id = msg?.senderId
+      if (!id) {
+        return
+      }
+      this.$emit('avatar-click', id)
+    },
     onHoverMessage() {
       if (!this.messageSelectionEnabled) {
         this.messageHover = !this.isSelectingContent && true

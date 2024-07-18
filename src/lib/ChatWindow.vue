@@ -88,6 +88,7 @@
         :external-files="externalFilesCasted"
         :allow-sending-external-files="allowSendingExternalFiles"
         :max-message-rows="maxMessageRows"
+        @avatar-click="onAvatarClick"
         @toggle-rooms-list="toggleRoomsList"
         @room-info="roomInfo"
         @fetch-messages="fetchMessages"
@@ -561,6 +562,13 @@ export default {
     },
     roomInfo() {
       this.$emit('room-info', this.room)
+    },
+    onAvatarClick(id) {
+      if (this.room?.isIndividual) {
+        this.roomInfo()
+        return
+      }
+      this.$emit('room-info', { userId: id })
     },
     addRoom() {
       this.$emit('add-room')
