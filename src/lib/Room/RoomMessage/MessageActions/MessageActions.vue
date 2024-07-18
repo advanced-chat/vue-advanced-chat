@@ -1,21 +1,19 @@
 <template>
-  <div class="vac-message-actions-wrapper" :style="{ display: message.deleted ? 'none' : '' }">
+  <div
+    class="vac-message-actions-wrapper"
+    :style="{ display: message.deleted ? 'none' : '' }"
+    :class="{
+      'vac-message-me': message.senderId === currentUserId
+    }"
+  >
     <div
       class="vac-options-container"
-      :style="{
-        display: hoverAudioProgress || !messageHover ? 'none' : 'initial',
-        width:
-          filteredMessageActions.length && showReactionEmojis ? '70px' : '45px'
-      }"
     >
-      <transition-group name="vac-slide-left" tag="span">
+      <transition-group :name="message.senderId === currentUserId ? 'vac-slide-left' : 'vac-slide-right'" tag="span">
         <div
           v-if="isMessageActions || isMessageReactions"
           key="1"
           class="vac-blur-container"
-          :class="{
-            'vac-options-me': message.senderId === currentUserId
-          }"
         />
 
         <div
@@ -38,7 +36,6 @@
           >
             <emoji-picker-container
               class="vac-message-emojis"
-              :style="{ right: isMessageActions ? '30px' : '5px' }"
               :emoji-opened="emojiOpened"
               :emoji-reaction="true"
               :position-right="message.senderId === currentUserId"

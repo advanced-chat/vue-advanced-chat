@@ -1,35 +1,28 @@
 .vac-message-actions-wrapper {
   .vac-options-container {
     position: absolute;
-    top: 2px;
-    right: 10px;
+    top: 4px;
+    right: -40px;
     height: 40px;
-    width: 70px;
-    overflow: hidden;
-    border-top-right-radius: 8px;
+    width: 50px;
   }
 
   .vac-blur-container {
     position: absolute;
     height: 100%;
     width: 100%;
-    left: 8px;
-    bottom: 10px;
+    right: 0;
+    top: 0;
     background: var(--chat-message-bg-color);
-    filter: blur(3px);
-    border-bottom-left-radius: 8px;
-  }
-
-  .vac-options-me {
-    background: var(--chat-message-bg-color-me);
+    filter: blur(8px);
   }
 
   .vac-message-options {
     background: var(--chat-icon-bg-dropdown-message);
     border-radius: 50%;
     position: absolute;
-    top: 7px;
-    right: 7px;
+    top: 25%;
+    left: 5px;
 
     svg {
       height: 17px;
@@ -41,8 +34,8 @@
 
   .vac-message-emojis {
     position: absolute;
-    top: 6px;
-    right: 30px;
+    top: 8px;
+    left: 25px;
   }
 
   .vac-menu-options {
@@ -50,16 +43,37 @@
   }
 
   .vac-menu-left {
-    right: -118px;
+    right: -150px;
+    top: 35px;
+  }
+}
+
+.vac-message-me {
+  position: absolute;
+  top: 0;
+  left: -50px;
+
+  .vac-options-container {
+    right: -60px;
   }
 
-  @media only screen and (max-width: 768px) {
-    .vac-options-container {
-      right: 3px;
-    }
+  .vac-blur-container {
+    height: 100%;
+    width: 100%;
+    right: 0;
+    top: 0;
+  }
 
-    .vac-menu-left {
-      right: -50px;
-    }
+  .vac-message-options {
+    left: 25px;
+  }
+
+  .vac-message-emojis {
+    left: 5px;
+  }
+
+  .vac-menu-options {
+    right: -50px;
+    top: 35px;
   }
 }
