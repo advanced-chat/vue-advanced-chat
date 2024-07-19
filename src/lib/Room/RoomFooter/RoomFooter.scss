@@ -70,6 +70,21 @@
   }
 }
 
+.vac-max-length-exceeded {
+  position: absolute;
+  top: -40px;
+  right: 10px;
+  
+  color: black;
+  text-wrap: nowrap;
+  
+  border: 1px solid black;
+  border-radius: 8px;
+  
+  margin: 6px;
+  padding: 4px 8px;
+}
+
 .vac-icon-microphone {
   fill: var(--chat-icon-color-microphone);
   margin: 0 7px;

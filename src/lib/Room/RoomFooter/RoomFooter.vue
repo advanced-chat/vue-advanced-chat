@@ -115,6 +115,7 @@
           'vac-textarea-outline': editedMessage._id,
           'vac-textarea-highlight': textareaHighlight,
         }"
+        :maxlength="MAX_MESSAGE_LENGTH"
         @input="onChangeInput"
         @keydown.esc="escapeTextarea"
         @keydown.enter.exact.prevent="selectItem"
@@ -125,6 +126,14 @@
         @keydown.down="updateActiveUpOrDown($event, 1)"
         @keydown.ctrl.i="onCtrlIKeydown"
       />
+
+      <span
+        v-if="message.length > MAX_MESSAGE_LENGTH - 25"
+        class="vac-max-length-exceeded"
+        :style="{ background: hasReachedMaxLength(message) ? 'var(--chat-danger)' : 'var(--chat-warning)' }"
+      >
+        {{ message.length }} / {{ MAX_MESSAGE_LENGTH }}
+      </span>
 
       <div v-if="!isRecording" class="vac-icon-textarea">
         <div
@@ -320,7 +329,8 @@ export default {
       selectedUsersTag: [],
       filteredTemplatesText: [],
       recorder: this.initRecorder(),
-      isRecording: false
+      isRecording: false,
+      MAX_MESSAGE_LENGTH: 20000
     }
   },
 
@@ -456,6 +466,9 @@ export default {
   },
 
   methods: {
+    hasReachedMaxLength(message) {
+      return message?.length >= this.MAX_MESSAGE_LENGTH
+    },
     mergeFiles(files, externalFiles) {
       const newExternalFiles = externalFiles.filter(
         customFile => !files.some(file => file.id === customFile.id)
@@ -482,8 +495,9 @@ export default {
       }
     },
     onChangeInput(shouldEmitTypingEvent = true) {
-      if (this.getTextareaRef()?.value || this.getTextareaRef()?.value === '') {
-        this.message = this.getTextareaRef()?.value
+      const messageTyped = this.getTextareaRef()?.value
+      if (messageTyped || messageTyped === '') {
+        this.message = messageTyped
       }
       this.keepKeyboardOpen = true
       this.resizeTextarea()
@@ -568,6 +582,7 @@ export default {
         emoji +
         this.message.substr(endPosition, this.message.length - 1)
 
+      this.message = this.message.substring(0, this.MAX_MESSAGE_LENGTH)
       this.cursorRangePosition = position
       this.focusTextarea()
     },
@@ -721,7 +736,7 @@ export default {
         return
       }
 
-      let message = this.message.trim()
+      let message = this.message.trim().substring(0, this.MAX_MESSAGE_LENGTH)
 
       if (!this.files.length && !message) return
 
