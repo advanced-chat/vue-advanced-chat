@@ -17,6 +17,7 @@
   code {
     display: block;
     font-size: 12px;
+    white-space: pre-wrap;
     color: var(--chat-markdown-color-multi);
     background: var(--chat-markdown-bg);
     border: 1px solid var(--chat-markdown-border);
