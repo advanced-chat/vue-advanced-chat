@@ -290,8 +290,9 @@ export default {
     attachmentOptions: { type: Array, required: true },
     currentUserId: { type: String, default: '' },
     textareaHighlight: { type: Boolean, default: false },
-    externalFiles: { type: Array, default: [] },
-    allowSendingExternalFiles: { type: Boolean, default: null }
+    externalFiles: { type: Array, default: () => [] },
+    allowSendingExternalFiles: { type: Boolean, default: null },
+    messages: { type: Array, default: () => [] }
   },
 
   emits: [
@@ -331,6 +332,8 @@ export default {
       recorder: this.initRecorder(),
       isRecording: false,
       MAX_MESSAGE_LENGTH: 20000,
+      lastMessage: null,
+      isLastMessageUpdated: false,
       isFileAttachementAllowed: false
     }
   },
@@ -357,6 +360,14 @@ export default {
   },
 
   watch: {
+    messages(msgs) {
+      const newMessage = msgs[msgs.length - 1]
+      if (newMessage._id === newMessage.indexId) {
+        return
+      }
+      this.lastMessage = newMessage
+      this.isLastMessageUpdated = true
+    },
     roomId(roomIdNew, roomIdOld) {
       /**
        * If roomId changes it means user switched
@@ -369,6 +380,10 @@ export default {
       })
 
       this.resetMessage(true, true)
+
+      if (this.recorder.isRecording) {
+        this.stopRecorder()
+      }
 
       if (this.roomMessage || this.room.draftMessage) {
         this.message = this.roomMessage || this.room.draftMessage
@@ -428,7 +443,12 @@ export default {
     let isComposed = true
 
     this.getTextareaRef().addEventListener('keyup', e => {
-      if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
+      if (e.key === 'ArrowUp' && !e.shiftKey) {
+        if (this.isAbleToEditLastMessage(this.lastMessage)) {
+          return this.editMessage(this.lastMessage)
+        }
+        return
+      } else if (e.key === 'Enter' && !e.shiftKey && !this.fileDialog) {
         if (isMobile) {
           this.message = this.message + '\n'
           setTimeout(() => this.onChangeInput())
@@ -467,6 +487,20 @@ export default {
   },
 
   methods: {
+    isAbleToEditLastMessage(lastMessage) {
+      const isDoingOtherAction = this.messageReply || this.editedMessage._id
+      const isLastMessageValid = !!lastMessage?._id && lastMessage.content.length
+      const isLastMessageMine = Number(lastMessage.senderId) === Number(this.currentUserId)
+      const isInputEmpty = !this.files.length && !this.message.length
+
+      return (
+        isInputEmpty &&
+        isLastMessageMine &&
+        isLastMessageValid &&
+        !isDoingOtherAction &&
+        this.isLastMessageUpdated
+      )
+    },
     setFilePickerState(state = null) {
       if (state !== 'all' && state !== 'none') {
         return
@@ -757,9 +791,9 @@ export default {
 
       let message = this.message.trim().substring(0, this.MAX_MESSAGE_LENGTH)
 
-      if (!this.files.length && !message) return
-
-      if (this.isFileLoading) return
+      if ((!this.files.length && !message) || this.isFileLoading) {
+        return
+      }
 
       this.selectedUsersTag.forEach(user => {
         message = message.replace(
@@ -792,11 +826,12 @@ export default {
           usersTag: this.selectedUsersTag
         })
       }
-
       this.$emit('attachment-picker-handler', {
         cancel: true
       })
+      const messageChanged = this.editedMessage.content === message
       this.resetMessage(true)
+      this.isLastMessageUpdated = messageChanged
     },
     editMessage(message) {
       this.resetMessage()
@@ -988,6 +1023,7 @@ export default {
       if (this.textareaAutoFocus || !initRoom) {
         setTimeout(() => this.focusTextarea(disableMobileFocus))
       }
+      this.isLastMessageUpdated = true
     },
     resetTextareaSize() {
       if (this.getTextareaRef()) {

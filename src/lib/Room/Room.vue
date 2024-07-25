@@ -152,6 +152,7 @@
       :room-id="roomId"
       :current-user-id="currentUserId"
       :room-message="roomMessage"
+      :messages="messages"
       :text-messages="textMessages"
       :show-send-icon="showSendIcon"
       :show-files="showFiles"
