@@ -73,7 +73,7 @@
       >
         <div class="vac-menu-list">
           <div v-for="action in filteredMessageActions" :key="action.name">
-            <div class="vac-menu-item" :class="{ 'vac-action-disabled': action?.disableIfContentIsNull && message.content === '' }" @click="messageActionHandler(action)">
+            <div v-if="!action.shouldHide" class="vac-menu-item" @click="messageActionHandler(action)">
               {{ action.title }}
             </div>
           </div>
@@ -152,7 +152,12 @@ export default {
 
       const messageType = this.getMessageType()
 
-      return actionsFilteredByUser.filter(action => !action?.type || action.type === messageType)
+      return actionsFilteredByUser
+        .filter(action => !action?.type || action.type === messageType)
+        .map(action => {
+          const shouldHide = action.hideIfContentIsNull && this.message.content === ''
+          return { ...action, shouldHide }
+        })
     }
   },
 

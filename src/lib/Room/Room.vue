@@ -594,7 +594,9 @@ export default {
         })
         return
       case 'editMessage':
-        this.initEditMessage = message
+        const tempMessage = { ...message }
+        tempMessage.files = []
+        this.initEditMessage = tempMessage
         setTimeout(() => {
           this.initEditMessage = null
         })

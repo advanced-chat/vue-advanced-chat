@@ -330,7 +330,8 @@ export default {
       filteredTemplatesText: [],
       recorder: this.initRecorder(),
       isRecording: false,
-      MAX_MESSAGE_LENGTH: 20000
+      MAX_MESSAGE_LENGTH: 20000,
+      isFileAttachementAllowed: false
     }
   },
 
@@ -466,6 +467,21 @@ export default {
   },
 
   methods: {
+    setFilePickerState(state = null) {
+      if (state !== 'all' && state !== 'none') {
+        return
+      }
+
+      var elem = $(this.getTextareaRef())?.parent()?.find('.room-attachment-picker-wrapper')
+
+      if (!elem) {
+        return
+      }
+
+      this.isFileAttachementAllowed = state === 'all'
+
+      elem.css({ 'pointer-events': state })
+    },
     hasReachedMaxLength(message) {
       return message?.length >= this.MAX_MESSAGE_LENGTH
     },
@@ -633,6 +649,9 @@ export default {
       this.$emit('attachment-picker-handler', option)
     },
     async onFileChange(files) {
+      if (!this.isFileAttachementAllowed) {
+        return
+      }
       this.fileDialog = true
       this.focusTextarea()
 
@@ -781,6 +800,7 @@ export default {
     },
     editMessage(message) {
       this.resetMessage()
+      this.setFilePickerState('none')
 
       this.editedMessage = { ...message }
 
@@ -949,6 +969,7 @@ export default {
       }
     },
     resetMessage(disableMobileFocus = false, initRoom = false) {
+      this.setFilePickerState('all')
       if (!initRoom) {
         this.$emit('typing-message', null)
       }
