@@ -28,6 +28,13 @@
     font-size: 12px;
     color: var(--chat-message-color-reply-content);
     white-space: pre-line;
+
+    .vac-format-message-wrapper {
+      .markdown p {
+        max-height: 200px;
+        overflow: scroll;
+      }
+    }
   }
 
   .vac-icon-reply {
