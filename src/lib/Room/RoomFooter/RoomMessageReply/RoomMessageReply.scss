@@ -30,7 +30,7 @@
     white-space: pre-line;
 
     .vac-format-message-wrapper {
-      .markdown {
+      .markdown p {
         max-height: 200px;
         overflow: scroll;
       }
