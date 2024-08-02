@@ -268,7 +268,7 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `styles`(29)                        | [String, Object] | -        | (26)                                                                                                              |
 | `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                                 |
 | `call`(31)                          | String           | -        |                                             |
-| `textarea-hightlight`               | Boolean          | -        |                                             |  
+| `textarea-hightlight`               | Boolean          | -        |                                             |
 | `external-files`(32)                | Array            | `false`  |      `[]`                                   |
 | `allow-sending-external-files`(33)  | Boolean          | `false`  |      `null`                                 |
 | `show-archived-rooms`(34)           | Boolean          | `false`  |      `false`                                |
@@ -497,7 +497,7 @@ Example: set `accepted-files="image/png, image/jpeg, application/pdf"` to allow 
 
 **(30)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
 
-**(31)** `show-audio` can be used to enable or disable audio icon 
+**(31)** `show-audio` can be used to enable or disable audio icon
 
 ```javascript
 styles="{
@@ -529,7 +529,7 @@ styles="{
 
 **(35)** `show-archived-rooms` indicates whether the room list should display archived rooms only or not.
 
-**(35)** `max-message-rows` indicates the maximum number of rows a message can have before being truncated. When the message has more rows, the content is truncated and a "Read more" button is shown. If set to `0` messages will never be truncated. 
+**(35)** `max-message-rows` indicates the maximum number of rows a message can have before being truncated. When the message has more rows, the content is truncated and a "Read more" button is shown. If set to `0` messages will never be truncated.
 
 ## Props data structure
 
@@ -972,6 +972,8 @@ messages: {
 ## [Contributing](https://github.com/advanced-chat/vue-advanced-chat/blob/master/.github/CONTRIBUTING.md)
 
 Your help is always appreciated :rocket:
+
+blablablabla
 
 ## License
 
