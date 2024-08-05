@@ -99,7 +99,7 @@
                 :max-message-rows="maxMessageRows"
                 @message-added="onMessageAdded"
                 @message-action-handler="messageActionHandler"
-                @open-file="openFile"
+                @open-file="$emit('open-file', $event)"
                 @open-user-tag="openUserTag"
                 @avatar-click="$emit('avatar-click', $event)"
                 @open-failed-message="$emit('open-failed-message', $event)"
@@ -647,9 +647,6 @@ export default {
           setTimeout(() => element.classList.remove('vac-scroll-smooth'))
         }
       }, 50)
-    },
-    openFile({ message, file }) {
-      this.$emit('open-file', { message, file })
     },
     openUserTag(user) {
       this.$emit('open-user-tag', user)

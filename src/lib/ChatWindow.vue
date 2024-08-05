@@ -123,7 +123,8 @@
     <transition name="vac-fade-preview" appear>
       <media-preview
         v-if="showMediaPreview"
-        :file="previewFile"
+        :files="previewFiles"
+        :index="previewIndex"
         @close-media-preview="showMediaPreview = false"
       >
         <template v-for="el in slots" #[el.slot]="data">
@@ -292,7 +293,7 @@ export default {
       showRoomsList: true,
       isMobile: false,
       showMediaPreview: false,
-      previewFile: {}
+      previewFiles: []
     }
   },
 
@@ -597,12 +598,16 @@ export default {
     deleteMessage(message) {
       this.$emit('delete-message', { message, roomId: this.room.roomId })
     },
-    openFile({ message, file }) {
-      if (this.mediaPreviewEnabledCasted && file.action === 'preview') {
-        this.previewFile = file.file
+    openFile(event) {
+      const file = typeof event?.files !== 'undefined' ? event?.files[event.index] : event.file
+      const message = event.message
+
+      if (this.mediaPreviewEnabledCasted && event.action === 'preview') {
+        this.previewFiles = event.files ?? [ file ]
+        this.previewIndex = event.index ?? 0
         this.showMediaPreview = true
       } else {
-        this.$emit('open-file', { message, file })
+        this.$emit('open-file', { message, file: file, action: event.action })
       }
     },
     openUserTag({ user }) {

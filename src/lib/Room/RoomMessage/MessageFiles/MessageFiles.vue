@@ -1,47 +1,18 @@
 <template>
   <div class="vac-message-files-container">
-    <div v-for="(file, i) in imageVideoFiles" :key="i + 'iv'">
+    <div v-for="(file, i) in allFiles" :key="i + 'iv'">
       <message-file
         :file="file"
         :current-user-id="currentUserId"
         :message="message"
         :index="i"
         :message-selection-enabled="messageSelectionEnabled"
-        @open-file="$emit('open-file', $event)"
+        @open-file="$emit('open-file', { index: i, files: allFiles, action: $event?.action ?? 'preview' })"
       >
-        <template v-for="(idx, name) in $slots" #[name]="data">
-          <slot :name="name" v-bind="data" />
+        <template v-for="(idx, name) in $slots" #[name]>
+          <slot :name="name" />
         </template>
       </message-file>
-    </div>
-
-    <div
-      v-for="(file, i) in otherFiles"
-      :key="i + 'a'"
-      class="vac-file-wrapper"
-    >
-      <progress-bar
-        v-if="file.progress >= 0"
-        :progress="file.progress"
-        :style="{ top: '44px' }"
-      />
-      <div
-        class="vac-file-container"
-        :class="{ 'vac-file-container-progress': file.progress >= 0 }"
-        @click="openFile($event, file)"
-      >
-        <div class="vac-svg-button">
-          <slot name="document-icon">
-            <svg-icon name="document" />
-          </slot>
-        </div>
-        <div class="vac-text-ellipsis">
-          {{ file.name }}
-        </div>
-        <div v-if="file.extension" class="vac-text-ellipsis vac-text-extension">
-          {{ file.extension }}
-        </div>
-      </div>
     </div>
 
     <format-message
@@ -56,9 +27,7 @@
 </template>
 
 <script>
-import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
 import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
-import ProgressBar from '../../../../components/ProgressBar/ProgressBar'
 
 import MessageFile from './MessageFile/MessageFile'
 
@@ -66,7 +35,7 @@ import { isImageVideoFile } from '../../../../utils/media-file'
 
 export default {
   name: 'MessageFiles',
-  components: { SvgIcon, FormatMessage, ProgressBar, MessageFile },
+  components: { FormatMessage, MessageFile },
 
   props: {
     currentUserId: { type: [String, Number], required: true },
@@ -85,26 +54,9 @@ export default {
     },
     otherFiles() {
       return this.message.files.filter(file => !isImageVideoFile(file))
-    }
-  },
-
-  methods: {
-    openFile(event, file) {
-      if (this.messageSelectionEnabled) {
-        return
-      }
-      event.stopPropagation()
-
-      // determine action based on file type
-      switch (file.type) {
-      case 'application/pdf':
-        this.$emit('open-file', { file, action: 'preview' })
-        break
-
-      default:
-        this.$emit('open-file', { file, action: 'download' })
-        break
-      }
+    },
+    allFiles() {
+      return [ ...this.imageVideoFiles, ...this.otherFiles ]
     }
   }
 }

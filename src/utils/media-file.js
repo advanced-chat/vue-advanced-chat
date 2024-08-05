@@ -1,4 +1,4 @@
-import { IMAGE_TYPES, VIDEO_TYPES, AUDIO_TYPES, PDF_TYPES } from './constants'
+import { IMAGE_TYPES, VIDEO_TYPES, AUDIO_TYPES, PDF_TYPES, TEXT_TYPES, SVG_TYPES } from './constants'
 
 function checkMediaType(types, file) {
   if (!file || !file.type) return
@@ -23,4 +23,12 @@ export function isAudioFile(file) {
 
 export function isPdfFile(file) {
   return checkMediaType(PDF_TYPES, file)
+}
+
+export function isTextFile(file) {
+  return checkMediaType(TEXT_TYPES, file)
+}
+
+export function isSVGFile(file) {
+  return checkMediaType(SVG_TYPES, file)
 }

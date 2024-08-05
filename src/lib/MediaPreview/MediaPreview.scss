@@ -14,21 +14,109 @@ $media-preview-width-sm: 20px;
   background-color: rgba(0, 0, 0, 0.8);
   outline: none;
 
+  .vac-carousel-arrows {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-around;
+    gap: 70%;
+    width: 100%;
+    z-index: 999;
+
+    .vac-carousel-arrow {
+      color: var(--chat-carousel-arrow-color);
+      background-color: var(--chat-carousel-arrow-bg-color);
+      border: none;
+      border-radius: 45px;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+      
+      &:hover {
+        box-shadow:  0px 0px 20px 3px var(--chat-carousel-arrow-shadow)
+      }
+    }
+  }
+
   .vac-media-preview-container {
     height: calc(100% - #{$media-preview-height * 2});
     width: calc(100% - #{$media-preview-width-lg * 2});
     padding: $media-preview-height $media-preview-width-lg;
     margin: 0 auto;
-    
-    .vac-iframe-preview-container {
+    max-width: 75vw;
+
+    .vac-svg-preview {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      height: 50%;
+      max-height: 85vh;
       width: 100%;
+      max-width: 75vw;
+      background-color: #747f89;
+      border-radius: 8px;
+      overflow: scroll;
+    }
+
+    .vac-iframe-preview-container {
       height: 100%;
-      z-index: 999;
+      margin: auto;
 
       .vac-iframe-preview-pdf {
         width: 100%;
         height: 100%;
         border: none;
+      }
+    }
+
+    .vac-text-preview-container {
+      height: 100%;
+
+      .vac-preview-text {
+        width: 100%;
+        height: 100%;
+        background: var(--chat-markdown-bg);
+        border-radius: 8px;
+        box-sizing: border-box;
+        padding: 10px;
+        overflow: scroll;
+        
+        code {
+          white-space: pre-wrap;
+          font-family: monospace;
+          border-bottom: 1px solid var(--chat-markdown-border);
+          display: initial;
+          overflow: scroll;
+          font-size: 14px;;
+          color: var(--chat-markdown-color);
+          text-wrap: wrap;
+        }
+      }
+    }
+
+    .vac-preview-failed-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--chat-carousel-alert-bg-color);
+      color:  var(--chat-carousel-alert-color);
+      height: 100px;
+      width: 350px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      text-align: center;
+      padding: 1rem 2rem;
+      margin: auto;
+      z-index: 1000;
+
+      .vac-preview-download-button {
+        margin-left: 1rem;
+        position: initial;
       }
     }
   }

@@ -51,6 +51,7 @@
 		"@semantic-release/changelog": "^6.0.3",
 		"@semantic-release/git": "^10.0.1",
 		"@semantic-release/github": "^9.2.1",
+		"@types/dompurify": "^3.0.5",
 		"@typescript-eslint/eslint-plugin": "5.4.0",
 		"@typescript-eslint/parser": "5.4.0",
 		"@vitejs/plugin-vue": "1.10.2",
@@ -70,6 +71,7 @@
 	},
 	"dependencies": {
 		"bootstrap-icons": "^1.11.1",
+		"dompurify": "^3.1.6",
 		"emoji-picker-element": "1.12.1",
 		"micromark": "^3.1.0",
 		"micromark-extension-gfm": "^2.0.1"

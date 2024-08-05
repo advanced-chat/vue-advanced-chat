@@ -196,7 +196,7 @@
                 :text-formatting="textFormatting"
                 :link-options="linkOptions"
                 :message-selection-enabled="messageSelectionEnabled"
-                @open-file="openFile"
+                @open-file="$emit('open-file', $event)"
                 @open-user-tag="openUserTag"
               >
                 <template v-for="(i, name) in $slots" #[name]="data">
@@ -504,10 +504,6 @@ export default {
     resetMessageHover() {
       this.messageHover = false
       this.hoverMessageId = null
-    },
-
-    openFile(file) {
-      this.$emit('open-file', { message: this.message, file: file })
     },
 
     openUserTag(user) {

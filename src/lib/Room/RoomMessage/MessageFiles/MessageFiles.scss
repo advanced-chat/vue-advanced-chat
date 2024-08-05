@@ -1,12 +1,14 @@
 .vac-message-files-container {
   .vac-file-wrapper {
     position: relative;
-    width: fit-content;
+    width: 100%;
+    margin: auto;
+    padding: 2px 0px;
 
     .vac-file-container {
       height: 60px;
-      width: 60px;
-      margin: 3px 0 5px;
+      max-width: 250px;
+      margin: auto;
       cursor: pointer;
       transition: all 0.6s;
 
