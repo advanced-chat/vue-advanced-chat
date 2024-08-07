@@ -32,7 +32,7 @@
     .vac-format-message-wrapper {
       .markdown {
         max-height: 200px;
-        overflow: scroll;
+        overflow-y: auto;
       }
     }
   }
