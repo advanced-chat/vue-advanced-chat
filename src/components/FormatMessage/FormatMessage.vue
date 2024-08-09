@@ -7,6 +7,7 @@
       <div
         v-if="message.markdown"
         class="markdown"
+        :class="{ 'vac-emoji-message': containsOnlyEmojis(message) }"
         @click="openTag"
         v-html="message.value"
       />
@@ -69,6 +70,7 @@ import SvgIcon from '../SvgIcon/SvgIcon'
 
 import markdown from '../../utils/markdown'
 import { IMAGE_TYPES } from '../../utils/constants'
+import { containsOnlyEmojis } from '../../utils/emoji'
 
 export default {
   name: 'FormatMessage',
@@ -126,6 +128,12 @@ export default {
   },
 
   methods: {
+    containsOnlyEmojis(message) {
+      const div = document.createElement('div')
+      div.innerHTML = message.value
+      const text = div.textContent || div.innerText || ''
+      return text.length && containsOnlyEmojis(text)
+    },
     checkType(message, type) {
       return message.types && message.types.indexOf(type) !== -1
     },
