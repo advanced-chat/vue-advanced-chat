@@ -165,9 +165,29 @@ export default {
     if (this.isSVG) {
       this.loadSVG(this.file)
     }
+
+    this.getModal().addEventListener('keyup', e => {
+      if (!this.showArrows) {
+        return
+      }
+
+      switch (e.key) {
+      case 'ArrowLeft':
+        this.prevMedia()
+        break
+      case 'ArrowRight':
+        this.nextMedia()
+        break
+      default:
+        break
+      }
+    })
   },
 
   methods: {
+    getModal() {
+      return this.$refs.modal
+    },
     setSVGLoading(state) {
       this.isSVGLoading = state
     },
