@@ -1,0 +1,34 @@
+.vac-rooms-filter-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    align-items: center;
+    color: black;
+    padding: 1rem;
+
+    .vac-filter-option {
+        background-color: var(--chat-sidemenu-bg-filter-option);
+        border-radius: 20px;
+        width: 22%;
+        text-align: center;
+        padding: 5px 3px;
+        font-weight: lighter;
+        cursor: pointer;
+        transition: all 0.5s;
+        position: relative;
+        text-wrap: nowrap;
+        width: 100%;
+
+        .vac-filter-option-name {
+            text-wrap: nowrap;
+        }
+        
+        &:hover {
+            background-color: var(--chat-sidemenu-bg-hover-filter-option);
+        }
+    }
+
+    .vac-filter-selected {
+        background-color: var(--chat-sidemenu-bg-hover-filter-option);
+    }
+}

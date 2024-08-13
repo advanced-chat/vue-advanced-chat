@@ -223,7 +223,6 @@ export default {
     isMobile: { type: Boolean, required: true },
     rooms: { type: Array, required: true },
     archivedRooms: { type: Array, required: true },
-    showArchivedRooms: { type: Boolean, required: true },
     roomId: { type: [String, Number], required: true },
     loadFirstRoom: { type: Boolean, required: true },
     messages: { type: Array, required: true },

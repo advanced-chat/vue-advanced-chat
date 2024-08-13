@@ -163,7 +163,7 @@ export default {
     linkOptions: { type: Object, required: true },
     textMessages: { type: Object, required: true },
     roomActions: { type: Array, required: true },
-    selectedRoomId: { type: String, required: false }
+    selectedRoomId: { type: String, required: false, default: null }
   },
 
   emits: ['room-action-handler'],

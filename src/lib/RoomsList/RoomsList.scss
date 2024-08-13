@@ -73,28 +73,40 @@
     }
   }
 
-  .rooms-move, /* apply transition to moving elements */
-  .rooms-enter-active,
-  .rooms-leave-active,
+  /* apply transition to moving elements */
+  .rooms-move,
+  .rooms-unread-move,
+  .rooms-group-move,
   .rooms-archived-move,
+
+  .rooms-enter-active,
+  .rooms-unread-enter-active,
+  .rooms-group-enter-active,
   .rooms-archived-enter-active,
+
+  .rooms-leave-active,
+  .rooms-unread-leave-active,
+  .rooms-group-leave-active,
   .rooms-archived-leave-active {
     transition: all 0.5s ease;
   }
 
   .rooms-enter-from,
-  .rooms-leave-to {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-
+  .rooms-unread-enter-from,
+  .rooms-group-enter-from,
   .rooms-archived-enter-from,
+
+  .rooms-leave-to,
+  .rooms-unread-leave-to,
+  .rooms-group-leave-to,
   .rooms-archived-leave-to {
     opacity: 0;
     transform: translateX(60px);
   }
 
   .rooms-leave-active,
+  .rooms-unread-leave-active,
+  .rooms-group-leave-active,
   .rooms-archived-leave-active {
     position: absolute;
   }
@@ -108,6 +120,8 @@
     background-color: var(--bs-primary) !important;
   }
 
+  .vac-rooms-unread,
+  .vac-rooms-group,
   .vac-rooms-archived {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;

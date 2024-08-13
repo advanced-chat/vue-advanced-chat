@@ -47,7 +47,9 @@ export const defaultThemeStyles = {
       backgroundHover: '#f6f6f6',
       backgroundActive: '#e5effa',
       colorActive: '#1976d2',
-      borderColorSearch: '#e1e5e8'
+      borderColorSearch: '#e1e5e8',
+      backgroundFilterOption: '#d9d9d9',
+      backgroundHoverFilterOption: '#d4d1fa'
     },
 
     dropdown: {
@@ -208,7 +210,9 @@ export const defaultThemeStyles = {
       backgroundHover: '#202224',
       backgroundActive: '#151617',
       colorActive: '#fff',
-      borderColorSearch: '#181a1b'
+      borderColorSearch: '#181a1b',
+      backgroundFilterOption: '#596269',
+      backgroundHoverFilterOption: '#7367f0'
     },
 
     dropdown: {
@@ -380,6 +384,8 @@ export const cssThemeVars = ({
     '--chat-sidemenu-bg-color-active': sidemenu.backgroundActive,
     '--chat-sidemenu-color-active': sidemenu.colorActive,
     '--chat-sidemenu-border-color-search': sidemenu.borderColorSearch,
+    '--chat-sidemenu-bg-filter-option': sidemenu.backgroundFilterOption,
+    '--chat-sidemenu-bg-hover-filter-option': sidemenu.backgroundHoverFilterOption,
 
     // dropdown
     '--chat-dropdown-bg-color': dropdown.background,

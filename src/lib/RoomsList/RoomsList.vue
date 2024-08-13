@@ -11,8 +11,6 @@
 
     <slot name="rooms-list-search">
       <rooms-search
-        :rooms="rooms"
-        :loading-rooms="loadingRooms"
         :text-messages="textMessages"
         :show-search="showSearch"
         :show-add-room="showAddRoom"
@@ -24,15 +22,11 @@
         </template>
       </rooms-search>
 
-      <div class="vac-rooms-archived" @click="clickArchivedRooms" v-if="showSearch">
-        <div class="rooms-archived-icon">
-          <i v-if="showArchivedRooms" class="bi bi-arrow-left"></i>
-          <i v-else class="bi bi-archive-fill"></i>
-        </div>
-        <div>
-          {{ textMessages.ARCHIVED_ROOMS }}
-        </div>
-      </div>
+      <rooms-filter
+        :room-filter-selected="roomFilterSelected"
+        :room-filters="roomFilters"
+        @set-filter-selected="handleSetFilterSelected"
+      />
     </slot>
 
     <loader :show="loadingRooms" type="rooms">
@@ -42,17 +36,17 @@
     </loader>
 
     <!-- Displayed when user searches for something and result it's empty -->
-    <div v-if="!loadingRooms && roomsQuery.length && !customSearchRooms.length && !roomsToDisplay.length" class="vac-rooms-empty xesquedele pinto">
-      <slot name="rooms-empty">
-        {{ textMessages.ROOMS_EMPTY }}
-      </slot>
+    <div v-if="showMessageEmptyRooms" class="vac-rooms-empty xesquedele pinto">
+      <slot name="rooms-empty">{{ textMessages.ROOMS_EMPTY }}</slot>
     </div>
-
-    <!-- Displayed when user has no archived rooms -->
-    <div v-if="!loadingRooms && !roomsQuery.length && showArchivedRooms && !archivedRooms.length" class="vac-rooms-empty">
-      <slot name="rooms-empty">
-        {{ textMessages.ARCHIVED_ROOMS_EMPTY }}
-      </slot>
+    <div v-if="showMessageEmptyUnreadRooms" class="vac-rooms-empty">
+      <slot name="rooms-empty">{{ textMessages.UNREAD_ROOMS_EMPTY }}</slot>
+    </div>
+    <div v-else-if="showMessageEmptyGroupRooms" class="vac-rooms-empty">
+      <slot name="rooms-empty">{{ textMessages.GROUP_ROOMS_EMPTY }}</slot>
+    </div>
+    <div v-else-if="showMessageEmptyArchivedRooms" class="vac-rooms-empty">
+      <slot name="rooms-empty">{{ textMessages.ARCHIVED_ROOMS_EMPTY }}</slot>
     </div>
 
     <div v-if="!loadingRooms && roomsToDisplay.length" id="rooms-list" class="vac-room-list">
@@ -96,7 +90,7 @@
         </div>
       </transition-group>
       <transition name="vac-fade-message">
-        <div v-if="(rooms.length || archivedRooms.length || customSearchRooms.length) && !loadingRooms" id="infinite-loader-rooms">
+        <div v-if="noRoomToShow && !loadingRooms" id="infinite-loader-rooms">
           <loader :show="showLoader" :infinite="true" type="infinite-rooms">
             <template v-for="(idx, name) in $slots" #[name]="data">
               <slot :name="name" v-bind="data" />
@@ -112,6 +106,7 @@
 import Loader from '../../components/Loader/Loader'
 
 import RoomsSearch from './RoomsSearch/RoomsSearch'
+import RoomsFilter from './RoomsFilter/RoomsFilter'
 import RoomContent from './RoomContent/RoomContent'
 import RoomCallContent from './RoomCallContent/RoomCallContent'
 
@@ -122,8 +117,9 @@ export default {
   components: {
     Loader,
     RoomsSearch,
+    RoomsFilter,
     RoomContent,
-    RoomCallContent,
+    RoomCallContent
   },
 
   props: {
@@ -137,7 +133,9 @@ export default {
     isMobile: { type: Boolean, required: true },
     rooms: { type: Array, required: true },
     archivedRooms: { type: Array, required: true },
-    customSearchRooms: { type: Array, required: false, default: () => []},
+    customSearchRooms: { type: Array, required: false, default: () => [] },
+    unreadRooms: { type: Array, required: true },
+    groupRooms: { type: Array, required: true },
     loadingRooms: { type: Boolean, required: true },
     roomsLoaded: { type: Boolean, required: true },
     room: { type: Object, required: true },
@@ -145,7 +143,8 @@ export default {
     roomActions: { type: Array, required: true },
     scrollDistance: { type: Number, required: true },
     call: { type: Object, required: true },
-    showArchivedRooms: { type: Boolean, required: true, default: false}
+    roomFilterSelected: { type: String, required: true },
+    roomFilters: { type: Object, default: () => {} }
   },
 
   emits: [
@@ -158,7 +157,7 @@ export default {
     'accept-call',
     'hang-up-call',
     'return-to-call',
-    'click-archived-rooms'
+    'set-room-filter'
   ],
 
   data() {
@@ -173,9 +172,47 @@ export default {
   },
 
   computed: {
-    roomsToDisplay: function() {
+    showMessageEmptyRooms() {
+      const active = this.roomFilterSelected === this.roomFilters.DEFAULT.name
+      return active && this.isRoomListEmpty && !this.customSearchRooms.length
+    },
+    showMessageEmptyUnreadRooms() {
+      const active = this.roomFilterSelected === this.roomFilters.UNREAD.name
+      return active && this.isRoomListEmpty && !this.unreadRooms.length
+    },
+    showMessageEmptyGroupRooms() {
+      const active = this.roomFilterSelected === this.roomFilters.GROUP.name
+      return active && this.isRoomListEmpty && !this.groupRooms.length
+    },
+    showMessageEmptyArchivedRooms() {
+      const active = this.roomFilterSelected === this.roomFilters.ARCHIVED.name
+      return active && this.isRoomListEmpty && !this.archivedRooms.length
+    },
+    isRoomListEmpty() {
+      return !this.roomsToDisplay.length && !this.loadingRooms && !this.roomsQuery.length
+    },
+
+    noRoomToShow() {
+      return (
+        !this.rooms.length &&
+        !this.archivedRooms.length &&
+        !this.unreadRooms.length &&
+        !this.groupRooms.length &&
+        !this.customSearchRooms.length
+      )
+    },
+    roomsToDisplay() {
       if (!this.roomsQuery.length) {
-        return this.showArchivedRooms ? this.archivedRooms : this.rooms
+        switch (this.roomFilterSelected) {
+        case this.roomFilters.UNREAD.name:
+          return this.unreadRooms
+        case this.roomFilters.ARCHIVED.name:
+          return this.archivedRooms
+        case this.roomFilters.GROUP.name:
+          return this.groupRooms
+        default:
+          return this.rooms
+        }
       }
 
       if (this.customSearchRoomEnabled) {
@@ -185,7 +222,16 @@ export default {
       return this.filteredRooms
     },
     roomListTransition() {
-      return this.showArchivedRooms ? 'rooms-archived': 'rooms';
+      switch (this.roomFilterSelected) {
+      case this.roomFilters.UNREAD.name:
+        return 'rooms-unread'
+      case this.roomFilters.ARCHIVED.name:
+        return 'rooms-archived'
+      case this.roomFilters.GROUP.name:
+        return 'rooms-group'
+      default:
+        return 'rooms'
+      }
     }
   },
 
@@ -224,20 +270,18 @@ export default {
       handler(val) {
         if (val && !this.isMobile) this.selectedRoomId = val.roomId
       }
-    },
-    /**
-     * If user change rooms view between archived and
-     * non-archived rooms, then reset the search.
-     */
-    showArchivedRooms: {
-      handler() {
-        this.roomsQuery = ''
-        setTimeout(() => this.initIntersectionObserver())
-      }
     }
   },
 
   methods: {
+    resetRoomsQueryAndInitObserver() {
+      this.roomsQuery = ''
+      setTimeout(() => this.initIntersectionObserver())
+    },
+    handleSetFilterSelected(option) {
+      this.$emit('set-room-filter', option)
+      this.resetRoomsQueryAndInitObserver()
+    },
     initIntersectionObserver() {
       if (this.observer) {
         this.showLoader = true
@@ -297,9 +341,6 @@ export default {
       const canAcceptCall = room.call && !room.call.attendance.statusCallEnded && !room.call.attendance.statusDeclined
 
       return !hasCallEnded && canAcceptCall
-    },
-    clickArchivedRooms() {
-      this.$emit('click-archived-rooms', !this.showArchivedRooms )
     }
   }
 }

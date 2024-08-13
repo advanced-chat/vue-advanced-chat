@@ -41,9 +41,7 @@ export default {
   props: {
     textMessages: { type: Object, required: true },
     showSearch: { type: Boolean, required: true },
-    showAddRoom: { type: Boolean, required: true },
-    rooms: { type: Array, required: true },
-    loadingRooms: { type: Boolean, required: true }
+    showAddRoom: { type: Boolean, required: true }
   },
 
   emits: ['search-room', 'add-room'],
