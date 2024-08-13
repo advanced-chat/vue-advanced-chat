@@ -423,11 +423,11 @@ export default {
       }
     },
     allowSendingExternalFiles(val) {
-      if (val == 'true') {
+      if (val === 'true') {
         this.sendMessage()
         return
       }
-      if (val == 'false') {
+      if (val === 'false') {
         this.resetMessage()
       }
       /**

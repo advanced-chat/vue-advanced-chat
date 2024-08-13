@@ -39,5 +39,9 @@ module.exports = {
   },
   parserOptions: {
     parser: '@typescript-eslint/parser'
+  },
+  globals: {
+    '$': 'readonly',
+    '__': 'readonly'
   }
 }

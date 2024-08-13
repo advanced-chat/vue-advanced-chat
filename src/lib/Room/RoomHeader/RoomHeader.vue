@@ -221,12 +221,6 @@ export default {
     },
     isAttendanceDeclined() {
       return this.call && this.call.attendance.statusDeclined
-    },
-    isAttendanceMissed() {
-      return this.call && this.call.attendance.statusMissed
-    },
-    isAttendanceCallEnded() {
-      return this.call && this.call.attendance.statusCallEnded
     }
   },
 

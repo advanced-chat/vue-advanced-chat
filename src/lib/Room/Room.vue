@@ -259,7 +259,7 @@ export default {
     attachmentOptions: { type: Array, required: true },
     call: { type: Object, required: true },
     textareaHighlight: { type: Boolean, default: false },
-    externalFiles: { type: Array, required: false },
+    externalFiles: { type: Array, default: () => [] },
     allowSendingExternalFiles: { type: Boolean, default: null },
     maxMessageRows: { type: Number, default: 0 }
   },
