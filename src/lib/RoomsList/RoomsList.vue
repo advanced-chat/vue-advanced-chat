@@ -193,13 +193,22 @@ export default {
     },
 
     noRoomToShow() {
-      return (
-        !this.rooms.length &&
-        !this.archivedRooms.length &&
-        !this.unreadRooms.length &&
-        !this.groupRooms.length &&
-        !this.customSearchRooms.length
-      )
+      if (this.customSearchRoomEnabled) {
+        return true
+      }
+
+      switch (this.roomFilterSelected) {
+      case this.roomFilters.DEFAULT.name:
+        return !this.rooms.length
+      case this.roomFilters.UNREAD.name:
+        return !this.unreadRooms.length
+      case this.roomFilters.GROUP.name:
+        return !this.groupRooms.length
+      case this.roomFilters.ARCHIVED.name:
+        return !this.archivedRooms.length
+      default:
+        return true
+      }
     },
     roomsToDisplay() {
       if (!this.roomsQuery.length) {
