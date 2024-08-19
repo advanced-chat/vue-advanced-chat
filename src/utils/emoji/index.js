@@ -10,5 +10,9 @@ export const extractEmojis = text => {
 
 export const containsOnlyEmojis = text => {
   const emojisOnly = extractEmojis(text)
-  return emojisOnly.length === text.toString().length && hasEmoji(emojisOnly)
+  return emojiCount(text) < text.toString().length && hasEmoji(emojisOnly)
+}
+
+export const emojiCount = text => {
+  return [...new Intl.Segmenter().segment(text)].length
 }
