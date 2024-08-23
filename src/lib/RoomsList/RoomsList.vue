@@ -90,7 +90,7 @@
         </div>
       </transition-group>
       <transition name="vac-fade-message">
-        <div v-if="noRoomToShow && !loadingRooms" id="infinite-loader-rooms">
+        <div v-if="!loadingRooms" id="infinite-loader-rooms">
           <loader :show="showLoader" :infinite="true" type="infinite-rooms">
             <template v-for="(idx, name) in $slots" #[name]="data">
               <slot :name="name" v-bind="data" />
@@ -192,24 +192,6 @@ export default {
       return !this.roomsToDisplay.length && !this.loadingRooms && !this.roomsQuery.length
     },
 
-    noRoomToShow() {
-      if (this.customSearchRoomEnabled) {
-        return true
-      }
-
-      switch (this.roomFilterSelected) {
-      case this.roomFilters.DEFAULT.name:
-        return !this.rooms.length
-      case this.roomFilters.UNREAD.name:
-        return !this.unreadRooms.length
-      case this.roomFilters.GROUP.name:
-        return !this.groupRooms.length
-      case this.roomFilters.ARCHIVED.name:
-        return !this.archivedRooms.length
-      default:
-        return true
-      }
-    },
     roomsToDisplay() {
       if (!this.roomsQuery.length) {
         switch (this.roomFilterSelected) {
