@@ -633,7 +633,7 @@ export default {
 			this.resetMessage()
 
 			this.editedMessage = { ...message }
-
+      this.messageReply = message.replyMessage;
 			let messageContent = message.content
 			const initialContent = messageContent
 
