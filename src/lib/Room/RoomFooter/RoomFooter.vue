@@ -362,7 +362,7 @@ export default {
   watch: {
     messages(msgs) {
       const newMessage = msgs[msgs.length - 1]
-      if (newMessage._id === newMessage.indexId) {
+      if (!newMessage || newMessage?._id === newMessage?.indexId) {
         return
       }
       this.lastMessage = newMessage

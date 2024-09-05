@@ -311,7 +311,7 @@ export default {
 
   computed: {
     room() {
-      return this.rooms.find(room => room.roomId === this.roomId) || this.archivedRooms.find(room => room.roomId === this.roomId) || {}
+      return this.rooms.find(room => Number(room.roomId) === Number(this.roomId)) || this.archivedRooms.find(room => Number(room.roomId) === Number(this.roomId)) || {}
     },
     showNoMessages() {
       return (

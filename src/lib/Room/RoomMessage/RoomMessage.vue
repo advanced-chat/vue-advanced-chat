@@ -11,7 +11,7 @@
       </div>
     </div>
 
-    <div v-if="newMessage._id === message._id">
+    <div v-if="newMessage?._id === message._id">
       <slot name="line-new">
         <div class="vac-line-new">
           {{ textMessages.NEW_MESSAGES }}

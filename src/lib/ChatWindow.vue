@@ -413,7 +413,15 @@ export default {
       return this.castBoolean(this.mediaPreviewEnabled)
     },
     roomsCasted() {
-      return this.castArray(this.rooms)
+      const roomsToCast = [
+        this.rooms,
+        this.customSearchRooms,
+        this.archivedRooms,
+        this.groupRooms,
+        this.unreadRooms
+      ]
+
+      return roomsToCast.flatMap(this.castArray)
     },
     customSearchRoomsCasted() {
       return this.castArray(this.customSearchRooms)
