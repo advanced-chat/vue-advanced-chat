@@ -121,8 +121,9 @@
           <div
             class="vac-message-container"
             :class="{
-            'vac-message-container-offset': messageOffset
-          }"
+              'vac-message-container-offset': messageOffset
+            }"
+            @contextmenu="handleContextMenu"
           >
             <div
               class="vac-message-card"
@@ -253,6 +254,7 @@
                 :current-user-id="currentUserId"
                 :message="message"
                 :message-actions="messageActions"
+                :message-context-menu="messageContextMenu"
                 :show-reaction-emojis="showReactionEmojis"
                 :message-hover="messageHover"
                 :hover-message-id="hoverMessageId"
@@ -352,7 +354,8 @@ export default {
     messageSelectionEnabled: { type: Boolean, required: true },
     selectedMessages: { type: Array, default: () => [] },
     emojiDataSource: { type: String, default: undefined },
-    maxMessageRows: { type: Number, default: 0 }
+    maxMessageRows: { type: Number, default: 0 },
+    messageContextMenu: { type: Object, default: () => ({ state: 'closed', messageId: null }) }
   },
 
   emits: [
@@ -367,7 +370,8 @@ export default {
     'message-reaction-click',
     'message-reply-click',
     'click-message-username',
-    'avatar-click'
+    'avatar-click',
+    'context-menu-opened'
   ],
 
   data() {
@@ -602,6 +606,11 @@ export default {
       this.$nextTick(() => {
         formatWrapper.style.cssText = ''
       })
+    },
+
+    handleContextMenu(event) {
+      event.preventDefault()
+      this.$emit('context-menu-opened', { messageId: this.message._id })
     }
   }
 }

@@ -97,6 +97,8 @@
                 :selected-messages="selectedMessages"
                 :emoji-data-source="emojiDataSource"
                 :max-message-rows="maxMessageRows"
+                :message-context-menu="messageContextMenu"
+                @context-menu-opened="handleContextMenuOpened"
                 @message-added="onMessageAdded"
                 @message-action-handler="messageActionHandler"
                 @open-file="$emit('open-file', $event)"
@@ -204,6 +206,7 @@ import RoomFooter from './RoomFooter/RoomFooter'
 import RoomMessage from './RoomMessage/RoomMessage'
 
 import FileUploaderOverlay from '../../utils/uploader-overlay/'
+import { nextTick } from 'vue'
 
 export default {
   name: 'ChatRoom',
@@ -305,7 +308,8 @@ export default {
       newMessages: [],
       messageSelectionEnabled: false,
       selectedMessages: [],
-      droppedFiles: []
+      droppedFiles: [],
+      messageContextMenu: { state: 'closed', messageId: null }
     }
   },
 
@@ -654,6 +658,16 @@ export default {
       if (this.showFiles) {
         this.droppedFiles = event.dataTransfer.files
       }
+    },
+    handleContextMenuOpened(event) {
+      this.closeMessageContextMenu()
+      nextTick(async () => {
+        await new Promise(resolve => setTimeout(resolve, 100))
+        this.messageContextMenu = { state: 'opened', messageId: event.messageId }
+      })
+    },
+    closeMessageContextMenu() {
+      this.messageContextMenu = { state: 'closed', messageId: null }
     }
   }
 }
