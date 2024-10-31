@@ -1,3 +1,19 @@
+const white = 'FFFFF';
+const grayLightest = '#F7F7F7';
+const lightGray = '#F5F5F5';
+const paleGray = '#EBEBEE';
+const grayLight = '#D5D5D8';
+const grayLighter = '#D1D1D1';
+const softGray = '#BEBEC7';
+const gray = '#C5C5C5';
+const grayDarker = '#383838';
+const grayDark = '#565252';
+const mediumGrayDark = '#444446';
+const almostBlack = '#202020';
+const darkGray = '#292929'
+const black = '#1A1A1A';
+const purple = '#905DA5';
+
 export const defaultThemeStyles = {
   light: {
     general: {
@@ -48,8 +64,8 @@ export const defaultThemeStyles = {
       backgroundActive: '#e5effa',
       colorActive: '#1976d2',
       borderColorSearch: '#e1e5e8',
-      backgroundFilterOption: '#d9d9d9',
-      backgroundHoverFilterOption: '#d4d1fa'
+      backgroundFilterOption: paleGray,
+      backgroundHoverFilterOption: grayLight
     },
 
     dropdown: {
@@ -211,8 +227,8 @@ export const defaultThemeStyles = {
       backgroundActive: '#151617',
       colorActive: '#fff',
       borderColorSearch: '#181a1b',
-      backgroundFilterOption: '#596269',
-      backgroundHoverFilterOption: '#7367f0'
+      backgroundFilterOption: darkGray,
+      backgroundHoverFilterOption: grayDarker
     },
 
     dropdown: {
