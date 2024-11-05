@@ -1,4 +1,4 @@
-const white = 'FFFFF';
+const white = '#FFFFF';
 const grayLightest = '#F7F7F7';
 const lightGray = '#F5F5F5';
 const paleGray = '#EBEBEE';
@@ -65,7 +65,7 @@ export const defaultThemeStyles = {
       colorActive: '#1976d2',
       borderColorSearch: '#e1e5e8',
       backgroundFilterOption: paleGray,
-      backgroundHoverFilterOption: grayLight
+      backgroundHoverFilterOption: '#CCD3DB'
     },
 
     dropdown: {
@@ -75,7 +75,7 @@ export const defaultThemeStyles = {
 
     message: {
       background: '#fff',
-      backgroundMe: '#ccf2cf',
+      backgroundMe: '#E3EFFD',
       color: '#0a0a0a',
       colorStarted: '#9ca6af',
       backgroundDeleted: '#dadfe2',
@@ -128,7 +128,7 @@ export const defaultThemeStyles = {
       colorTimestamp: '#a2aeb8',
       colorStateOnline: '#4caf50',
       colorStateOffline: '#9ca6af',
-      backgroundCounterBadge: '#0696c7',
+      backgroundCounterBadge: purple,
       colorCounterBadge: '#fff'
     },
 
@@ -291,7 +291,7 @@ export const defaultThemeStyles = {
       colorTimestamp: '#6c7278',
       colorStateOnline: '#4caf50',
       colorStateOffline: '#596269',
-      backgroundCounterBadge: '#1976d2',
+      backgroundCounterBadge: purple,
       colorCounterBadge: '#fff'
     },
 
