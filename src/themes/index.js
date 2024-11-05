@@ -1,4 +1,4 @@
-const white = '#FFFFF';
+const white = '#FFFFFF';
 const grayLightest = '#F7F7F7';
 const lightGray = '#F5F5F5';
 const paleGray = '#EBEBEE';
@@ -17,7 +17,7 @@ const purple = '#905DA5';
 export const defaultThemeStyles = {
   light: {
     general: {
-      primary: '#7367f0',
+      primary: purple,
       danger: '#eb4034',
       warning: 'orange',
       color: '#0a0a0a',
@@ -180,7 +180,7 @@ export const defaultThemeStyles = {
   },
   dark: {
     general: {
-      primary: '#7367f0',
+      primary: purple,
       danger: '#eb4034',
       warning: 'orange',
       color: '#fff',
