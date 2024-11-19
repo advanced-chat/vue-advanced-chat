@@ -1,4 +1,9 @@
 .vac-loader-wrapper {
+  &.vac-container-flex {
+    display: flex;
+    padding-right: 0.5rem;
+  }
+
   &.vac-container-center {
     position: absolute;
     left: 50%;

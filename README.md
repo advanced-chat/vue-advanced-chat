@@ -266,13 +266,17 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `accepted-files`(27)                | String           | -        | `*`                                                                                                               |
 | `capture-files`(28)                 | String           | -        | `''`                                                                                                              |
 | `styles`(29)                        | [String, Object] | -        | (26)                                                                                                              |
-| `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                                 |
-| `call`(31)                          | String           | -        |                                             |
-| `textarea-hightlight`               | Boolean          | -        |                                             |
-| `external-files`(32)                | Array            | `false`  |      `[]`                                   |
-| `allow-sending-external-files`(33)  | Boolean          | `false`  |      `null`                                 |
-| `show-archived-rooms`(34)           | Boolean          | `false`  |      `false`                                |
-| `max-message-rows`(35)              | Number           | `false`  |      `0`                                    |
+| `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                              |
+| `call`(31)                          | String           | -        |                                                                                                                   |
+| `textarea-hightlight`               | Boolean          | -        |                                                                                                                   |
+| `external-files`(32)                | Array            | `false`  | `[]`                                                                                                              |
+| `allow-sending-external-files`(33)  | Boolean          | `false`  | `null`                                                                                                            |
+| `show-archived-rooms`(34)           | Boolean          | `false`  | `false`                                                                                                           |
+| `max-message-rows`(35)              | Number           | `false`  | `0`                                                                                                               |
+| `message-text-area-classes`(36)     | Array            | `false`  | `[]`                                                                                                              |
+| `disable-message-text-area`(37)     | Boolean          | `false`  | `null`                                                                                                           |
+| `show-attachment-loader`(38)        | Boolean          | `false`  | `null`                                                                                                           |
+| `message-concat-value`(39)          | String           | `false`  | `''`                                                                                                              |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -527,9 +531,17 @@ styles="{
 - When set to `false` VAC will prevent sending external files. If user is sending external files in a message and this prop is set to `false` the file list will the cleaned (This use case can be clarified if you read `request-permission-to-send-external-files` event documentation);
 - When set to `null` VAC will emit the event `request-permission-to-send-external-files` each time a external file is sent;
 
-**(35)** `show-archived-rooms` indicates whether the room list should display archived rooms only or not.
+**(34)** `show-archived-rooms` indicates whether the room list should display archived rooms only or not.
 
 **(35)** `max-message-rows` indicates the maximum number of rows a message can have before being truncated. When the message has more rows, the content is truncated and a "Read more" button is shown. If set to `0` messages will never be truncated.
+
+**(36)** `message-text-area-classes` allows you to define custom CSS classes for the message text area component. This prop accepts an array of class names, which will be applied directly to the text area element. By default, it is an empty array (`[]`), meaning no additional classes are added. Use this prop to customize the appearance of the text area.
+
+**(37)** `disable-message-text-area` determines whether the message text area should be disabled. When set to `true`, the text area becomes non-interactive, preventing users from typing messages. If set to `null` (default), the text area remains fully functional.
+
+**(38)** `show-attachment-loader` controls the visibility of a loader that appears when attachments are being uploaded or processed. When set to `true`, the loader is displayed; if set to `null`, the loader is hidden. This prop is useful for providing visual feedback to users during attachment operations.
+
+**(39)** `message-concat-value` holds a concatenated string value of the current message being composed or manipulated. This prop is particularly useful for scenarios where the message input value needs to be dynamically updated or programmatically set. By default, it is an empty string (`''`).
 
 ## Props data structure
 

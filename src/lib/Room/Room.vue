@@ -180,6 +180,10 @@
       :textarea-highlight="textareaHighlight"
       :external-files="externalFiles"
       :allow-sending-external-files="allowSendingExternalFiles"
+      :message-text-area-classes="messageTextAreaClasses"
+      :disable-message-text-area="disableMessageTextArea"
+      :show-attachment-loader="showAttachmentLoader"
+      :message-concat-value="messageConcatValue"
       @update-edited-message-id="editedMessageId = $event"
       @edit-message="$emit('edit-message', $event)"
       @send-message="$emit('send-message', $event)"
@@ -263,6 +267,10 @@ export default {
     call: { type: Object, required: true },
     textareaHighlight: { type: Boolean, default: false },
     externalFiles: { type: Array, default: () => [] },
+    messageTextAreaClasses: { type: Array, default: () => [] },
+    disableMessageTextArea: { type: Boolean, default: false },
+    showAttachmentLoader: { type: Boolean, default: false },
+    messageConcatValue: { type: String, default: '' },
     allowSendingExternalFiles: { type: Boolean, default: null },
     maxMessageRows: { type: Number, default: 0 }
   },

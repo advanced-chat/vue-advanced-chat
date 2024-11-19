@@ -58,9 +58,12 @@
       class="vac-box-footer"
       :class="{ 'vac-box-footer-border': !files.length }"
     >
-      <div v-if="!isRecording && !textareaHighlight" class="vac-icon-textarea-left">
+      <template v-if="showAttachmentLoader">
+        <loader show="true" type="call-link-loader" flex="true" />
+      </template>
+      <div v-else-if="!isRecording && !textareaHighlight" class="vac-icon-textarea-left">
         <room-attachment-picker
-          v-if="showFiles"
+          v-if="showFiles && !showAttachmentLoader"
           :attachment-options="attachmentOptions"
           @attachment-picker-handler="attachmentPickerHandler"
         >
@@ -111,10 +114,12 @@
         ref="roomTextarea"
         :placeholder="textareaHighlight ? textMessages.TYPE_HIGHLIGHT_MESSAGE: textMessages.TYPE_MESSAGE"
         class="vac-textarea"
-        :class="{
-          'vac-textarea-outline': editedMessage._id,
-          'vac-textarea-highlight': textareaHighlight,
-        }"
+        :class="[
+          editedMessage._id ? 'vac-textarea-outline' : '',
+          textareaHighlight ? 'vac-textarea-highlight' : '',
+          messageTextAreaClasses
+        ]"
+        :disabled="disableMessageTextArea"
         :maxlength="MAX_MESSAGE_LENGTH"
         @input="onChangeInput"
         @keydown.esc="escapeTextarea"
@@ -220,6 +225,7 @@
 <script>
 import { Database } from 'emoji-picker-element'
 
+import Loader from '../../../components/Loader/Loader.vue'
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import EmojiPickerContainer from '../../../components/EmojiPickerContainer/EmojiPickerContainer'
 
@@ -247,6 +253,7 @@ export default {
   name: 'RoomFooter',
 
   components: {
+    Loader,
     SvgIcon,
     EmojiPickerContainer,
     RoomFiles,
@@ -292,6 +299,10 @@ export default {
     textareaHighlight: { type: Boolean, default: false },
     externalFiles: { type: Array, default: () => [] },
     allowSendingExternalFiles: { type: Boolean, default: null },
+    messageTextAreaClasses: { type: Array, default: () => [] },
+    disableMessageTextArea: { type: Boolean, default: false },
+    showAttachmentLoader: { type: Boolean, default: false },
+    messageConcatValue: { type: String, default: '' },
     messages: { type: Array, default: () => [] }
   },
 
@@ -392,6 +403,10 @@ export default {
     },
     message(val) {
       this.getTextareaRef().value = val
+      this.resizeTextarea()
+    },
+    messageConcatValue(val) {
+      this.message += val
     },
     roomMessage: {
       immediate: true,

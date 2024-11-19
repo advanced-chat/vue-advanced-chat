@@ -4,8 +4,9 @@
       v-if="show"
       class="vac-loader-wrapper"
       :class="{
-        'vac-container-center': !infinite,
-        'vac-container-top': infinite
+        'vac-container-center': !infinite && !flex,
+        'vac-container-top': infinite && !flex,
+        'vac-container-flex': flex
       }"
     >
       <slot v-if="type === 'rooms'" name="spinner-icon-rooms">
@@ -32,6 +33,13 @@
       >
         <div id="vac-circle" />
       </slot>
+      <slot 
+        v-if="type === 'call-link-loader'"
+        name="spinner-icon-call-link-loader"
+        class="spinner-icon-call-link-loader"
+      >
+        <div id="vac-circle" />
+      </slot>
     </div>
   </transition>
 </template>
@@ -44,7 +52,8 @@ export default {
     show: { type: Boolean, default: false },
     infinite: { type: Boolean, default: false },
     type: { type: String, required: true },
-    messageId: { type: String, default: '' }
+    messageId: { type: String, default: '' },
+    flex: { type: Boolean, default: false },
   }
 }
 </script>

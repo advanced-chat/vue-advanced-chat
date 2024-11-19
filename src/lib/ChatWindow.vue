@@ -89,6 +89,10 @@
         :external-files="externalFilesCasted"
         :allow-sending-external-files="allowSendingExternalFiles"
         :max-message-rows="maxMessageRows"
+        :message-text-area-classes="messageTextAreaClasses"
+        :disable-message-text-area="disableMessageTextArea"
+        :message-concat-value="messageConcatValue"
+        :show-attachment-loader="showAttachmentLoader"
         @avatar-click="onAvatarClick"
         @toggle-rooms-list="toggleRoomsList"
         @room-info="roomInfo"
@@ -249,6 +253,10 @@ export default {
     textareaHighlight: { type: Boolean, default: false },
     externalFiles: { type: Array, default: () => [] },
     allowSendingExternalFiles: { type: Boolean, default: null },
+    messageTextAreaClasses: { type: Array, default: () => [] },
+    disableMessageTextArea: { type: Boolean, default: false },
+    showAttachmentLoader: { type: Boolean, default: false },
+    messageConcatValue: { type: String, default: '' },
     maxMessageRows: { type: Number, default: 0 },
     roomFilters: { type: String, default: () => {} },
     roomFilterSelected: { type: String, required: true }
