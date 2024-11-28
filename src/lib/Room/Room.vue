@@ -287,7 +287,7 @@ export default {
 			return noRoomSelected
 		},
 		showMessagesStarted() {
-			return this.messages.length && this.messagesLoaded
+			return this.messagesLoaded
 		}
 	},
 
