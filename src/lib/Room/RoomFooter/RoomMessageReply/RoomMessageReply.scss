@@ -46,9 +46,15 @@
     }
   }
 
+  .vac-file-container {
+    max-width: 80px;
+    flex-wrap: nowrap;
+    padding: .5rem 1rem .5rem 0;
+  }
+
   .vac-image-reply {
     max-height: 100px;
-    max-width: 200px;
+    max-width: 250px;
     margin: 4px 10px 0 0;
     border-radius: 4px;
   }
@@ -57,8 +63,32 @@
     margin-right: 10px;
   }
 
-  .vac-file-container {
-    max-width: 80px;
+  .vac-reply-file-icon {
+    display: flex;
+    justify-content: center;
+    width: 25%;
+
+     > i {
+      font-size: 35px;
+     }
+  }
+
+  .vac-reply-file-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 75%;
+  }
+
+  .vac-reply-file-name {
+    font-weight: 500;
+    text-align: left;
+  }
+
+  .vac-reply-file-extension-and-size {
+    color: var(--chat-message-color-file-extension);
+    font-size: 12px;
+    text-align: left;
   }
 }
 

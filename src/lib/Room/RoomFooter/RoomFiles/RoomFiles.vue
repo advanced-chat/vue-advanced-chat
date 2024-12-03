@@ -5,7 +5,7 @@
       class="vac-room-files-container"
     >
       <div class="vac-files-box">
-        <div v-for="(file, i) in files" :key="i">
+        <div v-for="(file, i) in files" :key="i" class="vac-file-item">
           <room-file
             :file="file"
             :index="i"

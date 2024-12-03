@@ -79,21 +79,22 @@
       <div
         class="vac-file-container"
         :class="{ 'vac-file-container-progress': file.progress >= 0 }"
+        :title="isPreviewable() ? __('View file') : __('Download file')"
         @click="openFile($event, isPreviewable() ? 'preview' : 'download')"
       >
-        <div class="vac-svg-button">
-          <slot v-if="isPreviewable()" name="file-icon">
-            <svg-icon name="file" />
-          </slot>
-          <slot v-else name="document-icon">
-            <svg-icon name="document" />
-          </slot>
+        <div class="vac-svg-button vac-message-file-icon">
+          <i :class="fileIconClass" />
         </div>
-        <div class="vac-text-ellipsis">
-          {{ file.name }}
+        <div class="vac-message-file-info">
+          <div class="vac-text-ellipsis vac-file-name">
+            {{ fileNameAndExtension }}
+          </div>
+          <div class="vac-text-ellipsis vac-text-extension-and-size">
+            {{ fileExtensionAndSize }}
+          </div>
         </div>
-        <div v-if="file.extension" class="vac-text-ellipsis vac-text-extension">
-          {{ file.extension }}
+        <div class="vac-svg-button vac-message-download-file-icon" :title="__('Download file')" @click="openFile($event, 'download')">
+          <i class="bi bi-download" />
         </div>
       </div>
     </div>
@@ -104,6 +105,8 @@
 import Loader from '../../../../../components/Loader/Loader'
 import ProgressBar from '../../../../../components/ProgressBar/ProgressBar'
 import SvgIcon from '../../../../../components/SvgIcon/SvgIcon'
+import { humanFileSize } from '../../../../../utils/adhoc'
+import { translate } from '../../../../../utils/i18n'
 
 import { isImageFile, isVideoFile, isTextFile, isPdfFile, isSVGFile } from '../../../../../utils/media-file'
 
@@ -147,6 +150,24 @@ export default {
     },
     isSVG() {
       return isSVGFile(this.file)
+    },
+    fileIconClass() {
+      return Optidata.MimeTypeIcons.getIconByMimeType(this.file.type)
+    },
+    fileNameAndExtension() {
+      if (!this.file.extension) {
+        return this.file.name
+      }
+      if (this.file.name.endsWith(`.${this.file.extension}`)) {
+        return this.file.name
+      }
+      return `${this.file.name}.${this.file.extension}`
+    },
+    fileExtensionAndSize() {
+      if (!this.file.extension) {
+        return humanFileSize(this.file.size, true)
+      }
+      return `${this.file.extension} · ${humanFileSize(this.file.size, true)}`
     }
   },
 
@@ -174,6 +195,9 @@ export default {
     isPreviewable() {
       return this.isText || this.isPdf || this.isSVG
     },
+    __(key) {
+      return translate(key)
+    },
     checkImgLoad() {
       if (!isImageFile(this.file)) return
       this.imageLoading = true
@@ -184,7 +208,7 @@ export default {
     openFile(event, action) {
       if (!this.messageSelectionEnabled) {
         event.stopPropagation()
-        this.$emit('open-file', { file: this.file, 'action': action })
+        this.$emit('open-file', { file: this.file, action })
       }
     }
   }

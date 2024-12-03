@@ -752,11 +752,12 @@ export default {
 
           this.files.push({
             blob: record.blob,
-            name: `audio.${this.format}`,
+            name: `audio`,
             size: record.blob.size,
             duration: record.duration,
             type: record.blob.type,
             audio: true,
+            extension: this.format,
             localUrl: URL.createObjectURL(record.blob),
             source: SOURCE_USER_FILE_SYSTEM
           })

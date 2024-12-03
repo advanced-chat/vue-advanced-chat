@@ -63,4 +63,47 @@
       border-radius: 4px;
     }
   }
+
+  .vac-message-file-icon {
+    > i {
+      font-size: 35px;
+    }
+  }
+
+  .vac-message-file-icon,
+  .vac-message-download-file-icon {
+    max-height: unset;
+    align-items: center;
+    max-width: 15%;
+    justify-content: center;
+  }
+
+  .vac-message-download-file-icon {
+    margin-left: auto;
+    justify-content: end;
+
+     > i {
+      font-size: 25px;
+     }
+  }
+
+  .vac-message-file-info {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 70%;
+    margin-left: 0.75rem;
+  }
+
+  .vac-text-extension-and-size {
+    color: var(--chat-message-color-file-extension);
+    font-size: 12px;
+    text-align: left;
+  }
+
+  .vac-file-name {
+    font-weight: 500;
+    text-align: left;
+  }
 }

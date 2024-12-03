@@ -1,8 +1,9 @@
 .vac-reply-message {
-  background: var(--chat-message-bg-color-reply);
+  background: var(--chat-footer-bg-color-reply);
   border-radius: 4px;
   margin: -1px -5px 8px;
   padding: 8px 10px;
+  min-width: 190px;
 
   user-select: none;
     cursor: pointer;
@@ -55,6 +56,36 @@
 
   .vac-file-container {
     height: 60px;
-    width: 60px;
+    flex-wrap: nowrap;
+    justify-content: start;
+    padding: 0 1rem;
+  }
+
+  .vac-reply-file-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 0.75rem;
+
+    > i {
+      font-size: 30px;
+    }
+  }
+
+  .vac-reply-file-info {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+  }
+
+  .vac-reply-file-name {
+    font-weight: 500;
+  }
+
+  .vac-file-extension-and-size {
+    color: var(--chat-message-color-file-extension);
+    font-size: 12px;
   }
 }

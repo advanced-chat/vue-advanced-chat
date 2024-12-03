@@ -1,7 +1,6 @@
 .vac-room-file-container {
   display: flex;
   position: relative;
-  margin: 0 4px;
 
   .vac-message-image {
     position: relative;
@@ -9,10 +8,11 @@
     background-size: cover !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
-    height: 100px;
-    width: 100px;
+    height: 90px;
+    width: 90px;
     border: var(--chat-border-style-input);
     border-radius: 4px;
+    padding: 1rem;
   }
 
   .vac-optiwork-file {
@@ -35,14 +35,27 @@
   }
 
   .vac-file-container {
-    height: 80px;
-    width: 80px;
+    min-height: 90px;
+    width: 90px;
+    padding: 1rem;
+    border: 1px solid #bebec7;
+  }
+
+  .vac-room-file-icon {
+    > i {
+      font-size: 30px;
+    }
   }
 
   .vac-icon-remove {
     position: absolute;
-    top: 6px;
-    left: 6px;
+    top: 0.25rem;
+
+    /*
+    * 20px is the width of the icon
+    * 0.25rem is the margin
+    */
+    left: calc(100% - 0.25rem - 20px);
     z-index: 10;
 
     svg {

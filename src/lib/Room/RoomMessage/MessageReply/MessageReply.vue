@@ -32,19 +32,18 @@
     </audio-player>
 
     <div v-else-if="isOtherFile" class="vac-file-container">
-      <div>
-        <slot name="file-icon">
-          <svg-icon name="file" />
-        </slot>
+      <div class="vac-reply-file-icon">
+        <i :class="fileIconClass" />
       </div>
-      <div class="vac-text-ellipsis">
-        {{ firstFile.name }}
-      </div>
-      <div
-        v-if="firstFile.extension"
-        class="vac-text-ellipsis vac-text-extension"
-      >
-        {{ firstFile.extension }}
+      <div class="vac-reply-file-info">
+        <div class="vac-text-ellipsis vac-reply-file-name">
+          {{ firstFile.name }}
+        </div>
+        <div
+          class="vac-text-ellipsis vac-file-extension-and-size"
+        >
+          {{ fileExtensionAndSize }}
+        </div>
       </div>
     </div>
 
@@ -62,7 +61,6 @@
 </template>
 
 <script>
-import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
 import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
 
 import AudioPlayer from '../AudioPlayer/AudioPlayer'
@@ -73,9 +71,11 @@ import {
   isVideoFile
 } from '../../../../utils/media-file'
 
+import { humanFileSize } from '../../../../utils/adhoc'
+
 export default {
   name: 'MessageReply',
-  components: { AudioPlayer, SvgIcon, FormatMessage },
+  components: { AudioPlayer, FormatMessage },
 
   props: {
     message: { type: Object, required: true },
@@ -111,6 +111,12 @@ export default {
         !this.isVideo &&
         !this.isImage
       )
+    },
+    fileIconClass() {
+      return Optidata.MimeTypeIcons.getIconByMimeType(this.firstFile.type)
+    },
+    fileExtensionAndSize() {
+      return `${this.firstFile.extension} · ${humanFileSize(this.firstFile.size, true)}`
     }
   }
 }

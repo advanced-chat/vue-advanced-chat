@@ -1,5 +1,5 @@
 <template>
-  <div class="vac-room-file-container">
+  <div class="vac-room-file-container" :title="fileNameAndExtension">
     <loader :show="file.loading" type="room-file">
       <template v-for="(idx, name) in $slots" #[name]="data">
         <slot :name="name" v-bind="data" />
@@ -51,16 +51,14 @@
       class="vac-file-container"
       :class="{ 'vac-blur-loading': file.loading }"
     >
-      <div>
-        <slot name="file-icon">
-          <svg-icon name="file" />
-        </slot>
+      <div class="vac-room-file-icon">
+        <i :class="fileIconClass" />
       </div>
       <div class="vac-text-ellipsis">
         {{ file.name }}
       </div>
       <div v-if="file.extension" class="vac-text-ellipsis vac-text-extension">
-        {{ file.extension }}
+        {{ fileSizeAndExtension }}
       </div>
     </div>
   </div>
@@ -71,6 +69,7 @@ import Loader from '../../../../../components/Loader/Loader'
 import SvgIcon from '../../../../../components/SvgIcon/SvgIcon'
 
 import { isImageFile, isVideoFile } from '../../../../../utils/media-file'
+import { humanFileSize } from '../../../../../utils/adhoc'
 
 const SOURCE_OPTIWORK_DRIVE = 'SOURCE_OPTIWORK_DRIVE'
 
@@ -97,6 +96,18 @@ export default {
     },
     isFileFromOptiwork() {
       return this.file.source === SOURCE_OPTIWORK_DRIVE
+    },
+    fileIconClass() {
+      return Optidata.MimeTypeIcons.getIconByMimeType(this.file.type)
+    },
+    fileNameAndExtension() {
+      if (this.file.extension) {
+        return `${this.file.name}.${this.file.extension}`
+      }
+      return this.file.name
+    },
+    fileSizeAndExtension() {
+      return `${humanFileSize(this.file.size, true)} · ${this.file.extension}`
     }
   }
 }

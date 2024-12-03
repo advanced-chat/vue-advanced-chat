@@ -1,13 +1,18 @@
 .vac-room-files-container {
   display: flex;
   align-items: center;
-  padding: 10px 6px 0 6px;
+  padding: 1rem;
   background: var(--chat-footer-bg-color);
+  overflow-x: auto;
 
   .vac-files-box {
     display: flex;
-    overflow: auto;
+    gap: 1rem;
     width: calc(100% - 30px);
+  }
+
+  .vac-file-item:last-child {
+    padding-right: 1rem;
   }
 
   video {
