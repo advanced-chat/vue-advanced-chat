@@ -12,7 +12,8 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				globals: {
-					vue: 'Vue'
+					vue: 'Vue',
+					Optidata: 'Optidata'
 				}
 			}
 		}

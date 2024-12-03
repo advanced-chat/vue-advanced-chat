@@ -42,6 +42,7 @@ module.exports = {
   },
   globals: {
     '$': 'readonly',
-    '__': 'readonly'
+    '__': 'readonly',
+    'Optidata': 'readonly',
   }
 }
