@@ -242,7 +242,6 @@ export default {
     captureFiles: { type: String, default: undefined },
     multipleFiles: { type: [Boolean, String], default: true },
     templatesText: { type: [Array, String], default: () => [] },
-    mediaPreviewEnabled: { type: [Boolean, String], default: true },
     usernameOptions: {
       type: [Object, String],
       default: () => ({ minUsers: 3, currentUser: false })
@@ -416,9 +415,6 @@ export default {
     },
     emojisSuggestionEnabledCasted() {
       return this.castBoolean(this.emojisSuggestionEnabled)
-    },
-    mediaPreviewEnabledCasted() {
-      return this.castBoolean(this.mediaPreviewEnabled)
     },
     roomsCasted() {
       const roomsToCast = [

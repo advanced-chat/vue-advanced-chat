@@ -142,12 +142,6 @@ export default {
     isVideo() {
       return isVideoFile(this.file)
     },
-    isText() {
-      return isTextFile(this.file)
-    },
-    isPdf() {
-      return isPdfFile(this.file)
-    },
     isSVG() {
       return isSVGFile(this.file)
     },
