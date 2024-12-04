@@ -642,14 +642,7 @@ export default {
     openFile(event) {
       const file = typeof event?.files !== 'undefined' ? event?.files[event.index] : event.file
       const message = event.message
-
-      if (this.mediaPreviewEnabledCasted && event.action === 'preview') {
-        this.previewFiles = event.files ?? [ file ]
-        this.previewIndex = event.index ?? 0
-        this.showMediaPreview = true
-      } else {
-        this.$emit('open-file', { message, file: file, action: event.action })
-      }
+      this.$emit('open-file', { message, file: file, action: event.action })
     },
     openUserTag({ user }) {
       this.$emit('open-user-tag', { user })

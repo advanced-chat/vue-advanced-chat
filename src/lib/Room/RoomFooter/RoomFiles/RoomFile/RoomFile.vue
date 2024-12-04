@@ -17,15 +17,17 @@
 
     <div
       v-if="isFileFromOptiwork"
-      class="vac-optiwork-file"
+      class="vac-file-container"
       :title="file.name"
     >
-      <div>
-        <i :class="file.icon" class="vac-optiwork-file-icon" />
+      <div class="vac-room-file-icon">
+        <i :class="fileIconClass" />
       </div>
-
-      <div class="vac-optiwork-file-name vac-text-ellipsis">
+      <div class="vac-text-ellipsis">
         {{ file.name }}
+      </div>
+      <div class="vac-text-ellipsis vac-text-extension">
+        {{ fileSizeAndExtension }}
       </div>
     </div>
 
@@ -57,7 +59,7 @@
       <div class="vac-text-ellipsis">
         {{ file.name }}
       </div>
-      <div v-if="file.extension" class="vac-text-ellipsis vac-text-extension">
+      <div class="vac-text-ellipsis vac-text-extension">
         {{ fileSizeAndExtension }}
       </div>
     </div>
@@ -107,6 +109,9 @@ export default {
       return this.file.name
     },
     fileSizeAndExtension() {
+      if (!this.file.extension) {
+        return humanFileSize(this.file.size, true)
+      }
       return `${humanFileSize(this.file.size, true)} · ${this.file.extension}`
     }
   }

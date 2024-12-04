@@ -7,7 +7,7 @@
         :message="message"
         :index="i"
         :message-selection-enabled="messageSelectionEnabled"
-        @open-file="$emit('open-file', { index: i, files: allFiles, action: $event?.action ?? 'preview' })"
+        @open-file="$emit('open-file', { index: i, files: allFiles, action: $event?.action ?? 'view' })"
       >
         <template v-for="(idx, name) in $slots" #[name]>
           <slot :name="name" />

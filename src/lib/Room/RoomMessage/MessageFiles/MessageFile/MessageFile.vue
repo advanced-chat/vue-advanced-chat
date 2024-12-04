@@ -6,7 +6,7 @@
       class="vac-message-image-container"
       @mouseover="imageHover = true"
       @mouseleave="imageHover = false"
-      @click.prevent.stop="openFile($event, 'preview')"
+      @click.prevent.stop="openFile($event, 'view')"
     >
       <progress-bar
         v-if="file.progress >= 0"
@@ -44,7 +44,7 @@
           >
             <div
               class="vac-svg-button vac-button-view"
-              @click.prevent.stop="openFile($event, 'preview')"
+              @click.prevent.stop="openFile($event, 'view')"
             >
               <slot :name="'eye-icon_' + message._id">
                 <svg-icon name="eye" />
@@ -66,7 +66,7 @@
     <div
       v-else-if="isVideo"
       class="vac-video-container"
-      @click.prevent="openFile($event, 'preview')"
+      @click.prevent="openFile($event, 'view')"
     >
       <progress-bar v-if="file.progress >= 0" :progress="file.progress" />
       <video controls>
@@ -79,8 +79,8 @@
       <div
         class="vac-file-container"
         :class="{ 'vac-file-container-progress': file.progress >= 0 }"
-        :title="isPreviewable() ? __('View file') : __('Download file')"
-        @click="openFile($event, isPreviewable() ? 'preview' : 'download')"
+        :title="__('View file')"
+        @click="openFile($event, 'view')"
       >
         <div class="vac-svg-button vac-message-file-icon">
           <i :class="fileIconClass" />
@@ -192,9 +192,6 @@ export default {
   },
 
   methods: {
-    isPreviewable() {
-      return this.isText || this.isPdf || this.isSVG
-    },
     __(key) {
       return translate(key)
     },

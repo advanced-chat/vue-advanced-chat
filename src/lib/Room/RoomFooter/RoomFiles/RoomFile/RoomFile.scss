@@ -15,25 +15,6 @@
     padding: 1rem;
   }
 
-  .vac-optiwork-file {
-    @extend .vac-message-image;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 5px;
-  }
-
-  .vac-optiwork-file-icon {
-    font-size: 30px;
-  }
-
-  .vac-optiwork-file-name {
-    font-size: smaller;
-    text-align: center;
-    color: #3b3b3b;
-  }
-
   .vac-file-container {
     min-height: 90px;
     width: 90px;
