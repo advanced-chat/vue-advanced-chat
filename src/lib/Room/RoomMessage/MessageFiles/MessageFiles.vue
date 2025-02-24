@@ -8,6 +8,7 @@
         :index="i"
         :message-selection-enabled="messageSelectionEnabled"
         @open-file="$emit('open-file', { index: i, files: allFiles, action: $event?.action ?? 'view' })"
+        @copy-file-to-drive-folder="$emit('copy-file-to-drive-folder', { fileIndex: i, file: file })"
       >
         <template v-for="(idx, name) in $slots" #[name]>
           <slot :name="name" />
@@ -46,7 +47,7 @@ export default {
     messageSelectionEnabled: { type: Boolean, required: true }
   },
 
-  emits: ['open-file', 'open-user-tag'],
+  emits: ['open-file', 'copy-file-to-drive-folder', 'open-user-tag'],
 
   computed: {
     imageVideoFiles() {

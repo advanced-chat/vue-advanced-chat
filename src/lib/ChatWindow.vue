@@ -103,6 +103,7 @@
         @edit-message="editMessage"
         @delete-message="deleteMessage"
         @open-file="openFile"
+        @copy-file-to-drive-folder="$emit('copy-file-to-drive-folder', $event)"
         @open-user-tag="openUserTag"
         @open-failed-message="openFailedMessage"
         @menu-action-handler="menuActionHandler"
@@ -271,6 +272,7 @@ export default {
     'edit-message',
     'delete-message',
     'open-file',
+    'copy-file-to-drive-folder',
     'open-user-tag',
     'open-failed-message',
     'menu-action-handler',

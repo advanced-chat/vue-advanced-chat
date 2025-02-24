@@ -42,20 +42,33 @@
             v-if="!messageSelectionEnabled && imageHover && !isImageLoading"
             class="vac-image-buttons"
           >
-            <div
-              class="vac-svg-button vac-button-view"
-              @click.prevent.stop="openFile($event, 'view')"
-            >
-              <slot :name="'eye-icon_' + message._id">
-                <svg-icon name="eye" />
-              </slot>
-            </div>
+            <!-- download -->
             <div
               class="vac-svg-button vac-button-download"
               @click.prevent.stop="openFile($event, 'download')"
             >
               <slot :name="'document-icon_' + message._id">
                 <svg-icon name="document" />
+              </slot>
+            </div>
+
+            <!-- save file copy into optiwork drive -->
+            <div
+              class="vac-svg-button vac-button-save-copy-into-drive"
+              @click.prevent.stop="copyFileToDriveFolder($event)"
+            >
+              <slot :name="'cloud-icon_' + message._id">
+                <svg-icon name="cloud" stroke="royalblue" fill="royalblue" />
+              </slot>
+            </div>
+
+            <!-- view -->
+            <div
+              class="vac-svg-button vac-button-view"
+              @click.prevent.stop="openFile($event, 'view')"
+            >
+              <slot :name="'eye-icon_' + message._id">
+                <svg-icon name="eye" />
               </slot>
             </div>
           </div>
@@ -122,7 +135,7 @@ export default {
     messageSelectionEnabled: { type: Boolean, required: true }
   },
 
-  emits: ['open-file'],
+  emits: ['open-file', 'copy-file-to-drive-folder'],
 
   data() {
     return {
@@ -201,6 +214,9 @@ export default {
         event.stopPropagation()
         this.$emit('open-file', { file: this.file, action })
       }
+    },
+    copyFileToDriveFolder(event) {
+      this.$emit('copy-file-to-drive-folder', { file: this.file })
     }
   }
 }

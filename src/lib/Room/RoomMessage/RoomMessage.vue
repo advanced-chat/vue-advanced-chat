@@ -198,6 +198,7 @@
                 :link-options="linkOptions"
                 :message-selection-enabled="messageSelectionEnabled"
                 @open-file="$emit('open-file', $event)"
+                @copy-file-to-drive-folder="$emit('copy-file-to-drive-folder', { message, fileIndex: $event.fileIndex, file: $event.file })"
                 @open-user-tag="openUserTag"
               >
                 <template v-for="(i, name) in $slots" #[name]="data">
@@ -361,6 +362,7 @@ export default {
   emits: [
     'message-added',
     'open-file',
+    'copy-file-to-drive-folder',
     'open-user-tag',
     'open-failed-message',
     'message-action-handler',
