@@ -27,7 +27,7 @@
 	},
 	"homepage": "https://github.com/advanced-chat/vue-advanced-chat#readme",
 	"main": "./dist/vue-advanced-chat.umd.js",
-	"module": "./dist/vue-advanced-chat.es.js",
+	"module": "./dist/vue-advanced-chat.mjs",
 	"unpkg": "./dist/vue-advanced-chat.umd.js",
 	"jsdelivr": "./dist/vue-advanced-chat.umd.js",
 	"scripts": {
@@ -36,6 +36,7 @@
 		"serve": "vite preview",
 		"clean:lib": "rm -rf dist/*.js && rm -rf dist/*.map && rm -rf dist/*.css && rm -rf dist/*.html",
 		"prepublish": "npm run lint && npm run build",
+		"version": "npm run build",
 		"lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
 		"reset": "rm -rf node_modules && rm -rf package-lock.json && npm i",
 		"reset-all": "cd demo && npm run reset-all",
