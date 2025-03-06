@@ -1,0 +1,17 @@
+plugins:
+  - "@semantic-release/commit-analyzer"
+  - "@semantic-release/release-notes-generator"
+  - - "@semantic-release/npm"
+    - npmPublish: true
+  - - "@semantic-release/changelog"
+    - changelogFile: "CHANGELOG.md"
+  - - "@semantic-release/github"
+    - assets:
+        - "dist/**"
+        - "LICENSE"
+        - "CHANGELOG.md"
+
+branches:
+  - name: "main"
+
+tagFormat: ${version}

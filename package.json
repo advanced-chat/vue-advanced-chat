@@ -20,12 +20,12 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/antoine92190/vue-advanced-chat.git"
+		"url": "git+https://github.com/advanced-chat/vue-advanced-chat.git"
 	},
 	"bugs": {
-		"url": "https://github.com/antoine92190/vue-advanced-chat/issues"
+		"url": "https://github.com/advanced-chat/vue-advanced-chat/issues"
 	},
-	"homepage": "https://github.com/antoine92190/vue-advanced-chat#readme",
+	"homepage": "https://github.com/advanced-chat/vue-advanced-chat#readme",
 	"main": "./dist/vue-advanced-chat.umd.js",
 	"module": "./dist/vue-advanced-chat.es.js",
 	"unpkg": "./dist/vue-advanced-chat.umd.js",
@@ -48,6 +48,9 @@
 	],
 	"devDependencies": {
 		"@babel/core": "7.12.16",
+		"@semantic-release/changelog": "^6.0.3",
+		"@semantic-release/git": "^10.0.1",
+		"@semantic-release/github": "^9.2.1",
 		"@typescript-eslint/eslint-plugin": "5.4.0",
 		"@typescript-eslint/parser": "5.4.0",
 		"@vitejs/plugin-vue": "1.10.2",
@@ -58,16 +61,18 @@
 		"eslint": "7.32.0",
 		"eslint-plugin-vue": "8.0.3",
 		"node-sass": "8.0.0",
-		"sass": "1.56.1",
-		"typescript": "4.6.x",
-		"vite": "2.9.14",
-		"vue": "3.2.37",
-		"vue-loader": "^16.8.3"
+		"sass": "1.85.1",
+		"semantic-release": "^22.0.5",
+		"typescript": "5.8.x",
+		"vite": "6.2.0",
+		"vue": "3.5.13",
+		"vue-loader": "^17.4.2"
 	},
 	"dependencies": {
-		"@vueuse/components": "^9.13.0",
-		"@vueuse/core": "^9.13.0",
+		"@vueuse/components": "^12.8.2",
+		"@vueuse/core": "^12.8.2",
 		"emoji-picker-element": "1.12.1",
-		"linkifyjs": "2.1.9"
+		"micromark": "^3.1.0",
+		"micromark-extension-gfm": "^2.0.1"
 	}
 }

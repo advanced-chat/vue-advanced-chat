@@ -33,7 +33,7 @@
 					Dark
 				</button>
 				<button class="button-github">
-					<a href="https://github.com/antoine92190/vue-advanced-chat">
+					<a href="https://github.com/advanced-chat/vue-advanced-chat">
 						<img src="@/assets/github.svg" />
 					</a>
 				</button>
@@ -78,7 +78,7 @@ export default {
 				{
 					_id: 'SGmFnBZB4xxMv9V4CVlW',
 					username: 'Leia',
-					avatar: 'https://avatarfiles.alphacoders.com/184/thumb-184913.jpg'
+					avatar: 'https://media.glamour.com/photos/5695e9d716d0dc3747eea3ef/master/w_1600,c_limit/beauty-2015-12-princess-leia-1-main.jpg'
 				},
 				{
 					_id: '6jMsIXUrBHBj7o2cRlau',

@@ -1,14 +1,23 @@
 <p align="center">
-<a href="https://github.com/antoine92190/vue-advanced-chat/actions/workflows/build.yml"><img src="https://img.shields.io/github/actions/workflow/status/antoine92190/vue-advanced-chat/build.yml?branch=master"></a>
-<a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/dm/vue-advanced-chat.svg"></a>
-<a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/bundlephobia/minzip/vue-advanced-chat"></a>
-<a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/v/vue-advanced-chat.svg"></a>
-<a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/l/vue-advanced-chat.svg"></a>
+  <a href="https://github.com/advanced-chat/vue-advanced-chat/actions/workflows/release.yml"><img src="https://img.shields.io/github/actions/workflow/status/advanced-chat/vue-advanced-chat/release.yml?branch=main"></a>
+  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/dm/vue-advanced-chat.svg"></a>
+  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/bundlephobia/minzip/vue-advanced-chat"></a>
+  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/v/vue-advanced-chat.svg"></a>
+  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/l/vue-advanced-chat.svg"></a>
 </p>
 
 # vue-advanced-chat
 
 ![Demo Image](demo/src/assets/web_mobile.png)
+
+## Sponsors
+
+<div align="center">
+  <a target="_blank" href="https://chatkitty.com">
+    <img alt="ChatKitty sponsor" src="demo/src/assets/sponsors/chatkitty.png" width="220">
+  </a>
+  <div>Easy to use <a target="_blank" href="https://chatkitty.com">chat API/Server</a> with scalable infrastructure</div>
+</div>
 
 ## Features
 
@@ -26,7 +35,7 @@
 - Firestore example
 - Typescript, PWA, Web Component support
 
-## [Demo](https://antoine92190.github.io/vue-advanced-chat)
+## [Demo](https://advanced-chat.github.io/vue-advanced-chat)
 
 Enjoy :smile:
 
@@ -92,15 +101,15 @@ compilerOptions: {
 }
 ```
 
-Demo: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/main
+Demo: https://github.com/advanced-chat/vue-advanced-chat-sandbox/tree/main
 
 ### React
 
-Demo: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/react
+Demo: https://github.com/advanced-chat/vue-advanced-chat-sandbox/tree/react
 
 ### Angular / Ionic
 
-Demo: https://github.com/antoine92190/vue-advanced-chat-sandbox/tree/angular
+Demo: https://github.com/advanced-chat/vue-advanced-chat-sandbox/tree/angular
 
 <br>
 
@@ -209,7 +218,7 @@ If you are using Vue 3, you can pass Array and Object props normally: [Passing D
 Otherwise, you need to pass those props as strings. For example: `[messages]="JSON.stringify(messages)"`
 
 | <div style="width:230px">Prop</div> | Type             | Required | Default                                                                                                           |
-|-------------------------------------| ---------------- | -------- |-------------------------------------------------------------------------------------------------------------------|
+| ----------------------------------- | ---------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
 | `height`                            | String           | -        | `600px`                                                                                                           |
 | `current-user-id`(1)                | String           | `true`   | -                                                                                                                 |
 | `rooms`                             | [String, Array]  | -        | `[]`                                                                                                              |
@@ -255,8 +264,10 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `scroll-distance`(25)               | Number           | -        | `60`                                                                                                              |
 | `theme`(26)                         | `light` / `dark` | -        | `light`                                                                                                           |
 | `accepted-files`(27)                | String           | -        | `*`                                                                                                               |
-| `capture-files`(28)                 | String           | -        | `undefined`                                                                                                       |
-| `styles`(29)                        | [String, Object] | -        | (26)                                                                                                              |
+| `capture-files`(28)                 | String           | -        | `''`                                                                                                              |
+| `multiple-files`(29)                 | Boolean           | -        | `true`                                                                                                              |
+| `styles`(30)                        | [String, Object] | -        | (26)                                                                                                              |
+| `show-audio`(31)                        | Boolean | -        | `true`                                                                                                              |
 | `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                              |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
@@ -478,7 +489,11 @@ Example: set `accepted-files="image/png, image/jpeg, application/pdf"` to allow 
 
 **(28)** `capture-files` can be used to enable direct capturing of photos and videos on mobile browsers, as opposed to just uploading existing photos and videos which are already on the device. See [here](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/capture) for more information and recognized values. By default, the attribute is omitted and mobile browsers will only offer the gallery to choose photos and videos. Note: this only affects file attachments. Audio messages are always recorded using the device's microphone.
 
-**(29)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
+**(29)** `multiple-files` can be used to define whether multiple file selections will be accepted. By default this is true.
+
+**(30)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
+
+**(31)** `show-audio` can be used to enable or disable audio icon 
 
 ```javascript
 styles="{
@@ -778,6 +793,7 @@ Example:
 | `custom-action-icon`                        | Add a custom icon inside the footer                               |
 | `rooms-header`                              | Add a template on top of rooms list (above the search bar)        |
 | `room-list-item_{{ROOM_ID}}`                | Replace the template of the room list items                       |
+| `room-list-info_{{ROOM_ID}}`                | Replace the info of room list items                               |
 | `room-list-avatar_{{ROOM_ID}}`              | Replace the avatar of room list items                             |
 | `room-list-options_{{ROOM_ID}}`             | Replace the template of the list room options                     |
 | `room-list-options-icon_{{ROOM_ID}}`        | Replace the room list options dropdown icon                       |
@@ -839,8 +855,8 @@ You can find the source code to implement a full featured chat app using Firebas
 To test it using your own Firebase project:
 
 - Setup Cloud Firestore (to store users and rooms) and Realtime Database (to store users online status)
-- Clone this repository: `git clone https://github.com/antoine92190/vue-advanced-chat.git`
-- Inside `demo/src/firestore/index.js` file, replace the line `const config = ...` by your own Firebase config
+- Clone this repository: `git clone https://github.com/advanced-chat/vue-advanced-chat.git`
+- Inside `demo/src/database/index.js` file, replace the line `const config = ...` by your own Firebase config
 - Go inside `demo` folder and run `npm run serve`
 
 ### Data structure
@@ -900,7 +916,7 @@ messages: {
 
 <br>
 
-## [Contributing](https://github.com/antoine92190/vue-advanced-chat/blob/master/.github/CONTRIBUTING.md)
+## [Contributing](https://github.com/advanced-chat/vue-advanced-chat/blob/master/.github/CONTRIBUTING.md)
 
 Your help is always appreciated :rocket:
 

@@ -6,7 +6,7 @@
 - Clone the repository using `git clone https://github.com/YOUR_USERNAME/vue-advanced-chat`
 - Go inside your cloned repository and run `npm install`
 - Go inside the `demo` folder and run `npm install`
-- If you want to test using Firebase, you can follow the steps [here](https://github.com/antoine92190/vue-advanced-chat#using-with-firestore)
+- If you want to test using Firebase, you can follow the steps [here](https://github.com/advanced-chat/vue-advanced-chat#using-with-firestore)
 - You can use the code in `demo/src/ChatContainer.vue` or write your own code to test the chat
 - Run `npm run serve` inside the `demo` folder to open the demo app
 - You need to uncomment `import { register } from './../../src/lib/index.js'` to use the chat code locally and see your modifications live
