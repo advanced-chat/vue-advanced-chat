@@ -44,3 +44,12 @@
 		}
 	}
 }
+
+.vac-emoji-teleported {
+	.vac-emoji-picker {
+		top: 0 !important;
+		right: 0 !important;
+		position: absolute !important;
+		max-height: 320px !important;
+	}
+}

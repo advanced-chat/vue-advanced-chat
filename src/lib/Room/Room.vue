@@ -15,7 +15,7 @@
 		</slot>
 
 		<room-header
-			v-else
+			v-else-if="showRoomHeader"
 			:current-user-id="currentUserId"
 			:text-messages="textMessages"
 			:single-room="singleRoom"
@@ -42,6 +42,7 @@
 			id="messages-list"
 			ref="scrollContainer"
 			class="vac-container-scroll"
+			:class="{ 'vac-no-room-header': !showRoomHeader }"
 			@scroll="onContainerScroll"
 		>
 			<loader :show="loadingMessages" type="messages">
@@ -205,6 +206,7 @@ export default {
 		showSendIcon: { type: Boolean, required: true },
 		showFiles: { type: Boolean, required: true },
 		showAudio: { type: Boolean, required: true },
+		showRoomHeader: { type: Boolean, default: true },
 		audioBitRate: { type: Number, required: true },
 		audioSampleRate: { type: Number, required: true },
 		showEmojis: { type: Boolean, required: true },
@@ -225,7 +227,8 @@ export default {
 		scrollDistance: { type: Number, required: true },
 		templatesText: { type: Array, default: null },
 		usernameOptions: { type: Object, required: true },
-		emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: undefined },
+		showMessagesStartedText: { type: Boolean, default: true }
 	},
 
 	emits: [
@@ -287,7 +290,7 @@ export default {
 			return noRoomSelected
 		},
 		showMessagesStarted() {
-			return this.messages.length && this.messagesLoaded
+			return this.messages.length && this.messagesLoaded && this.showMessagesStartedText
 		}
 	},
 

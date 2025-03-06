@@ -17,24 +17,52 @@
 		</div>
 
 		<template v-if="emojiOpened">
-			<transition name="vac-slide-up" appear>
-				<div
-					class="vac-emoji-picker"
-					:class="{ 'vac-picker-reaction': emojiReaction }"
-					:style="{
-						height: `${emojiPickerHeight}px`,
-						top: positionTop ? emojiPickerHeight : `${emojiPickerTop}px`,
-						right: emojiPickerRight,
-						display: emojiPickerTop || !emojiReaction ? 'initial' : 'none'
-					}"
-				>
-					<emoji-picker
-						v-if="emojiOpened"
-						ref="emojiPicker"
-						:data-source="emojiDataSource"
-					/>
-				</div>
-			</transition>
+			<template v-if="teleportTarget">
+				<Teleport :to="teleportTarget">
+					<transition name="vac-slide-up" appear>
+						<OnClickOutside @trigger="closeEmoji">
+							<div
+								class="vac-emoji-picker"
+								:class="{ 'vac-picker-reaction': emojiReaction }"
+								:style="{
+									height: `${emojiPickerHeight}px`,
+									top: positionTop ? emojiPickerHeight : `${emojiPickerTop}px`,
+									right: emojiPickerRight,
+									display: emojiPickerTop || !emojiReaction ? 'initial' : 'none'
+								}"
+							>
+								<emoji-picker
+									v-if="emojiOpened"
+									ref="emojiPicker"
+									:data-source="emojiDataSource"
+								/>
+							</div>
+						</OnClickOutside>
+					</transition>
+				</Teleport>
+			</template>
+			<template v-else>
+				<transition name="vac-slide-up" appear>
+					<OnClickOutside @trigger="closeEmoji">
+						<div
+							class="vac-emoji-picker"
+							:class="{ 'vac-picker-reaction': emojiReaction }"
+							:style="{
+								height: `${emojiPickerHeight}px`,
+								top: positionTop ? emojiPickerHeight : `${emojiPickerTop}px`,
+								right: emojiPickerRight,
+								display: emojiPickerTop || !emojiReaction ? 'initial' : 'none'
+							}"
+						>
+							<emoji-picker
+								v-if="emojiOpened"
+								ref="emojiPicker"
+								:data-source="emojiDataSource"
+							/>
+						</div>
+					</OnClickOutside>
+				</transition>
+			</template>
 		</template>
 	</div>
 </template>
@@ -42,11 +70,13 @@
 <script>
 import SvgIcon from '../SvgIcon/SvgIcon'
 import { findParentBySelector } from '../../utils/element-selector'
+import { OnClickOutside } from '@vueuse/components'
 
 export default {
 	name: 'EmojiPickerContainer',
 	components: {
-		SvgIcon
+		SvgIcon,
+		OnClickOutside
 	},
 
 	props: {
@@ -55,10 +85,11 @@ export default {
 		positionTop: { type: Boolean, default: false },
 		positionRight: { type: Boolean, default: false },
 		messageId: { type: String, default: '' },
-		emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: undefined },
+		teleportTarget: { type: Object, default: undefined }
 	},
 
-	emits: ['add-emoji', 'open-emoji'],
+	emits: ['add-emoji', 'open-emoji', 'close-emoji'],
 
 	data() {
 		return {
@@ -124,6 +155,9 @@ export default {
 				ev.view.innerWidth,
 				ev.view.innerHeight
 			)
+		},
+		closeEmoji() {
+			this.$emit('open-emoji', false)
 		},
 		setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
 			const mobileSize = innerWidth < 500 || innerHeight < 700

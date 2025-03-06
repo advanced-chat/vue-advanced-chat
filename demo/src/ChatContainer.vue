@@ -81,7 +81,7 @@ import * as storageService from '@/database/storage'
 import { parseTimestamp, formatTimestamp } from '@/utils/dates'
 import logoAvatar from '@/assets/logo.png'
 
-import { register } from 'vue-advanced-chat'
+import { register } from '@artesa/vue-advanced-chat'
 // import { register } from './../../dist/vue-advanced-chat.es.js'
 // import { register } from './../../src/lib/index.js'
 register()
@@ -877,6 +877,7 @@ export default {
 <style lang="scss" scoped>
 .window-container {
 	width: 100%;
+	max-width: 500px;
 }
 
 .window-mobile {

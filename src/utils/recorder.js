@@ -44,10 +44,6 @@ export default class {
 
 		this.isPause = false
 		this.isRecording = true
-
-		if (!this.lameEncoder) {
-			this.lameEncoder = new Mp3Encoder(this.encoderOptions)
-		}
 	}
 
 	stop() {
@@ -89,6 +85,20 @@ export default class {
 		this.input = this.context.createMediaStreamSource(stream)
 		this.processor = this.context.createScriptProcessor(this.bufferSize, 1, 1)
 		this.stream = stream
+
+		const sampleRate = stream.getAudioTracks()[0].getSettings().sampleRate
+
+		if (sampleRate !== this.encoderOptions.sampleRate) {
+			this.encoderOptions.sampleRate = stream
+				.getAudioTracks()[0]
+				.getSettings().sampleRate
+
+			this.lameEncoder = new Mp3Encoder(this.encoderOptions)
+		}
+
+		if (!this.lameEncoder) {
+			this.lameEncoder = new Mp3Encoder(this.encoderOptions)
+		}
 
 		this.processor.onaudioprocess = ev => {
 			const sample = ev.inputBuffer.getChannelData(0)

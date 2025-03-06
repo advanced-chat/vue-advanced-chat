@@ -51,6 +51,7 @@
 				:show-reaction-emojis="showReactionEmojisCasted"
 				:show-new-messages-divider="showNewMessagesDividerCasted"
 				:show-footer="showFooterCasted"
+				:show-room-header="showRoomHeader"
 				:text-messages="t"
 				:single-room="singleRoomCasted"
 				:show-rooms-list="showRoomsList && roomsListOpenedCasted"
@@ -70,6 +71,7 @@
 				:templates-text="templatesTextCasted"
 				:username-options="usernameOptionsCasted"
 				:emoji-data-source="emojiDataSource"
+				:show-messages-started-text="showMessagesStarted"
 				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
@@ -181,6 +183,7 @@ export default {
 		showReactionEmojis: { type: [Boolean, String], default: true },
 		showNewMessagesDivider: { type: [Boolean, String], default: true },
 		showFooter: { type: [Boolean, String], default: true },
+		showRoomHeader: { type: Boolean, default: true },
 		textFormatting: {
 			type: [Object, String],
 			default: () => ({
@@ -207,7 +210,9 @@ export default {
 			type: [Object, String],
 			default: () => ({ minUsers: 3, currentUser: false })
 		},
-		emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: undefined },
+		handleCustomOpenFiles: { type: Boolean, default: false },
+		showMessagesStarted: { type: Boolean, default: true }
 	},
 
 	emits: [
@@ -380,6 +385,9 @@ export default {
 		},
 		usernameOptionsCasted() {
 			return this.castObject(this.usernameOptions)
+		},
+		handleCustomOpenFilesCasted() {
+			return this.castBoolean(this.handleCustomOpenFiles)
 		}
 	},
 
@@ -509,6 +517,18 @@ export default {
 			this.$emit('delete-message', { message, roomId: this.room.roomId })
 		},
 		openFile({ message, file }) {
+			if (this.handleCustomOpenFilesCasted) {
+				this.$emit('open-file', { message,
+					file,
+					defaultHandle: () => {
+						this._openFile({ message, file })
+					}
+				})
+			} else {
+				this._openFile({ message, file })
+			}
+		},
+		_openFile({ message, file }) {
 			if (this.mediaPreviewEnabledCasted && file.action === 'preview') {
 				this.previewFile = file.file
 				this.showMediaPreview = true
