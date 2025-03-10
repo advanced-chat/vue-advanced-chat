@@ -1,4 +1,6 @@
 .vac-format-message-wrapper {
+  font-weight: 300;
+
   .vac-format-container {
     display: inline;
   }
@@ -44,5 +46,9 @@
   .vac-image-link-message {
     max-width: 166px;
     font-size: 12px;
+  }
+
+  strong {
+    font-weight: 600;
   }
 }

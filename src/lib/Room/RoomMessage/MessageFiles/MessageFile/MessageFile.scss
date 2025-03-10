@@ -95,11 +95,12 @@
   .vac-text-extension-and-size {
     color: var(--chat-message-color-file-extension);
     font-size: 12px;
+    font-weight: 300;
     text-align: left;
   }
 
   .vac-file-name {
-    font-weight: 500;
+    font-weight: 400;
     text-align: left;
   }
 }

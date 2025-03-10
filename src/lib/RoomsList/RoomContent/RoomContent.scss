@@ -30,12 +30,13 @@
   .vac-room-name {
     flex: 1;
     color: var(--chat-room-color-username);
-    font-weight: 500;
+    font-weight: 400;
   }
 
   .vac-text-date {
     margin-left: 5px;
     font-size: 11px;
+    font-weight: 300;
     color: var(--chat-room-color-timestamp);
   }
 
