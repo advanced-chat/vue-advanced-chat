@@ -210,6 +210,10 @@ export default {
       image.addEventListener('load', () => (this.imageLoading = false))
     },
     openFile(event, action) {
+      if (!this.message.distributed) {
+        return
+      }
+
       if (!this.messageSelectionEnabled) {
         event.stopPropagation()
         this.$emit('open-file', { file: this.file, action })
