@@ -30,6 +30,7 @@
 	"module": "./dist/vue-advanced-chat.mjs",
 	"unpkg": "./dist/vue-advanced-chat.umd.js",
 	"jsdelivr": "./dist/vue-advanced-chat.umd.js",
+	"packageManager": "pnpm@9.15.9",
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
