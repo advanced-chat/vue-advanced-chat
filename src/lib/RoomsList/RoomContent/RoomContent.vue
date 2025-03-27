@@ -18,6 +18,7 @@
           <slot :name="'room-list-info_' + room.roomId">
             <div class="vac-room-name vac-text-ellipsis">
               {{ room.roomName }}
+              <i v-if="room.hasWhatsappIntegration" class="bi bi-whatsapp" />
             </div>
           </slot>
           <div v-if="room.lastMessage" class="vac-text-date">

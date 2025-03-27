@@ -76,11 +76,15 @@
               <div class="vac-text-ellipsis">
                 <div class="vac-room-name vac-text-ellipsis">
                   {{ room.roomName }}
+                  <i v-if="room.hasWhatsappIntegration" class="bi bi-whatsapp" />
                 </div>
                 <div v-if="typingUsers" class="vac-room-info vac-text-ellipsis">
                   {{ typingUsers }}
                 </div>
                 <div v-else-if="room.roomInfo" class="vac-room-info vac-text-ellipsis">
+                  <span v-if="room.hasWhatsappIntegration">
+                    {{ translate('Integrated with WhatsApp.') }}
+                  </span>
                   {{ room.roomInfo }}
                 </div>
                 <div v-else class="vac-room-info vac-text-ellipsis">
@@ -142,6 +146,7 @@
 
 <script>
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
+import { translate } from '../../../utils/i18n'
 
 import vClickOutside from '../../../utils/on-click-outside'
 import typingText from '../../../utils/typing-text'
@@ -249,6 +254,9 @@ export default {
   },
 
   methods: {
+    translate(str) {
+      return translate(str)
+    },
     menuActionHandler(action) {
       this.closeMenu()
       this.$emit('menu-action-handler', action)

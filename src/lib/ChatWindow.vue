@@ -41,6 +41,8 @@
         </template>
       </rooms-list>
       <room
+        :is-whatsapp-group-feature-enabled="isWhatsappGroupFeatureEnabledCasted"
+        :does-room-have-whatsapp-integration="room.hasWhatsappIntegration ?? false"
         :current-user-id="currentUserId"
         :rooms="roomsCasted"
         :archived-rooms="archivedRoomsCasted"
@@ -162,6 +164,7 @@ export default {
   },
 
   props: {
+    isWhatsappGroupFeatureEnabled: { type: Boolean, default: false },
     height: { type: String, default: '600px' },
     theme: { type: String, default: 'light' },
     styles: { type: [Object, String], default: () => ({}) },
@@ -431,6 +434,9 @@ export default {
     },
     customSearchRoomsCasted() {
       return this.castArray(this.customSearchRooms)
+    },
+    isWhatsappGroupFeatureEnabledCasted() {
+      return this.castBoolean(this.isWhatsappGroupFeatureEnabled)
     },
     messagesCasted() {
       return this.castArray(this.messages)

@@ -141,12 +141,31 @@
               <div
                 v-if="showUsername"
                 class="vac-text-username"
-                :class="{
-                  'vac-username-reply': !message.deleted && message.replyMessage
-                }"
+                :class="{ 'vac-username-reply': !message.deleted && message.replyMessage }"
                 @click="onClickMessageUsername"
               >
-                <span>{{ message.username }}</span>
+                <!-- show colored username -->
+                <span
+                  :style="doesRoomHaveWhatsappIntegration
+                    ? (isMessageFromWhatsapp(message) ? 'color: limegreen;' : 'color: #7367F0;')
+                    : ''"
+                >
+                  {{ doesRoomHaveWhatsappIntegration ? message.user.name : `${message.user.name} <${message.user.email}>` }}
+                </span>
+
+                <!-- show phone or email -->
+                <span v-if="doesRoomHaveWhatsappIntegration" class="vac-username-info">
+                  {{ isWhatsappGroupFeatureEnabled && isMessageFromWhatsapp(message) ? message.user?.phone_number : message.user?.email }}
+                </span>
+
+                <!-- logo whatsapp or optiwork -->
+                <i v-if="isWhatsappGroupFeatureEnabled && isMessageFromWhatsapp(message) && doesRoomHaveWhatsappIntegration" class="bi bi-whatsapp" />
+                <img
+                  v-else-if="!isWhatsappGroupFeatureEnabled || !isMessageFromWhatsapp(message)"
+                  v-show="doesRoomHaveWhatsappIntegration"
+                  src="../../../../../../../images/avatars/optiwork.svg"
+                  alt="Optiwork"
+                />
               </div>
 
               <div v-if="!message.deleted && message.isForwarded" :class="{'message-forwarded-container': !message.deleted && message.isForwarded}">
@@ -324,6 +343,7 @@ import AudioPlayer from './AudioPlayer/AudioPlayer'
 
 import { messagesValidation } from '../../../utils/data-validation'
 import { isAudioFile } from '../../../utils/media-file'
+import Message from '../../../../../models/Message'
 
 export default {
   name: 'RoomMessage',
@@ -338,6 +358,8 @@ export default {
   },
 
   props: {
+    isWhatsappGroupFeatureEnabled: { type: Boolean, default: false },
+    doesRoomHaveWhatsappIntegration: { type: Boolean, default: false },
     currentUserId: { type: [String, Number], required: true },
     textMessages: { type: Object, required: true },
     index: { type: Number, required: true },
@@ -482,6 +504,9 @@ export default {
   },
 
   methods: {
+    isMessageFromWhatsapp(msg) {
+      return msg.origin === Message.ORIGIN_WHATSAPP
+    },
     onMessageAvatarClicked(msg) {
       const id = msg?.senderId
       if (!id) {
@@ -517,6 +542,12 @@ export default {
     },
 
     onClickMessageUsername() {
+      if (this.isMessageFromWhatsapp(this.message)) {
+        const phone = this.message.user?.phone_number?.replace(/\D/g, '')
+        window.open(`https://wa.me/${phone}`, '_blank')
+        return
+      }
+
       const user = this.roomUsers.find(user => user._id === this.message.senderId)
       this.$emit('click-message-username', { user })
     },
