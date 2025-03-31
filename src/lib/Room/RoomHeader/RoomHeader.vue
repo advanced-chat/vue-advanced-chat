@@ -15,9 +15,9 @@
               </span>
 
               <div class="vac-selection-count-container">
-               <span class="vac-selection-button-count">
+                <span class="vac-selection-button-count">
                   {{ selectedMessagesTotal }}
-               </span>
+                </span>
                 {{ textMessages.COUNT_SELECT_MESSAGE }}
               </div>
             </div>
@@ -27,11 +27,13 @@
               :key="action.name"
             >
               <div v-if="action.name === 'forwardMessages'" class="vac-item-clickable forward-messages" :title="action.title" @click="messageSelectionActionHandler(action)">
-                  <span>
-                    <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class="" version="1.1" x="0px" y="0px" enable-background="new 0 0 24 24" xml:space="preserve">
-                      <path fill="currentColor" d="M14.278,4.813c0-0.723,0.873-1.085,1.383-0.574l6.045,6.051 c0.317,0.317,0.317,0.829,0,1.146l-6.045,6.051c-0.51,0.51-1.383,0.149-1.383-0.574v-2.732c-5.096,0-8.829,1.455-11.604,4.611 c-0.246,0.279-0.702,0.042-0.602-0.316C3.502,13.303,6.997,8.472,14.278,7.431V4.813z" />
+                  <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send-icon lucide-send">
+                      <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/>
+                      <path d="m21.854 2.147-10.94 10.939"/>
                     </svg>
-                  </span>
+                    <span>{{ translate('Forward') }}</span>
+                  </button>
               </div>
 
               <div

@@ -88,16 +88,27 @@
         color: var(--chat-message-color-forwarded);
       }
 
-      .vac-selection-count-container{
+      .vac-selection-count-container {
         margin-left:14px;
         font-size: 14.5px;
-        color: var(--chat-message-color-forwarded);;
+        color: var(--chat-message-color-forwarded);
         user-select: none;
         margin-top: 2px;
       }
     }
-    .forward-messages{
-      color: var(--chat-message-color-forwarded);;
+    .forward-messages {
+      button {
+        background-color: var(--bs-primary);
+        border: 0;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 12px;
+        color: white;
+        cursor: pointer;
+      }
     }
   }
 
