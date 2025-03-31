@@ -146,24 +146,24 @@
               >
                 <!-- show colored username -->
                 <span
-                  :style="doesRoomHaveWhatsappIntegration
-                    ? (isMessageFromWhatsapp(message) ? 'color: limegreen;' : 'color: #7367F0;')
+                  :style="hasWhatsappIntegration
+                    ? (isMessageFromWhatsapp(message) ? 'color: limegreen;' : 'color: #905DA5;')
                     : ''"
                 >
-                  {{ doesRoomHaveWhatsappIntegration ? message.user.name : `${message.user.name} <${message.user.email}>` }}
+                  {{ hasWhatsappIntegration ? message.user.name : `${message.user.name} <${message.user.email}>` }}
                 </span>
 
                 <!-- show phone or email -->
-                <span v-if="doesRoomHaveWhatsappIntegration" class="vac-username-info">
-                  {{ isWhatsappGroupFeatureEnabled && isMessageFromWhatsapp(message) ? message.user?.phone_number : message.user?.email }}
+                <span v-if="hasWhatsappIntegration" class="vac-username-info">
+                  {{ isWhatsappGroupFeatureEnabled && isMessageFromWhatsapp(message) ? message.user?.whatsapp_info.phone_number_formatted : message.user?.email }}
                 </span>
 
                 <!-- logo whatsapp or optiwork -->
-                <i v-if="isWhatsappGroupFeatureEnabled && isMessageFromWhatsapp(message) && doesRoomHaveWhatsappIntegration" class="bi bi-whatsapp" />
+                <i v-if="isWhatsappGroupFeatureEnabled && isMessageFromWhatsapp(message) && hasWhatsappIntegration" class="bi bi-whatsapp" />
                 <img
                   v-else-if="!isWhatsappGroupFeatureEnabled || !isMessageFromWhatsapp(message)"
-                  v-show="doesRoomHaveWhatsappIntegration"
-                  src="../../../../../../../images/avatars/optiwork.svg"
+                  v-show="hasWhatsappIntegration"
+                  src="../../../../../../../images/logo/logo.svg"
                   alt="Optiwork"
                 />
               </div>
@@ -359,7 +359,7 @@ export default {
 
   props: {
     isWhatsappGroupFeatureEnabled: { type: Boolean, default: false },
-    doesRoomHaveWhatsappIntegration: { type: Boolean, default: false },
+    hasWhatsappIntegration: { type: Boolean, default: false },
     currentUserId: { type: [String, Number], required: true },
     textMessages: { type: Object, required: true },
     index: { type: Number, required: true },
@@ -543,8 +543,7 @@ export default {
 
     onClickMessageUsername() {
       if (this.isMessageFromWhatsapp(this.message)) {
-        const phone = this.message.user?.phone_number?.replace(/\D/g, '')
-        window.open(`https://wa.me/${phone}`, '_blank')
+        window.open(`https://wa.me/${this.message.user?.whatsapp_info?.whatsapp_id}`, '_blank')
         return
       }
 

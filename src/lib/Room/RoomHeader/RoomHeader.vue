@@ -76,13 +76,13 @@
               <div class="vac-text-ellipsis">
                 <div class="vac-room-name vac-text-ellipsis">
                   {{ room.roomName }}
-                  <i v-if="room.hasWhatsappIntegration" class="bi bi-whatsapp" />
+                  <i v-if="room.whatsappGroupId" class="bi bi-whatsapp" />
                 </div>
                 <div v-if="typingUsers" class="vac-room-info vac-text-ellipsis">
                   {{ typingUsers }}
                 </div>
                 <div v-else-if="room.roomInfo" class="vac-room-info vac-text-ellipsis">
-                  <span v-if="room.hasWhatsappIntegration">
+                  <span v-if="room.whatsappGroupId">
                     {{ translate('Integrated with WhatsApp.') }}
                   </span>
                   {{ room.roomInfo }}
