@@ -10,11 +10,7 @@
         @click="$emit('select-user-tag', user)"
       >
         <div class="vac-tags-info">
-          <div
-            v-if="user.avatar"
-            class="vac-avatar vac-tags-avatar"
-            :style="{ 'background-image': `url('${user.avatar}')` }"
-          />
+          <img v-show="user.avatar" :src="user.avatar" class="vac-avatar vac-tags-avatar" />
           <div class="vac-tags-username">
             {{ user.username }}
           </div>

@@ -106,13 +106,7 @@
             v-if="message.senderId !== currentUserId"
             :name="'message-avatar_' + message._id"
           >
-            <div
-              v-if="message.avatar && !messageSelectionEnabled"
-              class="vac-avatar"
-              style="cursor: pointer"
-              :style="{ 'background-image': `url('${message.avatar}')` }"
-              @click="onMessageAvatarClicked(message)"
-            />
+            <img v-show="message.avatar && !messageSelectionEnabled" :src="message.avatar" @click="onMessageAvatarClicked(message)" class="vac-avatar cursor-pointer" />
           </slot>
           <div
             v-if="hasSenderUserAvatar && !message.avatar"
@@ -315,11 +309,7 @@
             v-if="message.senderId === currentUserId"
             :name="'message-avatar_' + message._id"
           >
-            <div
-              v-if="message.avatar && !messageSelectionEnabled"
-              class="vac-avatar vac-avatar-current"
-              :style="{ 'background-image': `url('${message.avatar}')` }"
-            />
+            <img v-show="message.avatar && !messageSelectionEnabled" :src="message.avatar" class="vac-avatar vac-avatar-current" />
           </slot>
           <div
             v-if="hasCurrentUserAvatar && !message.avatar"

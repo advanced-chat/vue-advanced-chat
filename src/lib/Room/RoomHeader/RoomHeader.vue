@@ -68,11 +68,7 @@
             @click="$emit('room-info')"
           >
             <slot name="room-header-avatar">
-              <div
-                v-if="room.avatar"
-                class="vac-avatar"
-                :style="{ 'background-image': `url('${room.avatar}')` }"
-              />
+              <img v-show="room.avatar" :src="room.avatar" class="vac-avatar" />
             </slot>
             <slot name="room-header-info">
               <div class="vac-text-ellipsis">

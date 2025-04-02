@@ -2,11 +2,7 @@
   <div class="vac-room-container">
     <slot :name="'room-list-item_' + room.roomId">
       <slot :name="'room-list-avatar_' + room.roomId">
-        <div
-          v-if="room.avatar"
-          class="vac-avatar"
-          :style="{ 'background-image': `url('${room.avatar}')` }"
-        />
+        <img v-show="room.avatar" :src="room.avatar" class="vac-avatar" />
       </slot>
       <div class="vac-name-container vac-text-ellipsis">
         <div class="vac-title-container">
