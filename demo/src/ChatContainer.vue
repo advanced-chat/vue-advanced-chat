@@ -79,9 +79,9 @@
 </template>
 
 <script>
-import {ްްregister } from 'vue-advanced-chat'
-// import {ްްregister } from '../../../vue-advanced-chat/dist/vue-advanced-chat.es.js'
-// import {ްްregister } from 'vue-advanced-chat/dist/vue-advanced-chat.umd.min.js'
+import { register } from 'vue-advanced-chat'
+// import { register } from '../../../vue-advanced-chat/dist/vue-advanced-chat.es.js'
+// import { register } from 'vue-advanced-chat/dist/vue-advanced-chat.umd.min.js'
 
 import * as firestoreService from '@/database/firestore'
 import * as storageService from '@/database/storage'
