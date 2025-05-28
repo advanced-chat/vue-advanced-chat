@@ -14,6 +14,9 @@ COPY package.json ./
 # The following line for package-lock.json is removed as per instructions
 # COPY package-lock.json ./
 
+# Install Python and C++ build tools
+RUN apk add --no-cache python3 make g++
+
 # Install dependencies for the demo app
 RUN npm install
 
