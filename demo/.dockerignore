@@ -1,0 +1,23 @@
+# Docker ignore for demo app
+
+# Dependencies
+node_modules
+**/node_modules
+
+# Build output
+dist
+build
+
+# Dockerfile itself
+Dockerfile
+
+# Local development files (examples, add if needed)
+# .env
+# .env.local
+# .vscode
+# .idea
+# *.log
+#
+# OS generated files
+.DS_Store
+Thumbs.db
