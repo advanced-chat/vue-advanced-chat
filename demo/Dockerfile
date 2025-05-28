@@ -15,7 +15,7 @@ COPY package.json ./
 # COPY package-lock.json ./
 
 # Install Python and C++ build tools
-RUN apk add --no-cache python3 make g++
+RUN apk add --no-cache python3 py3-setuptools make g++
 
 # Install dependencies for the demo app
 RUN npm install
