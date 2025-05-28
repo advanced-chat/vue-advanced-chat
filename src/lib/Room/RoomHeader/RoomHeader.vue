@@ -71,6 +71,15 @@
 					</div>
 					<slot v-if="room.roomId" name="room-options">
 						<div
+							v-if="room.roomId"
+							class="vac-svg-button vac-phone-button"
+							@click="$emit('start-call')"
+							style="margin-right: 10px;"
+						>
+							<!-- Replace with SvgIcon if a phone icon is available -->
+							<span>Call</span>
+						</div>
+						<div
 							v-if="menuActions.length"
 							class="vac-svg-button vac-room-options"
 							@click="menuOpened = !menuOpened"
@@ -139,7 +148,8 @@ export default {
 		'room-info',
 		'menu-action-handler',
 		'cancel-message-selection',
-		'message-selection-action-handler'
+		'message-selection-action-handler',
+		'start-call'
 	],
 
 	data() {

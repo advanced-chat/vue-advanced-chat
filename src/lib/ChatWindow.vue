@@ -70,6 +70,10 @@
 				:templates-text="templatesTextCasted"
 				:username-options="usernameOptionsCasted"
 				:emoji-data-source="emojiDataSource"
+				:jjsip-sip-uri="jjsipSipUri"
+				:jjsip-password="jjsipPassword"
+				:jjsip-web-socket-server="jjsipWebSocketServer"
+				:jjsip-display-name="jjsipDisplayName"
 				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
@@ -118,7 +122,7 @@ import {
 } from '../utils/data-validation'
 
 export default {
-	name: 'ChatContainer',
+	name: 'ChatContainer', // This should ideally be ChatWindow, but the file is ChatWindow.vue
 	components: {
 		RoomsList,
 		Room,
@@ -207,7 +211,13 @@ export default {
 			type: [Object, String],
 			default: () => ({ minUsers: 3, currentUser: false })
 		},
-		emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: undefined },
+
+		// JJSIP Props to pass down to Room.vue
+		jjsipSipUri: { type: String, default: 'sip:defaultwindowuser@example.com' },
+		jjsipPassword: { type: String, default: 'windowpassword' },
+		jjsipWebSocketServer: { type: String, default: 'wss://defaultwindowws.example.com' },
+		jjsipDisplayName: { type: String, default: 'Default Window User' }
 	},
 
 	emits: [

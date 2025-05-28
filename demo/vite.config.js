@@ -23,5 +23,5 @@ export default defineConfig({
 	server: {
 		open: '/'
 	},
-	base: process.env.NODE_ENV === 'production' ? '/vue-advanced-chat/' : '/'
+	base: '/'
 })

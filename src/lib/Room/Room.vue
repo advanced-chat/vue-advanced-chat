@@ -8,6 +8,37 @@
 		@dragleave.prevent
 		@touchstart="touchStart"
 	>
+		<!-- Audio element for JJSIP -->
+		<audio ref="jjsipAudioElement" autoplay playsinline style="display: none;"></audio>
+
+		<!-- Call UI Elements -->
+		<div v-if="callError" style="padding: 10px; background-color: #f8d7da; color: #721c24; text-align: center;">
+			Error: {{ callError }}
+		</div>
+
+		<!-- Incoming Call Notification -->
+		<div v-if="isIncomingCall && incomingCallData" style="padding: 15px; background-color: #d4edda; color: #155724; text-align: center; border-bottom: 1px solid #c3e6cb;">
+			<div>
+				Incoming call from: {{ (incomingCallData.session && incomingCallData.session.remote_identity) ? incomingCallData.session.remote_identity.uri.toString() : 'Unknown' }}
+			</div>
+			<button @click="answerIncomingCall" style="margin: 5px; padding: 8px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
+				Answer
+			</button>
+			<button @click="declineIncomingCall" style="margin: 5px; padding: 8px 15px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
+				Decline
+			</button>
+		</div>
+
+		<!-- Active Call UI -->
+		<div v-if="isCallActive && !isIncomingCall" style="padding: 15px; background-color: #cce5ff; color: #004085; text-align: center; border-bottom: 1px solid #b8daff;">
+			<div>
+				Call in progress with: {{ (jjsip_currentSession && jjsip_currentSession.remote_identity) ? jjsip_currentSession.remote_identity.uri.toString() : 'Unknown' }}
+			</div>
+			<button @click="endCurrentCall" style="margin: 5px; padding: 8px 15px; background-color: #ffc107; color: #212529; border: none; border-radius: 4px; cursor: pointer;">
+				Hang Up
+			</button>
+		</div>
+
 		<slot v-if="showNoRoom" name="no-room-selected">
 			<div class="vac-container-center vac-room-empty">
 				<div>{{ textMessages.ROOM_EMPTY }}</div>
@@ -32,6 +63,7 @@
 			@menu-action-handler="$emit('menu-action-handler', $event)"
 			@message-selection-action-handler="messageSelectionActionHandler"
 			@cancel-message-selection="messageSelectionEnabled = false"
+			@start-call="startCall"
 		>
 			<template v-for="(i, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
@@ -176,6 +208,8 @@ import RoomHeader from './RoomHeader/RoomHeader'
 import RoomFooter from './RoomFooter/RoomFooter'
 import RoomMessage from './RoomMessage/RoomMessage'
 
+import * as jjsipService from '../../services/jjsipService'
+
 export default {
 	name: 'ChatRoom',
 	components: {
@@ -225,7 +259,13 @@ export default {
 		scrollDistance: { type: Number, required: true },
 		templatesText: { type: Array, default: null },
 		usernameOptions: { type: Object, required: true },
-		emojiDataSource: { type: String, default: undefined }
+		emojiDataSource: { type: String, default: undefined },
+
+		// JJSIP Props
+		jjsipSipUri: { type: String, default: 'sip:defaultroomuser@example.com' },
+		jjsipPassword: { type: String, default: 'roompassword' },
+		jjsipWebSocketServer: { type: String, default: 'wss://defaultroomws.example.com' },
+		jjsipDisplayName: { type: String, default: 'Default Room User' }
 	},
 
 	emits: [
@@ -260,7 +300,15 @@ export default {
 			newMessages: [],
 			messageSelectionEnabled: false,
 			selectedMessages: [],
-			droppedFiles: []
+			droppedFiles: [],
+
+			// JJSIP related data
+			jjsip_ua: null,
+			jjsip_currentSession: null,
+			isCallActive: false,
+			isIncomingCall: false,
+			incomingCallData: null, 
+			callError: null
 		}
 	},
 
@@ -326,12 +374,194 @@ export default {
 
 	mounted() {
 		this.newMessages = []
+		this.initializeJJsip()
 	},
 
 	methods: {
+    initializeJJsip() {
+      const config = {
+        sipUri: this.jjsipSipUri,
+        password: this.jjsipPassword,
+        wsServer: this.jjsipWebSocketServer,
+        displayName: this.jjsipDisplayName
+      };
+
+      console.log('[Room.vue] Initializing JJSIP with config from props:', config);
+      this.callError = null;
+      try {
+        const ua = jjsipService.initJJsip(config);
+        if (ua) {
+          this.jjsip_ua = ua;
+          console.log('[Room.vue] JJSIP UA initialized successfully:', ua);
+          
+          ua.on('new_session', (sessionData) => {
+            console.log('[Room.vue] JJSIP UA new_session event (incoming call):', sessionData);
+            this.handleIncomingCall({ session: sessionData.session });
+          });
+
+          ua.on('registered', () => {
+            console.log('[Room.vue] JJSIP UA registered.');
+            this.callError = null; 
+          });
+
+          ua.on('unregistered', () => {
+            console.warn('[Room.vue] JJSIP UA unregistered.');
+          });
+          
+          ua.on('registrationFailed', (data) => {
+            console.error('[Room.vue] JJSIP UA registrationFailed event:', data);
+            this.handleRegistrationFailed(data);
+          });
+        } else {
+          console.error('[Room.vue] JJSIP UA initialization failed. UA instance not returned.');
+          this.callError = 'JJSIP initialization failed. UA not available.';
+        }
+      } catch (error) {
+        console.error('[Room.vue] Error during JJSIP initialization:', error);
+        this.callError = `JJSIP initialization error: ${error.message}`;
+      }
+    },
+
+    startCall() {
+      if (!this.jjsip_ua) {
+        this.callError = 'JJSIP not initialized. Cannot start call.';
+        console.error(this.callError);
+        return;
+      }
+      const targetUri = 'sip:user200@example.com'; // Placeholder
+      console.log(`[Room.vue] Attempting to start call to ${targetUri}`);
+
+      const session = jjsipService.makeCall(targetUri);
+      if (session) {
+        this.jjsip_currentSession = session;
+        this.isCallActive = true;
+        this.isIncomingCall = false;
+        this.incomingCallData = null; 
+        this.callError = null;
+        console.log('[Room.vue] Outgoing call initiated. Session:', session);
+        
+        session.on('accepted', () => {
+            console.log('[Room.vue] Outgoing call accepted by remote.');
+            this.isCallActive = true; 
+            this.isIncomingCall = false;
+            this.callError = null;
+            if (this.jjsip_currentSession && this.$refs.jjsipAudioElement) {
+              console.log('[Room.vue] Calling setRemoteAudioElement for outgoing call.');
+              jjsipService.setRemoteAudioElement(this.jjsip_currentSession, this.$refs.jjsipAudioElement);
+            }
+        });
+        session.on('ended', () => {
+            console.log('[Room.vue] Outgoing call ended.');
+            this.isCallActive = false;
+            if (this.jjsip_currentSession === session) {
+              this.jjsip_currentSession = null;
+            }
+        });
+        session.on('failed', (data) => {
+            console.error('[Room.vue] Outgoing call failed:', data);
+            this.isCallActive = false;
+            if (this.jjsip_currentSession === session) {
+              this.jjsip_currentSession = null;
+            }
+            this.callError = 'Call failed to connect.';
+        });
+      } else {
+        this.callError = 'Failed to start call (session is null).';
+        console.error('[Room.vue] Failed to start call, session is null.');
+      }
+    },
+
+    answerIncomingCall() {
+      if (!this.incomingCallData || !this.incomingCallData.session) {
+        this.callError = 'No incoming call data to answer.';
+        console.error(this.callError);
+        return;
+      }
+      console.log('[Room.vue] Answering incoming call. Session:', this.incomingCallData.session);
+      const incomingSession = this.incomingCallData.session;
+      jjsipService.answerCall(incomingSession); 
+
+      this.jjsip_currentSession = incomingSession; 
+      this.isCallActive = true;
+      this.isIncomingCall = false;
+      this.callError = null;
+
+      if (this.jjsip_currentSession) {
+        this.jjsip_currentSession.on('accepted', () => {
+             console.log('[Room.vue] Incoming call successfully accepted/connected (from Room.vue session.on "accepted").');
+             this.isCallActive = true; 
+             this.isIncomingCall = false; 
+             this.incomingCallData = null; 
+             if (this.$refs.jjsipAudioElement) {
+               console.log('[Room.vue] Calling setRemoteAudioElement for incoming call.');
+               jjsipService.setRemoteAudioElement(this.jjsip_currentSession, this.$refs.jjsipAudioElement);
+             }
+        });
+
+        this.jjsip_currentSession.on('ended', () => {
+            console.log('[Room.vue] Answered call ended (from Room.vue session.on "ended").');
+            this.isCallActive = false;
+            if (this.jjsip_currentSession === incomingSession) { 
+                this.jjsip_currentSession = null;
+            }
+            this.incomingCallData = null; 
+        });
+        this.jjsip_currentSession.on('failed', (data) => {
+             console.error('[Room.vue] Answered call failed (from Room.vue session.on "failed").', data);
+            this.isCallActive = false;
+            if (this.jjsip_currentSession === incomingSession) {
+                this.jjsip_currentSession = null;
+            }
+            this.incomingCallData = null; 
+            this.callError = 'Call failed after answering.';
+        });
+      } else {
+        this.incomingCallData = null;
+      }
+    },
+
+    declineIncomingCall() {
+      if (!this.incomingCallData || !this.incomingCallData.session) {
+        this.callError = 'No incoming call data to decline.';
+        return;
+      }
+      jjsipService.hangupCall(this.incomingCallData.session); 
+      this.isIncomingCall = false;
+      this.incomingCallData = null;
+      this.callError = null;
+      this.isCallActive = false; 
+    },
+
+    endCurrentCall() {
+      if (!this.jjsip_currentSession) {
+        this.callError = 'No active call to end.';
+        return;
+      }
+      jjsipService.hangupCall(this.jjsip_currentSession);
+      this.isCallActive = false;
+      this.jjsip_currentSession = null;
+      this.isIncomingCall = false; 
+      this.incomingCallData = null; 
+      this.callError = null;
+    },
+
+    handleIncomingCall(data) { 
+      if (!data || !data.session) {
+        console.error('[Room.vue] Invalid data for handleIncomingCall:', data);
+        return;
+      }
+      this.incomingCallData = { session: data.session }; 
+      this.isIncomingCall = true;
+      this.isCallActive = false; 
+      this.callError = null;
+    },
+
+    handleRegistrationFailed(data) {
+      this.callError = `SIP Registration Failed: ${data?.cause || 'Unknown cause'}.`;
+    },
+
 		updateLoadingMessages(val) {
 			this.loadingMessages = val
-
 			if (!val) {
 				setTimeout(() => this.initIntersectionObserver())
 			}
@@ -341,29 +571,24 @@ export default {
 				this.showLoader = true
 				this.observer.disconnect()
 			}
-
 			const loader = this.$el.querySelector('#infinite-loader-messages')
-
 			if (loader) {
 				const options = {
 					root: this.$el.querySelector('#messages-list'),
 					rootMargin: `${this.scrollDistance}px`,
 					threshold: 0
 				}
-
 				this.observer = new IntersectionObserver(entries => {
 					if (entries[0].isIntersecting) {
 						this.loadMoreMessages()
 					}
 				}, options)
-
 				this.observer.observe(loader)
 			}
 		},
 		preventTopScroll() {
 			const container = this.$refs.scrollContainer
 			const prevScrollHeight = container.scrollHeight
-
 			const observer = new ResizeObserver(_ => {
 				if (container.scrollHeight !== prevScrollHeight) {
 					if (this.$refs.scrollContainer) {
@@ -374,18 +599,15 @@ export default {
 					}
 				}
 			})
-
 			for (var i = 0; i < container.children.length; i++) {
 				observer.observe(container.children[i])
 			}
 		},
 		touchStart(touchEvent) {
 			if (this.singleRoom) return
-
 			if (touchEvent.changedTouches.length === 1) {
 				const posXStart = touchEvent.changedTouches[0].clientX
 				const posYStart = touchEvent.changedTouches[0].clientY
-
 				addEventListener(
 					'touchend',
 					touchEvent => this.touchEnd(touchEvent, posXStart, posYStart),
@@ -397,10 +619,8 @@ export default {
 			if (touchEvent.changedTouches.length === 1) {
 				const posXEnd = touchEvent.changedTouches[0].clientX
 				const posYEnd = touchEvent.changedTouches[0].clientY
-
 				const swippedRight = posXEnd - posXStart > 100
 				const swippedVertically = Math.abs(posYEnd - posYStart) > 50
-
 				if (swippedRight && !swippedVertically) {
 					this.$emit('toggle-rooms-list')
 				}
@@ -411,17 +631,13 @@ export default {
 			this.scrollIcon = false
 			this.scrollMessagesCount = 0
 			this.resetMessageSelection()
-
 			const unwatch = this.$watch(
 				() => this.messages,
 				val => {
 					if (!val || !val.length) return
-
 					const element = this.$refs.scrollContainer
 					if (!element) return
-
 					unwatch()
-
 					setTimeout(() => {
 						element.scrollTo({ top: element.scrollHeight })
 						this.updateLoadingMessages(false)
@@ -443,39 +659,29 @@ export default {
 		},
 		onMessageAdded({ message, index, ref }) {
 			if (index !== this.messages.length - 1) return
-
 			const autoScrollOffset = ref.offsetHeight + 60
-
 			setTimeout(() => {
 				const scrollContainer = this.$refs.scrollContainer
 				let scrolledUp = false
-
 				if (scrollContainer) {
 					scrolledUp = this.getBottomScroll(scrollContainer) > autoScrollOffset
 				}
-
 				if (message.senderId === this.currentUserId) {
 					if (scrolledUp) {
-						if (this.autoScroll.send.newAfterScrollUp) {
-							this.scrollToBottom()
-						}
+						if (this.autoScroll.send.newAfterScrollUp) this.scrollToBottom()
 					} else {
-						if (this.autoScroll.send.new) {
-							this.scrollToBottom()
-						}
+						if (this.autoScroll.send.new) this.scrollToBottom()
 					}
 				} else {
 					if (scrolledUp) {
-						if (this.autoScroll.receive.newAfterScrollUp) {
-							this.scrollToBottom()
-						} else {
+						if (this.autoScroll.receive.newAfterScrollUp) this.scrollToBottom()
+						else {
 							this.scrollIcon = true
 							this.scrollMessagesCount++
 						}
 					} else {
-						if (this.autoScroll.receive.new) {
-							this.scrollToBottom()
-						} else {
+						if (this.autoScroll.receive.new) this.scrollToBottom()
+						else {
 							this.scrollIcon = true
 							this.scrollMessagesCount++
 						}
@@ -485,45 +691,33 @@ export default {
 		},
 		onContainerScroll(e) {
 			if (!e.target) return
-
 			const bottomScroll = this.getBottomScroll(e.target)
 			if (bottomScroll < 60) this.scrollMessagesCount = 0
 			this.scrollIcon = bottomScroll > 500 || this.scrollMessagesCount
 		},
 		loadMoreMessages() {
 			if (this.loadingMessages) return
-
-			setTimeout(
-				() => {
-					if (this.loadingMoreMessages) return
-
-					if (this.messagesLoaded || !this.roomId) {
-						this.loadingMoreMessages = false
-						this.showLoader = false
-						return
-					}
-
-					this.preventTopScroll()
-					this.$emit('fetch-messages')
-					this.loadingMoreMessages = true
-				},
-				// prevent scroll bouncing speed
-				500
-			)
+			setTimeout(() => {
+				if (this.loadingMoreMessages) return
+				if (this.messagesLoaded || !this.roomId) {
+					this.loadingMoreMessages = false
+					this.showLoader = false
+					return
+				}
+				this.preventTopScroll()
+				this.$emit('fetch-messages')
+				this.loadingMoreMessages = true
+			}, 500)
 		},
 		messageActionHandler({ action, message }) {
 			switch (action.name) {
 				case 'replyMessage':
 					this.initReplyMessage = message
-					setTimeout(() => {
-						this.initReplyMessage = null
-					})
+					setTimeout(() => { this.initReplyMessage = null })
 					return
 				case 'editMessage':
 					this.initEditMessage = message
-					setTimeout(() => {
-						this.initEditMessage = null
-					})
+					setTimeout(() => { this.initEditMessage = null })
 					return
 				case 'deleteMessage':
 					return this.$emit('delete-message', message)
