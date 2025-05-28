@@ -1,133 +1,166 @@
 <template>
-	<div class="window-container" :class="{ 'window-mobile': isDevice }">
-		<form v-if="addNewRoom" @submit.prevent="createRoom">
-			<input v-model="addRoomUsername" type="text" placeholder="Add username" />
-			<button type="submit" :disabled="disableForm || !addRoomUsername">
-				Create Room
-			</button>
-			<button class="button-cancel" @click="addNewRoom = false">Cancel</button>
-		</form>
-
-		<form v-if="inviteRoomId" @submit.prevent="addRoomUser">
-			<input v-model="invitedUsername" type="text" placeholder="Add username" />
-			<button type="submit" :disabled="disableForm || !invitedUsername">
-				Add User
-			</button>
-			<button class="button-cancel" @click="inviteRoomId = null">Cancel</button>
-		</form>
-
-		<form v-if="removeRoomId" @submit.prevent="deleteRoomUser">
-			<select v-model="removeUserId">
-				<option default value="">Select User</option>
-				<option v-for="user in removeUsers" :key="user._id" :value="user._id">
-					{{ user.username }}
-				</option>
-			</select>
-			<button type="submit" :disabled="disableForm || !removeUserId">
-				Remove User
-			</button>
-			<button class="button-cancel" @click="removeRoomId = null">Cancel</button>
-		</form>
-
-		<vue-advanced-chat
-			ref="chatWindow"
-			:height="screenHeight"
-			:theme="theme"
-			:styles="JSON.stringify(styles)"
-			:current-user-id="currentUserId"
-			:room-id="roomId"
-			:rooms="JSON.stringify(loadedRooms)"
-			:loading-rooms="loadingRooms"
-			:rooms-loaded="roomsLoaded"
-			:messages="JSON.stringify(messages)"
-			:messages-loaded="messagesLoaded"
-			:room-message="roomMessage"
-			:room-actions="JSON.stringify(roomActions)"
-			:menu-actions="JSON.stringify(menuActions)"
-			:message-selection-actions="JSON.stringify(messageSelectionActions)"
-			:templates-text="JSON.stringify(templatesText)"
-			@fetch-more-rooms="fetchMoreRooms"
-			@fetch-messages="fetchMessages($event.detail[0])"
-			@send-message="sendMessage($event.detail[0])"
-			@edit-message="editMessage($event.detail[0])"
-			@delete-message="deleteMessage($event.detail[0])"
-			@open-file="openFile($event.detail[0])"
-			@open-user-tag="openUserTag($event.detail[0])"
-			@add-room="addRoom($event.detail[0])"
-			@room-action-handler="menuActionHandler($event.detail[0])"
-			@menu-action-handler="menuActionHandler($event.detail[0])"
-			@message-selection-action-handler="
-				messageSelectionActionHandler($event.detail[0])
-			"
-			@send-message-reaction="sendMessageReaction($event.detail[0])"
-			@typing-message="typingMessage($event.detail[0])"
-			@toggle-rooms-list="$emit('show-demo-options', $event.detail[0].opened)"
-		>
-			<!-- <div
-				v-for="message in messages"
-				:slot="'message_' + message._id"
-				:key="message._id"
-			>
-				New message container
-			</div> -->
-		</vue-advanced-chat>
-	</div>
+	<vue-advanced-chat
+		:height="screenHeight"
+		:theme="theme"
+		:styles="JSON.stringify(styles)"
+		:current-user-id="currentUserId"
+		:room-id="roomId"
+		:rooms="JSON.stringify(rooms)"
+		:messages="JSON.stringify(messages)"
+		:room-message="roomMessage"
+		:messages-loaded="messagesLoaded"
+		:rooms-loaded="roomsLoaded"
+		:show-search="showSearch"
+		:show-add-room="showAddRoom"
+		:show-send-icon="showSendIcon"
+		:show-files="showFiles"
+		:show-audio="showAudio"
+		:audio-bit-rate="audioBitRate"
+		:audio-sample-rate="audioSampleRate"
+		:show-emojis="showEmojis"
+		:show-reaction-emojis="showReactionEmojis"
+		:show-new-messages-divider="showNewMessagesDivider"
+		:show-footer="showFooter"
+		:text-messages="JSON.stringify(textMessages)"
+		:text-formatting="JSON.stringify(textFormatting)"
+		:link-options="JSON.stringify(linkOptions)"
+		:room-info-enabled="roomInfoEnabled"
+		:textarea-action-enabled="textareaActionEnabled"
+		:textarea-auto-focus="textareaAutoFocus"
+		:user-tags-enabled="userTagsEnabled"
+		:emojis-suggestion-enabled="emojisSuggestionEnabled"
+		:media-preview-enabled="mediaPreviewEnabled"
+		:single-room="singleRoom"
+		:rooms-list-opened="roomsListOpened"
+		:loading-rooms="loadingRooms"
+		:load-first-room="loadFirstRoom"
+		:room-actions="JSON.stringify(roomActions)"
+		:menu-actions="JSON.stringify(menuActions)"
+		:message-actions="JSON.stringify(messageActions)"
+		:message-selection-actions="JSON.stringify(messageSelectionActions)"
+		:multiple-files="multipleFiles"
+		:templates-text="JSON.stringify(templatesText)"
+		:auto-scroll="JSON.stringify(autoScroll)"
+		:username-options="JSON.stringify(usernameOptions)"
+		:responsive-breakpoint="responsiveBreakpoint"
+		:scroll-distance="scrollDistance"
+		:accepted-files="acceptedFiles"
+		:capture-files="captureFiles"
+		:emoji-data-source="emojiDataSource"
+		:jjsip-sip-uri="jjsipSipUri"
+		:jjsip-password="jjsipPassword"
+		:jjsip-web-socket-server="jjsipWebSocketServer"
+		:jjsip-display-name="jjsipDisplayName"
+		@fetch-messages="fetchMessages($event.detail[0])"
+		@send-message="sendMessage($event.detail[0])"
+		@edit-message="editMessage($event.detail[0])"
+		@delete-message="deleteMessage($event.detail[0])"
+		@open-file="openFile($event.detail[0])"
+		@open-user-tag="openUserTag($event.detail[0])"
+		@add-room="addRoom"
+		@search-room="searchRoom($event.detail[0])"
+		@room-action-handler="roomActionHandler($event.detail[0])"
+		@menu-action-handler="menuActionHandler($event.detail[0])"
+		@message-action-handler="messageActionHandler($event.detail[0])"
+		@message-selection-action-handler="
+			messageSelectionActionHandler($event.detail[0])
+		"
+		@send-message-reaction="sendMessageReaction($event.detail[0])"
+		@typing-message="typingMessage($event.detail[0])"
+		@textarea-action-handler="textareaActionHandler($event.detail[0])"
+		@fetch-more-rooms="fetchMoreRooms"
+		@toggle-rooms-list="$emit('show-demo-options', $event.detail[0].opened)"
+		@room-info="roomInfo($event.detail[0])"
+	>
+		<!-- <template #room-header="{ room }">
+			{{ room.roomName }}
+		</template> -->
+	</vue-advanced-chat>
 </template>
 
 <script>
+import {ްްregister } from 'vue-advanced-chat'
+// import {ްްregister } from '../../../vue-advanced-chat/dist/vue-advanced-chat.es.js'
+// import {ްްregister } from 'vue-advanced-chat/dist/vue-advanced-chat.umd.min.js'
+
 import * as firestoreService from '@/database/firestore'
-import * as firebaseService from '@/database/firebase'
 import * as storageService from '@/database/storage'
 import { parseTimestamp, formatTimestamp } from '@/utils/dates'
-import logoAvatar from '@/assets/logo.png'
 
-import { register } from 'vue-advanced-chat'
-// import { register } from './../../dist/vue-advanced-chat.es.js'
-// import { register } from './../../src/lib/index.js'
 register()
+
+// registerComponent('MediaPreview', MediaPreview)
 
 export default {
 	props: {
 		currentUserId: { type: String, required: true },
 		theme: { type: String, required: true },
-		isDevice: { type: Boolean, required: true }
+		isDevice: { type: Boolean, required: true },
+		// JJSIP Props to receive from App.vue and pass to ChatWindow
+		jjsipSipUri: { type: String, default: 'sip:defaultcontaineruser@example.com' },
+		jjsipPassword: { type: String, default: 'containerpassword' },
+		jjsipWebSocketServer: { type: String, default: 'wss://defaultcontainerws.example.com' },
+		jjsipDisplayName: { type: String, default: 'Default Container User' }
 	},
-
 	emits: ['show-demo-options'],
-
 	data() {
 		return {
-			roomsPerPage: 15,
 			rooms: [],
 			roomId: '',
-			startRooms: null,
-			endRooms: null,
+			messages: [],
+			roomMessage: '',
+			messagesLoaded: false,
 			roomsLoaded: false,
 			loadingRooms: true,
-			allUsers: [],
-			loadingLastMessageByRoom: 0,
-			roomsLoadedCount: 0,
-			selectedRoom: null,
-			messagesPerPage: 20,
-			messages: [],
-			messagesLoaded: false,
-			roomMessage: '',
-			lastLoadedMessage: null,
-			previousLastLoadedMessage: null,
-			roomsListeners: [],
-			listeners: [],
-			typingMessageCache: '',
-			disableForm: false,
-			addNewRoom: null,
-			addRoomUsername: '',
-			inviteRoomId: null,
-			invitedUsername: '',
-			removeRoomId: null,
-			removeUserId: '',
-			removeUsers: [],
+			loadFirstRoom: true,
+			showSearch: true,
+			showAddRoom: true,
+			showSendIcon: true,
+			showFiles: true,
+			showAudio: true,
+			audioBitRate: 128,
+			audioSampleRate: 44100,
+			showEmojis: true,
+			showReactionEmojis: true,
+			showNewMessagesDivider: true,
+			showFooter: true,
+			textMessages: {
+				ROOMS_EMPTY: 'No rooms',
+				ROOM_EMPTY: 'Select a room to start messaging',
+				NEW_MESSAGES: 'New Messages',
+				MESSAGE_DELETED: 'This message was deleted',
+				MESSAGES_EMPTY: 'No messages yet',
+				CONVERSATION_STARTED: 'Conversation started on:',
+				TYPE_MESSAGE: 'Type your message',
+				SEARCH: 'Search',
+				IS_ONLINE: 'is online',
+				LAST_SEEN: 'last seen ',
+				IS_TYPING: 'is typing...'
+				// User Tags
+				// USER_TAG_LABEL: 'was mentioned',
+				// USER_TAG_LABEL_ME: 'You were mentioned'
+			},
+			textFormatting: {
+				disabled: false
+				// italic: '_',
+				// bold: '*',
+				// strike: '~',
+				// underline: '°',
+				// multilineCode: '```',
+				// inlineCode: '`'
+			},
+			linkOptions: { disabled: false, target: '_blank' },
+			roomInfoEnabled: true,
+			textareaActionEnabled: false,
+			textareaAutoFocus: true,
+			userTagsEnabled: true,
+			emojisSuggestionEnabled: true,
+			mediaPreviewEnabled: true,
+			responsiveBreakpoint: 900,
+			roomsListOpened: !this.isDevice,
+			singleRoom: this.isDevice,
 			roomActions: [
-				{ name: 'inviteUser', title: 'Invite User' },
-				{ name: 'removeUser', title: 'Remove User' },
+				{ name: 'archiveRoom', title: 'Archive Room' },
 				{ name: 'deleteRoom', title: 'Delete Room' }
 			],
 			menuActions: [
@@ -135,9 +168,80 @@ export default {
 				{ name: 'removeUser', title: 'Remove User' },
 				{ name: 'deleteRoom', title: 'Delete Room' }
 			],
-			messageSelectionActions: [{ name: 'deleteMessages', title: 'Delete' }],
-			// eslint-disable-next-line vue/no-unused-properties
-			styles: { container: { borderRadius: '4px' } },
+			messageActions: [
+				{ name: 'replyMessage', title: 'Reply' },
+				{ name: 'editMessage', title: 'Edit Message', onlyMe: true },
+				{ name: 'deleteMessage', title: 'Delete Message', onlyMe: true },
+				{ name: 'selectMessages', title: 'Select Messages' }
+				// { name: 'downloadMessageFile', title: 'Download File' }
+			],
+			messageSelectionActions: [
+				{ name: 'deleteMessages', title: 'Delete Messages' }
+			],
+			// eslint-disable-next-line
+			styles: {
+				// container: {
+				//   borderRadius: '10px'
+				// },
+				// header: {
+				//   background: '#272727',
+				//   colorRoomName: 'red',
+				//   colorRoomInfo: 'green'
+				// },
+				// list: {
+				//   background: '#1c1c1c'
+				// },
+				// messageDate: {
+				//   color: 'yellow'
+				// },
+				// message: {
+				//   backgroundMe: '#272727',
+				//   colorMe: 'red',
+				//   background: '#1c1c1c',
+				//   color: 'green',
+				//   borderRadius: '10px',
+				//   padding: '0 10px',
+				//   maxWidth: '70%'
+				// },
+				// content: {
+				//   background: '#141414'
+				// },
+				/* replyMessage: {
+					background: 'red',
+					color: 'black',
+					backgroundMe: 'blue',
+					colorMe: 'yellow'
+				}, */
+				/* ReactionEmojis: {
+					background: 'red',
+					color: 'black',
+					backgroundMe: 'blue',
+					colorMe: 'yellow'
+				}, */
+				// footer: {
+				//   background: '#272727',
+				//   borderTop: 'none'
+				// },
+				/* scrollbar: {
+					background: 'red',
+					backgroundThumb: 'yellow'
+				}, */
+				/* emojiPicker: {
+					background: '#272727',
+					backgroundSearch: '#1c1c1c',
+					colorSearch: 'yellow',
+					color: 'red'
+				}, */
+				/* sendIcon: {
+					fill: 'red'
+				} */
+				// dropdownMenu: {
+				//   background: 'black',
+				//   color: 'white',
+				//   backgroundHover: 'red'
+				// }
+			},
+			multipleFiles: true,
 			templatesText: [
 				{
 					tag: 'help',
@@ -146,316 +250,376 @@ export default {
 				{
 					tag: 'action',
 					text: 'This is the action'
-				},
-				{
-					tag: 'action 2',
-					text: 'This is the second action'
 				}
-			]
-			// ,dbRequestCount: 0
+			],
+			autoScroll: { send: { new: true, newAfterScrollUp: true } },
+			usernameOptions: { minUsers: 3, currentUser: true },
+			//
+			scrollDistance: 0, // default: 60
+			acceptedFiles: '*', // default: '*'
+			captureFiles: '' // default: ''
+			// emojiDataSource: ''
 		}
 	},
 
 	computed: {
-		loadedRooms() {
-			return this.rooms.slice(0, this.roomsLoadedCount)
-		},
 		screenHeight() {
 			return this.isDevice ? window.innerHeight + 'px' : 'calc(100vh - 80px)'
 		}
 	},
 
-	mounted() {
-		this.addCss()
+	watch: {
+		currentUserId() {
+			this.loadFirstRoom = true
+			this.fetchRooms()
+		}
+	},
 
+	created() {
 		this.fetchRooms()
-		firebaseService.updateUserOnlineStatus(this.currentUserId)
+		// this.updateUserOnlineStatus()
 	},
 
 	methods: {
-		async addCss() {
-			if (import.meta.env.MODE === 'development') {
-				const styles = await import('./../../src/styles/index.scss')
-				const style = document.createElement('style')
-				style.innerHTML = styles.default
-				this.$refs.chatWindow.shadowRoot.appendChild(style)
-			}
-		},
-		resetRooms() {
+		// updateUserOnlineStatus() {
+		// 	const PERIOD_MS = 60 * 1000
+		// 	setInterval(async () => {
+		// 		if (!this.currentUserId) return
+		// 		await firestoreService.updateUser(this.currentUserId, {
+		// 			status: { state: 'online', lastChanged: new Date() }
+		// 		})
+		// 	}, PERIOD_MS)
+		// },
+		async fetchRooms() {
 			this.loadingRooms = true
-			this.loadingLastMessageByRoom = 0
-			this.roomsLoadedCount = 0
+			this.roomsLoaded = false
 			this.rooms = []
-			this.roomsLoaded = true
-			this.startRooms = null
-			this.endRooms = null
-			this.roomsListeners.forEach(listener => listener())
-			this.roomsListeners = []
-			this.resetMessages()
-		},
 
-		resetMessages() {
-			this.messages = []
-			this.messagesLoaded = false
-			this.lastLoadedMessage = null
-			this.previousLastLoadedMessage = null
-			this.listeners.forEach(listener => listener())
-			this.listeners = []
-		},
+			const { data } = await firestoreService.getRooms(this.currentUserId)
+			// console.log('getRooms', data)
 
-		fetchRooms() {
-			this.resetRooms()
-			this.fetchMoreRooms()
-		},
+			// this.rooms = data.map(room => {
+			data.forEach(async room => {
+				await firestoreService.updateRoom(room.roomId, { typingUsers: null })
 
-		async fetchMoreRooms() {
-			if (this.endRooms && !this.startRooms) {
-				this.roomsLoaded = true
-				return
-			}
+				const { data: users } = await firestoreService.getRoomUsers(room.roomId)
+				// console.log('getRoomUsers', users)
 
-			const query = firestoreService.roomsQuery(
-				this.currentUserId,
-				this.roomsPerPage,
-				this.startRooms
-			)
-
-			const { data, docs } = await firestoreService.getRooms(query)
-			// this.incrementDbCounter('Fetch Rooms', data.length)
-
-			this.roomsLoaded = data.length === 0 || data.length < this.roomsPerPage
-
-			if (this.startRooms) this.endRooms = this.startRooms
-			this.startRooms = docs[docs.length - 1]
-
-			const roomUserIds = []
-			data.forEach(room => {
-				room.users.forEach(userId => {
-					const foundUser = this.allUsers.find(user => user?._id === userId)
-					if (!foundUser && roomUserIds.indexOf(userId) === -1) {
-						roomUserIds.push(userId)
-					}
-				})
-			})
-
-			// this.incrementDbCounter('Fetch Room Users', roomUserIds.length)
-			const rawUsers = []
-			roomUserIds.forEach(userId => {
-				const promise = firestoreService.getUser(userId)
-				rawUsers.push(promise)
-			})
-
-			this.allUsers = [...this.allUsers, ...(await Promise.all(rawUsers))]
-
-			const roomList = {}
-			data.forEach(room => {
-				roomList[room.id] = { ...room, users: [] }
-
-				room.users.forEach(userId => {
-					const foundUser = this.allUsers.find(user => user?._id === userId)
-					if (foundUser) roomList[room.id].users.push(foundUser)
-				})
-			})
-
-			const formattedRooms = []
-
-			Object.keys(roomList).forEach(key => {
-				const room = roomList[key]
-
-				const roomContacts = room.users.filter(
+				const roomContacts = users.filter(
 					user => user._id !== this.currentUserId
 				)
 
+				room.users = users
 				room.roomName =
 					roomContacts.map(user => user.username).join(', ') || 'Myself'
 
 				const roomAvatar =
 					roomContacts.length === 1 && roomContacts[0].avatar
 						? roomContacts[0].avatar
-						: logoAvatar
+						: '' // room.avatar
 
-				formattedRooms.push({
+				const item = {
 					...room,
-					roomId: key,
+					roomId: room.roomId,
 					avatar: roomAvatar,
-					index: room.lastUpdated.seconds,
-					lastMessage: {
-						content: 'Room created',
-						timestamp: formatTimestamp(
-							new Date(room.lastUpdated.seconds),
-							room.lastUpdated
-						)
-					}
-				})
+					index: parseTimestamp(room.lastUpdated, 'HH:mm'),
+					lastUpdated: formatTimestamp(
+						new Date(parseTimestamp(room.lastUpdated)),
+						room.lastUpdated
+					)
+				}
+				this.rooms.push(item)
+
+				// this.listenLastMessage(item)
+				this.listenUsersOnlineStatus(item)
+				this.listenRoomTypingUsers(item)
 			})
 
-			this.rooms = this.rooms.concat(formattedRooms)
-			formattedRooms.forEach(room => this.listenLastMessage(room))
-
-			if (!this.rooms.length) {
-				this.loadingRooms = false
-				this.roomsLoadedCount = 0
+			if (this.loadFirstRoom && this.rooms.length) {
+				this.roomId = this.rooms[0].roomId
+				this.fetchMessages({ room: this.rooms[0] })
 			}
 
-			this.listenUsersOnlineStatus(formattedRooms)
-			this.listenRooms(query)
-			// setTimeout(() => console.log('TOTAL', this.dbRequestCount), 2000)
+			this.roomsLoaded = true
+			this.loadingRooms = false
 		},
-
 		listenLastMessage(room) {
-			const listener = firestoreService.listenLastMessage(
+			const { unsubscribe } = firestoreService.listenLastMessage(
 				room.roomId,
 				messages => {
-					// this.incrementDbCounter('Listen Last Room Message', messages.length)
 					messages.forEach(message => {
-						const lastMessage = this.formatLastMessage(message, room)
+						const lastMessage = this.formatLastMessage(message)
 						const roomIndex = this.rooms.findIndex(
 							r => room.roomId === r.roomId
 						)
-						this.rooms[roomIndex].lastMessage = lastMessage
-						this.rooms = [...this.rooms]
-					})
-					if (this.loadingLastMessageByRoom < this.rooms.length) {
-						this.loadingLastMessageByRoom++
-
-						if (this.loadingLastMessageByRoom === this.rooms.length) {
-							this.loadingRooms = false
-							this.roomsLoadedCount = this.rooms.length
+						this.rooms[roomIndex].lastMessage = {
+							...lastMessage,
+							...{ readBySender: true }
 						}
-					}
+					})
 				}
 			)
-
-			this.roomsListeners.push(listener)
+			this.rooms.find(r => r.roomId === room.roomId).unsubscribe = unsubscribe
 		},
-
-		formatLastMessage(message, room) {
-			if (!message.timestamp) return
-
+		listenUsersOnlineStatus(room) {
+			room.users.forEach(user => {
+				const { unsubscribe } = firestoreService.listenUserOnlineStatus(
+					user._id,
+					userStatus => {
+						const roomIndex = this.rooms.findIndex(
+							r => room.roomId === r.roomId
+						)
+						if (!this.rooms[roomIndex]) return
+						const userIndex = this.rooms[roomIndex].users.findIndex(
+							u => u._id === user._id
+						)
+						this.rooms[roomIndex].users[userIndex] = {
+							...this.rooms[roomIndex].users[userIndex],
+							...{ status: userStatus }
+						}
+					}
+				)
+				this.rooms.find(r => r.roomId === room.roomId).unsubscribeUsers =
+					unsubscribe
+			})
+		},
+		listenRoomTypingUsers(room) {
+			const { unsubscribe } = firestoreService.listenRoomTypingUsers(
+				room.roomId,
+				({ typingUsers }) => {
+					const roomIndex = this.rooms.findIndex(
+						r => room.roomId === r.roomId
+					)
+					this.rooms[roomIndex] = { ...this.rooms[roomIndex], typingUsers }
+				}
+			)
+			this.rooms.find(r => r.roomId === room.roomId).unsubscribeTypingUsers =
+				unsubscribe
+		},
+		formatLastMessage(message) {
 			let content = message.content
 			if (message.files?.length) {
 				const file = message.files[0]
 				content = `${file.name}.${file.extension || file.type}`
 			}
 
-			const username =
-				message.sender_id !== this.currentUserId
-					? room.users.find(user => message.sender_id === user._id)?.username
-					: ''
-
 			return {
 				...message,
 				...{
-					_id: message.id,
 					content,
-					senderId: message.sender_id,
 					timestamp: formatTimestamp(
-						new Date(message.timestamp.seconds * 1000),
+						new Date(parseTimestamp(message.timestamp)),
 						message.timestamp
 					),
-					username: username,
-					distributed: true,
-					seen: message.sender_id === this.currentUserId ? message.seen : null,
+					date: parseTimestamp(message.timestamp, 'DD MMMM YYYY'),
+					seen: message.senderId === this.currentUserId ? message.seen : null,
 					new:
-						message.sender_id !== this.currentUserId &&
-						(!message.seen || !message.seen[this.currentUserId])
+						message.senderId !== this.currentUserId &&
+						(!message.seen || !message.seen[this.currentUserId]),
+					saved: true, // message.viewed ? true : false,
+					distributed: true,
+					disableActions: false,
+					disableReactions: false
 				}
 			}
 		},
-
-		fetchMessages({ room, options = {} }) {
-			this.$emit('show-demo-options', false)
-
+		async fetchMessages({ room, options = {} }) {
 			if (options.reset) {
-				this.resetMessages()
+				this.messages = []
+				this.messagesLoaded = false
 			}
 
-			if (this.previousLastLoadedMessage && !this.lastLoadedMessage) {
+			if (this.previousLastLoadedMessage && !this.messages.length) return
+
+			const { data, next } = await firestoreService.getMessages(
+				room.roomId,
+				this.previousLastLoadedMessage
+			)
+
+			if (!data?.length && !this.messages.length) {
 				this.messagesLoaded = true
 				return
 			}
 
-			this.selectedRoom = room.roomId
+			if (this.roomId !== room.roomId) this.messages = []
 
-			firestoreService
-				.getMessages(room.roomId, this.messagesPerPage, this.lastLoadedMessage)
-				.then(({ data, docs }) => {
-					// this.incrementDbCounter('Fetch Room Messages', messages.length)
-					if (this.selectedRoom !== room.roomId) return
+			this.roomId = room.roomId
 
-					if (data.length === 0 || data.length < this.messagesPerPage) {
-						setTimeout(() => {
-							this.messagesLoaded = true
-						}, 0)
-					}
+			const formattedMessages = []
+			data.forEach(message => {
+				const formattedMessage = this.formatMessage(room, message)
+				formattedMessages.push(formattedMessage)
+			})
 
-					if (options.reset) this.messages = []
+			if (this.messages.length) {
+				this.messages = [...formattedMessages, ...this.messages]
+			} else {
+				this.messages = formattedMessages
+			}
 
-					data.forEach(message => {
-						const formattedMessage = this.formatMessage(room, message)
-						this.messages.unshift(formattedMessage)
-					})
+			this.previousLastLoadedMessage = next
 
-					if (this.lastLoadedMessage) {
-						this.previousLastLoadedMessage = this.lastLoadedMessage
-					}
-					this.lastLoadedMessage = docs[docs.length - 1]
+			if (!data.length) {
+				this.messagesLoaded = true
+				return
+			}
 
-					this.listenMessages(room)
-				})
+			this.listenMessages(room)
 		},
-
 		listenMessages(room) {
-			const listener = firestoreService.listenMessages(
+			const { unsubscribe } = firestoreService.listenMessages(
 				room.roomId,
-				this.lastLoadedMessage,
-				this.previousLastLoadedMessage,
+				this.lastLoadedMessage || this.previousLastLoadedMessage,
 				messages => {
 					messages.forEach(message => {
-						const formattedMessage = this.formatMessage(room, message)
-						const messageIndex = this.messages.findIndex(
-							m => m._id === message.id
-						)
-
-						if (messageIndex === -1) {
-							this.messages = this.messages.concat([formattedMessage])
-						} else {
-							this.messages[messageIndex] = formattedMessage
-							this.messages = [...this.messages]
-						}
-
-						this.markMessagesSeen(room, message)
+						this.addMessage(room, message)
 					})
 				}
 			)
-			this.listeners.push(listener)
+			this.rooms.find(r => r.roomId === room.roomId).unsubscribeMessages =
+				unsubscribe
 		},
+		async sendMessage(message) {
+			const files = message.files?.map(file => {
+				return {
+					name: file.name,
+					size: file.size,
+					type: file.type,
+					extension: file.extension,
+					url: file.url,
+					localUrl: file.localUrl,
+					audio: file.audio,
+					duration: file.duration,
+					progress: file.progress
+				}
+			})
 
-		markMessagesSeen(room, message) {
-			if (
-				message.sender_id !== this.currentUserId &&
-				(!message.seen || !message.seen[this.currentUserId])
-			) {
-				firestoreService.updateMessage(room.roomId, message.id, {
-					[`seen.${this.currentUserId}`]: new Date()
+			const newMessage = {
+				sender_id: this.currentUserId,
+				content: message.content,
+				system: false,
+				// date: String(new Date().getDate()),
+				timestamp: new Date(),
+				files: files || null,
+				replyMessage: message.replyMessage || null
+			}
+
+			const { id } = await firestoreService.addMessage(
+				this.roomId,
+				newMessage
+			)
+
+			if (files) {
+				for (let i = 0; i < files.length; i++) {
+					await this.uploadFile({ file: message.files[i], messageId: id })
+				}
+			}
+
+			// this.fetchRooms()
+			// this.fetchMessages({ room: { roomId: this.roomId } })
+		},
+		async editMessage(message) {
+			const newMessage = {
+				content: message.content,
+				edited: new Date()
+			}
+
+			const files = message.files?.map(file => {
+				return {
+					name: file.name,
+					size: file.size,
+					type: file.type,
+					extension: file.extension,
+					url: file.url,
+					localUrl: file.localUrl,
+					audio: file.audio,
+					duration: file.duration,
+					progress: file.progress
+				}
+			})
+
+			if (files) newMessage.files = files
+
+			await firestoreService.updateMessage(
+				this.roomId,
+				message._id,
+				newMessage
+			)
+
+			if (files) {
+				for (let i = 0; i < files.length; i++) {
+					if (message.files[i].blob) {
+						await this.uploadFile({ file: message.files[i], messageId: message._id })
+					}
+				}
+			}
+		},
+		async deleteMessage(message) {
+			await firestoreService.updateMessage(this.roomId, message._id, {
+				deleted: new Date(),
+				content: '',
+				files: null
+			})
+
+			if (message.files) {
+				message.files.forEach(file => {
+					storageService.deleteFile(this.currentUserId, message._id, file)
 				})
 			}
 		},
+		async uploadFile({ file, messageId }) {
+			storageService.listenUploadImageProgress(
+				this.currentUserId,
+				messageId,
+				file,
+				progress => {
+					this.updateFileProgress(messageId, file.localUrl, progress)
+				},
+				_error => {
+					// error code
+				},
+				async url => {
+					const message = this.messages.find(m => m._id === messageId)
+					if (!message) return
 
+					const fileIndex = message.files.findIndex(
+						f => f.localUrl === file.localUrl
+					)
+					const files = message.files
+					files[fileIndex].url = url
+					files[fileIndex].progress = null
+
+					await firestoreService.updateMessage(this.roomId, messageId, { files })
+				}
+			)
+		},
+		updateFileProgress(messageId, fileUrl, progress) {
+			const message = this.messages.find(m => m._id === messageId)
+			if (!message) return
+
+			const fileIndex = message.files.findIndex(f => f.localUrl === fileUrl)
+			message.files[fileIndex].progress = progress
+			this.messages = [...this.messages]
+		},
 		formatMessage(room, message) {
-			// const senderUser = room.users.find(user => user._id === message.sender_id)
+			const senderUser = room.users.find(user => user._id === message.sender_id)
+
 			const formattedMessage = {
 				...message,
 				...{
-					senderId: message.sender_id,
 					_id: message.id,
-					seconds: message.timestamp.seconds,
-					timestamp: parseTimestamp(message.timestamp, 'HH:mm'),
+					roomId: room.roomId,
+					senderId: message.sender_id,
+					username: senderUser ? senderUser.username : 'unknown',
+					avatar: senderUser ? senderUser.avatar : null,
+					timestamp: formatTimestamp(
+						new Date(parseTimestamp(message.timestamp)),
+						message.timestamp
+					),
 					date: parseTimestamp(message.timestamp, 'DD MMMM YYYY'),
-					username: room.users.find(user => message.sender_id === user._id)
-						?.username,
-					// avatar: senderUser ? senderUser.avatar : null,
-					distributed: true
+					seen: message.seen ? message.seen[this.currentUserId] : null,
+					disableActions: false,
+					disableReactions: false
 				}
 			}
 
@@ -463,486 +627,162 @@ export default {
 				formattedMessage.replyMessage = {
 					...message.replyMessage,
 					...{
-						senderId: message.replyMessage.sender_id
+						username: room.users.find(
+							user => user._id === message.replyMessage.senderId
+						)?.username
 					}
 				}
 			}
 
 			return formattedMessage
 		},
+		async addMessage(room, message) {
+			const formattedMessage = this.formatMessage(room, message)
+			const messageIndex = this.messages.findIndex(m => m._id === message.id)
 
-		async sendMessage({ content, roomId, files, replyMessage }) {
-			const message = {
-				sender_id: this.currentUserId,
-				content,
-				timestamp: new Date()
-			}
-
-			if (files) {
-				message.files = this.formattedFiles(files)
-			}
-
-			if (replyMessage) {
-				message.replyMessage = {
-					_id: replyMessage._id,
-					content: replyMessage.content,
-					sender_id: replyMessage.senderId
-				}
-
-				if (replyMessage.files) {
-					message.replyMessage.files = replyMessage.files
-				}
-			}
-
-			const { id } = await firestoreService.addMessage(roomId, message)
-
-			if (files) {
-				for (let index = 0; index < files.length; index++) {
-					await this.uploadFile({ file: files[index], messageId: id, roomId })
-				}
-			}
-
-			firestoreService.updateRoom(roomId, { lastUpdated: new Date() })
-		},
-
-		async editMessage({ messageId, newContent, roomId, files }) {
-			const newMessage = { edited: new Date() }
-			newMessage.content = newContent
-
-			if (files) {
-				newMessage.files = this.formattedFiles(files)
+			if (messageIndex !== -1) {
+				this.messages[messageIndex] = formattedMessage
+				this.messages = [...this.messages]
 			} else {
-				newMessage.files = firestoreService.deleteDbField
+				this.messages = [...this.messages, formattedMessage]
+				this.lastLoadedMessage = formattedMessage
 			}
 
-			await firestoreService.updateMessage(roomId, messageId, newMessage)
-
-			if (files) {
-				for (let index = 0; index < files.length; index++) {
-					if (files[index]?.blob) {
-						await this.uploadFile({ file: files[index], messageId, roomId })
-					}
-				}
-			}
+			this.markMessagesSeen(room, message)
 		},
+		async markMessagesSeen(room, message) {
+			if (
+				message.sender_id !== this.currentUserId &&
+				(!message.seen || !message.seen[this.currentUserId])
+			) {
+				let seen = {}
+				if (message.seen) seen = message.seen
+				seen[this.currentUserId] = new Date()
 
-		async deleteMessage({ message, roomId }) {
-			await firestoreService.updateMessage(roomId, message._id, {
-				deleted: new Date()
-			})
-
-			const { files } = message
-
-			if (files) {
-				files.forEach(file => {
-					storageService.deleteFile(this.currentUserId, message._id, file)
+				await firestoreService.updateMessage(room.roomId, message.id, {
+					seen: seen
 				})
 			}
 		},
-
-		async uploadFile({ file, messageId, roomId }) {
-			return new Promise(resolve => {
-				let type = file.extension || file.type
-				if (type === 'svg' || type === 'pdf') {
-					type = file.type
-				}
-
-				storageService.listenUploadImageProgress(
-					this.currentUserId,
-					messageId,
-					file,
-					type,
-					progress => {
-						this.updateFileProgress(messageId, file.localUrl, progress)
-					},
-					_error => {
-						resolve(false)
-					},
-					async url => {
-						const message = await firestoreService.getMessage(roomId, messageId)
-
-						message.files.forEach(f => {
-							if (f.url === file.localUrl) {
-								f.url = url
-							}
-						})
-
-						await firestoreService.updateMessage(roomId, messageId, {
-							files: message.files
-						})
-						resolve(true)
-					}
-				)
-			})
+		fetchMoreRooms() {
+			// your code here
 		},
-
-		updateFileProgress(messageId, fileUrl, progress) {
-			const message = this.messages.find(message => message._id === messageId)
-
-			if (!message || !message.files) return
-
-			message.files.find(file => file.url === fileUrl).progress = progress
-			this.messages = [...this.messages]
-		},
-
-		formattedFiles(files) {
-			const formattedFiles = []
-
-			files.forEach(file => {
-				const messageFile = {
-					name: file.name,
-					size: file.size,
-					type: file.type,
-					extension: file.extension || file.type,
-					url: file.url || file.localUrl
+		async roomActionHandler({ action, roomId }) {
+			switch (action.name) {
+				case 'archiveRoom':
+					return console.log('archive room', roomId)
+				case 'deleteRoom': {
+					const room = this.rooms.find(r => r.roomId === roomId)
+					room.unsubscribe()
+					room.unsubscribeUsers()
+					room.unsubscribeMessages()
+					room.unsubscribeTypingUsers()
+					await firestoreService.deleteRoom(roomId)
+					this.fetchRooms()
 				}
-
-				if (file.audio) {
-					messageFile.audio = true
-					messageFile.duration = file.duration
-				}
-
-				formattedFiles.push(messageFile)
-			})
-
-			return formattedFiles
-		},
-
-		openFile({ file }) {
-			window.open(file.file.url, '_blank')
-		},
-
-		async openUserTag({ user }) {
-			let roomId
-
-			this.rooms.forEach(room => {
-				if (room.users.length === 2) {
-					const userId1 = room.users[0]._id
-					const userId2 = room.users[1]._id
-					if (
-						(userId1 === user._id || userId1 === this.currentUserId) &&
-						(userId2 === user._id || userId2 === this.currentUserId)
-					) {
-						roomId = room.roomId
-					}
-				}
-			})
-
-			if (roomId) {
-				this.roomId = roomId
-				return
 			}
-
-			const query1 = await firestoreService.getUserRooms(
-				this.currentUserId,
-				user._id
-			)
-
-			if (query1.data.length) {
-				return this.loadRoom(query1)
-			}
-
-			const query2 = await firestoreService.getUserRooms(
-				user._id,
-				this.currentUserId
-			)
-
-			if (query2.data.length) {
-				return this.loadRoom(query2)
-			}
-
-			const users =
-				user._id === this.currentUserId
-					? [this.currentUserId]
-					: [user._id, this.currentUserId]
-
-			const room = await firestoreService.addRoom({
-				users: users,
-				lastUpdated: new Date()
-			})
-
-			this.roomId = room.id
-			this.fetchRooms()
 		},
-
-		async loadRoom(query) {
-			query.forEach(async room => {
-				if (this.loadingRooms) return
-				await firestoreService.updateRoom(room.id, { lastUpdated: new Date() })
-				this.roomId = room.id
-				this.fetchRooms()
-			})
-		},
-
 		menuActionHandler({ action, roomId }) {
 			switch (action.name) {
 				case 'inviteUser':
-					return this.inviteUser(roomId)
+					return console.log('invite user', roomId)
 				case 'removeUser':
-					return this.removeUser(roomId)
+					return console.log('remove user', roomId)
 				case 'deleteRoom':
-					return this.deleteRoom(roomId)
+					return console.log('delete room', roomId)
 			}
 		},
-
+		messageActionHandler({ action, message, roomId }) {
+			switch (action.name) {
+				case 'replyMessage':
+					return console.log('reply message', message, roomId)
+				case 'editMessage':
+					return console.log('edit message', message, roomId)
+				case 'deleteMessage':
+					return console.log('delete message', message, roomId)
+				case 'selectMessages':
+					return console.log('select messages', message, roomId)
+				case 'downloadMessageFile':
+					return console.log('download file', message, roomId)
+			}
+		},
 		messageSelectionActionHandler({ action, messages, roomId }) {
 			switch (action.name) {
 				case 'deleteMessages':
 					messages.forEach(message => {
-						this.deleteMessage({ message, roomId })
+						this.deleteMessage(message)
 					})
+					console.log('delete messages', messages, roomId)
 			}
 		},
-
-		async sendMessageReaction({ reaction, remove, messageId, roomId }) {
-			firestoreService.updateMessageReactions(
-				roomId,
-				messageId,
-				this.currentUserId,
-				reaction.unicode,
-				remove ? 'remove' : 'add'
-			)
+		openFile({ message, file }) {
+			window.open(file.file.url, '_blank')
+			console.log(message, file)
 		},
-
-		typingMessage({ message, roomId }) {
-			if (roomId) {
-				if (message?.length > 1) {
-					this.typingMessageCache = message
-					return
-				}
-
-				if (message?.length === 1 && this.typingMessageCache) {
-					this.typingMessageCache = message
-					return
-				}
-
-				this.typingMessageCache = message
-
-				firestoreService.updateRoomTypingUsers(
-					roomId,
-					this.currentUserId,
-					message ? 'add' : 'remove'
-				)
-			}
+		openUserTag({ user }) {
+			console.log(user)
 		},
-
-		async listenRooms(query) {
-			const listener = firestoreService.listenRooms(query, rooms => {
-				// this.incrementDbCounter('Listen Rooms Typing Users', rooms.length)
-				rooms.forEach(room => {
-					const foundRoom = this.rooms.find(r => r.roomId === room.id)
-					if (foundRoom) {
-						foundRoom.typingUsers = room.typingUsers
-						foundRoom.index = room.lastUpdated.seconds
-					}
-				})
-			})
-			this.roomsListeners.push(listener)
-		},
-
-		listenUsersOnlineStatus(rooms) {
-			rooms.forEach(room => {
-				room.users.forEach(user => {
-					const listener = firebaseService.firebaseListener(
-						firebaseService.userStatusRef(user._id),
-						snapshot => {
-							if (!snapshot || !snapshot.val()) return
-
-							const lastChanged = formatTimestamp(
-								new Date(snapshot.val().lastChanged),
-								new Date(snapshot.val().lastChanged)
-							)
-
-							user.status = { ...snapshot.val(), lastChanged }
-
-							const roomIndex = this.rooms.findIndex(
-								r => room.roomId === r.roomId
-							)
-
-							this.rooms[roomIndex] = room
-							this.rooms = [...this.rooms]
-						}
-					)
-					this.roomsListeners.push(listener)
-				})
-			})
-		},
-
-		addRoom() {
+		async addRoom() {
 			this.resetForms()
-			this.addNewRoom = true
-		},
 
-		async createRoom() {
-			this.disableForm = true
-
-			const { id } = await firestoreService.addUser({
-				username: this.addRoomUsername
-			})
-			await firestoreService.updateUser(id, { _id: id })
-
-			await firestoreService.addRoom({
-				users: [id, this.currentUserId],
+			const { id } = await firestoreService.addRoom({
+				users: [this.currentUserId, 'SGmFnBZB4xxMv9V4CVlW'], // , 'SGmFnBZB4xxMv9V4CVlW'
 				lastUpdated: new Date()
 			})
-
-			this.addNewRoom = false
-			this.addRoomUsername = ''
-			this.fetchRooms()
-		},
-
-		inviteUser(roomId) {
-			this.resetForms()
-			this.inviteRoomId = roomId
-		},
-
-		async addRoomUser() {
-			this.disableForm = true
-
-			const { id } = await firestoreService.addUser({
-				username: this.invitedUsername
+			await firestoreService.addMessage(id, {
+				sender_id: this.currentUserId,
+				content: 'Room created',
+				system: true,
+				timestamp: new Date()
 			})
-			await firestoreService.updateUser(id, { _id: id })
-
-			await firestoreService.addRoomUser(this.inviteRoomId, id)
-
-			this.inviteRoomId = null
-			this.invitedUsername = ''
 			this.fetchRooms()
 		},
-
-		removeUser(roomId) {
-			this.resetForms()
-			this.removeRoomId = roomId
-			this.removeUsers = this.rooms.find(room => room.roomId === roomId).users
+		searchRoom(val) {
+			this.loadingRooms = true
+			setTimeout(() => (this.loadingRooms = false), 500)
+			console.log(val)
 		},
+		async sendMessageReaction({ reaction, messageId, roomId }) {
+			const message = this.messages.find(m => m._id === messageId)
 
-		async deleteRoomUser() {
-			this.disableForm = true
-
-			await firestoreService.removeRoomUser(
-				this.removeRoomId,
-				this.removeUserId
-			)
-
-			this.removeRoomId = null
-			this.removeUserId = ''
-			this.fetchRooms()
-		},
-
-		async deleteRoom(roomId) {
-			const room = this.rooms.find(r => r.roomId === roomId)
-			if (
-				room.users.find(user => user._id === 'SGmFnBZB4xxMv9V4CVlW') ||
-				room.users.find(user => user._id === '6jMsIXUrBHBj7o2cRlau')
-			) {
-				return alert('Nope, for demo purposes you cannot delete this room')
+			const reactionIndex = message.reactions[this.currentUserId]
+			if (reactionIndex && reactionIndex === reaction.name) {
+				delete message.reactions[this.currentUserId]
+			} else {
+				message.reactions[this.currentUserId] = reaction.name
 			}
 
-			firestoreService.getMessages(roomId).then(({ data }) => {
-				data.forEach(message => {
-					firestoreService.deleteMessage(roomId, message.id)
-					if (message.files) {
-						message.files.forEach(file => {
-							storageService.deleteFile(this.currentUserId, message.id, file)
-						})
-					}
-				})
+			await firestoreService.updateMessage(roomId, messageId, {
+				reactions: message.reactions
 			})
-
-			await firestoreService.deleteRoom(roomId)
-
-			this.fetchRooms()
 		},
-
+		typingMessage({ message, roomId }) {
+			if (roomId) {
+				let typingUsers = []
+				if (message) typingUsers = [this.currentUserId]
+				firestoreService.updateRoom(roomId, { typingUsers })
+			}
+		},
+		textareaActionHandler({ message, roomId }) {
+			console.log('textarea action', message, roomId)
+		},
+		roomInfo(room) {
+			console.log('room info', room)
+		},
 		resetForms() {
-			this.disableForm = false
-			this.addNewRoom = null
-			this.addRoomUsername = ''
-			this.inviteRoomId = null
-			this.invitedUsername = ''
-			this.removeRoomId = null
-			this.removeUserId = ''
+			this.roomId = null
+			this.roomMessage = null
+			this.previousLastLoadedMessage = null
+			this.lastLoadedMessage = null
+			this.messages = []
+			this.messagesLoaded = false
 		}
-
-		// ,incrementDbCounter(type, size) {
-		// 	size = size || 1
-		// 	this.dbRequestCount += size
-		// 	console.log(type, size)
-		// }
 	}
 }
 </script>
 
-<style lang="scss" scoped>
-.window-container {
-	width: 100%;
-}
-
-.window-mobile {
-	form {
-		padding: 0 10px 10px;
-	}
-}
-
-form {
-	padding-bottom: 20px;
-}
-
-input {
-	padding: 5px;
-	width: 140px;
-	height: 21px;
-	border-radius: 4px;
-	border: 1px solid #d2d6da;
-	outline: none;
-	font-size: 14px;
-	vertical-align: middle;
-
-	&::placeholder {
-		color: #9ca6af;
-	}
-}
-
-button {
-	background: #1976d2;
-	color: #fff;
-	outline: none;
-	cursor: pointer;
-	border-radius: 4px;
-	padding: 8px 12px;
-	margin-left: 10px;
-	border: none;
-	font-size: 14px;
-	transition: 0.3s;
-	vertical-align: middle;
-
-	&:hover {
-		opacity: 0.8;
-	}
-
-	&:active {
-		opacity: 0.6;
-	}
-
-	&:disabled {
-		cursor: initial;
-		background: #c6c9cc;
-		opacity: 0.6;
-	}
-}
-
-.button-cancel {
-	color: #a8aeb3;
-	background: none;
-	margin-left: 5px;
-}
-
-select {
-	vertical-align: middle;
-	height: 33px;
-	width: 152px;
-	font-size: 13px;
-	margin: 0 !important;
+<style lang="scss">
+body {
+	font-size: 16px;
 }
 </style>

@@ -4,14 +4,6 @@
 			class="app-container"
 			:class="{ 'app-mobile': isDevice, 'app-mobile-dark': theme === 'dark' }"
 		>
-			<!-- <div>
-				<button @click="resetData">
-					Clear Data
-				</button>
-				<button :disabled="updatingData" @click="addData">
-					Add Data
-				</button>
-			</div> -->
 			<span
 				v-if="showOptions"
 				class="user-logged"
@@ -44,12 +36,12 @@
 				:current-user-id="currentUserId"
 				:theme="theme"
 				:is-device="isDevice"
+				:jjsip-sip-uri="demoJjsipSipUri"
+				:jjsip-password="demoJjsipPassword"
+				:jjsip-web-socket-server="demoJjsipWebSocketServer"
+				:jjsip-display-name="demoJjsipDisplayName"
 				@show-demo-options="showDemoOptions = $event"
 			/>
-
-			<!-- <div class="version-container">
-				v1.0.0
-			</div> -->
 		</div>
 	</div>
 </template>
@@ -90,7 +82,13 @@ export default {
 			currentUserId: '6R0MijpK6M4AIrwaaCY2',
 			isDevice: false,
 			showDemoOptions: true,
-			updatingData: false
+			updatingData: false,
+
+			// JJSIP Demo Credentials to be passed to ChatContainer
+			demoJjsipSipUri: 'sip:demouser@example.com',
+			demoJjsipPassword: 'demopassword',
+			demoJjsipWebSocketServer: 'wss://demows.example.com',
+			demoJjsipDisplayName: 'Demo User from App.vue'
 		}
 	},
 
