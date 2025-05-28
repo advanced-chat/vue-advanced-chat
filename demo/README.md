@@ -7,11 +7,13 @@ This directory contains the demo application for `vue-advanced-chat`.
 To build and run the demo application using Docker:
 
 1.  **Navigate to the demo directory:**
+    Make sure you are in the `demo` directory of this project.
     ```bash
-    cd demo
+    cd path/to/your-project/demo
     ```
 
 2.  **Build the Docker image:**
+    Run the following command from within the `demo` directory. The `.` specifies that the current directory (`demo/`) is the build context.
     ```bash
     docker build -t vue-advanced-chat-demo .
     ```

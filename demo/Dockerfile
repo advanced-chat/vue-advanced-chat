@@ -11,7 +11,8 @@ WORKDIR /app
 # We copy these first to leverage Docker cache for dependencies
 COPY package.json ./
 # Assuming npm is used because of package-lock.json in reset script
-COPY package-lock.json ./
+# The following line for package-lock.json is removed as per instructions
+# COPY package-lock.json ./
 
 # Install dependencies for the demo app
 RUN npm install
