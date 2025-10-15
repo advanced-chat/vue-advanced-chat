@@ -848,6 +848,34 @@ Example:
 <br>
 
 ## Using with ChatKitty
+ChatKitty provides a full-featured UI to customize vue-advanced-chat easily without having to write or manage any chat code — frontend or backend. You can find more information on how to use ChatKitty with vue-advanced-chat in the [ChatKitty documentation](https://chatkitty.com/docs).
+
+- Create a free ChatKitty account here [https://console.chatkitty.com](https://console.chatkitty.com)
+- Create a project and get your widget ID
+- Install the ChatKitty Vue package: `npm install @chatkitty/vue`
+- Import and use the ChatKitty Vue component in your Vue app:
+
+```vue
+<script setup>
+import {ChatUi} from '@chatkitty/vue'
+</script>
+
+<template>
+  <div style="width: 100vw; height: 100svh">
+    <!-- Replace widgetId with your widget ID from console.chatkitty.com -->
+    <!-- Remove mode="sandbox" in production environment -->
+    <ChatUi
+      widgetId="5IKgX7UHsLr1cWJ5"
+      username=username
+      mode="sandbox"/>
+  </div>
+</template>
+```
+
+You can find a full example in the `demo/chatkitty` folder.
+
+Customize your vue-advanced-chat theme and features using the ChatKitty console, setting the feature schema version to `vue-advanced-chat@2` in your project settings:
+![ChatKitty Console](demo/chatkitty/assets/chatkitty-console.png)
 
 ## Using with Firestore
 
