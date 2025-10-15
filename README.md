@@ -8,15 +8,15 @@
 
 # vue-advanced-chat
 
-![Demo Image](demo/src/assets/web_mobile.png)
+![Demo Image](demo/firebase/src/assets/web_mobile.png)
 
 ## Sponsors
 
 <div align="center">
-  <a target="_blank" href="https://chatkitty.com">
-    <img alt="ChatKitty sponsor" src="demo/src/assets/sponsors/chatkitty.png" width="220">
+  <a target="_blank" href="https://chatkitty.com/docs">
+    <img alt="ChatKitty sponsor" src="demo/firebase/src/assets/sponsors/chatkitty.png" width="220">
   </a>
-  <div>Easy to use <a target="_blank" href="https://chatkitty.com">chat API/Server</a> with scalable infrastructure</div>
+  <div>Easy to use <a target="_blank" href="https://chatkitty.com/docs">Chat API</a> with scalable infrastructure</div>
 </div>
 
 ## Features
@@ -72,6 +72,7 @@ You will get a fully working chat application for web and mobile:
 - [Props data structure](#props-data-structure)
 - [Events API](#events-api)
 - [Named Slots](#named-slots)
+- [Using with ChatKitty](#using-with-chatkitty)
 - [Using with Firestore](#using-with-firestore)
 
 <br>
@@ -846,23 +847,25 @@ Example:
 
 <br>
 
+## Using with ChatKitty
+
 ## Using with Firestore
 
 ### Source code
 
-You can find the source code to implement a full featured chat app using Firebase/Firestore inside the `demo` folder.
+You can find the source code to implement a full-featured chat app using Firebase/Firestore inside the `demo/firebase` folder.
 <br>
 To test it using your own Firebase project:
 
 - Setup Cloud Firestore (to store users and rooms) and Realtime Database (to store users online status)
 - Clone this repository: `git clone https://github.com/advanced-chat/vue-advanced-chat.git`
-- Inside `demo/src/database/index.js` file, replace the line `const config = ...` by your own Firebase config
-- Go inside `demo` folder and run `npm run serve`
+- Inside `demo/firebase/src/database/index.js` file, replace the line `const config = ...` by your own Firebase config
+- Go inside `demo/firebase` folder and run `npm run serve`
 
 ### Data structure
 
-If you decide to use the same code as in the `demo` folder to create your chat app, you need to have a specific Firestore data structure.<br>
-To help you get started, I added in `demo/src/App.vue` a method `addData` to initialize some data on your Firestore database.
+If you decide to use the same code as in the `demo/firebase` folder to create your chat app, you need to have a specific Firestore data structure.<br>
+To help you get started, I added in `demo/firebase/src/App.vue` a method `addData` to initialize some data on your Firestore database.
 
 #### Users collection
 

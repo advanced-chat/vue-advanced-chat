@@ -175,7 +175,7 @@ export default {
 	methods: {
 		async addCss() {
 			if (import.meta.env.MODE === 'development') {
-				const styles = await import('./../../src/styles/index.scss')
+				const styles = await import('../../../src/styles/index.scss')
 				const style = document.createElement('style')
 				style.innerHTML = styles.default
 				this.$refs.chatWindow.shadowRoot.appendChild(style)

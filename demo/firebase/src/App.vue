@@ -58,7 +58,7 @@
 import * as firestoreService from '@/database/firestore'
 import * as storageService from '@/database/storage'
 
-import ChatContainer from './ChatContainer'
+import ChatContainer from './ChatContainer.vue'
 
 export default {
 	components: {
