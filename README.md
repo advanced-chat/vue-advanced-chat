@@ -877,6 +877,13 @@ You can find a full example in the `demo/chatkitty` folder.
 Customize your vue-advanced-chat theme and features using the ChatKitty console, setting the feature schema version to `vue-advanced-chat@2` in your project settings:
 ![ChatKitty Console](demo/chatkitty/assets/chatkitty-console.png)
 
+### Styling via ChatKitty
+You can customize the vue-advanced-chat theme directly from the ChatKitty console without having to write any code.
+
+- Go to the ChatKitty console [https://console.chatkitty.com](https://console.chatkitty.com)
+- In the code editor, setting the styles schema version to `vue-advanced-chat@2` and change the styles under the `styles` key to customize your chat theme.
+- You can find the full options [here](src/themes/index.js)
+
 ## Using with Firestore
 
 ### Source code
