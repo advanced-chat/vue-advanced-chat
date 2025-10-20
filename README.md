@@ -19,6 +19,8 @@
   <div>Easy to use <a target="_blank" href="https://chatkitty.com/docs">Chat API</a> with scalable infrastructure</div>
 </div>
 
+[![Watch the video: Getting started with Vue](demo/chatkitty/assets/chatkitty-vue-demo.png)](https://www.youtube.com/watch?v=XrHyC0aUOAU)
+
 ## Features
 
 - Compatible with all Javascript frameworks (Vue, Angular, React, etc.) or no framework at all
@@ -863,6 +865,7 @@ import {ChatUi} from '@chatkitty/vue'
 <template>
   <div style="width: 100vw; height: 100svh">
     <!-- Replace widgetId with your widget ID from console.chatkitty.com -->
+	<!-- Set username to the current user's username -->
     <!-- Remove mode="sandbox" in production environment -->
     <ChatUi
       widgetId="5IKgX7UHsLr1cWJ5"
