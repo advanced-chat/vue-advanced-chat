@@ -1,8 +1,11 @@
 {
-	"compilerOptions": {
-		"allowJs": true,
-		"declaration": true,
-		"emitDeclarationOnly": true,
-		"outDir": "types"
-	}
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    }
+  ]
 }
