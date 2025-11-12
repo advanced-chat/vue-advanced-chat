@@ -1,22 +1,50 @@
 {
   "name": "vue-advanced-chat",
   "version": "3.0.0-alpha.0",
+  "license": "MIT",
+  "description": "A beautiful chat component library made with Vue",
   "type": "module",
-  "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+  "main": "dist/vue-advanced-chat.umd.js",
+  "module": "dist/vue-advanced-chat.js",
+  "unpkg": "dist/vue-advanced-chat.umd.js",
+  "jsdelivr": "dist/vue-advanced-chat.umd.js",
+  "typings": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "vue",
+    "vuejs",
+    "chat",
+    "vue-js-chat",
+    "multiple",
+    "group",
+    "rooms",
+    "realtime"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/advanced-chat/vue-advanced-chat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/advanced-chat/vue-advanced-chat/issues"
   },
   "scripts": {
     "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
     "preview": "vite preview",
-    "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",
     "format": "prettier --write src/",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.17",
+    "tailwindcss": "^4.1.17",
     "vue": "^3.5.22"
   },
   "devDependencies": {
@@ -41,6 +69,7 @@
     "npm-run-all2": "^8.0.4",
     "playwright": "^1.56.1",
     "prettier": "3.6.2",
+    "sass-embedded": "^1.93.3",
     "storybook": "^10.0.7",
     "typescript": "~5.9.0",
     "vite": "^7.1.11",
