@@ -34,3 +34,6 @@ coverage
 
 # Vitest
 __screenshots__/
+
+*storybook.log
+storybook-static

@@ -12,26 +12,39 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "vue": "^3.5.22"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^4.1.2",
+    "@storybook/addon-a11y": "^10.0.7",
+    "@storybook/addon-docs": "^10.0.7",
+    "@storybook/addon-onboarding": "^10.0.7",
+    "@storybook/addon-vitest": "^10.0.7",
+    "@storybook/vue3-vite": "^10.0.7",
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^22.18.11",
     "@vitejs/plugin-vue": "^6.0.1",
+    "@vitest/browser-playwright": "^4.0.8",
+    "@vitest/coverage-v8": "^4.0.8",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/tsconfig": "^0.8.1",
     "eslint": "^9.37.0",
+    "eslint-plugin-storybook": "^10.0.7",
     "eslint-plugin-vue": "~10.5.0",
     "jiti": "^2.6.1",
     "npm-run-all2": "^8.0.4",
+    "playwright": "^1.56.1",
     "prettier": "3.6.2",
+    "storybook": "^10.0.7",
     "typescript": "~5.9.0",
     "vite": "^7.1.11",
-    "vite-plugin-vue-devtools": "^8.0.3",
+    "vitest": "^4.0.8",
     "vue-tsc": "^3.1.1"
   }
 }
