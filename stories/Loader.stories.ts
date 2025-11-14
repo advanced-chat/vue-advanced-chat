@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import Loader from '../src/components/Loader/Loader.vue';
+import Loader from '@/Loader.vue';
 
 const meta = {
   component: Loader,
@@ -16,6 +16,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
+
     infinite: false,
   },
 };

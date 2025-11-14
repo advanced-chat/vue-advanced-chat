@@ -7,8 +7,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
 
-    /* Bundler mode */
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
@@ -18,7 +17,7 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/components/*"]
     },
 
     /* Linting */
@@ -27,6 +26,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["stories/**/*.ts"],
+  "include": ["stories/**/*.ts", "src/components/**/*.vue"],
   "exclude": ["node_modules", "dist"]
 }

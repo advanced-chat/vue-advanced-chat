@@ -6,6 +6,9 @@
     },
     {
       "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./tsconfig.stories.json"
     }
   ]
 }
