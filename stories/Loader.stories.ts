@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import Loader from './Loader.vue';
+import Loader from '../src/components/Loader/Loader.vue';
 
 const meta = {
   component: Loader,
