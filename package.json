@@ -8,7 +8,18 @@
   "module": "dist/vue-advanced-chat.js",
   "unpkg": "dist/vue-advanced-chat.umd.js",
   "jsdelivr": "dist/vue-advanced-chat.umd.js",
+  "style": "dist/vue-advanced-chat.css",
   "typings": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/vue-advanced-chat.js",
+      "require": "./dist/vue-advanced-chat.umd.js"
+    },
+    "./styles": {
+      "import": "./dist/vue-advanced-chat.css"
+    }
+  },
   "files": [
     "dist"
   ],
