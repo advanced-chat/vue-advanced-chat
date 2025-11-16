@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent } from 'vue'
+import { computed } from 'vue'
 
 export interface ProgressBarProps {
   /** The progress percentage */
@@ -40,10 +40,6 @@ export interface ProgressBarProps {
 }
 
 const props = defineProps<ProgressBarProps>()
-
-defineComponent({
-  name: 'AdvancedChatProgressBar',
-})
 
 const radius = 35
 const stroke = 4

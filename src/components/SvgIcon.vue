@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent } from 'vue'
+import { computed } from 'vue'
 
 export interface SvgIconProps {
   /** The name of the SVG icon to display */
@@ -29,10 +29,6 @@ interface SvgItem {
     size?: 'large' | 'medium'
   }
 }
-
-defineComponent({
-  name: 'AdvancedChatSvgIcon',
-})
 
 const props = defineProps<SvgIconProps>()
 

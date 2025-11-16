@@ -14,18 +14,12 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent } from 'vue'
-
 export interface LoaderProps {
   /** Whether to show the loader */
   show: boolean
   /** Whether the loader is for infinite scrolling */
   infinite: boolean
 }
-
-defineComponent({
-  name: 'AdvancedChatLoader',
-})
 
 withDefaults(defineProps<LoaderProps>(), {
   show: false,
