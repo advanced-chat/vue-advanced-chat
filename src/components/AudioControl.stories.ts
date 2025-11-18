@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import AudioPlayer from '@/AudioPlayer.vue';
+import AudioControl from './AudioControl.vue';
 
 const meta = {
-  component: AudioPlayer,
+  component: AudioControl,
   tags: ['autodocs'],
   args: {
   },
-} satisfies Meta<typeof AudioPlayer>;
+} satisfies Meta<typeof AudioControl>;
 
 export default meta;
 

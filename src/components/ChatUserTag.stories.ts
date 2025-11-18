@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import ChatsListSearch from '@/ChatsListSearch.vue';
+import ChatUserTag from './ChatUserTag.vue';
 
 const meta = {
-  component: ChatsListSearch,
+  component: ChatUserTag,
   tags: ['autodocs'],
   args: {
   },
-} satisfies Meta<typeof ChatsListSearch>;
+} satisfies Meta<typeof ChatUserTag>;
 
 export default meta;
 

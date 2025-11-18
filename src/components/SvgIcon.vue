@@ -7,8 +7,8 @@
     height="24"
     :viewBox="`0 0 ${size} ${size}`"
   >
-    <path :id="svgId" :d="svgItem[name].path" />
-    <path v-if="svgItem[name].path2" :id="svgId" :d="svgItem[name].path2" />
+    <path :id="svgId" :d="svgItem[name]?.path" />
+    <path v-if="svgItem[name]?.path2" :id="svgId" :d="svgItem[name]?.path2" />
   </svg>
 </template>
 

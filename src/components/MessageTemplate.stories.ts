@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import ChatEmojis from '@/ChatEmojis.vue';
+import MessageTemplate from './MessageTemplate.vue';
 
 const meta = {
-  component: ChatEmojis,
+  component: MessageTemplate,
   tags: ['autodocs'],
   args: {
   },
-} satisfies Meta<typeof ChatEmojis>;
+} satisfies Meta<typeof MessageTemplate>;
 
 export default meta;
 

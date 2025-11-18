@@ -10,7 +10,7 @@ const container = useTemplateRef('container')
 
 const picker = ref(new Picker())
 
-interface EmojiPickerProps {
+export interface EmojiPickerProps {
   opened: boolean
 }
 

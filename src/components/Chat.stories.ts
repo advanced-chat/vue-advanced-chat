@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import Chat from '@/Chat.vue';
+import Chat from './Chat.vue';
 
 const meta = {
   component: Chat,

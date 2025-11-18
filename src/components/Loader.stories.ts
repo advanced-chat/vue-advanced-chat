@@ -1,13 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import MessageActions from '@/MessageActions.vue';
+import Loader from './Loader.vue';
 
 const meta = {
-  component: MessageActions,
+  component: Loader,
   tags: ['autodocs'],
   args: {
+    show: true
   },
-} satisfies Meta<typeof MessageActions>;
+} satisfies Meta<typeof Loader>;
 
 export default meta;
 
@@ -15,5 +16,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
+
+    infinite: false,
   },
 };
+
+export const Infinite: Story = {
+  args: {
+    infinite: true,
+  },
+};
+

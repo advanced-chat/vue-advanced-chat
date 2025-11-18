@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import MessageReactions from '@/MessageReactions.vue';
+import MessageActions from './MessageActions.vue';
 
 const meta = {
-  component: MessageReactions,
+  component: MessageActions,
   tags: ['autodocs'],
   args: {
   },
-} satisfies Meta<typeof MessageReactions>;
+} satisfies Meta<typeof MessageActions>;
 
 export default meta;
 

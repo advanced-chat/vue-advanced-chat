@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import ChatFile from '@/ChatFile.vue';
+import AudioPlayer from './AudioPlayer.vue';
 
 const meta = {
-  component: ChatFile,
+  component: AudioPlayer,
   tags: ['autodocs'],
   args: {
   },
-} satisfies Meta<typeof ChatFile>;
+} satisfies Meta<typeof AudioPlayer>;
 
 export default meta;
 

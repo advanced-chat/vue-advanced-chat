@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import ChatMessage from '@/ChatMessage.vue';
+import ChatsList from './ChatsList.vue';
 
 const meta = {
-  component: ChatMessage,
+  component: ChatsList,
   tags: ['autodocs'],
   args: {
   },
-} satisfies Meta<typeof ChatMessage>;
+} satisfies Meta<typeof ChatsList>;
 
 export default meta;
 

@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import MessageTemplate from '@/MessageTemplate.vue';
+import Layout from './Layout.vue';
 
 const meta = {
-  component: MessageTemplate,
+  component: Layout,
   tags: ['autodocs'],
   args: {
   },
-} satisfies Meta<typeof MessageTemplate>;
+} satisfies Meta<typeof Layout>;
 
 export default meta;
 

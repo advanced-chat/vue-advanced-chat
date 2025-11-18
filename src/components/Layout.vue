@@ -1,14 +1,35 @@
+<script setup lang="ts">
+import ChatsList from '@/components/ChatsList.vue'
+
+export interface LayoutProps {
+  height?: string;
+  theme?: 'light' | 'dark' | 'auto';
+  styles?: ThemeStyles;
+}
+
+export interface ThemeStyles {
+  general?: GeneralThemeStyles;
+}
+
+export interface GeneralThemeStyles {
+  color?: string;
+}
+
+withDefaults(defineProps<LayoutProps>(), {
+  height: '600px',
+  theme: 'auto',
+})
+</script>
+
 <template>
-  <div class="vac-card-window">
+  <div class="vac-card-window" :style="[{ height }]">
     <div class="vac-chat-container">
+      <ChatsList/>
     </div>
     <transition name="vac-fade-preview" appear>
     </transition>
   </div>
 </template>
-
-<script setup lang="ts">
-</script>
 
 <style scoped lang="scss">
 .vac-card-window {

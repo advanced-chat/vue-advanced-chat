@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import ChatFiles from '@/ChatFiles.vue';
+import ChatFooter from './ChatFooter.vue';
 
 const meta = {
-  component: ChatFiles,
+  component: ChatFooter,
   tags: ['autodocs'],
   args: {
   },
-} satisfies Meta<typeof ChatFiles>;
+} satisfies Meta<typeof ChatFooter>;
 
 export default meta;
 

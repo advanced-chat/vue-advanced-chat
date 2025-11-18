@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import MediaPreview from '@/MediaPreview.vue';
+import MediaPreview from './MediaPreview.vue';
 
 const meta = {
   component: MediaPreview,

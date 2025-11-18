@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import EmojiPicker from '@/EmojiPicker.vue'
+import EmojiPicker from './EmojiPicker.vue'
 
 const meta = {
   component: EmojiPicker,

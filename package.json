@@ -12,7 +12,7 @@
   "typings": "dist/types/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/vue-advanced-chat.js",
       "require": "./dist/vue-advanced-chat.umd.js"
     },
@@ -41,7 +41,7 @@
     "url": "https://github.com/advanced-chat/vue-advanced-chat/issues"
   },
   "scripts": {
-    "build": "vite build && vue-tsc -p tsconfig.lib.json --declaration --emitDeclarationOnly",
+    "build": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",
     "format": "prettier --write src/",
@@ -83,6 +83,8 @@
     "tailwindcss": "^4.1.17",
     "typescript": "~5.9.0",
     "vite": "^7.1.11",
+    "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-vue-devtools": "^8.0.5",
     "vitest": "^4.0.8",
     "vue-tsc": "^3.1.1"
   }

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-import SvgIcon from '@/SvgIcon.vue'
+import SvgIcon from './SvgIcon.vue'
 
 const meta = {
   component: SvgIcon,

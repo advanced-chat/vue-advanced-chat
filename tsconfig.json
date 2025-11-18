@@ -2,13 +2,10 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.vite.json"
+      "path": "./tsconfig.node.json"
     },
     {
       "path": "./tsconfig.lib.json"
-    },
-    {
-      "path": "./tsconfig.stories.json"
     }
   ]
 }
