@@ -1,7 +1,4 @@
-export function findParentBySelector(
-  node: Node | null,
-  selector: string
-): Element | null {
+export function findParentBySelector(node: Node | null, selector: string): Element | null {
   let current: Node | null = node
 
   while (current instanceof Element) {

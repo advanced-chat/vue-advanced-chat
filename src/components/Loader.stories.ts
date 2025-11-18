@@ -1,29 +1,27 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import Loader from './Loader.vue';
+import Loader from './Loader.vue'
 
 const meta = {
   component: Loader,
   tags: ['autodocs'],
   args: {
-    show: true
+    show: true,
   },
-} satisfies Meta<typeof Loader>;
+} satisfies Meta<typeof Loader>
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-
     infinite: false,
   },
-};
+}
 
 export const Infinite: Story = {
   args: {
     infinite: true,
   },
-};
-
+}

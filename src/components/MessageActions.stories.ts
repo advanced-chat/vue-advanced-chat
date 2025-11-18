@@ -1,19 +1,17 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import MessageActions from './MessageActions.vue';
+import MessageActions from './MessageActions.vue'
 
 const meta = {
   component: MessageActions,
   tags: ['autodocs'],
-  args: {
-  },
-} satisfies Meta<typeof MessageActions>;
+  args: {},
+} satisfies Meta<typeof MessageActions>
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  args: {
-  },
-};
+  args: {},
+}

@@ -1,19 +1,17 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ChatsListItem from './ChatsListItem.vue';
+import ChatsListItem from './ChatsListItem.vue'
 
 const meta = {
   component: ChatsListItem,
   tags: ['autodocs'],
-  args: {
-  },
-} satisfies Meta<typeof ChatsListItem>;
+  args: {},
+} satisfies Meta<typeof ChatsListItem>
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  args: {
-  },
-};
+  args: {},
+}

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
 import ProgressBar from './ProgressBar.vue'
 
@@ -13,15 +13,13 @@ const meta = {
       control: { type: 'number', min: 0, max: 100, step: 1 },
       description: 'Progress percentage (0-100)',
     },
-  }
-} satisfies Meta<typeof ProgressBar>;
+  },
+} satisfies Meta<typeof ProgressBar>
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  args: {
-  },
-};
-
+  args: {},
+}

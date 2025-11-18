@@ -1,19 +1,17 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ChatFile from './ChatFile.vue';
+import ChatFile from './ChatFile.vue'
 
 const meta = {
   component: ChatFile,
   tags: ['autodocs'],
-  args: {
-  },
-} satisfies Meta<typeof ChatFile>;
+  args: {},
+} satisfies Meta<typeof ChatFile>
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  args: {
-  },
-};
+  args: {},
+}

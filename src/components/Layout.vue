@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import ChatsList from '@/components/ChatsList.vue'
+import ChatsList from './ChatsList.vue'
 
 export interface LayoutProps {
-  height?: string;
-  theme?: 'light' | 'dark' | 'auto';
-  styles?: ThemeStyles;
+  height?: string
+  theme?: 'light' | 'dark' | 'auto'
+  styles?: ThemeStyles
 }
 
 export interface ThemeStyles {
-  general?: GeneralThemeStyles;
+  general?: GeneralThemeStyles
 }
 
 export interface GeneralThemeStyles {
-  color?: string;
+  color?: string
 }
 
 withDefaults(defineProps<LayoutProps>(), {
@@ -24,10 +24,9 @@ withDefaults(defineProps<LayoutProps>(), {
 <template>
   <div class="vac-card-window" :style="[{ height }]">
     <div class="vac-chat-container">
-      <ChatsList/>
+      <ChatsList />
     </div>
-    <transition name="vac-fade-preview" appear>
-    </transition>
+    <transition name="vac-fade-preview" appear> </transition>
   </div>
 </template>
 

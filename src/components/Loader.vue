@@ -18,7 +18,7 @@ export interface LoaderProps {
   /** Whether to show the loader */
   show: boolean
   /** Whether the loader is for infinite scrolling */
-  infinite: boolean
+  infinite?: boolean
 }
 
 withDefaults(defineProps<LoaderProps>(), {

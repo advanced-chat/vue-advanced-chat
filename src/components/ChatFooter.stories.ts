@@ -1,19 +1,17 @@
-import type { Meta, StoryObj } from '@storybook/vue3-vite';
+import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ChatFooter from './ChatFooter.vue';
+import ChatFooter from './ChatFooter.vue'
 
 const meta = {
   component: ChatFooter,
   tags: ['autodocs'],
-  args: {
-  },
-} satisfies Meta<typeof ChatFooter>;
+  args: {},
+} satisfies Meta<typeof ChatFooter>
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  args: {
-  },
-};
+  args: {},
+}
