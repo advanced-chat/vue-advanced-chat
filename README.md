@@ -19,11 +19,6 @@
   <div>Easy to use <a target="_blank" href="https://chatkitty.com/docs">Chat API</a> with scalable infrastructure</div>
 </div>
 
-[![Watch the video: Getting started with Vue](demo/chatkitty/assets/chatkitty-vue-demo.png)](https://www.youtube.com/watch?v=XrHyC0aUOAU)
-
-### Need help integrating Chat into your app?
-We offer a [Done-for-You Chat Setup](https://chatkitty.com/done-for-you-chat-setup) service — where the ChatKitty team helps you get chat running fast, with zero setup hassle.
-
 ## Features
 
 - Compatible with all Javascript frameworks (Vue, Angular, React, etc.) or no framework at all
