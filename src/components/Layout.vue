@@ -1,32 +1,51 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import ChatsList from './ChatsList.vue'
+import Chat from './Chat.vue'
+import MediaPreview from './MediaPreview.vue'
+
+import { baseThemeOptions, cssThemeVars, type Theme, type Styles } from '../themes'
+import { deepMerge } from '@/utils/index.ts'
 
 export interface LayoutProps {
   height?: string
-  theme?: 'light' | 'dark' | 'auto'
-  styles?: ThemeStyles
+  theme?: Theme
+  styles?: Styles
 }
 
-export interface ThemeStyles {
-  general?: GeneralThemeStyles
-}
-
-export interface GeneralThemeStyles {
-  color?: string
-}
-
-withDefaults(defineProps<LayoutProps>(), {
+const props = withDefaults(defineProps<LayoutProps>(), {
   height: '600px',
   theme: 'auto',
+})
+
+const cssVars = computed(() => {
+  let baseTheme = props.theme || 'auto'
+
+  if (baseTheme === 'auto') {
+    baseTheme =
+      window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light'
+  }
+
+  const baseOptions = baseThemeOptions[baseTheme]
+  const overrideOptions = typeof props.styles === 'object' ? props.styles : {}
+
+  return cssThemeVars(deepMerge(baseOptions, overrideOptions))
 })
 </script>
 
 <template>
-  <div class="vac-card-window" :style="[{ height }]">
+  <div class="vac-card-window" :style="[{ height }, cssVars]">
     <div class="vac-chat-container">
       <ChatsList />
+
+      <Chat />
     </div>
-    <transition name="vac-fade-preview" appear> </transition>
+    <transition name="vac-fade-preview" appear>
+      <MediaPreview />
+    </transition>
   </div>
 </template>
 
