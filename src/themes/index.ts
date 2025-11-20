@@ -1,164 +1,127 @@
-import light from './light.ts'
-import dark from './dark.ts'
+/// <reference lib="dom" />
+import light from './light.json' with { type: 'json' }
+import dark from './dark.json' with { type: 'json' }
 
-import type { Theme, Styles, ThemeOptions } from './types.ts'
+export type Theme = 'light' | 'dark' | 'auto'
 
-export type { Theme, Styles }
-
-export const baseThemeOptions: {
-  light: ThemeOptions
-  dark: ThemeOptions
-} = {
-  light,
-  dark,
+export type Styles = {
+  '--chat-color': string
+  '--chat-color-button-clear': string
+  '--chat-color-button': string
+  '--chat-bg-color-button': string
+  '--chat-bg-color-input': string
+  '--chat-color-spinner': string
+  '--chat-color-placeholder': string
+  '--chat-color-caret': string
+  '--chat-border-style': string
+  '--chat-bg-scroll-icon': string
+  '--chat-container-border': string
+  '--chat-container-border-radius': string
+  '--chat-container-box-shadow': string
+  '--chat-header-bg-color': string
+  '--chat-header-color-name': string
+  '--chat-header-color-info': string
+  '--chat-header-position': string
+  '--chat-header-width': string
+  '--chat-footer-bg-color': string
+  '--chat-border-style-input': string
+  '--chat-border-color-input-selected': string
+  '--chat-footer-bg-color-reply': string
+  '--chat-footer-bg-color-tag-active': string
+  '--chat-footer-bg-color-tag': string
+  '--chat-content-bg-color': string
+  '--chat-sidemenu-bg-color': string
+  '--chat-sidemenu-bg-color-hover': string
+  '--chat-sidemenu-bg-color-active': string
+  '--chat-sidemenu-color-active': string
+  '--chat-sidemenu-border-color-search': string
+  '--chat-dropdown-bg-color': string
+  '--chat-dropdown-bg-color-hover': string
+  '--chat-message-bg-color': string
+  '--chat-message-bg-color-me': string
+  '--chat-message-color-started': string
+  '--chat-message-bg-color-deleted': string
+  '--chat-message-bg-color-selected': string
+  '--chat-message-color-deleted': string
+  '--chat-message-color-username': string
+  '--chat-message-color-timestamp': string
+  '--chat-message-bg-color-date': string
+  '--chat-message-color-date': string
+  '--chat-message-bg-color-system': string
+  '--chat-message-color-system': string
+  '--chat-message-color': string
+  '--chat-message-bg-color-media': string
+  '--chat-message-bg-color-reply': string
+  '--chat-message-color-reply-username': string
+  '--chat-message-color-reply-content': string
+  '--chat-message-color-tag': string
+  '--chat-message-bg-color-image': string
+  '--chat-message-color-new-messages': string
+  '--chat-message-bg-color-scroll-counter': string
+  '--chat-message-color-scroll-counter': string
+  '--chat-message-bg-color-reaction': string
+  '--chat-message-border-style-reaction': string
+  '--chat-message-bg-color-reaction-hover': string
+  '--chat-message-border-style-reaction-hover': string
+  '--chat-message-color-reaction-counter': string
+  '--chat-message-bg-color-reaction-me': string
+  '--chat-message-border-style-reaction-me': string
+  '--chat-message-bg-color-reaction-hover-me': string
+  '--chat-message-border-style-reaction-hover-me': string
+  '--chat-message-color-reaction-counter-me': string
+  '--chat-message-bg-color-audio-record': string
+  '--chat-message-bg-color-audio-line': string
+  '--chat-message-bg-color-audio-progress': string
+  '--chat-message-bg-color-audio-progress-selector': string
+  '--chat-message-color-file-extension': string
+  '--chat-markdown-bg': string
+  '--chat-markdown-border': string
+  '--chat-markdown-color': string
+  '--chat-markdown-color-multi': string
+  '--chat-room-color-username': string
+  '--chat-room-color-message': string
+  '--chat-room-color-timestamp': string
+  '--chat-room-color-online': string
+  '--chat-room-color-offline': string
+  '--chat-room-bg-color-badge': string
+  '--chat-room-color-badge': string
+  '--chat-emoji-bg-color': string
+  '--chat-icon-color-search': string
+  '--chat-icon-color-add': string
+  '--chat-icon-color-toggle': string
+  '--chat-icon-color-menu': string
+  '--chat-icon-color-close': string
+  '--chat-icon-color-close-image': string
+  '--chat-icon-color-file': string
+  '--chat-icon-color-paperclip': string
+  '--chat-icon-color-close-outline': string
+  '--chat-icon-color-close-preview': string
+  '--chat-icon-color-send': string
+  '--chat-icon-color-send-disabled': string
+  '--chat-icon-color-emoji': string
+  '--chat-icon-color-emoji-reaction': string
+  '--chat-icon-color-document': string
+  '--chat-icon-color-pencil': string
+  '--chat-icon-color-checkmark': string
+  '--chat-icon-color-checkmark-seen': string
+  '--chat-icon-color-eye': string
+  '--chat-icon-color-dropdown-message': string
+  '--chat-icon-bg-dropdown-message': string
+  '--chat-icon-color-dropdown-room': string
+  '--chat-icon-color-dropdown-scroll': string
+  '--chat-icon-color-microphone': string
+  '--chat-icon-color-audio-play': string
+  '--chat-icon-color-audio-pause': string
+  '--chat-icon-color-audio-cancel': string
+  '--chat-icon-color-audio-confirm': string
 }
 
-export const cssThemeVars = ({
-  general,
-  container,
-  header,
-  footer,
-  sidemenu,
-  content,
-  dropdown,
-  message,
-  markdown,
-  room,
-  emoji,
-  icons,
-}: ThemeOptions) => {
-  return {
-    // general
-    '--chat-color': general.color,
-    '--chat-color-button-clear': general.colorButtonClear,
-    '--chat-color-button': general.colorButton,
-    '--chat-bg-color-button': general.backgroundColorButton,
-    '--chat-bg-color-input': general.backgroundInput,
-    '--chat-color-spinner': general.colorSpinner,
-    '--chat-color-placeholder': general.colorPlaceholder,
-    '--chat-color-caret': general.colorCaret,
-    '--chat-border-style': general.borderStyle,
-    '--chat-bg-scroll-icon': general.backgroundScrollIcon,
+export const getThemeStyles = (theme: Theme): Styles => {
+  const isDarkMode =
+    (theme === 'auto' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches) ||
+    theme === 'dark'
 
-    // container
-    '--chat-container-border': container.border,
-    '--chat-container-border-radius': container.borderRadius,
-    '--chat-container-box-shadow': container.boxShadow,
-
-    // header
-    '--chat-header-bg-color': header.background,
-    '--chat-header-color-name': header.colorRoomName,
-    '--chat-header-color-info': header.colorRoomInfo,
-    '--chat-header-position': header.position,
-    '--chat-header-width': header.width,
-
-    // footer
-    '--chat-footer-bg-color': footer.background,
-    '--chat-border-style-input': footer.borderStyleInput,
-    '--chat-border-color-input-selected': footer.borderInputSelected,
-    '--chat-footer-bg-color-reply': footer.backgroundReply,
-    '--chat-footer-bg-color-tag-active': footer.backgroundTagActive,
-    '--chat-footer-bg-color-tag': footer.backgroundTag,
-
-    // content
-    '--chat-content-bg-color': content.background,
-
-    // sidemenu
-    '--chat-sidemenu-bg-color': sidemenu.background,
-    '--chat-sidemenu-bg-color-hover': sidemenu.backgroundHover,
-    '--chat-sidemenu-bg-color-active': sidemenu.backgroundActive,
-    '--chat-sidemenu-color-active': sidemenu.colorActive,
-    '--chat-sidemenu-border-color-search': sidemenu.borderColorSearch,
-
-    // dropdown
-    '--chat-dropdown-bg-color': dropdown.background,
-    '--chat-dropdown-bg-color-hover': dropdown.backgroundHover,
-
-    // message
-    '--chat-message-bg-color': message.background,
-    '--chat-message-bg-color-me': message.backgroundMe,
-    '--chat-message-color-started': message.colorStarted,
-    '--chat-message-bg-color-deleted': message.backgroundDeleted,
-    '--chat-message-bg-color-selected': message.backgroundSelected,
-    '--chat-message-color-deleted': message.colorDeleted,
-    '--chat-message-color-username': message.colorUsername,
-    '--chat-message-color-timestamp': message.colorTimestamp,
-    '--chat-message-bg-color-date': message.backgroundDate,
-    '--chat-message-color-date': message.colorDate,
-    '--chat-message-bg-color-system': message.backgroundSystem,
-    '--chat-message-color-system': message.colorSystem,
-    '--chat-message-color': message.color,
-    '--chat-message-bg-color-media': message.backgroundMedia,
-    '--chat-message-bg-color-reply': message.backgroundReply,
-    '--chat-message-color-reply-username': message.colorReplyUsername,
-    '--chat-message-color-reply-content': message.colorReply,
-    '--chat-message-color-tag': message.colorTag,
-    '--chat-message-bg-color-image': message.backgroundImage,
-    '--chat-message-color-new-messages': message.colorNewMessages,
-    '--chat-message-bg-color-scroll-counter': message.backgroundScrollCounter,
-    '--chat-message-color-scroll-counter': message.colorScrollCounter,
-    '--chat-message-bg-color-reaction': message.backgroundReaction,
-    '--chat-message-border-style-reaction': message.borderStyleReaction,
-    '--chat-message-bg-color-reaction-hover': message.backgroundReactionHover,
-    '--chat-message-border-style-reaction-hover': message.borderStyleReactionHover,
-    '--chat-message-color-reaction-counter': message.colorReactionCounter,
-    '--chat-message-bg-color-reaction-me': message.backgroundReactionMe,
-    '--chat-message-border-style-reaction-me': message.borderStyleReactionMe,
-    '--chat-message-bg-color-reaction-hover-me': message.backgroundReactionHoverMe,
-    '--chat-message-border-style-reaction-hover-me': message.borderStyleReactionHoverMe,
-    '--chat-message-color-reaction-counter-me': message.colorReactionCounterMe,
-    '--chat-message-bg-color-audio-record': message.backgroundAudioRecord,
-    '--chat-message-bg-color-audio-line': message.backgroundAudioLine,
-    '--chat-message-bg-color-audio-progress': message.backgroundAudioProgress,
-    '--chat-message-bg-color-audio-progress-selector': message.backgroundAudioProgressSelector,
-    '--chat-message-color-file-extension': message.colorFileExtension,
-
-    // markdown
-    '--chat-markdown-bg': markdown.background,
-    '--chat-markdown-border': markdown.border,
-    '--chat-markdown-color': markdown.color,
-    '--chat-markdown-color-multi': markdown.colorMulti,
-
-    // room
-    '--chat-room-color-username': room.colorUsername,
-    '--chat-room-color-message': room.colorMessage,
-    '--chat-room-color-timestamp': room.colorTimestamp,
-    '--chat-room-color-online': room.colorStateOnline,
-    '--chat-room-color-offline': room.colorStateOffline,
-    '--chat-room-bg-color-badge': room.backgroundCounterBadge,
-    '--chat-room-color-badge': room.colorCounterBadge,
-
-    // emoji
-    '--chat-emoji-bg-color': emoji.background,
-
-    // icons
-    '--chat-icon-color-search': icons.search,
-    '--chat-icon-color-add': icons.add,
-    '--chat-icon-color-toggle': icons.toggle,
-    '--chat-icon-color-menu': icons.menu,
-    '--chat-icon-color-close': icons.close,
-    '--chat-icon-color-close-image': icons.closeImage,
-    '--chat-icon-color-file': icons.file,
-    '--chat-icon-color-paperclip': icons.paperclip,
-    '--chat-icon-color-close-outline': icons.closeOutline,
-    '--chat-icon-color-close-preview': icons.closePreview,
-    '--chat-icon-color-send': icons.send,
-    '--chat-icon-color-send-disabled': icons.sendDisabled,
-    '--chat-icon-color-emoji': icons.emoji,
-    '--chat-icon-color-emoji-reaction': icons.emojiReaction,
-    '--chat-icon-color-document': icons.document,
-    '--chat-icon-color-pencil': icons.pencil,
-    '--chat-icon-color-checkmark': icons.checkmark,
-    '--chat-icon-color-checkmark-seen': icons.checkmarkSeen,
-    '--chat-icon-color-eye': icons.eye,
-    '--chat-icon-color-dropdown-message': icons.dropdownMessage,
-    '--chat-icon-bg-dropdown-message': icons.dropdownMessageBackground,
-    '--chat-icon-color-dropdown-room': icons.dropdownRoom,
-    '--chat-icon-color-dropdown-scroll': icons.dropdownScroll,
-    '--chat-icon-color-microphone': icons.microphone,
-    '--chat-icon-color-audio-play': icons.audioPlay,
-    '--chat-icon-color-audio-pause': icons.audioPause,
-    '--chat-icon-color-audio-cancel': icons.audioCancel,
-    '--chat-icon-color-audio-confirm': icons.audioConfirm,
-  }
+  return isDarkMode ? dark : light
 }

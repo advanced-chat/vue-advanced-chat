@@ -13,5 +13,11 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  args: {},
+  args: {
+    chats: [
+      { id: 1, name: 'Alice', lastMessage: 'Hey there!' },
+      { id: 2, name: 'Bob', lastMessage: "What's up?" },
+      { id: 3, name: 'Charlie', lastMessage: 'See you soon.' },
+    ],
+  },
 }

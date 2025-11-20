@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import ChatsList from './ChatsList.vue'
-import Chat from './Chat.vue'
-import MediaPreview from './MediaPreview.vue'
-
-import { baseThemeOptions, cssThemeVars, type Theme, type Styles } from '../themes'
-import { deepMerge } from '@/utils/index.ts'
+import { deepMerge } from '../utils'
+import { getThemeStyles, type Theme, type Styles } from '../themes'
 
 export interface LayoutProps {
   height?: string
@@ -14,38 +10,19 @@ export interface LayoutProps {
   styles?: Styles
 }
 
-const props = withDefaults(defineProps<LayoutProps>(), {
-  height: '600px',
-  theme: 'auto',
-})
+const props = defineProps<LayoutProps>()
 
 const cssVars = computed(() => {
-  let baseTheme = props.theme || 'auto'
+  const baseStyles = getThemeStyles(props.theme || 'auto')
+  const overrideStyles = typeof props.styles === 'object' ? props.styles : {}
 
-  if (baseTheme === 'auto') {
-    baseTheme =
-      window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
-  }
-
-  const baseOptions = baseThemeOptions[baseTheme]
-  const overrideOptions = typeof props.styles === 'object' ? props.styles : {}
-
-  return cssThemeVars(deepMerge(baseOptions, overrideOptions))
+  return deepMerge(baseStyles, overrideStyles)
 })
 </script>
 
 <template>
   <div class="vac-card-window" :style="[{ height }, cssVars]">
-    <div class="vac-chat-container">
-      <ChatsList />
-
-      <Chat />
-    </div>
-    <transition name="vac-fade-preview" appear>
-      <MediaPreview />
-    </transition>
+    <slot></slot>
   </div>
 </template>
 
@@ -70,21 +47,6 @@ const cssVars = computed(() => {
   a {
     color: #0d579c;
     font-weight: 500;
-  }
-
-  .vac-chat-container {
-    height: 100%;
-    display: flex;
-
-    input {
-      min-width: 10px;
-    }
-
-    textarea,
-    input[type='text'],
-    input[type='search'] {
-      -webkit-appearance: none;
-    }
   }
 }
 </style>

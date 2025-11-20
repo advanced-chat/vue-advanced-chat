@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import Layout from './Layout.vue'
+import AdvancedChat from '@/components/AdvancedChat.vue'
 
 const meta = {
-  component: Layout,
+  component: AdvancedChat,
   tags: ['autodocs'],
   args: {},
-} satisfies Meta<typeof Layout>
+} satisfies Meta<typeof AdvancedChat>
 
 export default meta
 

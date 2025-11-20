@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ChatsListSearch from '@/components/ChatsListSearch.vue'
+
 export interface ChatsListProps {
   isMobile?: boolean
 }
@@ -18,7 +20,9 @@ withDefaults(defineProps<ChatsListProps>(), {
   >
     <slot name="rooms-header" />
 
-    <slot name="rooms-list-search"> </slot>
+    <slot name="rooms-list-search">
+      <ChatsListSearch />
+    </slot>
   </div>
 </template>
 

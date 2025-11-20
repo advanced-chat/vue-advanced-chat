@@ -1,5 +1,6 @@
 import './assets/style.css'
 
+import AdvancedChat from '@/components/AdvancedChat.vue'
 import AudioControl from '@/components/AudioControl.vue'
 import AudioPlayer from '@/components/AudioPlayer.vue'
 import Chat from '@/components/Chat.vue'
@@ -16,7 +17,7 @@ import ChatUserTag from '@/components/ChatUserTag.vue'
 import EmojiPicker from '@/components/EmojiPicker.vue'
 import Layout from '@/components/Layout.vue'
 import Loader from '@/components/Loader.vue'
-import MediaPreview from './components/MediaPreview.vue'
+import MediaPreview from '@/components/MediaPreview.vue'
 import Message from '@/components/Message.vue'
 import MessageActions from '@/components/MessageActions.vue'
 import MessageFile from '@/components/MessageFile.vue'
@@ -28,6 +29,7 @@ import ProgressBar from '@/components/ProgressBar.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 
 export {
+  AdvancedChat,
   AudioControl,
   AudioPlayer,
   Chat,
