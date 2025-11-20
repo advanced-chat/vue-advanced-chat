@@ -5,14 +5,6 @@ import ChatsListSearch from './ChatsListSearch.vue'
 const meta = {
   component: ChatsListSearch,
   tags: ['autodocs'],
-  args: {},
-} satisfies Meta<typeof ChatsListSearch>
-
-export default meta
-
-type Story = StoryObj<typeof meta>
-
-export const Default: Story = {
   args: {
     chats: [
       { id: 1, name: 'Alice', lastMessage: 'Hey there!' },
@@ -20,4 +12,12 @@ export const Default: Story = {
       { id: 3, name: 'Charlie', lastMessage: 'See you soon.' },
     ],
   },
+} satisfies Meta<typeof ChatsListSearch>
+
+export default meta
+
+type Story = StoryObj<typeof meta>
+
+export const Default: Story = {
+  args: {},
 }

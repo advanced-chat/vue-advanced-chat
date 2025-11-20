@@ -15,7 +15,7 @@
     "moduleResolution": "NodeNext",
 
     "paths": {
-      "@/*": ["./src/*"]
+      "@/components/*": ["./src/components/*"]
     }
   }
 }

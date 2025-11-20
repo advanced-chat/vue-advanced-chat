@@ -3,10 +3,11 @@ import { computed } from 'vue'
 
 import SvgIcon from '@/components/SvgIcon.vue'
 
-import type { Chat } from '@/models/index.ts'
+import type { Chat } from '../models'
+import { getLocalizationStrings, type Strings } from '../localization'
 
 export interface ChatsListSearchProps {
-  textMessages?: Record<string, string>
+  strings?: Strings
   showSearch?: boolean
   showAddChat?: boolean
   chats?: Array<Chat>
@@ -14,11 +15,11 @@ export interface ChatsListSearchProps {
 }
 
 const props = withDefaults(defineProps<ChatsListSearchProps>(), {
-  textMessages: () => ({}),
+  strings: () => getLocalizationStrings('auto'),
   showSearch: true,
   showAddChat: true,
   chats: () => [],
-  loadingChats: true,
+  loadingChats: false,
 })
 
 const showSearchBar = computed(() => {
@@ -53,7 +54,7 @@ const onSearchInput = (event: Event) => {
       <input
         v-if="!loadingChats && chats.length"
         type="search"
-        :placeholder="textMessages.SEARCH"
+        :placeholder="strings['chats.search.placeholder']"
         autocomplete="off"
         class="vac-input"
         @input="onSearchInput"
