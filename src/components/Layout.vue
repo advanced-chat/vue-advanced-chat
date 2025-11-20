@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { deepMerge } from '../utils'
+import { deepMerge, pruneKeys } from '../utils'
 import { getThemeStyles, type Theme, type Styles } from '../themes'
 
 export interface LayoutProps {
@@ -16,7 +16,7 @@ const cssVars = computed(() => {
   const baseStyles = getThemeStyles(props.theme || 'auto')
   const overrideStyles = typeof props.styles === 'object' ? props.styles : {}
 
-  return deepMerge(baseStyles, overrideStyles)
+  return pruneKeys(deepMerge(baseStyles, overrideStyles))
 })
 </script>
 

@@ -11,6 +11,10 @@ export default defineConfigWithVueTs(
   {
     files: ['**/*.{ts,mts,tsx,vue}'],
     rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
       'vue/multi-word-component-names': 'off',
     },
   },

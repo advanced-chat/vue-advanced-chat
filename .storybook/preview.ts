@@ -36,16 +36,24 @@ const preview: Preview = {
   },
   decorators: [
     (story, context) => {
+      const skipLayout = context.parameters.skipLayout || false
+
+      if (skipLayout) {
+        return {
+          template: `<story/>`,
+        }
+      }
+
       const theme = context.globals.theme || 'auto'
 
       return {
         components: { Layout, story },
-        setup () {
+        setup() {
           return { theme }
         },
         template: `
           <Layout :theme="theme">
-            <story />
+            <story/>
           </Layout>
         `,
       }
