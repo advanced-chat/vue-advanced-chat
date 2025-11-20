@@ -49,6 +49,12 @@
     "build-storybook": "storybook build",
     "prepare": "husky"
   },
+  "lint-staged": {
+    "*.{vue,ts,js,json}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
@@ -78,6 +84,7 @@
     "eslint-plugin-vue": "~10.5.0",
     "husky": "^9.1.7",
     "jiti": "^2.6.1",
+    "lint-staged": "^16.2.7",
     "npm-run-all2": "^8.0.4",
     "playwright": "^1.56.1",
     "prettier": "3.6.2",
