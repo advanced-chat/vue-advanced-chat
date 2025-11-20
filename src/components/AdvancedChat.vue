@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Layout from '@/components/Layout.vue'
-import ChatsList from '@/components/ChatsList.vue'
+import Chats from '@/components/Chats.vue'
 import Chat from '@/components/Chat.vue'
 import MediaPreview from '@/components/MediaPreview.vue'
 
@@ -21,7 +21,7 @@ withDefaults(defineProps<AdvancedChatProps>(), {
 <template>
   <Layout :height="height" :theme="theme" :styles="styles">
     <div class="vac-chat-container">
-      <ChatsList />
+      <Chats />
 
       <Chat />
     </div>

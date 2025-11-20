@@ -10,9 +10,9 @@ import ChatFiles from '@/components/ChatFiles.vue'
 import ChatFooter from '@/components/ChatFooter.vue'
 import ChatHeader from '@/components/ChatHeader.vue'
 import ChatMessage from '@/components/ChatMessage.vue'
-import ChatsList from '@/components/ChatsList.vue'
-import ChatsListItem from '@/components/ChatsListItem.vue'
-import ChatsListSearch from '@/components/ChatsListSearch.vue'
+import Chats from '@/components/Chats.vue'
+import ChatsItem from '@/components/ChatsItem.vue'
+import ChatsSearch from '@/components/ChatsSearch.vue'
 import ChatUserTag from '@/components/ChatUserTag.vue'
 import EmojiPicker from '@/components/EmojiPicker.vue'
 import Layout from '@/components/Layout.vue'
@@ -39,9 +39,9 @@ export {
   ChatFooter,
   ChatHeader,
   ChatMessage,
-  ChatsList,
-  ChatsListItem,
-  ChatsListSearch,
+  Chats,
+  ChatsItem,
+  ChatsSearch,
   ChatUserTag,
   EmojiPicker,
   Layout,

@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
-import ChatsListItem from './ChatsListItem.vue'
+import ChatsItem from './ChatsItem.vue'
 
 const meta = {
-  component: ChatsListItem,
+  component: ChatsItem,
   tags: ['autodocs'],
   args: {},
-} satisfies Meta<typeof ChatsListItem>
+} satisfies Meta<typeof ChatsItem>
 
 export default meta
 
