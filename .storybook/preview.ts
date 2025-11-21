@@ -44,21 +44,30 @@ const preview: Preview = {
         }
       }
 
+      const height = context.parameters.height
+
       const theme = context.globals.theme || 'auto'
 
       return {
         components: { Layout, story },
         setup() {
-          return { theme }
+          return { height, theme }
         },
         template: `
-          <Layout :theme="theme">
+          <Layout :height="height" :theme="theme">
             <story/>
           </Layout>
         `,
       }
     },
   ],
+  args: {
+    chats: [
+      { id: 1, name: 'Alice', lastMessage: 'Hey there!' },
+      { id: 2, name: 'Bob', lastMessage: "What's up?" },
+      { id: 3, name: 'Charlie', lastMessage: 'See you soon.' },
+    ],
+  },
 }
 
 export default preview

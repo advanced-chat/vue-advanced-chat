@@ -4,6 +4,7 @@ import en from './en.json' with { type: 'json' }
 export type Localization = 'en' | 'auto'
 
 export type Strings = {
+  'chats.empty': string
   'chats.search.placeholder': string
 }
 

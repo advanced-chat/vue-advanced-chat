@@ -1,13 +1,37 @@
 <script setup lang="ts">
 import ChatsSearch from '@/components/ChatsSearch.vue'
+import type { Chat, UserReference } from '../models'
+import type { Styles } from '../themes'
+import { getLocalizationStrings, type Strings } from '../localization'
+import Loader from '@/components/Loader.vue'
 
 export interface ChatsProps {
+  showChats?: boolean
+  showSearch?: boolean
+  showAddChat?: boolean
+  loadingChats?: boolean
   isMobile?: boolean
+  user?: UserReference
+  chats?: Array<Chat>
+  styles?: Partial<Styles>
+  strings?: Partial<Strings>
 }
 
 withDefaults(defineProps<ChatsProps>(), {
+  showChats: true,
+  showSearch: true,
+  showAddChat: true,
+  loadingChats: false,
   isMobile: false,
+  chats: () => [],
+  styles: () => ({}),
+  strings: () => getLocalizationStrings('auto'),
 })
+
+defineEmits<{
+  'search-chat': [query: string]
+  'add-chat': []
+}>()
 </script>
 
 <template>
@@ -18,11 +42,29 @@ withDefaults(defineProps<ChatsProps>(), {
       'vac-app-border-r': !isMobile,
     }"
   >
-    <slot name="rooms-header" />
+    <slot name="chats-header" />
 
-    <slot name="rooms-list-search">
-      <ChatsSearch />
+    <slot name="chats-search">
+      <ChatsSearch
+        :show-search="showSearch"
+        :show-add-chat="showAddChat"
+        :loading-chats="loadingChats"
+        :chats="chats"
+        :styles="styles"
+        :strings="strings"
+        @search-chat="$emit('search-chat', $event)"
+        @add-chat="$emit('add-chat')"
+      >
+      </ChatsSearch>
     </slot>
+
+    <Loader :show="loadingChats"> </Loader>
+
+    <div v-if="!loadingChats && !chats.length" class="vac-rooms-empty">
+      <slot name="rooms-empty">
+        {{ strings['chats.empty'] }}
+      </slot>
+    </div>
   </div>
 </template>
 

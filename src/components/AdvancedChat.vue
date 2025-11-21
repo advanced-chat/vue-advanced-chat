@@ -5,16 +5,19 @@ import Chat from '@/components/Chat.vue'
 import MediaPreview from '@/components/MediaPreview.vue'
 
 import { type Theme, type Styles } from '../themes'
+import { getLocalizationStrings, type Strings } from '../localization'
 
 export interface AdvancedChatProps {
   height?: string
   theme?: Theme
   styles?: Styles
+  strings?: Strings
 }
 
 withDefaults(defineProps<AdvancedChatProps>(), {
   theme: 'auto',
   height: '600px',
+  strings: () => getLocalizationStrings('auto'),
 })
 </script>
 

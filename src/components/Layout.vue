@@ -7,7 +7,7 @@ import { getThemeStyles, type Theme, type Styles } from '../themes'
 export interface LayoutProps {
   height?: string
   theme?: Theme
-  styles?: Styles
+  styles?: Partial<Styles>
 }
 
 const props = defineProps<LayoutProps>()
