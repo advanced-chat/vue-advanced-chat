@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import ChatsSearch from '@/components/ChatsSearch.vue'
 
-export interface ChatsListProps {
+export interface ChatsProps {
   isMobile?: boolean
 }
 
-withDefaults(defineProps<ChatsListProps>(), {
+withDefaults(defineProps<ChatsProps>(), {
   isMobile: false,
 })
 </script>

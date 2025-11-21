@@ -5,21 +5,24 @@ import SvgIcon from '@/components/SvgIcon.vue'
 
 import type { Chat } from '../models'
 import { getLocalizationStrings, type Strings } from '../localization'
+import { type Styles } from '../themes'
 
-export interface ChatsListSearchProps {
-  strings?: Strings
+export interface ChatsSearchProps {
   showSearch?: boolean
   showAddChat?: boolean
-  chats?: Array<Chat>
   loadingChats?: boolean
+  chats?: Array<Chat>
+  styles?: Partial<Styles>
+  strings?: Partial<Strings>
 }
 
-const props = withDefaults(defineProps<ChatsListSearchProps>(), {
-  strings: () => getLocalizationStrings('auto'),
+const props = withDefaults(defineProps<ChatsSearchProps>(), {
   showSearch: true,
   showAddChat: true,
-  chats: () => [],
   loadingChats: false,
+  chats: () => [],
+  styles: () => ({}),
+  strings: () => getLocalizationStrings('auto'),
 })
 
 const showSearchBar = computed(() => {
@@ -44,6 +47,7 @@ const onSearchInput = (event: Event) => {
       'vac-box-search': showSearchBar,
       'vac-box-empty': !showSearchBar,
     }"
+    :style="[styles]"
   >
     <template v-if="showSearch">
       <div v-if="!loadingChats && chats.length" class="vac-icon-search">
