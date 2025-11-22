@@ -1,1 +1,6 @@
+@import './animation.scss';
+@import './menu.scss';
+@import './helper.scss';
+@import './markdown.scss';
+
 @import 'tailwindcss';
