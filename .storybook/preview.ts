@@ -62,6 +62,11 @@ const preview: Preview = {
     },
   ],
   args: {
+    users: [
+      { id: 1, displayName: 'Alice' },
+      { id: 2, displayName: 'Bob' },
+      { id: 3, displayName: 'Charlie' },
+    ],
     chats: [
       { id: 1, name: 'Alice', lastMessage: 'Hey there!' },
       { id: 2, name: 'Bob', lastMessage: "What's up?" },

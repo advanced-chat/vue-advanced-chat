@@ -1,11 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
 import MessageTemplate from './MessageTemplate.vue'
+import { fn } from 'storybook/test'
 
 const meta = {
   component: MessageTemplate,
   tags: ['autodocs'],
-  args: {},
+  args: {
+    'onClicked:user-tag': fn(),
+  },
 } satisfies Meta<typeof MessageTemplate>
 
 export default meta
@@ -42,6 +45,5 @@ export const UserTaggedMessage: Story = {
       nestedLevel: 0,
       deleted: false,
     },
-    users: [{ id: 1, displayName: 'Alice' }],
   },
 }

@@ -1,8 +1,10 @@
 // @ts-nocheck
 
+import type { Extension, HtmlExtension } from 'micromark-extension-gfm'
+
 import { codes } from './codes.js'
 
-import type { Extension, HtmlExtension } from 'micromark-extension-gfm'
+import { findUserById } from '../../models'
 
 const userTagTokenize = (effects, ok, nok) => {
   const inside = (code) => {
@@ -76,7 +78,7 @@ export const userTagHtml: (users) => HtmlExtension = (users) => ({
     userTagContent(token) {
       const userId = this.sliceSerialize(token)
 
-      const user = users.find((user) => user.id.toString() === userId)
+      const user = findUserById(users, userId)
 
       if (!user) {
         this.raw(this.encode(`<@${userId}>`))

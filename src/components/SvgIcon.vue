@@ -1,17 +1,3 @@
-<template>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    width="24"
-    height="24"
-    :viewBox="`0 0 ${size} ${size}`"
-  >
-    <path :id="svgId" :d="svgItem[name]?.path" />
-    <path v-if="svgItem[name]?.path2" :id="svgId" :d="svgItem[name]?.path2" />
-  </svg>
-</template>
-
 <script lang="ts" setup>
 import { computed } from 'vue'
 
@@ -114,6 +100,20 @@ const size = computed(() => {
   return 24
 })
 </script>
+
+<template>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="1.1"
+    width="24"
+    height="24"
+    :viewBox="`0 0 ${size} ${size}`"
+  >
+    <path :id="svgId" :d="svgItem[name]?.path" />
+    <path v-if="svgItem[name]?.path2" :id="svgId" :d="svgItem[name]?.path2" />
+  </svg>
+</template>
 
 <style lang="scss" scoped>
 #vac-icon-search {

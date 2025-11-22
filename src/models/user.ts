@@ -6,3 +6,9 @@ export interface User {
 export interface UserReference {
   id: string | number
 }
+
+export const findUserById = (users: User[], id: string | number): User | undefined => {
+  const userId = id.toString()
+
+  return users.find((user) => user.id.toString() === userId)
+}
