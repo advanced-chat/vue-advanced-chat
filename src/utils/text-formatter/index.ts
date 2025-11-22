@@ -1,6 +1,9 @@
 import { micromark } from 'micromark'
 import { gfm, gfmHtml } from 'micromark-extension-gfm'
 import { underline, underlineHtml } from './underline.js'
+import { userTag, userTagHtml } from './user-tag.js'
+
+import type { User } from '../../models/index.ts'
 
 export interface LinkOptions {
   target?: '_blank' | '_self' | '_parent' | '_top'
@@ -14,6 +17,10 @@ export interface TextFormattingOptions {
   linkOptions?: LinkOptions
 }
 
+export interface TextFormattingBindings {
+  users?: Array<User>
+}
+
 export interface FormattedText {
   value: string
   markdown?: boolean
@@ -23,6 +30,7 @@ export interface FormattedText {
 export const formatText = (
   text: string,
   { markdown, singleLine, linkify }: TextFormattingOptions,
+  { users }: TextFormattingBindings = {},
 ): FormattedText => {
   let parsed = text
 
@@ -40,8 +48,9 @@ export const formatText = (
           disable: { null: gfmDisabled },
         },
         underline,
+        userTag,
       ],
-      htmlExtensions: [gfmHtml(), underlineHtml],
+      htmlExtensions: [gfmHtml(), underlineHtml, userTagHtml(users || [])],
     })
   }
 

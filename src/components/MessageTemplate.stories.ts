@@ -33,3 +33,15 @@ export const UnderlinedMessage: Story = {
     },
   },
 }
+
+export const UserTaggedMessage: Story = {
+  args: {
+    message: {
+      id: '1',
+      content: 'Hello <@1>, how are you?',
+      nestedLevel: 0,
+      deleted: false,
+    },
+    users: [{ id: 1, displayName: 'Alice' }],
+  },
+}

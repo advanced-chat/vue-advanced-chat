@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Message, ChatReference } from '../models'
+import type { Message, ChatReference, User } from '../models'
 import type { Styles } from '../themes'
 import { getLocalizationStrings, type Strings } from '../localization'
 import { computed } from 'vue'
@@ -8,6 +8,7 @@ import { formatText, type TextFormattingOptions } from '../utils/text-formatter'
 export interface MessageTemplateProps {
   message?: Message
   chat?: ChatReference
+  users?: Array<User>
   formattingOptions?: TextFormattingOptions
   styles?: Partial<Styles>
   strings?: Partial<Strings>
@@ -31,8 +32,20 @@ const singleLine = computed(() => {
   return props.formattingOptions?.singleLine || false
 })
 
+const textFormattingBindings = computed(() => {
+  return {
+    users: props.users,
+  }
+})
+
 const formattedMessageParts = computed(() => {
-  return [formatText(props.message?.content || '', props.formattingOptions!)]
+  return [
+    formatText(
+      props.message?.content || '',
+      props.formattingOptions || {},
+      textFormattingBindings.value,
+    ),
+  ]
 })
 </script>
 
