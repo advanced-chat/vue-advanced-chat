@@ -3,3 +3,7 @@ export interface Chat {
   name: string
   lastMessage: string
 }
+
+export interface ChatReference {
+  id: string | number
+}

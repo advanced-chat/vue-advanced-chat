@@ -13,5 +13,23 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  args: {},
+  args: {
+    message: {
+      id: '1',
+      content: 'This is a sample message content.',
+      nestedLevel: 0,
+      deleted: false,
+    },
+  },
+}
+
+export const UnderlinedMessage: Story = {
+  args: {
+    message: {
+      id: '1',
+      content: '°This text is underlined°.',
+      nestedLevel: 0,
+      deleted: false,
+    },
+  },
 }

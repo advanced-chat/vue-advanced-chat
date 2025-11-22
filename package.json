@@ -3,6 +3,16 @@
   "version": "3.0.0-alpha.0",
   "license": "MIT",
   "description": "A beautiful chat component library made with Vue",
+  "contributors": [
+    {
+      "email": "antoindupontdev@gmail.com",
+      "name": "Antoine Dupont"
+    },
+    {
+      "email": "aaron@advancedchat.org",
+      "name": "Aaron Nwabuoku"
+    }
+  ],
   "type": "module",
   "main": "dist/vue-advanced-chat.umd.js",
   "module": "dist/vue-advanced-chat.js",
@@ -59,6 +69,8 @@
   },
   "dependencies": {
     "emoji-picker-element": "^1.27.0",
+    "micromark": "^4.0.2",
+    "micromark-extension-gfm": "^3.0.0",
     "vue": "^3.5.22"
   },
   "devDependencies": {

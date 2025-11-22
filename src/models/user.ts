@@ -1,8 +1,8 @@
 export interface User {
-  id: number
+  id: string | number
   displayName: string
 }
 
 export interface UserReference {
-  id: number
+  id: string | number
 }

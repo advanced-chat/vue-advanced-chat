@@ -1,5 +1,11 @@
-<template><div></div></template>
+<script setup lang="ts">
+import type { ChatReference } from '../models'
 
-<script setup lang="ts"></script>
+export interface ChatsItemProps {
+  chat?: ChatReference
+}
+</script>
+
+<template><div></div></template>
 
 <style scoped lang="scss"></style>

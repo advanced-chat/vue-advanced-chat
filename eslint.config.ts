@@ -15,6 +15,7 @@ export default defineConfigWithVueTs(
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
+      '@typescript-eslint/ban-ts-comment': 'off',
       'vue/multi-word-component-names': 'off',
     },
   },
