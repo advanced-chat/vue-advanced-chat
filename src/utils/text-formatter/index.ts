@@ -1,5 +1,15 @@
 import { micromark } from 'micromark'
-import { gfm, gfmHtml } from 'micromark-extension-gfm'
+import { gfm } from 'micromark-extension-gfm'
+
+import { combineHtmlExtensions } from 'micromark-util-combine-extensions'
+import { gfmFootnoteHtml } from 'micromark-extension-gfm-footnote'
+import { gfmStrikethroughHtml } from 'micromark-extension-gfm-strikethrough'
+import { gfmTableHtml } from 'micromark-extension-gfm-table'
+import { gfmTagfilterHtml } from 'micromark-extension-gfm-tagfilter'
+import { gfmTaskListItemHtml } from 'micromark-extension-gfm-task-list-item'
+
+import { gfmAutolinkLiteralHtml } from './autolink.js'
+
 import { underline, underlineHtml } from './underline.js'
 import { userTag, userTagHtml } from './user-tag.js'
 
@@ -29,7 +39,7 @@ export interface FormattedText {
 
 export const formatText = (
   text: string,
-  { markdown, singleLine, linkify }: TextFormattingOptions,
+  { markdown, singleLine, linkify, linkOptions }: TextFormattingOptions,
   { users }: TextFormattingBindings = {},
 ): FormattedText => {
   let parsed = text
@@ -39,6 +49,17 @@ export const formatText = (
 
     if (!linkify) {
       gfmDisabled = ['literalAutolink', 'literalAutolinkEmail']
+    }
+
+    function gfmHtml() {
+      return combineHtmlExtensions([
+        gfmAutolinkLiteralHtml(linkOptions),
+        gfmFootnoteHtml(),
+        gfmStrikethroughHtml(),
+        gfmTableHtml(),
+        gfmTagfilterHtml(),
+        gfmTaskListItemHtml(),
+      ])
     }
 
     parsed = micromark(text, {
