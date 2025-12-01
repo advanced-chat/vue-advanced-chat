@@ -88,7 +88,7 @@ export const userTagHtml: (users) => HtmlExtension = (users) => ({
 
       this.tag(`<span class="vac-text-tag" data-user-id="${userId}">`)
 
-      this.raw(`@${this.encode(user.displayName || userId)}`)
+      this.raw(`@${this.encode(user.name || userId)}`)
 
       this.tag('</span>')
     },

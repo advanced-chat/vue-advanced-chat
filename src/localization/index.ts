@@ -6,6 +6,7 @@ export type Localization = 'en' | 'auto'
 export type Strings = {
   'chats.empty': string
   'chats.search.placeholder': string
+  'chat.typing': string
 }
 
 export const getLocalizationStrings = (locale: Localization): Strings => {

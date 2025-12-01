@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { deepMerge, pruneKeys } from '../utils'
-import { getThemeStyles, type Theme, type Styles } from '../themes'
+import { type Theme, type Styles, getThemeStyles } from '../themes'
+import { deepMerge } from '../utils/deep-merge'
+import { pruneKeys } from '../utils/prune-keys'
 
 export interface LayoutProps {
   height?: string

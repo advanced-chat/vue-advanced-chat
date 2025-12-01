@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Alice",
+    "icon": "https://picsum.photos/200",
+    "lastMessage": {
+      "id": 1,
+      "content": "Hey there!",
+      "createdAt": "2025-12-01T10:00:00Z"
+    }
+  },
+  {
+    "id": 2,
+    "name": "Bob",
+    "icon": "https://picsum.photos/200",
+    "lastMessage": {
+      "id": 2,
+      "content": "What's up?",
+      "createdAt": "2025-12-01T10:05:00Z"
+    }
+  },
+  {
+    "id": 3,
+    "name": "Charlie",
+    "icon": "https://picsum.photos/200",
+    "lastMessage": {
+      "id": 3,
+      "content": "See you soon.",
+      "createdAt": "2025-12-01T10:10:00Z"
+    }
+  }
+]

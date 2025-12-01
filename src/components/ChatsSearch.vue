@@ -3,7 +3,7 @@ import { computed } from 'vue'
 
 import SvgIcon from '@/components/SvgIcon.vue'
 
-import type { Chat } from '../models'
+import type { Chat } from '../models/chat'
 import { getLocalizationStrings, type Strings } from '../localization'
 import { type Styles } from '../themes'
 

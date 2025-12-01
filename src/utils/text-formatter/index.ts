@@ -13,7 +13,7 @@ import { gfmAutolinkLiteralHtml } from './autolink.js'
 import { underline, underlineHtml } from './underline.js'
 import { userTag, userTagHtml } from './user-tag.js'
 
-import type { User } from '../../models/index.ts'
+import type { User } from '../../models/user.ts'
 
 export interface LinkOptions {
   target?: '_blank' | '_self' | '_parent' | '_top'

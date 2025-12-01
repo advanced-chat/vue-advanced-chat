@@ -1,4 +1,5 @@
 {
   "chats.empty": "No chats available.",
-  "chats.search.placeholder": "Search chats"
+  "chats.search.placeholder": "Search chats",
+  "chat.typing": "is typing..."
 }

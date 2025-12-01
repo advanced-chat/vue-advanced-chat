@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import { type Message, type ChatReference, type User, findUserById } from '../models'
 import type { Styles } from '../themes'
+
 import { getLocalizationStrings, type Strings } from '../localization'
-import { computed } from 'vue'
 import { formatText, type TextFormattingOptions } from '../utils/text-formatter'
 
 export interface MessageTemplateProps {
@@ -39,19 +41,11 @@ const singleLine = computed(() => {
   return props.formattingOptions?.singleLine || false
 })
 
-const textFormattingBindings = computed(() => {
-  return {
-    users: props.users,
-  }
-})
-
 const formattedMessageParts = computed(() => {
   return [
-    formatText(
-      props.message?.content || '',
-      props.formattingOptions || {},
-      textFormattingBindings.value,
-    ),
+    formatText(props.message?.content || '', props.formattingOptions || {}, {
+      users: props.users,
+    }),
   ]
 })
 

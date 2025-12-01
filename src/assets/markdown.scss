@@ -1,4 +1,38 @@
 .markdown {
+  h1 {
+    font-size: 24px;
+    margin: 16px 0 8px 0;
+  }
+
+  h2 {
+    font-size: 20px;
+    margin: 14px 0 7px 0;
+  }
+
+  h3 {
+    font-size: 18px;
+    margin: 12px 0 6px 0;
+  }
+
+  h4 {
+    font-size: 16px;
+    margin: 10px 0 5px 0;
+  }
+
+  h5 {
+    font-size: 14px;
+    margin: 8px 0 4px 0;
+  }
+
+  h6 {
+    font-size: 12px;
+    margin: 6px 0 3px 0;
+  }
+
+  blockquote {
+    border-left: 4px solid var(--chat-markdown-border);
+  }
+
   p {
     margin: 0;
   }

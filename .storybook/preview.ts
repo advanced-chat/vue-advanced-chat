@@ -4,6 +4,9 @@ import '../src/assets/style.css'
 
 import Layout from '../src/components/Layout.vue'
 
+import users from '../.test/users.json' with { type: 'json' }
+import chats from '../.test/chats.json' with { type: 'json' }
+
 const preview: Preview = {
   parameters: {
     controls: {
@@ -62,16 +65,8 @@ const preview: Preview = {
     },
   ],
   args: {
-    users: [
-      { id: 1, displayName: 'Alice' },
-      { id: 2, displayName: 'Bob' },
-      { id: 3, displayName: 'Charlie' },
-    ],
-    chats: [
-      { id: 1, name: 'Alice', lastMessage: 'Hey there!' },
-      { id: 2, name: 'Bob', lastMessage: "What's up?" },
-      { id: 3, name: 'Charlie', lastMessage: 'See you soon.' },
-    ],
+    users: users,
+    chats: chats,
   },
 }
 

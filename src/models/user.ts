@@ -1,6 +1,10 @@
 export interface User {
   id: string | number
-  displayName: string
+  name: string
+  status: {
+    state: 'online' | 'offline' | 'away' | 'busy'
+    lastActiveAt?: string
+  }
 }
 
 export interface UserReference {
