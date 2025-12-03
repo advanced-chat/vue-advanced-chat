@@ -4,6 +4,8 @@
 			<rooms-list
 				v-if="!singleRoomCasted"
 				:current-user-id="currentUserId"
+        :default-group-name="defaultGroupName"
+        :groups="groupsCasted"
 				:rooms="orderedRooms"
 				:loading-rooms="loadingRoomsCasted"
 				:rooms-loaded="roomsLoadedCasted"
@@ -135,6 +137,8 @@ export default {
 		textMessages: { type: [Object, String], default: () => ({}) },
 		currentUserId: { type: String, default: '' },
 		rooms: { type: [Array, String], default: () => [] },
+    defaultGroupName: { type: String, required: false },
+    groups: { type: [Array, String], default: () => [] },
 		roomsOrder: { type: String, default: 'desc' },
 		loadingRooms: { type: [Boolean, String], default: false },
 		roomsLoaded: { type: [Boolean, String], default: false },
@@ -342,6 +346,9 @@ export default {
 		mediaPreviewEnabledCasted() {
 			return this.castBoolean(this.mediaPreviewEnabled)
 		},
+    groupsCasted() {
+      return this.castArray(this.groups)
+    },
 		roomsCasted() {
 			return this.castArray(this.rooms)
 		},
