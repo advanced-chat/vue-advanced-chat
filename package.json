@@ -60,7 +60,6 @@
 		"babel-eslint": "10.0.3",
 		"eslint": "7.32.0",
 		"eslint-plugin-vue": "8.0.3",
-		"node-sass": "8.0.0",
 		"sass": "1.56.1",
 		"semantic-release": "^22.0.5",
 		"typescript": "4.6.x",

@@ -16,7 +16,7 @@
  *
  * Unicode basic latin block.
  *
- * Source: https://github.com/micromark/micromark/blob/main/packages/micromark-util-symbol/codes.js
+ * Source: https://github.com/micromark/micromark/blob/0ddff6df1149f7da540ae032916454485d649437/packages/micromark-util-symbol/codes.js
  */
 export const codes = {
 	carriageReturn: -5,

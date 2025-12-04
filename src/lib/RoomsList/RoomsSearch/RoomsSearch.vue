@@ -6,13 +6,13 @@
 		}"
 	>
 		<template v-if="showSearch">
-			<div v-if="!loadingRooms && rooms.length" class="vac-icon-search">
+			<div v-if="!loadingRooms" class="vac-icon-search">
 				<slot name="search-icon">
 					<svg-icon name="search" />
 				</slot>
 			</div>
 			<input
-				v-if="!loadingRooms && rooms.length"
+				v-if="!loadingRooms"
 				type="search"
 				:placeholder="textMessages.SEARCH"
 				autocomplete="off"
@@ -43,7 +43,6 @@ export default {
 		textMessages: { type: Object, required: true },
 		showSearch: { type: Boolean, required: true },
 		showAddRoom: { type: Boolean, required: true },
-		rooms: { type: Array, required: true },
 		loadingRooms: { type: Boolean, required: true }
 	},
 

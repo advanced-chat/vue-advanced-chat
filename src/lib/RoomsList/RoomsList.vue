@@ -11,7 +11,6 @@
 
 		<slot name="rooms-list-search">
 			<rooms-search
-				:rooms="rooms"
 				:loading-rooms="loadingRooms"
 				:text-messages="textMessages"
 				:show-search="showSearch"
@@ -104,8 +103,15 @@ export default {
 		room: { type: Object, required: true },
 		customSearchRoomEnabled: { type: [Boolean, String], default: false },
 		roomActions: { type: Array, required: true },
-		scrollDistance: { type: Number, required: true }
+		scrollDistance: { type: Number, required: true },
+    minimumVisibleRooms: { type: Number, default: 10 }
 	},
+
+  computed: {
+    filteredRooms() {
+      return filteredItems(this.rooms || [], 'roomName', this.filter)
+    }
+  },
 
 	emits: [
 		'add-room',
@@ -118,7 +124,7 @@ export default {
 
 	data() {
 		return {
-			filteredRooms: this.rooms || [],
+      filter: null,
 			observer: null,
 			showLoader: true,
 			loadingMoreRooms: false,
@@ -127,15 +133,36 @@ export default {
 	},
 
 	watch: {
-		rooms: {
-			deep: true,
-			handler(newVal, oldVal) {
-				this.filteredRooms = newVal
-				if (newVal.length !== oldVal.length || this.roomsLoaded) {
-					this.loadingMoreRooms = false
-				}
-			}
-		},
+    rooms: {
+      deep: true,
+      handler(newVal = [], oldVal = []) {
+        const newLength = Array.isArray(newVal) ? newVal.length : 0
+        const oldLength = Array.isArray(oldVal) ? oldVal.length : 0
+
+        // Stop "loading more" when the rooms array changes size,
+        // or when we've been told all rooms are loaded.
+        if (newLength !== oldLength || this.roomsLoaded) {
+          this.loadingMoreRooms = false
+        }
+
+        // If all rooms are loaded, we can hide the loader and stop here.
+        if (this.roomsLoaded) {
+          this.showLoader = false
+          return
+        }
+
+        // Use filtered rooms count to decide whether to load more.
+        const visibleRooms = this.filteredRooms
+
+        // Heuristic: if fewer than minimumVisibleRooms filtered rooms are
+        // visible, automatically load more until either the list is "full"
+        // or roomsLoaded becomes true.
+        if (!this.loadingMoreRooms && visibleRooms.length < this.minimumVisibleRooms) {
+          this.loadingMoreRooms = true
+          this.loadMoreRooms()
+        }
+      }
+    },
 		loadingRooms(val) {
 			if (!val) {
 				setTimeout(() => this.initIntersectionObserver())
@@ -189,13 +216,15 @@ export default {
 			}
 		},
 		searchRoom(ev) {
+      this.filter = ev.target.value
+
 			if (this.customSearchRoomEnabled) {
-				this.$emit('search-room', ev.target.value)
+				this.$emit('search-room', this.filter)
 			} else {
 				this.filteredRooms = filteredItems(
 					this.rooms,
 					'roomName',
-					ev.target.value
+          this.filter
 				)
 			}
 		},
