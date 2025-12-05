@@ -75,6 +75,7 @@
 				@fetch-messages="fetchMessages"
 				@send-message="sendMessage"
 				@edit-message="editMessage"
+				@reset-message="resetMessage"
 				@delete-message="deleteMessage"
 				@open-file="openFile"
 				@open-user-tag="openUserTag"
@@ -216,6 +217,7 @@ export default {
 		'fetch-messages',
 		'send-message',
 		'edit-message',
+		'reset-message',
 		'delete-message',
 		'open-file',
 		'open-user-tag',
@@ -504,6 +506,9 @@ export default {
 		},
 		editMessage(message) {
 			this.$emit('edit-message', { ...message, roomId: this.room.roomId })
+		},
+		resetMessage(message) {
+			this.$emit('reset-message', { ...message, roomId: this.room.roomId })
 		},
 		deleteMessage(message) {
 			this.$emit('delete-message', { message, roomId: this.room.roomId })
