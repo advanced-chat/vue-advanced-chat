@@ -160,7 +160,6 @@ export default {
         // visible, automatically load more until either the list is "full"
         // or roomsLoaded becomes true.
         if (!this.loadingMoreRooms && visibleRooms.length < this.minimumVisibleRooms) {
-          this.loadingMoreRooms = true
           this.loadMoreRooms()
         }
       }
