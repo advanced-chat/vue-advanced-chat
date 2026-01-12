@@ -252,6 +252,7 @@ export default {
 
 	emits: [
 		'edit-message',
+		'reset-message',
 		'send-message',
 		'update-edited-message-id',
 		'textarea-action-handler',
@@ -802,6 +803,12 @@ export default {
 			if (!initRoom) {
 				this.$emit('typing-message', null)
 			}
+			this.$emit('reset-message', {
+				content: this.message,
+				files: this.files,
+				replyMessage: this.messageReply,
+				usersTag: this.selectedUsersTag
+			})
 
 			this.selectedUsersTag = []
 			this.resetFooterList()
