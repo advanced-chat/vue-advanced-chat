@@ -9,8 +9,8 @@
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
 
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
 
     "paths": {
       "@/components/*": ["./src/components/*"]

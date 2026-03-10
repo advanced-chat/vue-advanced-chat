@@ -8,7 +8,7 @@ import EmojiPicker from '@/components/EmojiPicker.vue'
 import MessageReply from '@/components/MessageReply.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 
-import type { Chat, Message, MessageFile, User } from '../models'
+import type { Chat, Message, User } from '../models'
 import type { ChatFileItem } from './ChatFile.vue'
 
 const QUICK_EMOJIS = ['😀', '😂', '😍', '🔥', '👍', '🎉', '🚀', '🙌']
