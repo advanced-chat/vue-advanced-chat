@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "name": "Alice",
+    "status": {
+      "state": "online"
+    }
+  },
+  {
+    "id": 2,
+    "name": "Bob",
+    "status": {
+      "state": "away"
+    }
+  },
+  {
+    "id": 3,
+    "name": "Charlie",
+    "status": {
+      "state": "offline",
+      "lastActiveAt": "2025-11-30T13:22:23Z"
+    }
+  }
+]

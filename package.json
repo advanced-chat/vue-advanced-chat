@@ -1,75 +1,111 @@
 {
-	"name": "vue-advanced-chat",
-	"version": "2.0.9",
-	"license": "MIT",
-	"description": "A beautiful chat rooms component made with Vue.js - compatible with Vue, React & Angular",
-	"author": {
-		"email": "antoindupontdev@gmail.com",
-		"name": "Antoine Dupont"
-	},
-	"types": "./types/vue-advanced-chat.common.d.ts",
-	"keywords": [
-		"vue",
-		"vuejs",
-		"chat",
-		"vue-js-chat",
-		"multiple",
-		"group",
-		"rooms",
-		"realtime"
-	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/advanced-chat/vue-advanced-chat.git"
-	},
-	"bugs": {
-		"url": "https://github.com/advanced-chat/vue-advanced-chat/issues"
-	},
-	"homepage": "https://github.com/advanced-chat/vue-advanced-chat#readme",
-	"main": "./dist/vue-advanced-chat.umd.js",
-	"module": "./dist/vue-advanced-chat.es.js",
-	"unpkg": "./dist/vue-advanced-chat.umd.js",
-	"jsdelivr": "./dist/vue-advanced-chat.umd.js",
-	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"serve": "vite preview",
-		"clean:lib": "rm -rf dist/*.js && rm -rf dist/*.map && rm -rf dist/*.css && rm -rf dist/*.html",
-		"prepublish": "npm run lint && npm run build",
-		"lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
-		"reset": "rm -rf node_modules && rm -rf package-lock.json && npm i",
-		"reset-all": "cd demo && npm run reset-all",
-		"pull-master": "git pull origin master --no-edit --no-ff"
-	},
-	"typings": "types/index.d.ts",
-	"files": [
-		"dist/*",
-		"types/*"
-	],
-	"devDependencies": {
-		"@babel/core": "7.12.16",
-		"@semantic-release/changelog": "^6.0.3",
-		"@semantic-release/git": "^10.0.1",
-		"@semantic-release/github": "^9.2.1",
-		"@typescript-eslint/eslint-plugin": "5.4.0",
-		"@typescript-eslint/parser": "5.4.0",
-		"@vitejs/plugin-vue": "1.10.2",
-		"@vue/compiler-sfc": "3.2.22",
-		"@vue/eslint-config-standard": "4.0.0",
-		"@vue/eslint-config-typescript": "9.1.0",
-		"babel-eslint": "10.0.3",
-		"eslint": "7.32.0",
-		"eslint-plugin-vue": "8.0.3",
-		"sass": "1.56.1",
-		"semantic-release": "^22.0.5",
-		"typescript": "4.6.x",
-		"vite": "2.9.16",
-		"vue": "3.2.37",
-		"vue-loader": "^16.8.3"
-	},
-	"dependencies": {
-		"emoji-picker-element": "1.12.1",
-		"micromark": "^3.1.0",
-		"micromark-extension-gfm": "^2.0.1"
-	}
+  "name": "@advanced-chat/components",
+  "version": "3.0.0-alpha.0",
+  "license": "MIT",
+  "description": "A beautiful chat component library made with Vue",
+  "contributors": [
+    {
+      "email": "antoindupontdev@gmail.com",
+      "name": "Antoine Dupont"
+    },
+    {
+      "email": "aaron@advancedchat.org",
+      "name": "Aaron Nwabuoku"
+    }
+  ],
+  "type": "module",
+  "main": "dist/components.umd.cjs",
+  "module": "dist/components.js",
+  "unpkg": "dist/components.umd.cjs",
+  "jsdelivr": "dist/components.umd.cjs",
+  "style": "dist/components.css",
+  "typings": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/components.js",
+      "require": "./dist/components.umd.cjs"
+    },
+    "./styles": {
+      "types": "./dist/styles.d.ts",
+      "import": "./dist/components.css"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "vue",
+    "vuejs",
+    "chat",
+    "vue-js-chat",
+    "multiple",
+    "group",
+    "rooms",
+    "realtime"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/advanced-chat/vue-advanced-chat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/advanced-chat/vue-advanced-chat/issues"
+  },
+  "scripts": {
+    "build": "vite build",
+    "type-check": "vue-tsc --build",
+    "lint": "eslint . --fix --cache",
+    "format": "prettier --write src/",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{vue,ts,js,json}": [
+      "prettier --write"
+    ]
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "dependencies": {
+    "emoji-picker-element": "^1.27.0",
+    "micromark": "^4.0.2",
+    "micromark-extension-gfm": "^3.0.0",
+    "vue": "^3.5.22"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^4.1.3",
+    "@storybook/addon-a11y": "^10.1.7",
+    "@storybook/addon-docs": "^10.1.7",
+    "@storybook/addon-vitest": "^10.1.7",
+    "@storybook/vue3-vite": "^10.1.7",
+    "@tailwindcss/vite": "^4.1.17",
+    "@tsconfig/node22": "^22.0.2",
+    "@types/node": "^22.18.11",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vitest/browser-playwright": "^4.0.8",
+    "@vitest/coverage-v8": "^4.0.8",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/eslint-config-typescript": "^14.6.0",
+    "@vue/tsconfig": "^0.8.1",
+    "eslint": "^9.37.0",
+    "eslint-plugin-storybook": "^10.1.7",
+    "eslint-plugin-vue": "~10.5.0",
+    "husky": "^9.1.7",
+    "jiti": "^2.6.1",
+    "lint-staged": "^16.2.7",
+    "npm-run-all2": "^8.0.4",
+    "playwright": "^1.56.1",
+    "prettier": "3.6.2",
+    "sass-embedded": "^1.93.3",
+    "storybook": "^10.1.7",
+    "tailwindcss": "^4.1.17",
+    "typescript": "~5.9.0",
+    "vite": "^7.1.11",
+    "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-vue-devtools": "^8.0.5",
+    "vitest": "^4.0.8",
+    "vue-tsc": "^3.1.1"
+  }
 }
