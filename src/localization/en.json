@@ -1,0 +1,8 @@
+{
+  "chats.empty": "No chats available.",
+  "chats.search.placeholder": "Search chats",
+  "chat.typing": "is typing...",
+  "chat.cancel-selection": "Cancel",
+  "chat.user.is-online": "is online",
+  "chat.user.last-seen": "last seen "
+}
