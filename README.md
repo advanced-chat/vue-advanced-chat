@@ -1,48 +1,215 @@
+<p align="center">
+  <a href="https://github.com/advanced-chat/vue-advanced-chat"><img src="https://img.shields.io/github/stars/advanced-chat/vue-advanced-chat?style=social" alt="GitHub stars"></a>
+  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/dm/vue-advanced-chat.svg" alt="npm downloads"></a>
+  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/v/vue-advanced-chat.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/l/vue-advanced-chat.svg" alt="license"></a>
+</p>
+
 # vue-advanced-chat
 
-This template should help get you started developing with Vue 3 in Vite.
+`vue-advanced-chat` is a customizable chat UI project built for real-world applications.
 
-## Recommended IDE Setup
+It provides rooms, messages, media attachments, audio, reactions, formatting, themes, and flexible UI composition while staying backend-agnostic.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Features
 
-## Recommended Browser Setup
+- Backend agnostic chat UI
+- Rooms list and active conversation layout
+- Text, files, media, audio, reactions, and reply flows
+- Typing indicators, unread states, and message actions
+- Light, dark, and auto theme modes
+- Localization support
+- Flexible component composition for custom integrations
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## Demo
 
-## Type Support for `.vue` Imports in TS
+- Live demo: `https://advanced-chat.github.io/vue-advanced-chat`
+- Sandbox integrations: `https://github.com/advanced-chat/vue-advanced-chat-sandbox`
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## Installation
 
-## Customize configuration
+For the stable public package:
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+```bash
+npm install vue-advanced-chat
+```
 
-## Project Setup
+## Usage
 
-```sh
+If you are using the stable public package, use the documentation on the `main` branch.
+
+This `develop` branch is the in-progress Vue 3 + TypeScript rewrite. It currently builds the next library surface as:
+
+```bash
+npm install @advanced-chat/components
+```
+
+Example rewrite usage:
+
+```ts
+import { createApp } from 'vue'
+import App from './App.vue'
+
+import { AdvancedChatPlugin } from '@advanced-chat/components'
+import '@advanced-chat/components/styles'
+
+const app = createApp(App)
+
+app.use(
+  AdvancedChatPlugin({
+    strings: {
+      'chats.search.placeholder': 'Search conversations',
+    },
+  }),
+)
+
+app.mount('#app')
+```
+
+```vue
+<script setup lang="ts">
+import { AdvancedChat } from '@advanced-chat/components'
+import type { Chat, Message, User } from '@advanced-chat/components'
+
+const currentUser: User = {
+  id: 1,
+  name: 'Alice',
+  status: { state: 'online' },
+}
+
+const chats: Chat[] = [
+  {
+    id: 1,
+    name: 'General',
+    users: [currentUser],
+  },
+]
+
+const messages: Message[] = [
+  {
+    id: 1,
+    sender: currentUser,
+    content: 'Hello world',
+    createdAt: new Date().toISOString(),
+  },
+]
+</script>
+
+<template>
+  <AdvancedChat
+    :user="currentUser"
+    :chats="chats"
+    :chat="chats[0]"
+    :messages="messages"
+    height="600px"
+    theme="light"
+  />
+</template>
+```
+
+## Project Status
+
+This repository currently has two main tracks:
+
+- `main`: the stable `2.x` line and the package most users should rely on today
+- `develop`: the in-progress rewrite for the next major version
+
+If you need the production-ready package and stable documentation, use `main`.
+
+If you are contributing to the rewrite, use `develop`.
+
+## Rewrite Exports
+
+### Components
+
+- `AdvancedChat`
+- `Chats`
+- `ChatsSearch`
+- `ChatsItem`
+- `Chat`
+- `ChatHeader`
+- `ChatFooter`
+- `ChatMessage`
+- `Message`
+- `MessageTemplate`
+- `MessageReply`
+- `MessageFile`
+- `MessageFiles`
+- `MessageActions`
+- `MessageReactions`
+- `MediaPreview`
+- `AudioPlayer`
+- `AudioControl`
+- `EmojiPicker`
+- `Loader`
+- `ProgressBar`
+- `SvgIcon`
+
+### Types
+
+- `Chat`
+- `ChatReference`
+- `Message`
+- `MessageReference`
+- `MessageFile`
+- `User`
+- `UserReference`
+- `Action`
+- `Id`
+
+## Development
+
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+Run Storybook:
 
-```sh
-npm run dev
+```bash
+npm run storybook
 ```
 
-### Type-Check, Compile and Minify for Production
+Build the library:
 
-```sh
+```bash
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+Run type checks:
 
-```sh
-npm run lint
+```bash
+npm run type-check
 ```
+
+Build Storybook:
+
+```bash
+npm run build-storybook
+```
+
+Format source files:
+
+```bash
+npm run format
+```
+
+## Contributing
+
+Contributions are welcome.
+
+If you are working on `develop`:
+
+- keep changes aligned with the typed component API in `src/components`
+- add or update Storybook stories for component work
+- use `main` as the behavioral reference when porting existing features
+- avoid presenting rewrite-only APIs as if they are already the stable public interface
+
+## Notes
+
+- This repository is public and should stay clear for users, contributors, and maintainers.
+- The stable public npm package remains `vue-advanced-chat`.
+- The rewrite branch currently uses `@advanced-chat/components` in local package metadata as part of the migration work.
+
+## License
+
+This project is licensed under the MIT License.
