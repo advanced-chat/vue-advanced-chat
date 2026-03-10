@@ -5,7 +5,9 @@ import ChatEmojis from './ChatEmojis.vue'
 const meta = {
   component: ChatEmojis,
   tags: ['autodocs'],
-  args: {},
+  args: {
+    filteredEmojis: ['😀', '😂', '🔥', '🎉'],
+  },
 } satisfies Meta<typeof ChatEmojis>
 
 export default meta

@@ -174,13 +174,12 @@ const chatActionHandler = (action: Action) => {
           </div>
           <MessageTemplate
             v-else-if="chat.lastMessage"
-            :message-id="chat.lastMessage.id"
-            :room-id="chat.id"
-            :room-list="true"
-            :content="lastMessage"
-            :deleted="!!chat.lastMessage.deleted && !typingUsers"
+            :message="{
+              ...chat.lastMessage,
+              content: lastMessage,
+            }"
             :users="chat.users"
-            :single-line="true"
+            :formatting-options="{ singleLine: true, markdown: false }"
           >
           </MessageTemplate>
           <div v-if="!chat.lastMessage && typingUsers" class="vac-text-ellipsis">

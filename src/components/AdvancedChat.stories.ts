@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 
 import AdvancedChat from '@/components/AdvancedChat.vue'
+import {
+  chatActions,
+  currentUser,
+  messageActions,
+  sampleChat,
+  sampleChats,
+  sampleMessages,
+} from './stories.fixtures.ts'
 
 const meta = {
   component: AdvancedChat,
@@ -10,6 +18,12 @@ const meta = {
   },
   args: {
     height: '600px',
+    user: currentUser,
+    chats: sampleChats,
+    chat: sampleChat,
+    messages: sampleMessages,
+    headerActions: chatActions,
+    messageActions,
   },
 } satisfies Meta<typeof AdvancedChat>
 

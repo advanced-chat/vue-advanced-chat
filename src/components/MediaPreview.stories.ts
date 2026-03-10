@@ -5,7 +5,17 @@ import MediaPreview from './MediaPreview.vue'
 const meta = {
   component: MediaPreview,
   tags: ['autodocs'],
-  args: {},
+  parameters: {
+    skipLayout: true,
+  },
+  args: {
+    file: {
+      name: 'preview.png',
+      type: 'image/png',
+      extension: 'png',
+      url: 'https://picsum.photos/900/600',
+    },
+  },
 } satisfies Meta<typeof MediaPreview>
 
 export default meta

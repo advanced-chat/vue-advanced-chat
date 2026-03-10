@@ -1,5 +1,148 @@
-<template><div></div></template>
+<script setup lang="ts">
+import { computed, ref } from 'vue'
 
-<script setup lang="ts"></script>
+import SvgIcon from '@/components/SvgIcon.vue'
 
-<style scoped lang="scss"></style>
+import type { Action, Message, UserReference } from '../models'
+import onClickOutside from '../utils/on-click-outside'
+
+const vClickOutside = onClickOutside
+
+const REACTION_OPTIONS = ['👍', '❤️', '😂', '🎉', '🔥']
+
+export interface MessageActionsProps {
+  user: UserReference
+  message: Message
+  actions?: Action[]
+  showReactionEmojis?: boolean
+}
+
+export interface MessageActionsEvents {
+  (e: 'message-action-handler', payload: { action: Action; message: Message }): void
+  (e: 'send-message-reaction', payload: { emoji: string; message: Message }): void
+}
+
+const props = withDefaults(defineProps<MessageActionsProps>(), {
+  actions: () => [],
+  showReactionEmojis: true,
+})
+
+const emit = defineEmits<MessageActionsEvents>()
+
+const optionsOpened = ref(false)
+const reactionsOpened = ref(false)
+
+const filteredActions = computed(() => {
+  if (props.message.sender.id.toString() === props.user.id.toString()) return props.actions
+
+  return props.actions.filter((action) => !action.onlyMe)
+})
+
+const closeAll = () => {
+  optionsOpened.value = false
+  reactionsOpened.value = false
+}
+</script>
+
+<template>
+  <div v-if="!message.deleted" v-click-outside="closeAll" class="vac-message-actions-wrapper">
+    <div class="vac-actions-shell">
+      <div v-if="showReactionEmojis" class="vac-reaction-picker">
+        <div
+          class="vac-svg-button vac-message-options"
+          @click.stop="reactionsOpened = !reactionsOpened"
+        >
+          <slot :name="'emoji-icon_' + message.id">
+            <SvgIcon name="emoji" />
+          </slot>
+        </div>
+
+        <transition name="vac-slide-left">
+          <div v-if="reactionsOpened" class="vac-reactions-menu">
+            <button
+              v-for="emoji in REACTION_OPTIONS"
+              :key="emoji"
+              class="vac-reaction-option"
+              @click.stop="emit('send-message-reaction', { emoji, message })"
+            >
+              {{ emoji }}
+            </button>
+          </div>
+        </transition>
+      </div>
+
+      <div v-if="filteredActions.length" class="vac-dropdown-picker">
+        <div
+          class="vac-svg-button vac-message-options"
+          @click.stop="optionsOpened = !optionsOpened"
+        >
+          <slot :name="'dropdown-icon_' + message.id">
+            <SvgIcon name="dropdown" param="message" />
+          </slot>
+        </div>
+
+        <transition name="vac-slide-left">
+          <div v-if="optionsOpened" class="vac-menu-options">
+            <div class="vac-menu-list">
+              <div v-for="action in filteredActions" :key="action.name">
+                <div
+                  class="vac-menu-item"
+                  @click.stop="emit('message-action-handler', { action, message })"
+                >
+                  {{ action.title }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.vac-message-actions-wrapper {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+}
+
+.vac-actions-shell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vac-reaction-picker,
+.vac-dropdown-picker {
+  position: relative;
+}
+
+.vac-message-options {
+  padding: 2px;
+}
+
+.vac-reactions-menu,
+.vac-menu-options {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 6;
+}
+
+.vac-reactions-menu {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  background: var(--chat-dropdown-bg-color);
+  border-radius: 999px;
+  border: var(--chat-border-style);
+}
+
+.vac-reaction-option {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+}
+</style>

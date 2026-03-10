@@ -69,7 +69,11 @@ const isOtherFile = computed(() => {
     </div>
 
     <div class="vac-reply-content">
-      <MessageTemplate :message="message?.reply" :users="users" :reply="true" />
+      <MessageTemplate
+        :message="message?.reply"
+        :users="users"
+        :formatting-options="{ singleLine: true }"
+      />
     </div>
   </div>
 </template>

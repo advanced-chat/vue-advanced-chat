@@ -49,7 +49,7 @@ const openFile = (event: Event, file: MessageFile, action: 'preview' | 'download
         :message="message"
         :index="i"
         :message-selection-enabled="messageSelectionEnabled"
-        @open-file="$emit('opened:file', $event)"
+        @opened:file="emit('opened:file', $event)"
       >
       </MessageFile>
     </div>
@@ -82,6 +82,7 @@ const openFile = (event: Event, file: MessageFile, action: 'preview' | 'download
     <MessageTemplate
       :message="message"
       :users="users"
+      :formatting-options="{ singleLine: false }"
       @clicked:user-tag="emit('clicked:user-tag', $event)"
     />
   </div>

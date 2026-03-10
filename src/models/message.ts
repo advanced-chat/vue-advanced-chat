@@ -6,11 +6,17 @@ export interface Message {
   sender: User
   content?: string
   files?: MessageFile[]
+  reactions?: Record<string, Id[]>
   new?: boolean
   saved?: boolean
   delivered?: boolean
   read?: boolean
   deleted?: boolean
+  edited?: boolean
+  failure?: boolean
+  system?: boolean
+  disableActions?: boolean
+  disableReactions?: boolean
   createdAt: string
   reply?: Message
 }
