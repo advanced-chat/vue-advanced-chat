@@ -8,6 +8,61 @@ package is the V3 successor of the original `vue-advanced-chat`. See
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## 3.0.0-alpha.5
+
+Closes the remaining items on `rewrite/release-plan.md` step 4 — the
+last GA gaps before tagging beta. Adds three additive `Chat` /
+`ChatFooter` props plus a slot, lights up locale negotiation, and
+wires per-component slot autodocs. Each behavior change ships with a
+Storybook regression test.
+
+### Added
+
+- `ChatFooter.maxFiles` / `ChatFooter.maxFileSize` props (both
+  default `0` = disabled). Files past the cap are rejected with a
+  new `invalid-file: { file, reason: 'size' \| 'count' }` event so
+  hosts can show their own error UI. Forwarded by `Chat` and
+  `AdvancedChat`. Closes
+  [#461](https://github.com/advanced-chat/vue-advanced-chat/issues/461)
+  and
+  [#474](https://github.com/advanced-chat/vue-advanced-chat/issues/474).
+- `Chat.typingIndicatorPosition: 'header' \| 'composer' \| 'both' \|
+  'none'` (default `'header'`). When the policy includes `composer`,
+  `Chat` renders a typing line above `ChatFooter`; the new
+  `composer-typing` scoped slot exposes the resolved string. Closes
+  [#513](https://github.com/advanced-chat/vue-advanced-chat/issues/513).
+- `Chat.autoScroll: { onMount?, onChatSwitch?, onSend?, onReceive? }`
+  policy prop. Each leg defaults `true` to match the alpha.2
+  hard-coded behavior; consumers can opt out per leg without
+  rewriting any of the surrounding scroll logic.
+- `negotiateLocale()` helper exported from the package. Inspects
+  `navigator.language` and returns the closest supported BCP 47
+  prefix (`'en'` only today; ready for additional dictionaries to
+  land additively). Warns under `import.meta.env.DEV` when the
+  detected language has no bundled match.
+- `ChatHeader.showTypingIndicator` prop (default `true`) so `Chat`
+  can suppress the header's typing line when the policy renders it
+  somewhere else.
+- `<!-- @slot ... -->` documentation comments on every public slot
+  (`Chat`, `Chats`, `ChatHeader`, `ChatFooter`, `Message`).
+  Storybook autodocs now lists each slot, its description, and
+  scoped slot props where applicable. The README gains a
+  single-page slot reference table.
+
+### Changed
+
+- `getLocalizationStrings('auto')` now performs real locale
+  negotiation rather than returning English unconditionally. The
+  observable behavior for English-locale browsers is unchanged; for
+  non-English browsers it still resolves to `'en'` but emits a DEV
+  warning so the lack of localization is visible in development.
+
+### Fixed
+
+- The `'auto'` branch of `getLocalizationStrings` no longer reads
+  `navigator` on the server (returns `'en'` directly), removing one
+  more SSR sharp edge.
+
 ## 3.0.0-alpha.4
 
 Internal refactor that ships consumer-facing escape hatches. Closes

@@ -64,17 +64,36 @@ Run locally and in CI from a clean clone:
    - Storybook variants for empty/loading/no-chat-selected/edited/system/
      deleted/failure/audio/reply states.
    - Local-search interaction test added.
-4. **Remaining for 3.0.0-beta.0**:
-   - Wire message infinite-scroll (`fetch-messages` event + scroll-up
-     trigger on `Chat`).
-   - Implement scroll-to-bottom button + new-messages badge.
-   - Add an `auto-scroll` policy prop equivalent.
-   - Surface `maxFiles` / `maxFileSize` constraints on `ChatFooter`
+4. **Pagination + scroll-to-bottom** ✅ landed in `3.0.0-alpha.2`:
+   - `Chat` and `AdvancedChat` emit `fetch-messages` when the list
+     scrolls within 60 px of the top, suppressed while
+     `loadingMessages` or `messagesLoaded` is true.
+   - "Scroll to latest" pill renders with a count badge of unread
+     messages when the user is not at the bottom.
+   - `Chat` auto-scrolls on mount, on chat switch, on send, and on
+     receive when the user is at the bottom.
+5. **Remaining GA gaps** ✅ landed in `3.0.0-alpha.5`:
+   - `Chat.autoScroll` policy prop (`{ onMount?, onChatSwitch?,
+     onSend?, onReceive? }`) — defaults match the alpha.2 hard-coded
+     behavior; consumers can opt out per leg.
+   - `ChatFooter.maxFiles` and `ChatFooter.maxFileSize` props,
+     forwarded by `Chat` / `AdvancedChat`. Files above either cap
+     are emitted as `invalid-file: { file, reason }`
      ([#461](https://github.com/advanced-chat/vue-advanced-chat/issues/461),
      [#474](https://github.com/advanced-chat/vue-advanced-chat/issues/474)).
-   - Document the full slot inventory in Storybook autodocs.
-   - Provide an `auto`-locale strategy beyond English-only.
-5. **Carryover from the alpha.4 code review** — neither blocks beta,
+   - `Chat.typingIndicatorPosition` prop (`'header' | 'composer' |
+     'both' | 'none'`) plus a `composer-typing` slot that exposes
+     the typing string
+     ([#513](https://github.com/advanced-chat/vue-advanced-chat/issues/513)).
+   - Slot inventory documented inline (`<!-- @slot ... -->` on every
+     public slot) so Storybook autodocs picks them up; the README
+     gains a single-page slot reference table.
+   - `getLocalizationStrings('auto')` actually negotiates against
+     `navigator.language` via the new `negotiateLocale()` helper.
+     Currently still resolves to `'en'` (only locale shipped) but
+     warns in DEV when the detected language isn't supported, so
+     adding a second locale is purely additive.
+6. **Carryover from the alpha.4 code review** — neither blocks beta,
    both are worth doing before tagging it (see commit `b22a8e1`
    for the full review context):
    - **Drop `deep: true` from `useAutocomplete`'s items watcher**
@@ -97,7 +116,7 @@ Run locally and in CI from a clean clone:
      does (`backfillIfBelowMinimum`) so the file reads as a single
      codepath.
 
-6. **Release prep** (3.0.0):
+7. **Release prep** (3.0.0):
    - Bump `package.json` to `3.0.0`.
    - Move the `Unreleased` CHANGELOG section to `## 3.0.0`.
    - Run the GitHub issue triage sweep in `issue-triage.md`.
@@ -107,9 +126,18 @@ Run locally and in CI from a clean clone:
 Use semver prereleases on `next`:
 
 - `3.0.0-alpha.0` — architecture frozen, surface in flux
-- `3.0.0-alpha.1` (current) — parity gaps closed for actions, search,
+- `3.0.0-alpha.1` — parity gaps closed for actions, search,
   reply/edit, file-input controls, system/edited rendering, and theming.
-- `3.0.0-alpha.N` — message pagination + scroll behavior fixes
+- `3.0.0-alpha.2` — message pagination, auto-scroll on receive, and
+  scroll-to-latest pill; `Chat` event-payload reshape.
+- `3.0.0-alpha.3` — naming + ergonomics pass (P1 from
+  `ergonomics-review.md`).
+- `3.0.0-alpha.4` — composables extraction + `<AutocompleteMenu>`
+  unification + correctness fixes (SSR `singleLine`, image-error
+  handler, `URL.createObjectURL` dedupe).
+- `3.0.0-alpha.5` (current) — closes the remaining GA gaps:
+  file-constraint props, typing-indicator position, `autoScroll`
+  policy, locale negotiation, slot autodocs.
 - `3.0.0-beta.0` — feature complete, no known regressions vs v2
 - `3.0.0-rc.0` — feature freeze; only bug fixes
 - `3.0.0` — promoted to `latest`

@@ -127,6 +127,7 @@ const isFailed = computed(() => props.message.status === 'failed')
       />
 
       <div v-if="message.deleted" class="vac-message-deleted">
+        <!-- @slot Per-message deleted-icon override. Slot name is `deleted-icon_<message.id>`. -->
         <slot :name="'deleted-icon_' + message.id">
           <SvgIcon name="deleted" />
         </slot>
@@ -153,6 +154,7 @@ const isFailed = computed(() => props.message.status === 'failed')
       />
 
       <div v-else class="vac-audio-summary">
+        <!-- @slot Per-message microphone-icon override. Slot name is `microphone-icon_<message.id>`. -->
         <slot :name="'microphone-icon_' + message.id">
           <SvgIcon name="microphone" />
         </slot>
@@ -161,12 +163,14 @@ const isFailed = computed(() => props.message.status === 'failed')
 
       <div class="vac-message-meta">
         <span v-if="message.edited && !message.deleted" class="vac-message-edited">
+          <!-- @slot Per-message pencil-icon override. Slot name is `pencil-icon_<message.id>`. -->
           <slot :name="'pencil-icon_' + message.id">
             <SvgIcon name="pencil" />
           </slot>
         </span>
         <span>{{ timestamp }}</span>
         <span v-if="isOwnMessage && !message.deleted && checkmarkIcon">
+          <!-- @slot Per-message checkmark-icon override. Slot name is `checkmark-icon_<message.id>`. -->
           <slot :name="'checkmark-icon_' + message.id">
             <SvgIcon :name="checkmarkIcon.name" :param="checkmarkIcon.param" />
           </slot>

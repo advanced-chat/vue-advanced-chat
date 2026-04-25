@@ -232,6 +232,76 @@ export const EditModePrefillsContent: Story = {
   },
 }
 
+const dropFiles = (input: HTMLInputElement, files: File[]) => {
+  const transfer = new DataTransfer()
+  for (const file of files) transfer.items.add(file)
+  input.files = transfer.files
+  input.dispatchEvent(new Event('change', { bubbles: true }))
+}
+
+/**
+ * Regression for [#474](https://github.com/advanced-chat/vue-advanced-chat/issues/474):
+ * `maxFiles` caps the pending-file count. Files past the cap are
+ * rejected via `invalid-file` with `reason: 'count'`; the existing
+ * pending list is left untouched.
+ */
+export const MaxFilesRejectsOverflow: Story = {
+  args: {
+    maxFiles: 2,
+    'onInvalid-file': fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const input = canvasElement.querySelector('input[type="file"]') as HTMLInputElement
+    expect(input).toBeTruthy()
+
+    dropFiles(input, [
+      new File(['a'], 'a.txt', { type: 'text/plain' }),
+      new File(['b'], 'b.txt', { type: 'text/plain' }),
+      new File(['c'], 'c.txt', { type: 'text/plain' }),
+    ])
+
+    await waitFor(() => {
+      expect(canvasElement.querySelectorAll('.vac-room-file-container').length).toBe(2)
+    })
+
+    const calls = (args['onInvalid-file'] as ReturnType<typeof fn>).mock.calls
+    expect(calls.length).toBe(1)
+    const payload = calls[0]?.[0] as { file: File; reason: string }
+    expect(payload.reason).toBe('count')
+    expect(payload.file.name).toBe('c.txt')
+  },
+}
+
+/**
+ * Regression for [#461](https://github.com/advanced-chat/vue-advanced-chat/issues/461):
+ * `maxFileSize` rejects single files above the byte cap, but leaves
+ * smaller files in the same selection alone.
+ */
+export const MaxFileSizeRejectsLarge: Story = {
+  args: {
+    maxFileSize: 1024,
+    'onInvalid-file': fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const input = canvasElement.querySelector('input[type="file"]') as HTMLInputElement
+
+    dropFiles(input, [
+      new File([new Uint8Array(256)], 'small.bin', { type: 'application/octet-stream' }),
+      new File([new Uint8Array(2048)], 'large.bin', { type: 'application/octet-stream' }),
+    ])
+
+    await waitFor(() => {
+      expect(canvasElement.querySelectorAll('.vac-room-file-container').length).toBe(1)
+    })
+
+    const calls = (args['onInvalid-file'] as ReturnType<typeof fn>).mock.calls
+    expect(calls.length).toBe(1)
+    const payload = calls[0]?.[0] as { file: File; reason: string }
+    expect(payload.reason).toBe('size')
+    expect(payload.file.name).toBe('large.bin')
+  },
+}
+
 export const EditedMessageEmitsEdit: Story = {
   args: {
     initEditMessage: { ...sampleMessages[1]! } as never,

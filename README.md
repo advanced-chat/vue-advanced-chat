@@ -157,6 +157,24 @@ If you are contributing to the rewrite, use `develop`.
 - `AdvancedChatPlugin({ localization?, strings? })` — installs the
   string dictionary used by all components.
 
+### Slots
+
+Each public component documents its slots inline in Storybook
+autodocs. Notable slots by surface:
+
+| Component | Slot | Default |
+|---|---|---|
+| `Chat` | `no-chat-selected` | "No chat selected" empty state |
+| `Chat` | `composer-typing` (scoped: `typing-users`) | Renders `typingUsers` text when `typingIndicatorPosition` includes `composer` |
+| `Chat` | `scroll-icon` | Down-chevron for the scroll-to-latest pill |
+| `Chats` | `chats-header` / `chats-search` / `chats-empty` | (default chrome) |
+| `ChatHeader` | `chat-header`, `chat-header-avatar`, `chat-header-info`, `chat-options`, `toggle-icon`, `menu-icon` | (default chrome / icons) |
+| `ChatFooter` | `reply-close-icon`, `edit-close-icon`, `emoji-picker-icon`, `paperclip-icon`, `send-icon` | Built-in `SvgIcon` graphics |
+| `Message` | `deleted-icon_<id>`, `microphone-icon_<id>`, `pencil-icon_<id>`, `checkmark-icon_<id>` | Per-message icon overrides keyed by `message.id` |
+
+`AdvancedChat` does not forward slots — drop down to `Chats + Chat`
+when you need slot composition.
+
 ### Theming
 
 - `Layout.theme` accepts `'light'`, `'dark'`, `'auto'`, or

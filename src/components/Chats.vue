@@ -187,8 +187,10 @@ watch(
       'vac-app-border-r': !isMobile,
     }"
   >
+    <!-- @slot Free-form content rendered above the search bar. -->
     <slot name="chats-header" />
 
+    <!-- @slot Replacement for the default `<ChatsSearch>` row. -->
     <slot name="chats-search">
       <ChatsSearch
         :show-search="showSearch"
@@ -204,6 +206,7 @@ watch(
     <Loader :show="loadingChats"> </Loader>
 
     <div v-if="!loadingChats && !chats.length" class="vac-rooms-empty">
+      <!-- @slot Empty-state content shown when no chats are available. -->
       <slot name="chats-empty">
         {{ strings['chats.empty'] }}
       </slot>

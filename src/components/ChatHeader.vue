@@ -23,6 +23,13 @@ export interface ChatHeaderProps {
    */
   selectionActions?: Array<Action>
   selectedCount?: number
+  /**
+   * When `false`, the typing-users line is suppressed in the header
+   * (the `userStatus` line still renders). `Chat` flips this when its
+   * `typingIndicatorPosition` excludes `header` so the indicator
+   * doesn't render in two places at once.
+   */
+  showTypingIndicator?: boolean
 }
 
 export interface ChatHeaderEvents {
@@ -41,6 +48,7 @@ const props = withDefaults(defineProps<ChatHeaderProps>(), {
   actions: () => [],
   selectionActions: () => [],
   selectedCount: 0,
+  showTypingIndicator: true,
 })
 
 const typingUsers = computed(() => typingUsersString(props.chat, strings))
@@ -133,6 +141,7 @@ const menuActionHandler = (action: Action) => {
 
 <template>
   <div class="vac-room-header vac-app-border-b">
+    <!-- @slot Full replacement for the default header layout. -->
     <slot name="chat-header">
       <div class="vac-room-wrapper">
         <transition name="vac-slide-up">
@@ -163,6 +172,7 @@ const menuActionHandler = (action: Action) => {
             }"
             @click="emit('toggle-chat-list')"
           >
+            <!-- @slot Icon for the chat-list toggle button. -->
             <slot name="toggle-icon">
               <SvgIcon name="toggle" />
             </slot>
@@ -172,6 +182,7 @@ const menuActionHandler = (action: Action) => {
             :class="{ 'vac-item-clickable': chatInfoEnabled }"
             @click="emit('show-chat-info')"
           >
+            <!-- @slot Avatar element. Default renders a CSS background-image div. -->
             <slot name="chat-header-avatar">
               <div
                 v-if="avatarUrl"
@@ -179,12 +190,16 @@ const menuActionHandler = (action: Action) => {
                 :style="{ 'background-image': `url('${avatarUrl}')` }"
               />
             </slot>
+            <!-- @slot Name + status block to the right of the avatar. -->
             <slot name="chat-header-info">
               <div class="vac-text-ellipsis">
                 <div class="vac-room-name vac-text-ellipsis">
                   {{ chat.name }}
                 </div>
-                <div v-if="typingUsers" class="vac-room-info vac-text-ellipsis">
+                <div
+                  v-if="showTypingIndicator && typingUsers"
+                  class="vac-room-info vac-text-ellipsis"
+                >
                   {{ typingUsers }}
                 </div>
                 <div v-else class="vac-room-info vac-text-ellipsis">
@@ -193,12 +208,14 @@ const menuActionHandler = (action: Action) => {
               </div>
             </slot>
           </div>
+          <!-- @slot Replacement for the chat-options menu trigger + dropdown. -->
           <slot v-if="chat.id" name="chat-options">
             <div
               v-if="actions.length"
               class="vac-svg-button vac-room-options"
               @click="menuOpened = !menuOpened"
             >
+              <!-- @slot Icon for the chat-options menu trigger. -->
               <slot name="menu-icon">
                 <svg-icon name="menu" />
               </slot>

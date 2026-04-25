@@ -5,6 +5,13 @@ import { STRINGS_SYMBOL } from '../plugin/symbols.ts'
 
 export type Localization = 'en' | 'auto'
 
+/**
+ * Locales the package ships strings for. Add new BCP 47 prefixes here
+ * when introducing additional `*.json` dictionaries.
+ */
+const SUPPORTED_LOCALE_PREFIXES = ['en'] as const
+type SupportedLocale = (typeof SUPPORTED_LOCALE_PREFIXES)[number]
+
 export type Strings = {
   'chats.empty': string
   'chats.search.placeholder': string
@@ -25,12 +32,38 @@ export type Strings = {
   'chat.autocomplete.users': string
 }
 
+/**
+ * Negotiate against `navigator.language` for the closest supported
+ * locale. Returns the fallback (`'en'`) and warns under DEV when the
+ * detected language has no bundled dictionary.
+ *
+ * Exposed for tests and for consumers who want to make the same call
+ * outside of Vue (e.g. SSR).
+ */
+export const negotiateLocale = (): SupportedLocale => {
+  if (typeof navigator === 'undefined') return 'en'
+
+  const lang = (navigator.language || '').toLowerCase()
+
+  for (const prefix of SUPPORTED_LOCALE_PREFIXES) {
+    if (lang.startsWith(prefix)) return prefix
+  }
+
+  if (import.meta.env.DEV && lang) {
+    console.warn(
+      `[advanced-chat] No bundled localization for "${lang}". ` +
+        'Falling back to English. Pass overrides via AdvancedChatPlugin({ strings }).',
+    )
+  }
+
+  return 'en'
+}
+
 export const getLocalizationStrings = (locale: Localization): Strings => {
-  switch (locale) {
+  const resolved: SupportedLocale = locale === 'auto' ? negotiateLocale() : locale
+
+  switch (resolved) {
     case 'en':
-    case 'auto':
-      // TODO: when additional locales land, dispatch on
-      // `Intl.Locale` / `navigator.language` here for `'auto'`.
       return en
   }
 }

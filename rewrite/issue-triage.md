@@ -1,8 +1,8 @@
 # GitHub Issue / PR Triage for V3
 
-Open issues and PRs on advanced-chat/vue-advanced-chat as of the V3
-planning pass, sorted by what V3 should do with each. Use this as the
-script for the post-3.0 issue sweep.
+Open issues and PRs on advanced-chat/vue-advanced-chat, sorted by
+what V3 should do with each. Use this as the script for the post-3.0
+issue sweep. Last reconciled against `develop` at `3.0.0-alpha.5`.
 
 ## Resolved by V3 architecture (close on release)
 
@@ -21,41 +21,53 @@ delivers — close with a link to the V3 release notes.
 | [#511](https://github.com/advanced-chat/vue-advanced-chat/issues/511) | Cannot style `vac-progress-bar` | Shadow DOM / styling |
 | [#510](https://github.com/advanced-chat/vue-advanced-chat/issues/510) | linkifyjs unmet peer dep | Dependency hygiene |
 | [#551](https://github.com/advanced-chat/vue-advanced-chat/issues/551) | node-sass dep unneeded | Dependency hygiene |
+| [#572](https://github.com/advanced-chat/vue-advanced-chat/issues/572) | Expose conversation container | Component-based V3 — consumers wrap `Chat` themselves |
+| [#571](https://github.com/advanced-chat/vue-advanced-chat/issues/571) | Dynamic `room-actions` control | Each `Chat`/`ChatHeader` mount takes its own `actions` prop |
+| [#557](https://github.com/advanced-chat/vue-advanced-chat/issues/557) | `document-icon` slot has no effect | V2-only slot-name shape |
+| [#556](https://github.com/advanced-chat/vue-advanced-chat/issues/556) | Vue 2 route switch loses chat | V2-only |
+| [#555](https://github.com/advanced-chat/vue-advanced-chat/issues/555) | `fetch-more-rooms` not firing | V2-only event name |
+| [#541](https://github.com/advanced-chat/vue-advanced-chat/issues/541) | Switching rooms triggers wrong event | V2-only event shape |
+| [#532](https://github.com/advanced-chat/vue-advanced-chat/issues/532) | Loading on every room switch | V2-only |
+| [#517](https://github.com/advanced-chat/vue-advanced-chat/issues/517) | `messages-loaded` doesn't take effect | V2 web-component prop |
+| [#539](https://github.com/advanced-chat/vue-advanced-chat/issues/539) | Catch input change event | Already covered by `typing-message` in V3 |
 
-## Bundle into 3.0 (still need code)
+## Bundle into 3.0 — landed (close on release)
+
+Issues that originally fit the "still need code" / "regressions"
+buckets and have since landed. Close with a link to the V3 release
+notes and the version that shipped each fix.
+
+| # / Item | Landed in | What shipped |
+|---|---|---|
+| [#530](https://github.com/advanced-chat/vue-advanced-chat/issues/530) Disable `capture` on file input | `alpha.1` (renamed `alpha.3`) | `accept` / `multiple` / `capture` props on `ChatFooter` (and forwarded by `Chat` / `AdvancedChat`) |
+| [#478](https://github.com/advanced-chat/vue-advanced-chat/issues/478) focus/blur events on textarea | `alpha.1` | `focus-textarea` / `blur-textarea` events on `ChatFooter` |
+| [#548](https://github.com/advanced-chat/vue-advanced-chat/issues/548) Toggle `show-new-messages-divider` | `alpha.1` | `showNewMessagesDivider` prop on `Chat` |
+| [#503](https://github.com/advanced-chat/vue-advanced-chat/issues/503) Restore "no chat selected" state | `alpha.1` | `Chat` accepts `chat: null` + `no-chat-selected` slot |
+| [#461](https://github.com/advanced-chat/vue-advanced-chat/issues/461) File size upload limit | `alpha.5` | `ChatFooter.maxFileSize` + `invalid-file: { reason: 'size' }` event |
+| [#474](https://github.com/advanced-chat/vue-advanced-chat/issues/474) Limit number of uploaded files | `alpha.5` | `ChatFooter.maxFiles` + `invalid-file: { reason: 'count' }` event |
+| [#513](https://github.com/advanced-chat/vue-advanced-chat/issues/513) Position typing indicator above textarea | `alpha.5` | `Chat.typingIndicatorPosition` (`'header' \| 'composer' \| 'both' \| 'none'`) + `composer-typing` slot |
+| Pagination event for messages | `alpha.2` | `fetch-messages` event fires when scrolled within 60 px of top |
+| Scroll-to-bottom button | `alpha.2` | "Scroll to latest" pill with unread-count badge |
+| Auto-scroll on send / receive | `alpha.2` (policy prop in `alpha.5`) | Default policy plus `Chat.autoScroll: { onMount?, onChatSwitch?, onSend?, onReceive? }` |
+| Reply / edit wiring through `Chat` | `alpha.1` | `dispatchReplyEdit` pre-fills `ChatFooter` state; `useReplyEdit` extracted in `alpha.4` |
+| `edited` indicator | `alpha.1` | Pencil icon next to timestamp when `Message.edited` is true |
+| `system` message render | `alpha.1` | Centered pill rendering in `Message` |
+| `disableActions` / `disableReactions` | `alpha.1` | Respected in `Message`/`MessageActions` |
+| Local search filter on `Chats` | `alpha.1` | `useLocalSearch` (extracted in `alpha.4`); `customSearchEnabled` opts out |
+| `chat-action-handler` re-emit on `Chats` | `alpha.1` | `Chats` re-emits `ChatsItem`'s `chat-action-handler` |
+| Markdown task-list a11y warning | `alpha.1` | `aria-label` on `<input type="checkbox">` in markdown render |
+
+## Bundle into 3.0 — still open
 
 Tractable issues that fit the new architecture and are worth
-including before tagging 3.0:
+including before tagging 3.0-beta. Each is small enough to land in
+an alpha cycle.
 
 | # | Title | Action in V3 |
 |---|---|---|
-| [#530](https://github.com/advanced-chat/vue-advanced-chat/issues/530) | Disable `capture` on file input | Add `acceptedFiles` / `captureFiles` / `multipleFiles` props on `ChatFooter` |
-| [#461](https://github.com/advanced-chat/vue-advanced-chat/issues/461) | File size upload limit | Surface `maxFileSize` on `ChatFooter` (consumer enforces; we filter) |
-| [#474](https://github.com/advanced-chat/vue-advanced-chat/issues/474) | Limit number of uploaded files | Add `maxFiles` on `ChatFooter` |
-| [#478](https://github.com/advanced-chat/vue-advanced-chat/issues/478) | Emit focus / blur on textarea | Add `focus` / `blur` events on `ChatFooter` |
-| [#539](https://github.com/advanced-chat/vue-advanced-chat/issues/539) | Catch input change event | Already covered by `typing-message` |
-| [#572](https://github.com/advanced-chat/vue-advanced-chat/issues/572) | Expose conversation container | Trivial in component-based V3; consumers wrap `Chat` themselves |
-| [#548](https://github.com/advanced-chat/vue-advanced-chat/issues/548) | Toggle `show-new-messages-divider` | Add `showNewMessagesDivider` prop on `Chat` |
-| [#503](https://github.com/advanced-chat/vue-advanced-chat/issues/503) | Restore "no chat selected" state | `Chat` already supports `chat: null` |
-| [#513](https://github.com/advanced-chat/vue-advanced-chat/issues/513) | Position typing indicator above textarea | Either prop or document slot composition |
-
-## Bundle into 3.0 (regressions to fix)
-
-Things V3 currently regresses against v2 — must close before tagging
-the first non-prerelease.
-
-| Item | Notes |
-|---|---|
-| Pagination event for messages | v2 `fetch-messages` not yet wired in `Chat` |
-| Auto-scroll behavior on send / receive | v2 `auto-scroll` policy gone |
-| Scroll-to-bottom button | v2 had this; V3 doesn't |
-| Reply / edit wiring through `Chat` | The `replyMessage` and `editMessage` actions don't pre-fill `ChatFooter` state |
-| `edited` indicator | No pencil icon rendered in V3 |
-| `system` message render | No special render in V3 |
-| `disableActions` / `disableReactions` flags | Not respected in V3 |
-| Local search filter on `Chats` | `search-chat` is emitted but local filter never updates |
-| `chat-action-handler` re-emit on `Chats` | `ChatsItem` emits but `Chats` swallows it |
-| Markdown task-list a11y warning | `<input>` checkboxes flagged by Storybook a11y `error` |
+| [#573](https://github.com/advanced-chat/vue-advanced-chat/issues/573) | Message bubble `max-width` uses viewport `@media` instead of container queries | Replace the viewport `@media` rules in `Message.vue`/`Chat.vue` with `@container` queries so embedders in narrow panels get the right wrap width |
+| [#546](https://github.com/advanced-chat/vue-advanced-chat/issues/546) | Dark-mode link contrast | Tighten `--chat-message-color-link` against `--chat-message-bg-color-me` so a11y `error` mode passes the contrast check |
+| [#531](https://github.com/advanced-chat/vue-advanced-chat/issues/531) | Editable composer action icons + multiple actions | Icon side already a slot in V3 (`paperclip-icon` / `emoji-picker-icon` / `send-icon`); design and ship a `composerActions: Action[]` prop for additional buttons |
 
 ## V3 roadmap (post-3.0)
 

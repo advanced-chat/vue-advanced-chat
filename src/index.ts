@@ -104,7 +104,11 @@ export type { ChatProps, ChatEvents } from './components/Chat.vue'
 export type { ChatEmojisProps, ChatEmojisEvents } from './components/ChatEmojis.vue'
 export type { ChatFileProps, ChatFileEvents, ChatFileItem } from './components/ChatFile.vue'
 export type { ChatFilesProps, ChatFilesEvents } from './components/ChatFiles.vue'
-export type { ChatFooterProps, ChatFooterEvents } from './components/ChatFooter.vue'
+export type {
+  ChatFooterProps,
+  ChatFooterEvents,
+  InvalidFileReason,
+} from './components/ChatFooter.vue'
 export type { ChatHeaderProps, ChatHeaderEvents } from './components/ChatHeader.vue'
 export type { ChatMessageProps, ChatMessageEvents } from './components/ChatMessage.vue'
 export type { ChatsProps, ChatsEvents } from './components/Chats.vue'

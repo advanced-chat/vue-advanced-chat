@@ -53,6 +53,25 @@ export interface AdvancedChatProps {
   accept?: string
   multiple?: boolean
   capture?: '' | 'user' | 'environment'
+  /** Max files in the composer at once. `0` / unset disables. */
+  maxFiles?: number
+  /** Max bytes per file. `0` / unset disables. */
+  maxFileSize?: number
+  /**
+   * Where to render the typing-users indicator. See `Chat`'s prop for
+   * full semantics. Default `'header'`.
+   */
+  typingIndicatorPosition?: 'header' | 'composer' | 'both' | 'none'
+  /**
+   * Auto-scroll policy for the message list. See `Chat`'s prop for
+   * the per-leg semantics. All legs default `true`.
+   */
+  autoScroll?: {
+    onMount?: boolean
+    onChatSwitch?: boolean
+    onSend?: boolean
+    onReceive?: boolean
+  }
   customSearchEnabled?: boolean
   chatInfoEnabled?: boolean
 }
@@ -85,6 +104,11 @@ export interface AdvancedChatEvents {
     e: 'edit-message',
     payload: { messageId: Message['id']; content: string; files: ChatFileItem[] },
   ): void
+  /**
+   * Re-emitted from `Chat`/`ChatFooter` when a pending file is rejected
+   * by a configured `maxFiles` / `maxFileSize` limit.
+   */
+  (e: 'invalid-file', payload: { file: File; reason: 'size' | 'count' }): void
 }
 
 const props = withDefaults(defineProps<AdvancedChatProps>(), {
@@ -114,6 +138,10 @@ const props = withDefaults(defineProps<AdvancedChatProps>(), {
   accept: '*',
   multiple: true,
   capture: '',
+  maxFiles: 0,
+  maxFileSize: 0,
+  typingIndicatorPosition: 'header',
+  autoScroll: () => ({ onMount: true, onChatSwitch: true, onSend: true, onReceive: true }),
   customSearchEnabled: false,
   chatInfoEnabled: false,
   height: '600px',
@@ -197,6 +225,10 @@ const onOpenChat = (chat: ChatModel) => {
         :accept="accept"
         :multiple="multiple"
         :capture="capture"
+        :max-files="maxFiles"
+        :max-file-size="maxFileSize"
+        :typing-indicator-position="typingIndicatorPosition"
+        :auto-scroll="autoScroll"
         :chat-info-enabled="chatInfoEnabled"
         @toggle-chat-list="showChatList = !showChatList"
         @show-chat-info="onShowChatInfo"
@@ -212,6 +244,7 @@ const onOpenChat = (chat: ChatModel) => {
         @send-message="emit('send-message', $event)"
         @edit-message="emit('edit-message', $event)"
         @fetch-messages="emit('fetch-messages')"
+        @invalid-file="emit('invalid-file', $event)"
       />
     </div>
   </Layout>

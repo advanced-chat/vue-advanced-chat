@@ -6,6 +6,7 @@ import {
   chatActions,
   currentUser,
   messageActions,
+  otherUser,
   sampleChat,
   sampleMessages,
 } from './stories.fixtures.ts'
@@ -189,6 +190,79 @@ export const NoFetchWhenLoaded: Story = {
     scrollEl.scrollTop = 0
     scrollEl.dispatchEvent(new Event('scroll', { bubbles: true }))
     expect(args['onFetch-messages']).not.toHaveBeenCalled()
+  },
+}
+
+/**
+ * Regression for [#513](https://github.com/advanced-chat/vue-advanced-chat/issues/513):
+ * setting `typingIndicatorPosition: 'composer'` moves the typing line
+ * from the header (default) to a band above the textarea.
+ */
+export const TypingIndicatorAboveComposer: Story = {
+  args: {
+    typingIndicatorPosition: 'composer',
+    chat: { ...sampleChat, typingUsers: [{ id: otherUser.id }] },
+  },
+  play: async ({ canvasElement }) => {
+    const composer = canvasElement.querySelector('.vac-composer-typing')
+    expect(composer).toBeTruthy()
+    expect(composer?.textContent).toContain('is typing')
+    // and the header should not show it (only the user-status line)
+    const headerInfo = canvasElement.querySelector('.vac-info-wrapper .vac-room-info')
+    expect(headerInfo?.textContent).not.toContain('is typing')
+  },
+}
+
+/**
+ * Regression for [#513](https://github.com/advanced-chat/vue-advanced-chat/issues/513):
+ * `typingIndicatorPosition: 'both'` shows the indicator in the header
+ * AND above the composer at once.
+ */
+export const TypingIndicatorBoth: Story = {
+  args: {
+    typingIndicatorPosition: 'both',
+    chat: { ...sampleChat, typingUsers: [{ id: otherUser.id }] },
+  },
+  play: async ({ canvasElement }) => {
+    expect(canvasElement.querySelector('.vac-composer-typing')).toBeTruthy()
+    const headerInfo = canvasElement.querySelector('.vac-info-wrapper .vac-room-info')
+    expect(headerInfo?.textContent).toContain('is typing')
+  },
+}
+
+/**
+ * Regression for [#513](https://github.com/advanced-chat/vue-advanced-chat/issues/513):
+ * `typingIndicatorPosition: 'none'` suppresses the indicator entirely.
+ */
+export const TypingIndicatorNone: Story = {
+  args: {
+    typingIndicatorPosition: 'none',
+    chat: { ...sampleChat, typingUsers: [{ id: otherUser.id }] },
+  },
+  play: async ({ canvasElement }) => {
+    expect(canvasElement.querySelector('.vac-composer-typing')).toBeFalsy()
+    const headerInfo = canvasElement.querySelector('.vac-info-wrapper .vac-room-info')
+    expect(headerInfo?.textContent).not.toContain('is typing')
+  },
+}
+
+/**
+ * Regression for the GA `autoScroll` policy: setting `onMount: false`
+ * prevents the post-mount auto-scroll, so the message list stays at
+ * the top of the scroll container instead of jumping to the latest
+ * message.
+ */
+export const AutoScrollOnMountSuppressed: Story = {
+  args: {
+    autoScroll: { onMount: false },
+  },
+  play: async ({ canvasElement }) => {
+    const scrollEl = canvasElement.querySelector('.vac-container-scroll') as HTMLElement
+    expect(scrollEl).toBeTruthy()
+    // Wait one tick for any post-mount nextTick scrolls to settle.
+    await waitFor(() => {
+      expect(scrollEl.scrollTop).toBe(0)
+    })
   },
 }
 

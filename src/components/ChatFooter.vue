@@ -32,7 +32,22 @@ export interface ChatFooterProps {
   multiple?: boolean
   /** Mobile capture mode for the file input (e.g. `user`, `environment`). */
   capture?: '' | 'user' | 'environment'
+  /**
+   * Maximum number of pending files in the composer at once. Files added
+   * past this limit are rejected with `invalid-file: { reason: 'count' }`.
+   * `0` / unset disables the cap.
+   */
+  maxFiles?: number
+  /**
+   * Maximum size in bytes for any single file. Files exceeding this size
+   * are rejected with `invalid-file: { reason: 'size' }`. `0` / unset
+   * disables the cap.
+   */
+  maxFileSize?: number
 }
+
+/** Reason a file addition was rejected by `ChatFooter`. */
+export type InvalidFileReason = 'size' | 'count'
 
 export interface ChatFooterEvents {
   (
@@ -49,6 +64,12 @@ export interface ChatFooterEvents {
   (e: 'reset-edit-message'): void
   (e: 'focus-textarea'): void
   (e: 'blur-textarea'): void
+  /**
+   * Fired once per file the composer rejected because of a configured
+   * `maxFiles` / `maxFileSize` limit. Carries the original `File` so the
+   * host can show its own error UI (toast, inline message, etc.).
+   */
+  (e: 'invalid-file', payload: { file: File; reason: InvalidFileReason }): void
 }
 
 const props = withDefaults(defineProps<ChatFooterProps>(), {
@@ -63,6 +84,8 @@ const props = withDefaults(defineProps<ChatFooterProps>(), {
   accept: '*',
   multiple: true,
   capture: '',
+  maxFiles: 0,
+  maxFileSize: 0,
 })
 
 const emit = defineEmits<ChatFooterEvents>()
@@ -132,21 +155,38 @@ watch(message, (value) => {
 const updateFiles = (fileList: FileList | null) => {
   if (!fileList?.length) return
 
-  files.value = [
-    ...files.value,
-    ...Array.from(fileList).map((file) => {
-      const objectUrl = URL.createObjectURL(file)
+  const accepted: ChatFileItem[] = []
+  let remainingSlots =
+    props.maxFiles > 0 ? Math.max(0, props.maxFiles - files.value.length) : Infinity
 
-      return {
-        name: file.name,
-        type: file.type,
-        extension: file.name.split('.').pop() || '',
-        url: objectUrl,
-        localUrl: objectUrl,
-        blob: file,
-      }
-    }),
-  ]
+  for (const file of Array.from(fileList)) {
+    if (props.maxFileSize > 0 && file.size > props.maxFileSize) {
+      emit('invalid-file', { file, reason: 'size' })
+      continue
+    }
+
+    if (remainingSlots <= 0) {
+      emit('invalid-file', { file, reason: 'count' })
+      continue
+    }
+
+    const objectUrl = URL.createObjectURL(file)
+
+    accepted.push({
+      name: file.name,
+      type: file.type,
+      extension: file.name.split('.').pop() || '',
+      url: objectUrl,
+      localUrl: objectUrl,
+      blob: file,
+    })
+
+    remainingSlots -= 1
+  }
+
+  if (accepted.length) {
+    files.value = [...files.value, ...accepted]
+  }
 }
 
 const removeFile = (index: number) => {
@@ -312,6 +352,7 @@ const onKeydown = (event: KeyboardEvent) => {
         :aria-label="strings['chat.cancel-reply']"
         @click="cancelReply"
       >
+        <!-- @slot Icon for the "cancel reply" button. -->
         <slot name="reply-close-icon">
           <SvgIcon name="close-outline" />
         </slot>
@@ -343,6 +384,7 @@ const onKeydown = (event: KeyboardEvent) => {
           :aria-label="strings['chat.cancel-edit']"
           @click="cancelEdit"
         >
+          <!-- @slot Icon for the "cancel edit" button. -->
           <slot name="edit-close-icon">
             <SvgIcon name="close-outline" />
           </slot>
@@ -350,6 +392,7 @@ const onKeydown = (event: KeyboardEvent) => {
 
         <div v-if="showEmojis" class="vac-emoji-button">
           <div class="vac-svg-button" @click="emojiOpened = !emojiOpened">
+            <!-- @slot Icon that toggles the emoji picker. -->
             <slot name="emoji-picker-icon">
               <SvgIcon name="emoji" />
             </slot>
@@ -360,6 +403,7 @@ const onKeydown = (event: KeyboardEvent) => {
         </div>
 
         <label v-if="showFiles" class="vac-svg-button">
+          <!-- @slot Icon for the "attach file" button. -->
           <slot name="paperclip-icon">
             <SvgIcon name="paperclip" />
           </slot>
@@ -379,6 +423,7 @@ const onKeydown = (event: KeyboardEvent) => {
           :class="{ 'vac-send-disabled': isMessageEmpty }"
           @click="sendMessage"
         >
+          <!-- @slot Icon for the send button. Receives no slot props. -->
           <slot name="send-icon">
             <SvgIcon :name="'send'" :param="isMessageEmpty ? 'disabled' : ''" />
           </slot>
