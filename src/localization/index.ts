@@ -28,12 +28,9 @@ export type Strings = {
 export const getLocalizationStrings = (locale: Localization): Strings => {
   switch (locale) {
     case 'en':
-      return en
     case 'auto':
-      if (navigator.language.startsWith('en')) {
-        return en
-      }
-
+      // TODO: when additional locales land, dispatch on
+      // `Intl.Locale` / `navigator.language` here for `'auto'`.
       return en
   }
 }
@@ -43,6 +40,13 @@ export const useLocalizationStrings = (): Strings => {
 
   if (strings) {
     return strings
+  }
+
+  if (import.meta.env.DEV) {
+    console.warn(
+      '[advanced-chat] No AdvancedChatPlugin found — falling back to bundled English strings. ' +
+        'Call `app.use(AdvancedChatPlugin())` so consumer overrides take effect.',
+    )
   }
 
   return getLocalizationStrings('auto')

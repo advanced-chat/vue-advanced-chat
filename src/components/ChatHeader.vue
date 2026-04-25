@@ -3,7 +3,7 @@ import { type Action, type Chat, typingUsersString, type User, type UserReferenc
 import { vOnClickOutside } from '@vueuse/components'
 
 import { useLocalizationStrings } from '../localization'
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 
 const strings = useLocalizationStrings()
@@ -95,14 +95,27 @@ const messageSelectionActionHandler = (action: Action) => {
 }
 
 const messageSelectionAnimationEnded = ref(true)
+let messageSelectionAnimationTimeout: ReturnType<typeof setTimeout> | null = null
 
 watch(showMessageSelection, (val) => {
+  if (messageSelectionAnimationTimeout !== null) {
+    clearTimeout(messageSelectionAnimationTimeout)
+    messageSelectionAnimationTimeout = null
+  }
+
   if (val) {
     messageSelectionAnimationEnded.value = false
   } else {
-    setTimeout(() => {
+    messageSelectionAnimationTimeout = setTimeout(() => {
       messageSelectionAnimationEnded.value = true
+      messageSelectionAnimationTimeout = null
     }, 300)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (messageSelectionAnimationTimeout !== null) {
+    clearTimeout(messageSelectionAnimationTimeout)
   }
 })
 

@@ -15,7 +15,7 @@ const runScope = <T>(fn: () => T): { result: T; dispose: () => void } => {
 
 const stubMessage = (id: string): Message => ({
   id,
-  sender: { id: 'sender-1' },
+  sender: { id: 'sender-1', name: 'Sender', status: { state: 'online' } },
   content: '',
   createdAt: '2025-01-01T00:00:00Z',
 })

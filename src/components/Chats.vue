@@ -2,7 +2,7 @@
 import ChatsSearch from '@/components/ChatsSearch.vue'
 import type { Action, Chat, Id, UserReference } from '../models'
 import Loader from '@/components/Loader.vue'
-import { nextTick, ref, useTemplateRef, watch } from 'vue'
+import { ref, useTemplateRef, watch } from 'vue'
 import ChatsItem from '@/components/ChatsItem.vue'
 
 import { useInfiniteScroll } from '../composables/use-infinite-scroll'
@@ -98,18 +98,13 @@ const { filtered: filteredChats, setQuery } = useLocalSearch<Chat>({
   onSearch: (query) => emit('search-chat', query),
 })
 
-const root = useTemplateRef('root')
-const sentinel = ref<HTMLElement | null>(null)
-const scrollRoot = ref<HTMLElement | null>(null)
+const sentinelEl = useTemplateRef<HTMLElement>('sentinelEl')
+const scrollRootEl = useTemplateRef<HTMLElement>('scrollRootEl')
 const showLoader = ref(false)
 
-const {
-  loading: loadingMoreChats,
-  setLoading: setLoadingMore,
-  reset: resetInfiniteScroll,
-} = useInfiniteScroll({
-  target: sentinel,
-  scrollRoot,
+const { loading: loadingMoreChats, setLoading: setLoadingMore } = useInfiniteScroll({
+  target: sentinelEl,
+  scrollRoot: scrollRootEl,
   exhausted: () => props.chatsLoaded,
   onLoadMore: () => {
     showLoader.value = true
@@ -160,21 +155,6 @@ watch(
 )
 
 watch(
-  () => props.loadingChats,
-  (val) => {
-    if (!val) {
-      nextTick(() => {
-        const rootEl = root.value
-        if (!rootEl) return
-        scrollRoot.value = rootEl.querySelector<HTMLElement>('#rooms-list')
-        sentinel.value = rootEl.querySelector<HTMLElement>('#infinite-loader-rooms')
-        resetInfiniteScroll()
-      })
-    }
-  },
-)
-
-watch(
   () => props.chatsLoaded,
   (val) => {
     if (val) {
@@ -201,7 +181,6 @@ watch(
 <template>
   <div
     v-if="currentUser"
-    ref="root"
     class="vac-rooms-container"
     :class="{
       'vac-rooms-container-full': isMobile,
@@ -230,7 +209,7 @@ watch(
       </slot>
     </div>
 
-    <div v-if="!loadingChats" id="rooms-list" class="vac-room-list">
+    <div v-if="!loadingChats" id="rooms-list" ref="scrollRootEl" class="vac-room-list">
       <div
         v-for="chat in filteredChats"
         :id="String(chat.id)"
@@ -248,7 +227,7 @@ watch(
         </ChatsItem>
       </div>
       <transition name="vac-fade-message">
-        <div v-if="chats.length && !loadingChats" id="infinite-loader-rooms">
+        <div v-if="chats.length && !loadingChats" id="infinite-loader-rooms" ref="sentinelEl">
           <Loader :show="showLoader" :infinite="true" type="infinite-rooms"> </Loader>
         </div>
       </transition>

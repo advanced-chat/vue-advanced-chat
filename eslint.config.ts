@@ -21,7 +21,10 @@ export default defineConfigWithVueTs(
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
-      '@typescript-eslint/ban-ts-comment': 'off',
+      // The single-word component names (`Chat`, `Chats`, `Layout`,
+      // `Loader`, `Message`) are deliberate — they're the public API
+      // surface re-exported from `src/index.ts`. Renaming them would
+      // be a breaking change with no real ergonomics win.
       'vue/multi-word-component-names': 'off',
     },
   },

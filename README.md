@@ -161,8 +161,35 @@ If you are contributing to the rewrite, use `develop`.
 
 - `Layout.theme` accepts `'light'`, `'dark'`, `'auto'`, or
   `{ base: 'light' | 'dark', overrides: Partial<Styles> }`.
+- `Layout.styles` accepts a `Partial<Styles>` map applied as the
+  final layer over the resolved theme — useful for one-off overrides
+  on a single mount without forking a theme.
 - All visible colors are CSS custom properties on the `Layout` root.
 - `'auto'` follows `prefers-color-scheme` reactively.
+
+## Security model
+
+The library treats the data passed in via props as already trusted:
+it is rendered into the DOM and into CSS without sanitization. The
+host application is responsible for validating user-supplied content
+at the boundary where it enters the data layer.
+
+In particular, the following values are interpolated into
+`background-image: url('…')` declarations or `<source src>`
+attributes:
+
+- `Chat.avatar`, `User.avatar` (rendered by `ChatHeader`,
+  `ChatsItem`, `ChatUserTag`)
+- `Message.files[].url` and `Message.files[].previewUrl` (rendered
+  by `MessageFile`, `MediaPreview`, `MessageReply`)
+
+If any of these can originate from an untrusted source, validate
+that they are well-formed `http(s):` / `data:` / `blob:` URLs (and
+do not contain `'`, `)`, or newlines that could close the CSS
+`url(...)` token) before passing them in. Markdown rendered through
+`MessageTemplate` is sanitized by `micromark-extension-gfm-tagfilter`,
+which strips `<script>` and event-handler attributes; bring your own
+sanitizer if you need stricter guarantees.
 
 ## Development
 

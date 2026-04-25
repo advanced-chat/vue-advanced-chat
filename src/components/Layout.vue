@@ -15,7 +15,7 @@ const cssVars = useThemeStyles(toRef(props, 'theme'))
 </script>
 
 <template>
-  <div class="vac-card-window" :style="[{ height }, cssVars]">
+  <div class="vac-card-window" :style="[{ height }, cssVars, styles || {}]">
     <slot></slot>
   </div>
 </template>
