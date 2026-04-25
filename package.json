@@ -65,7 +65,7 @@
     "verify:pack": "node ./scripts/verify-pack.mjs",
     "verify:storybook-ui": "node ./scripts/verify-storybook-ui.mjs",
     "verify:storybook-flows": "node ./scripts/verify-storybook-flows.mjs",
-    "verify": "npm run format:check && npm run type-check && npm run lint && npm run test:storybook && npm run build && npm run verify:pack && npm run build-storybook",
+    "verify": "npm run format:check && npm run type-check && npm run lint && npm run test:unit && npm run test:storybook && npm run build && npm run verify:pack && npm run build-storybook",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prepare": "husky"
