@@ -134,14 +134,18 @@ const updateFiles = (fileList: FileList | null) => {
 
   files.value = [
     ...files.value,
-    ...Array.from(fileList).map((file) => ({
-      name: file.name,
-      type: file.type,
-      extension: file.name.split('.').pop() || '',
-      url: URL.createObjectURL(file),
-      localUrl: URL.createObjectURL(file),
-      blob: file,
-    })),
+    ...Array.from(fileList).map((file) => {
+      const objectUrl = URL.createObjectURL(file)
+
+      return {
+        name: file.name,
+        type: file.type,
+        extension: file.name.split('.').pop() || '',
+        url: objectUrl,
+        localUrl: objectUrl,
+        blob: file,
+      }
+    }),
   ]
 }
 

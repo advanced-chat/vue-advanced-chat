@@ -88,11 +88,18 @@ export const formatText = (
   }
 
   if (singleLine) {
-    const element = document.createElement('div')
+    if (typeof document !== 'undefined') {
+      const element = document.createElement('div')
 
-    element.innerHTML = parsed
+      element.innerHTML = parsed
 
-    parsed = element.innerText
+      parsed = element.innerText
+    } else {
+      parsed = parsed
+        .replace(/<[^>]+>/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+    }
   }
 
   return {

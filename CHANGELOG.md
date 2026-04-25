@@ -8,6 +8,70 @@ package is the V3 successor of the original `vue-advanced-chat`. See
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## 3.0.0-alpha.4
+
+Internal refactor that ships consumer-facing escape hatches. Closes
+the previously deferred composables-extraction and autocomplete-
+unification items from `rewrite/ergonomics-review.md`. No props or
+events on existing components changed; the new exports are purely
+additive.
+
+### Added
+
+- Composables exported from the package entrypoint:
+  - `useAutocomplete<T>` — the active-index state machine that powers
+    the emoji and user-tag suggestion menus. Drives a list from
+    parent-supplied `selectSignal` / `navSignal` watchers so the host
+    decides which keys mean navigate / commit.
+  - `useMessageSelection<T>` — bulk selection state with `toggle`,
+    `clear`, `cancel`, and a `selectedIds` set. `Chat.vue` now uses
+    it directly.
+  - `useReplyEdit` — owns the composer's reply / edit message state
+    and dispatches the built-in `REPLY_ACTION` / `EDIT_ACTION`.
+  - `useInfiniteScroll` — `IntersectionObserver` helper that fires
+    `onLoadMore` when a sentinel element scrolls into view; releases
+    the observer on unmount.
+  - `useLocalSearch<T>` — wraps the package's `filterItems` helper
+    with a `custom` escape hatch (server-driven results) baked in.
+- `<AutocompleteMenu>` component — generic, slotted base component
+  that `ChatEmojis` and `ChatUserTag` are now thin wrappers around.
+  Accepts `items: T[]`, an `itemKey` resolver, `selectItem` /
+  `activeUpOrDown` signals, a `vertical` / `horizontal` `layout`,
+  and an `ariaLabel`. Use it directly to build a slash-command menu
+  or any other autocomplete surface without re-deriving the
+  active-index state.
+- `chat.autocomplete.emojis` / `chat.autocomplete.users`
+  localization strings (used as the listbox `aria-label`).
+
+### Changed
+
+- `ChatEmojis` and `ChatUserTag` now render through
+  `<AutocompleteMenu>`. Their public props / events are unchanged.
+  The internal CSS class names changed (`vac-emoji-element`,
+  `vac-tags-box`, `vac-tags-box-active`, etc. → shared
+  `vac-autocomplete-item` /  `vac-autocomplete-item-active` +
+  per-wrapper `vac-emojis-menu` / `vac-user-tag-menu` scopes); only
+  consumers that styled or queried those internal classes are
+  affected.
+- `Chat.vue` now clears the message selection automatically after a
+  `message-selection-action-handler` dispatch. Hosts that previously
+  emitted `cancel-message-selection` from their handler can drop that
+  call; hosts that relied on the selection persisting must re-select
+  explicitly.
+
+### Fixed
+
+- `formatText({ singleLine: true })` no longer crashes under SSR.
+  The DOM-stripping pass is now guarded behind a `typeof document`
+  check with a tag-strip fallback for server rendering.
+- `MessageFile`'s image preloader now also listens for `error`,
+  so a broken image URL clears the loading spinner instead of
+  leaving it spinning indefinitely.
+- `ChatFooter` no longer leaks an extra `URL.createObjectURL`
+  reference per attached file — the composer's `url` and `localUrl`
+  now share a single object URL that `removeFile` / `resetMessage`
+  revoke together.
+
 ## 3.0.0-alpha.3
 
 Second naming and ergonomics pass — closes the consumer-facing P1

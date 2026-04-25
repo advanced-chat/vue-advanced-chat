@@ -49,7 +49,7 @@ export const ClickEmits: Story = {
     'onSelect-emoji': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const first = canvasElement.querySelector('.vac-emoji-element') as HTMLElement
+    const first = canvasElement.querySelector('.vac-autocomplete-item') as HTMLElement
     await userEvent.click(first)
     await expect(args['onSelect-emoji']).toHaveBeenCalledWith('😀')
   },
@@ -58,10 +58,10 @@ export const ClickEmits: Story = {
 export const HoverHighlightsItem: Story = {
   args: {},
   play: async ({ canvasElement }) => {
-    const items = canvasElement.querySelectorAll('.vac-emoji-element')
-    expect(items[0]?.classList.contains('vac-emoji-element-active')).toBe(true)
+    const items = canvasElement.querySelectorAll('.vac-autocomplete-item')
+    expect(items[0]?.classList.contains('vac-autocomplete-item-active')).toBe(true)
     items[2]?.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }))
     await Promise.resolve()
-    expect(items[2]?.classList.contains('vac-emoji-element-active')).toBe(true)
+    expect(items[2]?.classList.contains('vac-autocomplete-item-active')).toBe(true)
   },
 }

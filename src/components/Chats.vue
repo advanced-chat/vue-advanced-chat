@@ -2,10 +2,11 @@
 import ChatsSearch from '@/components/ChatsSearch.vue'
 import type { Action, Chat, Id, UserReference } from '../models'
 import Loader from '@/components/Loader.vue'
-import { computed, nextTick, onBeforeUnmount, ref, useTemplateRef, watch } from 'vue'
-import filterItems from '../utils/filter-items.ts'
+import { nextTick, ref, useTemplateRef, watch } from 'vue'
 import ChatsItem from '@/components/ChatsItem.vue'
 
+import { useInfiniteScroll } from '../composables/use-infinite-scroll'
+import { useLocalSearch } from '../composables/use-local-search'
 import { useLocalizationStrings } from '../localization'
 
 const strings = useLocalizationStrings()
@@ -88,36 +89,38 @@ const props = withDefaults(defineProps<ChatsProps>(), {
 
 const selectedChatId = ref<Id | null>(null)
 
-const filter = ref<string | null>(null)
-
-const filteredChats = computed(() => {
-  const { chats } = props
-
-  return filterItems(chats || [], 'name', filter.value)
-})
-
 const emit = defineEmits<ChatsEvents>()
 
-const onSearch = (query: string) => {
-  if (!props.customSearchEnabled) {
-    filter.value = query || null
-  }
-
-  emit('search-chat', query)
-}
+const { filtered: filteredChats, setQuery } = useLocalSearch<Chat>({
+  items: () => props.chats,
+  field: 'name',
+  custom: () => props.customSearchEnabled,
+  onSearch: (query) => emit('search-chat', query),
+})
 
 const root = useTemplateRef('root')
-
-const observer = ref<IntersectionObserver | null>(null)
-
+const sentinel = ref<HTMLElement | null>(null)
+const scrollRoot = ref<HTMLElement | null>(null)
 const showLoader = ref(false)
 
-const loadingMoreChats = ref(false)
+const {
+  loading: loadingMoreChats,
+  setLoading: setLoadingMore,
+  reset: resetInfiniteScroll,
+} = useInfiniteScroll({
+  target: sentinel,
+  scrollRoot,
+  exhausted: () => props.chatsLoaded,
+  onLoadMore: () => {
+    showLoader.value = true
+    emit('fetch-more-chats')
+  },
+})
 
 const loadMoreChats = () => {
   if (loadingMoreChats.value || props.chatsLoaded) return
 
-  loadingMoreChats.value = true
+  setLoadingMore(true)
   showLoader.value = true
 
   emit('fetch-more-chats')
@@ -129,38 +132,6 @@ const openChat = (chat: Chat) => {
   emit('open-chat', chat)
 }
 
-const initializeIntersectionObserver = () => {
-  if (observer.value) {
-    showLoader.value = true
-    observer.value.disconnect()
-  }
-
-  const rootEl = root.value
-
-  if (!rootEl) return
-
-  const loaderEl = rootEl.querySelector('#infinite-loader-rooms')
-  const roomsList = rootEl.querySelector('#rooms-list')
-
-  if (loaderEl && roomsList) {
-    const options = {
-      root: roomsList,
-      rootMargin: `100px`,
-      threshold: 0,
-    }
-
-    observer.value = new IntersectionObserver((entries) => {
-      if (entries[0]?.isIntersecting) {
-        loadMoreChats()
-      }
-    }, options)
-
-    observer.value.observe(loaderEl)
-  }
-}
-
-// Set up the loadingMoreChats watcher first so that the immediate chats
-// watcher below picks it up when it triggers loadMoreChats.
 watch(loadingMoreChats, (val) => {
   emit('loading-more-chats', val)
 })
@@ -172,7 +143,7 @@ watch(
     const oldLength = Array.isArray(oldVal) ? oldVal.length : 0
 
     if (newLength !== oldLength || props.chatsLoaded) {
-      loadingMoreChats.value = false
+      setLoadingMore(false)
     }
 
     if (props.chatsLoaded) {
@@ -181,9 +152,7 @@ watch(
       return
     }
 
-    const visibleRooms = filteredChats.value
-
-    if (!loadingMoreChats.value && visibleRooms.length < props.minimumVisibleChats) {
+    if (!loadingMoreChats.value && filteredChats.value.length < props.minimumVisibleChats) {
       loadMoreChats()
     }
   },
@@ -195,7 +164,11 @@ watch(
   (val) => {
     if (!val) {
       nextTick(() => {
-        initializeIntersectionObserver()
+        const rootEl = root.value
+        if (!rootEl) return
+        scrollRoot.value = rootEl.querySelector<HTMLElement>('#rooms-list')
+        sentinel.value = rootEl.querySelector<HTMLElement>('#infinite-loader-rooms')
+        resetInfiniteScroll()
       })
     }
   },
@@ -205,7 +178,7 @@ watch(
   () => props.chatsLoaded,
   (val) => {
     if (val) {
-      loadingMoreChats.value = false
+      setLoadingMore(false)
       if (!props.loadingChats) {
         showLoader.value = false
       }
@@ -223,12 +196,6 @@ watch(
   },
   { immediate: true },
 )
-
-onBeforeUnmount(() => {
-  if (observer.value) {
-    observer.value.disconnect()
-  }
-})
 </script>
 
 <template>
@@ -249,7 +216,7 @@ onBeforeUnmount(() => {
         :show-add-chat="showAddChat"
         :loading-chats="loadingChats"
         :chats="chats"
-        @search-chat="onSearch"
+        @search-chat="setQuery"
         @add-chat="$emit('add-chat')"
       >
       </ChatsSearch>

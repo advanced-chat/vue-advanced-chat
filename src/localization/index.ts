@@ -21,6 +21,8 @@ export type Strings = {
   'chat.scroll-to-bottom': string
   'chat.user.is-online': string
   'chat.user.last-seen': string
+  'chat.autocomplete.emojis': string
+  'chat.autocomplete.users': string
 }
 
 export const getLocalizationStrings = (locale: Localization): Strings => {

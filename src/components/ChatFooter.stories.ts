@@ -115,9 +115,9 @@ export const EmojiAutocompleteSelection: Story = {
     await userEvent.type(textarea, ':')
     // wait for the emoji suggestions chip to appear
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-emojis-container')).toBeTruthy()
+      expect(canvasElement.querySelector('.vac-emojis-menu')).toBeTruthy()
     })
-    const firstEmoji = canvasElement.querySelector('.vac-emoji-element')
+    const firstEmoji = canvasElement.querySelector('.vac-emojis-menu .vac-autocomplete-item')
     expect(firstEmoji).toBeTruthy()
     await userEvent.click(firstEmoji as Element)
     expect(textarea.value).not.toBe(':')
@@ -131,9 +131,9 @@ export const UserTagAutocompleteSelection: Story = {
     await userEvent.click(textarea)
     await userEvent.type(textarea, '@')
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-tags-container')).toBeTruthy()
+      expect(canvasElement.querySelector('.vac-user-tag-menu')).toBeTruthy()
     })
-    const firstUser = canvasElement.querySelector('.vac-tags-box')
+    const firstUser = canvasElement.querySelector('.vac-user-tag-menu .vac-autocomplete-item')
     await userEvent.click(firstUser as Element)
     expect(textarea.value).toContain('@')
   },
@@ -192,7 +192,7 @@ export const EmojiArrowKeysSelect: Story = {
     await userEvent.click(textarea)
     await userEvent.type(textarea, ':')
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-emojis-container')).toBeTruthy()
+      expect(canvasElement.querySelector('.vac-emojis-menu')).toBeTruthy()
     })
     await userEvent.keyboard('{ArrowDown}')
     await userEvent.keyboard('{ArrowUp}')
@@ -211,7 +211,7 @@ export const UserTagArrowKeysSelect: Story = {
     await userEvent.click(textarea)
     await userEvent.type(textarea, '@')
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-tags-container')).toBeTruthy()
+      expect(canvasElement.querySelector('.vac-user-tag-menu')).toBeTruthy()
     })
     await userEvent.keyboard('{ArrowDown}')
     await userEvent.keyboard('{ArrowUp}')

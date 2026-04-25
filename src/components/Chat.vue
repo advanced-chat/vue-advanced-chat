@@ -10,10 +10,10 @@ import SvgIcon from '@/components/SvgIcon.vue'
 
 import type { Action, Chat, Message, MessageFile, User, UserReference } from '../models'
 import { useLocalizationStrings } from '../localization'
+import { useMessageSelection } from '../composables/use-message-selection'
+import { useReplyEdit } from '../composables/use-reply-edit'
 import type { ChatFileItem } from './ChatFile.vue'
 import type { TextFormattingOptions } from '../utils/text-formatter'
-
-import { EDIT_ACTION, REPLY_ACTION } from './actions'
 
 const strings = useLocalizationStrings()
 
@@ -115,16 +115,35 @@ const props = withDefaults(defineProps<ChatProps>(), {
 
 const emit = defineEmits<ChatEvents>()
 
-const selectedMessages = ref<Message[]>([])
 const previewFile = ref<MessageFile | null>(null)
-const replyMessage = ref<Message | null>(null)
-const editMessage = ref<Message | null>(null)
 
 const scrollContainer = useTemplateRef<HTMLElement>('scrollContainer')
 const userAtBottom = ref(true)
 const newMessagesAvailable = ref(false)
 
 const users = computed(() => props.chat?.users || [])
+
+const selectionEnabled = computed(() => props.selectionActions.length > 0)
+
+const {
+  selected: selectedMessages,
+  selectedIds: selectedMessageIds,
+  toggle: toggleMessageSelection,
+  clear: clearMessageSelection,
+  cancel: cancelSelection,
+} = useMessageSelection<Message>({
+  enabled: selectionEnabled,
+  resetKey: () => props.chat?.id,
+  onCancel: () => emit('cancel-message-selection'),
+})
+
+const {
+  replyMessage,
+  editMessage,
+  dispatch: dispatchReplyEdit,
+  resetReply,
+  resetEdit,
+} = useReplyEdit({ resetKey: () => props.chat?.id })
 
 const newMessagesPillCount = computed(() => {
   return props.messages.filter((m) => m.unread).length
@@ -161,9 +180,6 @@ const onScroll = () => {
 watch(
   () => props.chat?.id,
   () => {
-    selectedMessages.value = []
-    replyMessage.value = null
-    editMessage.value = null
     newMessagesAvailable.value = false
     userAtBottom.value = true
     nextTick(() => scrollToBottom(false))
@@ -198,11 +214,7 @@ const messageSelectionActionHandler = (payload: { chat: Chat; action: Action }) 
     action: payload.action,
     messages: selectedMessages.value,
   })
-}
-
-const cancelMessageSelection = () => {
-  selectedMessages.value = []
-  emit('cancel-message-selection')
+  clearMessageSelection()
 }
 
 const handleOpenedFile = (payload: { file: MessageFile; action: 'preview' | 'download' }) => {
@@ -214,29 +226,8 @@ const handleOpenedFile = (payload: { file: MessageFile; action: 'preview' | 'dow
 }
 
 const onMessageAction = (payload: { action: Action; message: Message }) => {
-  if (payload.action.id === REPLY_ACTION) {
-    editMessage.value = null
-    replyMessage.value = payload.message
-  } else if (payload.action.id === EDIT_ACTION) {
-    replyMessage.value = null
-    editMessage.value = payload.message
-  }
-
+  dispatchReplyEdit(payload)
   emit('message-action-handler', payload)
-}
-
-const selectionEnabled = computed(() => props.selectionActions.length > 0)
-
-const onSelectMessage = (message: Message) => {
-  if (!selectionEnabled.value) return
-
-  const exists = selectedMessages.value.some((item) => item.id === message.id)
-
-  if (exists) {
-    selectedMessages.value = selectedMessages.value.filter((item) => item.id !== message.id)
-  } else {
-    selectedMessages.value = [...selectedMessages.value, message]
-  }
 }
 </script>
 
@@ -265,7 +256,7 @@ const onSelectMessage = (message: Message) => {
         @show-chat-info="emit('show-chat-info')"
         @menu-action-handler="emit('menu-action-handler', $event)"
         @message-selection-action-handler="messageSelectionActionHandler($event)"
-        @cancel-message-selection="cancelMessageSelection"
+        @cancel-message-selection="cancelSelection"
       />
 
       <div ref="scrollContainer" class="vac-container-scroll" @scroll.passive="onScroll">
@@ -289,12 +280,12 @@ const onSelectMessage = (message: Message) => {
             :show-new-messages-divider="showNewMessagesDivider"
             :text-formatting="textFormatting"
             :message-selection-enabled="selectionEnabled"
-            :selected="selectedMessages.some((selected) => selected.id === message.id)"
+            :selected="selectedMessageIds.has(message.id)"
             @message-action-handler="onMessageAction"
             @send-message-reaction="emit('send-message-reaction', $event)"
             @open-file="handleOpenedFile($event)"
             @click-user-tag="emit('click-user-tag', $event)"
-            @select-message="onSelectMessage"
+            @select-message="toggleMessageSelection"
             @open-failed-message="emit('open-failed-message', $event)"
           />
         </div>
@@ -331,8 +322,8 @@ const onSelectMessage = (message: Message) => {
         @typing-message="emit('typing-message', $event)"
         @send-message="emit('send-message', $event)"
         @edit-message="emit('edit-message', $event)"
-        @reset-reply-message="replyMessage = null"
-        @reset-edit-message="editMessage = null"
+        @reset-reply-message="resetReply"
+        @reset-edit-message="resetEdit"
       />
     </template>
 

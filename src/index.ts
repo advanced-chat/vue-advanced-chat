@@ -5,6 +5,7 @@ import AdvancedChatPlugin from './plugin/index.ts'
 import AdvancedChat from '@/components/AdvancedChat.vue'
 import AudioControl from '@/components/AudioControl.vue'
 import AudioPlayer from '@/components/AudioPlayer.vue'
+import AutocompleteMenu from '@/components/AutocompleteMenu.vue'
 import Chat from '@/components/Chat.vue'
 import ChatEmojis from '@/components/ChatEmojis.vue'
 import ChatFile from '@/components/ChatFile.vue'
@@ -35,6 +36,7 @@ export {
   AdvancedChat,
   AudioControl,
   AudioPlayer,
+  AutocompleteMenu,
   Chat,
   ChatEmojis,
   ChatFile,
@@ -94,6 +96,10 @@ export { getLocalizationStrings, useLocalizationStrings } from './localization'
 export type { AdvancedChatProps, AdvancedChatEvents } from './components/AdvancedChat.vue'
 export type { AudioControlProps, AudioControlEvents } from './components/AudioControl.vue'
 export type { AudioPlayerProps, AudioPlayerEvents } from './components/AudioPlayer.vue'
+export type {
+  AutocompleteMenuProps,
+  AutocompleteMenuEvents,
+} from './components/AutocompleteMenu.vue'
 export type { ChatProps, ChatEvents } from './components/Chat.vue'
 export type { ChatEmojisProps, ChatEmojisEvents } from './components/ChatEmojis.vue'
 export type { ChatFileProps, ChatFileEvents, ChatFileItem } from './components/ChatFile.vue'
@@ -133,3 +139,26 @@ export type {
   TextFormattingOptions,
 } from './utils/text-formatter'
 export { formatText } from './utils/text-formatter'
+
+// Composables — share the state machines that power the built-in
+// components so consumers can build custom surfaces without re-deriving
+// the autocomplete / selection / pagination logic.
+export {
+  useAutocomplete,
+  useMessageSelection,
+  useReplyEdit,
+  useInfiniteScroll,
+  useLocalSearch,
+} from './composables'
+export type {
+  UseAutocompleteOptions,
+  UseAutocompleteReturn,
+  UseMessageSelectionOptions,
+  UseMessageSelectionReturn,
+  UseReplyEditOptions,
+  UseReplyEditReturn,
+  UseInfiniteScrollOptions,
+  UseInfiniteScrollReturn,
+  UseLocalSearchOptions,
+  UseLocalSearchReturn,
+} from './composables'

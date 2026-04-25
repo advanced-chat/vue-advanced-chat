@@ -13,5 +13,7 @@
   "chat.cancel-edit": "Cancel edit",
   "chat.scroll-to-bottom": "Scroll to latest messages",
   "chat.user.is-online": "is online",
-  "chat.user.last-seen": "last seen "
+  "chat.user.last-seen": "last seen ",
+  "chat.autocomplete.emojis": "Emoji suggestions",
+  "chat.autocomplete.users": "User suggestions"
 }

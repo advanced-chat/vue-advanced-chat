@@ -57,7 +57,12 @@ const checkImgLoad = () => {
 
   image.src = props.file.url
 
-  image.addEventListener('load', () => (imageLoading.value = false))
+  const done = () => {
+    imageLoading.value = false
+  }
+
+  image.addEventListener('load', done)
+  image.addEventListener('error', done)
 }
 
 const openFile = (event: MouseEvent, action: 'preview' | 'download') => {
