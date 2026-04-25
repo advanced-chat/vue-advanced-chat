@@ -2,7 +2,7 @@
 import { computed, nextTick, onMounted, ref, useTemplateRef, watch } from 'vue'
 
 import ChatFooter from '@/components/ChatFooter.vue'
-import ChatHeader, { type ChatHeaderMessageSelection } from '@/components/ChatHeader.vue'
+import ChatHeader from '@/components/ChatHeader.vue'
 import ChatMessage from '@/components/ChatMessage.vue'
 import Loader from '@/components/Loader.vue'
 import MediaPreview from '@/components/MediaPreview.vue'
@@ -11,6 +11,7 @@ import SvgIcon from '@/components/SvgIcon.vue'
 import type { Action, Chat, Message, MessageFile, User, UserReference } from '../models'
 import { useLocalizationStrings } from '../localization'
 import type { ChatFileItem } from './ChatFile.vue'
+import type { TextFormattingOptions } from '../utils/text-formatter'
 
 import { EDIT_ACTION, REPLY_ACTION } from './actions'
 
@@ -19,7 +20,7 @@ const strings = useLocalizationStrings()
 const SCROLL_THRESHOLD = 60
 
 export interface ChatProps {
-  user?: UserReference | null
+  currentUser?: UserReference | null
   chat?: Chat | null
   messages?: Message[]
   loadingMessages?: boolean
@@ -34,15 +35,27 @@ export interface ChatProps {
   chatInfoEnabled?: boolean
   headerActions?: Action[]
   messageActions?: Action[]
-  messageSelection?: ChatHeaderMessageSelection
+  /**
+   * Bulk-action items rendered in the selection toolbar. When non-empty,
+   * clicking a message starts selection mode; the toolbar replaces the
+   * default header until cancelled. Pass an empty array (default) to
+   * disable selection mode entirely.
+   */
+  selectionActions?: Action[]
   showFiles?: boolean
   showEmojis?: boolean
   showFooter?: boolean
   showReactionEmojis?: boolean
   showNewMessagesDivider?: boolean
-  acceptedFiles?: string
-  multipleFiles?: boolean
-  captureFiles?: '' | 'user' | 'environment'
+  /**
+   * Markdown / linkify / autolink configuration applied to every message
+   * body in this chat. Per-render overrides (e.g. `singleLine` in reply
+   * previews) compose on top.
+   */
+  textFormatting?: Partial<TextFormattingOptions>
+  accept?: string
+  multiple?: boolean
+  capture?: '' | 'user' | 'environment'
 }
 
 export interface ChatEvents {
@@ -77,7 +90,7 @@ export interface ChatEvents {
 }
 
 const props = withDefaults(defineProps<ChatProps>(), {
-  user: null,
+  currentUser: null,
   chat: null,
   messages: () => [],
   loadingMessages: false,
@@ -88,15 +101,16 @@ const props = withDefaults(defineProps<ChatProps>(), {
   chatInfoEnabled: false,
   headerActions: () => [],
   messageActions: () => [],
-  messageSelection: () => ({ enabled: false, actions: [] }),
+  selectionActions: () => [],
   showFiles: true,
   showEmojis: true,
   showFooter: true,
   showReactionEmojis: true,
   showNewMessagesDivider: true,
-  acceptedFiles: '*',
-  multipleFiles: true,
-  captureFiles: '',
+  textFormatting: () => ({}),
+  accept: '*',
+  multiple: true,
+  capture: '',
 })
 
 const emit = defineEmits<ChatEvents>()
@@ -162,7 +176,7 @@ watch(
     if (newLen <= oldLen) return
 
     const last = props.messages[newLen - 1]
-    const isOwnLast = !!last && !!props.user && last.sender.id === props.user.id
+    const isOwnLast = !!last && !!props.currentUser && last.sender.id === props.currentUser.id
 
     nextTick(() => {
       if (userAtBottom.value || isOwnLast) {
@@ -211,8 +225,10 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
   emit('message-action-handler', payload)
 }
 
+const selectionEnabled = computed(() => props.selectionActions.length > 0)
+
 const onSelectMessage = (message: Message) => {
-  if (!props.messageSelection?.enabled) return
+  if (!selectionEnabled.value) return
 
   const exists = selectedMessages.value.some((item) => item.id === message.id)
 
@@ -226,7 +242,7 @@ const onSelectMessage = (message: Message) => {
 
 <template>
   <div class="vac-col-messages">
-    <template v-if="!user || !chat">
+    <template v-if="!currentUser || !chat">
       <div class="vac-container-center vac-room-empty">
         <slot name="no-chat-selected">
           <div>{{ strings['chat.empty'] }}</div>
@@ -236,15 +252,15 @@ const onSelectMessage = (message: Message) => {
 
     <template v-else>
       <ChatHeader
-        :user="user"
+        :current-user="currentUser"
         :chat="chat"
         :standalone="standalone"
         :show-chat-list="showChatList"
         :is-mobile="isMobile"
         :chat-info-enabled="chatInfoEnabled"
         :actions="headerActions"
-        :message-selection="messageSelection"
-        :selected-messages-total="selectedMessages.length"
+        :selection-actions="selectionActions"
+        :selected-count="selectedMessages.length"
         @toggle-chat-list="emit('toggle-chat-list')"
         @show-chat-info="emit('show-chat-info')"
         @menu-action-handler="emit('menu-action-handler', $event)"
@@ -263,7 +279,7 @@ const onSelectMessage = (message: Message) => {
           <ChatMessage
             v-for="(message, index) in messages"
             :key="message.id"
-            :user="user"
+            :current-user="currentUser"
             :message="message"
             :messages="messages"
             :index="index"
@@ -271,7 +287,8 @@ const onSelectMessage = (message: Message) => {
             :actions="messageActions"
             :show-reaction-emojis="showReactionEmojis"
             :show-new-messages-divider="showNewMessagesDivider"
-            :message-selection-enabled="messageSelection.enabled"
+            :text-formatting="textFormatting"
+            :message-selection-enabled="selectionEnabled"
             :selected="selectedMessages.some((selected) => selected.id === message.id)"
             @message-action-handler="onMessageAction"
             @send-message-reaction="emit('send-message-reaction', $event)"
@@ -306,9 +323,9 @@ const onSelectMessage = (message: Message) => {
         :show-files="showFiles"
         :show-emojis="showEmojis"
         :show-footer="showFooter"
-        :accepted-files="acceptedFiles"
-        :multiple-files="multipleFiles"
-        :capture-files="captureFiles"
+        :accept="accept"
+        :multiple="multiple"
+        :capture="capture"
         :init-reply-message="replyMessage"
         :init-edit-message="editMessage"
         @typing-message="emit('typing-message', $event)"

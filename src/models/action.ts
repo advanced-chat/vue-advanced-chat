@@ -8,8 +8,14 @@ export interface Action {
   id: string
   label: string
   /**
-   * When true, the action only appears on the current user's own
-   * messages (used by message dropdowns for actions like edit/delete).
+   * Optional leading icon. Resolves to a built-in `SvgIcon` name when
+   * the value matches one (e.g. `'pencil'`, `'deleted'`, `'send'`);
+   * otherwise consumers can override the icon slot.
    */
-  onlyMe?: boolean
+  icon?: string
+  /**
+   * When true, the action only appears on messages sent by the current
+   * user (typical for `edit`/`delete`).
+   */
+  ownMessageOnly?: boolean
 }

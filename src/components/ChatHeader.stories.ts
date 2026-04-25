@@ -11,7 +11,7 @@ const meta = {
   component: ChatHeader,
   tags: ['autodocs'],
   args: {
-    user: users[0]!,
+    currentUser: users[0]!,
     chat: chats[0] as Chat,
   },
 } satisfies Meta<typeof ChatHeader>
@@ -83,8 +83,8 @@ export const MenuActionHandler: Story = {
 
 export const SelectionToolbar: Story = {
   args: {
-    messageSelection: { enabled: true, actions: [{ id: 'delete', label: 'Delete' }] },
-    selectedMessagesTotal: 2,
+    selectionActions: [{ id: 'delete', label: 'Delete' }],
+    selectedCount: 2,
     'onCancel-message-selection': fn(),
     'onMessage-selection-action-handler': fn(),
   },

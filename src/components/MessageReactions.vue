@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import type { Message, UserReference } from '../models'
 
 export interface MessageReactionsProps {
-  user: UserReference
+  currentUser: UserReference
   message: Message
 }
 
@@ -26,7 +26,7 @@ const reactions = computed(() => Object.entries(props.message.reactions || {}))
       v-show="reaction.length"
       :key="emoji"
       class="vac-button-reaction"
-      :class="{ 'vac-reaction-me': reaction.some((id) => id === user.id) }"
+      :class="{ 'vac-reaction-me': reaction.some((id) => id === currentUser.id) }"
       @click="emit('send-message-reaction', { emoji, reaction })"
     >
       {{ emoji }}<span>{{ reaction.length }}</span>

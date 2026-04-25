@@ -25,7 +25,7 @@ export interface ChatsProps {
   chatsLoaded?: boolean
   minimumVisibleChats?: number
   isMobile?: boolean
-  user?: UserReference
+  currentUser?: UserReference
   chats?: Array<Chat>
   chat?: Chat
   /**
@@ -233,7 +233,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    v-if="user"
+    v-if="currentUser"
     ref="root"
     class="vac-rooms-container"
     :class="{
@@ -273,7 +273,7 @@ onBeforeUnmount(() => {
         @click="openChat(chat)"
       >
         <ChatsItem
-          :user="user"
+          :current-user="currentUser"
           :chat="chat"
           :actions="chatActions"
           @chat-action-handler="emit('chat-action-handler', $event)"

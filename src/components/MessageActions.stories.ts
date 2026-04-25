@@ -9,7 +9,7 @@ const meta = {
   component: MessageActions,
   tags: ['autodocs'],
   args: {
-    user: currentUser,
+    currentUser: currentUser,
     message: sampleMessages[2],
     actions: messageActions,
   },
@@ -99,7 +99,7 @@ export const DropdownMenuOpen: Story = {
 
 export const FilterOnlyMeWhenOtherUser: Story = {
   args: {
-    user: { id: '99' }, // not the sender
+    currentUser: { id: '99' }, // not the sender
   },
   play: async ({ canvasElement }) => {
     const trigger = canvasElement.querySelector(
@@ -109,7 +109,7 @@ export const FilterOnlyMeWhenOtherUser: Story = {
     await waitFor(() => {
       expect(canvasElement.querySelector('.vac-menu-options')).toBeTruthy()
     })
-    // messageActions has 3 items: reply, edit (onlyMe), delete (onlyMe)
+    // messageActions has 3 items: reply, edit (ownMessageOnly), delete (ownMessageOnly)
     const items = canvasElement.querySelectorAll('.vac-menu-item')
     expect(items.length).toBe(1)
   },

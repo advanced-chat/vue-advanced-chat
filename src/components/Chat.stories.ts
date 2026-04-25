@@ -14,17 +14,13 @@ const meta = {
   component: Chat,
   tags: ['autodocs'],
   args: {
-    user: currentUser,
+    currentUser: currentUser,
     chat: sampleChat,
     messages: sampleMessages,
     messagesLoaded: true,
     headerActions: chatActions,
     messageActions,
     standalone: true,
-    messageSelection: {
-      enabled: false,
-      actions: [{ id: 'delete', label: 'Delete' }],
-    },
     'onClick-user-tag': fn(),
   },
 } satisfies Meta<typeof Chat>
@@ -67,10 +63,7 @@ export const NoChatSelected: Story = {
 
 export const SelectionMode: Story = {
   args: {
-    messageSelection: {
-      enabled: true,
-      actions: [{ id: 'delete', label: 'Delete' }],
-    },
+    selectionActions: [{ id: 'delete', label: 'Delete' }],
   },
   play: async ({ canvasElement }) => {
     expect(canvasElement.querySelector('.vac-message-row-selectable')).toBeTruthy()
@@ -79,10 +72,7 @@ export const SelectionMode: Story = {
 
 export const SelectionToolbarFiresAction: Story = {
   args: {
-    messageSelection: {
-      enabled: true,
-      actions: [{ id: 'delete', label: 'Delete' }],
-    },
+    selectionActions: [{ id: 'delete', label: 'Delete' }],
     'onMessage-selection-action-handler': fn(),
   },
   play: async ({ canvasElement, args }) => {

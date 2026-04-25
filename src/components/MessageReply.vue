@@ -5,13 +5,17 @@ import { isAudioFile, isImageFile, isVideoFile } from '../utils/media-types.ts'
 import MessageTemplate from '@/components/MessageTemplate.vue'
 import AudioPlayer from '@/components/AudioPlayer.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
+import type { TextFormattingOptions } from '../utils/text-formatter'
 
 export interface MessageReplyProps {
   message: Message
   users: Array<User>
+  textFormatting?: Partial<TextFormattingOptions>
 }
 
-const props = defineProps<MessageReplyProps>()
+const props = withDefaults(defineProps<MessageReplyProps>(), {
+  textFormatting: () => ({}),
+})
 
 const replyUsername = computed(() => props.message.reply?.sender.name || '')
 
@@ -72,7 +76,7 @@ const isOtherFile = computed(() => {
       <MessageTemplate
         :message="message?.reply"
         :users="users"
-        :formatting-options="{ singleLine: true }"
+        :formatting-options="{ ...props.textFormatting, singleLine: true }"
       />
     </div>
   </div>

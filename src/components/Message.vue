@@ -11,15 +11,21 @@ import SvgIcon from '@/components/SvgIcon.vue'
 import type { Action, Message, MessageFile, User, UserReference } from '../models'
 import { isAudioFile } from '../utils/media-types'
 import { useLocalizationStrings } from '../localization'
+import type { TextFormattingOptions } from '../utils/text-formatter'
 
 const strings = useLocalizationStrings()
 
 export interface MessageProps {
-  user: UserReference
+  currentUser: UserReference
   message: Message
   users?: User[]
   actions?: Action[]
   showReactionEmojis?: boolean
+  /**
+   * Text-formatting options applied to this message body. Composes with
+   * downstream per-render overrides (single-line previews, etc.).
+   */
+  textFormatting?: Partial<TextFormattingOptions>
   messageSelectionEnabled?: boolean
   selected?: boolean
 }
@@ -37,13 +43,14 @@ const props = withDefaults(defineProps<MessageProps>(), {
   users: () => [],
   actions: () => [],
   showReactionEmojis: true,
+  textFormatting: () => ({}),
   messageSelectionEnabled: false,
   selected: false,
 })
 
 const emit = defineEmits<MessageEvents>()
 
-const isOwnMessage = computed(() => props.message.sender.id === props.user.id)
+const isOwnMessage = computed(() => props.message.sender.id === props.currentUser.id)
 
 const timestamp = computed(() => {
   const date = new Date(props.message.createdAt)
@@ -90,7 +97,7 @@ const isFailed = computed(() => props.message.status === 'failed')
       <MessageTemplate
         :message="message"
         :users="users"
-        :formatting-options="{ markdown: true, singleLine: false }"
+        :formatting-options="{ ...textFormatting, markdown: true, singleLine: false }"
         @click-user-tag="emit('click-user-tag', $event)"
       />
     </div>
@@ -115,6 +122,7 @@ const isFailed = computed(() => props.message.status === 'failed')
         v-if="message.reply && !message.deleted"
         :message="message"
         :users="users"
+        :text-formatting="textFormatting"
         class="vac-reply-block"
       />
 
@@ -129,14 +137,16 @@ const isFailed = computed(() => props.message.status === 'failed')
         v-else-if="!message.files?.length"
         :message="message"
         :users="users"
+        :formatting-options="textFormatting"
         @click-user-tag="emit('click-user-tag', $event)"
       />
 
       <MessageFiles
         v-else-if="!isAudioMessage"
-        :user="user"
+        :current-user="currentUser"
         :message="message"
         :users="users"
+        :text-formatting="textFormatting"
         :message-selection-enabled="messageSelectionEnabled"
         @open-file="emit('open-file', $event)"
         @click-user-tag="emit('click-user-tag', $event)"
@@ -165,7 +175,7 @@ const isFailed = computed(() => props.message.status === 'failed')
 
       <MessageActions
         v-if="showActions || showReactions"
-        :user="user"
+        :current-user="currentUser"
         :message="message"
         :actions="showActions ? actions : []"
         :show-reaction-emojis="showReactions"
@@ -176,7 +186,7 @@ const isFailed = computed(() => props.message.status === 'failed')
 
     <MessageReactions
       v-if="message.reactions"
-      :user="user"
+      :current-user="currentUser"
       :message="message"
       @send-message-reaction="emit('send-message-reaction', { emoji: $event.emoji, message })"
     />

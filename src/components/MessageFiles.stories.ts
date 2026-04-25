@@ -9,7 +9,7 @@ const meta = {
   component: MessageFiles,
   tags: ['autodocs'],
   args: {
-    user: { id: '1' },
+    currentUser: { id: '1' },
     message: {
       id: '1',
       content: 'Multiple attachments',

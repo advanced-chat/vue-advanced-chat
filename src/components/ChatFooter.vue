@@ -27,11 +27,11 @@ export interface ChatFooterProps {
   initReplyMessage?: Message | null
   initEditMessage?: Message | null
   /** MIME-type filter for the file input. */
-  acceptedFiles?: string
+  accept?: string
   /** Allow multi-file selection. */
-  multipleFiles?: boolean
+  multiple?: boolean
   /** Mobile capture mode for the file input (e.g. `user`, `environment`). */
-  captureFiles?: '' | 'user' | 'environment'
+  capture?: '' | 'user' | 'environment'
 }
 
 export interface ChatFooterEvents {
@@ -60,9 +60,9 @@ const props = withDefaults(defineProps<ChatFooterProps>(), {
   showFooter: true,
   initReplyMessage: null,
   initEditMessage: null,
-  acceptedFiles: '*',
-  multipleFiles: true,
-  captureFiles: '',
+  accept: '*',
+  multiple: true,
+  capture: '',
 })
 
 const emit = defineEmits<ChatFooterEvents>()
@@ -362,9 +362,9 @@ const onKeydown = (event: KeyboardEvent) => {
           <input
             hidden
             type="file"
-            :multiple="multipleFiles"
-            :accept="acceptedFiles"
-            :capture="captureFiles || undefined"
+            :multiple="multiple"
+            :accept="accept"
+            :capture="capture || undefined"
             @change="updateFiles(($event.target as HTMLInputElement).files)"
           />
         </label>

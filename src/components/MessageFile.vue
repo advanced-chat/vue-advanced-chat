@@ -9,7 +9,7 @@ import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 
 export interface MessageFileProps {
   file: MessageFile
-  user: UserReference
+  currentUser: UserReference
   message: Message
   index: number
   messageSelectionEnabled: boolean
@@ -112,7 +112,7 @@ onMounted(() => {
       <div
         class="vac-message-image"
         :class="{
-          'vac-blur-loading': isImageLoading && message.sender.id === user.id,
+          'vac-blur-loading': isImageLoading && message.sender.id === currentUser.id,
         }"
         :style="{
           'background-image': `url('${isImageLoading ? file.previewUrl || file.url : file.url}')`,

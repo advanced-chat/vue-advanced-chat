@@ -8,6 +8,71 @@ package is the V3 successor of the original `vue-advanced-chat`. See
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## 3.0.0-alpha.3
+
+Second naming and ergonomics pass — closes the consumer-facing P1
+items from `rewrite/ergonomics-review.md` (composables extraction
+and autocomplete unification stay deferred; they're internal-only
+refactors that don't gate the release). Every item is a breaking
+change vs `3.0.0-alpha.2`.
+
+### Migration recipe
+
+| Before | After |
+|---|---|
+| `messageSelection: { enabled, actions }` (Chat / ChatHeader / AdvancedChat as `messageSelectionActions`) | `selectionActions: Action[]` — non-empty enables selection mode |
+| `acceptedFiles` | `accept` |
+| `multipleFiles` | `multiple` |
+| `captureFiles` | `capture` |
+| `user` (the viewer prop on AdvancedChat / Chat / Chats / ChatHeader / ChatsItem / Message / ChatMessage / MessageActions / MessageReactions / MessageFile / MessageFiles) | `currentUser` |
+| `Action.onlyMe` | `Action.ownMessageOnly` |
+| `selectedMessagesTotal` (ChatHeader) | `selectedCount` |
+| `Chat.lastMessage: Message` | `Chat.lastMessage: MessageSummary` (`Message` is still assignable; the projection just doesn't require `reactions`/`reply`/etc.) |
+| `Message.reply: Message` | `Message.reply: MessageSummary` (no longer recursive) |
+| `chat.lastMessage.unread` (read in `ChatsItem` for the "new message" styling) | `chat.unreadCount` |
+
+### Added
+
+- `Chat.textFormatting?: Partial<TextFormattingOptions>` and
+  `AdvancedChat.textFormatting?: Partial<TextFormattingOptions>`. One
+  knob to disable markdown / linkify / configure link options across
+  every message body in a chat. Per-render overrides
+  (single-line previews, system-message render) compose on top.
+  Restores the v2 top-level `text-formatting` config.
+- `Action.icon?: string`. Optional leading icon for dropdown menu
+  items, resolves to a built-in `SvgIcon` name (e.g. `'pencil'`,
+  `'deleted'`). Sample fixture wires `pencil` for Edit and
+  `deleted` for Delete.
+- `MessageStatus` and `MessageSummary` types exported from the
+  package.
+
+### Changed (data model)
+
+- `Action.{name,title}` … wait, that's already alpha.2. *(This entry
+  is correct: alpha.2 did `name → id` / `title → label`; alpha.3
+  follows up with `onlyMe → ownMessageOnly` and adds `icon`.)*
+- `Chat.lastMessage` and `Message.reply` retyped to `MessageSummary`.
+  This is a non-recursive projection: `id`, `sender`, `content`,
+  `createdAt`, `status`, `deleted`, `edited`, `files`. Existing
+  `Message` values pass through unchanged.
+
+### Changed (component props)
+
+- The packed `messageSelection: { enabled, actions }` prop on `Chat`
+  and `ChatHeader` is replaced by `selectionActions: Action[]`.
+  Selection mode is enabled iff the array is non-empty. `AdvancedChat`
+  exposes the same prop directly (was `messageSelectionActions`).
+  One concept, one prop.
+- File-input props on `Chat`, `ChatFooter`, and `AdvancedChat` match
+  the underlying HTML attributes: `accept`, `multiple`, `capture`.
+- The viewer prop is `currentUser` everywhere it appears, no longer
+  colliding with `Chat.users` (participants) in TypeScript hovering.
+- `selectedCount` replaces `selectedMessagesTotal` on `ChatHeader`.
+
+### Removed
+
+- `ChatHeaderMessageSelection` interface (no longer needed).
+
 ## 3.0.0-alpha.2
 
 Naming and ergonomics pass that closes the P0 items from

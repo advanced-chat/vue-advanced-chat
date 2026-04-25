@@ -11,11 +11,12 @@ import type {
   UserReference,
 } from '../models'
 import { useLocalizationStrings } from '../localization'
+import type { TextFormattingOptions } from '../utils/text-formatter'
 
 const strings = useLocalizationStrings()
 
 export interface ChatMessageProps {
-  user: UserReference
+  currentUser: UserReference
   message: ChatMessageModel
   messages?: ChatMessageModel[]
   index?: number
@@ -23,6 +24,7 @@ export interface ChatMessageProps {
   actions?: Action[]
   showReactionEmojis?: boolean
   showNewMessagesDivider?: boolean
+  textFormatting?: Partial<TextFormattingOptions>
   messageSelectionEnabled?: boolean
   selected?: boolean
 }
@@ -43,6 +45,7 @@ const props = withDefaults(defineProps<ChatMessageProps>(), {
   actions: () => [],
   showReactionEmojis: true,
   showNewMessagesDivider: true,
+  textFormatting: () => ({}),
   messageSelectionEnabled: false,
   selected: false,
 })
@@ -81,11 +84,12 @@ const dateLabel = computed(() => {
     </div>
 
     <Message
-      :user="user"
+      :current-user="currentUser"
       :message="message"
       :users="users"
       :actions="actions"
       :show-reaction-emojis="showReactionEmojis"
+      :text-formatting="textFormatting"
       :message-selection-enabled="messageSelectionEnabled"
       :selected="selected"
       @message-action-handler="emit('message-action-handler', $event)"

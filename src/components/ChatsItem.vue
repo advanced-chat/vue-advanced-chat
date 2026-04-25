@@ -19,7 +19,7 @@ import { useLocalizationStrings } from '../localization'
 const strings = useLocalizationStrings()
 
 export interface ChatsItemProps {
-  user: UserReference
+  currentUser: UserReference
   chat: Chat
   actions?: Array<Action>
 }
@@ -34,11 +34,11 @@ export interface ChatsItemEvents {
 const props = withDefaults(defineProps<ChatsItemProps>(), {})
 
 const otherUser = computed(() => {
-  const { chat, user } = props
+  const { chat, currentUser } = props
 
   if (!chat.users || chat.users.length !== 2) return null
 
-  return chat.users.find((u) => u.id !== user.id) || null
+  return chat.users.find((u) => u.id !== currentUser.id) || null
 })
 
 const userStatus = computed(() => otherUser.value?.status?.state || null)
@@ -71,11 +71,11 @@ const formattedTimestamp = computed(() => {
 const typingUsers = computed(() => typingUsersString(props.chat, strings))
 
 const lastMessageCheckmark = computed<{ name: string; param: string } | null>(() => {
-  const { chat, user } = props
+  const { chat, currentUser } = props
   const last = chat.lastMessage
 
   if (!last || typingUsers.value || last.deleted) return null
-  if (last.sender.id !== user.id) return null
+  if (last.sender.id !== currentUser.id) return null
 
   switch (last.status) {
     case 'read':
@@ -111,7 +111,7 @@ const formattedDuration = computed(() => {
 const lastMessage = computed(() => {
   if (typingUsers.value) return typingUsers.value
 
-  const { chat, user } = props
+  const { chat, currentUser } = props
 
   const lastMessage = chat.lastMessage
 
@@ -131,7 +131,7 @@ const lastMessage = computed(() => {
 
   if (lastMessage.sender.name) {
     return `${lastMessage.sender.name} - ${content}`
-  } else if (!sender || sender.id === user.id) {
+  } else if (!sender || sender.id === currentUser.id) {
     return content
   }
 
@@ -181,7 +181,7 @@ const chatActionHandler = (action: Action) => {
         <div
           class="vac-text-last"
           :class="{
-            'vac-message-new': chat.lastMessage && chat.lastMessage.unread && !typingUsers,
+            'vac-message-new': !!chat.unreadCount && !typingUsers,
           }"
         >
           <span v-if="lastMessageCheckmark">

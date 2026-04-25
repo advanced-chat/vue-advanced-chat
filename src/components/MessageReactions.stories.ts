@@ -8,7 +8,7 @@ const meta = {
   component: MessageReactions,
   tags: ['autodocs'],
   args: {
-    user: currentUser,
+    currentUser: currentUser,
     message: sampleMessages[2],
   },
 } satisfies Meta<typeof MessageReactions>

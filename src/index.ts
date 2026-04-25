@@ -70,6 +70,8 @@ export type {
   Message as MessageModel,
   MessageFile as MessageFileModel,
   MessageReference,
+  MessageStatus,
+  MessageSummary,
   User,
   UserReference,
 } from './models'
@@ -97,11 +99,7 @@ export type { ChatEmojisProps, ChatEmojisEvents } from './components/ChatEmojis.
 export type { ChatFileProps, ChatFileEvents, ChatFileItem } from './components/ChatFile.vue'
 export type { ChatFilesProps, ChatFilesEvents } from './components/ChatFiles.vue'
 export type { ChatFooterProps, ChatFooterEvents } from './components/ChatFooter.vue'
-export type {
-  ChatHeaderProps,
-  ChatHeaderEvents,
-  ChatHeaderMessageSelection,
-} from './components/ChatHeader.vue'
+export type { ChatHeaderProps, ChatHeaderEvents } from './components/ChatHeader.vue'
 export type { ChatMessageProps, ChatMessageEvents } from './components/ChatMessage.vue'
 export type { ChatsProps, ChatsEvents } from './components/Chats.vue'
 export type { ChatsItemProps, ChatsItemEvents } from './components/ChatsItem.vue'

@@ -8,21 +8,21 @@ import SvgIcon from '@/components/SvgIcon.vue'
 
 const strings = useLocalizationStrings()
 
-export interface ChatHeaderMessageSelection {
-  enabled: boolean
-  actions: Array<Action>
-}
-
 export interface ChatHeaderProps {
-  user: UserReference
+  currentUser: UserReference
   chat: Chat
   standalone?: boolean
   showChatList?: boolean
   isMobile?: boolean
   chatInfoEnabled?: boolean
   actions?: Array<Action>
-  messageSelection?: ChatHeaderMessageSelection
-  selectedMessagesTotal?: number
+  /**
+   * Bulk-action items rendered in the selection toolbar. When non-empty
+   * and at least one message is selected, the toolbar replaces the
+   * default header until the user cancels.
+   */
+  selectionActions?: Array<Action>
+  selectedCount?: number
 }
 
 export interface ChatHeaderEvents {
@@ -39,13 +39,13 @@ const props = withDefaults(defineProps<ChatHeaderProps>(), {
   isMobile: false,
   chatInfoEnabled: false,
   actions: () => [],
-  messageSelection: () => ({ enabled: false, actions: [] }),
-  selectedMessagesTotal: 0,
+  selectionActions: () => [],
+  selectedCount: 0,
 })
 
 const typingUsers = computed(() => typingUsersString(props.chat, strings))
 const showMessageSelection = computed(
-  () => !!props.messageSelection?.enabled && props.selectedMessagesTotal > 0,
+  () => props.selectionActions.length > 0 && props.selectedCount > 0,
 )
 
 const formatLastActive = (value: string): string => {
@@ -68,7 +68,7 @@ const formatLastActive = (value: string): string => {
 
 const otherUser = computed(() => {
   if (!props.chat.users || props.chat.users.length !== 2) return null
-  return props.chat.users.find((u: User) => u.id !== props.user.id) || null
+  return props.chat.users.find((u: User) => u.id !== props.currentUser.id) || null
 })
 
 const avatarUrl = computed(() => props.chat.avatar || otherUser.value?.avatar || null)
@@ -124,11 +124,11 @@ const menuActionHandler = (action: Action) => {
       <div class="vac-room-wrapper">
         <transition name="vac-slide-up">
           <div v-if="showMessageSelection" class="vac-room-selection">
-            <div v-for="action in messageSelection?.actions || []" :id="action.id" :key="action.id">
+            <div v-for="action in selectionActions" :id="action.id" :key="action.id">
               <div class="vac-selection-button" @click="messageSelectionActionHandler(action)">
                 {{ action.label }}
                 <span class="vac-selection-button-count">
-                  {{ selectedMessagesTotal }}
+                  {{ selectedCount }}
                 </span>
               </div>
             </div>

@@ -22,7 +22,7 @@ const meta = {
   component: MessageFile,
   tags: ['autodocs'],
   args: {
-    user: { id: '1' },
+    currentUser: { id: '1' },
     message: sampleMessage,
     file: sampleMessage.files[0]!,
     index: 0,

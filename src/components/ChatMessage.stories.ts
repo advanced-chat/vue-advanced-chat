@@ -8,7 +8,7 @@ const meta = {
   component: ChatMessage,
   tags: ['autodocs'],
   args: {
-    user: currentUser,
+    currentUser: currentUser,
     message: sampleMessages[2],
     messages: sampleMessages,
     index: 2,

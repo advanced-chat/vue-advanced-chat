@@ -8,7 +8,7 @@ const meta = {
   component: Message,
   tags: ['autodocs'],
   args: {
-    user: currentUser,
+    currentUser: currentUser,
     message: sampleMessages[2],
     users: sampleUsers,
     actions: messageActions,

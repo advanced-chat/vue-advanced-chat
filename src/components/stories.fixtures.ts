@@ -109,6 +109,6 @@ export const chatActions: Action[] = [
 
 export const messageActions: Action[] = [
   { id: 'reply', label: 'Reply' },
-  { id: 'edit', label: 'Edit', onlyMe: true },
-  { id: 'delete', label: 'Delete', onlyMe: true },
+  { id: 'edit', label: 'Edit', icon: 'pencil', ownMessageOnly: true },
+  { id: 'delete', label: 'Delete', icon: 'deleted', ownMessageOnly: true },
 ]

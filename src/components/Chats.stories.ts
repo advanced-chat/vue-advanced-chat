@@ -14,7 +14,7 @@ const meta = {
     height: '600px',
   },
   args: {
-    user: users[0],
+    currentUser: users[0],
     chats: chats as Chat[],
     chatsLoaded: true,
     chat: chats[0] as Chat,

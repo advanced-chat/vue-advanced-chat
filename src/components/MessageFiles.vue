@@ -7,12 +7,14 @@ import MessageFile from '@/components/MessageFile.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import MessageTemplate from '@/components/MessageTemplate.vue'
+import type { TextFormattingOptions } from '../utils/text-formatter'
 
 export interface MessageFilesProps {
-  user: UserReference
+  currentUser: UserReference
   message: Message
   users: Array<User>
   messageSelectionEnabled: boolean
+  textFormatting?: Partial<TextFormattingOptions>
 }
 
 export interface MessageFilesEvents {
@@ -20,7 +22,9 @@ export interface MessageFilesEvents {
   (e: 'click-user-tag', user: User): void
 }
 
-const props = defineProps<MessageFilesProps>()
+const props = withDefaults(defineProps<MessageFilesProps>(), {
+  textFormatting: () => ({}),
+})
 
 const emit = defineEmits<MessageFilesEvents>()
 
@@ -44,7 +48,7 @@ const openFile = (event: Event, file: MessageFileModel, action: 'preview' | 'dow
     <div v-for="(file, i) in visualMediaFiles" :key="i + 'iv'">
       <MessageFile
         :file="file"
-        :user="user"
+        :current-user="currentUser"
         :message="message"
         :index="i"
         :message-selection-enabled="messageSelectionEnabled"
@@ -81,7 +85,7 @@ const openFile = (event: Event, file: MessageFileModel, action: 'preview' | 'dow
     <MessageTemplate
       :message="message"
       :users="users"
-      :formatting-options="{ singleLine: false }"
+      :formatting-options="{ ...textFormatting, singleLine: false }"
       @click-user-tag="emit('click-user-tag', $event)"
     />
   </div>

@@ -19,7 +19,7 @@ const meta = {
   },
   args: {
     height: '600px',
-    user: currentUser,
+    currentUser: currentUser,
     chats: sampleChats,
     chatsLoaded: true,
     chat: sampleChat,

@@ -15,11 +15,12 @@ import type {
   UserReference,
 } from '../models'
 import type { ChatFileItem } from './ChatFile.vue'
+import type { TextFormattingOptions } from '../utils/text-formatter'
 
 export interface AdvancedChatProps {
   height?: string
   theme?: Theme
-  user?: UserReference | null
+  currentUser?: UserReference | null
   chats?: ChatModel[]
   chat?: ChatModel | null
   messages?: Message[]
@@ -30,7 +31,12 @@ export interface AdvancedChatProps {
   headerActions?: Action[]
   messageActions?: Action[]
   chatActions?: Action[]
-  messageSelectionActions?: Action[]
+  /**
+   * Bulk-action items rendered in the message-selection toolbar. Pass
+   * non-empty to enable selection mode; pass empty (the default) to
+   * disable it. Replaces the prior `messageSelectionActions` prop.
+   */
+  selectionActions?: Action[]
   showChats?: boolean
   showSearch?: boolean
   showAddChat?: boolean
@@ -40,9 +46,13 @@ export interface AdvancedChatProps {
   showSendIcon?: boolean
   showReactionEmojis?: boolean
   showNewMessagesDivider?: boolean
-  acceptedFiles?: string
-  multipleFiles?: boolean
-  captureFiles?: '' | 'user' | 'environment'
+  /**
+   * Text-formatting applied to every message body in the active chat.
+   */
+  textFormatting?: Partial<TextFormattingOptions>
+  accept?: string
+  multiple?: boolean
+  capture?: '' | 'user' | 'environment'
   customSearchEnabled?: boolean
   chatInfoEnabled?: boolean
 }
@@ -79,7 +89,7 @@ export interface AdvancedChatEvents {
 
 const props = withDefaults(defineProps<AdvancedChatProps>(), {
   theme: 'auto',
-  user: null,
+  currentUser: null,
   chats: () => [],
   chat: null,
   messages: () => [],
@@ -90,7 +100,7 @@ const props = withDefaults(defineProps<AdvancedChatProps>(), {
   headerActions: () => [],
   messageActions: () => [],
   chatActions: () => [],
-  messageSelectionActions: () => [],
+  selectionActions: () => [],
   showChats: true,
   showSearch: true,
   showAddChat: true,
@@ -100,9 +110,10 @@ const props = withDefaults(defineProps<AdvancedChatProps>(), {
   showSendIcon: true,
   showReactionEmojis: true,
   showNewMessagesDivider: true,
-  acceptedFiles: '*',
-  multipleFiles: true,
-  captureFiles: '',
+  textFormatting: () => ({}),
+  accept: '*',
+  multiple: true,
+  capture: '',
   customSearchEnabled: false,
   chatInfoEnabled: false,
   height: '600px',
@@ -134,11 +145,6 @@ const showChatList = ref(true)
 
 const chatMessages = computed(() => props.messages)
 
-const messageSelection = computed(() => ({
-  enabled: props.messageSelectionActions.length > 0,
-  actions: props.messageSelectionActions,
-}))
-
 const onShowChatInfo = () => {
   if (!activeChat.value) return
 
@@ -155,8 +161,8 @@ const onOpenChat = (chat: ChatModel) => {
   <Layout :height="height" :theme="theme">
     <div class="vac-chat-container">
       <Chats
-        v-if="showChats && user"
-        :user="user"
+        v-if="showChats && currentUser"
+        :current-user="currentUser"
         :chats="chats"
         :chat="activeChat || undefined"
         :loading-chats="loadingChats"
@@ -173,7 +179,7 @@ const onOpenChat = (chat: ChatModel) => {
       />
 
       <Chat
-        :user="user"
+        :current-user="currentUser"
         :chat="activeChat"
         :messages="chatMessages"
         :loading-messages="loadingMessages"
@@ -181,15 +187,16 @@ const onOpenChat = (chat: ChatModel) => {
         :show-chat-list="showChatList"
         :header-actions="headerActions"
         :message-actions="messageActions"
-        :message-selection="messageSelection"
+        :selection-actions="selectionActions"
         :show-files="showFiles"
         :show-emojis="showEmojis"
         :show-footer="showFooter"
         :show-reaction-emojis="showReactionEmojis"
         :show-new-messages-divider="showNewMessagesDivider"
-        :accepted-files="acceptedFiles"
-        :multiple-files="multipleFiles"
-        :capture-files="captureFiles"
+        :text-formatting="textFormatting"
+        :accept="accept"
+        :multiple="multiple"
+        :capture="capture"
         :chat-info-enabled="chatInfoEnabled"
         @toggle-chat-list="showChatList = !showChatList"
         @show-chat-info="onShowChatInfo"

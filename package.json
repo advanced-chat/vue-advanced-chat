@@ -1,6 +1,6 @@
 {
   "name": "@advanced-chat/components",
-  "version": "3.0.0-alpha.2",
+  "version": "3.0.0-alpha.3",
   "license": "MIT",
   "description": "A beautiful chat component library made with Vue",
   "contributors": [

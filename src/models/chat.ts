@@ -1,5 +1,5 @@
 import type { User, UserReference } from './user.ts'
-import type { Message } from './message.ts'
+import type { MessageSummary } from './message.ts'
 import { type Strings } from '../localization/index.ts'
 import type { Id } from './id.ts'
 
@@ -13,7 +13,13 @@ export interface Chat {
    */
   avatar?: string
   unreadCount?: number
-  lastMessage?: Message
+  /**
+   * Latest message in the chat, used to render the chat-list preview
+   * row. Typed as `MessageSummary` so consumers can supply a tiny
+   * projection without filling in `reactions`, `reply`, `disableActions`,
+   * etc.; any full `Message` value is also assignable.
+   */
+  lastMessage?: MessageSummary
   users?: User[]
   typingUsers?: UserReference[]
 }

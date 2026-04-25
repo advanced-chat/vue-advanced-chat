@@ -4,7 +4,13 @@ export type { Chat, ChatReference } from './chat.ts'
 
 export type { User, UserReference } from './user.ts'
 
-export type { Message, MessageReference, MessageFile } from './message.ts'
+export type {
+  Message,
+  MessageReference,
+  MessageFile,
+  MessageSummary,
+  MessageStatus,
+} from './message.ts'
 
 export type { Action } from './action.ts'
 

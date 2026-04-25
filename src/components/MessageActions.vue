@@ -9,7 +9,7 @@ import { vOnClickOutside } from '@vueuse/components'
 const REACTION_OPTIONS = ['👍', '❤️', '😂', '🎉', '🔥']
 
 export interface MessageActionsProps {
-  user: UserReference
+  currentUser: UserReference
   message: Message
   actions?: Action[]
   showReactionEmojis?: boolean
@@ -31,9 +31,9 @@ const optionsOpened = ref(false)
 const reactionsOpened = ref(false)
 
 const filteredActions = computed(() => {
-  if (props.message.sender.id === props.user.id) return props.actions
+  if (props.message.sender.id === props.currentUser.id) return props.actions
 
-  return props.actions.filter((action) => !action.onlyMe)
+  return props.actions.filter((action) => !action.ownMessageOnly)
 })
 
 const closeAll = () => {
@@ -95,6 +95,7 @@ const closeAll = () => {
                 class="vac-menu-item"
                 @click.stop="emit('message-action-handler', { action, message })"
               >
+                <SvgIcon v-if="action.icon" :name="action.icon" class="vac-menu-item-icon" />
                 {{ action.label }}
               </button>
             </div>

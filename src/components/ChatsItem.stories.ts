@@ -11,7 +11,7 @@ const meta = {
   component: ChatsItem,
   tags: ['autodocs'],
   args: {
-    user: users[0]!,
+    currentUser: users[0]!,
     chat: chats[0] as Chat,
   },
 } satisfies Meta<typeof ChatsItem>
@@ -83,7 +83,7 @@ export const TypingIndicator: Story = {
 
 export const OnlineDot: Story = {
   args: {
-    user: users[0]!,
+    currentUser: users[0]!,
     chat: { ...(chats[0] as Chat), users: [users[0], users[1]] as User[] } as Chat,
   },
   play: async ({ canvasElement }) => {
