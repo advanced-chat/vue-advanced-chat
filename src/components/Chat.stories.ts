@@ -23,7 +23,7 @@ const meta = {
     standalone: true,
     messageSelection: {
       enabled: false,
-      actions: [{ name: 'delete', title: 'Delete' }],
+      actions: [{ id: 'delete', label: 'Delete' }],
     },
     'onClick-user-tag': fn(),
   },
@@ -69,7 +69,7 @@ export const SelectionMode: Story = {
   args: {
     messageSelection: {
       enabled: true,
-      actions: [{ name: 'delete', title: 'Delete' }],
+      actions: [{ id: 'delete', label: 'Delete' }],
     },
   },
   play: async ({ canvasElement }) => {
@@ -81,7 +81,7 @@ export const SelectionToolbarFiresAction: Story = {
   args: {
     messageSelection: {
       enabled: true,
-      actions: [{ name: 'delete', title: 'Delete' }],
+      actions: [{ id: 'delete', label: 'Delete' }],
     },
     'onMessage-selection-action-handler': fn(),
   },

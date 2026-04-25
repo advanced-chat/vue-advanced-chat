@@ -4,10 +4,10 @@ import { expect, fn, userEvent } from 'storybook/test'
 import MessageFile from './MessageFile.vue'
 
 const sampleMessage = {
-  id: 1,
+  id: '1',
   content: 'Hey there!',
   createdAt: '2025-12-01T10:00:00Z',
-  sender: { id: 1, name: 'Alice', status: { state: 'online' as const } },
+  sender: { id: '1', name: 'Alice', status: { state: 'online' as const } },
   files: [
     {
       name: 'example.jpg',
@@ -22,7 +22,7 @@ const meta = {
   component: MessageFile,
   tags: ['autodocs'],
   args: {
-    user: { id: 1 },
+    user: { id: '1' },
     message: sampleMessage,
     file: sampleMessage.files[0]!,
     index: 0,

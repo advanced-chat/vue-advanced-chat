@@ -173,7 +173,7 @@ export const ChatInfoClickFires: Story = {
 
 export const ChatActionHandlerEmits: Story = {
   args: {
-    chatActions: [{ name: 'archive', title: 'Archive' }],
+    chatActions: [{ id: 'archive', label: 'Archive' }],
     'onChat-action-handler': fn(),
   },
   play: async ({ canvasElement, args }) => {

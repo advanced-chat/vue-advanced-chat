@@ -1,19 +1,25 @@
 import type { Id } from './id.ts'
 import type { User } from './user.ts'
 
+/**
+ * Delivery / failure state of a message. Replaces the four overlapping
+ * booleans (`saved`/`delivered`/`read`/`failure`) used in earlier
+ * alphas. Components render checkmarks based on this single value.
+ */
+export type MessageStatus = 'sending' | 'sent' | 'delivered' | 'read' | 'failed'
+
 export interface Message {
   id: Id
   sender: User
   content?: string
   files?: MessageFile[]
   reactions?: Record<string, Id[]>
-  new?: boolean
-  saved?: boolean
-  delivered?: boolean
-  read?: boolean
+  /** True if this message is part of the unread batch that triggers the divider line. */
+  unread?: boolean
+  /** Delivery state. See `MessageStatus`. */
+  status?: MessageStatus
   deleted?: boolean
   edited?: boolean
-  failure?: boolean
   system?: boolean
   disableActions?: boolean
   disableReactions?: boolean
@@ -32,8 +38,10 @@ export interface MessageFile {
   url: string
   previewUrl?: string
   size?: number
-  audio?: boolean
+  /** Duration in seconds for audio/video files. */
   duration?: number
+  /** Upload progress (0-100) while a pending file is being sent. */
   progress?: number
+  /** In-memory blob for pending uploads (not for received files). */
   blob?: Blob
 }

@@ -11,18 +11,18 @@ export const otherUser = sampleUsers[1]!
 
 export const sampleMessages: Message[] = [
   {
-    id: 1,
+    id: '1',
     sender: otherUser,
     content: 'Hey there! Welcome to the thread.',
     createdAt: '2025-12-01T10:00:00Z',
-    read: true,
+    status: 'read',
   },
   {
-    id: 2,
+    id: '2',
     sender: currentUser,
     content: 'Here is a screenshot from the latest build.',
     createdAt: '2025-12-01T10:02:00Z',
-    delivered: true,
+    status: 'delivered',
     edited: true,
     files: [
       {
@@ -35,23 +35,23 @@ export const sampleMessages: Message[] = [
     ],
   },
   {
-    id: 3,
+    id: '3',
     sender: otherUser,
     content: 'Looks good. Can we ship this with reactions?',
     createdAt: '2025-12-01T10:03:00Z',
     reactions: {
-      '👍': [1, 2],
-      '🔥': [1],
+      '👍': ['1', '2'],
+      '🔥': ['1'],
     },
     reply: {
-      id: 1,
+      id: '1',
       sender: otherUser,
       content: 'Hey there! Welcome to the thread.',
       createdAt: '2025-12-01T10:00:00Z',
     },
   },
   {
-    id: 4,
+    id: '4',
     sender: currentUser,
     content: 'Audio note attached.',
     createdAt: '2025-12-01T10:05:00Z',
@@ -64,28 +64,28 @@ export const sampleMessages: Message[] = [
         duration: 104,
       },
     ],
-    saved: true,
+    status: 'sent',
   },
   {
-    id: 5,
+    id: '5',
     sender: otherUser,
     content: '',
     createdAt: '2025-12-01T10:08:00Z',
     deleted: true,
   },
   {
-    id: 6,
+    id: '6',
     sender: { ...otherUser, name: 'system' },
     content: 'Bob joined the thread.',
     createdAt: '2025-12-01T10:09:00Z',
     system: true,
   },
   {
-    id: 7,
+    id: '7',
     sender: currentUser,
     content: 'Tried to send but failed — tap to retry.',
     createdAt: '2025-12-01T10:10:00Z',
-    failure: true,
+    status: 'failed',
   },
 ]
 
@@ -103,12 +103,12 @@ export const sampleChat = {
 } satisfies Chat
 
 export const chatActions: Action[] = [
-  { name: 'archive', title: 'Archive' },
-  { name: 'mute', title: 'Mute' },
+  { id: 'archive', label: 'Archive' },
+  { id: 'mute', label: 'Mute' },
 ]
 
 export const messageActions: Action[] = [
-  { name: 'reply', title: 'Reply' },
-  { name: 'edit', title: 'Edit', onlyMe: true },
-  { name: 'delete', title: 'Delete', onlyMe: true },
+  { id: 'reply', label: 'Reply' },
+  { id: 'edit', label: 'Edit', onlyMe: true },
+  { id: 'delete', label: 'Delete', onlyMe: true },
 ]

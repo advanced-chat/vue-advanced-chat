@@ -88,9 +88,7 @@ export const FailureClickEmits: Story = {
   play: async ({ canvasElement, args }) => {
     const failure = canvasElement.querySelector('.vac-failure-container') as HTMLElement
     await userEvent.click(failure)
-    await expect(args['onOpen-failed-message']).toHaveBeenCalledWith({
-      message: sampleMessages[6],
-    })
+    await expect(args['onOpen-failed-message']).toHaveBeenCalledWith(sampleMessages[6])
   },
 }
 

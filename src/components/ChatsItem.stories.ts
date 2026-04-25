@@ -27,8 +27,8 @@ export const Default: Story = {
 export const WithActions: Story = {
   args: {
     actions: [
-      { name: 'archive', title: 'Archive' },
-      { name: 'mute', title: 'Mute' },
+      { id: 'archive', label: 'Archive' },
+      { id: 'mute', label: 'Mute' },
     ],
   },
   play: async ({ canvasElement }) => {
@@ -38,7 +38,7 @@ export const WithActions: Story = {
 
 export const ActionHandlerEmits: Story = {
   args: {
-    actions: [{ name: 'archive', title: 'Archive' }],
+    actions: [{ id: 'archive', label: 'Archive' }],
     'onChat-action-handler': fn(),
   },
   play: async ({ canvasElement, args }) => {
@@ -49,10 +49,11 @@ export const ActionHandlerEmits: Story = {
     })
     const item = canvasElement.querySelector('.vac-menu-item') as HTMLElement
     await userEvent.click(item)
-    await expect(args['onChat-action-handler']).toHaveBeenCalledWith({
-      name: 'archive',
-      title: 'Archive',
-    })
+    await expect(args['onChat-action-handler']).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: { id: 'archive', label: 'Archive' },
+      }),
+    )
   },
 }
 
@@ -72,7 +73,7 @@ export const TypingIndicator: Story = {
       ...(chats[0] as Chat),
       lastMessage: undefined,
       users: users as User[],
-      typingUsers: [{ id: 2 }],
+      typingUsers: [{ id: '2' }],
     } as Chat,
   },
   play: async ({ canvasElement }) => {
@@ -95,7 +96,7 @@ export const AudioLastMessage: Story = {
     chat: {
       ...(chats[0] as Chat),
       lastMessage: {
-        id: 1,
+        id: '1',
         content: '',
         createdAt: '2025-12-01T10:00:00Z',
         sender: users[0]! as User,

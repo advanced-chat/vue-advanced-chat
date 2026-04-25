@@ -1,12 +1,12 @@
 [
   {
-    "id": 1,
+    "id": "1",
     "name": "Alice",
-    "icon": "https://picsum.photos/200",
+    "avatar": "https://picsum.photos/200",
     "lastMessage": {
-      "id": 1,
+      "id": "1",
       "sender": {
-        "id": 1,
+        "id": "1",
         "name": "Alice",
         "status": {
           "state": "online"
@@ -17,13 +17,13 @@
     }
   },
   {
-    "id": 2,
+    "id": "2",
     "name": "Bob",
-    "icon": "https://picsum.photos/200",
+    "avatar": "https://picsum.photos/200",
     "lastMessage": {
-      "id": 2,
+      "id": "2",
       "sender": {
-        "id": 2,
+        "id": "2",
         "name": "Bob",
         "status": {
           "state": "away"
@@ -34,13 +34,13 @@
     }
   },
   {
-    "id": 3,
+    "id": "3",
     "name": "Charlie",
-    "icon": "https://picsum.photos/200",
+    "avatar": "https://picsum.photos/200",
     "lastMessage": {
-      "id": 3,
+      "id": "3",
       "sender": {
-        "id": 3,
+        "id": "3",
         "name": "Charlie",
         "status": {
           "state": "offline",

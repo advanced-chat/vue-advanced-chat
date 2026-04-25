@@ -33,7 +33,7 @@ export interface ChatMessageEvents {
   (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
   (e: 'click-user-tag', user: User): void
   (e: 'select-message', message: ChatMessageModel): void
-  (e: 'open-failed-message', payload: { message: ChatMessageModel }): void
+  (e: 'open-failed-message', message: ChatMessageModel): void
 }
 
 const props = withDefaults(defineProps<ChatMessageProps>(), {
@@ -76,7 +76,7 @@ const dateLabel = computed(() => {
       {{ dateLabel }}
     </div>
 
-    <div v-if="message.new && showNewMessagesDivider" class="vac-line-new">
+    <div v-if="message.unread && showNewMessagesDivider" class="vac-line-new">
       {{ strings['chat.messages.new'] }}
     </div>
 

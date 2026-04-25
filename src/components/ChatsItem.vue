@@ -26,9 +26,9 @@ export interface ChatsItemProps {
 
 export interface ChatsItemEvents {
   /**
-   * Emitted when a chat action is triggered
+   * Emitted when a chat action is triggered.
    */
-  (event: 'chat-action-handler', action: Action): void
+  (event: 'chat-action-handler', payload: { chat: Chat; action: Action }): void
 }
 
 const props = withDefaults(defineProps<ChatsItemProps>(), {})
@@ -38,10 +38,12 @@ const otherUser = computed(() => {
 
   if (!chat.users || chat.users.length !== 2) return null
 
-  return chat.users.find((u) => u.id.toString() !== user.id.toString()) || null
+  return chat.users.find((u) => u.id !== user.id) || null
 })
 
 const userStatus = computed(() => otherUser.value?.status?.state || null)
+
+const avatarUrl = computed(() => props.chat.avatar || otherUser.value?.avatar || null)
 
 const formattedTimestamp = computed(() => {
   const { chat } = props
@@ -68,16 +70,23 @@ const formattedTimestamp = computed(() => {
 
 const typingUsers = computed(() => typingUsersString(props.chat, strings))
 
-const isMessageCheckmarkVisible = computed(() => {
+const lastMessageCheckmark = computed<{ name: string; param: string } | null>(() => {
   const { chat, user } = props
+  const last = chat.lastMessage
 
-  return (
-    !typingUsers.value &&
-    chat.lastMessage &&
-    !chat.lastMessage.deleted &&
-    chat.lastMessage.sender.id === user.id &&
-    (chat.lastMessage.saved || chat.lastMessage.delivered || chat.lastMessage.read)
-  )
+  if (!last || typingUsers.value || last.deleted) return null
+  if (last.sender.id !== user.id) return null
+
+  switch (last.status) {
+    case 'read':
+      return { name: 'double-checkmark', param: 'seen' }
+    case 'delivered':
+      return { name: 'double-checkmark', param: '' }
+    case 'sent':
+      return { name: 'checkmark', param: '' }
+    default:
+      return null
+  }
 })
 
 const isAudio = computed(() => {
@@ -138,19 +147,19 @@ const closeChatMenu = () => {
 }
 
 const chatActionHandler = (action: Action) => {
-  emit('chat-action-handler', action)
+  emit('chat-action-handler', { chat: props.chat, action })
   closeChatMenu()
 }
 </script>
 
 <template>
   <div class="vac-room-container">
-    <slot :name="'room-list-item_' + chat.id">
-      <slot :name="'room-list-avatar_' + chat.id">
+    <slot :name="'chat-list-item_' + chat.id">
+      <slot :name="'chat-list-avatar_' + chat.id">
         <div
-          v-if="chat.icon"
+          v-if="avatarUrl"
           class="vac-avatar"
-          :style="{ 'background-image': `url('${chat.icon}')` }"
+          :style="{ 'background-image': `url('${avatarUrl}')` }"
         />
       </slot>
       <div class="vac-name-container vac-text-ellipsis">
@@ -160,7 +169,7 @@ const chatActionHandler = (action: Action) => {
             class="vac-state-circle"
             :class="{ 'vac-state-online': userStatus === 'online' }"
           />
-          <slot :name="'room-list-info_' + chat.id">
+          <slot :name="'chat-list-info_' + chat.id">
             <div class="vac-room-name vac-text-ellipsis">
               {{ chat.name }}
             </div>
@@ -172,14 +181,14 @@ const chatActionHandler = (action: Action) => {
         <div
           class="vac-text-last"
           :class="{
-            'vac-message-new': chat.lastMessage && chat.lastMessage.new && !typingUsers,
+            'vac-message-new': chat.lastMessage && chat.lastMessage.unread && !typingUsers,
           }"
         >
-          <span v-if="isMessageCheckmarkVisible">
+          <span v-if="lastMessageCheckmark">
             <slot :name="'checkmark-icon_' + chat.id">
               <SvgIcon
-                :name="chat.lastMessage?.delivered ? 'double-checkmark' : 'checkmark'"
-                :param="chat.lastMessage?.read ? 'seen' : ''"
+                :name="lastMessageCheckmark.name"
+                :param="lastMessageCheckmark.param"
                 class="vac-icon-check"
               />
             </slot>
@@ -210,13 +219,13 @@ const chatActionHandler = (action: Action) => {
             <div v-if="chat.unreadCount" class="vac-badge-counter vac-room-badge">
               {{ chat.unreadCount }}
             </div>
-            <slot :name="'room-list-options_' + chat.id">
+            <slot :name="'chat-list-options_' + chat.id">
               <template v-if="actions && actions.length">
                 <div
                   class="vac-svg-button vac-list-room-options"
                   @click.stop="openedChatMenu = chat.id"
                 >
-                  <slot :name="'room-list-options-icon_' + chat.id">
+                  <slot :name="'chat-list-options-icon_' + chat.id">
                     <svg-icon name="dropdown" param="room" />
                   </slot>
                 </div>
@@ -230,13 +239,13 @@ const chatActionHandler = (action: Action) => {
                     <div class="vac-menu-list">
                       <button
                         v-for="action in actions"
-                        :key="action.name"
+                        :key="action.id"
                         type="button"
                         role="menuitem"
                         class="vac-menu-item"
                         @click.stop="chatActionHandler(action)"
                       >
-                        {{ action.title }}
+                        {{ action.label }}
                       </button>
                     </div>
                   </div>

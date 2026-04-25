@@ -59,8 +59,8 @@ export const ChatInfoClickEmits: Story = {
 export const MenuActionHandler: Story = {
   args: {
     actions: [
-      { name: 'archive', title: 'Archive' },
-      { name: 'mute', title: 'Mute' },
+      { id: 'archive', label: 'Archive' },
+      { id: 'mute', label: 'Mute' },
     ],
     'onMenu-action-handler': fn(),
   },
@@ -73,16 +73,17 @@ export const MenuActionHandler: Story = {
     })
     const archive = within(canvasElement).getByText('Archive')
     await userEvent.click(archive)
-    await expect(args['onMenu-action-handler']).toHaveBeenCalledWith({
-      name: 'archive',
-      title: 'Archive',
-    })
+    await expect(args['onMenu-action-handler']).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: { id: 'archive', label: 'Archive' },
+      }),
+    )
   },
 }
 
 export const SelectionToolbar: Story = {
   args: {
-    messageSelection: { enabled: true, actions: [{ name: 'delete', title: 'Delete' }] },
+    messageSelection: { enabled: true, actions: [{ id: 'delete', label: 'Delete' }] },
     selectedMessagesTotal: 2,
     'onCancel-message-selection': fn(),
     'onMessage-selection-action-handler': fn(),
@@ -91,10 +92,11 @@ export const SelectionToolbar: Story = {
     expect(canvasElement.querySelector('.vac-room-selection')).toBeTruthy()
     const deleteBtn = canvasElement.querySelector('.vac-selection-button') as HTMLElement
     await userEvent.click(deleteBtn)
-    await expect(args['onMessage-selection-action-handler']).toHaveBeenCalledWith({
-      name: 'delete',
-      title: 'Delete',
-    })
+    await expect(args['onMessage-selection-action-handler']).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: { id: 'delete', label: 'Delete' },
+      }),
+    )
 
     const cancel = canvasElement.querySelector('.vac-selection-cancel') as HTMLElement
     await userEvent.click(cancel)
@@ -105,7 +107,7 @@ export const SelectionToolbar: Story = {
 export const TypingIndicator: Story = {
   args: {
     chat: {
-      id: 1,
+      id: '1',
       name: 'Group',
       users: [users[0]! as never, users[1]! as never, users[2]! as never],
       typingUsers: [{ id: users[1]!.id }],
@@ -121,7 +123,7 @@ export const TypingIndicator: Story = {
 export const OnlineStatus: Story = {
   args: {
     chat: {
-      id: 1,
+      id: '1',
       name: '1:1',
       users: [users[0]! as never, users[2]! as never],
     } as Chat,

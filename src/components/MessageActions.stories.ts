@@ -99,7 +99,7 @@ export const DropdownMenuOpen: Story = {
 
 export const FilterOnlyMeWhenOtherUser: Story = {
   args: {
-    user: { id: 99 }, // not the sender
+    user: { id: '99' }, // not the sender
   },
   play: async ({ canvasElement }) => {
     const trigger = canvasElement.querySelector(

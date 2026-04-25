@@ -56,11 +56,14 @@ export interface AdvancedChatEvents {
   (e: 'show-chat-info', chat: ChatModel): void
   (e: 'menu-action-handler', payload: { chat: ChatModel; action: Action }): void
   (e: 'message-action-handler', payload: { action: Action; message: Message }): void
-  (e: 'message-selection-action-handler', payload: { action: Action; messages: Message[] }): void
+  (
+    e: 'message-selection-action-handler',
+    payload: { chat: ChatModel; action: Action; messages: Message[] },
+  ): void
   (e: 'chat-action-handler', payload: { chat: ChatModel; action: Action }): void
   (e: 'cancel-message-selection'): void
   (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
-  (e: 'open-failed-message', payload: { message: Message }): void
+  (e: 'open-failed-message', message: Message): void
   (e: 'send-message-reaction', payload: { emoji: string; message: Message }): void
   (e: 'click-user-tag', user: User): void
   (e: 'typing-message', value: string): void
@@ -136,12 +139,6 @@ const messageSelection = computed(() => ({
   actions: props.messageSelectionActions,
 }))
 
-const onMenuActionHandler = (action: Action) => {
-  if (!activeChat.value) return
-
-  emit('menu-action-handler', { chat: activeChat.value, action })
-}
-
 const onShowChatInfo = () => {
   if (!activeChat.value) return
 
@@ -196,7 +193,7 @@ const onOpenChat = (chat: ChatModel) => {
         :chat-info-enabled="chatInfoEnabled"
         @toggle-chat-list="showChatList = !showChatList"
         @show-chat-info="onShowChatInfo"
-        @menu-action-handler="onMenuActionHandler"
+        @menu-action-handler="emit('menu-action-handler', $event)"
         @message-action-handler="emit('message-action-handler', $event)"
         @message-selection-action-handler="emit('message-selection-action-handler', $event)"
         @cancel-message-selection="emit('cancel-message-selection')"

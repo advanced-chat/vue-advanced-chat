@@ -8,59 +8,130 @@ package is the V3 successor of the original `vue-advanced-chat`. See
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 3.0.0-alpha.2
 
-### Added
+Naming and ergonomics pass that closes the P0 items from
+`rewrite/ergonomics-review.md`. Every item below is a breaking
+change vs `3.0.0-alpha.1`.
 
-- `Chat` and `AdvancedChat` now wire message pagination: a `fetch-messages`
-  event fires when the message list scrolls to within 60 px of the top
-  (suppressed while `loadingMessages` or `messagesLoaded` is true).
-- `Chat` auto-scrolls to the latest message on mount, on chat switch,
-  on send, and when receiving a new message while the user is already
-  near the bottom. When the user has scrolled away, a "scroll to
-  latest" pill (with a count badge of `message.new` items) appears.
-- `Chat.messagesLoaded` and `AdvancedChat.messagesLoaded` props short-
-  circuit pagination once every available message has been delivered.
-- New string `chat.scroll-to-bottom` for the pill's accessible label.
-- `src/index.ts` aggregates per-component `*Props` / `*Events`
-  interfaces (and `ChatHeaderMessageSelection`, `ChatFileItem`,
-  `Theme`, `Styles`, `Strings`, `Localization`, etc.) so consumers
-  writing wrapper components don't have to deep-import.
-- `REPLY_ACTION` and `EDIT_ACTION` constants exported from the
-  package (plus the `BuiltInActionName` type) so consumers don't
-  rely on magic strings.
+### Migration recipe (mechanical)
 
-### Changed
+| Before | After |
+|---|---|
+| `Action.name`, `Action.title` | `Action.id`, `Action.label` |
+| `Chat.icon` | `Chat.avatar` |
+| `User` had no avatar field | `User.avatar?: string` |
+| `Message.saved`, `Message.delivered`, `Message.read`, `Message.failure` | `Message.status?: 'sending' \| 'sent' \| 'delivered' \| 'read' \| 'failed'` |
+| `Message.new` | `Message.unread` |
+| `MessageFile.audio: boolean` | (removed; use `isAudioFile(file)` from `@advanced-chat/components`) |
+| `Id = string \| number` | `Id = string` (call `String(id)` at the API boundary) |
+| `<slot name="room-header">` etc. | `<slot name="chat-header">` |
+| `<slot :name="'room-list-item_' + id">` etc. | `<slot :name="'chat-list-item_' + id">` |
+| `<slot name="rooms-empty">` | `<slot name="chats-empty">` |
+| `<slot name="spinner-icon-rooms">` | `<slot name="spinner-icon-chats">` |
+| `ChatHeader` emits `menu-action-handler: Action` | `ChatHeader` emits `menu-action-handler: { chat, action }` |
+| `ChatHeader` emits `message-selection-action-handler: Action` | `ChatHeader` emits `message-selection-action-handler: { chat, action }` |
+| `ChatsItem` emits `chat-action-handler: Action` | `ChatsItem` emits `chat-action-handler: { chat, action }` |
+| `Chat`/`Message`/`AdvancedChat` emit `open-failed-message: { message }` | `open-failed-message: message` (single-field wrap dropped) |
 
-- **Breaking**: event names normalized to kebab-case.
-  `opened:file` → `open-file`, `clicked:user-tag` → `click-user-tag`
-  on `MessageActions`, `Message`, `MessageFile`, `MessageFiles`,
-  `MessageTemplate`, `ChatMessage`, `Chat`, and `AdvancedChat`.
-- **Breaking**: `Chats.chatsLoaded` now follows v2's
-  `rooms-loaded` semantics (true means "all chats delivered, stop
-  fetching"). The previous inverted check made `fetch-more-chats`
-  unreachable through the watch path.
-- The chats watch is now `immediate: true` and re-orders the
-  `loadingMoreChats` watcher so the initial pass through
-  `loadMoreChats` correctly emits both `fetch-more-chats` and
-  `loading-more-chats: true`.
-- All `vClickOutside` directive usages migrated from the internal
-  fork to `@vueuse/components`'s `vOnClickOutside`. Removes
-  `src/utils/on-click-outside.ts` (~200 LOC).
-- All five `// @ts-nocheck` files in `src/utils` are typed cleanly:
-  `deep-merge`, `filter-items`, `text-formatter/autolink`,
-  `text-formatter/underline`, `text-formatter/user-tag`. New
-  `text-formatter/types.d.ts` augments `micromark-util-types` with
-  the custom token names this library emits.
+### Changed (data model)
+
+- `Action` is now `{ id: string; label: string; onlyMe?: boolean }`.
+  Aligns with industry-standard `id`/`label` naming. The exported
+  built-in action constants `REPLY_ACTION` and `EDIT_ACTION` keep
+  their string values (`'reply'`, `'edit'`); they're now the
+  documented value to put in `Action.id`.
+- `Chat.icon` renamed to `Chat.avatar`. "Avatar" matches v2 and the
+  rest of the chat-library ecosystem.
+- `User.avatar?: string` added. Rendered in the user-tag autocomplete
+  row, available as fallback for `Chat.avatar` in 1:1 chats. Test
+  fixtures in `.test/users.json` now include avatar URLs.
+- `Message` delivery state moved from four overlapping booleans
+  (`saved`/`delivered`/`read`/`failure`) to one `status` enum:
+  `'sending' | 'sent' | 'delivered' | 'read' | 'failed'`. Components
+  derive the checkmark icon and failure pill from a single source
+  of truth. New exported type: `MessageStatus`.
+- `Message.new` renamed to `Message.unread`. Generic name → semantic.
+- `MessageFile.audio` removed. The library already detects audio via
+  MIME / extension through `isAudioFile`; the boolean was a duplicated
+  source of truth.
+- `Id` narrowed to `string`. Drops 12+ defensive `.toString()` calls
+  in components and removes a class of `1 === '1'` bugs. Consumers
+  with numeric backend ids should call `String(id)` at the API
+  boundary.
+
+### Changed (event payloads)
+
+- `ChatHeader.menu-action-handler`, `ChatHeader.message-selection-action-handler`,
+  and `ChatsItem.chat-action-handler` now emit `{ chat, action }`
+  (or `{ chat, action, messages }` for the selection variant). The
+  same listener wired through any layer (`Chats`, `Chat`, or
+  `AdvancedChat`) now sees the same payload shape.
+- `open-failed-message` emits the `Message` directly, not wrapped in
+  `{ message }`. Consumers should change
+  `(payload) => doSomething(payload.message)` to
+  `(message) => doSomething(message)`.
+
+### Changed (slots)
+
+Final v2 → v3 slot rename pass. Templates only — internal
+`vac-room-*` CSS classes are unchanged.
+
+- `room-header` → `chat-header`
+- `room-header-avatar` → `chat-header-avatar`
+- `room-header-info` → `chat-header-info`
+- `room-options` → `chat-options`
+- `rooms-empty` → `chats-empty`
+- `room-list-item_<id>` → `chat-list-item_<id>`
+- `room-list-avatar_<id>` → `chat-list-avatar_<id>`
+- `room-list-info_<id>` → `chat-list-info_<id>`
+- `room-list-options_<id>` → `chat-list-options_<id>`
+- `room-list-options-icon_<id>` → `chat-list-options-icon_<id>`
+- `spinner-icon-rooms` → `spinner-icon-chats`
+- `spinner-icon-infinite-rooms` → `spinner-icon-infinite-chats`
+
+### Changed (localization)
+
+- `typingUsersString(chat, strings)` now accepts
+  `Pick<Strings, 'chat.typing'>` instead of the full `Strings` type.
+  `AdvancedChatPlugin({ strings })` already accepted `Partial<Strings>`;
+  this matches the test fixtures' expectation. Adding new string keys
+  is no longer a breaking change for typed consumers.
 
 ### Removed
 
-- **Breaking**: dropped `@tailwindcss/vite` and `tailwindcss` as
-  dependencies. The library never used Tailwind utility classes;
-  the import in `src/assets/style.css` was shipping a Tailwind
-  preflight in `dist/components.css` for no consumer benefit. CSS
-  bundle now 31.77 kB / 5.83 kB gzipped (down from 37.20 / 7.48).
-- Removed the internal `src/utils/on-click-outside.ts` fork.
+- `Message.saved`, `Message.delivered`, `Message.read`, `Message.failure`,
+  `Message.new`, `MessageFile.audio` (see migration recipe).
+
+### Added (rolled in from the previous Unreleased section)
+
+- `Chat` and `AdvancedChat` wire message pagination: `fetch-messages`
+  fires when the list scrolls within 60 px of the top, suppressed
+  while `loadingMessages` or `messagesLoaded` is true.
+- `Chat` auto-scrolls to the latest message on mount, on chat switch,
+  on send, and on receive when the user is at the bottom. When the
+  user has scrolled away, a "scroll to latest" pill with a count
+  badge of unread messages appears.
+- New string `chat.scroll-to-bottom`.
+- `src/index.ts` aggregates per-component `*Props` / `*Events`
+  interfaces, theme/localization primitives, and plugin types.
+- `REPLY_ACTION` / `EDIT_ACTION` constants and `BuiltInActionName`
+  type exported.
+
+### Also changed
+
+- Event names previously namespaced with a colon (`opened:file`,
+  `clicked:user-tag`) renamed to kebab-case (`open-file`,
+  `click-user-tag`).
+- `Chats.chatsLoaded` semantics: `true` now means "all chats
+  delivered" (matches v2's `rooms-loaded`).
+- `vClickOutside` migrated from internal fork to
+  `@vueuse/components`'s `vOnClickOutside`.
+- Five `@ts-nocheck` files in `src/utils` are typed cleanly. New
+  `text-formatter/types.d.ts` augments `micromark-util-types`.
+- `@tailwindcss/vite` and `tailwindcss` dropped — the library never
+  used Tailwind utility classes. CSS bundle 31.77 kB / 5.83 kB gz
+  (was 37.20 / 7.48).
 
 ## 3.0.0-alpha.1
 

@@ -27,7 +27,7 @@ export const Default: Story = {
 
 export const NewMessageDivider: Story = {
   args: {
-    message: { ...sampleMessages[2]!, new: true },
+    message: { ...sampleMessages[2]!, unread: true },
   },
   play: async ({ canvasElement }) => {
     expect(canvasElement.querySelector('.vac-line-new')).toBeTruthy()
@@ -36,7 +36,7 @@ export const NewMessageDivider: Story = {
 
 export const NewMessageDividerHidden: Story = {
   args: {
-    message: { ...sampleMessages[2]!, new: true },
+    message: { ...sampleMessages[2]!, unread: true },
     showNewMessagesDivider: false,
   },
   play: async ({ canvasElement }) => {

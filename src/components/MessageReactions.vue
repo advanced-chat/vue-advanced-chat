@@ -26,7 +26,7 @@ const reactions = computed(() => Object.entries(props.message.reactions || {}))
       v-show="reaction.length"
       :key="emoji"
       class="vac-button-reaction"
-      :class="{ 'vac-reaction-me': reaction.some((id) => id.toString() === user.id.toString()) }"
+      :class="{ 'vac-reaction-me': reaction.some((id) => id === user.id) }"
       @click="emit('send-message-reaction', { emoji, reaction })"
     >
       {{ emoji }}<span>{{ reaction.length }}</span>

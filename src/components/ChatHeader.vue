@@ -28,9 +28,9 @@ export interface ChatHeaderProps {
 export interface ChatHeaderEvents {
   (e: 'toggle-chat-list'): void
   (e: 'show-chat-info'): void
-  (e: 'menu-action-handler', action: Action): void
+  (e: 'menu-action-handler', payload: { chat: Chat; action: Action }): void
   (e: 'cancel-message-selection'): void
-  (e: 'message-selection-action-handler', action: Action): void
+  (e: 'message-selection-action-handler', payload: { chat: Chat; action: Action }): void
 }
 
 const props = withDefaults(defineProps<ChatHeaderProps>(), {
@@ -66,19 +66,23 @@ const formatLastActive = (value: string): string => {
   return date.toLocaleDateString([], { month: 'short', day: 'numeric' })
 }
 
+const otherUser = computed(() => {
+  if (!props.chat.users || props.chat.users.length !== 2) return null
+  return props.chat.users.find((u: User) => u.id !== props.user.id) || null
+})
+
+const avatarUrl = computed(() => props.chat.avatar || otherUser.value?.avatar || null)
+
 const userStatus = computed(() => {
-  if (!props.chat.users || props.chat.users.length !== 2) return ''
+  const u = otherUser.value
+  if (!u?.status) return ''
 
-  const otherUser = props.chat.users.find((u: User) => u.id.toString() !== props.user.id.toString())
-
-  if (!otherUser?.status) return ''
-
-  if (otherUser.status.state === 'online') {
+  if (u.status.state === 'online') {
     return strings['chat.user.is-online']
   }
 
-  if (otherUser.status.lastActiveAt) {
-    return strings['chat.user.last-seen'] + formatLastActive(otherUser.status.lastActiveAt)
+  if (u.status.lastActiveAt) {
+    return strings['chat.user.last-seen'] + formatLastActive(u.status.lastActiveAt)
   }
 
   return ''
@@ -87,7 +91,7 @@ const userStatus = computed(() => {
 const emit = defineEmits<ChatHeaderEvents>()
 
 const messageSelectionActionHandler = (action: Action) => {
-  emit('message-selection-action-handler', action)
+  emit('message-selection-action-handler', { chat: props.chat, action })
 }
 
 const messageSelectionAnimationEnded = ref(true)
@@ -110,23 +114,19 @@ const closeMenu = () => {
 
 const menuActionHandler = (action: Action) => {
   closeMenu()
-  emit('menu-action-handler', action)
+  emit('menu-action-handler', { chat: props.chat, action })
 }
 </script>
 
 <template>
   <div class="vac-room-header vac-app-border-b">
-    <slot name="room-header">
+    <slot name="chat-header">
       <div class="vac-room-wrapper">
         <transition name="vac-slide-up">
           <div v-if="showMessageSelection" class="vac-room-selection">
-            <div
-              v-for="action in messageSelection?.actions || []"
-              :id="action.name"
-              :key="action.name"
-            >
+            <div v-for="action in messageSelection?.actions || []" :id="action.id" :key="action.id">
               <div class="vac-selection-button" @click="messageSelectionActionHandler(action)">
-                {{ action.title }}
+                {{ action.label }}
                 <span class="vac-selection-button-count">
                   {{ selectedMessagesTotal }}
                 </span>
@@ -159,14 +159,14 @@ const menuActionHandler = (action: Action) => {
             :class="{ 'vac-item-clickable': chatInfoEnabled }"
             @click="emit('show-chat-info')"
           >
-            <slot name="room-header-avatar">
+            <slot name="chat-header-avatar">
               <div
-                v-if="chat.icon"
+                v-if="avatarUrl"
                 class="vac-avatar"
-                :style="{ 'background-image': `url('${chat.icon}')` }"
+                :style="{ 'background-image': `url('${avatarUrl}')` }"
               />
             </slot>
-            <slot name="room-header-info">
+            <slot name="chat-header-info">
               <div class="vac-text-ellipsis">
                 <div class="vac-room-name vac-text-ellipsis">
                   {{ chat.name }}
@@ -180,7 +180,7 @@ const menuActionHandler = (action: Action) => {
               </div>
             </slot>
           </div>
-          <slot v-if="chat.id" name="room-options">
+          <slot v-if="chat.id" name="chat-options">
             <div
               v-if="actions.length"
               class="vac-svg-button vac-room-options"
@@ -200,13 +200,13 @@ const menuActionHandler = (action: Action) => {
                 <div class="vac-menu-list">
                   <button
                     v-for="action in actions"
-                    :key="action.name"
+                    :key="action.id"
                     type="button"
                     role="menuitem"
                     class="vac-menu-item"
                     @click="menuActionHandler(action)"
                   >
-                    {{ action.title }}
+                    {{ action.label }}
                   </button>
                 </div>
               </div>

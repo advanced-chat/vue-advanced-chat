@@ -69,7 +69,12 @@ watch(
         @click="emit('select-user-tag', user)"
       >
         <div class="vac-tags-info">
-          <div class="vac-tags-avatar">
+          <div
+            v-if="user.avatar"
+            class="vac-tags-avatar vac-tags-avatar-image"
+            :style="{ 'background-image': `url('${user.avatar}')` }"
+          />
+          <div v-else class="vac-tags-avatar">
             {{ user.name.slice(0, 1) }}
           </div>
           <div class="vac-tags-username">
@@ -124,6 +129,12 @@ watch(
   background: var(--chat-footer-bg-color-tag);
   font-size: 12px;
   font-weight: 700;
+
+  &.vac-tags-avatar-image {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
 }
 
 .vac-tags-username {

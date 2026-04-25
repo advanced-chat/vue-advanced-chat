@@ -31,7 +31,7 @@ const optionsOpened = ref(false)
 const reactionsOpened = ref(false)
 
 const filteredActions = computed(() => {
-  if (props.message.sender.id.toString() === props.user.id.toString()) return props.actions
+  if (props.message.sender.id === props.user.id) return props.actions
 
   return props.actions.filter((action) => !action.onlyMe)
 })
@@ -89,13 +89,13 @@ const closeAll = () => {
             <div class="vac-menu-list">
               <button
                 v-for="action in filteredActions"
-                :key="action.name"
+                :key="action.id"
                 type="button"
                 role="menuitem"
                 class="vac-menu-item"
                 @click.stop="emit('message-action-handler', { action, message })"
               >
-                {{ action.title }}
+                {{ action.label }}
               </button>
             </div>
           </div>

@@ -48,8 +48,11 @@ export interface ChatProps {
 export interface ChatEvents {
   (e: 'toggle-chat-list'): void
   (e: 'show-chat-info'): void
-  (e: 'menu-action-handler', action: Action): void
-  (e: 'message-selection-action-handler', payload: { action: Action; messages: Message[] }): void
+  (e: 'menu-action-handler', payload: { chat: Chat; action: Action }): void
+  (
+    e: 'message-selection-action-handler',
+    payload: { chat: Chat; action: Action; messages: Message[] },
+  ): void
   (e: 'cancel-message-selection'): void
   (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
   (e: 'typing-message', value: string): void
@@ -64,7 +67,7 @@ export interface ChatEvents {
   (e: 'message-action-handler', payload: { action: Action; message: Message }): void
   (e: 'click-user-tag', user: User): void
   (e: 'send-message-reaction', payload: { emoji: string; message: Message }): void
-  (e: 'open-failed-message', payload: { message: Message }): void
+  (e: 'open-failed-message', message: Message): void
   /**
    * Fired when the user scrolls near the top of the message list and more
    * messages should be paginated in. Suppressed while `loadingMessages` is
@@ -110,7 +113,7 @@ const newMessagesAvailable = ref(false)
 const users = computed(() => props.chat?.users || [])
 
 const newMessagesPillCount = computed(() => {
-  return props.messages.filter((m) => m.new).length
+  return props.messages.filter((m) => m.unread).length
 })
 
 const scrollToBottom = (smooth = true) => {
@@ -159,8 +162,7 @@ watch(
     if (newLen <= oldLen) return
 
     const last = props.messages[newLen - 1]
-    const isOwnLast =
-      !!last && !!props.user && last.sender.id.toString() === props.user.id.toString()
+    const isOwnLast = !!last && !!props.user && last.sender.id === props.user.id
 
     nextTick(() => {
       if (userAtBottom.value || isOwnLast) {
@@ -176,9 +178,10 @@ onMounted(() => {
   nextTick(() => scrollToBottom(false))
 })
 
-const messageSelectionActionHandler = (action: Action) => {
+const messageSelectionActionHandler = (payload: { chat: Chat; action: Action }) => {
   emit('message-selection-action-handler', {
-    action,
+    chat: payload.chat,
+    action: payload.action,
     messages: selectedMessages.value,
   })
 }
@@ -197,10 +200,10 @@ const handleOpenedFile = (payload: { file: MessageFile; action: 'preview' | 'dow
 }
 
 const onMessageAction = (payload: { action: Action; message: Message }) => {
-  if (payload.action.name === REPLY_ACTION) {
+  if (payload.action.id === REPLY_ACTION) {
     editMessage.value = null
     replyMessage.value = payload.message
-  } else if (payload.action.name === EDIT_ACTION) {
+  } else if (payload.action.id === EDIT_ACTION) {
     replyMessage.value = null
     editMessage.value = payload.message
   }
@@ -211,12 +214,10 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
 const onSelectMessage = (message: Message) => {
   if (!props.messageSelection?.enabled) return
 
-  const exists = selectedMessages.value.some((item) => item.id.toString() === message.id.toString())
+  const exists = selectedMessages.value.some((item) => item.id === message.id)
 
   if (exists) {
-    selectedMessages.value = selectedMessages.value.filter(
-      (item) => item.id.toString() !== message.id.toString(),
-    )
+    selectedMessages.value = selectedMessages.value.filter((item) => item.id !== message.id)
   } else {
     selectedMessages.value = [...selectedMessages.value, message]
   }
@@ -271,9 +272,7 @@ const onSelectMessage = (message: Message) => {
             :show-reaction-emojis="showReactionEmojis"
             :show-new-messages-divider="showNewMessagesDivider"
             :message-selection-enabled="messageSelection.enabled"
-            :selected="
-              selectedMessages.some((selected) => selected.id.toString() === message.id.toString())
-            "
+            :selected="selectedMessages.some((selected) => selected.id === message.id)"
             @message-action-handler="onMessageAction"
             @send-message-reaction="emit('send-message-reaction', $event)"
             @open-file="handleOpenedFile($event)"

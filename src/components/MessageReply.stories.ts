@@ -6,12 +6,12 @@ import { sampleUsers } from './stories.fixtures.ts'
 import type { Message } from '../models/index.ts'
 
 const baseReply = {
-  id: 1,
+  id: '1',
   content: 'Hey there!',
   createdAt: '2025-12-01T10:00:00Z',
   sender: sampleUsers[0]!,
   reply: {
-    id: 2,
+    id: '2',
     content: "What's up?",
     createdAt: '2025-12-01T10:05:00Z',
     sender: sampleUsers[1]!,

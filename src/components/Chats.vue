@@ -106,10 +106,6 @@ const onSearch = (query: string) => {
   emit('search-chat', query)
 }
 
-const onChatAction = (chat: Chat, action: Action) => {
-  emit('chat-action-handler', { chat, action })
-}
-
 const root = useTemplateRef('root')
 
 const observer = ref<IntersectionObserver | null>(null)
@@ -262,7 +258,7 @@ onBeforeUnmount(() => {
     <Loader :show="loadingChats"> </Loader>
 
     <div v-if="!loadingChats && !chats.length" class="vac-rooms-empty">
-      <slot name="rooms-empty">
+      <slot name="chats-empty">
         {{ strings['chats.empty'] }}
       </slot>
     </div>
@@ -280,7 +276,7 @@ onBeforeUnmount(() => {
           :user="user"
           :chat="chat"
           :actions="chatActions"
-          @chat-action-handler="onChatAction(chat, $event)"
+          @chat-action-handler="emit('chat-action-handler', $event)"
         >
         </ChatsItem>
       </div>

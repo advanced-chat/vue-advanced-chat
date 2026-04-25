@@ -21,7 +21,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
     message: {
-      id: 1,
+      id: '1',
       sender: users[0] as User,
       content: 'This is a sample message content.',
       createdAt: '2025-12-01T10:00:00Z',
@@ -35,7 +35,7 @@ export const Default: Story = {
 export const UnderlinedMessage: Story = {
   args: {
     message: {
-      id: 1,
+      id: '1',
       sender: users[0] as User,
       content: '°This text is underlined°.',
       createdAt: '2025-12-01T10:00:00Z',
@@ -49,7 +49,7 @@ export const UnderlinedMessage: Story = {
 export const UserTaggedMessage: Story = {
   args: {
     message: {
-      id: 1,
+      id: '1',
       sender: users[0] as User,
       content: 'Hello <@1>, how are you?',
       createdAt: '2025-12-01T10:00:00Z',
@@ -67,7 +67,7 @@ export const UserTaggedMessage: Story = {
 export const MarkdownMessage: Story = {
   args: {
     message: {
-      id: 1,
+      id: '1',
       sender: users[0] as User,
       content: `
 # GFM
@@ -114,7 +114,7 @@ A note[^1]
 export const SingleLineCollapses: Story = {
   args: {
     message: {
-      id: 1,
+      id: '1',
       sender: users[0] as User,
       content: '**bold** preview text',
       createdAt: '2025-12-01T10:00:00Z',
@@ -130,7 +130,7 @@ export const SingleLineCollapses: Story = {
 export const MarkdownDisabled: Story = {
   args: {
     message: {
-      id: 1,
+      id: '1',
       sender: users[0] as User,
       content: '**not bold**',
       createdAt: '2025-12-01T10:00:00Z',

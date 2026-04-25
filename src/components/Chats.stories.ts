@@ -51,8 +51,8 @@ export const Empty: Story = {
 export const WithActions: Story = {
   args: {
     chatActions: [
-      { name: 'archive', title: 'Archive' },
-      { name: 'mute', title: 'Mute' },
+      { id: 'archive', label: 'Archive' },
+      { id: 'mute', label: 'Mute' },
     ],
   },
   play: async ({ canvasElement }) => {
@@ -117,7 +117,7 @@ export const ClickOpensChat: Story = {
 
 export const ChatActionHandlerEmits: Story = {
   args: {
-    chatActions: [{ name: 'archive', title: 'Archive' }],
+    chatActions: [{ id: 'archive', label: 'Archive' }],
     'onChat-action-handler': fn(),
   },
   play: async ({ canvasElement, args }) => {

@@ -3,15 +3,15 @@ import { expect, fn, userEvent } from 'storybook/test'
 
 import MessageFiles from './MessageFiles.vue'
 
-const baseUser = { id: 1, name: 'Alice', status: { state: 'online' as const } }
+const baseUser = { id: '1', name: 'Alice', status: { state: 'online' as const } }
 
 const meta = {
   component: MessageFiles,
   tags: ['autodocs'],
   args: {
-    user: { id: 1 },
+    user: { id: '1' },
     message: {
-      id: 1,
+      id: '1',
       content: 'Multiple attachments',
       createdAt: '2025-12-01T10:00:00Z',
       sender: baseUser,
@@ -63,7 +63,7 @@ export const ClickFileEmitsDownload: Story = {
 export const FileWithProgressShowsBar: Story = {
   args: {
     message: {
-      id: 1,
+      id: '1',
       content: '',
       createdAt: '2025-12-01T10:00:00Z',
       sender: baseUser,

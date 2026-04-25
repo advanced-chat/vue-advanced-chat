@@ -30,7 +30,7 @@ export interface MessageEvents {
   (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
   (e: 'click-user-tag', user: User): void
   (e: 'select-message', message: Message): void
-  (e: 'open-failed-message', payload: { message: Message }): void
+  (e: 'open-failed-message', message: Message): void
 }
 
 const props = withDefaults(defineProps<MessageProps>(), {
@@ -43,7 +43,7 @@ const props = withDefaults(defineProps<MessageProps>(), {
 
 const emit = defineEmits<MessageEvents>()
 
-const isOwnMessage = computed(() => props.message.sender.id.toString() === props.user.id.toString())
+const isOwnMessage = computed(() => props.message.sender.id === props.user.id)
 
 const timestamp = computed(() => {
   const date = new Date(props.message.createdAt)
@@ -67,6 +67,21 @@ const showReactions = computed(
   () =>
     props.showReactionEmojis && !props.message.disableReactions && !props.messageSelectionEnabled,
 )
+
+const checkmarkIcon = computed<{ name: string; param: string } | null>(() => {
+  switch (props.message.status) {
+    case 'read':
+      return { name: 'double-checkmark', param: 'seen' }
+    case 'delivered':
+      return { name: 'double-checkmark', param: '' }
+    case 'sent':
+      return { name: 'checkmark', param: '' }
+    default:
+      return null
+  }
+})
+
+const isFailed = computed(() => props.message.status === 'failed')
 </script>
 
 <template>
@@ -141,12 +156,9 @@ const showReactions = computed(
           </slot>
         </span>
         <span>{{ timestamp }}</span>
-        <span v-if="isOwnMessage && !message.deleted">
+        <span v-if="isOwnMessage && !message.deleted && checkmarkIcon">
           <slot :name="'checkmark-icon_' + message.id">
-            <SvgIcon
-              :name="message.read || message.delivered ? 'double-checkmark' : 'checkmark'"
-              :param="message.read ? 'seen' : ''"
-            />
+            <SvgIcon :name="checkmarkIcon.name" :param="checkmarkIcon.param" />
           </slot>
         </span>
       </div>
@@ -170,11 +182,11 @@ const showReactions = computed(
     />
 
     <button
-      v-if="message.failure && isOwnMessage"
+      v-if="isFailed && isOwnMessage"
       type="button"
       class="vac-failure-container"
       :title="strings['chat.message.failure']"
-      @click.stop="emit('open-failed-message', { message })"
+      @click.stop="emit('open-failed-message', message)"
     >
       <span class="vac-failure-icon" aria-hidden="true">!</span>
       <span class="vac-failure-label">{{ strings['chat.message.failure'] }}</span>

@@ -6,7 +6,12 @@ import type { Id } from './id.ts'
 export interface Chat {
   id: Id
   name: string
-  icon?: string
+  /**
+   * Display picture for the chat — usually a group icon for multi-user
+   * rooms; for 1:1 rooms consumers can leave this unset and let the
+   * library fall back to the other user's avatar.
+   */
+  avatar?: string
   unreadCount?: number
   lastMessage?: Message
   users?: User[]
@@ -17,13 +22,11 @@ export interface ChatReference {
   id: Id
 }
 
-export const typingUsersString = (chat: Chat, strings: Strings): string => {
+export const typingUsersString = (chat: Chat, strings: Pick<Strings, 'chat.typing'>): string => {
   if (chat.typingUsers && chat.typingUsers.length) {
     if (chat.users) {
       const typingUsers = chat.users.filter((user) => {
-        return chat.typingUsers!.some(
-          (typingUserRef) => typingUserRef.id.toString() === user.id.toString(),
-        )
+        return chat.typingUsers!.some((typingUserRef) => typingUserRef.id === user.id)
       })
 
       if (!typingUsers.length) return ''
