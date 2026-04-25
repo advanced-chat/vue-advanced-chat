@@ -17,6 +17,7 @@ const meta = {
     user: currentUser,
     chat: sampleChat,
     messages: sampleMessages,
+    messagesLoaded: true,
     headerActions: chatActions,
     messageActions,
     standalone: true,
@@ -172,6 +173,7 @@ export const HiddenFooter: Story = {
 
 export const ScrollToTopFiresFetchMessages: Story = {
   args: {
+    messagesLoaded: false,
     'onFetch-messages': fn(),
   },
   play: async ({ canvasElement, args }) => {

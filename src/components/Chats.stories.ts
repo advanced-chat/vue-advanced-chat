@@ -16,6 +16,7 @@ const meta = {
   args: {
     user: users[0],
     chats: chats as Chat[],
+    chatsLoaded: true,
     chat: chats[0] as Chat,
   },
 } satisfies Meta<typeof Chats>
