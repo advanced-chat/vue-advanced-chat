@@ -74,7 +74,30 @@ Run locally and in CI from a clean clone:
      [#474](https://github.com/advanced-chat/vue-advanced-chat/issues/474)).
    - Document the full slot inventory in Storybook autodocs.
    - Provide an `auto`-locale strategy beyond English-only.
-5. **Release prep** (3.0.0):
+5. **Carryover from the alpha.4 code review** — neither blocks beta,
+   both are worth doing before tagging it (see commit `b22a8e1`
+   for the full review context):
+   - **Drop `deep: true` from `useAutocomplete`'s items watcher**
+     (`src/composables/use-autocomplete.ts:43`). Carried forward from
+     the original `ChatEmojis` / `ChatUserTag` watchers. The built-in
+     callers hand it ≤6 items so the cost is invisible, but a
+     consumer wiring up a 200-item slash-command list will pay
+     deep-tracking cost on every keystroke. Needs a microbenchmark
+     against a realistic list before switching to `deep: false` (or
+     a length+identity check) so we know what reactivity we lose for
+     consumers who mutate items in place.
+   - **Untangle `Chats.vue`'s two load-more paths**
+     (`src/components/Chats.vue:120-127` local `loadMoreChats`
+     +  the composable's intersection callback at
+     `src/composables/use-infinite-scroll.ts:57-66`). Pure refactor,
+     no behavior change — both paths converge correctly today
+     because `loading` and `loadingMoreChats` are the same ref.
+     Inline the local helper into the `minimumVisibleChats` backfill
+     (the only remaining caller) and rename it for what it actually
+     does (`backfillIfBelowMinimum`) so the file reads as a single
+     codepath.
+
+6. **Release prep** (3.0.0):
    - Bump `package.json` to `3.0.0`.
    - Move the `Unreleased` CHANGELOG section to `## 3.0.0`.
    - Run the GitHub issue triage sweep in `issue-triage.md`.
