@@ -142,14 +142,30 @@ export const AddChatEmits: Story = {
   },
 }
 
-export const LoadingMoreChatsRecorded: Story = {
+export const FewerThanMinimumTriggersLoadMore: Story = {
   args: {
+    chats: chats.slice(0, 1) as Chat[],
+    chatsLoaded: false,
+    minimumVisibleChats: 5,
+    'onFetch-more-chats': fn(),
     'onLoading-more-chats': fn(),
   },
   play: async ({ args }) => {
-    // The loading-more-chats event is wired through a watch on the internal
-    // `loadingMoreChats` ref; this story validates the emit is registered
-    // even if the IntersectionObserver doesn't fire in this headless environment.
-    expect(args['onLoading-more-chats']).toBeDefined()
+    await waitFor(() => {
+      expect(args['onFetch-more-chats']).toHaveBeenCalled()
+    })
+    await expect(args['onLoading-more-chats']).toHaveBeenCalledWith(true)
+  },
+}
+
+export const StopsLoadingMoreWhenAllLoaded: Story = {
+  args: {
+    chats: [],
+    chatsLoaded: true,
+    'onFetch-more-chats': fn(),
+  },
+  play: async ({ args }) => {
+    // chatsLoaded=true short-circuits the watch; loadMoreChats never emits.
+    expect(args['onFetch-more-chats']).not.toHaveBeenCalled()
   },
 }

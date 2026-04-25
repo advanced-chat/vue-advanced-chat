@@ -30,8 +30,8 @@ export interface ChatMessageProps {
 export interface ChatMessageEvents {
   (e: 'message-action-handler', payload: { action: Action; message: ChatMessageModel }): void
   (e: 'send-message-reaction', payload: { emoji: string; message: ChatMessageModel }): void
-  (e: 'opened:file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
-  (e: 'clicked:user-tag', user: User): void
+  (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
+  (e: 'click-user-tag', user: User): void
   (e: 'select-message', message: ChatMessageModel): void
   (e: 'open-failed-message', payload: { message: ChatMessageModel }): void
 }
@@ -90,8 +90,8 @@ const dateLabel = computed(() => {
       :selected="selected"
       @message-action-handler="emit('message-action-handler', $event)"
       @send-message-reaction="emit('send-message-reaction', $event)"
-      @opened:file="emit('opened:file', $event)"
-      @clicked:user-tag="emit('clicked:user-tag', $event)"
+      @open-file="emit('open-file', $event)"
+      @click-user-tag="emit('click-user-tag', $event)"
       @select-message="emit('select-message', $event)"
       @open-failed-message="emit('open-failed-message', $event)"
     />

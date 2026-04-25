@@ -49,12 +49,12 @@ export const Default: Story = {
 
 export const ClickFileEmitsDownload: Story = {
   args: {
-    'onOpened:file': fn(),
+    'onOpen-file': fn(),
   },
   play: async ({ canvasElement, args }) => {
     const fileEntry = canvasElement.querySelector('.vac-file-container') as HTMLElement
     await userEvent.click(fileEntry)
-    await expect(args['onOpened:file']).toHaveBeenCalledWith(
+    await expect(args['onOpen-file']).toHaveBeenCalledWith(
       expect.objectContaining({ action: 'download' }),
     )
   },

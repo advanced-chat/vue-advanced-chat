@@ -4,9 +4,7 @@ import { computed, ref } from 'vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 
 import type { Action, Message, UserReference } from '../models'
-import onClickOutside from '../utils/on-click-outside'
-
-const vClickOutside = onClickOutside
+import { vOnClickOutside } from '@vueuse/components'
 
 const REACTION_OPTIONS = ['👍', '❤️', '😂', '🎉', '🔥']
 
@@ -47,7 +45,7 @@ const closeAll = () => {
 <template>
   <div
     v-if="!message.deleted"
-    v-click-outside="closeAll"
+    v-on-click-outside="closeAll"
     class="vac-message-actions-wrapper"
     :class="{ 'vac-message-actions-open': reactionsOpened || optionsOpened }"
   >

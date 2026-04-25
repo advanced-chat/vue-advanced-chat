@@ -1,31 +1,33 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, useTemplateRef, watch } from 'vue'
 
 import ChatFooter from '@/components/ChatFooter.vue'
 import ChatHeader, { type ChatHeaderMessageSelection } from '@/components/ChatHeader.vue'
 import ChatMessage from '@/components/ChatMessage.vue'
 import Loader from '@/components/Loader.vue'
 import MediaPreview from '@/components/MediaPreview.vue'
+import SvgIcon from '@/components/SvgIcon.vue'
 
 import type { Action, Chat, Message, MessageFile, User, UserReference } from '../models'
 import { useLocalizationStrings } from '../localization'
 import type { ChatFileItem } from './ChatFile.vue'
 
+import { EDIT_ACTION, REPLY_ACTION } from './actions'
+
 const strings = useLocalizationStrings()
 
-/**
- * Action names that `Chat` recognizes and handles internally on top
- * of emitting `message-action-handler`. Consumers can use any other
- * action name and handle it externally.
- */
-const REPLY_ACTION = 'reply'
-const EDIT_ACTION = 'edit'
+const SCROLL_THRESHOLD = 60
 
 export interface ChatProps {
   user?: UserReference | null
   chat?: Chat | null
   messages?: Message[]
   loadingMessages?: boolean
+  /**
+   * Set to `true` once every available message has been delivered for the
+   * active chat. Disables further `fetch-messages` emissions.
+   */
+  messagesLoaded?: boolean
   standalone?: boolean
   showChatList?: boolean
   isMobile?: boolean
@@ -49,7 +51,7 @@ export interface ChatEvents {
   (e: 'menu-action-handler', action: Action): void
   (e: 'message-selection-action-handler', payload: { action: Action; messages: Message[] }): void
   (e: 'cancel-message-selection'): void
-  (e: 'opened:file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
+  (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
   (e: 'typing-message', value: string): void
   (
     e: 'send-message',
@@ -60,9 +62,15 @@ export interface ChatEvents {
     payload: { messageId: Message['id']; content: string; files: ChatFileItem[] },
   ): void
   (e: 'message-action-handler', payload: { action: Action; message: Message }): void
-  (e: 'clicked:user-tag', user: User): void
+  (e: 'click-user-tag', user: User): void
   (e: 'send-message-reaction', payload: { emoji: string; message: Message }): void
   (e: 'open-failed-message', payload: { message: Message }): void
+  /**
+   * Fired when the user scrolls near the top of the message list and more
+   * messages should be paginated in. Suppressed while `loadingMessages` is
+   * `true` or `messagesLoaded` is `true`.
+   */
+  (e: 'fetch-messages'): void
 }
 
 const props = withDefaults(defineProps<ChatProps>(), {
@@ -70,6 +78,7 @@ const props = withDefaults(defineProps<ChatProps>(), {
   chat: null,
   messages: () => [],
   loadingMessages: false,
+  messagesLoaded: false,
   standalone: false,
   showChatList: false,
   isMobile: false,
@@ -94,7 +103,43 @@ const previewFile = ref<MessageFile | null>(null)
 const replyMessage = ref<Message | null>(null)
 const editMessage = ref<Message | null>(null)
 
+const scrollContainer = useTemplateRef<HTMLElement>('scrollContainer')
+const userAtBottom = ref(true)
+const newMessagesAvailable = ref(false)
+
 const users = computed(() => props.chat?.users || [])
+
+const newMessagesPillCount = computed(() => {
+  return props.messages.filter((m) => m.new).length
+})
+
+const scrollToBottom = (smooth = true) => {
+  const el = scrollContainer.value
+  if (!el) return
+
+  el.scrollTo({ top: el.scrollHeight, behavior: smooth ? 'smooth' : 'auto' })
+}
+
+const onScroll = () => {
+  const el = scrollContainer.value
+  if (!el) return
+
+  const distFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight
+  userAtBottom.value = distFromBottom < SCROLL_THRESHOLD
+
+  if (userAtBottom.value) {
+    newMessagesAvailable.value = false
+  }
+
+  if (
+    el.scrollTop < SCROLL_THRESHOLD &&
+    !props.loadingMessages &&
+    !props.messagesLoaded &&
+    props.messages.length > 0
+  ) {
+    emit('fetch-messages')
+  }
+}
 
 watch(
   () => props.chat?.id,
@@ -102,8 +147,34 @@ watch(
     selectedMessages.value = []
     replyMessage.value = null
     editMessage.value = null
+    newMessagesAvailable.value = false
+    userAtBottom.value = true
+    nextTick(() => scrollToBottom(false))
   },
 )
+
+watch(
+  () => props.messages.length,
+  (newLen, oldLen = 0) => {
+    if (newLen <= oldLen) return
+
+    const last = props.messages[newLen - 1]
+    const isOwnLast =
+      !!last && !!props.user && last.sender.id.toString() === props.user.id.toString()
+
+    nextTick(() => {
+      if (userAtBottom.value || isOwnLast) {
+        scrollToBottom()
+      } else {
+        newMessagesAvailable.value = true
+      }
+    })
+  },
+)
+
+onMounted(() => {
+  nextTick(() => scrollToBottom(false))
+})
 
 const messageSelectionActionHandler = (action: Action) => {
   emit('message-selection-action-handler', {
@@ -122,7 +193,7 @@ const handleOpenedFile = (payload: { file: MessageFile; action: 'preview' | 'dow
     previewFile.value = payload.file
   }
 
-  emit('opened:file', payload)
+  emit('open-file', payload)
 }
 
 const onMessageAction = (payload: { action: Action; message: Message }) => {
@@ -180,7 +251,7 @@ const onSelectMessage = (message: Message) => {
         @cancel-message-selection="cancelMessageSelection"
       />
 
-      <div class="vac-container-scroll">
+      <div ref="scrollContainer" class="vac-container-scroll" @scroll.passive="onScroll">
         <Loader :show="loadingMessages" />
 
         <div v-if="!loadingMessages && !messages.length" class="vac-room-empty">
@@ -205,12 +276,29 @@ const onSelectMessage = (message: Message) => {
             "
             @message-action-handler="onMessageAction"
             @send-message-reaction="emit('send-message-reaction', $event)"
-            @opened:file="handleOpenedFile($event)"
-            @clicked:user-tag="emit('clicked:user-tag', $event)"
+            @open-file="handleOpenedFile($event)"
+            @click-user-tag="emit('click-user-tag', $event)"
             @select-message="onSelectMessage"
             @open-failed-message="emit('open-failed-message', $event)"
           />
         </div>
+
+        <transition name="vac-bounce">
+          <button
+            v-if="newMessagesAvailable && !userAtBottom"
+            type="button"
+            class="vac-scroll-bottom"
+            :aria-label="strings['chat.scroll-to-bottom']"
+            @click="scrollToBottom()"
+          >
+            <slot name="scroll-icon">
+              <SvgIcon name="dropdown" param="scroll" />
+            </slot>
+            <span v-if="newMessagesPillCount" class="vac-scroll-bottom-badge">
+              {{ newMessagesPillCount }}
+            </span>
+          </button>
+        </transition>
       </div>
 
       <ChatFooter
@@ -272,5 +360,40 @@ const onSelectMessage = (message: Message) => {
   align-items: center;
   justify-content: center;
   flex: 1;
+}
+
+.vac-scroll-bottom {
+  position: sticky;
+  bottom: 12px;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: var(--chat-border-style);
+  background: var(--chat-bg-scroll-icon);
+  color: var(--chat-message-color);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  z-index: 4;
+
+  :deep(svg) {
+    height: 14px;
+    width: 14px;
+    transform: rotate(0deg);
+  }
+}
+
+.vac-scroll-bottom-badge {
+  min-width: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--chat-message-bg-color-scroll-counter);
+  color: var(--chat-message-color-scroll-counter);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: center;
 }
 </style>

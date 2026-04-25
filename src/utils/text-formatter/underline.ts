@@ -1,11 +1,16 @@
-// @ts-nocheck
+import type {
+  CompileContext,
+  Code,
+  Effects,
+  Extension,
+  HtmlExtension,
+  State,
+} from 'micromark-util-types'
 
 import { codes } from './codes.ts'
 
-import type { Extension, HtmlExtension } from 'micromark-extension-gfm'
-
-const underlineTokenize = (effects, ok, nok) => {
-  const inside = (code) => {
+const underlineTokenize = (effects: Effects, ok: State, nok: State): State => {
+  const inside: State = (code: Code) => {
     if (
       code === codes.carriageReturn ||
       code === codes.lineFeed ||
@@ -17,7 +22,6 @@ const underlineTokenize = (effects, ok, nok) => {
 
     if (code === codes.backslash) {
       effects.consume(code)
-
       return insideEscape
     }
 
@@ -27,34 +31,30 @@ const underlineTokenize = (effects, ok, nok) => {
       effects.consume(code)
       effects.exit('underlineMarker')
       effects.exit('underline')
-
       return ok
     }
 
     effects.consume(code)
-
     return inside
   }
 
-  const insideEscape = (code) => {
+  const insideEscape: State = (code: Code) => {
     if (code === codes.backslash || code === codes.degree) {
       effects.consume(code)
-
       return inside
     }
 
     return inside(code)
   }
 
-  const begin = (code) => (code === codes.degree ? nok(code) : inside(code))
+  const begin: State = (code: Code) => (code === codes.degree ? nok(code) : inside(code))
 
-  return (code) => {
+  return (code: Code) => {
     effects.enter('underline')
     effects.enter('underlineMarker')
     effects.consume(code)
     effects.exit('underlineMarker')
-    effects.enter('underlineContent', { contentType: 'string' })
-
+    effects.enter('underlineContent', { contentType: 'string' } as never)
     return begin
   }
 }
@@ -65,12 +65,12 @@ export const underline: Extension = { text: { 176: underlineConstruct } } // 176
 
 export const underlineHtml: HtmlExtension = {
   enter: {
-    underline(this: { tag: (_: string) => void }) {
+    underline(this: CompileContext) {
       this.tag('<u>')
     },
   },
   exit: {
-    underline(this: { tag: (_: string) => void }) {
+    underline(this: CompileContext) {
       this.tag('</u>')
     },
   },

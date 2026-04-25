@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { type Action, type Chat, typingUsersString, type User, type UserReference } from '../models'
-import onClickOutside from '../utils/on-click-outside'
+import { vOnClickOutside } from '@vueuse/components'
 
 import { useLocalizationStrings } from '../localization'
 import { computed, ref, watch } from 'vue'
 import SvgIcon from '@/components/SvgIcon.vue'
-
-const vClickOutside = onClickOutside
 
 const strings = useLocalizationStrings()
 
@@ -195,7 +193,7 @@ const menuActionHandler = (action: Action) => {
             <transition v-if="actions.length" name="vac-slide-left">
               <div
                 v-if="menuOpened"
-                v-click-outside="closeMenu"
+                v-on-click-outside="closeMenu"
                 class="vac-menu-options"
                 role="menu"
               >

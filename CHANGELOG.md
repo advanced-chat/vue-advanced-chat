@@ -8,6 +8,60 @@ package is the V3 successor of the original `vue-advanced-chat`. See
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### Added
+
+- `Chat` and `AdvancedChat` now wire message pagination: a `fetch-messages`
+  event fires when the message list scrolls to within 60 px of the top
+  (suppressed while `loadingMessages` or `messagesLoaded` is true).
+- `Chat` auto-scrolls to the latest message on mount, on chat switch,
+  on send, and when receiving a new message while the user is already
+  near the bottom. When the user has scrolled away, a "scroll to
+  latest" pill (with a count badge of `message.new` items) appears.
+- `Chat.messagesLoaded` and `AdvancedChat.messagesLoaded` props short-
+  circuit pagination once every available message has been delivered.
+- New string `chat.scroll-to-bottom` for the pill's accessible label.
+- `src/index.ts` aggregates per-component `*Props` / `*Events`
+  interfaces (and `ChatHeaderMessageSelection`, `ChatFileItem`,
+  `Theme`, `Styles`, `Strings`, `Localization`, etc.) so consumers
+  writing wrapper components don't have to deep-import.
+- `REPLY_ACTION` and `EDIT_ACTION` constants exported from the
+  package (plus the `BuiltInActionName` type) so consumers don't
+  rely on magic strings.
+
+### Changed
+
+- **Breaking**: event names normalized to kebab-case.
+  `opened:file` → `open-file`, `clicked:user-tag` → `click-user-tag`
+  on `MessageActions`, `Message`, `MessageFile`, `MessageFiles`,
+  `MessageTemplate`, `ChatMessage`, `Chat`, and `AdvancedChat`.
+- **Breaking**: `Chats.chatsLoaded` now follows v2's
+  `rooms-loaded` semantics (true means "all chats delivered, stop
+  fetching"). The previous inverted check made `fetch-more-chats`
+  unreachable through the watch path.
+- The chats watch is now `immediate: true` and re-orders the
+  `loadingMoreChats` watcher so the initial pass through
+  `loadMoreChats` correctly emits both `fetch-more-chats` and
+  `loading-more-chats: true`.
+- All `vClickOutside` directive usages migrated from the internal
+  fork to `@vueuse/components`'s `vOnClickOutside`. Removes
+  `src/utils/on-click-outside.ts` (~200 LOC).
+- All five `// @ts-nocheck` files in `src/utils` are typed cleanly:
+  `deep-merge`, `filter-items`, `text-formatter/autolink`,
+  `text-formatter/underline`, `text-formatter/user-tag`. New
+  `text-formatter/types.d.ts` augments `micromark-util-types` with
+  the custom token names this library emits.
+
+### Removed
+
+- **Breaking**: dropped `@tailwindcss/vite` and `tailwindcss` as
+  dependencies. The library never used Tailwind utility classes;
+  the import in `src/assets/style.css` was shipping a Tailwind
+  preflight in `dist/components.css` for no consumer benefit. CSS
+  bundle now 31.77 kB / 5.83 kB gzipped (down from 37.20 / 7.48).
+- Removed the internal `src/utils/on-click-outside.ts` fork.
+
 ## 3.0.0-alpha.1
 
 ### Added

@@ -15,6 +15,13 @@ export interface ChatsProps {
   showSearch?: boolean
   showAddChat?: boolean
   loadingChats?: boolean
+  /**
+   * Set to `true` once the consumer has delivered every chat available;
+   * this disables further `fetch-more-chats` emissions. When `false`
+   * (the default), the component asks for more chats when the visible
+   * list falls below `minimumVisibleChats` or when the bottom-of-list
+   * sentinel scrolls into view.
+   */
   chatsLoaded?: boolean
   minimumVisibleChats?: number
   isMobile?: boolean
@@ -112,7 +119,7 @@ const showLoader = ref(false)
 const loadingMoreChats = ref(false)
 
 const loadMoreChats = () => {
-  if (loadingMoreChats.value || !props.chatsLoaded) return
+  if (loadingMoreChats.value || props.chatsLoaded) return
 
   loadingMoreChats.value = true
   showLoader.value = true
@@ -156,6 +163,12 @@ const initializeIntersectionObserver = () => {
   }
 }
 
+// Set up the loadingMoreChats watcher first so that the immediate chats
+// watcher below picks it up when it triggers loadMoreChats.
+watch(loadingMoreChats, (val) => {
+  emit('loading-more-chats', val)
+})
+
 watch(
   () => props.chats,
   (newVal = [], oldVal = []) => {
@@ -175,12 +188,10 @@ watch(
     const visibleRooms = filteredChats.value
 
     if (!loadingMoreChats.value && visibleRooms.length < props.minimumVisibleChats) {
-      loadingMoreChats.value = true
-
       loadMoreChats()
     }
   },
-  { deep: true },
+  { deep: true, immediate: true },
 )
 
 watch(
@@ -193,10 +204,6 @@ watch(
     }
   },
 )
-
-watch(loadingMoreChats, (val) => {
-  emit('loading-more-chats', val)
-})
 
 watch(
   () => props.chatsLoaded,
@@ -263,7 +270,7 @@ onBeforeUnmount(() => {
     <div v-if="!loadingChats" id="rooms-list" class="vac-room-list">
       <div
         v-for="chat in filteredChats"
-        :id="chat.id"
+        :id="String(chat.id)"
         :key="chat.id"
         class="vac-room-item"
         :class="{ 'vac-room-selected': selectedChatId === chat.id }"

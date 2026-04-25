@@ -20,6 +20,7 @@ const strings = {
   'chat.cancel-selection': '',
   'chat.cancel-reply': '',
   'chat.cancel-edit': '',
+  'chat.scroll-to-bottom': '',
   'chat.user.is-online': '',
   'chat.user.last-seen': '',
 }

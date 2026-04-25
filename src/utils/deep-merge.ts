@@ -1,27 +1,31 @@
-// @ts-nocheck
+type Plain = Record<string, unknown>
 
-// Source - https://stackoverflow.com/a/34749873
-// Posted by Salakar, modified by community. See post 'Timeline' for change history
-// Retrieved 2025-11-19, License - CC BY-SA 3.0
-
-const isObject = (item) => item && typeof item === 'object' && !Array.isArray(item)
+const isPlainObject = (value: unknown): value is Plain =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
 
 /**
- * Deep merge two objects.
- * @param target
- * @param sources
+ * Deep-merge `sources` into `target` in place. Plain objects are merged
+ * recursively; arrays and primitives are replaced (not concatenated).
+ *
+ * Returns the mutated `target` for fluent use.
  */
-export function deepMerge<T extends object>(target: T, ...sources: object[]): T {
+export function deepMerge<T extends object>(target: T, ...sources: Array<object>): T {
   if (!sources.length) return target
+
   const source = sources.shift()
 
-  if (isObject(target) && isObject(source)) {
-    for (const key in source) {
-      if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} })
-        deepMerge(target[key], source[key])
+  if (isPlainObject(target) && isPlainObject(source)) {
+    for (const key of Object.keys(source)) {
+      const sourceValue = (source as Plain)[key]
+
+      if (isPlainObject(sourceValue)) {
+        const targetValue = (target as Plain)[key]
+        if (!isPlainObject(targetValue)) {
+          ;(target as Plain)[key] = {}
+        }
+        deepMerge((target as Plain)[key] as object, sourceValue)
       } else {
-        Object.assign(target, { [key]: source[key] })
+        ;(target as Plain)[key] = sourceValue
       }
     }
   }

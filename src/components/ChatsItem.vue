@@ -7,7 +7,7 @@ import {
   type Id,
   type UserReference,
 } from '../models'
-import onClickOutside from '../utils/on-click-outside'
+import { vOnClickOutside } from '@vueuse/components'
 import { computed, ref } from 'vue'
 import { isAudioFile } from '../utils/media-types'
 
@@ -30,8 +30,6 @@ export interface ChatsItemEvents {
    */
   (event: 'chat-action-handler', action: Action): void
 }
-
-const vClickOutside = onClickOutside
 
 const props = withDefaults(defineProps<ChatsItemProps>(), {})
 
@@ -225,7 +223,7 @@ const chatActionHandler = (action: Action) => {
                 <transition name="vac-slide-left">
                   <div
                     v-if="openedChatMenu === chat.id"
-                    v-click-outside="closeChatMenu"
+                    v-on-click-outside="closeChatMenu"
                     class="vac-menu-options"
                     role="menu"
                   >

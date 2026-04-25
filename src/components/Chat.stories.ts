@@ -24,7 +24,7 @@ const meta = {
       enabled: false,
       actions: [{ name: 'delete', title: 'Delete' }],
     },
-    'onClicked:user-tag': fn(),
+    'onClick-user-tag': fn(),
   },
 } satisfies Meta<typeof Chat>
 
@@ -167,5 +167,51 @@ export const HiddenFooter: Story = {
   },
   play: async ({ canvasElement }) => {
     expect(canvasElement.querySelector('.vac-room-footer')).toBeFalsy()
+  },
+}
+
+export const ScrollToTopFiresFetchMessages: Story = {
+  args: {
+    'onFetch-messages': fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const scrollEl = canvasElement.querySelector('.vac-container-scroll') as HTMLElement
+    expect(scrollEl).toBeTruthy()
+
+    scrollEl.scrollTop = 0
+    scrollEl.dispatchEvent(new Event('scroll', { bubbles: true }))
+
+    await waitFor(() => {
+      expect(args['onFetch-messages']).toHaveBeenCalled()
+    })
+  },
+}
+
+export const NoFetchWhenLoaded: Story = {
+  args: {
+    messagesLoaded: true,
+    'onFetch-messages': fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const scrollEl = canvasElement.querySelector('.vac-container-scroll') as HTMLElement
+    scrollEl.scrollTop = 0
+    scrollEl.dispatchEvent(new Event('scroll', { bubbles: true }))
+    expect(args['onFetch-messages']).not.toHaveBeenCalled()
+  },
+}
+
+export const NoFetchWhileLoadingMessages: Story = {
+  args: {
+    loadingMessages: true,
+    messages: [],
+    'onFetch-messages': fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const scrollEl = canvasElement.querySelector('.vac-container-scroll') as HTMLElement | null
+    if (scrollEl) {
+      scrollEl.scrollTop = 0
+      scrollEl.dispatchEvent(new Event('scroll', { bubbles: true }))
+    }
+    expect(args['onFetch-messages']).not.toHaveBeenCalled()
   },
 }

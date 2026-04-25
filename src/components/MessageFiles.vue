@@ -16,8 +16,8 @@ export interface MessageFilesProps {
 }
 
 export interface MessageFilesEvents {
-  (e: 'opened:file', payload: { file: MessageFileModel; action: 'preview' | 'download' }): void
-  (e: 'clicked:user-tag', user: User): void
+  (e: 'open-file', payload: { file: MessageFileModel; action: 'preview' | 'download' }): void
+  (e: 'click-user-tag', user: User): void
 }
 
 const props = defineProps<MessageFilesProps>()
@@ -35,7 +35,7 @@ const otherFiles = computed(
 const openFile = (event: Event, file: MessageFileModel, action: 'preview' | 'download') => {
   event.stopPropagation()
 
-  emit('opened:file', { file, action })
+  emit('open-file', { file, action })
 }
 </script>
 
@@ -48,7 +48,7 @@ const openFile = (event: Event, file: MessageFileModel, action: 'preview' | 'dow
         :message="message"
         :index="i"
         :message-selection-enabled="messageSelectionEnabled"
-        @opened:file="emit('opened:file', $event)"
+        @open-file="emit('open-file', $event)"
       >
       </MessageFile>
     </div>
@@ -82,7 +82,7 @@ const openFile = (event: Event, file: MessageFileModel, action: 'preview' | 'dow
       :message="message"
       :users="users"
       :formatting-options="{ singleLine: false }"
-      @clicked:user-tag="emit('clicked:user-tag', $event)"
+      @click-user-tag="emit('click-user-tag', $event)"
     />
   </div>
 </template>
@@ -110,7 +110,12 @@ const openFile = (event: Event, file: MessageFileModel, action: 'preview' | 'dow
       }
 
       &.vac-file-container-progress {
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: rgba(0, 0, 0, 0.6);
+        color: #fff;
+
+        :deep(.vac-text-extension) {
+          color: #fff;
+        }
       }
     }
   }

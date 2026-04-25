@@ -27,8 +27,8 @@ export interface MessageProps {
 export interface MessageEvents {
   (e: 'message-action-handler', payload: { action: Action; message: Message }): void
   (e: 'send-message-reaction', payload: { emoji: string; message: Message }): void
-  (e: 'opened:file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
-  (e: 'clicked:user-tag', user: User): void
+  (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
+  (e: 'click-user-tag', user: User): void
   (e: 'select-message', message: Message): void
   (e: 'open-failed-message', payload: { message: Message }): void
 }
@@ -76,7 +76,7 @@ const showReactions = computed(
         :message="message"
         :users="users"
         :formatting-options="{ markdown: true, singleLine: false }"
-        @clicked:user-tag="emit('clicked:user-tag', $event)"
+        @click-user-tag="emit('click-user-tag', $event)"
       />
     </div>
   </div>
@@ -114,7 +114,7 @@ const showReactions = computed(
         v-else-if="!message.files?.length"
         :message="message"
         :users="users"
-        @clicked:user-tag="emit('clicked:user-tag', $event)"
+        @click-user-tag="emit('click-user-tag', $event)"
       />
 
       <MessageFiles
@@ -123,8 +123,8 @@ const showReactions = computed(
         :message="message"
         :users="users"
         :message-selection-enabled="messageSelectionEnabled"
-        @opened:file="emit('opened:file', $event)"
-        @clicked:user-tag="emit('clicked:user-tag', $event)"
+        @open-file="emit('open-file', $event)"
+        @click-user-tag="emit('click-user-tag', $event)"
       />
 
       <div v-else class="vac-audio-summary">

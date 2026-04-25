@@ -16,7 +16,7 @@ export interface MessageTemplateEvents {
   /**
    * Emitted when a user tag is clicked
    */
-  (event: 'clicked:user-tag', user: User): void
+  (event: 'click-user-tag', user: User): void
 }
 
 const props = defineProps<MessageTemplateProps>()
@@ -53,7 +53,7 @@ const onUserTagClick = (event: Event) => {
     const user = findUserById(props.users || [], userId)
 
     if (user) {
-      emit('clicked:user-tag', user)
+      emit('click-user-tag', user)
     }
   }
 }

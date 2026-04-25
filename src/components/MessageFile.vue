@@ -16,7 +16,7 @@ export interface MessageFileProps {
 }
 
 export interface MessageFileEvents {
-  (e: 'opened:file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
+  (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
 }
 
 const props = withDefaults(defineProps<MessageFileProps>(), {
@@ -62,7 +62,7 @@ const checkImgLoad = () => {
 
 const openFile = (event: MouseEvent, action: 'preview' | 'download') => {
   event.stopPropagation()
-  emit('opened:file', { file: props.file, action })
+  emit('open-file', { file: props.file, action })
 }
 
 watch(

@@ -18,6 +18,7 @@ export type Strings = {
   'chat.cancel-selection': string
   'chat.cancel-reply': string
   'chat.cancel-edit': string
+  'chat.scroll-to-bottom': string
   'chat.user.is-online': string
   'chat.user.last-seen': string
 }

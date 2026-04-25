@@ -1,13 +1,13 @@
-// @ts-nocheck
-
 import { sanitizeUri } from 'micromark-util-sanitize-uri'
-import type { HtmlExtension, Token } from 'micromark-util-types'
+import type { CompileContext, HtmlExtension, Token } from 'micromark-util-types'
 
-export const gfmAutolinkLiteralHtml: (options?: {
+export interface GfmAutolinkLiteralOptions {
   target?: string
   rel?: string
-}) => HtmlExtension = (options) => {
-  function anchorFromToken(this: unknown, token: Token, protocol?: string) {
+}
+
+export const gfmAutolinkLiteralHtml = (options?: GfmAutolinkLiteralOptions): HtmlExtension => {
+  function anchorFromToken(this: CompileContext, token: Token, protocol?: string): void {
     const url = this.sliceSerialize(token)
 
     this.tag(
@@ -17,34 +17,20 @@ export const gfmAutolinkLiteralHtml: (options?: {
         (options?.rel ? `" rel="${options.rel}` : '') +
         '">',
     )
-
     this.raw(this.encode(url))
-
     this.tag('</a>')
-  }
-
-  function literalAutolinkEmail(this: unknown, token: Token) {
-    anchorFromToken.call(this, token, 'mailto:')
-  }
-
-  function literalAutolinkWww(this: unknown, token: Token) {
-    anchorFromToken.call(this, token, 'http://')
-  }
-
-  function literalAutolinkHttp(this: unknown, token: Token) {
-    anchorFromToken.call(this, token)
   }
 
   return {
     exit: {
-      literalAutolinkEmail(token: Token) {
-        literalAutolinkEmail.call(this, token)
+      literalAutolinkEmail(this: CompileContext, token: Token) {
+        anchorFromToken.call(this, token, 'mailto:')
       },
-      literalAutolinkHttp(token: Token) {
-        literalAutolinkHttp.call(this, token)
+      literalAutolinkHttp(this: CompileContext, token: Token) {
+        anchorFromToken.call(this, token)
       },
-      literalAutolinkWww(token: Token) {
-        literalAutolinkWww.call(this, token)
+      literalAutolinkWww(this: CompileContext, token: Token) {
+        anchorFromToken.call(this, token, 'http://')
       },
     },
   }

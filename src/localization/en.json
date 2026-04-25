@@ -11,6 +11,7 @@
   "chat.cancel-selection": "Cancel",
   "chat.cancel-reply": "Cancel reply",
   "chat.cancel-edit": "Cancel edit",
+  "chat.scroll-to-bottom": "Scroll to latest messages",
   "chat.user.is-online": "is online",
   "chat.user.last-seen": "last seen "
 }

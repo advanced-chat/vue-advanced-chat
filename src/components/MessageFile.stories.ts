@@ -57,12 +57,12 @@ export const VideoFile: Story = {
 
 export const ClickImageEmitsPreview: Story = {
   args: {
-    'onOpened:file': fn(),
+    'onOpen-file': fn(),
   },
   play: async ({ canvasElement, args }) => {
     const container = canvasElement.querySelector('.vac-message-image-container') as HTMLElement
     await userEvent.click(container)
-    await expect(args['onOpened:file']).toHaveBeenCalledWith(
+    await expect(args['onOpen-file']).toHaveBeenCalledWith(
       expect.objectContaining({ action: 'preview' }),
     )
   },

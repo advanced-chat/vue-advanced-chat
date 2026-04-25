@@ -10,7 +10,7 @@ const meta = {
   component: MessageTemplate,
   tags: ['autodocs'],
   args: {
-    'onClicked:user-tag': fn(),
+    'onClick-user-tag': fn(),
   },
 } satisfies Meta<typeof MessageTemplate>
 
@@ -60,7 +60,7 @@ export const UserTaggedMessage: Story = {
     const tag = canvasElement.querySelector('[data-user-id="1"]') as HTMLElement
     expect(tag).toBeTruthy()
     await userEvent.click(tag)
-    await expect(args['onClicked:user-tag']).toHaveBeenCalled()
+    await expect(args['onClick-user-tag']).toHaveBeenCalled()
   },
 }
 

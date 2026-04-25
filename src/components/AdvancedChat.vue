@@ -26,6 +26,7 @@ export interface AdvancedChatProps {
   loadingChats?: boolean
   chatsLoaded?: boolean
   loadingMessages?: boolean
+  messagesLoaded?: boolean
   headerActions?: Action[]
   messageActions?: Action[]
   chatActions?: Action[]
@@ -50,6 +51,7 @@ export interface AdvancedChatEvents {
   (e: 'search-chat', query: string): void
   (e: 'add-chat'): void
   (e: 'fetch-more-chats'): void
+  (e: 'fetch-messages'): void
   (e: 'open-chat', chat: ChatModel): void
   (e: 'show-chat-info', chat: ChatModel): void
   (e: 'menu-action-handler', payload: { chat: ChatModel; action: Action }): void
@@ -57,10 +59,10 @@ export interface AdvancedChatEvents {
   (e: 'message-selection-action-handler', payload: { action: Action; messages: Message[] }): void
   (e: 'chat-action-handler', payload: { chat: ChatModel; action: Action }): void
   (e: 'cancel-message-selection'): void
-  (e: 'opened:file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
+  (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
   (e: 'open-failed-message', payload: { message: Message }): void
   (e: 'send-message-reaction', payload: { emoji: string; message: Message }): void
-  (e: 'clicked:user-tag', user: User): void
+  (e: 'click-user-tag', user: User): void
   (e: 'typing-message', value: string): void
   (
     e: 'send-message',
@@ -81,6 +83,7 @@ const props = withDefaults(defineProps<AdvancedChatProps>(), {
   loadingChats: false,
   chatsLoaded: false,
   loadingMessages: false,
+  messagesLoaded: false,
   headerActions: () => [],
   messageActions: () => [],
   chatActions: () => [],
@@ -177,6 +180,7 @@ const onOpenChat = (chat: ChatModel) => {
         :chat="activeChat"
         :messages="chatMessages"
         :loading-messages="loadingMessages"
+        :messages-loaded="messagesLoaded"
         :show-chat-list="showChatList"
         :header-actions="headerActions"
         :message-actions="messageActions"
@@ -196,13 +200,14 @@ const onOpenChat = (chat: ChatModel) => {
         @message-action-handler="emit('message-action-handler', $event)"
         @message-selection-action-handler="emit('message-selection-action-handler', $event)"
         @cancel-message-selection="emit('cancel-message-selection')"
-        @opened:file="emit('opened:file', $event)"
+        @open-file="emit('open-file', $event)"
         @open-failed-message="emit('open-failed-message', $event)"
         @send-message-reaction="emit('send-message-reaction', $event)"
-        @clicked:user-tag="emit('clicked:user-tag', $event)"
+        @click-user-tag="emit('click-user-tag', $event)"
         @typing-message="emit('typing-message', $event)"
         @send-message="emit('send-message', $event)"
         @edit-message="emit('edit-message', $event)"
+        @fetch-messages="emit('fetch-messages')"
       />
     </div>
   </Layout>

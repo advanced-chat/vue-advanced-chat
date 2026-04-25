@@ -15,6 +15,9 @@ behavior in the move.
 
 - [`architecture.md`](./architecture.md) — what V3 changes vs v2, why,
   and the public contract consumers will rely on.
+- [`architecture-review.md`](./architecture-review.md) — maintainer-eye
+  review of the V3 surface at `3.0.0-alpha.1`: strengths, P0/P1 issues,
+  and a recommended sequence before 3.0 GA.
 - [`v2-feature-catalog.md`](./v2-feature-catalog.md) — full inventory of
   the v2 component on `main`: every prop, event, slot, behavior, and
   configurable feature. Used as the parity bar.

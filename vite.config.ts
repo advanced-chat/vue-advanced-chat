@@ -2,7 +2,6 @@
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import tailwindcss from '@tailwindcss/vite'
 import dts from 'vite-plugin-dts'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
@@ -29,7 +28,6 @@ const isStorybookProcess =
 export default defineConfig({
   plugins: [
     vue(),
-    tailwindcss(),
     !isStorybookProcess &&
       dts({
         tsconfigPath: './tsconfig.lib.json',
