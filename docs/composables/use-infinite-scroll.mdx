@@ -1,0 +1,96 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Composables/useInfiniteScroll" />
+
+# useInfiniteScroll
+
+`IntersectionObserver` helper. Fires `onLoadMore` when a sentinel
+element scrolls into view inside a scroll-root, debounces while a
+load is in-flight, and releases the observer on component unmount.
+
+`Chats.vue` uses it for the chat-list infinite scroll. The composable
+re-attaches automatically when the target or scroll root changes,
+which makes it safe to point at elements behind a `v-if`.
+
+## Signature
+
+```ts
+import { useInfiniteScroll } from '@advanced-chat/components'
+
+const { loading, setLoading, reset } = useInfiniteScroll({
+  target,
+  scrollRoot,
+  exhausted,
+  rootMargin,
+  onLoadMore,
+})
+```
+
+## Options
+
+| Field | Type | Description |
+|---|---|---|
+| `target` | `MaybeRefOrGetter<HTMLElement \| null>` | Element whose visibility triggers loading (the bottom-of-list sentinel). Accepts a `Ref` from `useTemplateRef` or a getter for elements behind a `v-if`. |
+| `scrollRoot` | `MaybeRefOrGetter<HTMLElement \| null>` | Element used as the `IntersectionObserver` root (the scroll container). Same shape as `target`. |
+| `exhausted` | `MaybeRefOrGetter<boolean>` | When truthy, the observer stops calling `onLoadMore`. Wire to your "no more pages" flag. |
+| `rootMargin` | `string` | Margin around the root, forwarded to `IntersectionObserver`. Defaults to `'100px'` so loading starts before the user hits the very bottom. |
+| `onLoadMore` | `() => void` | Fired when the sentinel intersects the root and neither `loading` nor `exhausted` is true. |
+
+## Returns
+
+| Field | Type | Description |
+|---|---|---|
+| `loading` | `Readonly<Ref<boolean>>` | True between an `onLoadMore` invocation and `setLoading(false)`. Also surfaces useful for rendering a loader. |
+| `setLoading` | `(value: boolean) => void` | Manually toggle the loading flag. Call `setLoading(false)` after the new page lands so the next intersection can fire. |
+| `reset` | `() => void` | Manually re-attach the observer. The composable already does this when `target` / `scrollRoot` change, so you only need this for unusual cases. |
+
+## Example — message-list pagination
+
+```vue
+<script setup lang="ts">
+import { ref, useTemplateRef } from 'vue'
+import { useInfiniteScroll } from '@advanced-chat/components'
+
+const messages = ref<Message[]>([])
+const messagesLoaded = ref(false)
+const sentinel = useTemplateRef<HTMLElement>('sentinel')
+const scrollRoot = useTemplateRef<HTMLElement>('scrollRoot')
+
+const { loading, setLoading } = useInfiniteScroll({
+  target: sentinel,
+  scrollRoot,
+  exhausted: messagesLoaded,
+  onLoadMore: async () => {
+    const next = await fetchOlderMessages(messages.value[0]?.id)
+    messages.value = [...next, ...messages.value]
+    messagesLoaded.value = next.length === 0
+    setLoading(false)
+  },
+})
+</script>
+
+<template>
+  <div ref="scrollRoot" class="messages">
+    <div ref="sentinel" v-if="!messagesLoaded">
+      <Loader v-if="loading" />
+    </div>
+    <Message v-for="m in messages" :key="m.id" :message="m" />
+  </div>
+</template>
+```
+
+## Notes
+
+- The composable does not call `setLoading(false)` for you. Call it
+  in your `onLoadMore` handler after the new items land — that's
+  the signal the next intersection can fire.
+- The observer is created lazily once both `target` and `scrollRoot`
+  resolve to actual elements. Pass `useTemplateRef` refs for elements
+  inside `v-if` blocks; the composable will attach as soon as the
+  elements mount.
+- `exhausted` is checked at intersection time, not at attach time.
+  Flipping it to `true` after a load suppresses the next call without
+  needing to disconnect the observer.
+- `onBeforeUnmount` releases the observer automatically. Safe to use
+  in components that might mount and unmount during normal app
+  navigation.

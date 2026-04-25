@@ -1,0 +1,71 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Docs/Introduction" />
+
+# `@advanced-chat/components`
+
+A typed Vue 3 chat-UI library. Backend-agnostic: rooms, messages,
+files, audio, reactions, replies / edits, typing indicators, themes,
+localization, and a small set of composables for bringing your own
+UI.
+
+This is the V3 successor to the original [`vue-advanced-chat`][v2]
+package. V3 trades v2's single web-component (`<vue-advanced-chat>` +
+`register()`) for a set of typed Vue 3 SFCs that consumers compose
+directly. Slots, theming, and TypeScript ergonomics are all native
+instead of negotiated through Shadow DOM.
+
+[v2]: https://github.com/advanced-chat/vue-advanced-chat
+
+## When to use it
+
+Reach for this package when you want a chat surface that:
+
+- Renders in a normal Vue 3 / Vite / Nuxt project (no Shadow DOM,
+  no `register()` step, no JSON-stringified props).
+- Composes downward — drop `AdvancedChat` for the all-in-one
+  experience, drop down to `Chats + Chat` when you need a custom
+  layout, drop down to the primitives (`ChatHeader`, `ChatFooter`,
+  `Message`, `MessageTemplate`, …) when you need full control.
+- Lets you keep ownership of the data layer. The library never
+  fetches or persists anything; you wire your backend via props
+  (`chats`, `messages`) and events (`fetch-messages`,
+  `send-message`, `chat-action-handler`, …).
+- Has an honest, typed contract. Every prop, every event payload,
+  every slot is documented and emitted as a `.d.ts` so your editor
+  catches mistakes before you ship them.
+
+## When *not* to use it
+
+- You need a hosted chat with backend included — this is UI only.
+- You want a single web component you can drop into any framework.
+  V3 is Vue-only by design; the v2 package on `main` still works
+  for non-Vue hosts.
+- You need React or Svelte components. There is no port planned.
+
+## What's in the package
+
+- 27 components, each individually importable.
+- 5 composables for the state machines that back the built-in
+  components (you can build custom autocomplete, selection,
+  pagination, search, and reply-edit surfaces without re-deriving
+  the logic).
+- A theming layer based on CSS custom properties: light, dark,
+  auto (`prefers-color-scheme`), or your own override map.
+- A localization plugin that takes a `Partial<Strings>` so you only
+  override what you care about.
+- A markdown / mention / linkify formatter (`formatText`) you can
+  use to render messages elsewhere in your app.
+
+## Where to go next
+
+- [Quick Start](?path=/docs/docs-quick-start--docs) — copy-paste a
+  working chat in two files.
+- [Composition](?path=/docs/docs-composition--docs) — choosing
+  between `AdvancedChat`, `Chats + Chat`, and the primitives.
+- [Migration from v2](?path=/docs/docs-migration-from-v2--docs) —
+  if you're already using `vue-advanced-chat`.
+- The **Components** section in the sidebar carries the full
+  prop / event / slot tables for every component. The
+  **Composables**, **Cookbook**, and **Reference** sections cover
+  the rest.

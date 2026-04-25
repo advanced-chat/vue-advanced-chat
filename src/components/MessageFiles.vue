@@ -10,15 +10,22 @@ import MessageTemplate from '@/components/MessageTemplate.vue'
 import type { TextFormattingOptions } from '../utils/text-formatter'
 
 export interface MessageFilesProps {
+  /** Identifies the viewer; forwarded to each `MessageFile`. */
   currentUser: UserReference
+  /** Owning message; visual media files are rendered first, then other files, then the message body. */
   message: Message
+  /** Chat members; used to resolve `@user` tags in the message body. */
   users: Array<User>
+  /** When `true`, file click events are suppressed in favor of message selection. */
   messageSelectionEnabled: boolean
+  /** Markdown / linkify configuration applied to the message body that follows the files. */
   textFormatting?: Partial<TextFormattingOptions>
 }
 
 export interface MessageFilesEvents {
+  /** Fires when any file is clicked; `action` is `'preview'` for media and `'download'` for other files. */
   (e: 'open-file', payload: { file: MessageFileModel; action: 'preview' | 'download' }): void
+  /** Fires when an `@user` tag in the message body is clicked. */
   (e: 'click-user-tag', user: User): void
 }
 

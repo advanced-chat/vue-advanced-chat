@@ -1,0 +1,138 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Docs/Composition" />
+
+# Composition
+
+The library exposes three layers of granularity. Pick the lowest
+one that gets you what you want.
+
+## The three layers
+
+### 1. `AdvancedChat`
+
+The all-in-one composition. Wraps `Layout + Chats + Chat` in a
+single mount. Use this when:
+
+- You want the standard two-pane layout (sidebar + active
+  conversation).
+- You don't need to inject custom content between the sidebar and
+  the conversation, or wrap either in your own chrome.
+- You're prototyping or shipping a "good enough" surface.
+
+```vue
+<AdvancedChat
+  :current-user="currentUser"
+  :chats="chats"
+  :chat="activeChat"
+  :messages="messages"
+  height="600px"
+  theme="auto"
+  @send-message="onSend"
+  @fetch-messages="loadOlder"
+  @open-chat="(chat) => activeChat = chat"
+/>
+```
+
+`AdvancedChat` does **not** forward slots to `Chats` / `Chat`. If
+you need slot composition, drop down a layer.
+
+### 2. `Chats` + `Chat`
+
+The two halves rendered separately. Use this when:
+
+- You want to inject content between (or wrap) either half.
+- You want different sizing / layout rules than `Layout` provides.
+- You need slot composition on either component.
+- You want to render only one half (e.g. a single-conversation app
+  with no sidebar — just `<Chat />` standalone).
+
+```vue
+<Layout :height="height" :theme="theme">
+  <div class="my-chrome">
+    <header>My App</header>
+    <main>
+      <Chats
+        :current-user="currentUser"
+        :chats="chats"
+        :chat="activeChat"
+        @open-chat="(chat) => activeChat = chat"
+      />
+      <Chat
+        :current-user="currentUser"
+        :chat="activeChat"
+        :messages="messages"
+        standalone
+        @send-message="onSend"
+      >
+        <template #no-chat-selected>
+          <MyEmptyState />
+        </template>
+      </Chat>
+    </main>
+  </div>
+</Layout>
+```
+
+Pass `standalone` to `Chat` when you don't want the chat-list toggle
+button (the button that hides / shows the sidebar on mobile).
+
+### 3. The primitives
+
+`ChatHeader`, `ChatFooter`, `ChatMessage`, `Message`, `MessageActions`,
+`MessageReactions`, `MessageReply`, `MessageTemplate`,
+`MediaPreview`, `AudioPlayer` and friends — every internal piece of
+`Chat` is also exported. Use them when:
+
+- You want a totally custom layout that doesn't fit `Chat`'s
+  scroll-list + footer shape.
+- You want to render messages outside a chat (e.g. a comment thread,
+  an inbox preview, a search-result list).
+- You want to embed only the composer (`ChatFooter`) somewhere
+  unrelated to a message list.
+
+```vue
+<div class="thread-view">
+  <ChatHeader :chat="thread" :current-user="currentUser" />
+  <div class="thread-messages">
+    <Message
+      v-for="message in messages"
+      :key="message.id"
+      :current-user="currentUser"
+      :message="message"
+      :users="users"
+      @send-message-reaction="toggleReaction"
+    />
+  </div>
+  <ChatFooter
+    :chat="thread"
+    :users="users"
+    @send-message="onSend"
+  />
+</div>
+```
+
+## Decision table
+
+| If you need... | Use |
+|---|---|
+| A standard chat surface, no customization | `AdvancedChat` |
+| Two-pane layout but want to wrap each pane | `Layout + Chats + Chat` |
+| Single-conversation surface (no sidebar) | `Layout + Chat standalone` |
+| To render messages outside a chat | `Message` (or `MessageTemplate` for just text) |
+| To reuse the composer in a different surface | `ChatFooter` |
+| Just the markdown / mention rendering | `formatText` (no component needed) |
+
+## Composables instead of slots
+
+Several pieces of state machinery are also exported as composables.
+Reach for them when you want to render your own UI on top of the
+state, rather than restyling a built-in component:
+
+- `useAutocomplete` — slash-command menus, custom mention pickers.
+- `useMessageSelection` — bulk-select for chats, files, anything.
+- `useReplyEdit` — your own composer with reply / edit pre-fill.
+- `useInfiniteScroll` — pagination on lists that aren't messages.
+- `useLocalSearch` — filter any id-bearing collection.
+
+See **Composables** in the sidebar.

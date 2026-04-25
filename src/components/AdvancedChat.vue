@@ -18,18 +18,31 @@ import type { ChatFileItem } from './ChatFile.vue'
 import type { TextFormattingOptions } from '../utils/text-formatter'
 
 export interface AdvancedChatProps {
+  /** Outer container height as a CSS length. Defaults to `'600px'`. */
   height?: string
+  /** Visual theme. Defaults to `'auto'`, which follows the user's OS preference. */
   theme?: Theme
+  /** Identifies the viewer; required to render most UI. Defaults to `null`. */
   currentUser?: UserReference | null
+  /** Chats shown in the left-hand list. */
   chats?: ChatModel[]
+  /** Initially-active chat; the inner `Chat` switches to this when it changes. */
   chat?: ChatModel | null
+  /** Messages for the active chat. */
   messages?: Message[]
+  /** Shows the chats-list spinner while `true`. */
   loadingChats?: boolean
+  /** Set to `true` once all chats have been delivered to disable further `fetch-more-chats`. */
   chatsLoaded?: boolean
+  /** Shows the messages spinner while `true`. */
   loadingMessages?: boolean
+  /** Set to `true` once all messages for the active chat have been delivered. */
   messagesLoaded?: boolean
+  /** Items rendered in the chat-header overflow menu. */
   headerActions?: Action[]
+  /** Items rendered in each message's actions menu. */
   messageActions?: Action[]
+  /** Items rendered in each chat-list item's actions menu. */
   chatActions?: Action[]
   /**
    * Bulk-action items rendered in the message-selection toolbar. Pass
@@ -37,21 +50,33 @@ export interface AdvancedChatProps {
    * disable it. Replaces the prior `messageSelectionActions` prop.
    */
   selectionActions?: Action[]
+  /** Renders the chats sidebar when `true`. Defaults to `true`. */
   showChats?: boolean
+  /** Shows the search input in the chats sidebar. Defaults to `true`. */
   showSearch?: boolean
+  /** Shows the "add chat" button in the chats sidebar. Defaults to `true`. */
   showAddChat?: boolean
+  /** Shows the file-attachment button in the composer. Defaults to `true`. */
   showFiles?: boolean
+  /** Shows the emoji-picker button in the composer. Defaults to `true`. */
   showEmojis?: boolean
+  /** Renders the composer footer. Defaults to `true`. */
   showFooter?: boolean
+  /** Shows the send-icon button in the composer. Defaults to `true`. */
   showSendIcon?: boolean
+  /** Shows the inline emoji-reaction picker on each message. Defaults to `true`. */
   showReactionEmojis?: boolean
+  /** Renders the "new messages" divider above the first unread message. Defaults to `true`. */
   showNewMessagesDivider?: boolean
   /**
    * Text-formatting applied to every message body in the active chat.
    */
   textFormatting?: Partial<TextFormattingOptions>
+  /** `accept` attribute forwarded to the file input. Defaults to `'*'`. */
   accept?: string
+  /** Allows selecting multiple files in the file picker. Defaults to `true`. */
   multiple?: boolean
+  /** `capture` attribute forwarded to the file input (mobile camera/mic). */
   capture?: '' | 'user' | 'environment'
   /** Max files in the composer at once. `0` / unset disables. */
   maxFiles?: number
@@ -72,34 +97,62 @@ export interface AdvancedChatProps {
     onSend?: boolean
     onReceive?: boolean
   }
+  /**
+   * When `true`, `search-chat` still fires on every keystroke but the
+   * built-in local filter is suppressed — the host renders server-driven
+   * results.
+   */
   customSearchEnabled?: boolean
+  /** When `true`, the header becomes clickable and emits `show-chat-info`. */
   chatInfoEnabled?: boolean
 }
 
 export interface AdvancedChatEvents {
+  /**
+   * Fires on each keystroke in the chats search input. Always emitted;
+   * pair with `customSearchEnabled` to opt out of the built-in local
+   * filter and drive results from your backend.
+   */
   (e: 'search-chat', query: string): void
+  /** Fires when the "add chat" button is clicked. */
   (e: 'add-chat'): void
+  /** Fires when the chats list scrolls near the bottom and more chats should be paginated in. */
   (e: 'fetch-more-chats'): void
+  /** Fires when the messages list scrolls near the top and more messages should be paginated in. */
   (e: 'fetch-messages'): void
+  /** Fires when the user selects a chat from the list. */
   (e: 'open-chat', chat: ChatModel): void
+  /** Fires when the chat header is clicked while `chatInfoEnabled` is `true`. */
   (e: 'show-chat-info', chat: ChatModel): void
+  /** Fires when an item in the chat-header menu is selected. */
   (e: 'menu-action-handler', payload: { chat: ChatModel; action: Action }): void
+  /** Fires when an item in a message's actions menu is selected. */
   (e: 'message-action-handler', payload: { action: Action; message: Message }): void
+  /** Fires when a bulk-selection action is invoked, with the currently-selected messages. */
   (
     e: 'message-selection-action-handler',
     payload: { chat: ChatModel; action: Action; messages: Message[] },
   ): void
+  /** Fires when an item in a chat-list item's actions menu is selected. */
   (e: 'chat-action-handler', payload: { chat: ChatModel; action: Action }): void
+  /** Fires when the user exits message-selection mode. */
   (e: 'cancel-message-selection'): void
+  /** Fires when a message file is clicked; `action` is `'preview'` for media and `'download'` for other files. */
   (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
+  /** Fires when the user clicks a failed message to retry sending. */
   (e: 'open-failed-message', message: Message): void
+  /** Fires when the viewer adds or removes a reaction; the host should toggle the emoji on the message. */
   (e: 'send-message-reaction', payload: { emoji: string; message: Message }): void
+  /** Fires when an `@user` tag in a rendered message is clicked. */
   (e: 'click-user-tag', user: User): void
+  /** Fires (debounced) as the viewer types in the composer; emit typing presence upstream. */
   (e: 'typing-message', value: string): void
+  /** Fires when the viewer sends a new message. */
   (
     e: 'send-message',
     payload: { content: string; files: ChatFileItem[]; reply?: Message | null },
   ): void
+  /** Fires when the viewer commits an edit to an existing message. */
   (
     e: 'edit-message',
     payload: { messageId: Message['id']; content: string; files: ChatFileItem[] },

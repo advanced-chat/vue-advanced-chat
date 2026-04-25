@@ -19,8 +19,11 @@ import { useLocalizationStrings } from '../localization'
 const strings = useLocalizationStrings()
 
 export interface ChatsItemProps {
+  /** Identifies the viewer; used to derive the "other user" in 1:1 chats and to format checkmarks on the last message. */
   currentUser: UserReference
+  /** Chat rendered by this list item. */
   chat: Chat
+  /** Items rendered in this chat's overflow menu. */
   actions?: Array<Action>
 }
 

@@ -3,11 +3,14 @@ import SvgIcon from '@/components/SvgIcon.vue'
 import ChatFile, { type ChatFileItem } from '@/components/ChatFile.vue'
 
 export interface ChatFilesProps {
+  /** Pending composer files. The container animates in when non-empty and hides when empty. */
   files: ChatFileItem[]
 }
 
 export interface ChatFilesEvents {
+  /** Fires when the user removes a single file; `index` matches its position in `files`. */
   (e: 'remove-file', index: number): void
+  /** Fires when the user clears the entire pending-files tray. */
   (e: 'reset-message'): void
 }
 

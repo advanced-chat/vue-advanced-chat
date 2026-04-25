@@ -8,14 +8,20 @@ import type { Message, MessageFile, UserReference } from '../models'
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 
 export interface MessageFileProps {
+  /** File rendered by this row. Image and video MIME types render rich previews. */
   file: MessageFile
+  /** Identifies the viewer; used to apply the blur-loading effect only on the sender's side. */
   currentUser: UserReference
+  /** Owning message; its `id` namespaces the slot names used to override icons. */
   message: Message
+  /** Position of `file` within `message.files`. */
   index: number
+  /** When `true`, click events on this file are suppressed in favor of message selection. */
   messageSelectionEnabled: boolean
 }
 
 export interface MessageFileEvents {
+  /** Fires when the file is clicked; `action` is `'preview'` for the eye icon and `'download'` for the document icon. */
   (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
 }
 

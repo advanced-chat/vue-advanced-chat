@@ -1,0 +1,137 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Docs/Quick Start" />
+
+# Quick Start
+
+A complete working chat in two files. Drop these in any Vue 3 +
+Vite project to see the library running against in-memory data.
+
+## Install
+
+```bash
+npm install @advanced-chat/components
+```
+
+Vue 3.5+ is a peer dependency.
+
+## Wire the plugin
+
+`main.ts`:
+
+```ts
+import { createApp } from 'vue'
+import App from './App.vue'
+
+import { AdvancedChatPlugin } from '@advanced-chat/components'
+import '@advanced-chat/components/styles'
+
+const app = createApp(App)
+
+app.use(
+  AdvancedChatPlugin({
+    // Optional — override any subset of the bundled English strings.
+    strings: {
+      'chats.search.placeholder': 'Search conversations',
+    },
+  }),
+)
+
+app.mount('#app')
+```
+
+The plugin provides the localized strings dictionary used by every
+component. Without it the components fall back to the bundled
+English strings and warn under `import.meta.env.DEV`.
+
+The CSS import (`@advanced-chat/components/styles`) is required —
+the package ships a separate stylesheet rather than inlining styles
+into the JS bundle.
+
+## Render the chat
+
+`App.vue`:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { AdvancedChat, type Chat, type Message, type User } from '@advanced-chat/components'
+
+const currentUser: User = {
+  id: 'me',
+  name: 'Alice',
+  status: { state: 'online' },
+}
+
+const otherUser: User = {
+  id: 'them',
+  name: 'Bob',
+  status: { state: 'online' },
+}
+
+const chats = ref<Chat[]>([
+  {
+    id: 'general',
+    name: 'General',
+    users: [currentUser, otherUser],
+  },
+])
+
+const messages = ref<Message[]>([
+  {
+    id: '1',
+    sender: otherUser,
+    content: 'Hey there! Welcome to the thread.',
+    createdAt: '2026-04-01T10:00:00Z',
+    status: 'read',
+  },
+])
+
+const onSendMessage = (payload: { content: string; files: unknown[] }) => {
+  messages.value = [
+    ...messages.value,
+    {
+      id: String(Date.now()),
+      sender: currentUser,
+      content: payload.content,
+      createdAt: new Date().toISOString(),
+      status: 'sent',
+    },
+  ]
+}
+</script>
+
+<template>
+  <AdvancedChat
+    :current-user="currentUser"
+    :chats="chats"
+    :chat="chats[0]"
+    :messages="messages"
+    :messages-loaded="true"
+    :chats-loaded="true"
+    height="600px"
+    theme="light"
+    @send-message="onSendMessage"
+  />
+</template>
+```
+
+## What you should see
+
+- A two-pane layout: chat list on the left, active conversation on
+  the right.
+- The "General" chat row in the sidebar.
+- Bob's seed message at the top of the messages list.
+- A working composer at the bottom — typing into it and pressing
+  Enter appends a new message to the local list.
+
+## Where to go from here
+
+- [Composition](?path=/docs/docs-composition--docs) — drop down to
+  `Chats + Chat` when you want a custom layout.
+- [Cookbook → Backend Integration](?path=/docs/cookbook-backend-integration--docs)
+  — replace the in-memory ref with a real backend.
+- [Theming](?path=/docs/docs-theming--docs) — `theme="dark"`, custom
+  palettes, per-instance overrides.
+- [Cookbook → Pagination](?path=/docs/cookbook-pagination--docs) —
+  load older messages on scroll.

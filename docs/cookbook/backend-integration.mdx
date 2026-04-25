@@ -1,0 +1,235 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Cookbook/Backend Integration" />
+
+# Backend Integration
+
+`@advanced-chat/components` is backend-agnostic — the components
+accept data via props and emit events when the user takes an
+action. You own the data layer; the library never fetches or
+persists anything.
+
+This recipe shows the wiring against a Firebase Firestore backend
+because that's the most common ask, but the same shape works for
+any REST API, GraphQL backend, custom WebSocket server, or
+in-memory mock.
+
+## The data flow
+
+```
+backend ──> reactive refs ──> AdvancedChat (props)
+                                   │
+backend <── handlers <── AdvancedChat (events)
+```
+
+Three pieces:
+
+1. A subscription that hydrates `chats` and `messages` refs.
+2. Event handlers that translate user actions into backend writes.
+3. A pagination handler for `fetch-messages` / `fetch-more-chats`.
+
+## Firestore example
+
+```ts
+// composables/use-chat-store.ts
+import { ref, watch } from 'vue'
+import {
+  collection,
+  doc,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  startAfter,
+  addDoc,
+  serverTimestamp,
+} from 'firebase/firestore'
+import { db } from './firebase'
+
+import type { Chat, Message, User } from '@advanced-chat/components'
+
+export const useChatStore = (currentUser: User) => {
+  const chats = ref<Chat[]>([])
+  const messages = ref<Message[]>([])
+  const activeChat = ref<Chat | null>(null)
+  const messagesLoaded = ref(false)
+  const loadingMessages = ref(false)
+  let oldestLoaded: any = null
+
+  // Subscribe to the chat list.
+  const chatsQuery = query(collection(db, 'chats'), orderBy('updatedAt', 'desc'))
+  onSnapshot(chatsQuery, (snap) => {
+    chats.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }) as Chat)
+  })
+
+  // Re-subscribe to messages whenever the active chat changes.
+  watch(activeChat, (chat) => {
+    messages.value = []
+    messagesLoaded.value = false
+    oldestLoaded = null
+
+    if (!chat) return
+
+    const messagesQuery = query(
+      collection(db, 'chats', chat.id, 'messages'),
+      orderBy('createdAt', 'desc'),
+      limit(50),
+    )
+    onSnapshot(messagesQuery, (snap) => {
+      messages.value = snap.docs
+        .map((d) => ({ id: d.id, ...d.data() }) as Message)
+        .reverse()
+      oldestLoaded = snap.docs[snap.docs.length - 1]
+      messagesLoaded.value = snap.docs.length < 50
+    })
+  })
+
+  const sendMessage = async (
+    payload: { content: string; files: { blob?: Blob; name: string }[]; reply?: Message | null },
+  ) => {
+    if (!activeChat.value) return
+    await addDoc(collection(db, 'chats', activeChat.value.id, 'messages'), {
+      sender: { id: currentUser.id, name: currentUser.name },
+      content: payload.content,
+      createdAt: serverTimestamp(),
+      status: 'sending',
+      reply: payload.reply ? { id: payload.reply.id, sender: payload.reply.sender, content: payload.reply.content, createdAt: payload.reply.createdAt } : undefined,
+      // file uploads handled separately — see "File Uploads" recipe
+    })
+  }
+
+  const fetchMoreMessages = async () => {
+    if (!activeChat.value || messagesLoaded.value || loadingMessages.value) return
+    loadingMessages.value = true
+
+    const olderQuery = query(
+      collection(db, 'chats', activeChat.value.id, 'messages'),
+      orderBy('createdAt', 'desc'),
+      startAfter(oldestLoaded),
+      limit(50),
+    )
+    onSnapshot(olderQuery, (snap) => {
+      const older = snap.docs.map((d) => ({ id: d.id, ...d.data() }) as Message).reverse()
+      messages.value = [...older, ...messages.value]
+      oldestLoaded = snap.docs[snap.docs.length - 1] ?? oldestLoaded
+      messagesLoaded.value = snap.docs.length < 50
+      loadingMessages.value = false
+    })
+  }
+
+  return {
+    chats,
+    messages,
+    activeChat,
+    messagesLoaded,
+    loadingMessages,
+    sendMessage,
+    fetchMoreMessages,
+  }
+}
+```
+
+## Wiring it up
+
+```vue
+<script setup lang="ts">
+import { AdvancedChat } from '@advanced-chat/components'
+import { useChatStore } from './composables/use-chat-store'
+
+const currentUser = useCurrentUser() // your auth store
+
+const {
+  chats,
+  messages,
+  activeChat,
+  messagesLoaded,
+  loadingMessages,
+  sendMessage,
+  fetchMoreMessages,
+} = useChatStore(currentUser)
+</script>
+
+<template>
+  <AdvancedChat
+    :current-user="currentUser"
+    :chats="chats"
+    :chat="activeChat"
+    :messages="messages"
+    :messages-loaded="messagesLoaded"
+    :loading-messages="loadingMessages"
+    :chats-loaded="true"
+    @open-chat="(chat) => activeChat = chat"
+    @send-message="sendMessage"
+    @fetch-messages="fetchMoreMessages"
+  />
+</template>
+```
+
+## What about REST / GraphQL?
+
+Same shape, different fetcher. Replace `onSnapshot` with whatever
+your backend exposes:
+
+- **REST polling** — `setInterval(() => fetchChats(), 5000)`. Not
+  recommended for messages but fine for chat-list metadata.
+- **WebSocket** — subscribe to a server-pushed event and update the
+  refs in place. The components re-render reactively.
+- **GraphQL subscriptions** — Apollo / urql client with
+  `useSubscription`; pipe the result into the refs.
+- **Polling + manual refresh** — `pull-to-refresh`-style. Less
+  ergonomic but works.
+
+The library does not care what's behind the refs. It cares that
+they're reactive and that the events you wire round-trip back into
+them.
+
+## Reactions
+
+`send-message-reaction` fires with `{ emoji, message }` and is a
+**toggle** signal — the host decides whether to add or remove based
+on whether the current user is already in the reaction list:
+
+```ts
+const onReaction = async ({ emoji, message }: { emoji: string; message: Message }) => {
+  const current = message.reactions?.[emoji] ?? []
+  const isMine = current.includes(currentUser.id)
+
+  await updateDoc(doc(db, 'chats', activeChat.value!.id, 'messages', message.id), {
+    [`reactions.${emoji}`]: isMine
+      ? current.filter((id) => id !== currentUser.id)
+      : [...current, currentUser.id],
+  })
+}
+```
+
+## Typing presence
+
+Typing events fire on every keystroke as `typing-message` (with the
+current input text). Debounce them before writing to your backend:
+
+```ts
+import { useDebounceFn } from '@vueuse/core'
+
+const updateTyping = useDebounceFn(async (text: string) => {
+  await updateDoc(doc(db, 'chats', activeChat.value!.id, 'typingUsers', currentUser.id), {
+    typing: text.length > 0,
+    updatedAt: serverTimestamp(),
+  })
+}, 500)
+
+// in template: @typing-message="updateTyping"
+```
+
+## Failed sends
+
+When a write fails, set the message's `status` to `'failed'` and
+keep it in the `messages` ref. The library renders a "Tap to retry"
+pill on failed own-messages and emits `open-failed-message` with
+the message when the user clicks it:
+
+```ts
+const onRetry = async (message: Message) => {
+  await sendMessage({ content: message.content!, files: message.files ?? [] })
+  // remove the failed copy from local state once the new send lands.
+}
+```

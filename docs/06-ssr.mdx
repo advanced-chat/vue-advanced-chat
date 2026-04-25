@@ -1,0 +1,91 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Docs/SSR" />
+
+# Server-side rendering
+
+The components are not currently designed for full server-side
+rendering — several internals reach for browser-only globals
+(`document`, `window.matchMedia`, `IntersectionObserver`,
+`navigator.language`). What the package guarantees today is that
+**importing and rendering on the server doesn't crash**: each
+browser dependency is guarded so the SSR pass returns a sensible
+default and the real behavior kicks in on hydration.
+
+## What works
+
+| Feature | SSR status |
+|---|---|
+| Importing the package on the server | ✅ |
+| Rendering markup (no interactive features) | ✅ |
+| `formatText({ markdown: true })` | ✅ — the markdown pass uses micromark; the post-pass DOM cleanup is guarded behind `typeof document`. |
+| `formatText({ singleLine: true })` | ✅ — the DOM-based whitespace-collapse path is guarded; the SSR fallback strips tags via regex. |
+| `useThemeStyles` | ✅ — falls back to the `light` palette when `window.matchMedia` is undefined; reactive `prefers-color-scheme` listener attaches in `onMounted`. |
+| `useLocalizationStrings` / `negotiateLocale` | ✅ — returns `'en'` when `navigator` is undefined. |
+| `useInfiniteScroll` | ✅ at module level — `IntersectionObserver` is only constructed inside the watcher's `flush: 'post'` callback, which runs client-side. |
+
+## What doesn't
+
+| Feature | SSR status | Workaround |
+|---|---|---|
+| Hydration of full chat surfaces in Nuxt 3 | ⚠️ Untested | Wrap in `<ClientOnly>`. See [#451](https://github.com/advanced-chat/vue-advanced-chat/issues/451), [#528](https://github.com/advanced-chat/vue-advanced-chat/issues/528). |
+| Auto-scroll on mount under SSR | ⚠️ Effectively a no-op | The `onMounted` hook only runs on the client; first paint shows the list at top. Set `autoScroll: { onMount: false }` if you'd rather not see the scroll-to-bottom flash on hydrate. |
+| Emoji picker (`emoji-picker-element`) | ⚠️ Browser-only custom element | Render `EmojiPicker` inside `<ClientOnly>`, or hide it entirely until mounted. |
+
+## Recommended pattern (Nuxt 3)
+
+```vue
+<template>
+  <ClientOnly>
+    <AdvancedChat
+      :current-user="currentUser"
+      :chats="chats"
+      :chat="activeChat"
+      :messages="messages"
+      :auto-scroll="{ onMount: false }"
+      @send-message="onSend"
+    />
+    <template #fallback>
+      <div class="chat-skeleton" />
+    </template>
+  </ClientOnly>
+</template>
+```
+
+`<ClientOnly>` skips the component on the server and renders the
+fallback. On the client, the component mounts normally with full
+behavior. Pair it with `:auto-scroll="{ onMount: false }"` (or omit
+that prop to keep the default scroll-to-latest) depending on what
+you want users to see during hydration.
+
+## Recommended pattern (Vite SSR)
+
+For non-Nuxt SSR setups (`vite-plugin-ssr`, custom SSR), wrap with
+your own client-only directive or check `import.meta.env.SSR`:
+
+```vue
+<template>
+  <AdvancedChat v-if="!isSsr" … />
+  <div v-else class="chat-skeleton" />
+</template>
+
+<script setup lang="ts">
+const isSsr = import.meta.env.SSR
+</script>
+```
+
+## Roadmap
+
+Full SSR + hydration is on the post-3.0 roadmap (issues
+[#451](https://github.com/advanced-chat/vue-advanced-chat/issues/451)
+and [#528](https://github.com/advanced-chat/vue-advanced-chat/issues/528)).
+The work involves:
+
+- Auditing every browser-only side effect in `onMounted` /
+  `onBeforeMount`.
+- Adding hydration tests in Storybook + Playwright.
+- Documenting which DOM measurements (auto-scroll triggers,
+  intersection-observer thresholds) are inherently client-only.
+
+Until that lands, treat the components as client-only and wrap
+appropriately.

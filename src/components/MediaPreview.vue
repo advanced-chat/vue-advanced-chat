@@ -7,10 +7,12 @@ import type { MessageFile } from '../models'
 import { isImageFile, isVideoFile } from '../utils/media-types'
 
 export interface MediaPreviewProps {
+  /** Image or video to preview. The modal is hidden when `null` / unset. */
   file?: MessageFile | null
 }
 
 export interface MediaPreviewEvents {
+  /** Fires when the user closes the preview via the close button, backdrop click, or Escape. */
   (e: 'close-media-preview'): void
 }
 

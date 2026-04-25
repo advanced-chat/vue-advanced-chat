@@ -1,0 +1,198 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Cookbook/Custom Action Menus" />
+
+# Custom Action Menus
+
+Four action menus are exposed across the surface, each driven by
+an `Action[]` array prop. They share a single contract:
+`{ id, label, icon?, ownMessageOnly? }`.
+
+| Menu | Prop on `AdvancedChat` / `Chat` / `Chats` | Event the host handles |
+|---|---|---|
+| Chat-row dropdown (per row in the chat list) | `chatActions` | `chat-action-handler: { chat, action }` |
+| Chat-header overflow (top-right of active chat) | `headerActions` | `menu-action-handler: { chat, action }` |
+| Per-message dropdown | `messageActions` | `message-action-handler: { action, message }` |
+| Bulk-selection toolbar | `selectionActions` | `message-selection-action-handler: { chat, action, messages }` |
+
+The four payloads are intentionally different so a single
+host-level handler doesn't accidentally shadow the wrong context.
+
+## Define your actions
+
+```ts
+import type { Action } from '@advanced-chat/components'
+import { REPLY_ACTION, EDIT_ACTION } from '@advanced-chat/components'
+
+const chatActions: Action[] = [
+  { id: 'archive', label: 'Archive' },
+  { id: 'mute', label: 'Mute' },
+  { id: 'leave', label: 'Leave chat' },
+]
+
+const headerActions: Action[] = [
+  { id: 'add-participant', label: 'Add participant' },
+  { id: 'view-info', label: 'Chat info' },
+]
+
+const messageActions: Action[] = [
+  { id: REPLY_ACTION, label: 'Reply' },
+  { id: EDIT_ACTION, label: 'Edit', icon: 'pencil', ownMessageOnly: true },
+  { id: 'delete', label: 'Delete', icon: 'deleted', ownMessageOnly: true },
+  { id: 'forward', label: 'Forward' },
+  { id: 'pin', label: 'Pin' },
+]
+
+const selectionActions: Action[] = [
+  { id: 'delete-many', label: 'Delete' },
+  { id: 'forward-many', label: 'Forward' },
+]
+```
+
+`ownMessageOnly: true` filters the action out for messages
+authored by other users. Useful for `edit` / `delete`.
+
+`icon` resolves to a built-in `SvgIcon` name (`'pencil'`,
+`'deleted'`, `'send'`, etc.). For custom icons, use the per-message
+slot overrides (`pencil-icon_<id>`, `deleted-icon_<id>`, …).
+
+## Wire the handlers
+
+```vue
+<script setup lang="ts">
+import type { Action, Chat as ChatModel, Message } from '@advanced-chat/components'
+
+const onChatAction = ({ chat, action }: { chat: ChatModel; action: Action }) => {
+  switch (action.id) {
+    case 'archive':
+      archiveChat(chat.id)
+      break
+    case 'mute':
+      muteChat(chat.id)
+      break
+    case 'leave':
+      leaveChat(chat.id)
+      break
+  }
+}
+
+const onHeaderAction = ({ chat, action }: { chat: ChatModel; action: Action }) => {
+  switch (action.id) {
+    case 'add-participant':
+      openAddParticipantModal(chat)
+      break
+    case 'view-info':
+      navigateTo(`/chat/${chat.id}/info`)
+      break
+  }
+}
+
+const onMessageAction = ({ action, message }: { action: Action; message: Message }) => {
+  // The built-in REPLY / EDIT actions already pre-fill the composer; you only need
+  // to handle the rest.
+  switch (action.id) {
+    case 'delete':
+      deleteMessage(message.id)
+      break
+    case 'forward':
+      openForwardModal(message)
+      break
+    case 'pin':
+      pinMessage(message.id)
+      break
+  }
+}
+
+const onSelectionAction = ({
+  chat,
+  action,
+  messages,
+}: {
+  chat: ChatModel
+  action: Action
+  messages: Message[]
+}) => {
+  switch (action.id) {
+    case 'delete-many':
+      deleteMessages(messages.map((m) => m.id))
+      break
+    case 'forward-many':
+      openForwardModal(messages)
+      break
+  }
+}
+</script>
+
+<template>
+  <AdvancedChat
+    :current-user="currentUser"
+    :chats="chats"
+    :chat="activeChat"
+    :messages="messages"
+    :chat-actions="chatActions"
+    :header-actions="headerActions"
+    :message-actions="messageActions"
+    :selection-actions="selectionActions"
+    @chat-action-handler="onChatAction"
+    @menu-action-handler="onHeaderAction"
+    @message-action-handler="onMessageAction"
+    @message-selection-action-handler="onSelectionAction"
+  />
+</template>
+```
+
+## Selection mode
+
+The selection toolbar is enabled by passing a non-empty
+`selectionActions` array. While enabled:
+
+- Clicking a message toggles its selection.
+- The header is replaced by a toolbar showing each
+  `selectionActions[i].label` with a count.
+- Clicking a toolbar button fires
+  `message-selection-action-handler` with the selected messages
+  and clears the selection.
+- Clicking "Cancel" in the toolbar (or pressing the cancel button
+  of your choosing) emits `cancel-message-selection` and exits
+  selection mode.
+
+Pass an empty array (the default) to disable selection mode
+entirely.
+
+## Disabling actions for specific messages
+
+Two `Message` flags suppress action menus on individual messages
+without removing the actions globally:
+
+```ts
+const messages: Message[] = [
+  {
+    id: '1',
+    sender: otherUser,
+    content: 'A system announcement',
+    createdAt: '...',
+    system: true,
+    disableActions: true,
+    disableReactions: true,
+  },
+]
+```
+
+| Flag | Effect |
+|---|---|
+| `disableActions` | Hides the per-message dropdown menu on this message. |
+| `disableReactions` | Hides the inline reaction picker on this message. |
+
+`system: true` already hides both by default (system messages
+render as a centered pill, not a normal bubble).
+
+## Building your own action menu
+
+If the dropdown chrome doesn't fit your design, you can render the
+header / message slot yourself and dispatch back through the same
+events. See `Chat`'s `chat-options` slot or `Message`'s
+per-message icon slots — both let you replace the trigger button
+while still emitting the standard event payloads. The dropdown
+positioning + click-outside dismissal logic lives inside
+`MessageActions` and `ChatHeader`; if you bypass it entirely, you
+take responsibility for those interactions.

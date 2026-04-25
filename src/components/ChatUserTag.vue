@@ -6,13 +6,18 @@ import { useLocalizationStrings } from '../localization'
 const strings = useLocalizationStrings()
 
 export interface ChatUserTagProps {
+  /** Users matching the active `@` query. Pass an empty array to hide the popup. */
   filteredUsers: User[]
+  /** Truthy edge commits the active user. The host typically wires this to Enter. */
   selectItem?: boolean | null
+  /** Positive steps forward, negative backward. The host typically wires this to ArrowUp/ArrowDown. */
   activeUpOrDown?: number | null
 }
 
 export interface ChatUserTagEvents {
+  /** Fires when the user commits a tag from the popup. */
   (e: 'select-user-tag', user: User): void
+  /** Fires after the active user moves via `activeUpOrDown`. */
   (e: 'activate-item'): void
 }
 

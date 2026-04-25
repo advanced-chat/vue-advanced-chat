@@ -16,25 +16,42 @@ import type { TextFormattingOptions } from '../utils/text-formatter'
 const strings = useLocalizationStrings()
 
 export interface ChatMessageProps {
+  /** Identifies the viewer; used to render own vs. other styling and own-only actions. */
   currentUser: UserReference
+  /** Message rendered by this row. */
   message: ChatMessageModel
+  /** Surrounding messages; used to decide whether to render a date divider above this row. */
   messages?: ChatMessageModel[]
+  /** Position of `message` within `messages`. Defaults to `0`. */
   index?: number
+  /** Chat members; used to resolve `@user` tags and reply previews. */
   users?: User[]
+  /** Items rendered in this message's actions menu. */
   actions?: Action[]
+  /** Shows the inline emoji-reaction picker on this message. Defaults to `true`. */
   showReactionEmojis?: boolean
+  /** Renders the "new messages" divider above this row when `message.unread` is true. Defaults to `true`. */
   showNewMessagesDivider?: boolean
+  /** Markdown / linkify configuration applied to the message body. */
   textFormatting?: Partial<TextFormattingOptions>
+  /** When `true`, clicks toggle this message's selection instead of opening menus. Defaults to `false`. */
   messageSelectionEnabled?: boolean
+  /** Whether this message is currently selected. Defaults to `false`. */
   selected?: boolean
 }
 
 export interface ChatMessageEvents {
+  /** Fires when an item in the message's actions menu is selected. */
   (e: 'message-action-handler', payload: { action: Action; message: ChatMessageModel }): void
+  /** Fires when the viewer adds or removes a reaction; the host should toggle the emoji on the message. */
   (e: 'send-message-reaction', payload: { emoji: string; message: ChatMessageModel }): void
+  /** Fires when a file is clicked; `action` is `'preview'` for media and `'download'` otherwise. */
   (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
+  /** Fires when an `@user` tag in the message body is clicked. */
   (e: 'click-user-tag', user: User): void
+  /** Fires when the message is clicked while `messageSelectionEnabled` is `true`. */
   (e: 'select-message', message: ChatMessageModel): void
+  /** Fires when the viewer clicks a failed message to retry sending. */
   (e: 'open-failed-message', message: ChatMessageModel): void
 }
 

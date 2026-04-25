@@ -5,13 +5,18 @@ import SvgIcon from '@/components/SvgIcon.vue'
 import AudioControl from '@/components/AudioControl.vue'
 
 export interface AudioPlayerProps {
+  /** Owning message; its `id` namespaces the underlying `<audio>` element and slot names. */
   message?: MessageReference
+  /** Audio source URL. Pass `null` to render a disabled player. */
   src?: string | null
+  /** When `true`, playback and scrubbing are disabled so clicks toggle message selection instead. */
   messageSelectionEnabled?: boolean
 }
 
 export interface AudioPlayerEvents {
+  /** Fires when the cursor enters or leaves the progress bar. */
   (e: 'hover-audio-progress', hovering: boolean): void
+  /** Fires as playback advances; payload is the current `mm:ss` time, or total duration before playback starts. */
   (e: 'update-progress-time', value: string): void
 }
 

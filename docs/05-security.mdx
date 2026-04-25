@@ -1,0 +1,107 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Docs/Security Model" />
+
+# Security model
+
+The library treats the data passed in via props as already trusted.
+Strings, URLs, and HTML rendered through the markdown pass are
+emitted to the DOM and to CSS without further sanitization. The
+host application is responsible for validating user-supplied
+content at the boundary where it enters the data layer.
+
+This page enumerates exactly which fields land where, so you know
+what to validate.
+
+## URLs interpolated into CSS
+
+Several components render avatars and file thumbnails by setting
+`background-image: url('${someUrl}')` or by passing the URL as the
+`src` of an `<img>` / `<source>` element. If those URLs can come
+from untrusted users, validate them before they enter the data
+layer.
+
+| Source field | Renders in | How |
+|---|---|---|
+| `Chat.avatar` | `ChatHeader`, `ChatsItem` | CSS `background-image: url(…)` |
+| `User.avatar` | `ChatUserTag`, `ChatHeader` (1:1 chats), `ChatsItem` (1:1 chats) | CSS `background-image: url(…)` |
+| `Message.files[].url` | `MessageFile` (image/video render), `MediaPreview` | `<source src>`, CSS `background-image: url(…)` |
+| `Message.files[].previewUrl` | `MessageFile` (image preview while loading) | CSS `background-image: url(…)` |
+| `Message.reply.files[0].url` | `MessageReply` | CSS `background-image: url(…)` |
+
+A malicious URL like
+
+```
+http://example.com/img.png'); background: url('https://attacker.com
+```
+
+would close the CSS `url(…)` token and inject arbitrary CSS. Validate
+that incoming URLs:
+
+- Have a scheme you trust (`http:`, `https:`, `data:`, `blob:`).
+- Don't contain `'`, `)`, or newlines.
+- Don't contain `javascript:` or `vbscript:`.
+
+A 5-line allowlist function at your data-load boundary is enough.
+
+## Markdown rendering
+
+`MessageTemplate` renders message bodies through `formatText`, which
+runs on top of [micromark][m] with the GFM tag-filter extension
+enabled. The tag filter strips dangerous HTML tags (`<script>`,
+`<iframe>`, event-handler attributes) before serialization, but it
+is not a full HTML sanitizer.
+
+[m]: https://github.com/micromark/micromark
+
+If your messages can contain attacker-controlled markdown:
+
+- The tag filter is a meaningful first line of defense — it blocks
+  the most common XSS vectors.
+- For stronger guarantees, run incoming message bodies through
+  [DOMPurify](https://github.com/cure53/DOMPurify) at the data-load
+  boundary before the message reaches the components.
+
+If your messages are entirely first-party (a transcript exporter,
+internal tooling, etc.), the default formatter is fine.
+
+You can disable the markdown pass entirely on a per-chat or
+per-message basis:
+
+```vue
+<Chat :text-formatting="{ markdown: false }" … />
+```
+
+`linkify`, `markdown`, and `singleLine` are independent options on
+`TextFormattingOptions` — see `formatText` in the API reference.
+
+## Mention tags
+
+`<@id>` tokens in message bodies resolve to clickable spans via the
+`userTag` micromark extension. The extension reads the user's
+`name` and renders it inside a `<span data-user-id="…">@Name</span>`
+— the name is HTML-escaped, the id is set via attribute. Untrusted
+user names won't escape the span.
+
+## File downloads
+
+Files emitted through the `open-file` event with `action: 'download'`
+are *not* downloaded by the library. The component just emits the
+event with the `MessageFile` payload; your handler decides whether
+to fetch + save the bytes, navigate to a hosted URL, etc. This is
+intentional — chat libraries should not be in the business of
+deciding download behavior.
+
+## SSR
+
+Several composables read browser-only globals (`navigator.language`,
+`window.matchMedia`, `IntersectionObserver`). Each is guarded with
+a `typeof` check that falls back to a sensible default under SSR.
+See [SSR](?path=/docs/docs-ssr--docs).
+
+## Reporting
+
+If you find a way to break out of one of these boundaries — CSS
+escaping, mention tag rendering, the markdown pass — file a private
+security advisory on the repository (`github.com/advanced-chat/vue-advanced-chat/security/advisories/new`)
+rather than opening a public issue.

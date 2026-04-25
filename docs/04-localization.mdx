@@ -1,0 +1,119 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Docs/Localization" />
+
+# Localization
+
+The library ships an English string dictionary and exposes a
+`Partial<Strings>` override path through the plugin. Adding a key
+to the bundled dictionary is a breaking change for typed consumers;
+overriding individual values is not.
+
+## Setup
+
+```ts
+import { createApp } from 'vue'
+import { AdvancedChatPlugin } from '@advanced-chat/components'
+
+createApp(App)
+  .use(
+    AdvancedChatPlugin({
+      strings: {
+        'chats.empty': 'No conversations yet',
+        'chat.message.placeholder': 'Send a message to your team',
+      },
+    }),
+  )
+  .mount('#app')
+```
+
+The plugin merges your overrides on top of the bundled English
+strings via deep-merge. Keys you don't pass keep their defaults.
+
+If you skip the plugin entirely, every component falls back to the
+bundled English dictionary and emits a `console.warn` under
+`import.meta.env.DEV` — the warning is silenced in production.
+
+## The `Strings` contract
+
+`Strings` is a typed map. Every key the components read is part of
+the type:
+
+```ts
+import type { Strings } from '@advanced-chat/components'
+```
+
+Sample of the current keys:
+
+| Key | Used for |
+|---|---|
+| `chats.empty` | Sidebar empty state. |
+| `chats.search.placeholder` | Sidebar search input placeholder. |
+| `chat.empty` | "No chat selected" empty state in `Chat`. |
+| `chat.messages.empty` | "No messages yet" inside a chat. |
+| `chat.messages.new` | "New messages" divider label. |
+| `chat.message.placeholder` | Composer textarea placeholder. |
+| `chat.message.deleted` | Body of a deleted message. |
+| `chat.message.failure` | Tooltip on a failed-to-send message. |
+| `chat.typing` | "X is typing..." suffix. |
+| `chat.user.is-online` | Online status line. |
+| `chat.user.last-seen` | Offline status prefix (followed by date). |
+| `chat.cancel-reply` | Aria-label for the cancel-reply button. |
+| `chat.cancel-edit` | Aria-label for the cancel-edit button. |
+| `chat.cancel-selection` | Label for the selection-toolbar cancel button. |
+| `chat.scroll-to-bottom` | Aria-label for the scroll-to-latest pill. |
+| `chat.autocomplete.emojis` | Aria-label for the emoji-suggestion listbox. |
+| `chat.autocomplete.users` | Aria-label for the user-tag suggestion listbox. |
+
+Hover the type in your editor for the complete list.
+
+## Locale negotiation
+
+The `Localization` type accepts `'en'` or `'auto'`. Today the
+package ships only English, so:
+
+- `'en'` — returns the bundled English dictionary directly.
+- `'auto'` — calls `negotiateLocale()`, which inspects
+  `navigator.language` and matches against the supported BCP 47
+  prefixes (`'en'` only). If the user's browser language is not
+  English, it falls back to English **and** logs a
+  `console.warn` under `import.meta.env.DEV` so the gap is visible
+  during development.
+
+```ts
+import { negotiateLocale } from '@advanced-chat/components'
+
+negotiateLocale() // 'en'
+```
+
+When additional locales land in a future minor release, the same
+function will start returning the matched prefix — no consumer code
+changes required.
+
+### SSR
+
+`negotiateLocale` checks for `typeof navigator === 'undefined'`
+first and returns `'en'` directly under SSR, so calling
+`getLocalizationStrings('auto')` from a server is safe.
+
+## Reading strings outside `setup()`
+
+Most consumer code uses the strings indirectly — by passing a
+`Chat` / `Message` to a component and letting the component render
+them. If you need the dictionary in a non-component context (e.g.
+formatting a notification body), call the function directly:
+
+```ts
+import { getLocalizationStrings } from '@advanced-chat/components'
+
+const strings = getLocalizationStrings('en')
+showNotification(`${strings['chat.message.failure']}`)
+```
+
+## Adding more locales (when they ship)
+
+When the package starts bundling additional locales, the
+`Localization` type will widen (e.g. `'en' | 'fr' | 'auto'`) and
+`negotiateLocale` will start returning the matching prefix. Until
+then: ship your overrides through the plugin, or wait for the
+upstream locale to land.

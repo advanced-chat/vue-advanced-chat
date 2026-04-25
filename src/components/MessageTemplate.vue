@@ -6,9 +6,13 @@ import { type Message, type ChatReference, type User, findUserById } from '../mo
 import { formatText, type TextFormattingOptions } from '../utils/text-formatter'
 
 export interface MessageTemplateProps {
+  /** Message to render. Its `content` is run through `formatText`. */
   message?: Message
+  /** Optional owning chat reference; reserved for future chat-aware formatting. */
   chat?: ChatReference
+  /** Chat members; used to resolve `@user` tags. */
   users?: Array<User>
+  /** Overrides for the default formatter (`markdown`, `linkify`, `singleLine`, etc). */
   formattingOptions?: Partial<TextFormattingOptions>
 }
 

@@ -8,8 +8,11 @@ import SvgIcon from '@/components/SvgIcon.vue'
 import type { TextFormattingOptions } from '../utils/text-formatter'
 
 export interface MessageReplyProps {
+  /** Outer message; its `reply` field provides the quoted preview body, sender, and first attachment. */
   message: Message
+  /** Chat members; used to resolve `@user` tags in the quoted body. */
   users: Array<User>
+  /** Markdown / linkify configuration applied to the quoted body. `singleLine` is forced to `true`. */
   textFormatting?: Partial<TextFormattingOptions>
 }
 

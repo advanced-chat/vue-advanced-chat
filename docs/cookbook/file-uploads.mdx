@@ -1,0 +1,187 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Cookbook/File Uploads" />
+
+# File Uploads
+
+`ChatFooter` lets the user attach files to a pending message
+without doing any uploading itself. Each pending file lands in the
+`send-message` payload as a `ChatFileItem` with three URL-shaped
+fields:
+
+| Field | Set by the library | Meaning |
+|---|---|---|
+| `blob` | `Blob` | The raw file bytes. Use this for the upload. |
+| `localUrl` | object URL | Library-owned. Used for the in-composer preview thumbnail. Revoked when the file is removed or the composer resets. |
+| `url` | object URL (initial) | Consumer-owned. The library writes the same object URL here on attach; you replace it with the server URL after upload. |
+
+The split lets you swap `url` to the persisted server URL once the
+upload completes, while the library cleans up `localUrl` on its
+own.
+
+## Upload-on-send pattern
+
+The simplest flow: the user attaches files in the composer, presses
+send, the host uploads each blob in parallel, and writes a single
+message document with the resolved URLs.
+
+```ts
+import type { ChatFileItem, MessageFile } from '@advanced-chat/components'
+
+const onSend = async (payload: { content: string; files: ChatFileItem[]; reply?: Message | null }) => {
+  // 1. Upload each pending file (in parallel).
+  const uploaded = await Promise.all(
+    payload.files.map(async (item): Promise<MessageFile> => {
+      if (!item.blob) {
+        // Already-uploaded files (e.g. from a forwarded message) come through unchanged.
+        return item
+      }
+      const url = await uploadToStorage(item.blob, item.name)
+      return {
+        name: item.name,
+        type: item.type,
+        extension: item.extension,
+        url,
+        size: item.blob.size,
+      }
+    }),
+  )
+
+  // 2. Write the message with the resolved URLs.
+  await writeMessage({
+    content: payload.content,
+    files: uploaded,
+    reply: payload.reply ? { id: payload.reply.id } : undefined,
+  })
+}
+```
+
+`uploadToStorage` is whatever your backend exposes — Firebase
+Storage, S3 presigned PUT, a `multipart/form-data` POST to your
+server, etc.
+
+## Optimistic uploads
+
+If you want the message to appear immediately while uploads
+continue in the background:
+
+```ts
+const onSend = async (payload: { content: string; files: ChatFileItem[] }) => {
+  const optimisticId = `pending-${Date.now()}`
+  const localFiles: MessageFile[] = payload.files.map((f) => ({
+    name: f.name,
+    type: f.type,
+    extension: f.extension,
+    url: f.url, // local object URL — preview works without waiting.
+    progress: 0,
+  }))
+
+  // 1. Append the local-only message.
+  messages.value = [
+    ...messages.value,
+    {
+      id: optimisticId,
+      sender: currentUser,
+      content: payload.content,
+      createdAt: new Date().toISOString(),
+      status: 'sending',
+      files: localFiles,
+    },
+  ]
+
+  // 2. Upload in the background, mutating the message's progress / url as you go.
+  for (let i = 0; i < payload.files.length; i++) {
+    const file = payload.files[i]!
+    if (!file.blob) continue
+    const url = await uploadWithProgress(file.blob, (pct) => {
+      // mutate progress on the optimistic message
+      const msg = messages.value.find((m) => m.id === optimisticId)
+      if (msg?.files?.[i]) msg.files[i]!.progress = pct
+    })
+    const msg = messages.value.find((m) => m.id === optimisticId)
+    if (msg?.files?.[i]) {
+      msg.files[i]!.url = url
+      msg.files[i]!.progress = 100
+    }
+  }
+
+  // 3. Persist the now-uploaded message; replace the optimistic one with the server copy.
+  const persisted = await writeMessage({ … })
+  messages.value = messages.value.map((m) => (m.id === optimisticId ? persisted : m))
+}
+```
+
+`MessageFile.progress` is a 0-100 number rendered as a progress
+bar overlay on `MessageFile`. Setting it to `100` (or undefined)
+hides the bar.
+
+## Constraining uploads
+
+`ChatFooter` ships two opt-in caps:
+
+```vue
+<AdvancedChat
+  :max-files="5"
+  :max-file-size="10 * 1024 * 1024"
+  @invalid-file="onRejected"
+/>
+```
+
+| Prop | Behavior |
+|---|---|
+| `maxFiles?: number` | Max pending files in the composer at once. Files past the cap don't enter `files.value`. `0` (default) disables. |
+| `maxFileSize?: number` | Max bytes per file. `0` (default) disables. |
+
+Rejected files are emitted as `invalid-file: { file: File; reason: 'size' \| 'count' }`
+so the host can surface its own error UI:
+
+```ts
+const onRejected = ({ file, reason }: { file: File; reason: 'size' | 'count' }) => {
+  toast.error(
+    reason === 'size'
+      ? `${file.name} is too large (max 10 MB).`
+      : `Too many files attached (max 5).`,
+  )
+}
+```
+
+## MIME-type filter
+
+The `accept` prop is forwarded directly to the underlying
+`<input type="file">`. Use the standard HTML accept syntax:
+
+```vue
+<AdvancedChat accept="image/*,application/pdf" />
+<AdvancedChat accept=".png,.jpg,.jpeg,.gif" />
+```
+
+Note: browsers treat `accept` as a hint, not a hard validation.
+For real enforcement, also check `file.type` (or do server-side
+validation) — this is the standard HTML behavior, not a library
+quirk.
+
+## Mobile capture
+
+```vue
+<!-- Photo from the rear camera. -->
+<AdvancedChat capture="environment" accept="image/*" />
+
+<!-- Photo from the front (selfie) camera. -->
+<AdvancedChat capture="user" accept="image/*" />
+```
+
+The empty default (`capture: ''`) lets the OS picker show its
+normal file-browser UI; setting `capture` opens the camera / mic
+directly on mobile.
+
+## Cleanup contract
+
+The library owns `localUrl` and revokes it when:
+
+- The user clicks the remove-file button on a pending file.
+- The composer resets (after send, or after `reset-message` event).
+
+The library does **not** own `url` — once you swap it to a server
+URL, you're responsible for whatever lifecycle that URL has. If
+your server URLs are presigned with a short TTL, refresh them in
+your data layer rather than expecting the library to.

@@ -10,9 +10,13 @@ import { useLocalizationStrings } from '../localization'
 const strings = useLocalizationStrings()
 
 export interface ChatsSearchProps {
+  /** Renders the search input. Defaults to `true`. */
   showSearch?: boolean
+  /** Renders the "add chat" button to the right of the input. Defaults to `true`. */
   showAddChat?: boolean
+  /** When `true`, hides the search input while the chats list is loading. Defaults to `false`. */
   loadingChats?: boolean
+  /** Chats list; the input is also hidden when this is empty. */
   chats?: Array<Chat>
 }
 

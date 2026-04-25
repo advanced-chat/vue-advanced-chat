@@ -1,0 +1,193 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Docs/Migration from v2" />
+
+# Migration from `vue-advanced-chat` v2
+
+V3 is **not** a drop-in replacement for v2. The package name, the
+mount shape, the data model, and many event payloads all change.
+This guide is the curated map; the [CHANGELOG](https://github.com/advanced-chat/vue-advanced-chat/blob/develop/CHANGELOG.md)
+has the per-alpha play-by-play.
+
+The v2 package on the `main` branch will continue to ship as
+`vue-advanced-chat` until V3 GA and a deprecation notice is
+published. Migration is a deliberate cutover, not a yarn upgrade.
+
+## Top-line changes
+
+| Area | v2 | V3 |
+|---|---|---|
+| Package name | `vue-advanced-chat` | `@advanced-chat/components` |
+| Surface | Single `<vue-advanced-chat>` web component | 27 typed Vue 3 SFCs |
+| Mount step | `import { register } from 'vue-advanced-chat'; register()` | `import { AdvancedChat } from '@advanced-chat/components'` |
+| Vue dependency | Bundled (Vue 2 + Vue 3 versions) | Vue 3.5+ peer dependency |
+| Props | JSON-stringified strings | Typed Vue 3 props |
+| Slots | `<template #room-header>` (with kebab→camel quirks) | Native Vue slots |
+| Styling | Shadow DOM + CSS variables | Plain stylesheet + CSS variables (no shadow DOM) |
+| TypeScript | Manual ambient module declarations | Per-component `.d.ts` emitted from `vite-plugin-dts` |
+
+## Renames
+
+V3 renames the "room" terminology to "chat" throughout — props,
+events, slots, and types. Renames in alphabetical order:
+
+| v2 | V3 |
+|---|---|
+| `current-user-id` | `currentUser: { id }` |
+| `room` | `chat` |
+| `room-id` | `chat.id` |
+| `rooms` | `chats` |
+| `rooms-loaded` | `chatsLoaded` |
+| `loading-rooms` | `loadingChats` |
+| `room-actions` | `headerActions` |
+| `room-message` | (removed — use `init-reply-message` / `init-edit-message`) |
+| `text-messages` | `AdvancedChatPlugin({ strings })` |
+| `<slot name="rooms-list-item_id">` | `<slot name="chat-list-item_id">` |
+| `<slot name="rooms-empty">` | `<slot name="chats-empty">` |
+| `<slot name="room-header">` | `<slot name="chat-header">` |
+| `<slot name="spinner-icon-rooms">` | `<slot name="spinner-icon-chats">` |
+| `fetch-rooms` | `fetch-more-chats` |
+| `add-room` | `add-chat` |
+
+## Data model
+
+### `Action`
+
+| v2 | V3 |
+|---|---|
+| `name: string` | `id: string` |
+| `title: string` | `label: string` |
+| `onlyMe: boolean` | `ownMessageOnly: boolean` |
+| (no field) | `icon?: string` (resolves to a built-in `SvgIcon` name) |
+
+The exported `REPLY_ACTION` (`'reply'`) and `EDIT_ACTION` (`'edit'`)
+constants are the documented `id` values for the two built-in
+actions `Chat` recognizes.
+
+### `Chat`
+
+| v2 | V3 |
+|---|---|
+| `roomId` | `id` |
+| `roomName` | `name` |
+| `avatar` (string URL) | `avatar?: string` (same) |
+| `unreadCount` | same |
+| `lastMessage: Message` (full) | `lastMessage: MessageSummary` (`Pick<Message, 'id' \| 'sender' \| 'content' \| 'createdAt' \| 'status' \| 'deleted' \| 'edited' \| 'files'>`) |
+| `users: User[]` | same |
+| `typingUsers: number[]` | `typingUsers: UserReference[]` |
+
+### `Message`
+
+| v2 | V3 |
+|---|---|
+| `_id` | `id` |
+| `senderId: string` | `sender: User` (or `UserReference` resolved against `chat.users`) |
+| `username` (denormalized) | (derived from `sender.name`) |
+| `avatar` (denormalized) | (derived from `sender.avatar`) |
+| `saved: boolean` | `status?: 'sending' \| 'sent' \| 'delivered' \| 'read' \| 'failed'` |
+| `distributed: boolean` | rolled into `status` |
+| `seen: boolean` | rolled into `status` |
+| `failure: boolean` | rolled into `status` (`'failed'`) |
+| `new: boolean` | `unread: boolean` |
+| `content` | same |
+| `files: MessageFile[]` | same |
+| `reactions: { [emoji]: { _id, username }[] }` | `reactions: { [emoji]: Id[] }` |
+| `replyMessage: Message` | `reply: MessageSummary` (no longer recursive) |
+
+### `User`
+
+| v2 | V3 |
+|---|---|
+| `_id` | `id` |
+| `username` | `name` |
+| `avatar` | same |
+| `status: 'online' \| 'offline'` (string) | `status: { state, lastActiveAt? }` |
+
+### `Id`
+
+| v2 | V3 |
+|---|---|
+| `string \| number` | `string` (call `String(id)` at the API boundary if your backend uses numeric ids) |
+
+## Event payloads
+
+| v2 event | V3 event | Payload change |
+|---|---|---|
+| `send-message` | `send-message` | `{ content, files, replyMessage }` → `{ content, files, reply }` |
+| `edit-message` | `edit-message` | `{ messageId, newContent, files }` → `{ messageId, content, files }` |
+| `fetch-messages` | `fetch-messages` | `{ room, options }` → no payload (consumer reads the active chat from its own state) |
+| `fetch-more-rooms` | `fetch-more-chats` | (rename only) |
+| `room-action-handler` | `chat-action-handler` | `{ action: { name, title } }` → `{ chat, action: { id, label } }` |
+| `message-action-handler` | `message-action-handler` | `{ action, roomId, message }` → `{ action: { id, label }, message }` |
+| `menu-action-handler` | `menu-action-handler` | `{ action, roomId }` → `{ chat, action }` |
+| `send-message-reaction` | `send-message-reaction` | `{ messageId, roomId, reaction, remove }` → `{ emoji, message }` (host derives toggle semantics) |
+| `open-file` | `open-file` | `{ message, file, action }` → `{ file, action }` |
+| `open-failed-message` | `open-failed-message` | `{ message }` → `message` directly (single-field wrap dropped) |
+| `typing-message` | `typing-message` | `value` (string) — same |
+| `add-room` | `add-chat` | (rename only) |
+| `room-info` | `show-chat-info` | (rename + emits `chat` payload) |
+
+## Mount-time changes
+
+```diff
+- import { register } from 'vue-advanced-chat'
+- register()
++ import { AdvancedChatPlugin, AdvancedChat } from '@advanced-chat/components'
++ import '@advanced-chat/components/styles'
+
+  const app = createApp(App)
++ app.use(AdvancedChatPlugin({ strings: { … } }))
+  app.mount('#app')
+```
+
+```diff
+- <vue-advanced-chat
+-   :current-user-id="JSON.stringify('me')"
+-   :rooms="JSON.stringify(rooms)"
+-   :messages="JSON.stringify(messages)"
+-   :text-messages="JSON.stringify({ ... })"
+-   @send-message="onSend"
+- />
++ <AdvancedChat
++   :current-user="currentUser"
++   :chats="chats"
++   :messages="messages"
++   @send-message="onSend"
++ />
+```
+
+No more `JSON.stringify` per prop. Slot names use the V3 conventions
+above.
+
+## Behavioral changes worth knowing
+
+- **Selection mode** — v2 had `messageSelectionEnabled: boolean` +
+  `messageSelectionActions: Action[]`. V3 packs both into
+  `selectionActions: Action[]` — non-empty enables, empty (the
+  default) disables.
+- **Auto-scroll** — v2 had a hard-coded scroll policy. V3 exposes
+  it as a structured prop:
+  `autoScroll: { onMount?, onChatSwitch?, onSend?, onReceive? }`,
+  each defaulting `true`.
+- **Search** — v2's local search filtered automatically. V3
+  emits `search-chat` and filters locally by default; pass
+  `customSearchEnabled` to opt the local filter out and drive
+  results from your backend.
+- **File constraints** — v2 had no built-in file caps. V3 adds
+  `maxFiles?: number` and `maxFileSize?: number` on `ChatFooter`
+  (forwarded by `Chat` / `AdvancedChat`); files past the cap are
+  emitted as `invalid-file: { file, reason }`.
+- **Chat-action handler** — v2's `room-action-handler` only fired
+  from the chat-options menu in the active conversation. V3's
+  `chat-action-handler` also fires from the per-row dropdown in
+  the chat list (`Chats` re-emits from `ChatsItem`).
+
+## When in doubt
+
+The full alpha-by-alpha CHANGELOG is the authoritative record:
+[`CHANGELOG.md`](https://github.com/advanced-chat/vue-advanced-chat/blob/develop/CHANGELOG.md).
+The architecture rationale lives in
+[`rewrite/architecture.md`](https://github.com/advanced-chat/vue-advanced-chat/blob/develop/rewrite/architecture.md);
+the parity status (which v2 features V3 already supports, drops, or
+defers) is in
+[`rewrite/parity-checklist.md`](https://github.com/advanced-chat/vue-advanced-chat/blob/develop/rewrite/parity-checklist.md).

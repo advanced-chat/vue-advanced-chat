@@ -1,0 +1,83 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Composables/useReplyEdit" />
+
+# useReplyEdit
+
+Composer state machine for the built-in `REPLY_ACTION` /
+`EDIT_ACTION`. `Chat.vue` uses it to translate per-message action
+dispatches into the `replyMessage` / `editMessage` refs that
+`ChatFooter` reads.
+
+You'd use it directly when wiring up a custom composer — say, a
+detached "thread reply" panel — without re-implementing the
+mutually-exclusive reply/edit state.
+
+## Signature
+
+```ts
+import { useReplyEdit } from '@advanced-chat/components'
+
+const { replyMessage, editMessage, dispatch, resetReply, resetEdit } =
+  useReplyEdit({ resetKey })
+```
+
+## Options
+
+| Field | Type | Description |
+|---|---|---|
+| `resetKey` | `MaybeRefOrGetter<unknown>` | Watching this clears both `replyMessage` and `editMessage` whenever it changes. Pass `() => activeChat.id` to clear when the active chat switches. Optional. |
+
+## Returns
+
+| Field | Type | Description |
+|---|---|---|
+| `replyMessage` | `Ref<Message \| null>` | Message currently being replied to, or `null`. |
+| `editMessage` | `Ref<Message \| null>` | Message currently being edited, or `null`. |
+| `dispatch` | `(payload: { action: Action; message: Message }) => void` | Dispatches a `message-action-handler` payload. Sets `replyMessage` / `editMessage` for the built-in reply/edit actions and is otherwise a no-op so hosts can still chain custom actions through it. |
+| `resetReply` | `() => void` | Clears `replyMessage`. Wire to `ChatFooter`'s `reset-reply-message` event. |
+| `resetEdit` | `() => void` | Clears `editMessage`. Wire to `ChatFooter`'s `reset-edit-message` event. |
+
+## Example — custom composer
+
+```vue
+<script setup lang="ts">
+import { useReplyEdit } from '@advanced-chat/components'
+import type { Action, Message } from '@advanced-chat/components'
+
+const { replyMessage, editMessage, dispatch, resetReply, resetEdit } =
+  useReplyEdit({ resetKey: () => activeChat.value?.id })
+
+const onMessageAction = (payload: { action: Action; message: Message }) => {
+  dispatch(payload)
+
+  // Custom actions still pass through.
+  if (payload.action.id === 'forward') {
+    openForwardModal(payload.message)
+  }
+}
+</script>
+
+<template>
+  <MyMessageList @message-action-handler="onMessageAction" />
+  <MyComposer
+    :reply-to="replyMessage"
+    :editing="editMessage"
+    @reset-reply="resetReply"
+    @reset-edit="resetEdit"
+  />
+</template>
+```
+
+## Notes
+
+- `dispatch` reads `payload.action.id` (string) and matches against
+  the exported `REPLY_ACTION` / `EDIT_ACTION` constants. That means
+  host-defined `Action` values with `id: 'reply'` work the same as
+  the built-in constant — no identity check.
+- Setting one of `replyMessage` / `editMessage` clears the other:
+  the two are mutually exclusive. `ChatFooter` does the same.
+- Custom actions (`'forward'`, `'pin'`, etc.) leave both refs
+  untouched — `dispatch` is silent on them. Your `onMessageAction`
+  handler still receives the original payload through whatever path
+  you wired (here: re-emitting from the message list).

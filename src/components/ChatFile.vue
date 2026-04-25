@@ -13,11 +13,14 @@ export interface ChatFileItem extends MessageFile {
 }
 
 export interface ChatFileProps {
+  /** File to render in the composer. Renders an image preview, video player, or generic file tile based on MIME type. */
   file: ChatFileItem
+  /** Position of this file within the composer's pending list; echoed back in `remove-file`. */
   index: number
 }
 
 export interface ChatFileEvents {
+  /** Fires when the user clicks the remove button on this file tile. */
   (e: 'remove-file', index: number): void
 }
 

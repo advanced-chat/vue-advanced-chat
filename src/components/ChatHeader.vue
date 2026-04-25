@@ -9,12 +9,19 @@ import SvgIcon from '@/components/SvgIcon.vue'
 const strings = useLocalizationStrings()
 
 export interface ChatHeaderProps {
+  /** Identifies the viewer; used to derive the "other user" in 1:1 chats for avatar/status fallback. */
   currentUser: UserReference
+  /** Active chat being shown. */
   chat: Chat
+  /** When `true`, hides the chat-list toggle button (used when `Chat` is rendered without a sidebar). Defaults to `false`. */
   standalone?: boolean
+  /** Reflects whether the chats sidebar is currently expanded; controls the toggle-button rotation. Defaults to `false`. */
   showChatList?: boolean
+  /** Disables the toggle-button rotation animation on small viewports. Defaults to `false`. */
   isMobile?: boolean
+  /** When `true`, the avatar/name area becomes clickable and emits `show-chat-info`. Defaults to `false`. */
   chatInfoEnabled?: boolean
+  /** Items rendered in the chat-header overflow menu. */
   actions?: Array<Action>
   /**
    * Bulk-action items rendered in the selection toolbar. When non-empty
@@ -22,6 +29,7 @@ export interface ChatHeaderProps {
    * default header until the user cancels.
    */
   selectionActions?: Array<Action>
+  /** Number of currently-selected messages; rendered as a counter on each selection-action button. */
   selectedCount?: number
   /**
    * When `false`, the typing-users line is suppressed in the header
@@ -33,10 +41,15 @@ export interface ChatHeaderProps {
 }
 
 export interface ChatHeaderEvents {
+  /** Fires when the chat-list toggle button is clicked. */
   (e: 'toggle-chat-list'): void
+  /** Fires when the avatar/name area is clicked while `chatInfoEnabled` is `true`. */
   (e: 'show-chat-info'): void
+  /** Fires when an item in the overflow menu is selected. */
   (e: 'menu-action-handler', payload: { chat: Chat; action: Action }): void
+  /** Fires when the user clicks the "cancel" button in the selection toolbar. */
   (e: 'cancel-message-selection'): void
+  /** Fires when a button in the selection toolbar is clicked. */
   (e: 'message-selection-action-handler', payload: { chat: Chat; action: Action }): void
 }
 

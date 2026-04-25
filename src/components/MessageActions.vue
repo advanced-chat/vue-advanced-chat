@@ -9,14 +9,20 @@ import { vOnClickOutside } from '@vueuse/components'
 const REACTION_OPTIONS = ['👍', '❤️', '😂', '🎉', '🔥']
 
 export interface MessageActionsProps {
+  /** Identifies the viewer; `ownMessageOnly` actions are hidden when this differs from `message.sender`. */
   currentUser: UserReference
+  /** Message these actions apply to. */
   message: Message
+  /** Items rendered in the dropdown menu. */
   actions?: Action[]
+  /** Renders the quick-reaction emoji picker alongside the dropdown. Defaults to `true`. */
   showReactionEmojis?: boolean
 }
 
 export interface MessageActionsEvents {
+  /** Fires when an item in the dropdown menu is selected. */
   (e: 'message-action-handler', payload: { action: Action; message: Message }): void
+  /** Fires when the viewer picks a quick-reaction emoji; the host should toggle the emoji on the message. */
   (e: 'send-message-reaction', payload: { emoji: string; message: Message }): void
 }
 

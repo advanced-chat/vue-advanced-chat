@@ -23,6 +23,40 @@ const preview: Preview = {
       // 'off' - skip a11y checks entirely
       test: 'error',
     },
+
+    options: {
+      // Manual sidebar order so prose / cookbook / reference sit
+      // ahead of the per-component story tree.
+      storySort: {
+        order: [
+          'Docs',
+          [
+            'Introduction',
+            'Quick Start',
+            'Composition',
+            'Theming',
+            'Localization',
+            'Security Model',
+            'SSR',
+            'Migration from v2',
+          ],
+          'Cookbook',
+          ['Backend Integration', 'File Uploads', 'Pagination', 'Custom Action Menus'],
+          'Composables',
+          [
+            'useAutocomplete',
+            'useMessageSelection',
+            'useReplyEdit',
+            'useInfiniteScroll',
+            'useLocalSearch',
+          ],
+          'Reference',
+          ['Public API'],
+          'Components',
+          '*',
+        ],
+      },
+    },
   },
   globalTypes: {
     theme: {

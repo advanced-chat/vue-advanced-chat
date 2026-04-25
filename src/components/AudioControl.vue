@@ -2,12 +2,16 @@
 import { ref, useTemplateRef } from 'vue'
 
 export interface AudioControlProps {
+  /** Playback position as `0`–`100`. Drives the progress bar fill and dot. Defaults to `0`. */
   percentage?: number
+  /** When `true`, scrubbing is disabled so clicks toggle message selection instead. */
   messageSelectionEnabled: boolean
 }
 
 export interface AudioControlEvents {
+  /** Fires when the cursor enters or leaves the progress bar. */
   (e: 'hover-audio-progress', hovering: boolean): void
+  /** Fires when the user scrubs; `position` is `0`–`1` along the bar. */
   (e: 'change-linehead', position: number): void
 }
 

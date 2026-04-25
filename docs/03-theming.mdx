@@ -1,0 +1,138 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Docs/Theming" />
+
+# Theming
+
+Every visible color in `@advanced-chat/components` is a CSS custom
+property. The `Layout` component (which `AdvancedChat` mounts for
+you) emits the active palette as inline CSS variables on its root
+element; consumers override them with normal CSS at any specificity.
+
+There is no shadow DOM, no `!important` scaffolding, and no
+component-level CSS-in-JS — overrides land where you'd expect.
+
+## Built-in themes
+
+```vue
+<Layout theme="light">…</Layout>
+<Layout theme="dark">…</Layout>
+<Layout theme="auto">…</Layout>
+```
+
+| Value | Behavior |
+|---|---|
+| `'light'` | Light palette, fixed. |
+| `'dark'` | Dark palette, fixed. |
+| `'auto'` (default) | Follows `prefers-color-scheme` reactively. The active palette flips when the user's OS preference changes — no remount. |
+
+## Override map
+
+Pass an object to override individual variables on top of the
+resolved palette:
+
+```vue
+<Layout
+  :theme="{
+    base: 'dark',
+    overrides: {
+      '--chat-message-bg-color-me': '#0d579c',
+      '--chat-message-color-link': '#7cc4ff',
+    },
+  }"
+>
+```
+
+The `base` field picks the palette you're starting from (`'light'`
+or `'dark'`); `overrides` is a `Partial<Styles>` deep-merged on top.
+
+## Per-instance overrides
+
+`Layout.styles` (and `AdvancedChat.styles` if you wrap your own
+`Layout`) accepts a separate `Partial<Styles>` that's applied as
+the *final* layer — useful when one mount needs to look slightly
+different without forking a full theme.
+
+```vue
+<Layout
+  theme="dark"
+  :styles="{ '--chat-container-border-radius': '0px' }"
+>
+```
+
+Applied order, lowest to highest: bundled palette → `theme.overrides`
+→ `Layout.styles`.
+
+## Targeting from your own stylesheet
+
+Because the variables live on the `Layout` root, you can override
+them globally:
+
+```css
+.vac-card-window {
+  --chat-message-bg-color-me: #0d579c;
+  --chat-message-color-link: #7cc4ff;
+}
+```
+
+…or scoped to a specific mount by adding a class:
+
+```vue
+<AdvancedChat class="my-chat" … />
+```
+
+```css
+.my-chat .vac-card-window {
+  --chat-message-bg-color-me: #0d579c;
+}
+```
+
+The component's CSS rules use `var(...)` everywhere, so the override
+takes effect at any specificity layer.
+
+## The full variable list
+
+All ~120 CSS custom properties are typed via the exported `Styles`
+interface:
+
+```ts
+import type { Styles } from '@advanced-chat/components'
+```
+
+Hover over the type in your editor to get the full list with field
+names. The `light` and `dark` JSON files in the package are the
+source of truth for default values.
+
+A sampling of the most-overridden ones:
+
+| Variable | What it controls |
+|---|---|
+| `--chat-content-bg-color` | Main message-list background. |
+| `--chat-sidemenu-bg-color` | Chat-list (sidebar) background. |
+| `--chat-message-bg-color` | Default message bubble. |
+| `--chat-message-bg-color-me` | Own-message bubble. |
+| `--chat-message-color` | Default message text. |
+| `--chat-message-color-link` | Link color inside message bodies. |
+| `--chat-footer-bg-color` | Composer background. |
+| `--chat-bg-color-input` | Textarea background. |
+| `--chat-color` | Default text on the message-list background. |
+| `--chat-container-border-radius` | Outer container radius. |
+| `--chat-container-box-shadow` | Outer container drop shadow. |
+
+## Reactive theme: `useThemeStyles`
+
+If you're rendering primitives outside of `Layout` (e.g. embedding
+`Message` somewhere on its own), you can call `useThemeStyles`
+yourself:
+
+```ts
+import { ref } from 'vue'
+import { useThemeStyles, type Theme } from '@advanced-chat/components'
+
+const theme = ref<Theme>('auto')
+const cssVars = useThemeStyles(theme)
+// cssVars.value is a Ref<Styles> — bind to :style on a wrapper.
+```
+
+The composable handles `prefers-color-scheme` change events for
+`'auto'` and tears the listener down on unmount.

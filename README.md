@@ -7,286 +7,123 @@
 
 # vue-advanced-chat
 
-`vue-advanced-chat` is a customizable chat UI project built for real-world applications.
+A typed Vue 3 chat-UI library: rooms, messages, files, audio, reactions,
+replies, edits, typing indicators, themes, localization, and a small set
+of composables. Backend-agnostic — you own the data layer.
 
-It provides rooms, messages, media attachments, audio, reactions, formatting, themes, and flexible UI composition while staying backend-agnostic.
+This repository ships two tracks:
 
-## Features
+- **`main`** — the stable v2 line. Published as `vue-advanced-chat` on
+  npm. Single web-component (`<vue-advanced-chat>` + `register()`).
+  Most users on Vue 2 / non-Vue hosts should stay here.
+- **`develop`** — the V3 rewrite. Published as
+  `@advanced-chat/components` on npm (currently `3.0.0-alpha.5`).
+  Set of typed Vue 3 SFCs, no shadow DOM, no `JSON.stringify` props.
 
-- Backend agnostic chat UI
-- Rooms list and active conversation layout
-- Text, files, media, audio, reactions, and reply flows
-- Typing indicators, unread states, and message actions
-- Light, dark, and auto theme modes
-- Localization support
-- Flexible component composition for custom integrations
+## V3 documentation
 
-## Demo
+The V3 docs site is built from Storybook and deployed from `develop`:
 
-- Live demo: `https://advanced-chat.github.io/vue-advanced-chat`
-- Sandbox integrations: `https://github.com/advanced-chat/vue-advanced-chat-sandbox`
+> **<https://advanced-chat.github.io/vue-advanced-chat/>**
 
-## Installation
+It carries the per-component prop / event / slot tables, the prose
+guides, the cookbook, and the public API reference. New users on V3
+should start with the **Quick Start** page on the docs site.
 
-For the stable public package:
-
-```bash
-npm install vue-advanced-chat
-```
-
-## Usage
-
-If you are using the stable public package, use the documentation on the `main` branch.
-
-This `develop` branch is the in-progress Vue 3 + TypeScript rewrite. It currently builds the next library surface as:
+## Install (V3)
 
 ```bash
 npm install @advanced-chat/components
 ```
 
-Example rewrite usage:
+Vue 3.5+ is a peer dependency.
+
+## Quick example (V3)
 
 ```ts
+// main.ts
 import { createApp } from 'vue'
 import App from './App.vue'
 
 import { AdvancedChatPlugin } from '@advanced-chat/components'
 import '@advanced-chat/components/styles'
 
-const app = createApp(App)
-
-app.use(
-  AdvancedChatPlugin({
-    strings: {
-      'chats.search.placeholder': 'Search conversations',
-    },
-  }),
-)
-
-app.mount('#app')
+createApp(App).use(AdvancedChatPlugin()).mount('#app')
 ```
 
 ```vue
+<!-- App.vue -->
 <script setup lang="ts">
-import { AdvancedChat } from '@advanced-chat/components'
-import type { Chat, Message, User } from '@advanced-chat/components'
+import { ref } from 'vue'
+import { AdvancedChat, type Chat, type Message, type User } from '@advanced-chat/components'
 
-const currentUser: User = {
-  id: 1,
-  name: 'Alice',
-  status: { state: 'online' },
-}
-
-const chats: Chat[] = [
-  {
-    id: 1,
-    name: 'General',
-    users: [currentUser],
-  },
-]
-
-const messages: Message[] = [
-  {
-    id: 1,
-    sender: currentUser,
-    content: 'Hello world',
-    createdAt: new Date().toISOString(),
-  },
-]
+const currentUser: User = { id: 'me', name: 'Alice', status: { state: 'online' } }
+const chats = ref<Chat[]>([{ id: 'general', name: 'General', users: [currentUser] }])
+const messages = ref<Message[]>([])
 </script>
 
 <template>
   <AdvancedChat
-    :user="currentUser"
+    :current-user="currentUser"
     :chats="chats"
     :chat="chats[0]"
     :messages="messages"
+    :messages-loaded="true"
+    :chats-loaded="true"
     height="600px"
-    theme="light"
+    theme="auto"
   />
 </template>
 ```
 
-## Project Status
+For a full working example, the **Quick Start** page on the docs site
+walks through the wiring end-to-end. To run a real backend behind it,
+see **Cookbook → Backend Integration**.
 
-This repository currently has two main tracks:
+## Install (v2)
 
-- `main`: the stable `2.x` line and the package most users should rely on today
-- `develop`: the in-progress rewrite for the next major version
+If you're shipping today on `main`, the v2 package is unchanged:
 
-If you need the production-ready package and stable documentation, use `main`.
+```bash
+npm install vue-advanced-chat
+```
 
-If you are contributing to the rewrite, use `develop`.
-
-## Rewrite Exports
-
-### Components
-
-| Component | Role |
-|---|---|
-| `AdvancedChat` | All-in-one composition: Layout + Chats + Chat |
-| `Layout` | Theme + height wrapper that drives CSS custom properties |
-| `Chats` | Sidebar list of conversations (search, infinite-scroll, actions) |
-| `ChatsSearch` | Search/add bar embedded in `Chats` |
-| `ChatsItem` | Single chat row (avatar, last message, unread badge) |
-| `Chat` | Active conversation: header, messages list, footer, media preview |
-| `ChatHeader` | Chat name, status, menu actions, message-selection toolbar |
-| `ChatFooter` | Textarea + emoji + file picker + reply/edit state |
-| `ChatMessage` | Date dividers + new-messages divider around `Message` |
-| `Message` | Message bubble: text/files/audio, reply, reactions, actions |
-| `MessageTemplate` | Markdown / mention rendering primitive |
-| `MessageReply` | Quoted message preview |
-| `MessageFile` / `MessageFiles` | Image / video / file attachments |
-| `MessageActions` | Per-message dropdown + reaction picker |
-| `MessageReactions` | Emoji-reaction pills |
-| `MediaPreview` | Fullscreen image/video lightbox |
-| `AudioPlayer` / `AudioControl` | Audio playback + scrubber |
-| `EmojiPicker` | `emoji-picker-element` wrapper |
-| `ChatEmojis` / `ChatUserTag` / `ChatFile` / `ChatFiles` | Footer autocomplete + pending-upload primitives |
-| `Loader` / `ProgressBar` / `SvgIcon` | UI primitives |
-
-### Types
-
-- `Chat`, `ChatReference`
-- `Message`, `MessageReference`, `MessageFile`
-- `User`, `UserReference`
-- `Action`, `Id`
-
-### Plugin
-
-- `AdvancedChatPlugin({ localization?, strings? })` — installs the
-  string dictionary used by all components.
-
-### Slots
-
-Each public component documents its slots inline in Storybook
-autodocs. Notable slots by surface:
-
-| Component | Slot | Default |
-|---|---|---|
-| `Chat` | `no-chat-selected` | "No chat selected" empty state |
-| `Chat` | `composer-typing` (scoped: `typing-users`) | Renders `typingUsers` text when `typingIndicatorPosition` includes `composer` |
-| `Chat` | `scroll-icon` | Down-chevron for the scroll-to-latest pill |
-| `Chats` | `chats-header` / `chats-search` / `chats-empty` | (default chrome) |
-| `ChatHeader` | `chat-header`, `chat-header-avatar`, `chat-header-info`, `chat-options`, `toggle-icon`, `menu-icon` | (default chrome / icons) |
-| `ChatFooter` | `reply-close-icon`, `edit-close-icon`, `emoji-picker-icon`, `paperclip-icon`, `send-icon` | Built-in `SvgIcon` graphics |
-| `Message` | `deleted-icon_<id>`, `microphone-icon_<id>`, `pencil-icon_<id>`, `checkmark-icon_<id>` | Per-message icon overrides keyed by `message.id` |
-
-`AdvancedChat` does not forward slots — drop down to `Chats + Chat`
-when you need slot composition.
-
-### Theming
-
-- `Layout.theme` accepts `'light'`, `'dark'`, `'auto'`, or
-  `{ base: 'light' | 'dark', overrides: Partial<Styles> }`.
-- `Layout.styles` accepts a `Partial<Styles>` map applied as the
-  final layer over the resolved theme — useful for one-off overrides
-  on a single mount without forking a theme.
-- All visible colors are CSS custom properties on the `Layout` root.
-- `'auto'` follows `prefers-color-scheme` reactively.
-
-## Security model
-
-The library treats the data passed in via props as already trusted:
-it is rendered into the DOM and into CSS without sanitization. The
-host application is responsible for validating user-supplied content
-at the boundary where it enters the data layer.
-
-In particular, the following values are interpolated into
-`background-image: url('…')` declarations or `<source src>`
-attributes:
-
-- `Chat.avatar`, `User.avatar` (rendered by `ChatHeader`,
-  `ChatsItem`, `ChatUserTag`)
-- `Message.files[].url` and `Message.files[].previewUrl` (rendered
-  by `MessageFile`, `MediaPreview`, `MessageReply`)
-
-If any of these can originate from an untrusted source, validate
-that they are well-formed `http(s):` / `data:` / `blob:` URLs (and
-do not contain `'`, `)`, or newlines that could close the CSS
-`url(...)` token) before passing them in. Markdown rendered through
-`MessageTemplate` is sanitized by `micromark-extension-gfm-tagfilter`,
-which strips `<script>` and event-handler attributes; bring your own
-sanitizer if you need stricter guarantees.
+Use the `main` branch for v2 documentation and the v2-specific issues
+listed in [`rewrite/issue-triage.md`](./rewrite/issue-triage.md) for a
+rough map of what V3 resolves.
 
 ## Development
 
 ```bash
 npm ci
+npm run storybook         # local docs + component playground
+npm run verify            # format + types + lint + tests + build + pack + storybook
 ```
 
-Use Node `22.14.0` or newer when working on the V3 package and release workflow.
+Use Node `22.14.0` or newer (`.nvmrc`).
 
-Run Storybook:
-
-```bash
-npm run storybook
-```
-
-Build the library:
-
-```bash
-npm run build
-```
-
-Run type checks:
-
-```bash
-npm run type-check
-```
-
-Run the full verification suite:
-
-```bash
-npm run verify
-```
-
-Build Storybook:
-
-```bash
-npm run build-storybook
-```
-
-Format source files:
-
-```bash
-npm run format
-```
-
-Check formatting without mutating files:
-
-```bash
-npm run format:check
-```
-
-Lint source files without mutating them:
-
-```bash
-npm run lint
-```
+The full set of `npm run` scripts: `format`, `format:check`, `lint`,
+`type-check`, `test`, `test:unit`, `test:storybook`, `test:coverage`,
+`build`, `build-storybook`, `verify`, `verify:pack`. `verify` chains
+the gates that CI also runs.
 
 ## Contributing
 
 Contributions are welcome.
 
-If you are working on `develop`:
+If you're working on `develop`:
 
-- keep changes aligned with the typed component API in `src/components`
-- add or update Storybook stories for component work
-- use `main` as the behavioral reference when porting existing features
-- avoid presenting rewrite-only APIs as if they are already the stable public interface
+- Keep changes aligned with the typed component API in
+  [`src/components`](./src/components).
+- Add or update Storybook stories for any component change.
+- Use `main` as the behavioral reference when porting existing
+  features.
 
-For V3 release process and publication rules, see [RELEASING.md](./RELEASING.md).
-The architecture, parity status, and upcoming work are documented in
-[`rewrite/`](./rewrite/README.md), and notable changes are tracked in
+For the V3 release process, see [RELEASING.md](./RELEASING.md). The
+architecture rationale and parity status live in
+[`rewrite/`](./rewrite/README.md). Notable changes are tracked in
 [`CHANGELOG.md`](./CHANGELOG.md).
-
-## Notes
-
-- This repository is public and should stay clear for users, contributors, and maintainers.
-- The stable public npm package remains `vue-advanced-chat`.
-- The rewrite branch currently uses `@advanced-chat/components` in local package metadata as part of the migration work.
 
 ## License
 
-This project is licensed under the MIT License.
+MIT.

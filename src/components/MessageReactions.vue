@@ -4,11 +4,14 @@ import { computed } from 'vue'
 import type { Message, UserReference } from '../models'
 
 export interface MessageReactionsProps {
+  /** Identifies the viewer; their entry in each reaction's user list highlights the chip as "mine". */
   currentUser: UserReference
+  /** Message whose `reactions` map is rendered. */
   message: Message
 }
 
 export interface MessageReactionsEvents {
+  /** Fires when a reaction chip is clicked; `reaction` is the existing list of user IDs and the host should toggle `currentUser` in/out. */
   (e: 'send-message-reaction', payload: { emoji: string; reaction: Array<string | number> }): void
 }
 

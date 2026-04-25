@@ -5,13 +5,18 @@ import { useLocalizationStrings } from '../localization'
 const strings = useLocalizationStrings()
 
 export interface ChatEmojisProps {
+  /** Emojis matching the active `:` query. Pass an empty array to hide the popup. */
   filteredEmojis: string[]
+  /** Truthy edge commits the active emoji. The host typically wires this to Enter. */
   selectItem?: boolean | null
+  /** Positive steps forward, negative backward. The host typically wires this to ArrowLeft/ArrowRight. */
   activeUpOrDown?: number | null
 }
 
 export interface ChatEmojisEvents {
+  /** Fires when the user commits an emoji from the popup. */
   (e: 'select-emoji', emoji: string): void
+  /** Fires after the active emoji moves via `activeUpOrDown`. */
   (e: 'activate-item'): void
 }
 

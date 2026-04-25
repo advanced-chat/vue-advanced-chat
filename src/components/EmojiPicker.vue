@@ -11,6 +11,7 @@ const container = useTemplateRef('container')
 const picker = ref(new Picker())
 
 export interface EmojiPickerProps {
+  /** When `true`, the underlying `emoji-picker-element` is mounted into the container; setting `false` detaches it. */
   opened: boolean
 }
 
