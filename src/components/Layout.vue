@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { toRef } from 'vue'
 
-import { type Theme, type Styles, getThemeStyles } from '../themes'
+import { type Theme, type Styles, useThemeStyles } from '../themes'
 
 export interface LayoutProps {
   height?: string
@@ -11,7 +11,7 @@ export interface LayoutProps {
 
 const props = defineProps<LayoutProps>()
 
-const cssVars = computed(() => getThemeStyles(props.theme || 'auto'))
+const cssVars = useThemeStyles(toRef(props, 'theme'))
 </script>
 
 <template>

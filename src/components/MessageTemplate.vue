@@ -19,25 +19,24 @@ export interface MessageTemplateEvents {
   (event: 'clicked:user-tag', user: User): void
 }
 
-const props = withDefaults(defineProps<MessageTemplateProps>(), {
-  formattingOptions: () => ({
-    markdown: true,
-    linkify: true,
-    singleLine: false,
-    linkOptions: {
-      target: '_blank',
-      rel: 'noopener noreferrer',
-    },
-  }),
-})
+const props = defineProps<MessageTemplateProps>()
 
-const singleLine = computed(() => {
-  return props.formattingOptions?.singleLine || false
-})
+const options = computed<TextFormattingOptions>(() => ({
+  markdown: true,
+  linkify: true,
+  singleLine: false,
+  linkOptions: {
+    target: '_blank',
+    rel: 'noopener noreferrer',
+  },
+  ...(props.formattingOptions || {}),
+}))
+
+const singleLine = computed(() => options.value.singleLine === true)
 
 const formattedMessageParts = computed(() => {
   return [
-    formatText(props.message?.content || '', props.formattingOptions || {}, {
+    formatText(props.message?.content || '', options.value, {
       users: props.users,
     }),
   ]
@@ -63,7 +62,14 @@ const onUserTagClick = (event: Event) => {
 <template>
   <div class="vac-format-message-wrapper" :class="{ 'vac-text-ellipsis': singleLine }">
     <template v-for="(part, i) in formattedMessageParts" :key="i">
-      <div v-if="part.markdown" class="markdown" @click="onUserTagClick" v-html="part.value" />
+      <div
+        v-if="part.markdown && !part.singleLine"
+        :key="`md-${i}`"
+        class="markdown"
+        @click="onUserTagClick"
+        v-html="part.value"
+      />
+      <span v-else :key="`txt-${i}`" class="vac-format-text">{{ part.value }}</span>
     </template>
   </div>
 </template>

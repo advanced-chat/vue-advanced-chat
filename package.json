@@ -1,6 +1,6 @@
 {
   "name": "@advanced-chat/components",
-  "version": "3.0.0-alpha.0",
+  "version": "3.0.0-alpha.1",
   "license": "MIT",
   "description": "A beautiful chat component library made with Vue",
   "contributors": [
@@ -19,15 +19,15 @@
   "unpkg": "dist/components.umd.cjs",
   "jsdelivr": "dist/components.umd.cjs",
   "style": "dist/components.css",
-  "typings": "dist/types/index.d.ts",
+  "typings": "dist/src/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/src/index.d.ts",
       "import": "./dist/components.js",
       "require": "./dist/components.umd.cjs"
     },
     "./styles": {
-      "types": "./dist/styles.d.ts",
+      "types": "./dist/src/styles.d.ts",
       "import": "./dist/components.css"
     }
   },
@@ -54,8 +54,16 @@
   "scripts": {
     "build": "vite build",
     "type-check": "vue-tsc --build",
-    "lint": "eslint . --fix --cache",
-    "format": "prettier --write src/",
+    "lint": "eslint . --cache",
+    "lint:fix": "eslint . --fix --cache",
+    "format": "prettier --write src/ .storybook/",
+    "format:check": "prettier --check src/ .storybook/",
+    "test:storybook": "vitest run --project storybook",
+    "test": "npm run test:storybook",
+    "verify:pack": "node ./scripts/verify-pack.mjs",
+    "verify:storybook-ui": "node ./scripts/verify-storybook-ui.mjs",
+    "verify:storybook-flows": "node ./scripts/verify-storybook-flows.mjs",
+    "verify": "npm run format:check && npm run type-check && npm run lint && npm run test:storybook && npm run build && npm run verify:pack && npm run build-storybook",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prepare": "husky"
@@ -66,13 +74,22 @@
     ]
   },
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": "^20.19.0 || >=22.14.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
   },
   "dependencies": {
     "emoji-picker-element": "^1.29.1",
     "micromark": "^4.0.2",
     "micromark-extension-gfm": "^3.0.0",
-    "vue": "^3.5.30"
+    "micromark-extension-gfm-footnote": "^2.1.0",
+    "micromark-extension-gfm-strikethrough": "^2.1.0",
+    "micromark-extension-gfm-table": "^2.1.0",
+    "micromark-extension-gfm-tagfilter": "^2.0.0",
+    "micromark-extension-gfm-task-list-item": "^2.1.0",
+    "micromark-util-combine-extensions": "^2.0.0",
+    "micromark-util-types": "^2.0.0"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.0.1",

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import ChatFooter from '@/components/ChatFooter.vue'
 import ChatHeader, { type ChatHeaderMessageSelection } from '@/components/ChatHeader.vue'
@@ -8,6 +8,18 @@ import Loader from '@/components/Loader.vue'
 import MediaPreview from '@/components/MediaPreview.vue'
 
 import type { Action, Chat, Message, MessageFile, User, UserReference } from '../models'
+import { useLocalizationStrings } from '../localization'
+import type { ChatFileItem } from './ChatFile.vue'
+
+const strings = useLocalizationStrings()
+
+/**
+ * Action names that `Chat` recognizes and handles internally on top
+ * of emitting `message-action-handler`. Consumers can use any other
+ * action name and handle it externally.
+ */
+const REPLY_ACTION = 'reply'
+const EDIT_ACTION = 'edit'
 
 export interface ChatProps {
   user?: UserReference | null
@@ -21,27 +33,36 @@ export interface ChatProps {
   headerActions?: Action[]
   messageActions?: Action[]
   messageSelection?: ChatHeaderMessageSelection
+  showFiles?: boolean
+  showEmojis?: boolean
   showFooter?: boolean
   showReactionEmojis?: boolean
+  showNewMessagesDivider?: boolean
+  acceptedFiles?: string
+  multipleFiles?: boolean
+  captureFiles?: '' | 'user' | 'environment'
 }
 
 export interface ChatEvents {
   (e: 'toggle-chat-list'): void
   (e: 'show-chat-info'): void
   (e: 'menu-action-handler', action: Action): void
-  (e: 'message-selection-action-handler', action: Action): void
+  (e: 'message-selection-action-handler', payload: { action: Action; messages: Message[] }): void
   (e: 'cancel-message-selection'): void
+  (e: 'opened:file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
+  (e: 'typing-message', value: string): void
   (
     e: 'send-message',
-    payload: { content: string; files: MessageFile[]; reply?: Message | null },
+    payload: { content: string; files: ChatFileItem[]; reply?: Message | null },
   ): void
   (
     e: 'edit-message',
-    payload: { messageId: Message['id']; content: string; files: MessageFile[] },
+    payload: { messageId: Message['id']; content: string; files: ChatFileItem[] },
   ): void
   (e: 'message-action-handler', payload: { action: Action; message: Message }): void
   (e: 'clicked:user-tag', user: User): void
   (e: 'send-message-reaction', payload: { emoji: string; message: Message }): void
+  (e: 'open-failed-message', payload: { message: Message }): void
 }
 
 const props = withDefaults(defineProps<ChatProps>(), {
@@ -56,16 +77,65 @@ const props = withDefaults(defineProps<ChatProps>(), {
   headerActions: () => [],
   messageActions: () => [],
   messageSelection: () => ({ enabled: false, actions: [] }),
+  showFiles: true,
+  showEmojis: true,
   showFooter: true,
   showReactionEmojis: true,
+  showNewMessagesDivider: true,
+  acceptedFiles: '*',
+  multipleFiles: true,
+  captureFiles: '',
 })
 
 const emit = defineEmits<ChatEvents>()
 
 const selectedMessages = ref<Message[]>([])
 const previewFile = ref<MessageFile | null>(null)
+const replyMessage = ref<Message | null>(null)
+const editMessage = ref<Message | null>(null)
 
 const users = computed(() => props.chat?.users || [])
+
+watch(
+  () => props.chat?.id,
+  () => {
+    selectedMessages.value = []
+    replyMessage.value = null
+    editMessage.value = null
+  },
+)
+
+const messageSelectionActionHandler = (action: Action) => {
+  emit('message-selection-action-handler', {
+    action,
+    messages: selectedMessages.value,
+  })
+}
+
+const cancelMessageSelection = () => {
+  selectedMessages.value = []
+  emit('cancel-message-selection')
+}
+
+const handleOpenedFile = (payload: { file: MessageFile; action: 'preview' | 'download' }) => {
+  if (payload.action === 'preview') {
+    previewFile.value = payload.file
+  }
+
+  emit('opened:file', payload)
+}
+
+const onMessageAction = (payload: { action: Action; message: Message }) => {
+  if (payload.action.name === REPLY_ACTION) {
+    editMessage.value = null
+    replyMessage.value = payload.message
+  } else if (payload.action.name === EDIT_ACTION) {
+    replyMessage.value = null
+    editMessage.value = payload.message
+  }
+
+  emit('message-action-handler', payload)
+}
 
 const onSelectMessage = (message: Message) => {
   if (!props.messageSelection?.enabled) return
@@ -86,7 +156,9 @@ const onSelectMessage = (message: Message) => {
   <div class="vac-col-messages">
     <template v-if="!user || !chat">
       <div class="vac-container-center vac-room-empty">
-        <div>No chat selected.</div>
+        <slot name="no-chat-selected">
+          <div>{{ strings['chat.empty'] }}</div>
+        </slot>
       </div>
     </template>
 
@@ -104,15 +176,15 @@ const onSelectMessage = (message: Message) => {
         @toggle-chat-list="emit('toggle-chat-list')"
         @show-chat-info="emit('show-chat-info')"
         @menu-action-handler="emit('menu-action-handler', $event)"
-        @message-selection-action-handler="emit('message-selection-action-handler', $event)"
-        @cancel-message-selection="emit('cancel-message-selection')"
+        @message-selection-action-handler="messageSelectionActionHandler($event)"
+        @cancel-message-selection="cancelMessageSelection"
       />
 
       <div class="vac-container-scroll">
         <Loader :show="loadingMessages" />
 
         <div v-if="!loadingMessages && !messages.length" class="vac-room-empty">
-          No messages yet.
+          {{ strings['chat.messages.empty'] }}
         </div>
 
         <div v-else class="vac-messages-container">
@@ -126,15 +198,17 @@ const onSelectMessage = (message: Message) => {
             :users="users"
             :actions="messageActions"
             :show-reaction-emojis="showReactionEmojis"
+            :show-new-messages-divider="showNewMessagesDivider"
             :message-selection-enabled="messageSelection.enabled"
             :selected="
               selectedMessages.some((selected) => selected.id.toString() === message.id.toString())
             "
-            @message-action-handler="emit('message-action-handler', $event)"
+            @message-action-handler="onMessageAction"
             @send-message-reaction="emit('send-message-reaction', $event)"
-            @opened:file="previewFile = $event.action === 'preview' ? $event.file : previewFile"
+            @opened:file="handleOpenedFile($event)"
             @clicked:user-tag="emit('clicked:user-tag', $event)"
             @select-message="onSelectMessage"
+            @open-failed-message="emit('open-failed-message', $event)"
           />
         </div>
       </div>
@@ -142,9 +216,19 @@ const onSelectMessage = (message: Message) => {
       <ChatFooter
         :chat="chat"
         :users="users"
+        :show-files="showFiles"
+        :show-emojis="showEmojis"
         :show-footer="showFooter"
+        :accepted-files="acceptedFiles"
+        :multiple-files="multipleFiles"
+        :capture-files="captureFiles"
+        :init-reply-message="replyMessage"
+        :init-edit-message="editMessage"
+        @typing-message="emit('typing-message', $event)"
         @send-message="emit('send-message', $event)"
         @edit-message="emit('edit-message', $event)"
+        @reset-reply-message="replyMessage = null"
+        @reset-edit-message="editMessage = null"
       />
     </template>
 

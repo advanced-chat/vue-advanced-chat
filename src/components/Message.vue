@@ -10,6 +10,9 @@ import SvgIcon from '@/components/SvgIcon.vue'
 
 import type { Action, Message, MessageFile, User, UserReference } from '../models'
 import { isAudioFile } from '../utils/media-types'
+import { useLocalizationStrings } from '../localization'
+
+const strings = useLocalizationStrings()
 
 export interface MessageProps {
   user: UserReference
@@ -55,10 +58,31 @@ const firstFile = computed(() => props.message.files?.[0] || null)
 const isAudioMessage = computed(
   () => !!firstFile.value && props.message.files?.length === 1 && isAudioFile(firstFile.value),
 )
+
+const showActions = computed(
+  () => props.actions.length > 0 && !props.message.disableActions && !props.messageSelectionEnabled,
+)
+
+const showReactions = computed(
+  () =>
+    props.showReactionEmojis && !props.message.disableReactions && !props.messageSelectionEnabled,
+)
 </script>
 
 <template>
+  <div v-if="message.system" class="vac-message-row vac-message-row-system">
+    <div class="vac-message-system">
+      <MessageTemplate
+        :message="message"
+        :users="users"
+        :formatting-options="{ markdown: true, singleLine: false }"
+        @clicked:user-tag="emit('clicked:user-tag', $event)"
+      />
+    </div>
+  </div>
+
   <div
+    v-else
     class="vac-message-row"
     :class="{
       'vac-message-row-me': isOwnMessage,
@@ -83,7 +107,7 @@ const isAudioMessage = computed(
         <slot :name="'deleted-icon_' + message.id">
           <SvgIcon name="deleted" />
         </slot>
-        <span>Message deleted</span>
+        <span>{{ strings['chat.message.deleted'] }}</span>
       </div>
 
       <MessageTemplate
@@ -111,6 +135,11 @@ const isAudioMessage = computed(
       </div>
 
       <div class="vac-message-meta">
+        <span v-if="message.edited && !message.deleted" class="vac-message-edited">
+          <slot :name="'pencil-icon_' + message.id">
+            <SvgIcon name="pencil" />
+          </slot>
+        </span>
         <span>{{ timestamp }}</span>
         <span v-if="isOwnMessage && !message.deleted">
           <slot :name="'checkmark-icon_' + message.id">
@@ -123,10 +152,11 @@ const isAudioMessage = computed(
       </div>
 
       <MessageActions
+        v-if="showActions || showReactions"
         :user="user"
         :message="message"
-        :actions="actions"
-        :show-reaction-emojis="showReactionEmojis"
+        :actions="showActions ? actions : []"
+        :show-reaction-emojis="showReactions"
         @message-action-handler="emit('message-action-handler', $event)"
         @send-message-reaction="emit('send-message-reaction', $event)"
       />
@@ -141,10 +171,13 @@ const isAudioMessage = computed(
 
     <button
       v-if="message.failure && isOwnMessage"
+      type="button"
       class="vac-failure-container"
+      :title="strings['chat.message.failure']"
       @click.stop="emit('open-failed-message', { message })"
     >
-      !
+      <span class="vac-failure-icon" aria-hidden="true">!</span>
+      <span class="vac-failure-label">{{ strings['chat.message.failure'] }}</span>
     </button>
   </div>
 </template>
@@ -173,6 +206,7 @@ const isAudioMessage = computed(
 .vac-message-card {
   position: relative;
   max-width: min(100%, 560px);
+  margin-bottom: 14px; // reserve space for the floating actions chip below the bubble
   padding: 12px 14px;
   border-radius: 18px;
   background: var(--chat-message-bg-color);
@@ -201,6 +235,33 @@ const isAudioMessage = computed(
   color: var(--chat-message-color-deleted);
 }
 
+.vac-message-row-system {
+  align-items: center;
+}
+
+.vac-message-system {
+  width: fit-content;
+  margin: 8px auto;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--chat-message-bg-color-system);
+  color: var(--chat-message-color-system);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.vac-message-edited {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 2px;
+  opacity: 0.7;
+
+  :deep(svg) {
+    height: 12px;
+    width: 12px;
+  }
+}
+
 .vac-audio-summary {
   display: flex;
   align-items: center;
@@ -218,11 +279,35 @@ const isAudioMessage = computed(
 }
 
 .vac-failure-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   margin-top: 4px;
-  border: 0;
+  padding: 4px 10px;
+  border: 1px solid var(--chat-message-bg-color-failure);
   background: transparent;
-  color: #d12e2e;
+  color: var(--chat-message-color-failure);
+  border-radius: 999px;
   cursor: pointer;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.vac-failure-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--chat-message-bg-color-failure);
+  color: #fff;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.vac-failure-label {
+  white-space: nowrap;
 }
 </style>

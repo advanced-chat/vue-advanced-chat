@@ -213,4 +213,12 @@ const size = computed(() => {
 #vac-icon-audio-pause {
   fill: var(--chat-icon-color-audio-pause);
 }
+
+#vac-icon-microphone {
+  fill: var(--chat-icon-color-microphone);
+}
+
+#vac-icon-deleted {
+  fill: var(--chat-message-color-deleted);
+}
 </style>

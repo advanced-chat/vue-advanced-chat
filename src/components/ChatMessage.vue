@@ -10,6 +10,9 @@ import type {
   User,
   UserReference,
 } from '../models'
+import { useLocalizationStrings } from '../localization'
+
+const strings = useLocalizationStrings()
 
 export interface ChatMessageProps {
   user: UserReference
@@ -19,6 +22,7 @@ export interface ChatMessageProps {
   users?: User[]
   actions?: Action[]
   showReactionEmojis?: boolean
+  showNewMessagesDivider?: boolean
   messageSelectionEnabled?: boolean
   selected?: boolean
 }
@@ -38,6 +42,7 @@ const props = withDefaults(defineProps<ChatMessageProps>(), {
   users: () => [],
   actions: () => [],
   showReactionEmojis: true,
+  showNewMessagesDivider: true,
   messageSelectionEnabled: false,
   selected: false,
 })
@@ -71,7 +76,9 @@ const dateLabel = computed(() => {
       {{ dateLabel }}
     </div>
 
-    <div v-if="message.new" class="vac-line-new">New messages</div>
+    <div v-if="message.new && showNewMessagesDivider" class="vac-line-new">
+      {{ strings['chat.messages.new'] }}
+    </div>
 
     <Message
       :user="user"

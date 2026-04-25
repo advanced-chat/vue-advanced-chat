@@ -37,3 +37,9 @@ __screenshots__/
 
 *storybook.log
 storybook-static
+
+# Local scratch dir for UI verification screenshots and similar
+.tmp/
+
+# Claude Code per-project state
+.claude/

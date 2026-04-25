@@ -10,6 +10,9 @@ import SvgIcon from '@/components/SvgIcon.vue'
 
 import type { Chat, Message, User } from '../models'
 import type { ChatFileItem } from './ChatFile.vue'
+import { useLocalizationStrings } from '../localization'
+
+const strings = useLocalizationStrings()
 
 const QUICK_EMOJIS = ['😀', '😂', '😍', '🔥', '👍', '🎉', '🚀', '🙌']
 
@@ -23,6 +26,12 @@ export interface ChatFooterProps {
   showFooter?: boolean
   initReplyMessage?: Message | null
   initEditMessage?: Message | null
+  /** MIME-type filter for the file input. */
+  acceptedFiles?: string
+  /** Allow multi-file selection. */
+  multipleFiles?: boolean
+  /** Mobile capture mode for the file input (e.g. `user`, `environment`). */
+  captureFiles?: '' | 'user' | 'environment'
 }
 
 export interface ChatFooterEvents {
@@ -36,6 +45,10 @@ export interface ChatFooterEvents {
   ): void
   (e: 'update-edited-message-id', value: Message['id'] | null): void
   (e: 'typing-message', value: string): void
+  (e: 'reset-reply-message'): void
+  (e: 'reset-edit-message'): void
+  (e: 'focus-textarea'): void
+  (e: 'blur-textarea'): void
 }
 
 const props = withDefaults(defineProps<ChatFooterProps>(), {
@@ -47,6 +60,9 @@ const props = withDefaults(defineProps<ChatFooterProps>(), {
   showFooter: true,
   initReplyMessage: null,
   initEditMessage: null,
+  acceptedFiles: '*',
+  multipleFiles: true,
+  captureFiles: '',
 })
 
 const emit = defineEmits<ChatFooterEvents>()
@@ -142,9 +158,34 @@ const resetMessage = () => {
 
   files.value = []
   message.value = ''
-  replyMessage.value = null
-  editedMessage.value = null
+
+  if (replyMessage.value) {
+    replyMessage.value = null
+    emit('reset-reply-message')
+  }
+
+  if (editedMessage.value) {
+    editedMessage.value = null
+    emit('reset-edit-message')
+  }
+
   emit('update-edited-message-id', null)
+}
+
+const cancelEdit = () => {
+  if (!editedMessage.value) return
+
+  editedMessage.value = null
+  message.value = ''
+  emit('update-edited-message-id', null)
+  emit('reset-edit-message')
+}
+
+const cancelReply = () => {
+  if (!replyMessage.value) return
+
+  replyMessage.value = null
+  emit('reset-reply-message')
 }
 
 const replaceTrailingToken = (pattern: RegExp, replacement: string) => {
@@ -255,12 +296,23 @@ const onKeydown = (event: KeyboardEvent) => {
       @activate-item="activeUpOrDownUsers = null"
     />
 
-    <MessageReply
-      v-if="replyMessage"
-      :message="{ ...replyMessage, reply: replyMessage }"
-      :users="users"
-      class="vac-footer-reply"
-    />
+    <div v-if="replyMessage" class="vac-footer-reply-wrapper">
+      <MessageReply
+        :message="{ ...replyMessage, reply: replyMessage }"
+        :users="users"
+        class="vac-footer-reply"
+      />
+      <button
+        type="button"
+        class="vac-svg-button vac-footer-reply-close"
+        :aria-label="strings['chat.cancel-reply']"
+        @click="cancelReply"
+      >
+        <slot name="reply-close-icon">
+          <SvgIcon name="close-outline" />
+        </slot>
+      </button>
+    </div>
 
     <ChatFiles :files="files" @remove-file="removeFile" @reset-message="resetMessage" />
 
@@ -271,13 +323,27 @@ const onKeydown = (event: KeyboardEvent) => {
       <textarea
         id="roomTextarea"
         v-model="message"
-        placeholder="Type a message"
+        :placeholder="strings['chat.message.placeholder']"
         class="vac-textarea"
         :class="{ 'vac-textarea-outline': editedMessage }"
         @keydown="onKeydown"
+        @focus="emit('focus-textarea')"
+        @blur="emit('blur-textarea')"
       />
 
       <div class="vac-icon-textarea">
+        <button
+          v-if="editedMessage"
+          type="button"
+          class="vac-svg-button"
+          :aria-label="strings['chat.cancel-edit']"
+          @click="cancelEdit"
+        >
+          <slot name="edit-close-icon">
+            <SvgIcon name="close-outline" />
+          </slot>
+        </button>
+
         <div v-if="showEmojis" class="vac-emoji-button">
           <div class="vac-svg-button" @click="emojiOpened = !emojiOpened">
             <slot name="emoji-picker-icon">
@@ -296,7 +362,9 @@ const onKeydown = (event: KeyboardEvent) => {
           <input
             hidden
             type="file"
-            multiple
+            :multiple="multipleFiles"
+            :accept="acceptedFiles"
+            :capture="captureFiles || undefined"
             @change="updateFiles(($event.target as HTMLInputElement).files)"
           />
         </label>
@@ -324,8 +392,22 @@ const onKeydown = (event: KeyboardEvent) => {
   border-top: var(--chat-border-style);
 }
 
+.vac-footer-reply-wrapper {
+  position: relative;
+}
+
 .vac-footer-reply {
   margin: 12px 16px 0;
+  padding-right: 36px;
+}
+
+.vac-footer-reply-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
 .vac-box-footer {

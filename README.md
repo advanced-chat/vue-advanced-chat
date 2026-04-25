@@ -122,46 +122,55 @@ If you are contributing to the rewrite, use `develop`.
 
 ### Components
 
-- `AdvancedChat`
-- `Chats`
-- `ChatsSearch`
-- `ChatsItem`
-- `Chat`
-- `ChatHeader`
-- `ChatFooter`
-- `ChatMessage`
-- `Message`
-- `MessageTemplate`
-- `MessageReply`
-- `MessageFile`
-- `MessageFiles`
-- `MessageActions`
-- `MessageReactions`
-- `MediaPreview`
-- `AudioPlayer`
-- `AudioControl`
-- `EmojiPicker`
-- `Loader`
-- `ProgressBar`
-- `SvgIcon`
+| Component | Role |
+|---|---|
+| `AdvancedChat` | All-in-one composition: Layout + Chats + Chat |
+| `Layout` | Theme + height wrapper that drives CSS custom properties |
+| `Chats` | Sidebar list of conversations (search, infinite-scroll, actions) |
+| `ChatsSearch` | Search/add bar embedded in `Chats` |
+| `ChatsItem` | Single chat row (avatar, last message, unread badge) |
+| `Chat` | Active conversation: header, messages list, footer, media preview |
+| `ChatHeader` | Chat name, status, menu actions, message-selection toolbar |
+| `ChatFooter` | Textarea + emoji + file picker + reply/edit state |
+| `ChatMessage` | Date dividers + new-messages divider around `Message` |
+| `Message` | Message bubble: text/files/audio, reply, reactions, actions |
+| `MessageTemplate` | Markdown / mention rendering primitive |
+| `MessageReply` | Quoted message preview |
+| `MessageFile` / `MessageFiles` | Image / video / file attachments |
+| `MessageActions` | Per-message dropdown + reaction picker |
+| `MessageReactions` | Emoji-reaction pills |
+| `MediaPreview` | Fullscreen image/video lightbox |
+| `AudioPlayer` / `AudioControl` | Audio playback + scrubber |
+| `EmojiPicker` | `emoji-picker-element` wrapper |
+| `ChatEmojis` / `ChatUserTag` / `ChatFile` / `ChatFiles` | Footer autocomplete + pending-upload primitives |
+| `Loader` / `ProgressBar` / `SvgIcon` | UI primitives |
 
 ### Types
 
-- `Chat`
-- `ChatReference`
-- `Message`
-- `MessageReference`
-- `MessageFile`
-- `User`
-- `UserReference`
-- `Action`
-- `Id`
+- `Chat`, `ChatReference`
+- `Message`, `MessageReference`, `MessageFile`
+- `User`, `UserReference`
+- `Action`, `Id`
+
+### Plugin
+
+- `AdvancedChatPlugin({ localization?, strings? })` — installs the
+  string dictionary used by all components.
+
+### Theming
+
+- `Layout.theme` accepts `'light'`, `'dark'`, `'auto'`, or
+  `{ base: 'light' | 'dark', overrides: Partial<Styles> }`.
+- All visible colors are CSS custom properties on the `Layout` root.
+- `'auto'` follows `prefers-color-scheme` reactively.
 
 ## Development
 
 ```bash
-npm install
+npm ci
 ```
+
+Use Node `22.14.0` or newer when working on the V3 package and release workflow.
 
 Run Storybook:
 
@@ -181,6 +190,12 @@ Run type checks:
 npm run type-check
 ```
 
+Run the full verification suite:
+
+```bash
+npm run verify
+```
+
 Build Storybook:
 
 ```bash
@@ -193,6 +208,18 @@ Format source files:
 npm run format
 ```
 
+Check formatting without mutating files:
+
+```bash
+npm run format:check
+```
+
+Lint source files without mutating them:
+
+```bash
+npm run lint
+```
+
 ## Contributing
 
 Contributions are welcome.
@@ -203,6 +230,11 @@ If you are working on `develop`:
 - add or update Storybook stories for component work
 - use `main` as the behavioral reference when porting existing features
 - avoid presenting rewrite-only APIs as if they are already the stable public interface
+
+For V3 release process and publication rules, see [RELEASING.md](./RELEASING.md).
+The architecture, parity status, and upcoming work are documented in
+[`rewrite/`](./rewrite/README.md), and notable changes are tracked in
+[`CHANGELOG.md`](./CHANGELOG.md).
 
 ## Notes
 

@@ -8,8 +8,16 @@ export type Localization = 'en' | 'auto'
 export type Strings = {
   'chats.empty': string
   'chats.search.placeholder': string
+  'chat.empty': string
+  'chat.messages.empty': string
+  'chat.messages.new': string
+  'chat.message.placeholder': string
+  'chat.message.deleted': string
+  'chat.message.failure': string
   'chat.typing': string
   'chat.cancel-selection': string
+  'chat.cancel-reply': string
+  'chat.cancel-edit': string
   'chat.user.is-online': string
   'chat.user.last-seen': string
 }

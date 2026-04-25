@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import type { Message, MessageFile, User, UserReference } from '../models'
+import type { Message, MessageFile as MessageFileModel, User, UserReference } from '../models'
 import { isVisualMediaFile } from '../utils/media-types.ts'
+import MessageFile from '@/components/MessageFile.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import MessageTemplate from '@/components/MessageTemplate.vue'
@@ -15,7 +16,7 @@ export interface MessageFilesProps {
 }
 
 export interface MessageFilesEvents {
-  (e: 'opened:file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
+  (e: 'opened:file', payload: { file: MessageFileModel; action: 'preview' | 'download' }): void
   (e: 'clicked:user-tag', user: User): void
 }
 
@@ -31,9 +32,7 @@ const otherFiles = computed(
   () => props.message.files?.filter((file) => !isVisualMediaFile(file)) || [],
 )
 
-const openFile = (event: Event, file: MessageFile, action: 'preview' | 'download') => {
-  if (props.messageSelectionEnabled) return
-
+const openFile = (event: Event, file: MessageFileModel, action: 'preview' | 'download') => {
   event.stopPropagation()
 
   emit('opened:file', { file, action })

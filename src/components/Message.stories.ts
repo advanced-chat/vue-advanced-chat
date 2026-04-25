@@ -21,3 +21,39 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {},
 }
+
+export const OwnEdited: Story = {
+  args: {
+    message: sampleMessages[1],
+  },
+}
+
+export const Reply: Story = {
+  args: {
+    message: sampleMessages[2],
+  },
+}
+
+export const AudioOnly: Story = {
+  args: {
+    message: sampleMessages[3],
+  },
+}
+
+export const Deleted: Story = {
+  args: {
+    message: sampleMessages[4],
+  },
+}
+
+export const System: Story = {
+  args: {
+    message: sampleMessages[5],
+  },
+}
+
+export const Failure: Story = {
+  args: {
+    message: sampleMessages[6],
+  },
+}

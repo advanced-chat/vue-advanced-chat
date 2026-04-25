@@ -35,14 +35,37 @@ const vClickOutside = onClickOutside
 
 const props = withDefaults(defineProps<ChatsItemProps>(), {})
 
-const userStatus = computed(() => {
+const otherUser = computed(() => {
   const { chat, user } = props
 
   if (!chat.users || chat.users.length !== 2) return null
 
-  const otherUser = findUserById(chat.users, user.id)
+  return chat.users.find((u) => u.id.toString() !== user.id.toString()) || null
+})
 
-  return otherUser?.status?.state || null
+const userStatus = computed(() => otherUser.value?.status?.state || null)
+
+const formattedTimestamp = computed(() => {
+  const { chat } = props
+  const value = chat.lastMessage?.createdAt
+
+  if (!value) return ''
+
+  const date = new Date(value)
+
+  if (Number.isNaN(date.getTime())) return value
+
+  const now = new Date()
+  const sameDay =
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate()
+
+  if (sameDay) {
+    return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+  }
+
+  return date.toLocaleDateString([], { month: 'short', day: 'numeric' })
 })
 
 const typingUsers = computed(() => typingUsersString(props.chat, strings))
@@ -144,8 +167,8 @@ const chatActionHandler = (action: Action) => {
               {{ chat.name }}
             </div>
           </slot>
-          <div v-if="chat.lastMessage" class="vac-text-date">
-            {{ chat.lastMessage.createdAt }}
+          <div v-if="formattedTimestamp" class="vac-text-date">
+            {{ formattedTimestamp }}
           </div>
         </div>
         <div
@@ -190,30 +213,31 @@ const chatActionHandler = (action: Action) => {
               {{ chat.unreadCount }}
             </div>
             <slot :name="'room-list-options_' + chat.id">
-              <div
-                v-if="actions"
-                class="vac-svg-button vac-list-room-options"
-                @click.stop="openedChatMenu = chat.id"
-              >
-                <slot :name="'room-list-options-icon_' + chat.id">
-                  <svg-icon name="dropdown" param="room" />
-                </slot>
-              </div>
-              <transition v-if="actions" name="vac-slide-left">
+              <template v-if="actions && actions.length">
                 <div
-                  v-if="openedChatMenu === chat.id"
-                  v-click-outside="closeChatMenu"
-                  class="vac-menu-options"
+                  class="vac-svg-button vac-list-room-options"
+                  @click.stop="openedChatMenu = chat.id"
                 >
-                  <div class="vac-menu-list">
-                    <div v-for="action in actions" :key="action.name">
-                      <div class="vac-menu-item" @click.stop="chatActionHandler(action)">
-                        {{ action.title }}
+                  <slot :name="'room-list-options-icon_' + chat.id">
+                    <svg-icon name="dropdown" param="room" />
+                  </slot>
+                </div>
+                <transition name="vac-slide-left">
+                  <div
+                    v-if="openedChatMenu === chat.id"
+                    v-click-outside="closeChatMenu"
+                    class="vac-menu-options"
+                  >
+                    <div class="vac-menu-list">
+                      <div v-for="action in actions" :key="action.name">
+                        <div class="vac-menu-item" @click.stop="chatActionHandler(action)">
+                          {{ action.title }}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </transition>
+                </transition>
+              </template>
             </slot>
           </div>
         </div>

@@ -3,6 +3,7 @@ import light from './light.json' with { type: 'json' }
 import dark from './dark.json' with { type: 'json' }
 
 import { deepMerge } from '../utils/deep-merge.js'
+import { onBeforeUnmount, onMounted, ref, type Ref, watch } from 'vue'
 
 export type Theme =
   | 'light'
@@ -123,6 +124,14 @@ export type Styles = {
   '--chat-icon-color-audio-pause': string
   '--chat-icon-color-audio-cancel': string
   '--chat-icon-color-audio-confirm': string
+  '--chat-message-color-failure': string
+  '--chat-message-bg-color-failure': string
+}
+
+const prefersDark = (): boolean => {
+  if (typeof window === 'undefined' || !window.matchMedia) return false
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
 }
 
 export const getThemeStyles = (theme: Theme): Styles => {
@@ -134,11 +143,58 @@ export const getThemeStyles = (theme: Theme): Styles => {
     return deepMerge(baseStyles, overrideStyles)
   }
 
-  const isDarkMode =
-    (theme === 'auto' &&
-      window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches) ||
-    theme === 'dark'
+  const isDarkMode = (theme === 'auto' && prefersDark()) || theme === 'dark'
 
   return isDarkMode ? dark : light
+}
+
+/**
+ * Reactive `Styles` ref that follows the active theme. When the theme
+ * is `'auto'` it tracks `prefers-color-scheme` updates after mount.
+ */
+export const useThemeStyles = (theme: Ref<Theme | undefined>): Ref<Styles> => {
+  const styles = ref<Styles>(getThemeStyles(theme.value || 'auto'))
+
+  let mediaQuery: MediaQueryList | null = null
+  const onMediaChange = () => {
+    styles.value = getThemeStyles(theme.value || 'auto')
+  }
+
+  const subscribe = () => {
+    if (typeof window === 'undefined' || !window.matchMedia) return
+
+    mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    mediaQuery.addEventListener('change', onMediaChange)
+  }
+
+  const unsubscribe = () => {
+    if (!mediaQuery) return
+
+    mediaQuery.removeEventListener('change', onMediaChange)
+    mediaQuery = null
+  }
+
+  watch(
+    theme,
+    (next) => {
+      styles.value = getThemeStyles(next || 'auto')
+
+      unsubscribe()
+
+      if (next === 'auto') {
+        subscribe()
+      }
+    },
+    { immediate: false },
+  )
+
+  onMounted(() => {
+    if ((theme.value || 'auto') === 'auto') {
+      subscribe()
+    }
+  })
+
+  onBeforeUnmount(unsubscribe)
+
+  return styles
 }

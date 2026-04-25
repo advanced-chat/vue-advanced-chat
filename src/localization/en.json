@@ -1,8 +1,16 @@
 {
   "chats.empty": "No chats available.",
   "chats.search.placeholder": "Search chats",
+  "chat.empty": "No chat selected.",
+  "chat.messages.empty": "No messages yet.",
+  "chat.messages.new": "New messages",
+  "chat.message.placeholder": "Type a message",
+  "chat.message.deleted": "Message deleted",
+  "chat.message.failure": "Failed to send. Tap to retry.",
   "chat.typing": "is typing...",
   "chat.cancel-selection": "Cancel",
+  "chat.cancel-reply": "Cancel reply",
+  "chat.cancel-edit": "Cancel edit",
   "chat.user.is-online": "is online",
   "chat.user.last-seen": "last seen "
 }

@@ -73,6 +73,18 @@ export const formatText = (
       ],
       htmlExtensions: [gfmHtml(), underlineHtml, userTagHtml(users || [])],
     })
+
+    if (typeof document !== 'undefined') {
+      const element = document.createElement('div')
+      element.innerHTML = parsed
+
+      element.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+        checkbox.setAttribute('aria-label', 'Checklist item')
+        checkbox.setAttribute('title', 'Checklist item')
+      })
+
+      parsed = element.innerHTML
+    }
   }
 
   if (singleLine) {

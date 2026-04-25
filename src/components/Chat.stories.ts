@@ -19,6 +19,7 @@ const meta = {
     messages: sampleMessages,
     headerActions: chatActions,
     messageActions,
+    standalone: true,
     messageSelection: {
       enabled: false,
       actions: [{ name: 'delete', title: 'Delete' }],
@@ -33,6 +34,25 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {},
+}
+
+export const Loading: Story = {
+  args: {
+    loadingMessages: true,
+    messages: [],
+  },
+}
+
+export const Empty: Story = {
+  args: {
+    messages: [],
+  },
+}
+
+export const NoChatSelected: Story = {
+  args: {
+    chat: null,
+  },
 }
 
 export const SelectionMode: Story = {

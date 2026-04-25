@@ -45,7 +45,12 @@ const closeAll = () => {
 </script>
 
 <template>
-  <div v-if="!message.deleted" v-click-outside="closeAll" class="vac-message-actions-wrapper">
+  <div
+    v-if="!message.deleted"
+    v-click-outside="closeAll"
+    class="vac-message-actions-wrapper"
+    :class="{ 'vac-message-actions-open': reactionsOpened || optionsOpened }"
+  >
     <div class="vac-actions-shell">
       <div v-if="showReactionEmojis" class="vac-reaction-picker">
         <div
@@ -103,14 +108,20 @@ const closeAll = () => {
 <style scoped lang="scss">
 .vac-message-actions-wrapper {
   position: absolute;
-  top: 8px;
-  right: 10px;
+  bottom: -14px;
+  right: 8px;
+  z-index: 5;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--chat-dropdown-bg-color);
+  border: var(--chat-border-style);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .vac-actions-shell {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .vac-reaction-picker,
@@ -120,12 +131,19 @@ const closeAll = () => {
 
 .vac-message-options {
   padding: 2px;
+  display: flex;
+  align-items: center;
+
+  svg {
+    height: 16px;
+    width: 16px;
+  }
 }
 
 .vac-reactions-menu,
 .vac-menu-options {
   position: absolute;
-  top: calc(100% + 6px);
+  bottom: calc(100% + 6px);
   right: 0;
   z-index: 6;
 }
@@ -137,6 +155,7 @@ const closeAll = () => {
   background: var(--chat-dropdown-bg-color);
   border-radius: 999px;
   border: var(--chat-border-style);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .vac-reaction-option {
@@ -144,5 +163,6 @@ const closeAll = () => {
   background: transparent;
   cursor: pointer;
   font-size: 18px;
+  padding: 0 4px;
 }
 </style>

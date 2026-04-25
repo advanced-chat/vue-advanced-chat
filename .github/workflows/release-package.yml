@@ -1,0 +1,77 @@
+name: Release Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_ref:
+        description: Git tag to publish, for example v3.0.0-alpha.0
+        required: true
+        type: string
+      npm_dist_tag:
+        description: npm dist-tag to publish
+        required: true
+        type: choice
+        options:
+          - next
+          - latest
+          - beta
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_ref }}
+
+      - name: Validate release ref
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="$(git describe --tags --exact-match)"
+          if [[ "$tag" != "${{ inputs.release_ref }}" ]]; then
+            echo "Checked-out ref is not the requested tag."
+            exit 1
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Release ref must be a semver-like tag."
+            exit 1
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup npm
+        run: npm install --global npm@11.5.1
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify
+        run: npm run verify
+
+      - name: Check package version matches tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          package_version="$(node -p "require('./package.json').version")"
+          expected_tag="v${package_version}"
+          if [[ "$expected_tag" != "${{ inputs.release_ref }}" ]]; then
+            echo "package.json version ${package_version} does not match release tag ${{ inputs.release_ref }}."
+            exit 1
+          fi
+
+      - name: Publish package
+        run: npm publish --provenance --access public --tag "${{ inputs.npm_dist_tag }}"

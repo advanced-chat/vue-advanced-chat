@@ -1,6 +1,6 @@
 <template>
   <transition name="vac-fade-spinner" appear>
-    <div ref="progress" class="vac-progress-wrapper">
+    <div class="vac-progress-wrapper">
       <svg :height="radius * 2" :width="radius * 2">
         <circle
           stroke="rgba(255, 255, 255, 0.7)"
@@ -49,8 +49,6 @@ const circumference = normalizedRadius * 2 * Math.PI
 const strokeDashoffset = computed(() => {
   return circumference - (props.progress / 100) * circumference
 })
-
-const progress = computed(() => props.progress)
 </script>
 
 <style lang="scss" scoped>

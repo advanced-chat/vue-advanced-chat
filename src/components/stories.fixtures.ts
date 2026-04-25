@@ -23,6 +23,7 @@ export const sampleMessages: Message[] = [
     content: 'Here is a screenshot from the latest build.',
     createdAt: '2025-12-01T10:02:00Z',
     delivered: true,
+    edited: true,
     files: [
       {
         name: 'dashboard.png',
@@ -64,6 +65,27 @@ export const sampleMessages: Message[] = [
       },
     ],
     saved: true,
+  },
+  {
+    id: 5,
+    sender: otherUser,
+    content: '',
+    createdAt: '2025-12-01T10:08:00Z',
+    deleted: true,
+  },
+  {
+    id: 6,
+    sender: { ...otherUser, name: 'system' },
+    content: 'Bob joined the thread.',
+    createdAt: '2025-12-01T10:09:00Z',
+    system: true,
+  },
+  {
+    id: 7,
+    sender: currentUser,
+    content: 'Tried to send but failed — tap to retry.',
+    createdAt: '2025-12-01T10:10:00Z',
+    failure: true,
   },
 ]
 

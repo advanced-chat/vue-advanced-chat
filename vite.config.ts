@@ -13,17 +13,25 @@ import { playwright } from '@vitest/browser-playwright'
 const dirname =
   typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url))
 
-const isStorybookProcess = process.env.npm_lifecycle_event === 'storybook'
+const npmLifecycleEvent = process.env.npm_lifecycle_event || ''
+const isVitestStorybookProcess =
+  process.env.VITEST === 'true' &&
+  (npmLifecycleEvent === 'test' || npmLifecycleEvent === 'test:storybook')
+const isStorybookProcess =
+  npmLifecycleEvent === 'storybook' ||
+  npmLifecycleEvent === 'build-storybook' ||
+  isVitestStorybookProcess
 
 export default defineConfig({
   plugins: [
     vue(),
     tailwindcss(),
-    dts({
-      tsconfigPath: './tsconfig.lib.json',
-      exclude: ['**/*.stories.ts'],
-      copyDtsFiles: true,
-    }),
+    !isStorybookProcess &&
+      dts({
+        tsconfigPath: './tsconfig.lib.json',
+        exclude: ['**/*.stories.ts'],
+        copyDtsFiles: true,
+      }),
     !isStorybookProcess && vueDevTools(),
   ],
   resolve: {

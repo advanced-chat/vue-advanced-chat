@@ -46,23 +46,44 @@ const props = withDefaults(defineProps<ChatHeaderProps>(), {
 })
 
 const typingUsers = computed(() => typingUsersString(props.chat, strings))
+const showMessageSelection = computed(
+  () => !!props.messageSelection?.enabled && props.selectedMessagesTotal > 0,
+)
+
+const formatLastActive = (value: string): string => {
+  const date = new Date(value)
+
+  if (Number.isNaN(date.getTime())) return value
+
+  const now = new Date()
+  const sameDay =
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate()
+
+  if (sameDay) {
+    return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+  }
+
+  return date.toLocaleDateString([], { month: 'short', day: 'numeric' })
+}
 
 const userStatus = computed(() => {
   if (!props.chat.users || props.chat.users.length !== 2) return ''
 
-  const otherUser = props.chat.users.find((u: User) => u.id !== props.user.id)
+  const otherUser = props.chat.users.find((u: User) => u.id.toString() !== props.user.id.toString())
 
   if (!otherUser?.status) return ''
 
-  let statusText = ''
-
   if (otherUser.status.state === 'online') {
-    statusText = strings['chat.user.is-online']
-  } else if (otherUser.status.lastActiveAt) {
-    statusText = strings['chat.user.last-seen'] + otherUser.status.lastActiveAt
+    return strings['chat.user.is-online']
   }
 
-  return statusText
+  if (otherUser.status.lastActiveAt) {
+    return strings['chat.user.last-seen'] + formatLastActive(otherUser.status.lastActiveAt)
+  }
+
+  return ''
 })
 
 const emit = defineEmits<ChatHeaderEvents>()
@@ -73,18 +94,15 @@ const messageSelectionActionHandler = (action: Action) => {
 
 const messageSelectionAnimationEnded = ref(true)
 
-watch(
-  () => props.messageSelection?.enabled,
-  (val) => {
-    if (val) {
-      messageSelectionAnimationEnded.value = false
-    } else {
-      setTimeout(() => {
-        messageSelectionAnimationEnded.value = true
-      }, 300)
-    }
-  },
-)
+watch(showMessageSelection, (val) => {
+  if (val) {
+    messageSelectionAnimationEnded.value = false
+  } else {
+    setTimeout(() => {
+      messageSelectionAnimationEnded.value = true
+    }, 300)
+  }
+})
 
 const menuOpened = ref(false)
 
@@ -103,7 +121,7 @@ const menuActionHandler = (action: Action) => {
     <slot name="room-header">
       <div class="vac-room-wrapper">
         <transition name="vac-slide-up">
-          <div v-if="messageSelection?.enabled" class="vac-room-selection">
+          <div v-if="showMessageSelection" class="vac-room-selection">
             <div
               v-for="action in messageSelection?.actions || []"
               :id="action.name"
@@ -124,7 +142,7 @@ const menuActionHandler = (action: Action) => {
             </div>
           </div>
         </transition>
-        <template v-if="!messageSelection?.enabled && messageSelectionAnimationEnded">
+        <template v-if="!showMessageSelection && messageSelectionAnimationEnded">
           <div
             v-if="!standalone"
             class="vac-svg-button vac-toggle-button"

@@ -1,4 +1,5 @@
 import type { Preview } from '@storybook/vue3-vite'
+import { h } from 'vue'
 
 import '../src/assets/style.css'
 
@@ -20,7 +21,7 @@ const preview: Preview = {
       // 'todo' - show a11y violations in the test UI only
       // 'error' - fail CI on a11y violations
       // 'off' - skip a11y checks entirely
-      test: 'todo',
+      test: 'error',
     },
   },
   globalTypes: {
@@ -42,26 +43,24 @@ const preview: Preview = {
       const skipLayout = context.parameters.skipLayout || false
 
       if (skipLayout) {
-        return {
-          template: `<story/>`,
-        }
+        return () => h(story())
       }
 
       const height = context.parameters.height
 
       const theme = context.globals.theme || 'auto'
 
-      return {
-        components: { Layout, story },
-        setup() {
-          return { height, theme }
-        },
-        template: `
-          <Layout :height="height" :theme="theme">
-            <story/>
-          </Layout>
-        `,
-      }
+      return () =>
+        h(
+          Layout,
+          {
+            height,
+            theme,
+          },
+          {
+            default: () => h(story()),
+          },
+        )
     },
   ],
   args: {

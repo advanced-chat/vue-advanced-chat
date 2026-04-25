@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ChatsSearch from '@/components/ChatsSearch.vue'
-import type { Chat, Id, UserReference } from '../models'
+import type { Action, Chat, Id, UserReference } from '../models'
 import Loader from '@/components/Loader.vue'
 import { computed, nextTick, onBeforeUnmount, ref, useTemplateRef, watch } from 'vue'
 import filterItems from '../utils/filter-items.ts'
@@ -21,11 +21,22 @@ export interface ChatsProps {
   user?: UserReference
   chats?: Array<Chat>
   chat?: Chat
+  /**
+   * Per-chat-row dropdown actions surfaced through `ChatsItem`.
+   */
+  chatActions?: Array<Action>
+  /**
+   * When true, `search-chat` is emitted but the local filter is not
+   * applied. Use this if the consumer drives chat results from the
+   * server based on the search query.
+   */
+  customSearchEnabled?: boolean
 }
 
 export interface ChatsEvents {
   /**
-   * Emitted when a search is performed
+   * Emitted when the search input changes. The local list is filtered
+   * automatically unless `customSearchEnabled` is true.
    */
   (event: 'search-chat', query: string): void
 
@@ -48,6 +59,11 @@ export interface ChatsEvents {
    * Emitted when more chats are being loaded
    */
   (event: 'loading-more-chats', isLoading: boolean): void
+
+  /**
+   * Emitted when a per-chat dropdown action is triggered.
+   */
+  (event: 'chat-action-handler', payload: { chat: Chat; action: Action }): void
 }
 
 const props = withDefaults(defineProps<ChatsProps>(), {
@@ -59,11 +75,13 @@ const props = withDefaults(defineProps<ChatsProps>(), {
   minimumVisibleChats: 10,
   isMobile: false,
   chats: () => [],
+  chatActions: () => [],
+  customSearchEnabled: false,
 })
 
 const selectedChatId = ref<Id | null>(null)
 
-const filter = ref(null)
+const filter = ref<string | null>(null)
 
 const filteredChats = computed(() => {
   const { chats } = props
@@ -72,6 +90,18 @@ const filteredChats = computed(() => {
 })
 
 const emit = defineEmits<ChatsEvents>()
+
+const onSearch = (query: string) => {
+  if (!props.customSearchEnabled) {
+    filter.value = query || null
+  }
+
+  emit('search-chat', query)
+}
+
+const onChatAction = (chat: Chat, action: Action) => {
+  emit('chat-action-handler', { chat, action })
+}
 
 const root = useTemplateRef('root')
 
@@ -216,7 +246,7 @@ onBeforeUnmount(() => {
         :show-add-chat="showAddChat"
         :loading-chats="loadingChats"
         :chats="chats"
-        @search-chat="$emit('search-chat', $event)"
+        @search-chat="onSearch"
         @add-chat="$emit('add-chat')"
       >
       </ChatsSearch>
@@ -239,7 +269,13 @@ onBeforeUnmount(() => {
         :class="{ 'vac-room-selected': selectedChatId === chat.id }"
         @click="openChat(chat)"
       >
-        <ChatsItem :user="user" :chat="chat"> </ChatsItem>
+        <ChatsItem
+          :user="user"
+          :chat="chat"
+          :actions="chatActions"
+          @chat-action-handler="onChatAction(chat, $event)"
+        >
+        </ChatsItem>
       </div>
       <transition name="vac-fade-message">
         <div v-if="chats.length && !loadingChats" id="infinite-loader-rooms">
@@ -270,7 +306,7 @@ onBeforeUnmount(() => {
 
   .vac-rooms-empty {
     font-size: 14px;
-    color: #9ca6af;
+    color: var(--chat-message-color-started);
     font-style: italic;
     text-align: center;
     margin: 40px 0;

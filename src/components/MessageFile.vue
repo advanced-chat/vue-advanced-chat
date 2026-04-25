@@ -26,8 +26,8 @@ const props = withDefaults(defineProps<MessageFileProps>(), {
 const emit = defineEmits<MessageFileEvents>()
 
 const imageResponsive = ref<{ maxHeight: number; loaderTop: number }>({
-  maxHeight: 0,
-  loaderTop: 0,
+  maxHeight: 280,
+  loaderTop: 130,
 })
 
 const imageLoading = ref(false)
@@ -61,10 +61,8 @@ const checkImgLoad = () => {
 }
 
 const openFile = (event: MouseEvent, action: 'preview' | 'download') => {
-  if (!props.messageSelectionEnabled) {
-    event.stopPropagation()
-    emit('opened:file', { file: props.file, action })
-  }
+  event.stopPropagation()
+  emit('opened:file', { file: props.file, action })
 }
 
 watch(
@@ -77,9 +75,12 @@ watch(
 
 onMounted(() => {
   if (imageRef.value) {
+    const width = imageRef.value.clientWidth || 0
+    const height = imageRef.value.clientHeight || 0
+
     imageResponsive.value = {
-      maxHeight: imageRef.value.clientWidth - 18,
-      loaderTop: imageRef.value.clientHeight / 2 - 9,
+      maxHeight: Math.max(120, width - 18),
+      loaderTop: Math.max(0, height / 2 - 9),
     }
   }
 })
@@ -119,10 +120,7 @@ onMounted(() => {
         }"
       >
         <transition name="vac-fade-image">
-          <div
-            v-if="!messageSelectionEnabled && imageHover && !isImageLoading"
-            class="vac-image-buttons"
-          >
+          <div v-if="imageHover && !isImageLoading" class="vac-image-buttons">
             <div class="vac-svg-button vac-button-view" @click="openFile($event, 'preview')">
               <slot :name="'eye-icon_' + message.id">
                 <svg-icon name="eye" />
@@ -158,6 +156,19 @@ onMounted(() => {
 
   .vac-message-image-container {
     cursor: pointer;
+    width: 320px;
+    max-width: 100%;
+  }
+
+  .vac-message-image {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 8px;
+    height: 200px;
+    min-height: 120px;
+    width: 100%;
+    position: relative;
   }
 
   .vac-image-buttons {
