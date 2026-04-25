@@ -43,3 +43,6 @@ storybook-static
 
 # Claude Code per-project state
 .claude/
+
+# Coverage reports
+coverage/

@@ -87,16 +87,18 @@ const closeAll = () => {
         </div>
 
         <transition name="vac-slide-left">
-          <div v-if="optionsOpened" class="vac-menu-options">
+          <div v-if="optionsOpened" class="vac-menu-options" role="menu">
             <div class="vac-menu-list">
-              <div v-for="action in filteredActions" :key="action.name">
-                <div
-                  class="vac-menu-item"
-                  @click.stop="emit('message-action-handler', { action, message })"
-                >
-                  {{ action.title }}
-                </div>
-              </div>
+              <button
+                v-for="action in filteredActions"
+                :key="action.name"
+                type="button"
+                role="menuitem"
+                class="vac-menu-item"
+                @click.stop="emit('message-action-handler', { action, message })"
+              >
+                {{ action.title }}
+              </button>
             </div>
           </div>
         </transition>

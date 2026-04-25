@@ -41,6 +41,16 @@ and the project follows [Semantic Versioning](https://semver.org/).
 - Storybook variants for `Chat` (Loading, Empty, NoChatSelected),
   `Chats` (Loading, Empty, WithActions), and `Message`
   (OwnEdited, Reply, AudioOnly, Deleted, System, Failure).
+- Comprehensive Playwright interaction tests via Storybook + Vitest:
+  229 tests covering 35 test files (input/footer typing/keyboard nav,
+  reply/edit flow, message actions/reactions/menu opens, chat list
+  selection/search/actions, audio scrub, media preview close, and
+  end-to-end AdvancedChat flows). Combined with unit tests for
+  utilities, models, theme, plugin, and text-formatter, the suite
+  reaches 86.07% statements / 79.1% branches / 84.51% functions /
+  87.78% lines via `npm run test:coverage`.
+- New `npm run test:coverage` and `npm run test:unit` scripts; the
+  default `npm run test` runs both suites.
 - `rewrite/` working directory: architecture, V2 catalog, parity
   checklist, GitHub issue triage, and release plan documents.
 

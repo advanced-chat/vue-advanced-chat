@@ -193,13 +193,23 @@ const menuActionHandler = (action: Action) => {
               </slot>
             </div>
             <transition v-if="actions.length" name="vac-slide-left">
-              <div v-if="menuOpened" v-click-outside="closeMenu" class="vac-menu-options">
+              <div
+                v-if="menuOpened"
+                v-click-outside="closeMenu"
+                class="vac-menu-options"
+                role="menu"
+              >
                 <div class="vac-menu-list">
-                  <div v-for="action in actions" :key="action.name">
-                    <div class="vac-menu-item" @click="menuActionHandler(action)">
-                      {{ action.title }}
-                    </div>
-                  </div>
+                  <button
+                    v-for="action in actions"
+                    :key="action.name"
+                    type="button"
+                    role="menuitem"
+                    class="vac-menu-item"
+                    @click="menuActionHandler(action)"
+                  >
+                    {{ action.title }}
+                  </button>
                 </div>
               </div>
             </transition>

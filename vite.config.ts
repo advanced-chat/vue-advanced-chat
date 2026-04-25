@@ -16,7 +16,11 @@ const dirname =
 const npmLifecycleEvent = process.env.npm_lifecycle_event || ''
 const isVitestStorybookProcess =
   process.env.VITEST === 'true' &&
-  (npmLifecycleEvent === 'test' || npmLifecycleEvent === 'test:storybook')
+  (npmLifecycleEvent === 'test' ||
+    npmLifecycleEvent === 'test:storybook' ||
+    npmLifecycleEvent === 'test:coverage' ||
+    npmLifecycleEvent === 'test:unit' ||
+    npmLifecycleEvent === 'verify')
 const isStorybookProcess =
   npmLifecycleEvent === 'storybook' ||
   npmLifecycleEvent === 'build-storybook' ||
@@ -55,6 +59,27 @@ export default defineConfig({
     },
   },
   test: {
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'json-summary'],
+      reportsDirectory: './coverage',
+      include: ['src/**/*.{ts,vue}'],
+      exclude: [
+        'src/**/*.stories.ts',
+        'src/**/*.spec.ts',
+        'src/**/stories.fixtures.ts',
+        'src/index.ts',
+        'src/styles.d.ts',
+        'src/assets/**',
+        // Type-only modules — no runtime code to cover
+        'src/models/index.ts',
+        'src/models/id.ts',
+        'src/models/action.ts',
+        'src/models/message.ts',
+        'src/utils/deep-partial.ts',
+        'src/plugin/symbols.ts',
+      ],
+    },
     projects: [
       {
         extends: true,
@@ -76,6 +101,14 @@ export default defineConfig({
             ],
           },
           setupFiles: ['.storybook/vitest.setup.ts'],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          environment: 'node',
+          include: ['src/**/*.spec.ts'],
         },
       },
     ],

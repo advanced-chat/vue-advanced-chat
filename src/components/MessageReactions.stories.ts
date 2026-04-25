@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { expect, fn, userEvent } from 'storybook/test'
 
 import MessageReactions from './MessageReactions.vue'
 import { currentUser, sampleMessages } from './stories.fixtures.ts'
@@ -18,4 +19,36 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {},
+  play: async ({ canvasElement }) => {
+    const pills = canvasElement.querySelectorAll('.vac-button-reaction')
+    expect(pills.length).toBe(2)
+  },
+}
+
+export const ClickEmits: Story = {
+  args: {
+    'onSend-message-reaction': fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const pill = canvasElement.querySelector('.vac-button-reaction') as HTMLElement
+    await userEvent.click(pill)
+    await expect(args['onSend-message-reaction']).toHaveBeenCalled()
+  },
+}
+
+export const HighlightsCurrentUserReactions: Story = {
+  args: {},
+  play: async ({ canvasElement }) => {
+    const pills = canvasElement.querySelectorAll('.vac-reaction-me')
+    expect(pills.length).toBeGreaterThan(0)
+  },
+}
+
+export const HiddenWhenDeleted: Story = {
+  args: {
+    message: { ...sampleMessages[2]!, deleted: true },
+  },
+  play: async ({ canvasElement }) => {
+    expect(canvasElement.querySelector('.vac-button-reaction')).toBeFalsy()
+  },
 }

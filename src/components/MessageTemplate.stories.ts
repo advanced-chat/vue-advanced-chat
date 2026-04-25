@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { expect, fn, userEvent } from 'storybook/test'
 
 import MessageTemplate from './MessageTemplate.vue'
-import { fn } from 'storybook/test'
 
 import users from '../../.test/users.json' with { type: 'json' }
 import type { User } from '../models/index.ts'
@@ -27,6 +27,9 @@ export const Default: Story = {
       createdAt: '2025-12-01T10:00:00Z',
     },
   },
+  play: async ({ canvasElement }) => {
+    expect(canvasElement.textContent).toContain('This is a sample message content.')
+  },
 }
 
 export const UnderlinedMessage: Story = {
@@ -38,6 +41,9 @@ export const UnderlinedMessage: Story = {
       createdAt: '2025-12-01T10:00:00Z',
     },
   },
+  play: async ({ canvasElement }) => {
+    expect(canvasElement.querySelector('u')).toBeTruthy()
+  },
 }
 
 export const UserTaggedMessage: Story = {
@@ -48,6 +54,13 @@ export const UserTaggedMessage: Story = {
       content: 'Hello <@1>, how are you?',
       createdAt: '2025-12-01T10:00:00Z',
     },
+    users: users as User[],
+  },
+  play: async ({ canvasElement, args }) => {
+    const tag = canvasElement.querySelector('[data-user-id="1"]') as HTMLElement
+    expect(tag).toBeTruthy()
+    await userEvent.click(tag)
+    await expect(args['onClicked:user-tag']).toHaveBeenCalled()
   },
 }
 
@@ -89,5 +102,43 @@ A note[^1]
       `,
       createdAt: '2025-12-01T10:00:00Z',
     },
+  },
+  play: async ({ canvasElement }) => {
+    expect(canvasElement.querySelector('h1')).toBeTruthy()
+    expect(canvasElement.querySelector('table')).toBeTruthy()
+    expect(canvasElement.querySelector('del')).toBeTruthy()
+    expect(canvasElement.querySelector('input[type="checkbox"]')).toBeTruthy()
+  },
+}
+
+export const SingleLineCollapses: Story = {
+  args: {
+    message: {
+      id: 1,
+      sender: users[0] as User,
+      content: '**bold** preview text',
+      createdAt: '2025-12-01T10:00:00Z',
+    },
+    formattingOptions: { singleLine: true, markdown: true },
+  },
+  play: async ({ canvasElement }) => {
+    // singleLine collapses to plain text and uses ellipsis class
+    expect(canvasElement.querySelector('.vac-text-ellipsis')).toBeTruthy()
+  },
+}
+
+export const MarkdownDisabled: Story = {
+  args: {
+    message: {
+      id: 1,
+      sender: users[0] as User,
+      content: '**not bold**',
+      createdAt: '2025-12-01T10:00:00Z',
+    },
+    formattingOptions: { markdown: false },
+  },
+  play: async ({ canvasElement }) => {
+    expect(canvasElement.textContent).toContain('**not bold**')
+    expect(canvasElement.querySelector('strong')).toBeFalsy()
   },
 }

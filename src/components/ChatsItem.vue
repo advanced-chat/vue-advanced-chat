@@ -227,13 +227,19 @@ const chatActionHandler = (action: Action) => {
                     v-if="openedChatMenu === chat.id"
                     v-click-outside="closeChatMenu"
                     class="vac-menu-options"
+                    role="menu"
                   >
                     <div class="vac-menu-list">
-                      <div v-for="action in actions" :key="action.name">
-                        <div class="vac-menu-item" @click.stop="chatActionHandler(action)">
-                          {{ action.title }}
-                        </div>
-                      </div>
+                      <button
+                        v-for="action in actions"
+                        :key="action.name"
+                        type="button"
+                        role="menuitem"
+                        class="vac-menu-item"
+                        @click.stop="chatActionHandler(action)"
+                      >
+                        {{ action.title }}
+                      </button>
                     </div>
                   </div>
                 </transition>
