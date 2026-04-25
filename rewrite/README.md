@@ -18,6 +18,10 @@ behavior in the move.
 - [`architecture-review.md`](./architecture-review.md) — maintainer-eye
   review of the V3 surface at `3.0.0-alpha.1`: strengths, P0/P1 issues,
   and a recommended sequence before 3.0 GA.
+- [`ergonomics-review.md`](./ergonomics-review.md) — companion review
+  focused on data modeling, field names, prop ergonomics, localization
+  type, and event payload shape. Drives the final naming pass before
+  3.0 GA.
 - [`v2-feature-catalog.md`](./v2-feature-catalog.md) — full inventory of
   the v2 component on `main`: every prop, event, slot, behavior, and
   configurable feature. Used as the parity bar.
