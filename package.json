@@ -30,6 +30,14 @@
 	"module": "./dist/vue-advanced-chat.es.js",
 	"unpkg": "./dist/vue-advanced-chat.umd.js",
 	"jsdelivr": "./dist/vue-advanced-chat.umd.js",
+	"exports": {
+		".": {
+			"import": "./dist/vue-advanced-chat.es.js",
+			"require": "./dist/vue-advanced-chat.umd.js",
+			"types": "./types/index.d.ts"
+		},
+		"./src/*": "./src/*"
+	},
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
@@ -44,7 +52,8 @@
 	"typings": "types/index.d.ts",
 	"files": [
 		"dist/*",
-		"types/*"
+		"types/*",
+		"src/**/*"
 	],
 	"devDependencies": {
 		"@babel/core": "7.12.16",
