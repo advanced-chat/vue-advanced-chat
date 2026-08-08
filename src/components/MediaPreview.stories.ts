@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect, fn, userEvent } from 'storybook/test'
 
 import MediaPreview from './MediaPreview.vue'
+import { storyImageUrl, storyVideoUrl } from './stories.fixtures.ts'
 
 const meta = {
+  title: 'Components/MediaPreview',
   component: MediaPreview,
   tags: ['autodocs'],
   parameters: {
@@ -14,7 +16,7 @@ const meta = {
       name: 'preview.png',
       type: 'image/png',
       extension: 'png',
-      url: 'https://picsum.photos/900/600',
+      url: storyImageUrl,
     },
   },
 } satisfies Meta<typeof MediaPreview>
@@ -37,7 +39,7 @@ export const VideoPreview: Story = {
       name: 'clip.mp4',
       type: 'video/mp4',
       extension: 'mp4',
-      url: 'https://example.com/clip.mp4',
+      url: storyVideoUrl,
     },
   },
   play: async ({ canvasElement }) => {
@@ -46,6 +48,7 @@ export const VideoPreview: Story = {
 }
 
 export const HiddenWhenNoFile: Story = {
+  name: 'No media selected',
   args: {
     file: null,
   },
@@ -55,6 +58,7 @@ export const HiddenWhenNoFile: Story = {
 }
 
 export const ClickBackdropEmitsClose: Story = {
+  name: 'Close from backdrop',
   args: {
     'onClose-media-preview': fn(),
   },
@@ -66,6 +70,7 @@ export const ClickBackdropEmitsClose: Story = {
 }
 
 export const CloseButtonEmitsClose: Story = {
+  name: 'Close button',
   args: {
     'onClose-media-preview': fn(),
   },
@@ -77,6 +82,7 @@ export const CloseButtonEmitsClose: Story = {
 }
 
 export const EscapeKeyEmitsClose: Story = {
+  name: 'Close with Escape',
   args: {
     'onClose-media-preview': fn(),
   },

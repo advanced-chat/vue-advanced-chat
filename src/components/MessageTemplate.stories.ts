@@ -7,6 +7,7 @@ import users from '../../.test/users.json' with { type: 'json' }
 import type { User } from '../models/index.ts'
 
 const meta = {
+  title: 'Components/MessageTemplate',
   component: MessageTemplate,
   tags: ['autodocs'],
   args: {
@@ -112,6 +113,7 @@ A note[^1]
 }
 
 export const SingleLineCollapses: Story = {
+  name: 'Single-line message',
   args: {
     message: {
       id: '1',
@@ -128,6 +130,7 @@ export const SingleLineCollapses: Story = {
 }
 
 export const MarkdownDisabled: Story = {
+  name: 'Plain text formatting',
   args: {
     message: {
       id: '1',

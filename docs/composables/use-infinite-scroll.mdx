@@ -4,9 +4,9 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 # useInfiniteScroll
 
-`IntersectionObserver` helper. Fires `onLoadMore` when a sentinel
-element scrolls into view inside a scroll-root, debounces while a
-load is in-flight, and releases the observer on component unmount.
+`IntersectionObserver` helper. Fires `onLoadMore` when a sentinel element
+scrolls into view inside a scroll root, suppresses duplicate calls while its
+`loading` flag is true, and releases the observer on component unmount.
 
 `Chats.vue` uses it for the chat-list infinite scroll. The composable
 re-attaches automatically when the target or scroll root changes,
@@ -51,6 +51,8 @@ const { loading, setLoading, reset } = useInfiniteScroll({
 import { ref, useTemplateRef } from 'vue'
 import { useInfiniteScroll, type MessageModel } from '@advanced-chat/components'
 
+declare function fetchOlderMessages(beforeId?: string): Promise<MessageModel[]>
+
 const messages = ref<MessageModel[]>([])
 const messagesLoaded = ref(false)
 const sentinel = useTemplateRef<HTMLElement>('sentinel')
@@ -61,23 +63,31 @@ const { loading, setLoading } = useInfiniteScroll({
   scrollRoot,
   exhausted: messagesLoaded,
   onLoadMore: async () => {
-    const next = await fetchOlderMessages(messages.value[0]?.id)
-    messages.value = [...next, ...messages.value]
-    messagesLoaded.value = next.length === 0
-    setLoading(false)
+    try {
+      const next = await fetchOlderMessages(messages.value[0]?.id)
+      messages.value = [...next, ...messages.value]
+      messagesLoaded.value = next.length === 0
+    } finally {
+      setLoading(false)
+    }
   },
 })
 </script>
 
 <template>
   <div ref="scrollRoot" class="messages">
-    <div ref="sentinel" v-if="!messagesLoaded">
-      <Loader v-if="loading" />
+    <div v-if="!messagesLoaded" ref="sentinel">
+      <span v-if="loading">Loading older messages…</span>
     </div>
-    <Message v-for="m in messages" :key="m.id" :message="m" />
+    <article v-for="message in messages" :key="message.id">
+      {{ message.content }}
+    </article>
   </div>
 </template>
 ```
+
+`fetchOlderMessages` is intentionally declared as an app-owned API in this
+example; replace it with your backend implementation.
 
 ## Notes
 
@@ -91,6 +101,7 @@ const { loading, setLoading } = useInfiniteScroll({
 - `exhausted` is checked at intersection time, not at attach time.
   Flipping it to `true` after a load suppresses the next call without
   needing to disconnect the observer.
-- `onBeforeUnmount` releases the observer automatically. Safe to use
-  in components that might mount and unmount during normal app
-  navigation.
+- `onBeforeUnmount` releases the observer automatically.
+- The composable does not polyfill or guard a missing `IntersectionObserver`
+  once the element refs resolve. Add a client polyfill or choose a manual load
+  control for unsupported browsers and non-browser render environments.

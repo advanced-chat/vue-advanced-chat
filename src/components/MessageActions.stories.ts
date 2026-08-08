@@ -6,6 +6,7 @@ import MessageActions from './MessageActions.vue'
 import { currentUser, messageActions, sampleMessages } from './stories.fixtures.ts'
 
 const meta = {
+  title: 'Components/MessageActions',
   component: MessageActions,
   tags: ['autodocs'],
   args: {
@@ -127,6 +128,7 @@ export const EscapeClosesMenuAndReturnsFocus: Story = {
 }
 
 export const FilterOnlyMeWhenOtherUser: Story = {
+  name: 'Actions limited to your messages',
   args: {
     currentUser: { id: '99' }, // not the sender
   },
@@ -142,6 +144,7 @@ export const FilterOnlyMeWhenOtherUser: Story = {
 }
 
 export const HiddenForDeletedMessage: Story = {
+  name: 'Deleted message',
   args: {
     message: { ...sampleMessages[2]!, deleted: true },
   },

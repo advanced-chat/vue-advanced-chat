@@ -1,8 +1,8 @@
 # V3 Release Plan
 
-This is the path from the `3.0.0-alpha.5` `develop` tree (plus the current
-Unreleased working-tree fixes) to a published `3.0.0`. Stable v2 remains
-`vue-advanced-chat@2.1.2`; V3 is not yet the stable replacement.
+This is the path from `@advanced-chat/components@3.0.0-rc.1` to a published
+`3.0.0`. Stable v2 remains `vue-advanced-chat@2.1.2` on npm and its source is
+preserved on the `v2` branch; V3 is not a drop-in replacement.
 
 ## Decisions taken
 
@@ -11,12 +11,22 @@ Unreleased working-tree fixes) to a published `3.0.0`. Stable v2 remains
   GA, deprecate `vue-advanced-chat` with a pointer to the new name.
 - **Migration story**: V3 is not a drop-in replacement for v2. The
   README explicitly tells users on v2 to keep using the
-  `vue-advanced-chat` package and the `main` branch.
-- **Distribution**: ESM + UMD Vue component build, a bundled light-DOM
-  web-component build, separate CSS entrypoints, and generated component plus
-  HTMLElement/event declarations.
+  `vue-advanced-chat` package and the `v2` branch.
+- **Distribution**: ESM-only Node package, browser-only UMD Vue component
+  artifact, bundled light-DOM web-component builds, separate CSS entrypoints,
+  and rolled-up component plus HTMLElement/event declarations.
 - **Publishing**: npm trusted publishing via the `release-package.yml`
   GitHub Actions workflow with OIDC. No long-lived tokens.
+
+## Publication baseline
+
+The 2026-08-08 [publish-readiness audit](./publish-readiness-audit.md) found
+release blockers not covered by the original build and test gates. The rc.1
+preparation resolved the repository identity, version, CommonJS, licensing,
+declaration, manifest, governance, public-copy, and packed-consumer findings.
+The remaining gates are external: merge to the default branch, deploy and
+verify Pages, confirm npm trusted publishing, and publish the immutable rc.1
+tag to `next`.
 
 ## Gates that must be green before tagging
 
@@ -94,27 +104,18 @@ onSend?, onReceive? }`) — defaults match the alpha.2 hard-coded
      Currently still resolves to `'en'` (only locale shipped) but
      warns in DEV when the detected language isn't supported, so
      adding a second locale is purely additive.
-6. **Post-alpha.5 public-contract fixes** ✅ present in the current working
-   tree and tracked under `CHANGELOG.md` Unreleased:
+6. **Post-alpha.5 public-contract fixes** ✅ included in `3.0.0-rc.1`:
    - Typed, auto-registering light-DOM web-component entrypoint with direct
      `CustomEvent.detail` and future-mount registration option semantics.
    - Stable `<@id>` mention content plus `mentionedUsers` on send/edit.
    - Explicit object-URL ownership transfer after send/edit.
    - Container-observed mobile navigation and host operational states.
    - Audio playback lifecycle and mouse/keyboard scrubbing fixes.
-   - Public docs and compatibility records reconciled against implementation.
-7. **Carryover from the alpha.4 code review** — neither blocks beta,
-   both are worth doing before tagging it (see commit `b22a8e1`
-   for the full review context):
-   - **Drop `deep: true` from `useAutocomplete`'s items watcher**
-     (`src/composables/use-autocomplete.ts:43`). Carried forward from
-     the original `ChatEmojis` / `ChatUserTag` watchers. The built-in
-     callers hand it ≤6 items so the cost is invisible, but a
-     consumer wiring up a 200-item slash-command list will pay
-     deep-tracking cost on every keystroke. Needs a microbenchmark
-     against a realistic list before switching to `deep: false` (or
-     a length+identity check) so we know what reactivity we lose for
-     consumers who mutate items in place.
+   - Public docs, examples, Storybook copy, and compatibility records audited
+     against implementation.
+7. **Carryover from the alpha.4 code review**:
+   - ✅ `useAutocomplete` now watches item length rather than deep-traversing
+     consumer objects and resets correctly after in-place length changes.
    - **Untangle `Chats.vue`'s two load-more paths**
      (`src/components/Chats.vue:120-127` local `loadMoreChats`
      - the composable's intersection callback at
@@ -126,9 +127,14 @@ onSend?, onReceive? }`) — defaults match the alpha.2 hard-coded
        does (`backfillIfBelowMinimum`) so the file reads as a single
        codepath.
 
-8. **Release prep** (3.0.0):
-   - Bump `package.json` to `3.0.0`.
-   - Move the `Unreleased` CHANGELOG section to `## 3.0.0`.
+8. **Release-candidate prep** ✅ completed for `3.0.0-rc.1`:
+   - ESM-only package contract and strict packed-consumer verification.
+   - MIT and bundled third-party notices.
+   - Security, contribution, conduct, support, and issue templates.
+   - Corrected public guides and deterministic Storybook documentation.
+9. **GA prep** after rc feedback:
+   - Close any release-candidate defects without adding features.
+   - Bump `package.json` to `3.0.0` and add a dated changelog section.
    - Run the GitHub issue triage sweep in `issue-triage.md`.
 
 ## Versioning ladder
@@ -136,42 +142,40 @@ onSend?, onReceive? }`) — defaults match the alpha.2 hard-coded
 Use semver prereleases on `next`:
 
 - `3.0.0-alpha.0` — architecture frozen, surface in flux
-- `3.0.0-alpha.1` — parity gaps closed for actions, search,
+- `3.0.0-alpha.1` — internal milestone: parity gaps closed for actions, search,
   reply/edit, file-input controls, system/edited rendering, and theming.
-- `3.0.0-alpha.2` — message pagination, auto-scroll on receive, and
+- `3.0.0-alpha.2` — internal milestone: message pagination, auto-scroll on receive, and
   scroll-to-latest pill; `Chat` event-payload reshape.
-- `3.0.0-alpha.3` — naming + ergonomics pass (P1 from
+- `3.0.0-alpha.3` — internal milestone: naming + ergonomics pass (P1 from
   `ergonomics-review.md`).
-- `3.0.0-alpha.4` — composables extraction + `<AutocompleteMenu>`
+- `3.0.0-alpha.4` — internal milestone: composables extraction + `<AutocompleteMenu>`
   unification + correctness fixes (SSR `singleLine`, image-error
   handler, `URL.createObjectURL` dedupe).
-- `3.0.0-alpha.5` — closes the originally listed GA gaps:
+- `3.0.0-alpha.5` — internal milestone closing the originally listed GA gaps:
   file-constraint props, typing-indicator position, `autoScroll`
   policy, locale negotiation, slot autodocs.
-- `Unreleased` working tree — web-component contract, mentions, file URL
-  ownership, mobile/operational states, audio playback fixes, and compatibility
-  documentation reconciliation.
-- `3.0.0-beta.0` — public contract complete with deliberate v2 removals and
-  remaining limits explicitly documented
-- `3.0.0-rc.0` — feature freeze; only bug fixes
+- `3.0.0-rc.1` — first public release candidate: contract complete, ESM-only,
+  licensed, packed-consumer verified, and documentation audited.
 - `3.0.0` — promoted to `latest`
 
 Each tag must satisfy:
 
-- `package.json` version matches the tag (`v3.0.0-alpha.1` ↔ `3.0.0-alpha.1`)
-- Tag is pushed from a clean, reviewed commit on `develop`
+- `package.json` version matches the tag (`v3.0.0-rc.1` ↔ `3.0.0-rc.1`)
+- Tag is pushed from a clean, reviewed commit on `main`
 - CI on the exact tag is green
 
 ## Publishing
 
-Triggered manually via GitHub Actions:
+Triggered by an immutable `v*` tag push:
 
-1. Ensure `package.json` matches the intended version on `develop`.
-2. Tag and push (e.g. `git tag v3.0.0-alpha.1 && git push --tags`).
-3. Run `Release Package` workflow, passing the tag and the npm
-   dist-tag (`next` for prereleases, `latest` for 3.0.0).
+1. Ensure `package.json` and the changelog match the intended version on
+   `main`.
+2. Tag and push only that tag, for example
+   `git tag v3.0.0-rc.1 && git push origin v3.0.0-rc.1`.
+3. The workflow validates the tag and publishes prereleases to `next` or stable
+   versions to `latest`.
 4. Confirm the npm package page shows provenance on the new version.
-5. Capture release notes against the GitHub Release.
+5. Capture release notes in the matching GitHub Release.
 
 Trusted publishing setup must already be configured for the workflow
 (see `RELEASING.md`). No `NPM_TOKEN` is used.

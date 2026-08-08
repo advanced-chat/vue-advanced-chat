@@ -6,6 +6,7 @@ import ChatUserTag from './ChatUserTag.vue'
 import { sampleUsers } from './stories.fixtures.ts'
 
 const meta = {
+  title: 'Components/ChatUserTag',
   component: ChatUserTag,
   tags: ['autodocs'],
   args: {
@@ -40,6 +41,7 @@ export const Empty: Story = {
 }
 
 export const ClickEmits: Story = {
+  name: 'Choose a person',
   args: {
     'onSelect-user-tag': fn(),
   },

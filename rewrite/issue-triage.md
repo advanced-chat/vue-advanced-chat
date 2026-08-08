@@ -2,7 +2,7 @@
 
 Open issues and PRs on advanced-chat/advanced-chat-components, sorted by
 what V3 should do with each. Use this as the script for the post-3.0
-issue sweep. Last reconciled against the post-`3.0.0-alpha.5` working tree.
+issue sweep. Last reconciled against the `3.0.0-rc.1` working tree.
 
 ## Resolved by V3 architecture (close on release)
 
@@ -56,10 +56,10 @@ notes and the version that shipped each fix.
 | Local search filter on `Chats`                                                                                        | `alpha.1`                            | `useLocalSearch` (extracted in `alpha.4`); `customSearchEnabled` opts out                                                             |
 | `chat-action-handler` re-emit on `Chats`                                                                              | `alpha.1`                            | `Chats` re-emits `ChatsItem`'s `chat-action-handler`                                                                                  |
 | Markdown task-list a11y warning                                                                                       | `alpha.1`                            | `aria-label` on `<input type="checkbox">` in markdown render                                                                          |
-| [#573](https://github.com/advanced-chat/advanced-chat-components/issues/573) Narrow embedded layout                   | post-`alpha.5` working tree          | `AdvancedChat` observes its own width for the 768 px pane switch; message cards use `max-width: min(100%, 560px)`                     |
-| Audio playback state and controls                                                                                     | post-`alpha.5` working tree          | Native play/pause/end synchronization, rejected-play handling, mouse/keyboard scrubbing, source/selection reset, and listener cleanup |
-| Mention payloads                                                                                                      | post-`alpha.5` working tree          | Stable `<@id>` content plus deduplicated `mentionedUsers` on send/edit                                                                |
-| Host operational states                                                                                               | post-`alpha.5` working tree          | Blocking and non-blocking state UI, retry event, and independently disabled composer                                                  |
+| [#573](https://github.com/advanced-chat/advanced-chat-components/issues/573) Narrow embedded layout                   | `3.0.0-rc.1`                         | `AdvancedChat` observes its own width for the 768 px pane switch; message cards use `max-width: min(100%, 560px)`                     |
+| Audio playback state and controls                                                                                     | `3.0.0-rc.1`                         | Native play/pause/end synchronization, rejected-play handling, mouse/keyboard scrubbing, source/selection reset, and listener cleanup |
+| Mention payloads                                                                                                      | `3.0.0-rc.1`                         | Stable `<@id>` content plus deduplicated `mentionedUsers` on send/edit                                                                |
+| Host operational states                                                                                               | `3.0.0-rc.1`                         | Blocking and non-blocking state UI, retry event, and independently disabled composer                                                  |
 
 ## Compatibility decisions before beta
 
@@ -68,9 +68,9 @@ The remaining differences are either roadmap limits or deliberate removals in
 `parity-checklist.md`.
 
 - [#546](https://github.com/advanced-chat/advanced-chat-components/issues/546): links
-  render, but `Layout` currently applies a fixed `#0d579c` anchor color and
-  there is no `--chat-message-color-link` token. Keep the contrast/design issue
-  open; do not document a token until one is implemented with light/dark
+  render using the shared `--chat-message-color-tag` value, but there is no
+  dedicated `--chat-message-color-link` token. Keep the design issue open; do
+  not document a dedicated token until one is implemented with light/dark
   values.
 - [#531](https://github.com/advanced-chat/advanced-chat-components/issues/531): V3
   deliberately does not replace v2's extra textarea action with a new
@@ -112,14 +112,14 @@ Items that don't fit the V3 charter or are vendor-specific.
 
 ## Stale PRs (recommend closing)
 
-| #                                                                                                                                                                                                                                  | Action                                                                                   |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| [#567](https://github.com/advanced-chat/advanced-chat-components/pull/567)                                                                                                                                                         | Maintainer fix on v2 — merge into `main` if still relevant before V3 takes over `latest` |
-| [#540](https://github.com/advanced-chat/advanced-chat-components/pull/540)                                                                                                                                                         | Cherry-pick the bug intent into V3, then close                                           |
-| [#520](https://github.com/advanced-chat/advanced-chat-components/pull/520) / [#519](https://github.com/advanced-chat/advanced-chat-components/pull/519)                                                                            | Stale dependabot, supersede                                                              |
-| [#518](https://github.com/advanced-chat/advanced-chat-components/pull/518) / [#514](https://github.com/advanced-chat/advanced-chat-components/pull/514)                                                                            | Stale styling PRs, redundant in V3                                                       |
-| [#495](https://github.com/advanced-chat/advanced-chat-components/pull/495)                                                                                                                                                         | Inspect logic, then close — V3 has its own divider implementation                        |
-| [#477](https://github.com/advanced-chat/advanced-chat-components/pull/477), [#307](https://github.com/advanced-chat/advanced-chat-components/pull/307), [#306](https://github.com/advanced-chat/advanced-chat-components/pull/306) | Stale, close                                                                             |
+| #                                                                                                                                                                                                                                  | Action                                                            |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| [#567](https://github.com/advanced-chat/advanced-chat-components/pull/567)                                                                                                                                                         | Maintainer fix on v2 — backport to `v2` if still relevant         |
+| [#540](https://github.com/advanced-chat/advanced-chat-components/pull/540)                                                                                                                                                         | Cherry-pick the bug intent into V3, then close                    |
+| [#520](https://github.com/advanced-chat/advanced-chat-components/pull/520) / [#519](https://github.com/advanced-chat/advanced-chat-components/pull/519)                                                                            | Stale dependabot, supersede                                       |
+| [#518](https://github.com/advanced-chat/advanced-chat-components/pull/518) / [#514](https://github.com/advanced-chat/advanced-chat-components/pull/514)                                                                            | Stale styling PRs, redundant in V3                                |
+| [#495](https://github.com/advanced-chat/advanced-chat-components/pull/495)                                                                                                                                                         | Inspect logic, then close — V3 has its own divider implementation |
+| [#477](https://github.com/advanced-chat/advanced-chat-components/pull/477), [#307](https://github.com/advanced-chat/advanced-chat-components/pull/307), [#306](https://github.com/advanced-chat/advanced-chat-components/pull/306) | Stale, close                                                      |
 
 ## Bug clusters resolved without code change
 
@@ -130,9 +130,10 @@ in light DOM, takes real DOM properties, and has a typed event map.
 - **Slot mapping bugs** (`text2.replaceAll` errors on dashed names):
   V3 uses native Vue slots; the kebab→camel conversion that broke v2
   is gone.
-- **CSS isolation pain**: V3 ships a single `components.css` and uses
-  CSS custom properties in light DOM, so consumers can override through the
-  normal cascade rather than crossing a Shadow DOM boundary.
+- **CSS isolation pain**: V3 ships a single `components.css` in light DOM.
+  Consumers can target component selectors directly and use object-form
+  `theme` or `Layout.styles` for palette variables rather than crossing a
+  Shadow DOM boundary.
 - **Hard-coded sizes**: the primary pane switch now observes the component
   container and message cards constrain themselves to available width. Some
   leaf controls still have fixed dimensions and viewport media rules; these

@@ -3,16 +3,19 @@ import { expect, fn, userEvent, waitFor } from 'storybook/test'
 
 import ChatsItem from './ChatsItem.vue'
 
-import users from '../../.test/users.json' with { type: 'json' }
 import chats from '../../.test/chats.json' with { type: 'json' }
 import type { Chat, User } from '../models/index.ts'
+import { sampleUsers, storyAudioUrl, storyPhotoUrl } from './stories.fixtures.ts'
+
+const storyChats = (chats as Chat[]).map((chat) => ({ ...chat, avatar: storyPhotoUrl }))
 
 const meta = {
+  title: 'Components/ChatsItem',
   component: ChatsItem,
   tags: ['autodocs'],
   args: {
-    currentUser: users[0]!,
-    chat: chats[0] as Chat,
+    currentUser: sampleUsers[0]!,
+    chat: storyChats[0] as Chat,
   },
 } satisfies Meta<typeof ChatsItem>
 
@@ -37,6 +40,7 @@ export const WithActions: Story = {
 }
 
 export const ActionHandlerEmits: Story = {
+  name: 'Choose a chat action',
   args: {
     actions: [{ id: 'archive', label: 'Archive' }],
     'onChat-action-handler': fn(),
@@ -59,7 +63,7 @@ export const ActionHandlerEmits: Story = {
 
 export const UnreadBadge: Story = {
   args: {
-    chat: { ...(chats[0] as Chat), unreadCount: 5 },
+    chat: { ...storyChats[0]!, unreadCount: 5 },
   },
   play: async ({ canvasElement }) => {
     const badge = canvasElement.querySelector('.acc-badge-counter')
@@ -70,9 +74,9 @@ export const UnreadBadge: Story = {
 export const TypingIndicator: Story = {
   args: {
     chat: {
-      ...(chats[0] as Chat),
+      ...storyChats[0]!,
       lastMessage: undefined,
-      users: users as User[],
+      users: sampleUsers,
       typingUsers: [{ id: '2' }],
     } as Chat,
   },
@@ -82,9 +86,10 @@ export const TypingIndicator: Story = {
 }
 
 export const OnlineDot: Story = {
+  name: 'Online conversation',
   args: {
-    currentUser: users[0]!,
-    chat: { ...(chats[0] as Chat), users: [users[0], users[1]] as User[] } as Chat,
+    currentUser: sampleUsers[0]!,
+    chat: { ...storyChats[0]!, users: [sampleUsers[0], sampleUsers[1]] as User[] } as Chat,
   },
   play: async ({ canvasElement }) => {
     expect(canvasElement.querySelector('.acc-state-circle')).toBeTruthy()
@@ -92,21 +97,22 @@ export const OnlineDot: Story = {
 }
 
 export const AudioLastMessage: Story = {
+  name: 'Audio message preview',
   args: {
     chat: {
-      ...(chats[0] as Chat),
+      ...storyChats[0]!,
       lastMessage: {
         id: '1',
         content: '',
         createdAt: '2025-12-01T10:00:00Z',
-        sender: users[0]! as User,
+        sender: sampleUsers[0]! as User,
         files: [
           {
-            name: 'voice.mp3',
-            type: 'audio/mpeg',
-            extension: 'mp3',
-            url: 'https://example.com/voice.mp3',
-            duration: 65,
+            name: 'voice.wav',
+            type: 'audio/wav',
+            extension: 'wav',
+            url: storyAudioUrl,
+            duration: 0.5,
           },
         ],
       },
@@ -114,6 +120,6 @@ export const AudioLastMessage: Story = {
   },
   play: async ({ canvasElement }) => {
     expect(canvasElement.querySelector('.acc-icon-microphone')).toBeTruthy()
-    expect(canvasElement.textContent).toContain('1:05')
+    expect(canvasElement.textContent).toContain('0:00.5')
   },
 }

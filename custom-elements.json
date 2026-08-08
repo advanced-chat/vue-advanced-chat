@@ -22,13 +22,14 @@
             {
               "kind": "field",
               "name": "theme",
-              "type": { "text": "'light' | 'dark' | 'auto' | ThemeOptions" },
+              "type": { "text": "Theme" },
               "default": "'auto'"
             },
             {
               "kind": "field",
               "name": "currentUser",
-              "type": { "text": "UserReference | null" }
+              "type": { "text": "UserReference | null" },
+              "default": "null"
             },
             {
               "kind": "field",
@@ -39,7 +40,8 @@
             {
               "kind": "field",
               "name": "chat",
-              "type": { "text": "Chat | null" }
+              "type": { "text": "Chat | null" },
+              "default": "null"
             },
             {
               "kind": "field",
@@ -152,7 +154,8 @@
             {
               "kind": "field",
               "name": "textFormatting",
-              "type": { "text": "Partial<TextFormattingOptions>" }
+              "type": { "text": "Partial<TextFormattingOptions>" },
+              "default": "{}"
             },
             {
               "kind": "field",
@@ -195,7 +198,8 @@
               "name": "autoScroll",
               "type": {
                 "text": "{ onMount?: boolean; onChatSwitch?: boolean; onSend?: boolean; onReceive?: boolean }"
-              }
+              },
+              "default": "{ onMount: true, onChatSwitch: true, onSend: true, onReceive: true }"
             },
             {
               "kind": "field",
@@ -220,12 +224,14 @@
             {
               "kind": "field",
               "name": "statusMessage",
-              "type": { "text": "string" }
+              "type": { "text": "string" },
+              "default": "''"
             },
             {
               "kind": "field",
               "name": "retryLabel",
-              "type": { "text": "string" }
+              "type": { "text": "string" },
+              "default": "''"
             },
             {
               "kind": "field",

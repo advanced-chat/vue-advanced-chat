@@ -1,0 +1,64 @@
+name: Feature request
+description: Propose a focused improvement to the public library contract.
+title: '[Feature]: '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues and Discussions first. Use Discussions Q&A for implementation help.
+        Consider starting a Discussion before proposing a large API or architecture change.
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Affected surface
+      options:
+        - Vue components
+        - Web components
+        - Styling and themes
+        - Accessibility
+        - Localization
+        - Package or developer experience
+        - Documentation
+        - Other public API
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe the user need and why the current public API does not address it.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the behavior and any proposed props, events, slots, types, or CSS variables.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Include current workarounds and why they are insufficient.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility and migration impact
+      description: Note effects on Vue, web-component, accessibility, SSR, or existing consumers.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add examples, prior art, screenshots, or links that clarify the request.
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and Discussions for this request.
+          required: true
+        - label: This request describes a library capability, not private implementation support.
+          required: true

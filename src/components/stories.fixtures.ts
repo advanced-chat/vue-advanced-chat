@@ -2,8 +2,22 @@ import chats from '../../.test/chats.json' with { type: 'json' }
 import users from '../../.test/users.json' with { type: 'json' }
 
 import type { Action, Chat, Message, User } from '../models/index.ts'
+import storyAudioAssetUrl from './story-assets/sample-audio.wav?url&no-inline'
+import storyDocumentAssetUrl from './story-assets/sample-document.pdf?url&no-inline'
+import storyImageAssetUrl from './story-assets/sample-image.png?url&no-inline'
+import storyPhotoAssetUrl from './story-assets/sample-photo.jpg?url&no-inline'
+import storyVideoAssetUrl from './story-assets/sample-video.mp4?url&no-inline'
 
-export const sampleUsers = users as User[]
+export const storyImageUrl = storyImageAssetUrl
+export const storyPhotoUrl = storyPhotoAssetUrl
+export const storyAudioUrl = storyAudioAssetUrl
+export const storyVideoUrl = storyVideoAssetUrl
+export const storyDocumentUrl = storyDocumentAssetUrl
+
+export const sampleUsers = (users as User[]).map((user) => ({
+  ...user,
+  avatar: storyPhotoUrl,
+}))
 
 export const currentUser = sampleUsers[0]!
 
@@ -29,8 +43,8 @@ export const sampleMessages: Message[] = [
         name: 'dashboard.png',
         type: 'image/png',
         extension: 'png',
-        url: 'https://picsum.photos/420/240',
-        previewUrl: 'https://picsum.photos/420/240',
+        url: storyImageUrl,
+        previewUrl: storyImageUrl,
       },
     ],
   },
@@ -57,11 +71,11 @@ export const sampleMessages: Message[] = [
     createdAt: '2025-12-01T10:05:00Z',
     files: [
       {
-        name: 'voice-note.mp3',
-        type: 'audio/mpeg',
-        extension: 'mp3',
-        url: 'https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3',
-        duration: 104,
+        name: 'voice-note.wav',
+        type: 'audio/wav',
+        extension: 'wav',
+        url: storyAudioUrl,
+        duration: 0.5,
       },
     ],
     status: 'sent',
@@ -91,6 +105,7 @@ export const sampleMessages: Message[] = [
 
 export const sampleChats: Chat[] = (chats as Chat[]).map((chat, index) => ({
   ...chat,
+  avatar: storyPhotoUrl,
   users: sampleUsers,
   unreadCount: index === 0 ? 3 : 0,
   typingUsers: index === 1 ? [otherUser] : [],

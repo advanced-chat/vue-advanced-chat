@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
 
 import MessageFile from './MessageFile.vue'
+import { storyImageUrl, storyPhotoUrl, storyVideoUrl } from './stories.fixtures.ts'
 
 const sampleMessage = {
   id: '1',
@@ -13,12 +14,13 @@ const sampleMessage = {
       name: 'example.jpg',
       type: 'image/jpeg',
       extension: 'jpg',
-      url: 'https://picsum.photos/200',
+      url: storyPhotoUrl,
     },
   ],
 }
 
 const meta = {
+  title: 'Components/MessageFile',
   component: MessageFile,
   tags: ['autodocs'],
   args: {
@@ -47,7 +49,7 @@ export const VideoFile: Story = {
       name: 'clip.mp4',
       type: 'video/mp4',
       extension: 'mp4',
-      url: 'https://example.com/clip.mp4',
+      url: storyVideoUrl,
     },
   },
   play: async ({ canvasElement }) => {
@@ -56,6 +58,7 @@ export const VideoFile: Story = {
 }
 
 export const ClickImageEmitsPreview: Story = {
+  name: 'Open image preview',
   args: {
     'onOpen-file': fn(),
   },
@@ -76,7 +79,7 @@ export const UploadProgress: Story = {
       name: 'uploading.png',
       type: 'image/png',
       extension: 'png',
-      url: 'https://picsum.photos/200',
+      url: storyImageUrl,
       progress: 0,
     },
   },
@@ -86,6 +89,7 @@ export const UploadProgress: Story = {
 }
 
 export const SelectionModeBubblesWithoutOpening: Story = {
+  name: 'Select a message with an attachment',
   args: {
     messageSelectionEnabled: true,
     'onOpen-file': fn(),

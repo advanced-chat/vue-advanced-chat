@@ -34,13 +34,11 @@ export const useAutocomplete = <T>(options: UseAutocompleteOptions<T>): UseAutoc
   const activeIndex = ref<number | null>(null)
 
   watch(
-    () => toValue(options.items),
-    (val, oldVal = []) => {
-      if (!oldVal.length || val.length !== oldVal.length) {
-        activeIndex.value = val.length ? 0 : null
-      }
+    () => toValue(options.items).length,
+    (length) => {
+      activeIndex.value = length ? 0 : null
     },
-    { deep: true, immediate: true },
+    { immediate: true },
   )
 
   watch(

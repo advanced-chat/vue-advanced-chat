@@ -12,7 +12,7 @@ Vue.
 ## Install
 
 ```bash
-npm install @advanced-chat/components
+npm install @advanced-chat/components@next
 ```
 
 Load both the auto-registering module and its stylesheet:
@@ -33,7 +33,11 @@ numbers, and booleans only.
   import '@advanced-chat/components/web-component/styles'
 
   const chat = document.querySelector('#chat')
-  const currentUser = { id: 'me', name: 'Alice' }
+  const currentUser = {
+    id: 'me',
+    name: 'Alice',
+    status: { state: 'online' },
+  }
 
   chat.currentUser = currentUser
   chat.chats = [{ id: 'general', name: 'General', users: [currentUser] }]
@@ -49,14 +53,16 @@ numbers, and booleans only.
 ```
 
 All public events are `CustomEvent` instances. Their payload is directly on
-`event.detail`; events have `bubbles: true` and `composed: true`, so event
-delegation works from an application shell and across host shadow roots.
+`event.detail`; events without a payload use `null`. Events have `bubbles: true`
+and `composed: true`, so event delegation works from an application shell and
+across host shadow roots.
 
 ## Explicit registration
 
-The default entrypoint registers `<advanced-chat-components>` when imported. Use the
-side-effect-free core entrypoint when an application controls startup, uses an
-alternate tag, or imports modules during server rendering.
+The default entrypoint registers `<advanced-chat-components>` when imported in a
+browser and safely skips registration when `customElements` is unavailable. Use
+the side-effect-free core entrypoint when an application controls startup or uses
+an alternate tag.
 
 ```ts
 import {
@@ -87,11 +93,35 @@ retains typed DOM events.
 
 ```tsx
 import { useEffect, useRef } from 'react'
+import type { DetailedHTMLProps, HTMLAttributes } from 'react'
 import '@advanced-chat/components/web-component'
 import '@advanced-chat/components/web-component/styles'
-import type { AdvancedChatHTMLElement } from '@advanced-chat/components/web-component'
+import type { ChatModel, MessageModel, UserReference } from '@advanced-chat/components'
+import type {
+  AdvancedChatEventMap,
+  AdvancedChatHTMLElement,
+} from '@advanced-chat/components/web-component'
 
-export function Chat({ currentUser, chats, messages, onSendMessage }) {
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'advanced-chat-components': DetailedHTMLProps<
+        HTMLAttributes<AdvancedChatHTMLElement>,
+        AdvancedChatHTMLElement
+      > & { height?: string }
+    }
+  }
+}
+
+interface ChatProps {
+  currentUser: UserReference
+  chats: ChatModel[]
+  activeChat: ChatModel | null
+  messages: MessageModel[]
+  onSendMessage: (payload: AdvancedChatEventMap['send-message']['detail']) => void
+}
+
+export function Chat({ currentUser, chats, activeChat, messages, onSendMessage }: ChatProps) {
   const ref = useRef<AdvancedChatHTMLElement>(null)
 
   useEffect(() => {
@@ -100,23 +130,25 @@ export function Chat({ currentUser, chats, messages, onSendMessage }) {
 
     element.currentUser = currentUser
     element.chats = chats
-    element.chat = chats[0] ?? null
+    element.chat = activeChat
     element.messages = messages
     element.chatsLoaded = true
     element.messagesLoaded = true
 
-    const handleSend = (event) => onSendMessage(event.detail)
+    const handleSend = (event: AdvancedChatEventMap['send-message']) => {
+      onSendMessage(event.detail)
+    }
     element.addEventListener('send-message', handleSend)
     return () => element.removeEventListener('send-message', handleSend)
-  }, [currentUser, chats, messages, onSendMessage])
+  }, [currentUser, chats, activeChat, messages, onSendMessage])
 
   return <advanced-chat-components ref={ref} height="600px" />
 }
 ```
 
-TypeScript applications can augment `JSX.IntrinsicElements` with
-`AdvancedChatHTMLElement` if their React types do not discover the package's
-Custom Elements Manifest.
+React's TypeScript declarations do not automatically consume a Custom Elements
+Manifest. The local augmentation above types the tag, standard attributes, and
+`ref`; complex values still cross the boundary as DOM properties in the effect.
 
 ## Angular
 
@@ -127,6 +159,8 @@ component or module.
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import '@advanced-chat/components/web-component'
 import '@advanced-chat/components/web-component/styles'
+import type { ChatModel, MessageModel, UserReference } from '@advanced-chat/components'
+import type { AdvancedChatEventMap } from '@advanced-chat/components/web-component'
 
 @Component({
   selector: 'app-chat',
@@ -137,15 +171,34 @@ import '@advanced-chat/components/web-component/styles'
       height="600px"
       [currentUser]="currentUser"
       [chats]="chats"
-      [chat]="chats[0]"
+      [chat]="activeChat"
       [messages]="messages"
       [chatsLoaded]="true"
       [messagesLoaded]="true"
-      (send-message)="send($event.detail)"
+      (send-message)="send($event)"
     />
   `,
 })
-export class ChatComponent {}
+export class ChatComponent {
+  readonly currentUser: UserReference = { id: 'me' }
+  readonly chats: ChatModel[] = [
+    {
+      id: 'general',
+      name: 'General',
+      users: [
+        { id: 'me', name: 'Alice', status: { state: 'online' } },
+        { id: 'sam', name: 'Sam', status: { state: 'offline' } },
+      ],
+    },
+  ]
+  readonly activeChat = this.chats[0] ?? null
+  readonly messages: MessageModel[] = []
+
+  send(event: Event) {
+    const payload = (event as AdvancedChatEventMap['send-message']).detail
+    console.log(payload)
+  }
+}
 ```
 
 ## Svelte
@@ -153,22 +206,34 @@ export class ChatComponent {}
 Use `bind:this` when you want an explicit property and event boundary.
 
 ```svelte
-<script>
+<script lang="ts">
   import { onMount } from 'svelte'
   import '@advanced-chat/components/web-component'
   import '@advanced-chat/components/web-component/styles'
+  import type { ChatModel, MessageModel, User } from '@advanced-chat/components'
+  import type {
+    AdvancedChatEventMap,
+    AdvancedChatHTMLElement,
+  } from '@advanced-chat/components/web-component'
 
-  let chatElement
+  const currentUser: User = {
+    id: 'me',
+    name: 'Alice',
+    status: { state: 'online' },
+  }
+  const chats: ChatModel[] = [{ id: 'general', name: 'General', users: [currentUser] }]
+  const messages: MessageModel[] = []
+  let chatElement: AdvancedChatHTMLElement
 
   onMount(() => {
     chatElement.currentUser = currentUser
     chatElement.chats = chats
-    chatElement.chat = chats[0]
+    chatElement.chat = chats[0] ?? null
     chatElement.messages = messages
     chatElement.chatsLoaded = true
     chatElement.messagesLoaded = true
 
-    const send = event => console.log(event.detail)
+    const send = (event: AdvancedChatEventMap['send-message']) => console.log(event.detail)
     chatElement.addEventListener('send-message', send)
     return () => chatElement.removeEventListener('send-message', send)
   })
@@ -180,8 +245,8 @@ Use `bind:this` when you want an explicit property and event boundary.
 ## Tooling and styles
 
 The npm package publishes `custom-elements.json` using the Custom Elements
-Manifest schema. Editors and framework tooling can use it for property,
-attribute, and event completion.
+Manifest schema. Tooling that explicitly supports that schema can use it for
+property, attribute, and event completion.
 
 The element intentionally renders in light DOM. This keeps application-level
 theming and CSS custom-property overrides straightforward, but host selectors
@@ -189,5 +254,7 @@ can affect the internal UI. Load exactly one matching web-component stylesheet
 and scope broad application styles when necessary.
 
 The distributed module targets modern browsers with native custom elements,
-ES modules, dynamic imports, and `IntersectionObserver`. Add platform
-polyfills before registration when supporting browsers without those APIs.
+ES modules, dynamic imports, `IntersectionObserver`, and `ResizeObserver`. Add
+platform polyfills before registration when supporting browsers without APIs
+your integration relies on; without `ResizeObserver`, the component retains its
+initial desktop/mobile layout calculation after mount.

@@ -10,7 +10,7 @@ Vite project to see the library running against in-memory data.
 ## Install
 
 ```bash
-npm install @advanced-chat/components
+npm install @advanced-chat/components@next
 ```
 
 Vue 3.5+ is a peer dependency.
@@ -57,7 +57,6 @@ into the JS bundle.
 import { ref } from 'vue'
 import {
   AdvancedChat,
-  type ChatFileItem,
   type ChatModel,
   type MessageModel,
   type User,
@@ -93,11 +92,7 @@ const messages = ref<MessageModel[]>([
   },
 ])
 
-const onSendMessage = (payload: {
-  content: string
-  files: ChatFileItem[]
-  mentionedUsers: User[]
-}) => {
+const onSendMessage = (payload: { content: string }) => {
   messages.value = [
     ...messages.value,
     {
@@ -119,6 +114,7 @@ const onSendMessage = (payload: {
     :messages="messages"
     :messages-loaded="true"
     :chats-loaded="true"
+    :show-files="false"
     height="600px"
     theme="light"
     @send-message="onSendMessage"
@@ -141,6 +137,10 @@ stored messages. The same contract applies to `edit-message`.
 - Bob's seed message at the top of the messages list.
 - A working composer at the bottom — typing into it and pressing
   Enter appends a new message to the local list.
+
+This minimal in-memory example disables file selection. When enabling files,
+upload each emitted `ChatFileItem.blob` and manage the transferred `localUrl`
+ownership described in the API reference.
 
 ## Where to go from here
 

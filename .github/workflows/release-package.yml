@@ -1,50 +1,30 @@
 name: Release Package
 
 on:
-  workflow_dispatch:
-    inputs:
-      release_ref:
-        description: Git tag to publish, for example v3.0.0-alpha.0
-        required: true
-        type: string
-      npm_dist_tag:
-        description: npm dist-tag to publish
-        required: true
-        type: choice
-        options:
-          - next
-          - latest
-          - beta
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
-      contents: read
+      contents: write
       id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          ref: ${{ inputs.release_ref }}
-
-      - name: Validate release ref
-        shell: bash
-        run: |
-          set -euo pipefail
-          tag="$(git describe --tags --exact-match)"
-          if [[ "$tag" != "${{ inputs.release_ref }}" ]]; then
-            echo "Checked-out ref is not the requested tag."
-            exit 1
-          fi
-          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            echo "Release ref must be a semver-like tag."
-            exit 1
-          fi
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: '.nvmrc'
           cache: npm
@@ -52,6 +32,59 @@ jobs:
 
       - name: Setup npm
         run: npm install --global npm@11.5.1
+
+      - name: Validate release tag
+        id: release
+        shell: bash
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          package_version="$(node -p "require('./package.json').version")"
+          expected_tag="v${package_version}"
+          checked_out_tag="$(git tag --points-at HEAD --list "$TAG_NAME")"
+          tag_commit="$(git rev-list -n 1 "$TAG_NAME")"
+
+          if [[ ! "$package_version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$ ]]; then
+            echo "Package version ${package_version} is not valid SemVer."
+            exit 1
+          fi
+
+          version_without_build="${package_version%%+*}"
+          if [[ "$version_without_build" == *-* ]]; then
+            prerelease="${version_without_build#*-}"
+            IFS='.' read -ra prerelease_identifiers <<< "$prerelease"
+            for identifier in "${prerelease_identifiers[@]}"; do
+              if [[ "$identifier" =~ ^[0-9]+$ && "$identifier" == 0* && "$identifier" != "0" ]]; then
+                echo "Package version ${package_version} has a leading-zero prerelease identifier."
+                exit 1
+              fi
+            done
+          fi
+
+          if [[ "$TAG_NAME" != "$expected_tag" || "$checked_out_tag" != "$expected_tag" ]]; then
+            echo "Release tag ${TAG_NAME} must exactly match package version ${package_version}."
+            exit 1
+          fi
+
+          if [[ "$tag_commit" != "$GITHUB_SHA" ]]; then
+            echo "Release tag ${TAG_NAME} does not resolve to the pushed commit ${GITHUB_SHA}."
+            exit 1
+          fi
+
+          git fetch --no-tags origin main
+          if ! git merge-base --is-ancestor "$tag_commit" origin/main; then
+            echo "Release tag ${TAG_NAME} must point to a commit on origin/main."
+            exit 1
+          fi
+
+          if [[ "$version_without_build" == *-* ]]; then
+            echo "npm_dist_tag=next" >> "$GITHUB_OUTPUT"
+            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "npm_dist_tag=latest" >> "$GITHUB_OUTPUT"
+            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Install
         run: npm ci
@@ -62,16 +95,25 @@ jobs:
       - name: Verify
         run: npm run verify
 
-      - name: Check package version matches tag
-        shell: bash
+      - name: Publish package
+        env:
+          NPM_DIST_TAG: ${{ steps.release.outputs.npm_dist_tag }}
+        run: npm publish --provenance --access public --tag "$NPM_DIST_TAG"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          IS_PRERELEASE: ${{ steps.release.outputs.is_prerelease }}
+          TAG_NAME: ${{ github.ref_name }}
         run: |
           set -euo pipefail
-          package_version="$(node -p "require('./package.json').version")"
-          expected_tag="v${package_version}"
-          if [[ "$expected_tag" != "${{ inputs.release_ref }}" ]]; then
-            echo "package.json version ${package_version} does not match release tag ${{ inputs.release_ref }}."
-            exit 1
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            echo "GitHub release ${TAG_NAME} already exists."
+            exit 0
           fi
 
-      - name: Publish package
-        run: npm publish --provenance --access public --tag "${{ inputs.npm_dist_tag }}"
+          args=("$TAG_NAME" --verify-tag --generate-notes)
+          if [[ "$IS_PRERELEASE" == "true" ]]; then
+            args+=(--prerelease)
+          fi
+          gh release create "${args[@]}"

@@ -4,6 +4,7 @@ import { expect, waitFor } from 'storybook/test'
 import EmojiPicker from './EmojiPicker.vue'
 
 const meta = {
+  title: 'Components/EmojiPicker',
   component: EmojiPicker,
   tags: ['autodocs'],
   args: {},

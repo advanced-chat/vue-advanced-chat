@@ -4,88 +4,84 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 # Server-side rendering
 
-The components are not currently designed for full server-side
-rendering — several internals reach for browser-only globals
-(`document`, `window.matchMedia`, `IntersectionObserver`,
-`navigator.language`). What the package guarantees today is that
-**importing and rendering on the server doesn't crash**: each
-browser dependency is guarded so the SSR pass returns a sensible
-default and the real behavior kicks in on hydration.
+Full component SSR and hydration are not currently a supported guarantee.
+Several helpers guard browser globals, but the component tree also contains DOM
+measurement, observers, media elements, and browser-only custom-element
+integration. Keep complete chat surfaces behind a client-only boundary unless
+your application has tested its exact prop and render paths.
 
-## What works
+## Helper behavior
 
-| Feature                                      | SSR status                                                                                                                                      |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Importing the package on the server          | ✅                                                                                                                                              |
-| Rendering markup (no interactive features)   | ✅                                                                                                                                              |
-| `formatText({ markdown: true })`             | ✅ — the markdown pass uses micromark; the post-pass DOM cleanup is guarded behind `typeof document`.                                           |
-| `formatText({ singleLine: true })`           | ✅ — the DOM-based whitespace-collapse path is guarded; the SSR fallback strips tags via regex.                                                 |
-| `useThemeStyles`                             | ✅ — falls back to the `light` palette when `window.matchMedia` is undefined; reactive `prefers-color-scheme` listener attaches in `onMounted`. |
-| `useLocalizationStrings` / `negotiateLocale` | ✅ — returns `'en'` when `navigator` is undefined.                                                                                              |
-| `useInfiniteScroll`                          | ✅ at module level — `IntersectionObserver` is only constructed inside the watcher's `flush: 'post'` callback, which runs client-side.          |
+These implementation facts can help with host wrappers, but they are narrower
+than a component-rendering guarantee:
 
-## What doesn't
+- `formatText({ markdown: true })` can run without `document`; the browser-only
+  checkbox annotation pass is skipped.
+- `formatText({ singleLine: true })` uses a regex fallback on the server and DOM
+  `innerText` in a browser. Those paths can produce different text for some
+  input, so do not render their output into both sides of a hydration boundary
+  without tests.
+- `getThemeStyles('auto')` resolves to light when `window.matchMedia` is absent.
+  A dark-mode browser can resolve dark during client setup, producing different
+  inline variables from a server-rendered light tree.
+- `negotiateLocale()` returns `'en'` without `navigator`. Only English ships
+  today, so the client currently resolves to the same bundled dictionary.
+- `useInfiniteScroll` constructs `IntersectionObserver` after its element refs
+  resolve. It has no fallback when that API is unavailable.
 
-| Feature                                   | SSR status                     | Workaround                                                                                                                                                                              |
-| ----------------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Hydration of full chat surfaces in Nuxt 3 | ⚠️ Untested                    | Wrap in `<ClientOnly>`. See [#451](https://github.com/advanced-chat/advanced-chat-components/issues/451), [#528](https://github.com/advanced-chat/advanced-chat-components/issues/528). |
-| Auto-scroll on mount under SSR            | ⚠️ Effectively a no-op         | The `onMounted` hook only runs on the client; first paint shows the list at top. Set `autoScroll: { onMount: false }` if you'd rather not see the scroll-to-bottom flash on hydrate.    |
-| Emoji picker (`emoji-picker-element`)     | ⚠️ Browser-only custom element | Render `EmojiPicker` inside `<ClientOnly>`, or hide it entirely until mounted.                                                                                                          |
+The package's ESM source guards default custom-element registration when
+`customElements` is absent. That fact alone does not certify every bundler,
+module format, component prop combination, or hydration result.
 
 ## Recommended pattern (Nuxt 3)
+
+The following is an intentionally partial page excerpt. Put the component that
+imports and renders `AdvancedChat` in a Nuxt `.client.vue` file so Nuxt excludes
+that component from server rendering:
 
 ```vue
 <template>
   <ClientOnly>
-    <AdvancedChat
-      :current-user="currentUser"
-      :chats="chats"
-      :chat="activeChat"
-      :messages="messages"
-      :auto-scroll="{ onMount: false }"
-      @send-message="onSend"
-    />
+    <ChatSurface />
     <template #fallback>
-      <div class="chat-skeleton" />
+      <div class="chat-skeleton" aria-hidden="true" />
     </template>
   </ClientOnly>
 </template>
 ```
 
-`<ClientOnly>` skips the component on the server and renders the
-fallback. On the client, the component mounts normally with full
-behavior. Pair it with `:auto-scroll="{ onMount: false }"` (or omit
-that prop to keep the default scroll-to-latest) depending on what
-you want users to see during hydration.
+For that example, name the implementation file `ChatSurface.client.vue` and
+keep its `AdvancedChat`, stylesheet, state, and handler imports inside that
+file. `<ClientOnly>` renders the fallback on the server and mounts the client
+component after hydration. Choose `autoScroll.onMount` based on the desired
+post-mount behavior; it is not an SSR fix.
 
 ## Recommended pattern (Vite SSR)
 
-For non-Nuxt SSR setups (`vite-plugin-ssr`, custom SSR), wrap with
-your own client-only directive or check `import.meta.env.SSR`:
+For non-Nuxt Vite SSR setups, render the same fallback during the server pass
+and the client's initial hydration render. Set a mounted flag in `onMounted`
+before rendering a lazily imported chat surface:
 
 ```vue
-<template>
-  <AdvancedChat v-if="!isSsr" … />
-  <div v-else class="chat-skeleton" />
-</template>
-
 <script setup lang="ts">
-const isSsr = import.meta.env.SSR
+import { defineAsyncComponent, onMounted, ref } from 'vue'
+
+const mounted = ref(false)
+const ChatSurface = defineAsyncComponent(() => import('./ChatSurface.vue'))
+
+onMounted(() => {
+  mounted.value = true
+})
 </script>
+
+<template>
+  <ChatSurface v-if="mounted" />
+  <div v-else class="chat-skeleton" aria-hidden="true" />
+</template>
 ```
 
-## Roadmap
-
-Full SSR + hydration is on the post-3.0 roadmap (issues
-[#451](https://github.com/advanced-chat/advanced-chat-components/issues/451)
-and [#528](https://github.com/advanced-chat/advanced-chat-components/issues/528)).
-The work involves:
-
-- Auditing every browser-only side effect in `onMounted` /
-  `onBeforeMount`.
-- Adding hydration tests in Storybook + Playwright.
-- Documenting which DOM measurements (auto-scroll triggers,
-  intersection-observer thresholds) are inherently client-only.
-
-Until that lands, treat the components as client-only and wrap
-appropriately.
+Unlike `const isSsr = import.meta.env.SSR`, `mounted` is `false` for both the
+server render and the client's initial render. The fallback therefore hydrates
+against matching markup; the async chat module is requested only after mount.
+Keep the package imports inside `ChatSurface.vue`, and test the wrapper with the
+SSR framework and deployment adapter you ship.

@@ -5,6 +5,7 @@ import MessageReactions from './MessageReactions.vue'
 import { currentUser, sampleMessages } from './stories.fixtures.ts'
 
 const meta = {
+  title: 'Components/MessageReactions',
   component: MessageReactions,
   tags: ['autodocs'],
   args: {
@@ -26,6 +27,7 @@ export const Default: Story = {
 }
 
 export const ClickEmits: Story = {
+  name: 'Toggle a reaction',
   args: {
     'onSend-message-reaction': fn(),
   },
@@ -37,6 +39,7 @@ export const ClickEmits: Story = {
 }
 
 export const SelectionModeBubblesWithoutReacting: Story = {
+  name: 'Select a message without reacting',
   args: {
     'onSend-message-reaction': fn(),
   },
@@ -54,6 +57,7 @@ export const SelectionModeBubblesWithoutReacting: Story = {
 }
 
 export const HighlightsCurrentUserReactions: Story = {
+  name: 'Your reaction highlighted',
   args: {},
   play: async ({ canvasElement }) => {
     const pills = canvasElement.querySelectorAll('.acc-reaction-me')
@@ -62,6 +66,7 @@ export const HighlightsCurrentUserReactions: Story = {
 }
 
 export const HiddenWhenDeleted: Story = {
+  name: 'Deleted message',
   args: {
     message: { ...sampleMessages[2]!, deleted: true },
   },

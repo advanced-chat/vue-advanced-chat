@@ -5,6 +5,7 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import AudioControl from './AudioControl.vue'
 
 const meta = {
+  title: 'Components/AudioControl',
   component: AudioControl,
   tags: ['autodocs'],
   args: {
@@ -36,6 +37,7 @@ export const Default: Story = {
 }
 
 export const MouseDownEmitsZeroLineHead: Story = {
+  name: 'Seek to the beginning',
   args: {
     'onChange-linehead': fn(),
   },
@@ -49,6 +51,7 @@ export const MouseDownEmitsZeroLineHead: Story = {
 }
 
 export const DragMovesLineHead: Story = {
+  name: 'Drag to seek',
   args: {
     'onChange-linehead': fn(),
   },
@@ -66,6 +69,7 @@ export const DragMovesLineHead: Story = {
 }
 
 export const KeyboardSeeks: Story = {
+  name: 'Seek with the keyboard',
   args: {
     'onChange-linehead': fn(),
   },
@@ -82,6 +86,7 @@ export const KeyboardSeeks: Story = {
 }
 
 export const HoverEmitsHoverFlag: Story = {
+  name: 'Hover over audio progress',
   args: {
     'onHover-audio-progress': fn(),
   },
@@ -95,6 +100,7 @@ export const HoverEmitsHoverFlag: Story = {
 }
 
 export const SelectionModeBlocksScrub: Story = {
+  name: 'Audio controls while selecting',
   args: {
     messageSelectionEnabled: true,
     'onChange-linehead': fn(),
@@ -111,6 +117,7 @@ export const SelectionModeBlocksScrub: Story = {
 }
 
 export const UnmountDuringDragRemovesDocumentListeners: Story = {
+  name: 'Remove audio while seeking',
   args: {
     'onChange-linehead': fn(),
   },

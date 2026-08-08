@@ -1,15 +1,18 @@
 # Releasing `@advanced-chat/components`
 
-This document defines the release path for the V3 rewrite on the `develop` branch.
+This document defines the release path for V3 on the default `main` branch.
 
 The release tracks are intentionally separate: `vue-advanced-chat@2.1.2` is the
 stable v2 package, while this tree is the pre-GA
-`@advanced-chat/components@3.0.0-alpha.5` line. Do not describe an alpha as the
-stable replacement or move the v2 `latest` tag as part of a V3 prerelease.
+`@advanced-chat/components@3.0.0-rc.1` line. Do not describe a release candidate
+as the stable replacement or modify the separate `vue-advanced-chat` package's
+`latest` tag as part of a V3 prerelease.
 
 ## Trusted Publishing Setup
 
-Configure npm trusted publishing for the exact GitHub Actions workflow in this repository before the first live release.
+Configure npm trusted publishing for the exact GitHub Actions workflow in this
+repository before the next release. The historical alpha.0 publication predates
+this workflow.
 
 - npm package: `@advanced-chat/components`
 - GitHub organization or user: `advanced-chat`
@@ -30,8 +33,8 @@ After trusted publishing is working:
 
 ## Release Preconditions
 
-- merge only from reviewed, green commits on `develop`
-- ensure `package.json` version already matches the intended tag, for example `3.0.0-alpha.1`
+- merge only reviewed, green commits into `main`
+- ensure `package.json` version already matches the intended tag, for example `3.0.0-rc.1`
 - ensure the local and CI runtime meets npm trusted publishing minimums:
   - Node `22.14.0` or newer
   - npm `11.5.1` or newer
@@ -60,19 +63,25 @@ npm run verify:pack
 
 ## Version And Tag Rules
 
-- V3 prereleases should use semver prerelease versions such as `3.0.0-alpha.1`
-- the Git tag must match `package.json` exactly with a `v` prefix, for example `v3.0.0-alpha.1`
+- V3 prereleases use SemVer prerelease versions such as `3.0.0-rc.1`
+- the Git tag must match `package.json` exactly with a `v` prefix, for example `v3.0.0-rc.1`
 - the release workflow publishes from immutable tags only; do not publish from a branch tip
+- prerelease tags publish to npm `next`; stable tags publish to npm `latest`
 
 ## Standard Release Flow
 
-1. Update `package.json` to the intended V3 version and land the change on `develop`.
+1. Update `package.json` and `CHANGELOG.md` to the intended V3 version and land
+   the reviewed change on `main`.
 2. Verify the exact release commit locally with `npm ci`, `npm run verify`, and `npm run verify:pack`.
-3. Create and push the exact tag, for example `v3.0.0-alpha.1`.
-4. Run the `Release Package` GitHub Actions workflow with:
-   - `release_ref`: the exact tag
-   - `npm_dist_tag`: `next` for prereleases unless there is an explicit release decision to use another tag
-5. Confirm the workflow completed successfully and that the published npm version, dist-tag, provenance metadata, and npm trusted publisher details match the intended release.
+3. Create and push only the exact tag, for example
+   `git tag v3.0.0-rc.1 && git push origin v3.0.0-rc.1`.
+4. The tag push starts `Release Package`; the workflow validates the tag and
+   derives the npm dist-tag from the package version.
+5. Confirm the workflow completed successfully and that the published npm
+   version, dist-tag, provenance metadata, and trusted publisher match the
+   intended release.
+6. Confirm the workflow created the matching GitHub Release and marked
+   prerelease versions as prereleases.
 
 ## Release Checklist
 
@@ -84,12 +93,14 @@ npm run verify:pack
 - `Release Package` workflow ran from that tag
 - npm package published with provenance through GitHub OIDC trusted publishing
 - npm package page shows provenance for the published release
-- changelog or release notes captured in the repo or release record used for the publication
+- matching GitHub Release exists with generated or curated release notes
 - public docs state stable v2 and prerelease V3 status accurately
 - migration/parity records list deliberate removals and remaining limits
 
 ## Rollback And Follow-Up
 
-- if the workflow fails before `npm publish`, fix the issue on `develop`, retag from a new commit, and rerun from the new immutable tag
+- if the workflow fails before `npm publish`, fix the issue on `main`, bump to a
+  new prerelease version, and create a new matching tag; never move or reuse the
+  failed tag
 - if the package publishes incorrectly, do not overwrite the version; publish a new corrective version
 - if trusted publishing setup is missing, stop and fix the GitHub-to-npm publishing configuration before retrying

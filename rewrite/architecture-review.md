@@ -2,7 +2,7 @@
 
 > Historical audit only. This review records the state and recommendations at
 > `3.0.0-alpha.1`; its words such as "today", "current", "missing", and
-> "incomplete" do not describe the `3.0.0-alpha.5` working tree. Pagination,
+> "incomplete" do not describe the `3.0.0-rc.1` working tree. Pagination,
 > auto-scroll, event renames, action constants, type exports, Tailwind removal,
 > click-outside replacement, strict utility typing, and the public composables
 > subsequently landed. Use [`parity-checklist.md`](./parity-checklist.md) for

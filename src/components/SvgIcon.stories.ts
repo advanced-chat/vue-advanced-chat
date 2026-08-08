@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import SvgIcon from './SvgIcon.vue'
 
 const meta = {
+  title: 'Components/SvgIcon',
   component: SvgIcon,
   tags: ['autodocs'],
   argTypes: {

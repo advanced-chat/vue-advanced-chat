@@ -5,6 +5,7 @@ import { h } from 'vue'
 import ChatEmojis from './ChatEmojis.vue'
 
 const meta = {
+  title: 'Components/ChatEmojis',
   component: ChatEmojis,
   tags: ['autodocs'],
   args: {
@@ -45,6 +46,7 @@ export const Empty: Story = {
 }
 
 export const ClickEmits: Story = {
+  name: 'Choose an emoji',
   args: {
     'onSelect-emoji': fn(),
   },

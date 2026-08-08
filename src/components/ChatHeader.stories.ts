@@ -3,16 +3,19 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 
 import ChatHeader from './ChatHeader.vue'
 
-import users from '../../.test/users.json' with { type: 'json' }
 import chats from '../../.test/chats.json' with { type: 'json' }
 import type { Chat } from '../models/index.ts'
+import { sampleUsers, storyPhotoUrl } from './stories.fixtures.ts'
+
+const storyChat = { ...(chats[0] as Chat), avatar: storyPhotoUrl }
 
 const meta = {
+  title: 'Components/ChatHeader',
   component: ChatHeader,
   tags: ['autodocs'],
   args: {
-    currentUser: users[0]!,
-    chat: chats[0] as Chat,
+    currentUser: sampleUsers[0]!,
+    chat: storyChat,
   },
 } satisfies Meta<typeof ChatHeader>
 
@@ -44,6 +47,7 @@ export const Standalone: Story = {
 }
 
 export const ChatInfoClickEmits: Story = {
+  name: 'Open chat details',
   args: {
     chatInfoEnabled: true,
     'onShow-chat-info': fn(),
@@ -57,6 +61,7 @@ export const ChatInfoClickEmits: Story = {
 }
 
 export const MenuActionHandler: Story = {
+  name: 'Choose a header action',
   args: {
     actions: [
       { id: 'archive', label: 'Archive' },
@@ -109,8 +114,8 @@ export const TypingIndicator: Story = {
     chat: {
       id: '1',
       name: 'Group',
-      users: [users[0]! as never, users[1]! as never, users[2]! as never],
-      typingUsers: [{ id: users[1]!.id }],
+      users: [sampleUsers[0]! as never, sampleUsers[1]! as never, sampleUsers[2]! as never],
+      typingUsers: [{ id: sampleUsers[1]!.id }],
     } as Chat,
   },
   play: async ({ canvasElement }) => {
@@ -125,7 +130,7 @@ export const OnlineStatus: Story = {
     chat: {
       id: '1',
       name: '1:1',
-      users: [users[0]! as never, users[2]! as never],
+      users: [sampleUsers[0]! as never, sampleUsers[2]! as never],
     } as Chat,
   },
   play: async ({ canvasElement }) => {

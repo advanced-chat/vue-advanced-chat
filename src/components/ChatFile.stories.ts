@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
 
 import ChatFile from './ChatFile.vue'
+import { storyDocumentUrl, storyImageUrl, storyVideoUrl } from './stories.fixtures.ts'
 
 const meta = {
+  title: 'Components/ChatFile',
   component: ChatFile,
   tags: ['autodocs'],
   args: {
@@ -12,7 +14,7 @@ const meta = {
       name: 'dashboard.png',
       type: 'image/png',
       extension: 'png',
-      url: 'https://picsum.photos/200/200',
+      url: storyImageUrl,
     },
   },
 } satisfies Meta<typeof ChatFile>
@@ -31,7 +33,7 @@ export const Video: Story = {
       name: 'clip.mp4',
       type: 'video/mp4',
       extension: 'mp4',
-      url: 'https://example.com/clip.mp4',
+      url: storyVideoUrl,
     },
   },
 }
@@ -42,12 +44,13 @@ export const Document: Story = {
       name: 'notes.pdf',
       type: 'application/pdf',
       extension: 'pdf',
-      url: 'https://example.com/notes.pdf',
+      url: storyDocumentUrl,
     },
   },
 }
 
 export const RemoveEmits: Story = {
+  name: 'Remove attachment',
   args: {
     'onRemove-file': fn(),
   },
@@ -61,12 +64,13 @@ export const RemoveEmits: Story = {
 }
 
 export const LoadingShowsLoader: Story = {
+  name: 'Uploading an attachment',
   args: {
     file: {
       name: 'uploading.png',
       type: 'image/png',
       extension: 'png',
-      url: 'https://picsum.photos/200/200',
+      url: storyImageUrl,
       loading: true,
     },
   },

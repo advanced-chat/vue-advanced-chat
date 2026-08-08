@@ -5,6 +5,7 @@ import ChatMessage from './ChatMessage.vue'
 import { currentUser, messageActions, sampleMessages, sampleUsers } from './stories.fixtures.ts'
 
 const meta = {
+  title: 'Components/ChatMessage',
   component: ChatMessage,
   tags: ['autodocs'],
   args: {
@@ -35,6 +36,7 @@ export const NewMessageDivider: Story = {
 }
 
 export const NewMessageDividerHidden: Story = {
+  name: 'Previously read messages',
   args: {
     message: { ...sampleMessages[2]!, unread: true },
     showNewMessagesDivider: false,

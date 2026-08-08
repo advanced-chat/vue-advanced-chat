@@ -1,7 +1,7 @@
 # V2 Feature Catalog
 
-Reference inventory of the stable v2 `2.1.2` (`main`) component as published. Built
-from the v2 README and the source on `main`. Used as the parity bar
+Reference inventory of the stable v2 `2.1.2` (`v2`) component as published. Built
+from the v2 README and the source now preserved on `v2`. Used as the parity bar
 for V3.
 
 This document is effectively frozen — it describes what v2 ships, not

@@ -26,13 +26,85 @@ describe('useAutocomplete', () => {
     dispose()
   })
 
-  it('resets the active index when the item list changes length', async () => {
+  it('resets the active index when a replacement item list changes length', async () => {
     const items = ref(['a', 'b', 'c'])
     const { result, dispose } = runScope(() => useAutocomplete({ items }))
     result.setActiveIndex(2)
     items.value = ['x']
     await nextTick()
     expect(result.activeIndex.value).toBe(0)
+    dispose()
+  })
+
+  it('preserves a valid active index when a replacement item list has the same length', async () => {
+    const items = ref(['a', 'b', 'c'])
+    const { result, dispose } = runScope(() => useAutocomplete({ items }))
+
+    result.setActiveIndex(2)
+    items.value = ['x', 'y', 'z']
+    await nextTick()
+
+    expect(result.activeIndex.value).toBe(2)
+    dispose()
+  })
+
+  it('resets the active index for in-place push and splice length changes', async () => {
+    const items = ref(['a', 'b', 'c'])
+    const { result, dispose } = runScope(() => useAutocomplete({ items }))
+
+    result.setActiveIndex(2)
+    items.value.push('d')
+    await nextTick()
+    expect(result.activeIndex.value).toBe(0)
+
+    result.setActiveIndex(3)
+    items.value.splice(1, 2)
+    await nextTick()
+    expect(result.activeIndex.value).toBe(0)
+
+    items.value.splice(0)
+    await nextTick()
+    expect(result.activeIndex.value).toBe(null)
+
+    dispose()
+  })
+
+  it('navigates and commits against the current list after an in-place length change', async () => {
+    const items = ref(['a', 'b'])
+    const navSignal = ref<number | null>(null)
+    const selectSignal = ref<boolean | null>(null)
+    const onCommit = vi.fn()
+    const { result, dispose } = runScope(() =>
+      useAutocomplete({ items, navSignal, selectSignal, onCommit }),
+    )
+
+    result.setActiveIndex(1)
+    items.value.push('c')
+    await nextTick()
+    expect(result.activeIndex.value).toBe(0)
+
+    navSignal.value = 1
+    await nextTick()
+    expect(result.activeIndex.value).toBe(1)
+
+    selectSignal.value = true
+    await nextTick()
+    expect(onCommit).toHaveBeenCalledOnce()
+    expect(onCommit).toHaveBeenCalledWith('b')
+
+    dispose()
+  })
+
+  it('does not traverse item objects while watching the list length', () => {
+    const readNestedValue = vi.fn(() => ({ value: 'nested' }))
+    const item = Object.defineProperty({ id: 'a' }, 'nested', {
+      enumerable: true,
+      get: readNestedValue,
+    })
+    const items = ref([item])
+    const { dispose } = runScope(() => useAutocomplete({ items }))
+
+    expect(readNestedValue).not.toHaveBeenCalled()
     dispose()
   })
 

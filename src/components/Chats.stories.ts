@@ -4,21 +4,24 @@ import { nextTick, ref } from 'vue'
 
 import Chats from './Chats.vue'
 
-import users from '../../.test/users.json' with { type: 'json' }
 import chats from '../../.test/chats.json' with { type: 'json' }
 import type { Chat } from '../models/index.ts'
+import { sampleUsers, storyPhotoUrl } from './stories.fixtures.ts'
+
+const storyChats = (chats as Chat[]).map((chat) => ({ ...chat, avatar: storyPhotoUrl }))
 
 const meta = {
+  title: 'Components/Chats',
   component: Chats,
   tags: ['autodocs'],
   parameters: {
     height: '600px',
   },
   args: {
-    currentUser: users[0],
-    chats: chats as Chat[],
+    currentUser: sampleUsers[0],
+    chats: storyChats,
     chatsLoaded: true,
-    chat: chats[0] as Chat,
+    chat: storyChats[0] as Chat,
   },
 } satisfies Meta<typeof Chats>
 
@@ -63,6 +66,7 @@ export const WithActions: Story = {
 }
 
 export const SearchFiltersList: Story = {
+  name: 'Search conversations',
   args: {
     'onSearch-chat': fn(),
   },
@@ -86,6 +90,7 @@ export const SearchFiltersList: Story = {
 }
 
 export const LocalSearchEmpty: Story = {
+  name: 'No search results',
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const searchInput = canvas.getByRole('searchbox')
@@ -98,6 +103,7 @@ export const LocalSearchEmpty: Story = {
 }
 
 export const CustomSearchKeepsList: Story = {
+  name: 'Host-managed search results',
   args: {
     customSearchEnabled: true,
     'onSearch-chat': fn(),
@@ -115,6 +121,7 @@ export const CustomSearchKeepsList: Story = {
 }
 
 export const ClickOpensChat: Story = {
+  name: 'Open a conversation',
   args: {
     'onOpen-chat': fn(),
   },
@@ -129,6 +136,7 @@ export const ClickOpensChat: Story = {
 }
 
 export const ChatActionHandlerEmits: Story = {
+  name: 'Choose a chat action',
   args: {
     chatActions: [{ id: 'archive', label: 'Archive' }],
     'onChat-action-handler': fn(),
@@ -146,6 +154,7 @@ export const ChatActionHandlerEmits: Story = {
 }
 
 export const AddChatEmits: Story = {
+  name: 'Start a new chat',
   args: {
     'onAdd-chat': fn(),
   },
@@ -157,8 +166,9 @@ export const AddChatEmits: Story = {
 }
 
 export const FewerThanMinimumTriggersLoadMore: Story = {
+  name: 'Load more when the list is short',
   args: {
-    chats: chats.slice(0, 1) as Chat[],
+    chats: storyChats.slice(0, 1),
     chatsLoaded: false,
     minimumVisibleChats: 5,
     'onFetch-more-chats': fn(),
@@ -173,8 +183,9 @@ export const FewerThanMinimumTriggersLoadMore: Story = {
 }
 
 export const LoadingRecovery: Story = {
+  name: 'Continue loading chats',
   args: {
-    chats: chats.slice(0, 1) as Chat[],
+    chats: storyChats.slice(0, 1),
     chatsLoaded: false,
     minimumVisibleChats: 5,
     'onFetch-more-chats': fn(),
@@ -227,8 +238,9 @@ export const LoadingRecovery: Story = {
 }
 
 export const HostAppendClearsPending: Story = {
+  name: 'Receive more chats',
   args: {
-    chats: chats.slice(0, 1) as Chat[],
+    chats: storyChats.slice(0, 1),
     chatsLoaded: false,
     minimumVisibleChats: 2,
     'onFetch-more-chats': fn(),
@@ -243,7 +255,7 @@ export const HostAppendClearsPending: Story = {
         args,
         chatList,
         supplyMoreChats: () => {
-          chatList.value = chats.slice(0, 2) as Chat[]
+          chatList.value = storyChats.slice(0, 2)
         },
       }
     },
@@ -268,6 +280,7 @@ export const HostAppendClearsPending: Story = {
 }
 
 export const StopsLoadingMoreWhenAllLoaded: Story = {
+  name: 'All chats loaded',
   args: {
     chats: [],
     chatsLoaded: true,

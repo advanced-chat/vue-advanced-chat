@@ -6,20 +6,20 @@ exposes.
 
 ## What V3 changes vs v2
 
-| Concern       | v2 (`main`, stable 2.1.2)                   | V3 (`develop`, pre-GA alpha.5)                                            |
-| ------------- | ------------------------------------------- | ------------------------------------------------------------------------- |
-| Package name  | `vue-advanced-chat`                         | `@advanced-chat/components`                                               |
-| Distribution  | Single web component, explicit `register()` | 28 typed Vue SFCs plus bundled auto-registering web component             |
-| Encapsulation | Custom Element + Shadow DOM                 | Light DOM for Vue and custom-element surfaces                             |
-| Props         | Arrays/objects commonly JSON-stringified    | Native typed values; custom-element hosts assign DOM properties           |
-| Events        | Web-component custom events                 | Typed Vue events or typed direct `CustomEvent.detail`                     |
-| Slots         | String-named custom-element slots           | Native Vue slots on component surfaces                                    |
-| Bundling      | UMD + ES, CSS embedded in JS                | Component and bundled web-component builds, separate CSS entrypoints      |
-| Styling       | `styles` JSON prop, hard-coded breakpoints  | Typed CSS variables, normal CSS, container-observed primary mobile layout |
-| Theming       | `light` / `dark`                            | `light` / `dark` / reactive `auto` plus override object                   |
-| Localization  | `text-messages` prop                        | `AdvancedChatPlugin({ strings })` or web-component registration options   |
-| TypeScript    | Hand-written declaration for one component  | Per-component declarations plus typed HTMLElement/event map               |
-| Tooling       | Vite 2 + custom build                       | Vite 7, Storybook 10, Vitest browser tests                                |
+| Concern       | v2 (`v2`, stable 2.1.2)                     | V3 (`main`, pre-GA 3.0.0-rc.1)                                          |
+| ------------- | ------------------------------------------- | ----------------------------------------------------------------------- |
+| Package name  | `vue-advanced-chat`                         | `@advanced-chat/components`                                             |
+| Distribution  | Single web component, explicit `register()` | 28 typed Vue SFCs plus bundled auto-registering web component           |
+| Encapsulation | Custom Element + Shadow DOM                 | Light DOM for Vue and custom-element surfaces                           |
+| Props         | Arrays/objects commonly JSON-stringified    | Native typed values; custom-element hosts assign DOM properties         |
+| Events        | Web-component custom events                 | Typed Vue events or typed direct `CustomEvent.detail`                   |
+| Slots         | String-named custom-element slots           | Native Vue slots on component surfaces                                  |
+| Bundling      | UMD + ES, CSS embedded in JS                | Component and bundled web-component builds, separate CSS entrypoints    |
+| Styling       | `styles` JSON prop, hard-coded breakpoints  | Typed theme overrides, light DOM, container-observed mobile layout      |
+| Theming       | `light` / `dark`                            | `light` / `dark` / reactive `auto` plus override object                 |
+| Localization  | `text-messages` prop                        | `AdvancedChatPlugin({ strings })` or web-component registration options |
+| TypeScript    | Hand-written declaration for one component  | Rolled-up declarations plus typed HTMLElement/event map                 |
+| Tooling       | Vite 2 + custom build                       | Vite 7, Storybook 10, Vitest browser tests                              |
 
 ## The breaking changes
 
@@ -81,8 +81,8 @@ AdvancedChat              — Layout + Chats + Chat
 
 ### Exported types
 
-`Id`, `User`, `UserReference`, `Chat`, `ChatReference`, `Message`,
-`MessageReference`, `MessageFile`, `Action`. The `*Reference` shapes
+`Id`, `User`, `UserReference`, `ChatModel`, `ChatReference`, `MessageModel`,
+`MessageReference`, `MessageFileModel`, `Action`. The `*Reference` shapes
 exist so callers can pass minimal `{ id }` objects when full hydration
 isn't needed (e.g. `typingUsers`).
 

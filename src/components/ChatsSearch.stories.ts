@@ -5,6 +5,7 @@ import ChatsSearch from './ChatsSearch.vue'
 import { sampleChats } from './stories.fixtures.ts'
 
 const meta = {
+  title: 'Components/ChatsSearch',
   component: ChatsSearch,
   tags: ['autodocs'],
   args: {
@@ -21,6 +22,7 @@ export const Default: Story = {
 }
 
 export const TypingEmitsSearch: Story = {
+  name: 'Search as you type',
   args: {
     'onSearch-chat': fn(),
   },
@@ -36,6 +38,7 @@ export const TypingEmitsSearch: Story = {
 }
 
 export const AddChatEmits: Story = {
+  name: 'Start a new chat',
   args: {
     'onAdd-chat': fn(),
   },
@@ -48,6 +51,7 @@ export const AddChatEmits: Story = {
 }
 
 export const HiddenSearchInput: Story = {
+  name: 'Without search',
   args: {
     showSearch: false,
   },
@@ -57,6 +61,7 @@ export const HiddenSearchInput: Story = {
 }
 
 export const HiddenAddButton: Story = {
+  name: 'Without a new chat button',
   args: {
     showAddChat: false,
   },

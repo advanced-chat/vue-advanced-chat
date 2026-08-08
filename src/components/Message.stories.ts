@@ -5,6 +5,7 @@ import Message from './Message.vue'
 import { currentUser, messageActions, sampleMessages, sampleUsers } from './stories.fixtures.ts'
 
 const meta = {
+  title: 'Components/Message',
   component: Message,
   tags: ['autodocs'],
   args: {
@@ -99,6 +100,7 @@ export const Failure: Story = {
 }
 
 export const FailureClickEmits: Story = {
+  name: 'Retry a failed message',
   args: {
     message: sampleMessages[6],
     'onOpen-failed-message': fn(),
@@ -111,6 +113,7 @@ export const FailureClickEmits: Story = {
 }
 
 export const ReactionPickerEmits: Story = {
+  name: 'Choose a reaction',
   args: {
     'onSend-message-reaction': fn(),
   },
@@ -130,6 +133,7 @@ export const ReactionPickerEmits: Story = {
 }
 
 export const DropdownActionEmits: Story = {
+  name: 'Choose a message action',
   args: {
     'onMessage-action-handler': fn(),
   },
@@ -149,6 +153,7 @@ export const DropdownActionEmits: Story = {
 }
 
 export const SelectionModeClickEmits: Story = {
+  name: 'Select a message',
   args: {
     message: sampleMessages[2],
     messageSelectionEnabled: true,
@@ -164,6 +169,7 @@ export const SelectionModeClickEmits: Story = {
 }
 
 export const ExistingReactionsRender: Story = {
+  name: 'Message with reactions',
   args: {
     message: sampleMessages[2],
   },
@@ -174,6 +180,7 @@ export const ExistingReactionsRender: Story = {
 }
 
 export const ClickReactionPillEmits: Story = {
+  name: 'Toggle an existing reaction',
   args: {
     message: sampleMessages[2],
     'onSend-message-reaction': fn(),
@@ -186,6 +193,7 @@ export const ClickReactionPillEmits: Story = {
 }
 
 export const DisabledActionsHidesChip: Story = {
+  name: 'Message without actions',
   args: {
     message: { ...sampleMessages[2]!, disableActions: true, disableReactions: true },
   },

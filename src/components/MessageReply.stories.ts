@@ -2,7 +2,13 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect } from 'storybook/test'
 
 import MessageReply from './MessageReply.vue'
-import { sampleUsers } from './stories.fixtures.ts'
+import {
+  sampleUsers,
+  storyAudioUrl,
+  storyDocumentUrl,
+  storyImageUrl,
+  storyVideoUrl,
+} from './stories.fixtures.ts'
 import type { Message } from '../models/index.ts'
 
 const baseReply = {
@@ -19,6 +25,7 @@ const baseReply = {
 } satisfies Message
 
 const meta = {
+  title: 'Components/MessageReply',
   component: MessageReply,
   tags: ['autodocs'],
   args: {
@@ -51,7 +58,7 @@ export const ImageReply: Story = {
             name: 'photo.png',
             type: 'image/png',
             extension: 'png',
-            url: 'https://picsum.photos/200/200',
+            url: storyImageUrl,
           },
         ],
       },
@@ -74,7 +81,7 @@ export const VideoReply: Story = {
             name: 'clip.mp4',
             type: 'video/mp4',
             extension: 'mp4',
-            url: 'https://example.com/clip.mp4',
+            url: storyVideoUrl,
           },
         ],
       },
@@ -94,10 +101,10 @@ export const AudioReply: Story = {
         content: '',
         files: [
           {
-            name: 'voice.mp3',
-            type: 'audio/mpeg',
-            extension: 'mp3',
-            url: 'https://example.com/voice.mp3',
+            name: 'voice.wav',
+            type: 'audio/wav',
+            extension: 'wav',
+            url: storyAudioUrl,
           },
         ],
       },
@@ -120,7 +127,7 @@ export const FileReply: Story = {
             name: 'notes.pdf',
             type: 'application/pdf',
             extension: 'pdf',
-            url: 'https://example.com/notes.pdf',
+            url: storyDocumentUrl,
           },
         ],
       },

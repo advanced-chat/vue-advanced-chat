@@ -12,6 +12,7 @@ import {
 } from './stories.fixtures.ts'
 
 const meta = {
+  title: 'Components/Chat',
   component: Chat,
   tags: ['autodocs'],
   args: {
@@ -72,6 +73,7 @@ export const SelectionMode: Story = {
 }
 
 export const SelectionToolbarFiresAction: Story = {
+  name: 'Run a bulk action',
   args: {
     selectionActions: [{ id: 'delete', label: 'Delete' }],
     'onMessage-selection-action-handler': fn(),
@@ -89,6 +91,7 @@ export const SelectionToolbarFiresAction: Story = {
 }
 
 export const ReplyActionPrefillsFooter: Story = {
+  name: 'Reply to a message',
   args: {
     'onMessage-action-handler': fn(),
   },
@@ -109,6 +112,7 @@ export const ReplyActionPrefillsFooter: Story = {
 }
 
 export const EditActionPrefillsFooter: Story = {
+  name: 'Edit a message',
   args: {
     'onMessage-action-handler': fn(),
   },
@@ -133,6 +137,7 @@ export const EditActionPrefillsFooter: Story = {
 }
 
 export const MediaPreviewOpensOnImageClick: Story = {
+  name: 'Open an image preview',
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const image = canvas.getByRole('button', { name: /^Preview / })
@@ -144,6 +149,7 @@ export const MediaPreviewOpensOnImageClick: Story = {
 }
 
 export const EmptyMessagesShowsFooter: Story = {
+  name: 'Start a conversation',
   args: {
     messages: [],
     showFooter: true,
@@ -154,6 +160,7 @@ export const EmptyMessagesShowsFooter: Story = {
 }
 
 export const HiddenFooter: Story = {
+  name: 'Read-only chat',
   args: {
     showFooter: false,
   },
@@ -163,6 +170,7 @@ export const HiddenFooter: Story = {
 }
 
 export const ScrollToTopFiresFetchMessages: Story = {
+  name: 'Load earlier messages',
   args: {
     messagesLoaded: false,
     'onFetch-messages': fn(),
@@ -181,6 +189,7 @@ export const ScrollToTopFiresFetchMessages: Story = {
 }
 
 export const NoFetchWhenLoaded: Story = {
+  name: 'Message history already loaded',
   args: {
     messagesLoaded: true,
     'onFetch-messages': fn(),
@@ -193,11 +202,7 @@ export const NoFetchWhenLoaded: Story = {
   },
 }
 
-/**
- * Regression for [#513](https://github.com/advanced-chat/advanced-chat-components/issues/513):
- * setting `typingIndicatorPosition: 'composer'` moves the typing line
- * from the header (default) to a band above the textarea.
- */
+/** Shows typing activity above the composer instead of in the chat header. */
 export const TypingIndicatorAboveComposer: Story = {
   args: {
     typingIndicatorPosition: 'composer',
@@ -213,11 +218,7 @@ export const TypingIndicatorAboveComposer: Story = {
   },
 }
 
-/**
- * Regression for [#513](https://github.com/advanced-chat/advanced-chat-components/issues/513):
- * `typingIndicatorPosition: 'both'` shows the indicator in the header
- * AND above the composer at once.
- */
+/** Shows typing activity in both the chat header and above the composer. */
 export const TypingIndicatorBoth: Story = {
   args: {
     typingIndicatorPosition: 'both',
@@ -230,10 +231,7 @@ export const TypingIndicatorBoth: Story = {
   },
 }
 
-/**
- * Regression for [#513](https://github.com/advanced-chat/advanced-chat-components/issues/513):
- * `typingIndicatorPosition: 'none'` suppresses the indicator entirely.
- */
+/** Hides typing activity while users compose messages. */
 export const TypingIndicatorNone: Story = {
   args: {
     typingIndicatorPosition: 'none',
@@ -246,13 +244,9 @@ export const TypingIndicatorNone: Story = {
   },
 }
 
-/**
- * Regression for the GA `autoScroll` policy: setting `onMount: false`
- * prevents the post-mount auto-scroll, so the message list stays at
- * the top of the scroll container instead of jumping to the latest
- * message.
- */
+/** Keeps the current message-list position when the chat first opens. */
 export const AutoScrollOnMountSuppressed: Story = {
+  name: 'Keep position when chat opens',
   args: {
     autoScroll: { onMount: false },
   },
@@ -267,6 +261,7 @@ export const AutoScrollOnMountSuppressed: Story = {
 }
 
 export const NoFetchWhileLoadingMessages: Story = {
+  name: 'Loading message history',
   args: {
     loadingMessages: true,
     messages: [],

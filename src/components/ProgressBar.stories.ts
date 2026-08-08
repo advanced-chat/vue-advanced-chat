@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import ProgressBar from './ProgressBar.vue'
 
 const meta = {
+  title: 'Components/ProgressBar',
   component: ProgressBar,
   tags: ['autodocs'],
   args: {

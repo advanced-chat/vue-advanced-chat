@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
 
 import ChatFiles from './ChatFiles.vue'
+import { storyDocumentUrl, storyImageUrl } from './stories.fixtures.ts'
 
 const meta = {
+  title: 'Components/ChatFiles',
   component: ChatFiles,
   tags: ['autodocs'],
   args: {
@@ -12,13 +14,13 @@ const meta = {
         name: 'dashboard.png',
         type: 'image/png',
         extension: 'png',
-        url: 'https://picsum.photos/200/200',
+        url: storyImageUrl,
       },
       {
         name: 'notes.pdf',
         type: 'application/pdf',
         extension: 'pdf',
-        url: 'https://example.com/notes.pdf',
+        url: storyDocumentUrl,
       },
     ],
   },
@@ -43,6 +45,7 @@ export const Empty: Story = {
 }
 
 export const RemoveFile: Story = {
+  name: 'Remove one attachment',
   args: {
     'onRemove-file': fn(),
   },
@@ -54,6 +57,7 @@ export const RemoveFile: Story = {
 }
 
 export const ResetEmits: Story = {
+  name: 'Remove all attachments',
   args: {
     'onReset-message': fn(),
   },

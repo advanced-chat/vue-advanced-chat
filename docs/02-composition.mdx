@@ -20,6 +20,11 @@ single mount. Use this when:
   the conversation, or wrap either in your own chrome.
 - You're prototyping or shipping a "good enough" surface.
 
+The examples on this page are intentionally partial template excerpts. They
+assume the named components are imported from `@advanced-chat/components` and
+that the props and handlers are defined in `<script setup>` as shown in the
+[Quick Start](?path=/docs/docs-quick-start--docs).
+
 ```vue
 <AdvancedChat
   :current-user="currentUser"
@@ -34,7 +39,7 @@ single mount. Use this when:
 />
 ```
 
-`AdvancedChat` does **not** forward slots to `Chats` / `Chat`. If
+`AdvancedChat` does **not** forward slots to `Chats` or `Chat`. If
 you need slot composition, drop down a layer.
 
 ### 2. `Chats` + `Chat`
@@ -133,6 +138,6 @@ state, rather than restyling a built-in component:
 - `useMessageSelection` — bulk-select for chats, files, anything.
 - `useReplyEdit` — your own composer with reply / edit pre-fill.
 - `useInfiniteScroll` — pagination on lists that aren't messages.
-- `useLocalSearch` — filter any id-bearing collection.
+- `useLocalSearch` — filter any collection by a selected field.
 
 See **Composables** in the sidebar.

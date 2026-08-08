@@ -3,12 +3,14 @@ import { ref } from 'vue'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 
 import AudioPlayer from './AudioPlayer.vue'
+import audioUrl from './story-assets/sample-audio.wav?url&no-inline'
 
 const meta = {
+  title: 'Components/AudioPlayer',
   component: AudioPlayer,
   tags: ['autodocs'],
   args: {
-    src: 'https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3',
+    src: audioUrl,
     message: { id: 'sample-1' },
   },
 } satisfies Meta<typeof AudioPlayer>
@@ -21,6 +23,9 @@ const mockAudio = (
   audio: HTMLAudioElement,
   { duration = 100, rejectPlay = false }: { duration?: number; rejectPlay?: boolean } = {},
 ) => {
+  audio.removeAttribute('src')
+  audio.load()
+
   let currentTime = 0
   let paused = true
   const play = fn(async () => {
@@ -70,6 +75,7 @@ export const Default: Story = {
 }
 
 export const PlayButtonIsRendered: Story = {
+  name: 'Play control',
   args: {},
   play: async ({ canvasElement }) => {
     expect(canvasElement.querySelector('#acc-icon-audio-play')).toBeTruthy()
@@ -77,6 +83,7 @@ export const PlayButtonIsRendered: Story = {
 }
 
 export const SeekIncludesZero: Story = {
+  name: 'Seek to the start',
   args: {},
   play: async ({ canvasElement }) => {
     const audio = canvasElement.querySelector('audio') as HTMLAudioElement
@@ -99,6 +106,7 @@ export const SeekIncludesZero: Story = {
 }
 
 export const RejectedPlayStaysPaused: Story = {
+  name: 'Blocked playback',
   args: {},
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -114,15 +122,16 @@ export const RejectedPlayStaysPaused: Story = {
 }
 
 export const SourceChangeResetsProgress: Story = {
+  name: 'Changing audio source',
   render: (args) => ({
     components: { AudioPlayer },
     setup() {
       const source = ref<string | null | undefined>(args.src)
-      return { args, source }
+      return { args, audioUrl, source }
     },
     template: `
       <AudioPlayer v-bind="args" :src="source" />
-      <button type="button" @click="source = 'replacement-audio.mp3'">Change source</button>
+      <button type="button" @click="source = audioUrl + '#replacement'">Change source</button>
     `,
   }),
   play: async ({ canvasElement }) => {
@@ -136,7 +145,7 @@ export const SourceChangeResetsProgress: Story = {
     await waitFor(() => expect(bar.getAttribute('aria-valuenow')).toBe('50'))
 
     await userEvent.click(canvas.getByRole('button', { name: 'Change source' }))
-    await waitFor(() => expect(audio.getAttribute('src')).toBe('replacement-audio.mp3'))
+    await waitFor(() => expect(audio.getAttribute('src')).toBe(`${audioUrl}#replacement`))
     expect(audio.currentTime).toBe(0)
     await waitFor(() => expect(bar.getAttribute('aria-valuenow')).toBe('0'))
     expect(media.pause).toHaveBeenCalled()
@@ -144,6 +153,7 @@ export const SourceChangeResetsProgress: Story = {
 }
 
 export const UnmountPausesAndRemovesListeners: Story = {
+  name: 'Removing a playing audio message',
   render: (args) => ({
     components: { AudioPlayer },
     setup() {
@@ -177,6 +187,7 @@ export const UnmountPausesAndRemovesListeners: Story = {
 }
 
 export const NoSrc: Story = {
+  name: 'Unavailable audio',
   args: {
     src: null,
   },

@@ -6,8 +6,7 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 `ChatFooter` lets the user attach files to a pending message
 without doing any uploading itself. Each pending file lands in the
-`send-message` payload as a `ChatFileItem` with three URL-shaped
-fields:
+`send-message` payload as a `ChatFileItem` with three upload-related fields:
 
 | Field      | Set by the library | Meaning                                                                              |
 | ---------- | ------------------ | ------------------------------------------------------------------------------------ |
@@ -33,7 +32,34 @@ send, the host uploads each blob in parallel, and writes a single
 message document with the resolved URLs.
 
 ```ts
-import type { ChatFileItem, MessageFileModel, MessageModel, User } from '@advanced-chat/components'
+import type {
+  ChatFileItem,
+  MessageFileModel,
+  MessageModel,
+  MessageSummary,
+  User,
+} from '@advanced-chat/components'
+
+interface MessageWrite {
+  content: string
+  files: MessageFileModel[]
+  mentionedUserIds: User['id'][]
+  reply?: MessageSummary
+}
+
+declare function uploadToStorage(blob: Blob, name: string): Promise<string>
+declare function writeMessage(input: MessageWrite): Promise<MessageModel>
+
+const toReplySummary = (message: MessageModel): MessageSummary => ({
+  id: message.id,
+  sender: message.sender,
+  createdAt: message.createdAt,
+  ...(message.content === undefined ? {} : { content: message.content }),
+  ...(message.status === undefined ? {} : { status: message.status }),
+  ...(message.deleted === undefined ? {} : { deleted: message.deleted }),
+  ...(message.edited === undefined ? {} : { edited: message.edited }),
+  ...(message.files === undefined ? {} : { files: message.files }),
+})
 
 const onSend = async (payload: {
   content: string
@@ -41,41 +67,56 @@ const onSend = async (payload: {
   mentionedUsers: User[]
   reply?: MessageModel | null
 }) => {
-  // 1. Upload each pending file (in parallel).
-  const uploaded = await Promise.all(
-    payload.files.map(async (item): Promise<MessageFileModel> => {
-      if (!item.blob) {
-        // Already-uploaded files (e.g. from a forwarded message) come through unchanged.
-        return item
-      }
-      const url = await uploadToStorage(item.blob, item.name)
-      return {
-        name: item.name,
-        type: item.type,
-        extension: item.extension,
-        url,
-        size: item.blob.size,
-      }
-    }),
+  const localUrls = new Set(
+    payload.files.map((file) => file.localUrl).filter((url): url is string => Boolean(url)),
   )
 
-  // 2. Write the message with the resolved URLs.
-  await writeMessage({
-    content: payload.content,
-    files: uploaded,
-    reply: payload.reply ? { id: payload.reply.id } : undefined,
-  })
+  try {
+    // 1. Upload each pending file in parallel and persist only serializable metadata.
+    const uploaded = await Promise.all(
+      payload.files.map(async (item): Promise<MessageFileModel> => {
+        const url = item.blob ? await uploadToStorage(item.blob, item.name) : item.url
 
-  // 3. The send payload transferred object-URL ownership to this handler.
-  for (const localUrl of new Set(payload.files.map((file) => file.localUrl).filter(Boolean))) {
-    URL.revokeObjectURL(localUrl!)
+        if (url.startsWith('blob:')) {
+          throw new Error(`Cannot persist the local URL for ${item.name}`)
+        }
+
+        const uploadedFile: MessageFileModel = {
+          name: item.name,
+          type: item.type,
+          extension: item.extension,
+          url,
+        }
+        const size = item.blob?.size ?? item.size
+        if (size !== undefined) uploadedFile.size = size
+        if (item.duration !== undefined) uploadedFile.duration = item.duration
+        if (item.previewable !== undefined) uploadedFile.previewable = item.previewable
+        return uploadedFile
+      }),
+    )
+
+    // 2. Write the message only after every upload succeeds.
+    await writeMessage({
+      content: payload.content,
+      files: uploaded,
+      mentionedUserIds: payload.mentionedUsers.map((user) => user.id),
+      ...(payload.reply ? { reply: toReplySummary(payload.reply) } : {}),
+    })
+  } finally {
+    // Ownership transferred to this handler even when an upload or write fails.
+    localUrls.forEach((url) => URL.revokeObjectURL(url))
   }
 }
 ```
 
-`uploadToStorage` is whatever your backend exposes — Firebase
-Storage, S3 presigned PUT, a `multipart/form-data` POST to your
-server, etc.
+`uploadToStorage` is whatever your backend exposes: Firebase Storage, an S3
+presigned PUT, a `multipart/form-data` POST to your server, etc. Authorize the
+conversation and file type/size on the server; never rely on `accept` or the
+client-provided chat ID. For multi-file sends, use staged uploads or delete
+already-uploaded objects when a later upload or message write fails.
+`writeMessage` should be an authenticated endpoint that discards non-member
+mention IDs and verifies the replied-to message belongs to the same conversation;
+do not trust the submitted reply summary as canonical data.
 
 ## Optimistic uploads
 
@@ -83,12 +124,56 @@ If you want the message to appear immediately while uploads
 continue in the background:
 
 ```ts
+import { ref } from 'vue'
+import type {
+  ChatFileItem,
+  MessageFileModel,
+  MessageModel,
+  MessageSummary,
+  User,
+} from '@advanced-chat/components'
+
+declare function uploadWithProgress(
+  blob: Blob,
+  onProgress: (progress: number) => void,
+): Promise<string>
+declare function writeMessage(input: {
+  content: string
+  files: MessageFileModel[]
+  mentionedUserIds: User['id'][]
+  reply?: MessageSummary
+}): Promise<MessageModel>
+
+const toReplySummary = (message: MessageModel): MessageSummary => ({
+  id: message.id,
+  sender: message.sender,
+  createdAt: message.createdAt,
+  ...(message.content === undefined ? {} : { content: message.content }),
+  ...(message.status === undefined ? {} : { status: message.status }),
+  ...(message.deleted === undefined ? {} : { deleted: message.deleted }),
+  ...(message.edited === undefined ? {} : { edited: message.edited }),
+  ...(message.files === undefined ? {} : { files: message.files }),
+})
+
+const currentUser: User = {
+  id: 'me',
+  name: 'Alice',
+  status: { state: 'online' },
+}
+const messages = ref<MessageModel[]>([])
+
 const onSend = async (payload: {
   content: string
   files: ChatFileItem[]
   mentionedUsers: User[]
+  reply?: MessageModel | null
 }) => {
   const optimisticId = `pending-${Date.now()}`
+  const mentionedUserIds = payload.mentionedUsers.map((user) => user.id)
+  const reply = payload.reply ? toReplySummary(payload.reply) : undefined
+  const localUrls = new Set(
+    payload.files.map((file) => file.localUrl).filter((url): url is string => Boolean(url)),
+  )
   const localFiles: MessageFileModel[] = payload.files.map((f) => ({
     name: f.name,
     type: f.type,
@@ -107,42 +192,89 @@ const onSend = async (payload: {
       createdAt: new Date().toISOString(),
       status: 'sending',
       files: localFiles,
+      ...(reply === undefined ? {} : { reply }),
     },
   ]
 
-  // 2. Upload in the background, mutating the message's progress / url as you go.
-  for (let i = 0; i < payload.files.length; i++) {
-    const file = payload.files[i]!
-    if (!file.blob) continue
-    const url = await uploadWithProgress(file.blob, (pct) => {
-      // mutate progress on the optimistic message
-      const msg = messages.value.find((m) => m.id === optimisticId)
-      if (msg?.files?.[i]) msg.files[i]!.progress = pct
-    })
-    const msg = messages.value.find((m) => m.id === optimisticId)
-    if (msg?.files?.[i]) {
-      msg.files[i]!.url = url
-      msg.files[i]!.progress = 100
-    }
-    if (file.localUrl) URL.revokeObjectURL(file.localUrl)
+  const updateFile = (index: number, patch: Partial<MessageFileModel>) => {
+    messages.value = messages.value.map((message) =>
+      message.id === optimisticId
+        ? {
+            ...message,
+            files: message.files?.map((file, fileIndex) =>
+              fileIndex === index ? { ...file, ...patch } : file,
+            ),
+          }
+        : message,
+    )
   }
 
-  // 3. Persist the now-uploaded message; replace the optimistic one with the server copy.
-  const persisted = await writeMessage({ … })
-  messages.value = messages.value.map((m) => (m.id === optimisticId ? persisted : m))
+  try {
+    // 2. Upload in the background and replace each local URL as it completes.
+    for (let index = 0; index < payload.files.length; index++) {
+      const file = payload.files[index]!
+      if (!file.blob) {
+        if (file.url.startsWith('blob:')) {
+          throw new Error(`Cannot persist the local URL for ${file.name}`)
+        }
+        updateFile(index, { progress: undefined })
+        continue
+      }
+
+      const url = await uploadWithProgress(file.blob, (progress) => {
+        updateFile(index, { progress })
+      })
+      updateFile(index, { url, progress: undefined })
+    }
+
+    // 3. Persist serializable file metadata and replace the optimistic record.
+    const optimistic = messages.value.find((message) => message.id === optimisticId)
+    const files = (optimistic?.files ?? []).map(({ progress: _progress, ...file }) => file)
+    const persisted = await writeMessage({
+      content: payload.content,
+      files,
+      mentionedUserIds,
+      ...(reply === undefined ? {} : { reply }),
+    })
+    messages.value = messages.value.map((message) =>
+      message.id === optimisticId ? persisted : message,
+    )
+  } catch (error) {
+    // This example removes the failed preview. A retry UI may retain it, but then
+    // it must retain and later revoke the object URLs too.
+    messages.value = messages.value.filter((message) => message.id !== optimisticId)
+    throw error
+  } finally {
+    localUrls.forEach((url) => URL.revokeObjectURL(url))
+  }
 }
 ```
 
-`MessageFile.progress` is a 0-100 number rendered as a progress
-bar overlay on `MessageFile`. Setting it to `100` (or undefined)
-hides the bar.
+The optimistic record preserves tokenized mention content and the reply summary,
+while `mentionedUserIds` remains captured beside it until final persistence. Both
+examples omit the `reply` field when the event supplies `null` or `undefined`;
+they do not write `reply: null`.
+
+`MessageFile.progress` is clamped to a 0-100 number and rendered as a progress
+bar overlay on image files. A value of `100` still renders the overlay; remove
+the field or set it to `undefined` after the upload completes.
 
 ## Constraining uploads
 
 `ChatFooter` ships two opt-in caps:
 
 ```vue
-<AdvancedChat :max-files="5" :max-file-size="10 * 1024 * 1024" @invalid-file="onRejected" />
+<script setup lang="ts">
+import { AdvancedChat } from '@advanced-chat/components'
+
+const onRejected = ({ file, reason }: { file: File; reason: 'size' | 'count' }) => {
+  console.warn(file.name, reason)
+}
+</script>
+
+<template>
+  <AdvancedChat :max-files="5" :max-file-size="10 * 1024 * 1024" @invalid-file="onRejected" />
+</template>
 ```
 
 | Prop                   | Behavior                                                                                                         |
@@ -150,18 +282,9 @@ hides the bar.
 | `maxFiles?: number`    | Max pending files in the composer at once. Files past the cap don't enter `files.value`. `0` (default) disables. |
 | `maxFileSize?: number` | Max bytes per file. `0` (default) disables.                                                                      |
 
-Rejected files are emitted as `invalid-file: { file: File; reason: 'size' \| 'count' }`
-so the host can surface its own error UI:
-
-```ts
-const onRejected = ({ file, reason }: { file: File; reason: 'size' | 'count' }) => {
-  toast.error(
-    reason === 'size'
-      ? `${file.name} is too large (max 10 MB).`
-      : `Too many files attached (max 5).`,
-  )
-}
-```
+Rejected files are emitted as
+`invalid-file: { file: File; reason: 'size' | 'count' }` so the host can surface
+its own error UI, as shown by `onRejected` above.
 
 ## MIME-type filter
 
@@ -169,28 +292,40 @@ The `accept` prop is forwarded directly to the underlying
 `<input type="file">`. Use the standard HTML accept syntax:
 
 ```vue
-<AdvancedChat accept="image/*,application/pdf" />
-<AdvancedChat accept=".png,.jpg,.jpeg,.gif" />
+<script setup lang="ts">
+import { AdvancedChat } from '@advanced-chat/components'
+</script>
+
+<template>
+  <AdvancedChat accept="image/*,application/pdf" />
+  <AdvancedChat accept=".png,.jpg,.jpeg,.gif" />
+</template>
 ```
 
-Note: browsers treat `accept` as a hint, not a hard validation.
-For real enforcement, also check `file.type` (or do server-side
-validation) — this is the standard HTML behavior, not a library
-quirk.
+Browsers treat `accept` as a hint, not hard validation. Client checks can improve
+feedback, but authoritative MIME sniffing, size limits, malware scanning, file
+name handling, and access control belong on the server.
 
 ## Mobile capture
 
 ```vue
-<!-- Photo from the rear camera. -->
-<AdvancedChat capture="environment" accept="image/*" />
+<script setup lang="ts">
+import { AdvancedChat } from '@advanced-chat/components'
+</script>
 
-<!-- Photo from the front (selfie) camera. -->
-<AdvancedChat capture="user" accept="image/*" />
+<template>
+  <!-- Photo from the rear camera. -->
+  <AdvancedChat capture="environment" accept="image/*" />
+
+  <!-- Photo from the front (selfie) camera. -->
+  <AdvancedChat capture="user" accept="image/*" />
+</template>
 ```
 
-The empty default (`capture: ''`) lets the OS picker show its
-normal file-browser UI; setting `capture` opens the camera / mic
-directly on mobile.
+The empty default (`capture: ''`) leaves the choice to the normal picker.
+`capture` requests a preferred camera or microphone capture mode, but behavior
+varies by browser, device, MIME filter, and user permission; it does not
+guarantee direct capture.
 
 ## Cleanup contract
 

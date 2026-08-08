@@ -4,15 +4,17 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 # Backend Integration
 
-`@advanced-chat/components` is backend-agnostic — the components
-accept data via props and emit events when the user takes an
-action. You own the data layer; the library never fetches or
-persists anything.
+`@advanced-chat/components` is backend-agnostic. The components accept data via
+props and emit events when the user takes an action. You own the data layer; the
+library never fetches, authorizes, or persists anything.
 
-This recipe shows the wiring against a Firebase Firestore backend
-because that's the most common ask, but the same shape works for
-any REST API, GraphQL backend, custom WebSocket server, or
-in-memory mock.
+This recipe uses Firebase Firestore to demonstrate the boundary. It is
+**illustrative, not a drop-in production backend**: adapt the schema, validation,
+indexes, error states, offline policy, and rules to your application. Prefer an
+authenticated server endpoint for writes so it can derive sender identity,
+authorize membership, validate mentions/replies/files, and update chat metadata
+atomically. Every direct read and realtime subscription still needs tested
+Firestore Security Rules. Hiding UI controls is not authorization.
 
 ## The data flow
 
@@ -24,110 +26,230 @@ backend <── handlers <── AdvancedChat (events)
 
 Three pieces:
 
-1. A subscription that hydrates `chats` and `messages` refs.
-2. Event handlers that translate user actions into backend writes.
-3. A pagination handler for `fetch-messages` / `fetch-more-chats`.
+1. Scoped subscriptions that hydrate `chats` and the newest `messages` page.
+2. Event handlers that translate authorized user actions into backend writes.
+3. One-shot cursor reads for older pages requested by `fetch-messages`.
 
 ## Firestore example
 
+This sample stores a `memberIds` array on each chat. Firestore rules are not
+filters, so the browser query includes `array-contains` and the rules independently
+verify membership. Chat membership is provisioned by trusted server code, and the
+store sends messages through an application endpoint rather than writing message
+documents directly from the browser.
+
 ```ts
 // composables/use-chat-store.ts
-import { ref, watch } from 'vue'
+import { onScopeDispose, ref, watch } from 'vue'
 import {
   collection,
-  doc,
+  getDocs,
   limit,
   onSnapshot,
   orderBy,
   query,
   startAfter,
-  addDoc,
-  serverTimestamp,
+  Timestamp,
+  where,
+  type DocumentData,
+  type QueryDocumentSnapshot,
 } from 'firebase/firestore'
 import { db } from './firebase'
 
-import type { ChatModel, MessageModel, User } from '@advanced-chat/components'
+import type {
+  ChatModel,
+  MessageFileModel,
+  MessageModel,
+  MessageStatus,
+  MessageSummary,
+  User,
+} from '@advanced-chat/components'
 
-export const useChatStore = (currentUser: User) => {
+const PAGE_SIZE = 50
+
+interface ChatDocument {
+  name: string
+  memberIds: string[]
+  users: User[]
+}
+
+interface MessageDocument {
+  sender: User
+  content?: string
+  createdAt: Timestamp
+  status?: MessageStatus
+  files?: MessageFileModel[]
+  mentionedUserIds?: string[]
+  reply?: MessageSummary
+}
+
+interface SendMessageRequest {
+  chatId: ChatModel['id']
+  content: string
+  files: MessageFileModel[]
+  mentionedUserIds: User['id'][]
+  reply?: MessageSummary
+}
+
+export interface ChatApi {
+  sendMessage(input: SendMessageRequest): Promise<void>
+}
+
+const toReplySummary = (message: MessageModel): MessageSummary => ({
+  id: message.id,
+  sender: message.sender,
+  createdAt: message.createdAt,
+  ...(message.content === undefined ? {} : { content: message.content }),
+  ...(message.status === undefined ? {} : { status: message.status }),
+  ...(message.deleted === undefined ? {} : { deleted: message.deleted }),
+  ...(message.edited === undefined ? {} : { edited: message.edited }),
+  ...(message.files === undefined ? {} : { files: message.files }),
+})
+
+const toChatModel = (snapshot: QueryDocumentSnapshot<DocumentData>): ChatModel => {
+  const data = snapshot.data() as ChatDocument
+  return { id: snapshot.id, name: data.name, users: data.users }
+}
+
+const toMessageModel = (snapshot: QueryDocumentSnapshot<DocumentData>): MessageModel => {
+  const data = snapshot.data({ serverTimestamps: 'estimate' }) as MessageDocument
+
+  if (!(data.createdAt instanceof Timestamp)) {
+    throw new TypeError(`Message ${snapshot.id} is missing a createdAt Timestamp`)
+  }
+
+  return {
+    id: snapshot.id,
+    sender: data.sender,
+    content: data.content,
+    createdAt: data.createdAt.toDate().toISOString(),
+    status: data.status,
+    files: data.files,
+    ...(data.reply === undefined ? {} : { reply: data.reply }),
+  }
+}
+
+export const useChatStore = (currentUser: User, api: ChatApi) => {
   const chats = ref<ChatModel[]>([])
+  const chatsLoaded = ref(false)
   const messages = ref<MessageModel[]>([])
   const activeChat = ref<ChatModel | null>(null)
   const messagesLoaded = ref(false)
   const loadingMessages = ref(false)
-  let oldestLoaded: any = null
+  let oldestLoaded: QueryDocumentSnapshot<DocumentData> | null = null
 
-  // Subscribe to the chat list.
-  const chatsQuery = query(collection(db, 'chats'), orderBy('updatedAt', 'desc'))
-  onSnapshot(chatsQuery, (snap) => {
-    chats.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }) as ChatModel)
+  const chatsQuery = query(
+    collection(db, 'chats'),
+    where('memberIds', 'array-contains', currentUser.id),
+    orderBy('updatedAt', 'desc'),
+  )
+  const unsubscribeChats = onSnapshot(chatsQuery, (snapshot) => {
+    chats.value = snapshot.docs.map(toChatModel)
+    chatsLoaded.value = true
+
+    if (!activeChat.value || !chats.value.some((chat) => chat.id === activeChat.value?.id)) {
+      activeChat.value = chats.value[0] ?? null
+    }
   })
 
-  // Re-subscribe to messages whenever the active chat changes.
-  watch(activeChat, (chat) => {
-    messages.value = []
-    messagesLoaded.value = false
-    oldestLoaded = null
+  const stopWatchingChat = watch(
+    activeChat,
+    (chat, _previousChat, onCleanup) => {
+      messages.value = []
+      messagesLoaded.value = false
+      loadingMessages.value = false
+      oldestLoaded = null
 
-    if (!chat) return
+      if (!chat) return
 
-    const messagesQuery = query(
-      collection(db, 'chats', chat.id, 'messages'),
-      orderBy('createdAt', 'desc'),
-      limit(50),
-    )
-    onSnapshot(messagesQuery, (snap) => {
-      messages.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }) as MessageModel).reverse()
-      oldestLoaded = snap.docs[snap.docs.length - 1]
-      messagesLoaded.value = snap.docs.length < 50
-    })
-  })
+      let receivedInitialPage = false
+      const newestMessagesQuery = query(
+        collection(db, 'chats', chat.id, 'messages'),
+        orderBy('createdAt', 'desc'),
+        limit(PAGE_SIZE),
+      )
+      const unsubscribeMessages = onSnapshot(newestMessagesQuery, (snapshot) => {
+        const newest = snapshot.docs.map(toMessageModel).reverse()
+        const newestIds = new Set(newest.map((message) => message.id))
+
+        // Keep pages loaded earlier while replacing records covered by the live page.
+        messages.value = [
+          ...messages.value.filter((message) => !newestIds.has(message.id)),
+          ...newest,
+        ].sort((left, right) => left.createdAt.localeCompare(right.createdAt))
+
+        if (!receivedInitialPage) {
+          oldestLoaded = snapshot.docs.at(-1) ?? null
+          messagesLoaded.value = snapshot.size < PAGE_SIZE
+          receivedInitialPage = true
+        }
+      })
+
+      onCleanup(unsubscribeMessages)
+    },
+    { immediate: true },
+  )
 
   const sendMessage = async (payload: {
     content: string
-    files: { blob?: Blob; name: string }[]
+    files: MessageFileModel[]
     mentionedUsers: User[]
     reply?: MessageModel | null
   }) => {
-    if (!activeChat.value) return
-    await addDoc(collection(db, 'chats', activeChat.value.id, 'messages'), {
-      sender: currentUser,
+    const chat = activeChat.value
+    if (!chat) return
+
+    const reply = payload.reply ? toReplySummary(payload.reply) : undefined
+
+    await api.sendMessage({
+      chatId: chat.id,
       content: payload.content,
+      files: payload.files,
       mentionedUserIds: payload.mentionedUsers.map((user) => user.id),
-      createdAt: serverTimestamp(),
-      status: 'sending',
-      reply: payload.reply
-        ? {
-            id: payload.reply.id,
-            sender: payload.reply.sender,
-            content: payload.reply.content,
-            createdAt: payload.reply.createdAt,
-          }
-        : undefined,
-      // file uploads handled separately — see "File Uploads" recipe
+      ...(reply === undefined ? {} : { reply }),
     })
   }
 
   const fetchMoreMessages = async () => {
-    if (!activeChat.value || messagesLoaded.value || loadingMessages.value) return
-    loadingMessages.value = true
+    const chat = activeChat.value
+    const cursor = oldestLoaded
+    if (!chat || !cursor || messagesLoaded.value || loadingMessages.value) return
 
-    const olderQuery = query(
-      collection(db, 'chats', activeChat.value.id, 'messages'),
-      orderBy('createdAt', 'desc'),
-      startAfter(oldestLoaded),
-      limit(50),
-    )
-    onSnapshot(olderQuery, (snap) => {
-      const older = snap.docs.map((d) => ({ id: d.id, ...d.data() }) as MessageModel).reverse()
+    loadingMessages.value = true
+    try {
+      const olderQuery = query(
+        collection(db, 'chats', chat.id, 'messages'),
+        orderBy('createdAt', 'desc'),
+        startAfter(cursor),
+        limit(PAGE_SIZE),
+      )
+      const snapshot = await getDocs(olderQuery)
+
+      // Ignore a response that completed after the user switched chats.
+      if (activeChat.value?.id !== chat.id) return
+
+      const loadedIds = new Set(messages.value.map((message) => message.id))
+      const older = snapshot.docs
+        .map(toMessageModel)
+        .reverse()
+        .filter((message) => !loadedIds.has(message.id))
+
       messages.value = [...older, ...messages.value]
-      oldestLoaded = snap.docs[snap.docs.length - 1] ?? oldestLoaded
-      messagesLoaded.value = snap.docs.length < 50
+      oldestLoaded = snapshot.docs.at(-1) ?? oldestLoaded
+      messagesLoaded.value = snapshot.size < PAGE_SIZE
+    } finally {
       loadingMessages.value = false
-    })
+    }
   }
+
+  onScopeDispose(() => {
+    unsubscribeChats()
+    stopWatchingChat()
+  })
 
   return {
     chats,
+    chatsLoaded,
     messages,
     activeChat,
     messagesLoaded,
@@ -138,24 +260,164 @@ export const useChatStore = (currentUser: User) => {
 }
 ```
 
+The casts above keep the sample focused; production adapters should validate
+untrusted document data before constructing library models. In particular,
+every `User` in a chat or message needs `id`, `name`, and
+`status: { state: 'online' | 'offline' | 'away' | 'busy' }`. Firestore
+`Timestamp` values must be converted to ISO strings because
+`MessageModel.createdAt` is a string.
+
+The chat query may require a Firestore composite index for `memberIds` and
+`updatedAt`; follow the index link in Firestore's query error and deploy that
+index with your project configuration.
+
+Because chat documents are ordered by `updatedAt`, a trusted server trigger or
+message endpoint must update the parent chat after a successful send. The sample
+rules deliberately do not let the browser change chat metadata or membership.
+For stronger identity integrity, persist an authenticated `senderId` and resolve
+the canonical `User` server-side instead of trusting profile fields submitted by
+the browser.
+
+Use `getDocs` for historical pages. Attaching `onSnapshot` for every cursor page
+creates persistent listeners, duplicate updates, and cleanup work without making
+the entire history coherently realtime.
+
+## Direct-write Security Rules fallback
+
+An authenticated server endpoint remains the recommended write path. If an
+application deliberately retains browser-to-Firestore writes, do not stop at a
+sender-ID check. The following **illustrative, schema-specific fallback** allows
+only text messages and edits: attachments and replies must use the server
+endpoint. It assumes `/users/{uid}.chatProfile` is the exact public `User` map
+allowed in a message.
+
+Test equivalent rules with the Firebase Emulator Suite. Add App Check and abuse
+controls as appropriate, and use separate Storage Rules for attachments.
+
+```text
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function chatData(chatId) {
+      return get(/databases/$(database)/documents/chats/$(chatId)).data;
+    }
+
+    function isMember(chatId) {
+      return signedIn()
+        && request.auth.uid in chatData(chatId).memberIds;
+    }
+
+    function validContent(data) {
+      return data.content is string
+        && data.content.size() > 0
+        && data.content.size() <= 10000;
+    }
+
+    function validMentions(chatId, data) {
+      return data.mentionedUserIds is list
+        && data.mentionedUserIds.size() <= 100
+        && data.mentionedUserIds.hasOnly(chatData(chatId).memberIds);
+    }
+
+    function validSender(data) {
+      return data.sender is map
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && data.sender ==
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.chatProfile;
+    }
+
+    function validCreate(chatId, data) {
+      return data.keys().hasAll([
+          'sender',
+          'content',
+          'files',
+          'mentionedUserIds',
+          'createdAt',
+          'status'
+        ])
+        && data.keys().hasOnly([
+          'sender',
+          'content',
+          'files',
+          'mentionedUserIds',
+          'createdAt',
+          'status'
+        ])
+        && validSender(data)
+        && validContent(data)
+        && validMentions(chatId, data)
+        && data.files is list
+        && data.files.size() == 0
+        && data.createdAt == request.time
+        && data.status == 'sent';
+    }
+
+    function validEdit(chatId) {
+      return resource.data.sender.id == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['content', 'mentionedUserIds'])
+        && validContent(request.resource.data)
+        && validMentions(chatId, request.resource.data);
+    }
+
+    match /chats/{chatId} {
+      allow read: if signedIn() && request.auth.uid in resource.data.memberIds;
+
+      // Provision chats and membership through a trusted server endpoint.
+      allow create, update, delete: if false;
+
+      match /messages/{messageId} {
+        allow read: if isMember(chatId);
+        allow create: if isMember(chatId)
+          && validCreate(chatId, request.resource.data);
+        allow update: if isMember(chatId) && validEdit(chatId);
+        allow delete: if isMember(chatId)
+          && resource.data.sender.id == request.auth.uid;
+      }
+    }
+  }
+}
+```
+
+The create allowlist rejects unknown fields, canonical-profile equality binds the
+sender to the authenticated user, mention IDs must be chat members, and the edit
+diff makes sender, timestamps, status, and files immutable. Replies and non-empty
+file lists are intentionally rejected by this fallback.
+
+Do not ship Admin SDK credentials, storage credentials, or unrestricted signed
+URL creation to the browser. The preferred server endpoint must independently
+validate the same constraints plus reply membership, attachment ownership, MIME
+and size policy, idempotency, and rate limits. Operations such as moderation,
+membership changes, and reactions on another user's message also need
+transactional authorization.
+
 ## Wiring it up
 
 ```vue
 <script setup lang="ts">
 import { AdvancedChat } from '@advanced-chat/components'
-import { useChatStore } from './composables/use-chat-store'
+import type { ChatModel, User } from '@advanced-chat/components'
+import { useChatStore, type ChatApi } from './composables/use-chat-store'
 
-const currentUser = useCurrentUser() // your auth store
-
+const { currentUser, chatApi } = defineProps<{ currentUser: User; chatApi: ChatApi }>()
 const {
   chats,
+  chatsLoaded,
   messages,
   activeChat,
   messagesLoaded,
   loadingMessages,
   sendMessage,
   fetchMoreMessages,
-} = useChatStore(currentUser)
+} = useChatStore(currentUser, chatApi)
+
+const openChat = (chat: ChatModel) => {
+  activeChat.value = chat
+}
 </script>
 
 <template>
@@ -166,94 +428,126 @@ const {
     :messages="messages"
     :messages-loaded="messagesLoaded"
     :loading-messages="loadingMessages"
-    :chats-loaded="true"
-    @open-chat="(chat) => (activeChat = chat)"
+    :chats-loaded="chatsLoaded"
+    :show-files="false"
+    @open-chat="openChat"
     @send-message="sendMessage"
     @fetch-messages="fetchMoreMessages"
   />
 </template>
 ```
 
+This focused example disables attachments. If files are enabled, the
+`send-message` event contains pending `ChatFileItem` values: upload and sanitize
+them into serializable `MessageFileModel` values before calling `sendMessage`,
+and always revoke transferred object URLs. See the File Uploads recipe.
+
+The component's send payload may contain `reply: null`; the store normalizes that
+boundary by omitting `reply` from the endpoint request when there is no reply.
+Use the same absent-field convention in stored documents instead of mixing
+missing, `undefined`, and `null` values.
+
 ## What about REST / GraphQL?
 
-Same shape, different fetcher. Replace `onSnapshot` with whatever
-your backend exposes:
+Use the same boundary with a different fetcher:
 
-- **REST polling** — `setInterval(() => fetchChats(), 5000)`. Not
-  recommended for messages but fine for chat-list metadata.
-- **WebSocket** — subscribe to a server-pushed event and update the
-  refs in place. The components re-render reactively.
-- **GraphQL subscriptions** — Apollo / urql client with
-  `useSubscription`; pipe the result into the refs.
-- **Polling + manual refresh** — `pull-to-refresh`-style. Less
-  ergonomic but works.
+- **REST polling**: schedule a fetch and replace refs with the returned models.
+  Stop the timer when the view unmounts or the session ends.
+- **WebSocket**: unsubscribe on unmount/reconnect and replace or immutably merge
+  records by stable ID.
+- **GraphQL subscriptions**: dispose subscriptions and map results into the same
+  models.
+- **Manual refresh**: replace the refs after an authenticated request.
 
-The library does not care what's behind the refs. It cares that
-they're reactive and that the events you wire round-trip back into
-them.
+Whichever transport you use, reject stale responses after a chat switch, clean
+up listeners, deduplicate by stable ID, and enforce membership on the server.
 
 ## Reactions
 
-`send-message-reaction` fires with `{ emoji, message }` and is a
-**toggle** signal — the host decides whether to add or remove based
-on whether the current user is already in the reaction list:
+`send-message-reaction` fires with `{ emoji, message }` and is a toggle signal.
+The host can inspect the current UI model, but the backend must decide atomically
+whether to add or remove the authenticated user so concurrent reactions are not
+lost:
 
 ```ts
-const onReaction = async ({ emoji, message }: { emoji: string; message: MessageModel }) => {
-  const current = message.reactions?.[emoji] ?? []
-  const isMine = current.includes(currentUser.id)
+import type { ChatModel, MessageModel } from '@advanced-chat/components'
 
-  await updateDoc(doc(db, 'chats', activeChat.value!.id, 'messages', message.id), {
-    [`reactions.${emoji}`]: isMine
-      ? current.filter((id) => id !== currentUser.id)
-      : [...current, currentUser.id],
-  })
+interface ReactionApi {
+  toggleReaction(input: {
+    chatId: ChatModel['id']
+    messageId: MessageModel['id']
+    emoji: string
+  }): Promise<void>
 }
+
+const createReactionHandler =
+  (chatId: ChatModel['id'], api: ReactionApi) =>
+  async ({ emoji, message }: { emoji: string; message: MessageModel }) => {
+    await api.toggleReaction({ chatId, messageId: message.id, emoji })
+  }
 ```
+
+The server endpoint must derive the user ID from the authenticated session,
+verify chat membership, validate the emoji, and use a transaction. Do not trust
+a user ID or complete reactions map submitted by the browser.
 
 ## Mentions
 
 The send and edit payloads contain both stable `<@id>` tokens in `content` and
 deduplicated full users in `mentionedUsers`. Persist the tokenized content and,
 if your backend needs a notification/index field, derive it from
-`mentionedUsers.map(user => user.id)`. Unknown `<@id>` tokens remain intact in
-content but are not added to `mentionedUsers`.
+`mentionedUsers.map((user) => user.id)`. The server must discard IDs outside the
+conversation before creating notifications. Unknown `<@id>` tokens remain in
+content but are not added to `mentionedUsers` by the component.
 
 ## Typing presence
 
-`typing-message` carries the current composer string, not the v2
-`{ roomId, message }` object. The component emits immediately when typing
-starts, emits a trailing update after 300 ms of inactivity, and emits `''`
-when cleared or when an active composer unmounts. Treat the value as a presence
-signal and rate-limit backend writes:
+`typing-message` carries the current composer string, not a room object. The
+component emits immediately when typing starts, emits a trailing update after
+300 ms of inactivity, and emits `''` when cleared or when an active composer
+unmounts. Treat it as an ephemeral signal and rate-limit writes:
 
 ```ts
 import { useDebounceFn } from '@vueuse/core'
+import type { ChatModel } from '@advanced-chat/components'
 
-const updateTyping = useDebounceFn(async (text: string) => {
-  await updateDoc(doc(db, 'chats', activeChat.value!.id, 'typingUsers', currentUser.id), {
-    typing: text.length > 0,
-    updatedAt: serverTimestamp(),
-  })
-}, 500)
+interface PresenceApi {
+  setTyping(input: { chatId: ChatModel['id']; typing: boolean }): Promise<void>
+}
 
-// in template: @typing-message="updateTyping"
+const createTypingHandler = (getChatId: () => ChatModel['id'] | null, api: PresenceApi) =>
+  useDebounceFn(async (text: string) => {
+    const chatId = getChatId()
+    if (!chatId) return
+
+    await api.setTyping({ chatId, typing: text.length > 0 })
+  }, 500)
+
+// const updateTyping = createTypingHandler(() => activeChat.value?.id ?? null, chatApi)
+// In the template: @typing-message="updateTyping"
 ```
+
+The server must derive the user from the session, verify membership, expire stale
+presence, and rate-limit abuse. Clear presence on disconnect as well as on the
+empty-string event because browsers cannot guarantee an unmount request reaches
+the server.
 
 ## Failed sends
 
-When a write fails, set the message's `status` to `'failed'` and
-keep it in the `messages` ref. The library renders a "Tap to retry"
-pill on failed own-messages and emits `open-failed-message` with
-the message when the user clicks it:
+The component does not create optimistic messages itself. If your data layer
+adds one and a send fails, keep it with `status: 'failed'`. A failed own-message
+renders a retry control and emits `open-failed-message` when activated:
 
 ```ts
-const onRetry = async (message: MessageModel) => {
-  await sendMessage({
-    content: message.content!,
-    files: message.files ?? [],
-    mentionedUsers: [],
-  })
-  // remove the failed copy from local state once the new send lands.
-}
+import type { MessageModel } from '@advanced-chat/components'
+
+const createRetryHandler =
+  (retryFailedMessage: (id: MessageModel['id']) => Promise<void>) =>
+  async (message: MessageModel) =>
+    retryFailedMessage(message.id)
 ```
+
+Make retries idempotent with a client-generated operation ID so a lost response
+cannot create duplicate messages. Reauthorize the chat and attachments on every
+attempt, and replace or remove the failed local record only after the server
+confirms the durable message.

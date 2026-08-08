@@ -30,13 +30,13 @@ const { activeIndex, setActiveIndex } = useAutocomplete<T>({
 
 ## Options
 
-| Field          | Type                                | Description                                                                                                                                                |
-| -------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `items`        | `MaybeRefOrGetter<T[]>`             | Reactive list of currently-suggested items. The active index resets to `0` whenever the list length changes.                                               |
-| `selectSignal` | `MaybeRefOrGetter<boolean \| null>` | When this flips truthy, the active item is committed via `onCommit`. Toggle it (e.g. `true` → `false` → `true`) so each commit fires its own watcher tick. |
-| `navSignal`    | `MaybeRefOrGetter<number \| null>`  | Positive → step forward; negative → step backward. The watcher steps by exactly one on each change regardless of magnitude.                                |
-| `onCommit`     | `(item: T) => void`                 | Fired with the active item when `selectSignal` flips truthy.                                                                                               |
-| `onNavigate`   | `() => void`                        | Fired after `navSignal` moves the active index. The parent typically resets `navSignal` to `null` here.                                                    |
+| Field          | Type                                | Description                                                                                                                                                         |
+| -------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `items`        | `MaybeRefOrGetter<T[]>`             | Reactive suggestions. Initial evaluation selects `0` when non-empty. Replacement and in-place length changes reset the index; same-length replacements preserve it. |
+| `selectSignal` | `MaybeRefOrGetter<boolean \| null>` | When this flips truthy, the active item is committed via `onCommit`. Toggle it (e.g. `true` → `false` → `true`) so each commit fires its own watcher tick.          |
+| `navSignal`    | `MaybeRefOrGetter<number \| null>`  | Positive → step forward; negative → step backward. The watcher steps by exactly one on each change regardless of magnitude.                                         |
+| `onCommit`     | `(item: T) => void`                 | Fired with the active item when `selectSignal` flips truthy.                                                                                                        |
+| `onNavigate`   | `() => void`                        | Fired after every nonzero `navSignal`, including at a list boundary where the index cannot move. Typically resets `navSignal` to `null`.                            |
 
 ## Returns
 
@@ -58,6 +58,10 @@ const commands = [
   { id: 'leave', label: 'Leave chat' },
   { id: 'invite', label: 'Invite participant' },
 ]
+
+const runCommand = (id: string) => {
+  console.log(`Run command: ${id}`)
+}
 
 const filtered = computed(() => {
   const m = message.value.match(/^\/(\w*)$/)
@@ -98,11 +102,16 @@ const onKeydown = (e: KeyboardEvent) => {
     selectSignal.value = !selectSignal.value
   }
 }
+
+const selectCommand = (index: number) => {
+  setActiveIndex(index)
+  selectSignal.value = !selectSignal.value
+}
 </script>
 
 <template>
   <textarea v-model="message" @keydown="onKeydown" />
-  <ul v-if="filtered.length" role="listbox">
+  <ul v-if="filtered.length" role="listbox" aria-label="Chat commands">
     <li
       v-for="(cmd, i) in filtered"
       :key="cmd.id"
@@ -110,7 +119,7 @@ const onKeydown = (e: KeyboardEvent) => {
       :aria-selected="i === activeIndex"
       :class="{ active: i === activeIndex }"
       @mouseover="setActiveIndex(i)"
-      @click="selectSignal = !selectSignal"
+      @click="selectCommand(i)"
     >
       {{ cmd.label }}
     </li>
@@ -120,14 +129,20 @@ const onKeydown = (e: KeyboardEvent) => {
 
 ## Notes
 
-- The items watcher uses `{ deep: true }` for backwards compatibility
-  with the original `ChatEmojis` / `ChatUserTag` callers. For very
-  large reactive lists you may want to wrap your items source in
-  `shallowRef` to avoid the deep reactivity cost on each keystroke.
+- The items watcher tracks only the array length. Replacement arrays and
+  in-place mutations such as `push` or `splice` reset the index when their
+  length changes, without traversing nested item data.
 - `selectSignal` and `navSignal` are intentionally separate from the
   keyboard event itself. The parent translates whatever keys it
   wants (Enter, Tab, ArrowDown, etc.) into the signal flips, so the
   composable doesn't bake in any specific keymap.
-- For a fully-rendered menu (with the floating positioning, slot,
-  and ARIA roles), reach for `<AutocompleteMenu>` instead — it wraps
-  this composable and adds the visual layer.
+- `setActiveIndex` does not clamp or validate its argument. Keep manually set
+  indexes within the current items array; committing an out-of-range index is a
+  no-op.
+- Set the clicked index before toggling `selectSignal`, as `selectCommand` does
+  above. Hover commonly updates the index for a mouse, but touch activation
+  does not provide that preceding hover event.
+- For a rendered menu with positioning, slots, listbox/option roles, and active
+  descendant reporting, reach for `<AutocompleteMenu>`. The host still owns the
+  input or combobox attributes, keyboard policy, focus behavior, and accessible
+  labeling for the complete interaction.

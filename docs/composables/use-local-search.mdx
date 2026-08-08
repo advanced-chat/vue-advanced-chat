@@ -6,8 +6,8 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 Wraps the package's small `filterItems` helper in a reactive
 composable with a built-in escape hatch for server-driven search.
-`Chats.vue` uses it for the chat-list search; the same shape works
-for any id-bearing collection.
+`Chats.vue` uses it for the chat-list search; the same shape works for any
+collection with a field that can be converted to a string.
 
 ## Signature
 
@@ -27,25 +27,28 @@ const { query, filtered, setQuery } = useLocalSearch<T>({
 | Field      | Type                        | Description                                                                                                                                           |
 | ---------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `items`    | `MaybeRefOrGetter<T[]>`     | Items to filter.                                                                                                                                      |
-| `field`    | `keyof T`                   | Item field to match against (e.g. `'name'`). The match is case-insensitive and substring-based.                                                       |
+| `field`    | `keyof T`                   | Item field to match against (e.g. `'name'`). The substring match is case- and accent-insensitive.                                                     |
 | `custom`   | `MaybeRefOrGetter<boolean>` | When truthy, the local list passes through unfiltered — the host renders server-driven results. `query` is not updated either; only `onSearch` fires. |
-| `onSearch` | `(query: string) => void`   | Fired with the current query on every change. Use this to call your backend search when `custom` is true.                                             |
+| `onSearch` | `(query: string) => void`   | Fired with the supplied value on every `setQuery` call. Use this to call your backend search when `custom` is true.                                   |
 
 ## Returns
 
-| Field      | Type                      | Description                                                                               |
-| ---------- | ------------------------- | ----------------------------------------------------------------------------------------- |
-| `query`    | `Ref<string \| null>`     | Current search query. `null` means no filter is active (i.e. the user cleared the input). |
-| `filtered` | `ComputedRef<T[]>`        | Filtered items, or the raw input when `custom` is true.                                   |
-| `setQuery` | `(value: string) => void` | Update the query and forward it via `onSearch`.                                           |
+| Field      | Type                      | Description                                                                                        |
+| ---------- | ------------------------- | -------------------------------------------------------------------------------------------------- |
+| `query`    | `Ref<string \| null>`     | Stored local query. `null` means no local filter is active; custom-mode searches do not update it. |
+| `filtered` | `ComputedRef<T[]>`        | Filtered items, or the raw input when `custom` is true.                                            |
+| `setQuery` | `(value: string) => void` | Update the stored query when `custom` is false and always forward the value via `onSearch`.        |
 
 ## Example — local + server-driven hybrid
 
 ```vue
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useLocalSearch, type ChatModel } from '@advanced-chat/components'
 
+declare function searchChats(query: string): Promise<ChatModel[]>
+
+const localChats = ref<ChatModel[]>([])
 const remoteResults = ref<ChatModel[]>([])
 const useRemote = ref(false)
 
@@ -72,16 +75,17 @@ const { filtered, setQuery } = useLocalSearch({
 </template>
 ```
 
+`searchChats` is intentionally declared as an app-owned API in this example;
+replace it with your backend implementation.
+
 ## Notes
 
-- The match is performed by `filterItems`, which lowercases both
-  sides and uses `String.prototype.includes`. Diacritics are
-  preserved as-is — for accent-insensitive search you'd post-process
-  `query` in your `onSearch` callback before sending it to the
-  backend.
+- The match is performed by `filterItems`, which lowercases both sides,
+  normalizes them to NFD, removes combining diacritic marks, and then uses
+  `String.prototype.includes`. For example, `cafe` matches `Café`.
 - `setQuery('')` clears the filter and sets `query.value` to `null`.
   Your `onSearch` still fires with `''` so the backend knows to
   reset its result set.
-- `custom` is checked at the moment `setQuery` runs and again inside
-  `filtered`, so flipping it on the fly does the right thing without
-  a remount.
+- `custom` is checked when `setQuery` runs and inside `filtered`. While custom
+  mode is active, new search values are emitted but not stored in `query`; if
+  local mode is restored, its previous local query becomes active again.

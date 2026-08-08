@@ -2,7 +2,6 @@
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import dts from 'vite-plugin-dts'
 
 import path from 'node:path'
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
@@ -11,31 +10,8 @@ import { playwright } from '@vitest/browser-playwright'
 const dirname =
   typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url))
 
-const npmLifecycleEvent = process.env.npm_lifecycle_event || ''
-const isVitestStorybookProcess =
-  process.env.VITEST === 'true' &&
-  (process.env.VITEST_CHILD_PROCESS === 'true' ||
-    process.env.VITEST_STORYBOOK === 'true' ||
-    npmLifecycleEvent === 'test' ||
-    npmLifecycleEvent === 'test:storybook' ||
-    npmLifecycleEvent === 'test:coverage' ||
-    npmLifecycleEvent === 'test:unit' ||
-    npmLifecycleEvent === 'verify')
-const isStorybookProcess =
-  npmLifecycleEvent === 'storybook' ||
-  npmLifecycleEvent === 'build-storybook' ||
-  isVitestStorybookProcess
-
 export default defineConfig({
-  plugins: [
-    vue(),
-    !isStorybookProcess &&
-      dts({
-        tsconfigPath: './tsconfig.lib.json',
-        exclude: ['**/*.stories.ts', '**/*.spec.ts'],
-        copyDtsFiles: true,
-      }),
-  ],
+  plugins: [vue()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -52,6 +28,8 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'AdvancedChatComponents',
+      formats: ['es', 'umd'],
+      fileName: (format) => (format === 'umd' ? 'components.umd.js' : 'components.js'),
     },
     rollupOptions: {
       external: ['vue'],

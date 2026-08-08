@@ -8,7 +8,11 @@ package is the V3 successor of the original `vue-advanced-chat`. See
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+Only `3.0.0-alpha.0` was published to npm. The alpha.1 through alpha.5
+sections below are retained as internal development milestones that were folded
+into the first public release candidate.
+
+## 3.0.0-rc.1 - 2026-08-08
 
 ### Added
 
@@ -21,6 +25,10 @@ and the project follows [Semantic Versioning](https://semver.org/).
   Manifest for IDE and framework tooling.
 - Browser-level package verification for auto-registration, explicit
   registration, property assignment, packaged styles, rendering, and events.
+- Rolled-up public declarations verified against strict TypeScript `Bundler`
+  and `NodeNext` consumers, plus a packed-package Vite consumer.
+- MIT project licensing, bundled third-party notices, security and support
+  policies, contribution guidance, and GitHub issue templates.
 - `send-message` and `edit-message` now include deduplicated
   `mentionedUsers: User[]`. Selecting a mention writes a stable `<@id>` token
   into `content`; rendering resolves known ids to names without changing the
@@ -36,6 +44,8 @@ and the project follows [Semantic Versioning](https://semver.org/).
 
 - Renamed the component CSS, transition, keyframe, and SVG identifier prefix
   from `vac-` to `acc-`, including the documented light-DOM selectors.
+- Made the Node package ESM-only. The browser UMD artifact remains available
+  through CDN metadata but is no longer exposed as a CommonJS entry.
 - Renamed the V3 project to `advanced-chat-components` while retaining the npm
   package name `@advanced-chat/components`. The default custom-element tag,
   browser globals, bundle filenames, repository metadata, and documentation now
@@ -52,7 +62,7 @@ and the project follows [Semantic Versioning](https://semver.org/).
   object URLs to the host. The library still revokes URLs for files removed or
   reset while pending; after emission the host must revoke them.
 - V3 compatibility records now distinguish stable `vue-advanced-chat@2.1.2`
-  from the pre-GA `@advanced-chat/components@3.0.0-alpha.5` tree and record the
+  from the pre-GA `@advanced-chat/components@3.0.0-rc.1` tree and record the
   deliberate removal of audio recording, room ordering, template
   autocomplete, and the extra composer action.
 
@@ -65,12 +75,12 @@ and the project follows [Semantic Versioning](https://semver.org/).
 - Message pagination preserves the reader's position after history prepends,
   gates duplicate requests, and works with the documented auto-scroll and
   scroll-to-latest behavior.
-- Removed documentation for the nonexistent
-  `--chat-message-color-link` theme token. Links rendered inside `Layout`
-  currently use the component's fixed link rule and can be overridden with
-  normal light-DOM CSS; there is not yet a dedicated `Styles` key.
+- Corrected security, theming, SSR, web-component, backend, upload, pagination,
+  composable, migration, and API guidance against the shipped implementation.
+  In particular, inline theme variables must be overridden through object-form
+  `theme` or `Layout.styles`; there is no dedicated link-color token.
 
-## 3.0.0-alpha.5
+## 3.0.0-alpha.5 (internal milestone)
 
 Closes the remaining items on `rewrite/release-plan.md` step 4 — the
 last GA gaps before tagging beta. Adds three additive `Chat` /
@@ -124,7 +134,7 @@ Storybook regression test.
   `navigator` on the server (returns `'en'` directly), removing one
   more SSR sharp edge.
 
-## 3.0.0-alpha.4
+## 3.0.0-alpha.4 (internal milestone)
 
 Internal refactor that ships consumer-facing escape hatches. Closes
 the previously deferred composables-extraction and autocomplete-
@@ -188,7 +198,7 @@ additive.
   now share a single object URL that `removeFile` / `resetMessage`
   revoke together.
 
-## 3.0.0-alpha.3
+## 3.0.0-alpha.3 (internal milestone)
 
 Second naming and ergonomics pass — closes the consumer-facing P1
 items from `rewrite/ergonomics-review.md` (composables extraction
@@ -228,9 +238,8 @@ change vs `3.0.0-alpha.2`.
 
 ### Changed (data model)
 
-- `Action.{name,title}` … wait, that's already alpha.2. _(This entry
-  is correct: alpha.2 did `name → id` / `title → label`; alpha.3
-  follows up with `onlyMe → ownMessageOnly` and adds `icon`.)_
+- `Action.onlyMe` was renamed to `Action.ownMessageOnly`, and `Action.icon`
+  was added. The alpha.2 `name` to `id` and `title` to `label` renames remain.
 - `Chat.lastMessage` and `Message.reply` retyped to `MessageSummary`.
   This is a non-recursive projection: `id`, `sender`, `content`,
   `createdAt`, `status`, `deleted`, `edited`, `files`. Existing
@@ -253,7 +262,7 @@ change vs `3.0.0-alpha.2`.
 
 - `ChatHeaderMessageSelection` interface (no longer needed).
 
-## 3.0.0-alpha.2
+## 3.0.0-alpha.2 (internal milestone)
 
 Naming and ergonomics pass that closes the P0 items from
 `rewrite/ergonomics-review.md`. Every item below is a breaking
@@ -340,8 +349,10 @@ Final v2 → v3 slot rename pass. Templates only — internal
 - `typingUsersString(chat, strings)` now accepts
   `Pick<Strings, 'chat.typing'>` instead of the full `Strings` type.
   `AdvancedChatPlugin({ strings })` already accepted `Partial<Strings>`;
-  this matches the test fixtures' expectation. Adding new string keys
-  is no longer a breaking change for typed consumers.
+  this matches the test fixtures' expectation. Plugin overrides using
+  `Partial<Strings>` no longer need to implement unrelated keys; consumers
+  implementing the complete `Strings` interface still receive new required
+  keys as the interface evolves.
 
 ### Removed
 
@@ -378,7 +389,7 @@ Final v2 → v3 slot rename pass. Templates only — internal
   used Tailwind utility classes. CSS bundle 31.77 kB / 5.83 kB gz
   (was 37.20 / 7.48).
 
-## 3.0.0-alpha.1
+## 3.0.0-alpha.1 (internal milestone)
 
 ### Added
 
@@ -477,5 +488,5 @@ Final v2 → v3 slot rename pass. Templates only — internal
 
 ## 3.0.0-alpha.0
 
-Initial alpha tag of the V3 rewrite. See git history on `develop`
-prior to this changelog being introduced.
+Initial npm publication of the V3 rewrite. Later alpha sections document
+internal milestones rather than separately published npm versions.

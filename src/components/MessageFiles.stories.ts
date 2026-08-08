@@ -2,10 +2,12 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
 
 import MessageFiles from './MessageFiles.vue'
+import { storyDocumentUrl, storyPhotoUrl } from './stories.fixtures.ts'
 
 const baseUser = { id: '1', name: 'Alice', status: { state: 'online' as const } }
 
 const meta = {
+  title: 'Components/MessageFiles',
   component: MessageFiles,
   tags: ['autodocs'],
   args: {
@@ -20,13 +22,13 @@ const meta = {
           name: 'photo.jpg',
           type: 'image/jpeg',
           extension: 'jpg',
-          url: 'https://picsum.photos/200',
+          url: storyPhotoUrl,
         },
         {
           name: 'notes.pdf',
           type: 'application/pdf',
           extension: 'pdf',
-          url: 'https://example.com/notes.pdf',
+          url: storyDocumentUrl,
         },
       ],
     },
@@ -48,6 +50,7 @@ export const Default: Story = {
 }
 
 export const ClickFileEmitsDownload: Story = {
+  name: 'Download with keyboard',
   args: {
     'onOpen-file': fn(),
   },
@@ -63,6 +66,7 @@ export const ClickFileEmitsDownload: Story = {
 }
 
 export const AuthenticatedMediaEmitsDownload: Story = {
+  name: 'Protected media download',
   args: {
     message: {
       id: '1',
@@ -74,7 +78,7 @@ export const AuthenticatedMediaEmitsDownload: Story = {
           name: 'protected.jpg',
           type: 'image/jpeg',
           extension: 'jpg',
-          url: 'https://example.com/protected.jpg',
+          url: storyPhotoUrl,
           previewable: false,
         },
       ],
@@ -93,6 +97,7 @@ export const AuthenticatedMediaEmitsDownload: Story = {
 }
 
 export const FileWithProgressShowsBar: Story = {
+  name: 'Attachment upload progress',
   args: {
     message: {
       id: '1',
@@ -104,7 +109,7 @@ export const FileWithProgressShowsBar: Story = {
           name: 'uploading.pdf',
           type: 'application/pdf',
           extension: 'pdf',
-          url: 'https://example.com/uploading.pdf',
+          url: storyDocumentUrl,
           progress: 125,
         },
       ],
@@ -116,6 +121,7 @@ export const FileWithProgressShowsBar: Story = {
 }
 
 export const SelectionModeBubblesWithoutDownloading: Story = {
+  name: 'Select a message with attachments',
   args: {
     message: {
       id: '1',
@@ -127,7 +133,7 @@ export const SelectionModeBubblesWithoutDownloading: Story = {
           name: 'notes.pdf',
           type: 'application/pdf',
           extension: 'pdf',
-          url: 'https://example.com/notes.pdf',
+          url: storyDocumentUrl,
         },
       ],
     },

@@ -1,0 +1,89 @@
+name: Bug report
+description: Report reproducible behavior caused by Advanced Chat Components.
+title: '[Bug]: '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for reproducible library defects. Ask usage questions in Discussions Q&A.
+        Report suspected vulnerabilities through the private security advisory route, not here.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package or build
+      options:
+        - '@advanced-chat/components (Vue)'
+        - '@advanced-chat/components (web component)'
+        - 'vue-advanced-chat (legacy V2)'
+    validations:
+      required: true
+  - type: input
+    id: package-version
+    attributes:
+      label: Package version
+      placeholder: 3.0.0-rc.1
+    validations:
+      required: true
+  - type: input
+    id: vue-version
+    attributes:
+      label: Vue version
+      description: Enter "not applicable" for a framework-neutral web-component reproduction.
+      placeholder: 3.5.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and operating system
+      placeholder: Chrome 128 on macOS 15
+    validations:
+      required: true
+  - type: input
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Link to a small repository, StackBlitz, CodeSandbox, or other public reproduction.
+      placeholder: https://...
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Start from a clean load and include the exact inputs or interactions.
+      placeholder: |
+        1. Open ...
+        2. Set ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include complete errors, screenshots, or recordings when useful. Remove private data.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Include bundler, framework adapter, regression version, or workaround details.
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and Discussions for this behavior.
+          required: true
+        - label: I reproduced the problem with the package version listed above.
+          required: true
+        - label: This report does not disclose a suspected security vulnerability.
+          required: true

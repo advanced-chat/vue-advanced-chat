@@ -1,6 +1,6 @@
 {
   "name": "@advanced-chat/components",
-  "version": "3.0.0-alpha.5",
+  "version": "3.0.0-rc.1",
   "license": "MIT",
   "description": "Framework-neutral chat web component and typed Vue 3 component library",
   "contributors": [
@@ -14,39 +14,38 @@
     }
   ],
   "type": "module",
-  "main": "dist/components.umd.cjs",
   "module": "dist/components.js",
-  "unpkg": "dist/components.umd.cjs",
-  "jsdelivr": "dist/components.umd.cjs",
+  "unpkg": "dist/components.umd.js",
+  "jsdelivr": "dist/components.umd.js",
   "style": "dist/components.css",
-  "typings": "dist/src/index.d.ts",
+  "types": "dist/index.d.ts",
   "customElements": "custom-elements.json",
   "exports": {
     ".": {
-      "types": "./dist/src/index.d.ts",
-      "import": "./dist/components.js",
-      "require": "./dist/components.umd.cjs"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/components.js"
     },
     "./styles": {
-      "types": "./dist/src/styles.d.ts",
+      "types": "./dist/styles.d.ts",
       "import": "./dist/components.css"
     },
     "./web-component": {
-      "types": "./dist/src/web-component.d.ts",
+      "types": "./dist/web-component.d.ts",
       "import": "./dist/advanced-chat-components.js"
     },
     "./web-component/core": {
-      "types": "./dist/src/web-component-core.d.ts",
+      "types": "./dist/web-component-core.d.ts",
       "import": "./dist/advanced-chat-components-core.js"
     },
     "./web-component/styles": {
-      "types": "./dist/src/styles.d.ts",
+      "types": "./dist/styles.d.ts",
       "import": "./dist/advanced-chat-components.css"
     }
   },
   "files": [
     "dist",
-    "custom-elements.json"
+    "custom-elements.json",
+    "THIRD_PARTY_LICENSES.md"
   ],
   "keywords": [
     "vue",
@@ -73,7 +72,7 @@
   },
   "homepage": "https://advanced-chat.github.io/advanced-chat-components/",
   "scripts": {
-    "build": "vite build && vite build --config vite.web-component.config.ts && vite build --config vite.web-component.config.ts --mode core",
+    "build": "vite build && vite build --config vite.web-component.config.ts && vite build --config vite.web-component.config.ts --mode core && vite build --config vite.declarations.config.ts",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --fix --cache",
@@ -102,6 +101,9 @@
   },
   "peerDependencies": {
     "vue": "^3.5.0"
+  },
+  "overrides": {
+    "valibot": "1.4.2"
   },
   "dependencies": {
     "@vueuse/components": "^14.2.1",

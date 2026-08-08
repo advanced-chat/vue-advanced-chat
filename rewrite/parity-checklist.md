@@ -1,7 +1,7 @@
 # V2 -> V3 Compatibility Record
 
 Current compatibility status for stable `vue-advanced-chat@2.1.2` and the
-pre-GA `@advanced-chat/components@3.0.0-alpha.5` working tree. Unlike the
+pre-GA `@advanced-chat/components@3.0.0-rc.1` working tree. Unlike the
 archived alpha.1 reviews, this file is maintained as the current source of
 truth.
 
@@ -17,7 +17,7 @@ Status legend:
 
 | v2 surface                                   | V3 surface                                                 | Status  | Notes                                                                          |
 | -------------------------------------------- | ---------------------------------------------------------- | ------- | ------------------------------------------------------------------------------ |
-| Stable `vue-advanced-chat@2.1.2`             | Pre-GA `@advanced-chat/components@3.0.0-alpha.5` tree      | Done    | Separate package and release track; not an in-place upgrade.                   |
+| Stable `vue-advanced-chat@2.1.2`             | Pre-GA `@advanced-chat/components@3.0.0-rc.1` tree         | Done    | Separate package and release track; not an in-place upgrade.                   |
 | One Shadow DOM custom element + `register()` | 28 typed Vue SFCs plus bundled light-DOM custom element    | Done    | Vue is primary; web-component entrypoint auto-registers by default.            |
 | JSON-stringified object/array props          | Typed Vue props or custom-element DOM properties           | Done    | Do not serialize complex V3 values into attributes.                            |
 | Web-component event payloads                 | Typed `CustomEvent.detail`                                 | Done    | V3 exposes the payload directly, without Vue's single-argument array wrapper.  |
@@ -71,7 +71,7 @@ Status legend:
 ## Message rendering
 
 | v2                                           | V3                                                   | Status  | Notes                                                                                   |
-| -------------------------------------------- | ---------------------------------------------------- | ------- | --------------------------------------------------------------------------------------- | -------------- |
+| -------------------------------------------- | ---------------------------------------------------- | ------- | --------------------------------------------------------------------------------------- |
 | Markdown, GFM, underline, mentions, autolink | `formatText` / `MessageTemplate`                     | Done    | Known `<@id>` tokens render current names; unknown ids remain tokens.                   |
 | Top-level text formatting                    | `textFormatting` on `Chat` / `AdvancedChat`          | Partial | Markdown/linkify options exist; custom per-marker syntax does not.                      |
 | `link-options`                               | `textFormatting.linkOptions`                         | Done    | No dedicated link-color theme token yet.                                                |
@@ -79,7 +79,7 @@ Status legend:
 | saved/distributed/seen/failure booleans      | `status` enum                                        | Done    | `sending`, `sent`, `delivered`, `read`, `failed`.                                       |
 | edited/deleted/system/failure states         | `Message` variants                                   | Done    | Failed own messages emit the message directly for retry.                                |
 | Reply, reactions, actions, selection         | `MessageReply`, `MessageReactions`, `MessageActions` | Done    | Delete remains host-defined through action handler.                                     |
-| Image/video/file preview and download intent | `MessageFile`, `MediaPreview`, `open-file`           | Done    | Payload is `{ file, action: 'preview'                                                   | 'download' }`. |
+| Image/video/file preview and download intent | `MessageFile`, `MediaPreview`, `open-file`           | Done    | Payload is `{ file, action: 'preview' \| 'download' }`.                                 |
 | Audio playback                               | `AudioPlayer` + `AudioControl`                       | Done    | Native play/pause state and mouse/keyboard scrubbing; source/selection/unmount cleanup. |
 | Per-message username policy                  | Non-own sender name shown                            | Partial | No `username-options` equivalent.                                                       |
 | Reaction picker                              | Fixed inline emoji set                               | Partial | Not the full emoji picker.                                                              |

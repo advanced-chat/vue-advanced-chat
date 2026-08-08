@@ -5,6 +5,7 @@ import ChatFooter from './ChatFooter.vue'
 import { sampleChat, sampleMessages, sampleUsers } from './stories.fixtures.ts'
 
 const meta = {
+  title: 'Components/ChatFooter',
   component: ChatFooter,
   tags: ['autodocs'],
   args: {
@@ -28,6 +29,7 @@ export const Replying: Story = {
 }
 
 export const TypingEmitsTypingMessage: Story = {
+  name: 'Typing a message',
   args: {
     'onTyping-message': fn(),
   },
@@ -44,6 +46,7 @@ export const TypingEmitsTypingMessage: Story = {
 }
 
 export const EnterSendsMessage: Story = {
+  name: 'Send with Enter',
   args: {
     'onSend-message': fn(),
   },
@@ -65,6 +68,7 @@ export const EnterSendsMessage: Story = {
 }
 
 export const ShiftEnterDoesNotSend: Story = {
+  name: 'Write multiple lines',
   args: {
     'onSend-message': fn(),
   },
@@ -79,6 +83,7 @@ export const ShiftEnterDoesNotSend: Story = {
 }
 
 export const SendButtonDisabledWhenEmpty: Story = {
+  name: 'Empty composer',
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const sendButton = canvasElement.querySelector('.acc-send-disabled')
@@ -91,6 +96,7 @@ export const SendButtonDisabledWhenEmpty: Story = {
 }
 
 export const ClickingSendIconEmits: Story = {
+  name: 'Send with the button',
   args: {
     'onSend-message': fn(),
   },
@@ -109,6 +115,7 @@ export const ClickingSendIconEmits: Story = {
 }
 
 export const EmojiAutocompleteSelection: Story = {
+  name: 'Choose an emoji suggestion',
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const textarea = canvas.getByPlaceholderText('Type a message') as HTMLTextAreaElement
@@ -126,6 +133,7 @@ export const EmojiAutocompleteSelection: Story = {
 }
 
 export const UserTagAutocompleteSelection: Story = {
+  name: 'Mention a person',
   args: {
     'onSend-message': fn(),
   },
@@ -170,6 +178,7 @@ export const UserTagAutocompleteSelection: Story = {
 }
 
 export const EscapeClosesComposerPopupsWithoutSending: Story = {
+  name: 'Close composer menus with Escape',
   args: {
     'onSend-message': fn(),
   },
@@ -203,6 +212,7 @@ export const EscapeClosesComposerPopupsWithoutSending: Story = {
 }
 
 export const CancelReplyEmitsReset: Story = {
+  name: 'Cancel a reply',
   args: {
     initReplyMessage: sampleMessages[0],
     'onReset-reply-message': fn(),
@@ -216,6 +226,7 @@ export const CancelReplyEmitsReset: Story = {
 }
 
 export const CancelEditEmitsReset: Story = {
+  name: 'Cancel message editing',
   args: {
     initEditMessage: sampleMessages[1],
     'onReset-edit-message': fn(),
@@ -231,6 +242,7 @@ export const CancelEditEmitsReset: Story = {
 }
 
 export const FocusBlurEvents: Story = {
+  name: 'Focus and leave the composer',
   args: {
     'onFocus-textarea': fn(),
     'onBlur-textarea': fn(),
@@ -246,6 +258,7 @@ export const FocusBlurEvents: Story = {
 }
 
 export const EmojiArrowKeysSelect: Story = {
+  name: 'Navigate emoji suggestions by keyboard',
   args: {
     'onSend-message': fn(),
   },
@@ -265,6 +278,7 @@ export const EmojiArrowKeysSelect: Story = {
 }
 
 export const UserTagArrowKeysSelect: Story = {
+  name: 'Navigate mention suggestions by keyboard',
   args: {
     'onSend-message': fn(),
   },
@@ -284,6 +298,7 @@ export const UserTagArrowKeysSelect: Story = {
 }
 
 export const EditModePrefillsContent: Story = {
+  name: 'Edit an existing message',
   args: {
     initEditMessage: { ...sampleMessages[1]! } as never,
     'onUpdate-edited-message-id': fn(),
@@ -306,6 +321,7 @@ const dropFiles = (input: HTMLInputElement, files: File[]) => {
 }
 
 export const SameFileReselectionTransfersPreviewOwnership: Story = {
+  name: 'Reattach the same file',
   args: {
     'onSend-message': fn(),
   },
@@ -348,13 +364,9 @@ export const SameFileReselectionTransfersPreviewOwnership: Story = {
   },
 }
 
-/**
- * Regression for [#474](https://github.com/advanced-chat/advanced-chat-components/issues/474):
- * `maxFiles` caps the pending-file count. Files past the cap are
- * rejected via `invalid-file` with `reason: 'count'`; the existing
- * pending list is left untouched.
- */
+/** Keeps accepted attachments and rejects files beyond the configured count limit. */
 export const MaxFilesRejectsOverflow: Story = {
+  name: 'Attachment count limit',
   args: {
     maxFiles: 2,
     'onInvalid-file': fn(),
@@ -381,12 +393,9 @@ export const MaxFilesRejectsOverflow: Story = {
   },
 }
 
-/**
- * Regression for [#461](https://github.com/advanced-chat/advanced-chat-components/issues/461):
- * `maxFileSize` rejects single files above the byte cap, but leaves
- * smaller files in the same selection alone.
- */
+/** Keeps attachments within the size limit while rejecting files that are too large. */
 export const MaxFileSizeRejectsLarge: Story = {
+  name: 'Attachment size limit',
   args: {
     maxFileSize: 1024,
     'onInvalid-file': fn(),
@@ -412,6 +421,7 @@ export const MaxFileSizeRejectsLarge: Story = {
 }
 
 export const EditedMessageEmitsEdit: Story = {
+  name: 'Save an edited message',
   args: {
     initEditMessage: { ...sampleMessages[1]!, content: 'Review with <@1>' } as never,
     'onEdit-message': fn(),

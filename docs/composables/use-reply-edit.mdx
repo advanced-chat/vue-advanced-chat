@@ -29,20 +29,29 @@ const { replyMessage, editMessage, dispatch, resetReply, resetEdit } = useReplyE
 
 ## Returns
 
-| Field          | Type                                                      | Description                                                                                                                                                                                         |
-| -------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `replyMessage` | `Ref<Message \| null>`                                    | Message currently being replied to, or `null`.                                                                                                                                                      |
-| `editMessage`  | `Ref<Message \| null>`                                    | Message currently being edited, or `null`.                                                                                                                                                          |
-| `dispatch`     | `(payload: { action: Action; message: Message }) => void` | Dispatches a `message-action-handler` payload. Sets `replyMessage` / `editMessage` for the built-in reply/edit actions and is otherwise a no-op so hosts can still chain custom actions through it. |
-| `resetReply`   | `() => void`                                              | Clears `replyMessage`. Wire to `ChatFooter`'s `reset-reply-message` event.                                                                                                                          |
-| `resetEdit`    | `() => void`                                              | Clears `editMessage`. Wire to `ChatFooter`'s `reset-edit-message` event.                                                                                                                            |
+| Field          | Type                                                           | Description                                                                                                                                                               |
+| -------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `replyMessage` | `Ref<MessageModel \| null>`                                    | Message currently being replied to, or `null`.                                                                                                                            |
+| `editMessage`  | `Ref<MessageModel \| null>`                                    | Message currently being edited, or `null`.                                                                                                                                |
+| `dispatch`     | `(payload: { action: Action; message: MessageModel }) => void` | Consumes a `message-action-handler` payload. Sets `replyMessage` / `editMessage` for the built-in reply/edit actions and is otherwise a no-op; it does not emit an event. |
+| `resetReply`   | `() => void`                                                   | Clears `replyMessage`. Wire to `ChatFooter`'s `reset-reply-message` event.                                                                                                |
+| `resetEdit`    | `() => void`                                                   | Clears `editMessage`. Wire to `ChatFooter`'s `reset-edit-message` event.                                                                                                  |
 
 ## Example — custom composer
 
 ```vue
 <script setup lang="ts">
-import { useReplyEdit } from '@advanced-chat/components'
-import type { Action, MessageModel } from '@advanced-chat/components'
+import { ref } from 'vue'
+import {
+  useReplyEdit,
+  type Action,
+  type ChatModel,
+  type MessageModel,
+} from '@advanced-chat/components'
+
+declare function openForwardModal(message: MessageModel): void
+
+const activeChat = ref<ChatModel | null>(null)
 
 const { replyMessage, editMessage, dispatch, resetReply, resetEdit } = useReplyEdit({
   resetKey: () => activeChat.value?.id,
@@ -68,6 +77,9 @@ const onMessageAction = (payload: { action: Action; message: MessageModel }) => 
   />
 </template>
 ```
+
+`MyMessageList`, `MyComposer`, and `openForwardModal` are intentionally
+app-owned parts of this composition example.
 
 ## Notes
 

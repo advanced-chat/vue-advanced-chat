@@ -14,6 +14,7 @@ import {
 } from './stories.fixtures.ts'
 
 const meta = {
+  title: 'Components/AdvancedChat',
   component: AdvancedChat,
   tags: ['autodocs'],
   parameters: {
@@ -139,6 +140,7 @@ export const ReconnectingWithHistoryPreserved: Story = {
 }
 
 export const StatefulHostSendWorkflow: Story = {
+  name: 'Send and display a new message',
   args: {
     'onSend-message': fn(),
   },
@@ -218,6 +220,7 @@ export const MobileListToChatNavigation: Story = {
 }
 
 export const SearchInteractsWithList: Story = {
+  name: 'Search conversations',
   args: {
     'onSearch-chat': fn(),
   },
@@ -232,6 +235,7 @@ export const SearchInteractsWithList: Story = {
 }
 
 export const ClickAnotherChatEmitsOpen: Story = {
+  name: 'Open another chat',
   args: {
     'onOpen-chat': fn(),
   },
@@ -245,6 +249,7 @@ export const ClickAnotherChatEmitsOpen: Story = {
 }
 
 export const SendMessageEmitsPayload: Story = {
+  name: 'Send a message',
   args: {
     'onSend-message': fn(),
   },
@@ -262,6 +267,7 @@ export const SendMessageEmitsPayload: Story = {
 }
 
 export const ReplyActionPrefillsFooter: Story = {
+  name: 'Reply to a message',
   args: {
     'onMessage-action-handler': fn(),
   },
@@ -284,6 +290,7 @@ export const ReplyActionPrefillsFooter: Story = {
 }
 
 export const ToggleChatListEmitsAndRotatesIcon: Story = {
+  name: 'Toggle the chat list',
   play: async ({ canvasElement }) => {
     const toggle = canvasElement.querySelector('.acc-toggle-button') as HTMLElement
     expect(toggle).toBeTruthy()
@@ -314,6 +321,7 @@ export const ThemeOverride: Story = {
 }
 
 export const HeaderMenuActionFires: Story = {
+  name: 'Choose a header action',
   args: {
     'onMenu-action-handler': fn(),
   },
@@ -331,6 +339,7 @@ export const HeaderMenuActionFires: Story = {
 }
 
 export const ChatInfoClickFires: Story = {
+  name: 'Open chat details',
   args: {
     chatInfoEnabled: true,
     'onShow-chat-info': fn(),
@@ -343,6 +352,7 @@ export const ChatInfoClickFires: Story = {
 }
 
 export const ChatActionHandlerEmits: Story = {
+  name: 'Choose a chat action',
   args: {
     chatActions: [{ id: 'archive', label: 'Archive' }],
     'onChat-action-handler': fn(),
@@ -360,6 +370,7 @@ export const ChatActionHandlerEmits: Story = {
 }
 
 export const DraftClearsWhenChatChanges: Story = {
+  name: 'Switch chats with a draft',
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const textarea = canvas.getByPlaceholderText('Type a message') as HTMLTextAreaElement
@@ -386,6 +397,7 @@ export const PublicStateSurfaces: Story = {
 }
 
 export const SendIconCanBeHidden: Story = {
+  name: 'Composer without a send button',
   args: {
     showSendIcon: false,
   },
@@ -395,6 +407,7 @@ export const SendIconCanBeHidden: Story = {
 }
 
 export const OnlyFirstUnreadDividerRenders: Story = {
+  name: 'Unread messages divider',
   args: {
     messages: sampleMessages.map((message) => ({ ...message, unread: true })),
   },

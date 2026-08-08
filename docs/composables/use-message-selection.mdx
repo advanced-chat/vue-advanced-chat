@@ -16,9 +16,11 @@ in.
 ## Signature
 
 ```ts
-import { useMessageSelection } from '@advanced-chat/components'
+import { useMessageSelection, type Id } from '@advanced-chat/components'
 
-const { selected, selectedIds, toggle, clear, cancel } = useMessageSelection<T>({
+type Selectable = { id: Id }
+
+const { selected, selectedIds, toggle, clear, cancel } = useMessageSelection<Selectable>({
   enabled,
   resetKey,
   onCancel,
@@ -47,11 +49,13 @@ const { selected, selectedIds, toggle, clear, cancel } = useMessageSelection<T>(
 
 ```vue
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useMessageSelection } from '@advanced-chat/components'
-import type { ChatModel } from '@advanced-chat/components'
+import { ref } from 'vue'
+import { useMessageSelection, type ChatModel } from '@advanced-chat/components'
 
-const chats = ref<ChatModel[]>([...])
+declare function archiveChats(ids: string[]): void
+declare function openChat(chat: ChatModel): void
+
+const chats = ref<ChatModel[]>([])
 const selectionMode = ref(false)
 
 const { selected, selectedIds, toggle, cancel } = useMessageSelection<ChatModel>({
@@ -68,7 +72,9 @@ const archive = () => {
 </script>
 
 <template>
-  <button @click="selectionMode = !selectionMode">Select</button>
+  <button @click="selectionMode ? cancel() : (selectionMode = true)">
+    {{ selectionMode ? 'Exit selection' : 'Select' }}
+  </button>
   <button v-if="selected.length" @click="archive">Archive ({{ selected.length }})</button>
   <button v-if="selected.length" @click="cancel">Cancel</button>
   <div
@@ -82,6 +88,9 @@ const archive = () => {
 </template>
 ```
 
+`archiveChats` and `openChat` are intentionally declared as app-owned functions
+in this example.
+
 ## Notes
 
 - `selected.value` is always an array, never `undefined`. Safe to
@@ -92,3 +101,6 @@ const archive = () => {
   presses a "cancel" button.
 - The composable does not track which item was _last_ selected. If
   you need that for shift-click range-select, layer it on top.
+- Changing `enabled` to `false` prevents future toggles but does not clear an
+  existing selection. Call `clear()` or `cancel()` when leaving selection mode
+  if that state should be discarded.

@@ -4,6 +4,7 @@ import { expect, within } from 'storybook/test'
 import Layout from './Layout.vue'
 
 const meta = {
+  title: 'Components/Layout',
   component: Layout,
   tags: ['autodocs'],
   args: {
@@ -17,6 +18,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const SlotHeightAndThemeContract: Story = {
+  name: 'Embedded content with a theme',
   render: (args) => ({
     components: { Layout },
     setup: () => ({ args }),
