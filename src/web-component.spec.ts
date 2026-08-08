@@ -22,26 +22,26 @@ describe('web component entrypoint', () => {
   })
 
   it('is idempotent and supports an explicit tag name', () => {
-    const first = registerAdvancedChat({ tagName: 'advanced-chat-test' })
-    const second = registerAdvancedChat({ tagName: 'advanced-chat-test' })
+    const first = registerAdvancedChat({ tagName: 'advanced-chat-components-test' })
+    const second = registerAdvancedChat({ tagName: 'advanced-chat-components-test' })
 
     expect(first).toBe(second)
-    expect(customElements.get('advanced-chat-test')).toBe(first)
+    expect(customElements.get('advanced-chat-components-test')).toBe(first)
   })
 
   it('does not silently discard options for a foreign registration', () => {
-    customElements.define('advanced-chat-foreign-test', class extends HTMLElement {})
+    customElements.define('advanced-chat-components-foreign-test', class extends HTMLElement {})
 
     expect(() =>
       registerAdvancedChat({
-        tagName: 'advanced-chat-foreign-test',
+        tagName: 'advanced-chat-components-foreign-test',
         strings: { 'chat.state.error': 'Ignored error' },
       }),
     ).toThrow('already registered by another constructor')
   })
 
   it('mounts with assigned DOM properties and renders them', async () => {
-    const Element = registerAdvancedChat({ tagName: 'advanced-chat-props-test' })
+    const Element = registerAdvancedChat({ tagName: 'advanced-chat-components-props-test' })
     const element = new Element()
     element.status = 'error'
     element.statusMessage = 'Could not load this chat'
@@ -49,17 +49,17 @@ describe('web component entrypoint', () => {
 
     await mount(element)
 
-    expect(element.querySelector('.vac-chat-root')?.getAttribute('data-status')).toBe('error')
-    expect(element.querySelector('.vac-state-panel p')?.textContent).toBe(
+    expect(element.querySelector('.acc-chat-root')?.getAttribute('data-status')).toBe('error')
+    expect(element.querySelector('.acc-state-panel p')?.textContent).toBe(
       'Could not load this chat',
     )
-    expect(element.querySelector<HTMLButtonElement>('.vac-state-panel button')?.textContent).toBe(
+    expect(element.querySelector<HTMLButtonElement>('.acc-state-panel button')?.textContent).toBe(
       'Try again',
     )
   })
 
   it('exposes actual component event payloads as typed direct details', async () => {
-    const Element = registerAdvancedChat({ tagName: 'advanced-chat-events-test' })
+    const Element = registerAdvancedChat({ tagName: 'advanced-chat-components-events-test' })
     const element = new Element()
     element.currentUser = { id: 'current-user' }
     element.chats = []
@@ -82,7 +82,7 @@ describe('web component entrypoint', () => {
   })
 
   it('emits delegated standards-based DOM events', async () => {
-    const Element = registerAdvancedChat({ tagName: 'advanced-chat-bubbling-test' })
+    const Element = registerAdvancedChat({ tagName: 'advanced-chat-components-bubbling-test' })
     const container = document.createElement('div')
     const element = new Element()
     element.status = 'error'
@@ -95,7 +95,7 @@ describe('web component entrypoint', () => {
 
     await Promise.resolve()
     await nextTick()
-    element.querySelector<HTMLButtonElement>('.vac-state-panel button')?.click()
+    element.querySelector<HTMLButtonElement>('.acc-state-panel button')?.click()
 
     expect(receivedEvent?.detail).toBeNull()
     expect(receivedEvent?.bubbles).toBe(true)
@@ -111,7 +111,7 @@ describe('web component entrypoint', () => {
 
     await mount(element)
 
-    expect(element.querySelector('.vac-state-panel p')?.textContent).toBe(
+    expect(element.querySelector('.acc-state-panel p')?.textContent).toBe(
       'Localized web-component error',
     )
   })

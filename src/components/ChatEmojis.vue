@@ -42,19 +42,19 @@ const emit = defineEmits<ChatEmojisEvents>()
     :listbox-id="listboxId"
     layout="horizontal"
     :aria-label="strings['chat.autocomplete.emojis']"
-    class="vac-emojis-menu"
+    class="acc-emojis-menu"
     @commit="(emoji) => emit('select-emoji', emoji)"
     @activate-item="emit('activate-item')"
     @active-descendant-change="(value) => emit('active-descendant-change', value)"
   >
     <template #default="{ item }">
-      <div class="vac-emoji-chip">{{ item }}</div>
+      <div class="acc-emoji-chip">{{ item }}</div>
     </template>
   </AutocompleteMenu>
 </template>
 
 <style scoped lang="scss">
-.vac-emoji-chip {
+.acc-emoji-chip {
   min-width: 38px;
   height: 38px;
   display: flex;

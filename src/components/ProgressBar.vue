@@ -1,7 +1,7 @@
 <template>
-  <transition name="vac-fade-spinner" appear>
+  <transition name="acc-fade-spinner" appear>
     <div
-      class="vac-progress-wrapper"
+      class="acc-progress-wrapper"
       role="progressbar"
       aria-label="Upload progress"
       aria-valuemin="0"
@@ -24,14 +24,14 @@
         />
       </svg>
       <div
-        class="vac-progress-content"
+        class="acc-progress-content"
         :style="{
           height: radius * 2 - 19 + 'px',
           width: radius * 2 - 19 + 'px',
         }"
       >
-        <div class="vac-progress-text">
-          {{ progress }}<span class="vac-progress-percent">%</span>
+        <div class="acc-progress-text">
+          {{ progress }}<span class="acc-progress-percent">%</span>
         </div>
       </div>
     </div>
@@ -59,7 +59,7 @@ const strokeDashoffset = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.vac-progress-wrapper {
+.acc-progress-wrapper {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -72,7 +72,7 @@ const strokeDashoffset = computed(() => {
     transform-origin: 50% 50%;
   }
 
-  .vac-progress-content {
+  .acc-progress-content {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -82,7 +82,7 @@ const strokeDashoffset = computed(() => {
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 50%;
 
-    .vac-progress-text {
+    .acc-progress-text {
       position: absolute;
       left: 50%;
       top: 50%;
@@ -90,7 +90,7 @@ const strokeDashoffset = computed(() => {
       font-weight: bold;
       color: white;
 
-      .vac-progress-percent {
+      .acc-progress-percent {
         font-size: 9px;
         font-weight: normal;
       }

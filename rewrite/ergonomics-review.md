@@ -213,10 +213,10 @@ Recommendation: standardize on `id`, `name`, `avatar`, `count`-suffixed counters
 
 The rewrite consistently renamed `room` → `chat`, but several slot
 names and DOM ids still say "room": `room-header`, `room-options`,
-`room-list-item_<id>`, `infinite-loader-rooms`, `vac-rooms-empty`.
+`room-list-item_<id>`, `infinite-loader-rooms`, `acc-rooms-empty`.
 
 Recommendation: do a final pass on slot names. The CSS class names
-(`vac-room-*`) can stay (CSS is internal), but the slot names are
+(`acc-room-*`) can stay (CSS is internal), but the slot names are
 public API. `P0`.
 
 ## Component prop ergonomics

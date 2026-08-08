@@ -68,7 +68,7 @@ const clickUserTag = (user: User) => {
 </script>
 
 <template>
-  <div class="vac-message-files-container">
+  <div class="acc-message-files-container">
     <div v-for="(file, i) in visualMediaFiles" :key="i + 'iv'">
       <MessageFile
         :file="file"
@@ -81,7 +81,7 @@ const clickUserTag = (user: User) => {
       </MessageFile>
     </div>
 
-    <div v-for="(file, i) in otherFiles" :key="i + 'a'" class="vac-file-wrapper">
+    <div v-for="(file, i) in otherFiles" :key="i + 'a'" class="acc-file-wrapper">
       <ProgressBar
         v-if="file.progress != null"
         :progress="clampProgress(file.progress)"
@@ -89,8 +89,8 @@ const clickUserTag = (user: User) => {
       />
       <button
         type="button"
-        class="vac-file-container"
-        :class="{ 'vac-file-container-progress': file.progress != null }"
+        class="acc-file-container"
+        :class="{ 'acc-file-container-progress': file.progress != null }"
         :aria-label="
           messageSelectionEnabled
             ? `Select message containing ${file.name}`
@@ -98,15 +98,15 @@ const clickUserTag = (user: User) => {
         "
         @click="openFile($event, file, 'download')"
       >
-        <span class="vac-svg-button">
+        <span class="acc-svg-button">
           <slot name="document-icon">
             <SvgIcon name="document" />
           </slot>
         </span>
-        <span class="vac-text-ellipsis">
+        <span class="acc-text-ellipsis">
           {{ file.name }}
         </span>
-        <span v-if="file.extension" class="vac-text-ellipsis vac-text-extension">
+        <span v-if="file.extension" class="acc-text-ellipsis acc-text-extension">
           {{ file.extension }}
         </span>
       </button>
@@ -122,12 +122,12 @@ const clickUserTag = (user: User) => {
 </template>
 
 <style scoped lang="scss">
-.vac-message-files-container {
-  .vac-file-wrapper {
+.acc-message-files-container {
+  .acc-file-wrapper {
     position: relative;
     width: fit-content;
 
-    .vac-file-container {
+    .acc-file-container {
       height: 60px;
       width: 60px;
       margin: 3px 0 5px;
@@ -148,11 +148,11 @@ const clickUserTag = (user: User) => {
         width: 30px;
       }
 
-      &.vac-file-container-progress {
+      &.acc-file-container-progress {
         background-color: rgba(0, 0, 0, 0.6);
         color: #fff;
 
-        :deep(.vac-text-extension) {
+        :deep(.acc-text-extension) {
           color: #fff;
         }
       }

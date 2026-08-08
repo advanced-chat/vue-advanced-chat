@@ -186,10 +186,10 @@ onBeforeUnmount(() => {
 
 <template>
   <div>
-    <div class="vac-audio-player">
+    <div class="acc-audio-player">
       <button
         type="button"
-        class="vac-svg-button"
+        class="acc-svg-button"
         :disabled="!audioSource"
         :tabindex="messageSelectionEnabled || !audioSource ? -1 : 0"
         :aria-label="isPlaying ? 'Pause audio' : 'Play audio'"
@@ -218,11 +218,11 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped lang="scss">
-.vac-audio-player {
+.acc-audio-player {
   display: flex;
   margin: 8px 0 5px;
 
-  .vac-svg-button {
+  .acc-svg-button {
     display: flex;
     align-items: center;
     max-width: 18px;
@@ -240,10 +240,10 @@ onBeforeUnmount(() => {
 }
 
 @media only screen and (max-width: 768px) {
-  .vac-audio-player {
+  .acc-audio-player {
     margin: 4px 0 0;
 
-    .vac-svg-button {
+    .acc-svg-button {
       max-width: 16px;
       margin-left: 5px;
     }

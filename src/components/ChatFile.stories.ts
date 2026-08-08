@@ -71,7 +71,7 @@ export const LoadingShowsLoader: Story = {
     },
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-blur-loading')).toBeTruthy()
-    expect(canvasElement.querySelector('.vac-loader-wrapper')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-blur-loading')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-loader-wrapper')).toBeTruthy()
   },
 }

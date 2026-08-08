@@ -30,7 +30,7 @@ export const NewMessageDivider: Story = {
     message: { ...sampleMessages[2]!, unread: true },
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-line-new')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-line-new')).toBeTruthy()
   },
 }
 
@@ -40,7 +40,7 @@ export const NewMessageDividerHidden: Story = {
     showNewMessagesDivider: false,
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-line-new')).toBeFalsy()
+    expect(canvasElement.querySelector('.acc-line-new')).toBeFalsy()
   },
 }
 
@@ -54,7 +54,7 @@ export const DateDividerWhenDayChanges: Story = {
     index: 1,
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-card-date')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-card-date')).toBeTruthy()
   },
 }
 
@@ -65,6 +65,6 @@ export const FirstMessageDateDivider: Story = {
     index: 0,
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-card-date')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-card-date')).toBeTruthy()
   },
 }

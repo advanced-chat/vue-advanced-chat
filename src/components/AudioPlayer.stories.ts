@@ -72,7 +72,7 @@ export const Default: Story = {
 export const PlayButtonIsRendered: Story = {
   args: {},
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('#vac-icon-audio-play')).toBeTruthy()
+    expect(canvasElement.querySelector('#acc-icon-audio-play')).toBeTruthy()
   },
 }
 
@@ -80,7 +80,7 @@ export const SeekIncludesZero: Story = {
   args: {},
   play: async ({ canvasElement }) => {
     const audio = canvasElement.querySelector('audio') as HTMLAudioElement
-    const bar = canvasElement.querySelector('.vac-player-bar') as HTMLElement
+    const bar = canvasElement.querySelector('.acc-player-bar') as HTMLElement
     const media = mockAudio(audio)
 
     Object.defineProperty(bar, 'getBoundingClientRect', {

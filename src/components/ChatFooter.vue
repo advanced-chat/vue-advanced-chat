@@ -482,7 +482,7 @@ const onKeydown = (event: KeyboardEvent) => {
   <div
     v-if="showFooter && chat"
     id="room-footer"
-    class="vac-room-footer"
+    class="acc-room-footer"
     @keydown.esc="closePopups"
   >
     <ChatEmojis
@@ -505,15 +505,15 @@ const onKeydown = (event: KeyboardEvent) => {
       @active-descendant-change="activeUserDescendant = $event"
     />
 
-    <div v-if="replyMessage" class="vac-footer-reply-wrapper">
+    <div v-if="replyMessage" class="acc-footer-reply-wrapper">
       <MessageReply
         :message="{ ...replyMessage, reply: replyMessage }"
         :users="users"
-        class="vac-footer-reply"
+        class="acc-footer-reply"
       />
       <button
         type="button"
-        class="vac-svg-button vac-footer-reply-close"
+        class="acc-svg-button acc-footer-reply-close"
         :aria-label="strings['chat.cancel-reply']"
         @click="cancelReply"
       >
@@ -527,11 +527,11 @@ const onKeydown = (event: KeyboardEvent) => {
     <ChatFiles :files="files" @remove-file="removeFile" @reset-message="resetMessage" />
 
     <div
-      class="vac-box-footer"
-      :class="{ 'vac-box-footer-border': !files.length && !replyMessage }"
+      class="acc-box-footer"
+      :class="{ 'acc-box-footer-border': !files.length && !replyMessage }"
     >
       <div
-        class="vac-composer-combobox"
+        class="acc-composer-combobox"
         role="combobox"
         aria-label="Message suggestions"
         aria-haspopup="listbox"
@@ -543,9 +543,9 @@ const onKeydown = (event: KeyboardEvent) => {
           :id="textareaId"
           v-model="message"
           :placeholder="strings['chat.message.placeholder']"
-          class="vac-textarea"
+          class="acc-textarea"
           :disabled="disabled"
-          :class="{ 'vac-textarea-outline': editedMessage }"
+          :class="{ 'acc-textarea-outline': editedMessage }"
           :aria-label="strings['chat.message.placeholder']"
           aria-autocomplete="list"
           :aria-controls="activeListboxId"
@@ -556,11 +556,11 @@ const onKeydown = (event: KeyboardEvent) => {
         />
       </div>
 
-      <div class="vac-icon-textarea">
+      <div class="acc-icon-textarea">
         <button
           v-if="editedMessage"
           type="button"
-          class="vac-svg-button"
+          class="acc-svg-button"
           :aria-label="strings['chat.cancel-edit']"
           @click="cancelEdit"
         >
@@ -570,11 +570,11 @@ const onKeydown = (event: KeyboardEvent) => {
           </slot>
         </button>
 
-        <div v-if="showEmojis" class="vac-emoji-button">
+        <div v-if="showEmojis" class="acc-emoji-button">
           <button
             :id="emojiPickerButtonId"
             type="button"
-            class="vac-svg-button"
+            class="acc-svg-button"
             :disabled="disabled"
             aria-label="Choose an emoji"
             aria-haspopup="dialog"
@@ -590,7 +590,7 @@ const onKeydown = (event: KeyboardEvent) => {
           <div
             v-if="emojiOpened"
             :id="emojiPickerId"
-            class="vac-picker-shell"
+            class="acc-picker-shell"
             role="dialog"
             aria-label="Emoji picker"
             :aria-labelledby="emojiPickerButtonId"
@@ -603,7 +603,7 @@ const onKeydown = (event: KeyboardEvent) => {
         <button
           v-if="showFiles"
           type="button"
-          class="vac-svg-button"
+          class="acc-svg-button"
           :disabled="disabled"
           aria-label="Attach files"
           @click="fileInput?.click()"
@@ -628,8 +628,8 @@ const onKeydown = (event: KeyboardEvent) => {
         <button
           v-if="showSendIcon"
           type="button"
-          class="vac-svg-button"
-          :class="{ 'vac-send-disabled': isMessageEmpty }"
+          class="acc-svg-button"
+          :class="{ 'acc-send-disabled': isMessageEmpty }"
           :disabled="disabled || isMessageEmpty"
           aria-label="Send message"
           @click="sendMessage"
@@ -645,23 +645,23 @@ const onKeydown = (event: KeyboardEvent) => {
 </template>
 
 <style scoped lang="scss">
-.vac-room-footer {
+.acc-room-footer {
   position: relative;
   padding: 12px 16px 16px;
   background: var(--chat-footer-bg-color);
   border-top: var(--chat-border-style);
 }
 
-.vac-footer-reply-wrapper {
+.acc-footer-reply-wrapper {
   position: relative;
 }
 
-.vac-footer-reply {
+.acc-footer-reply {
   margin: 0 0 10px;
   padding-right: 36px;
 }
 
-.vac-footer-reply-close {
+.acc-footer-reply-close {
   position: absolute;
   top: 3px;
   right: 3px;
@@ -670,7 +670,7 @@ const onKeydown = (event: KeyboardEvent) => {
   cursor: pointer;
 }
 
-.vac-box-footer {
+.acc-box-footer {
   display: flex;
   align-items: flex-end;
   gap: 8px;
@@ -690,12 +690,12 @@ const onKeydown = (event: KeyboardEvent) => {
       0 8px 24px rgba(30, 28, 48, 0.07);
   }
 
-  &.vac-box-footer-border {
+  &.acc-box-footer-border {
     border-top: 0;
   }
 }
 
-.vac-textarea {
+.acc-textarea {
   width: 100%;
   min-height: 42px;
   max-height: 140px;
@@ -706,21 +706,21 @@ const onKeydown = (event: KeyboardEvent) => {
   color: var(--chat-color);
   outline: 0;
 
-  &.vac-textarea-outline {
+  &.acc-textarea-outline {
     border-color: var(--chat-border-color-input-selected);
   }
 }
 
-.vac-composer-combobox {
+.acc-composer-combobox {
   width: 100%;
 }
 
-.vac-icon-textarea {
+.acc-icon-textarea {
   display: flex;
   align-items: center;
   gap: 4px;
 
-  .vac-svg-button {
+  .acc-svg-button {
     width: 34px;
     height: 34px;
     max-height: 34px;
@@ -734,24 +734,24 @@ const onKeydown = (event: KeyboardEvent) => {
     }
   }
 
-  > .vac-svg-button:last-child:not(.vac-send-disabled) {
+  > .acc-svg-button:last-child:not(.acc-send-disabled) {
     background: var(--chat-bg-color-button);
     box-shadow: 0 6px 14px color-mix(in srgb, var(--chat-bg-color-button) 30%, transparent);
   }
 }
 
-.vac-emoji-button {
+.acc-emoji-button {
   position: relative;
 }
 
-.vac-picker-shell {
+.acc-picker-shell {
   position: absolute;
   right: 0;
   bottom: calc(100% + 8px);
   z-index: 8;
 }
 
-.vac-send-disabled {
+.acc-send-disabled {
   opacity: 0.4;
 }
 </style>

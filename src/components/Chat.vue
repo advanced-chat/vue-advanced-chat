@@ -349,9 +349,9 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
 </script>
 
 <template>
-  <div class="vac-col-messages">
+  <div class="acc-col-messages">
     <template v-if="!currentUser || !chat">
-      <div class="vac-container-center vac-room-empty">
+      <div class="acc-container-center acc-room-empty">
         <!-- @slot Empty-state content rendered when `chat` or `currentUser` is missing. -->
         <slot name="no-chat-selected">
           <div>{{ strings['chat.empty'] }}</div>
@@ -378,14 +378,14 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
         @cancel-message-selection="cancelSelection"
       />
 
-      <div ref="scrollContainer" class="vac-container-scroll" @scroll.passive="onScroll">
+      <div ref="scrollContainer" class="acc-container-scroll" @scroll.passive="onScroll">
         <Loader :show="loadingMessages" />
 
-        <div v-if="!loadingMessages && !messages.length" class="vac-room-empty">
+        <div v-if="!loadingMessages && !messages.length" class="acc-room-empty">
           {{ strings['chat.messages.empty'] }}
         </div>
 
-        <div v-else class="vac-messages-container">
+        <div v-else class="acc-messages-container">
           <ChatMessage
             v-for="(message, index) in messages"
             :key="message.id"
@@ -409,11 +409,11 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
           />
         </div>
 
-        <transition name="vac-bounce">
+        <transition name="acc-bounce">
           <button
             v-if="newMessagesAvailable && !userAtBottom"
             type="button"
-            class="vac-scroll-bottom"
+            class="acc-scroll-bottom"
             :aria-label="strings['chat.scroll-to-bottom']"
             @click="scrollToBottom()"
           >
@@ -421,7 +421,7 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
             <slot name="scroll-icon">
               <SvgIcon name="dropdown" param="scroll" />
             </slot>
-            <span v-if="newMessagesPillCount" class="vac-scroll-bottom-badge">
+            <span v-if="newMessagesPillCount" class="acc-scroll-bottom-badge">
               {{ newMessagesPillCount }}
             </span>
           </button>
@@ -430,7 +430,7 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
 
       <div
         v-if="showTypingInComposer && composerTypingUsers"
-        class="vac-composer-typing"
+        class="acc-composer-typing"
         aria-live="polite"
       >
         <!--
@@ -468,14 +468,14 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
       />
     </template>
 
-    <transition name="vac-fade-preview" appear>
+    <transition name="acc-fade-preview" appear>
       <MediaPreview :file="previewFile" @close-media-preview="previewFile = null" />
     </transition>
   </div>
 </template>
 
 <style scoped lang="scss">
-.vac-col-messages {
+.acc-col-messages {
   position: relative;
   display: flex;
   flex: 1 1 auto;
@@ -484,7 +484,7 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
   height: 100%;
 }
 
-.vac-container-scroll {
+.acc-container-scroll {
   position: relative;
   flex: 1 1 auto;
   overflow-y: auto;
@@ -494,25 +494,25 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
   scrollbar-width: thin;
 }
 
-.vac-messages-container {
+.acc-messages-container {
   padding: 18px 0 8px;
 }
 
-.vac-room-empty {
+.acc-room-empty {
   margin: auto;
   color: var(--chat-message-color-started);
   text-align: center;
   padding: 24px;
 }
 
-.vac-container-center {
+.acc-container-center {
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 1;
 }
 
-.vac-scroll-bottom {
+.acc-scroll-bottom {
   position: sticky;
   bottom: 12px;
   margin-left: auto;
@@ -535,7 +535,7 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
   }
 }
 
-.vac-composer-typing {
+.acc-composer-typing {
   padding: 4px 16px 0;
   font-size: 12px;
   color: var(--chat-message-color-timestamp);
@@ -543,7 +543,7 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
   background: var(--chat-footer-bg-color);
 }
 
-.vac-scroll-bottom-badge {
+.acc-scroll-bottom-badge {
   min-width: 16px;
   padding: 0 4px;
   border-radius: 999px;

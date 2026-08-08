@@ -105,17 +105,17 @@ const selectAction = (action: Action) => {
   <div
     v-if="!message.deleted"
     v-on-click-outside="closeAll"
-    class="vac-message-actions-wrapper"
-    :class="{ 'vac-message-actions-open': reactionsOpened || optionsOpened }"
+    class="acc-message-actions-wrapper"
+    :class="{ 'acc-message-actions-open': reactionsOpened || optionsOpened }"
     @keydown.esc="onEscape"
   >
-    <div class="vac-actions-shell">
-      <div v-if="showReactionEmojis" class="vac-reaction-picker">
+    <div class="acc-actions-shell">
+      <div v-if="showReactionEmojis" class="acc-reaction-picker">
         <button
           :id="reactionTriggerId"
           ref="reactionTrigger"
           type="button"
-          class="vac-svg-button vac-message-options"
+          class="acc-svg-button acc-message-options"
           aria-label="Add reaction"
           aria-haspopup="menu"
           :aria-expanded="reactionsOpened"
@@ -127,12 +127,12 @@ const selectAction = (action: Action) => {
           </slot>
         </button>
 
-        <transition name="vac-slide-left">
+        <transition name="acc-slide-left">
           <div
             v-if="reactionsOpened"
             :id="reactionMenuId"
             ref="reactionMenu"
-            class="vac-reactions-menu"
+            class="acc-reactions-menu"
             role="menu"
             :aria-labelledby="reactionTriggerId"
           >
@@ -141,7 +141,7 @@ const selectAction = (action: Action) => {
               :key="emoji"
               type="button"
               role="menuitem"
-              class="vac-reaction-option"
+              class="acc-reaction-option"
               :aria-label="`React with ${emoji}`"
               @click.stop="selectReaction(emoji)"
             >
@@ -151,12 +151,12 @@ const selectAction = (action: Action) => {
         </transition>
       </div>
 
-      <div v-if="filteredActions.length" class="vac-dropdown-picker">
+      <div v-if="filteredActions.length" class="acc-dropdown-picker">
         <button
           :id="optionsTriggerId"
           ref="optionsTrigger"
           type="button"
-          class="vac-svg-button vac-message-options"
+          class="acc-svg-button acc-message-options"
           aria-label="Message actions"
           aria-haspopup="menu"
           :aria-expanded="optionsOpened"
@@ -168,25 +168,25 @@ const selectAction = (action: Action) => {
           </slot>
         </button>
 
-        <transition name="vac-slide-left">
+        <transition name="acc-slide-left">
           <div
             v-if="optionsOpened"
             :id="optionsMenuId"
             ref="optionsMenu"
-            class="vac-menu-options"
+            class="acc-menu-options"
             role="menu"
             :aria-labelledby="optionsTriggerId"
           >
-            <div class="vac-menu-list">
+            <div class="acc-menu-list">
               <button
                 v-for="action in filteredActions"
                 :key="action.id"
                 type="button"
                 role="menuitem"
-                class="vac-menu-item"
+                class="acc-menu-item"
                 @click.stop="selectAction(action)"
               >
-                <SvgIcon v-if="action.icon" :name="action.icon" class="vac-menu-item-icon" />
+                <SvgIcon v-if="action.icon" :name="action.icon" class="acc-menu-item-icon" />
                 {{ action.label }}
               </button>
             </div>
@@ -198,7 +198,7 @@ const selectAction = (action: Action) => {
 </template>
 
 <style scoped lang="scss">
-.vac-message-actions-wrapper {
+.acc-message-actions-wrapper {
   position: absolute;
   bottom: -14px;
   right: 8px;
@@ -215,24 +215,24 @@ const selectAction = (action: Action) => {
 
   &:hover,
   &:focus-within,
-  &.vac-message-actions-open {
+  &.acc-message-actions-open {
     opacity: 1;
     transform: translateY(-1px);
   }
 }
 
-.vac-actions-shell {
+.acc-actions-shell {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.vac-reaction-picker,
-.vac-dropdown-picker {
+.acc-reaction-picker,
+.acc-dropdown-picker {
   position: relative;
 }
 
-.vac-message-options {
+.acc-message-options {
   padding: 2px;
   display: flex;
   align-items: center;
@@ -246,15 +246,15 @@ const selectAction = (action: Action) => {
   }
 }
 
-.vac-reactions-menu,
-.vac-menu-options {
+.acc-reactions-menu,
+.acc-menu-options {
   position: absolute;
   bottom: calc(100% + 6px);
   right: 0;
   z-index: 6;
 }
 
-.vac-reactions-menu {
+.acc-reactions-menu {
   display: flex;
   gap: 4px;
   padding: 6px;
@@ -264,7 +264,7 @@ const selectAction = (action: Action) => {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
-.vac-reaction-option {
+.acc-reaction-option {
   border: 0;
   background: transparent;
   cursor: pointer;

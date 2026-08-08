@@ -237,7 +237,7 @@ export const ClickAnotherChatEmitsOpen: Story = {
   },
   play: async ({ canvasElement, args }) => {
     // pick the second row in the chat list
-    const rows = canvasElement.querySelectorAll('.vac-room-item')
+    const rows = canvasElement.querySelectorAll('.acc-room-item')
     expect(rows.length).toBeGreaterThan(1)
     await userEvent.click(rows[1] as Element)
     await expect(args['onOpen-chat']).toHaveBeenCalled()
@@ -268,29 +268,29 @@ export const ReplyActionPrefillsFooter: Story = {
   play: async ({ canvasElement }) => {
     // open the dropdown of the first non-deleted message bubble
     const dropdown = canvasElement.querySelector(
-      '.vac-dropdown-picker .vac-message-options',
+      '.acc-dropdown-picker .acc-message-options',
     ) as HTMLElement
     await userEvent.click(dropdown)
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-menu-options')).toBeTruthy()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeTruthy()
     })
     const replyButton = within(canvasElement).getByText('Reply')
     await userEvent.click(replyButton)
     // footer should now show the reply preview
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-footer-reply-wrapper')).toBeTruthy()
+      expect(canvasElement.querySelector('.acc-footer-reply-wrapper')).toBeTruthy()
     })
   },
 }
 
 export const ToggleChatListEmitsAndRotatesIcon: Story = {
   play: async ({ canvasElement }) => {
-    const toggle = canvasElement.querySelector('.vac-toggle-button') as HTMLElement
+    const toggle = canvasElement.querySelector('.acc-toggle-button') as HTMLElement
     expect(toggle).toBeTruthy()
     // initial: icon is rotated 360 (default state)
     await userEvent.click(toggle)
     // after click: showChatList flips and the toggle re-renders without crashing
-    expect(canvasElement.querySelector('.vac-toggle-button')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-toggle-button')).toBeTruthy()
   },
 }
 
@@ -299,7 +299,7 @@ export const HiddenChatList: Story = {
     showChats: false,
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-rooms-container')).not.toBeVisible()
+    expect(canvasElement.querySelector('.acc-rooms-container')).not.toBeVisible()
   },
 }
 
@@ -308,7 +308,7 @@ export const ThemeOverride: Story = {
     theme: { base: 'light', overrides: { '--chat-message-bg-color-me': '#ffeb3b' } },
   },
   play: async ({ canvasElement }) => {
-    const card = canvasElement.querySelector('.vac-card-window') as HTMLElement
+    const card = canvasElement.querySelector('.acc-card-window') as HTMLElement
     expect(card.style.cssText).toContain('--chat-message-bg-color-me: #ffeb3b')
   },
 }
@@ -318,13 +318,13 @@ export const HeaderMenuActionFires: Story = {
     'onMenu-action-handler': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const menuTrigger = canvasElement.querySelector('.vac-room-options') as HTMLElement
+    const menuTrigger = canvasElement.querySelector('.acc-room-options') as HTMLElement
     expect(menuTrigger).toBeTruthy()
     await userEvent.click(menuTrigger)
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-menu-options')).toBeTruthy()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeTruthy()
     })
-    const item = canvasElement.querySelector('.vac-menu-item') as HTMLElement
+    const item = canvasElement.querySelector('.acc-menu-item') as HTMLElement
     await userEvent.click(item)
     await expect(args['onMenu-action-handler']).toHaveBeenCalled()
   },
@@ -336,7 +336,7 @@ export const ChatInfoClickFires: Story = {
     'onShow-chat-info': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const info = canvasElement.querySelector('.vac-info-wrapper.vac-item-clickable') as HTMLElement
+    const info = canvasElement.querySelector('.acc-info-wrapper.acc-item-clickable') as HTMLElement
     await userEvent.click(info)
     await expect(args['onShow-chat-info']).toHaveBeenCalled()
   },
@@ -348,12 +348,12 @@ export const ChatActionHandlerEmits: Story = {
     'onChat-action-handler': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const trigger = canvasElement.querySelector('.vac-list-room-options') as HTMLElement
+    const trigger = canvasElement.querySelector('.acc-list-room-options') as HTMLElement
     await userEvent.click(trigger)
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-menu-options')).toBeTruthy()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeTruthy()
     })
-    const action = canvasElement.querySelector('.vac-menu-item') as HTMLElement
+    const action = canvasElement.querySelector('.acc-menu-item') as HTMLElement
     await userEvent.click(action)
     await expect(args['onChat-action-handler']).toHaveBeenCalled()
   },
@@ -364,7 +364,7 @@ export const DraftClearsWhenChatChanges: Story = {
     const canvas = within(canvasElement)
     const textarea = canvas.getByPlaceholderText('Type a message') as HTMLTextAreaElement
     await userEvent.type(textarea, 'private draft')
-    const rows = canvasElement.querySelectorAll('.vac-room-item')
+    const rows = canvasElement.querySelectorAll('.acc-room-item')
     await userEvent.click(rows[1] as Element)
     await waitFor(() => expect(textarea.value).toBe(''))
   },
@@ -399,6 +399,6 @@ export const OnlyFirstUnreadDividerRenders: Story = {
     messages: sampleMessages.map((message) => ({ ...message, unread: true })),
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelectorAll('.vac-line-new')).toHaveLength(1)
+    expect(canvasElement.querySelectorAll('.acc-line-new')).toHaveLength(1)
   },
 }

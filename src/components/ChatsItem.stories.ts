@@ -32,7 +32,7 @@ export const WithActions: Story = {
     ],
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-list-room-options')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-list-room-options')).toBeTruthy()
   },
 }
 
@@ -42,12 +42,12 @@ export const ActionHandlerEmits: Story = {
     'onChat-action-handler': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const trigger = canvasElement.querySelector('.vac-list-room-options') as HTMLElement
+    const trigger = canvasElement.querySelector('.acc-list-room-options') as HTMLElement
     await userEvent.click(trigger)
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-menu-options')).toBeTruthy()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeTruthy()
     })
-    const item = canvasElement.querySelector('.vac-menu-item') as HTMLElement
+    const item = canvasElement.querySelector('.acc-menu-item') as HTMLElement
     await userEvent.click(item)
     await expect(args['onChat-action-handler']).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -62,7 +62,7 @@ export const UnreadBadge: Story = {
     chat: { ...(chats[0] as Chat), unreadCount: 5 },
   },
   play: async ({ canvasElement }) => {
-    const badge = canvasElement.querySelector('.vac-badge-counter')
+    const badge = canvasElement.querySelector('.acc-badge-counter')
     expect(badge?.textContent).toContain('5')
   },
 }
@@ -87,7 +87,7 @@ export const OnlineDot: Story = {
     chat: { ...(chats[0] as Chat), users: [users[0], users[1]] as User[] } as Chat,
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-state-circle')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-state-circle')).toBeTruthy()
   },
 }
 
@@ -113,7 +113,7 @@ export const AudioLastMessage: Story = {
     } as Chat,
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-icon-microphone')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-icon-microphone')).toBeTruthy()
     expect(canvasElement.textContent).toContain('1:05')
   },
 }

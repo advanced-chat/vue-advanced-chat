@@ -24,7 +24,7 @@ const reactions = computed(() => Object.entries(props.message.reactions || {}))
 const sendReaction = (event: MouseEvent, emoji: string, reaction: Array<string | number>) => {
   const reactionButton = event.currentTarget as HTMLElement
 
-  if (reactionButton.closest('.vac-message-row-selectable')) return
+  if (reactionButton.closest('.acc-message-row-selectable')) return
 
   event.stopPropagation()
   emit('send-message-reaction', { emoji, reaction })
@@ -32,14 +32,14 @@ const sendReaction = (event: MouseEvent, emoji: string, reaction: Array<string |
 </script>
 
 <template>
-  <transition-group v-if="!message.deleted" name="vac-slide-left" tag="div" class="vac-reactions">
+  <transition-group v-if="!message.deleted" name="acc-slide-left" tag="div" class="acc-reactions">
     <button
       v-for="[emoji, reaction] in reactions"
       v-show="reaction.length"
       :key="emoji"
       type="button"
-      class="vac-button-reaction"
-      :class="{ 'vac-reaction-me': reaction.some((id) => id === currentUser.id) }"
+      class="acc-button-reaction"
+      :class="{ 'acc-reaction-me': reaction.some((id) => id === currentUser.id) }"
       :aria-label="`${emoji} reaction from ${reaction.length} ${reaction.length === 1 ? 'person' : 'people'}`"
       @click="sendReaction($event, emoji, reaction)"
     >
@@ -49,14 +49,14 @@ const sendReaction = (event: MouseEvent, emoji: string, reaction: Array<string |
 </template>
 
 <style scoped lang="scss">
-.vac-reactions {
+.acc-reactions {
   display: flex;
   gap: 6px;
   margin-top: 6px;
   flex-wrap: wrap;
 }
 
-.vac-button-reaction {
+.acc-button-reaction {
   border: 0;
   border-radius: 999px;
   padding: 4px 9px;
@@ -81,7 +81,7 @@ const sendReaction = (event: MouseEvent, emoji: string, reaction: Array<string |
     margin-left: 4px;
   }
 
-  &.vac-reaction-me {
+  &.acc-reaction-me {
     background: var(--chat-message-bg-color-reaction-me);
     border: var(--chat-message-border-style-reaction-me);
 

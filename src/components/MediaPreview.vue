@@ -69,7 +69,7 @@ watch(
     v-if="file"
     ref="modal"
     tabindex="-1"
-    class="vac-media-preview"
+    class="acc-media-preview"
     role="dialog"
     aria-modal="true"
     :aria-label="`Preview ${file.name}`"
@@ -77,12 +77,12 @@ watch(
     @keydown.esc="closeModal"
     @keydown.tab="trapFocus"
   >
-    <transition name="vac-bounce-preview" appear>
-      <div v-if="isImage" class="vac-media-preview-container">
-        <div class="vac-image-preview" :style="{ 'background-image': `url('${file.url}')` }" />
+    <transition name="acc-bounce-preview" appear>
+      <div v-if="isImage" class="acc-media-preview-container">
+        <div class="acc-image-preview" :style="{ 'background-image': `url('${file.url}')` }" />
       </div>
 
-      <div v-else-if="isVideo" class="vac-media-preview-container">
+      <div v-else-if="isVideo" class="acc-media-preview-container">
         <video controls autoplay>
           <source :src="file.url" />
         </video>
@@ -91,7 +91,7 @@ watch(
 
     <button
       type="button"
-      class="vac-svg-button vac-close-button"
+      class="acc-svg-button acc-close-button"
       aria-label="Close media preview"
       @click="closeModal"
     >
@@ -103,7 +103,7 @@ watch(
 </template>
 
 <style scoped lang="scss">
-.vac-media-preview {
+.acc-media-preview {
   position: absolute;
   inset: 0;
   z-index: 30;
@@ -112,7 +112,7 @@ watch(
   justify-content: center;
   background: rgba(0, 0, 0, 0.86);
 
-  .vac-media-preview-container {
+  .acc-media-preview-container {
     width: min(90vw, 960px);
     max-height: 85vh;
     display: flex;
@@ -120,7 +120,7 @@ watch(
     justify-content: center;
   }
 
-  .vac-image-preview {
+  .acc-image-preview {
     width: 100%;
     min-height: 320px;
     max-height: 85vh;
@@ -136,7 +136,7 @@ watch(
     border-radius: 12px;
   }
 
-  .vac-close-button {
+  .acc-close-button {
     position: absolute;
     top: 18px;
     right: 18px;

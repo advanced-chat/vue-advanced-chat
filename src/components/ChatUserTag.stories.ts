@@ -44,7 +44,7 @@ export const ClickEmits: Story = {
     'onSelect-user-tag': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const firstRow = canvasElement.querySelector('.vac-autocomplete-item') as HTMLElement
+    const firstRow = canvasElement.querySelector('.acc-autocomplete-item') as HTMLElement
     await userEvent.click(firstRow)
     await expect(args['onSelect-user-tag']).toHaveBeenCalled()
     const calls = (args['onSelect-user-tag'] as ReturnType<typeof fn>).mock.calls
@@ -55,9 +55,9 @@ export const ClickEmits: Story = {
 export const HoverHighlightsRow: Story = {
   args: {},
   play: async ({ canvasElement }) => {
-    const rows = canvasElement.querySelectorAll('.vac-autocomplete-item')
+    const rows = canvasElement.querySelectorAll('.acc-autocomplete-item')
     rows[2]?.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }))
     await Promise.resolve()
-    expect(rows[2]?.classList.contains('vac-autocomplete-item-active')).toBe(true)
+    expect(rows[2]?.classList.contains('acc-autocomplete-item-active')).toBe(true)
   },
 }

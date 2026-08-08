@@ -88,7 +88,7 @@ const svgItem: SvgItem = {
 
 const svgId = computed(() => {
   const param = props.param ? '-' + props.param : ''
-  return `vac-icon-${props.name}${param}`
+  return `acc-icon-${props.name}${param}`
 })
 
 const size = computed(() => {
@@ -116,109 +116,109 @@ const size = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-#vac-icon-search {
+#acc-icon-search {
   fill: var(--chat-icon-color-search);
 }
 
-#vac-icon-add {
+#acc-icon-add {
   fill: var(--chat-icon-color-add);
 }
 
-#vac-icon-toggle {
+#acc-icon-toggle {
   fill: var(--chat-icon-color-toggle);
 }
 
-#vac-icon-menu {
+#acc-icon-menu {
   fill: var(--chat-icon-color-menu);
 }
 
-#vac-icon-close {
+#acc-icon-close {
   fill: var(--chat-icon-color-close);
 }
 
-#vac-icon-close-image {
+#acc-icon-close-image {
   fill: var(--chat-icon-color-close-image);
 }
 
-#vac-icon-file {
+#acc-icon-file {
   fill: var(--chat-icon-color-file);
 }
 
-#vac-icon-paperclip {
+#acc-icon-paperclip {
   fill: var(--chat-icon-color-paperclip);
 }
 
-#vac-icon-close-outline {
+#acc-icon-close-outline {
   fill: var(--chat-icon-color-close-outline);
 }
 
-#vac-icon-close-outline-preview {
+#acc-icon-close-outline-preview {
   fill: var(--chat-icon-color-close-preview);
 }
 
-#vac-icon-send {
+#acc-icon-send {
   fill: var(--chat-icon-color-send);
 }
 
-#vac-icon-send-disabled {
+#acc-icon-send-disabled {
   fill: var(--chat-icon-color-send-disabled);
 }
 
-#vac-icon-emoji {
+#acc-icon-emoji {
   fill: var(--chat-icon-color-emoji);
 }
 
-#vac-icon-emoji-reaction {
+#acc-icon-emoji-reaction {
   fill: var(--chat-icon-color-emoji-reaction);
 }
 
-#vac-icon-document {
+#acc-icon-document {
   fill: var(--chat-icon-color-document);
 }
 
-#vac-icon-pencil {
+#acc-icon-pencil {
   fill: var(--chat-icon-color-pencil);
 }
 
-#vac-icon-checkmark,
-#vac-icon-double-checkmark {
+#acc-icon-checkmark,
+#acc-icon-double-checkmark {
   fill: var(--chat-icon-color-checkmark);
 }
 
-#vac-icon-checkmark-seen,
-#vac-icon-double-checkmark-seen {
+#acc-icon-checkmark-seen,
+#acc-icon-double-checkmark-seen {
   fill: var(--chat-icon-color-checkmark-seen);
 }
 
-#vac-icon-eye {
+#acc-icon-eye {
   fill: var(--chat-icon-color-eye);
 }
 
-#vac-icon-dropdown-message {
+#acc-icon-dropdown-message {
   fill: var(--chat-icon-color-dropdown-message);
 }
 
-#vac-icon-dropdown-room {
+#acc-icon-dropdown-room {
   fill: var(--chat-icon-color-dropdown-room);
 }
 
-#vac-icon-dropdown-scroll {
+#acc-icon-dropdown-scroll {
   fill: var(--chat-icon-color-dropdown-scroll);
 }
 
-#vac-icon-audio-play {
+#acc-icon-audio-play {
   fill: var(--chat-icon-color-audio-play);
 }
 
-#vac-icon-audio-pause {
+#acc-icon-audio-pause {
   fill: var(--chat-icon-color-audio-pause);
 }
 
-#vac-icon-microphone {
+#acc-icon-microphone {
   fill: var(--chat-icon-color-microphone);
 }
 
-#vac-icon-deleted {
+#acc-icon-deleted {
   fill: var(--chat-message-color-deleted);
 }
 </style>

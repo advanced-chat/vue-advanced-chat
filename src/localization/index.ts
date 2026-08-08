@@ -58,7 +58,7 @@ export const negotiateLocale = (): SupportedLocale => {
 
   if (import.meta.env.DEV && lang) {
     console.warn(
-      `[advanced-chat] No bundled localization for "${lang}". ` +
+      `[advanced-chat-components] No bundled localization for "${lang}". ` +
         'Falling back to English. Pass overrides via AdvancedChatPlugin({ strings }).',
     )
   }
@@ -84,7 +84,7 @@ export const useLocalizationStrings = (): Strings => {
 
   if (import.meta.env.DEV) {
     console.warn(
-      '[advanced-chat] No AdvancedChatPlugin found — falling back to bundled English strings. ' +
+      '[advanced-chat-components] No AdvancedChatPlugin found — falling back to bundled English strings. ' +
         'Call `app.use(AdvancedChatPlugin())` so consumer overrides take effect.',
     )
   }

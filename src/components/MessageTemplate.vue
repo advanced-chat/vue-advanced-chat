@@ -64,7 +64,7 @@ const onUserTagClick = (event: Event) => {
 </script>
 
 <template>
-  <div class="vac-format-message-wrapper" :class="{ 'vac-text-ellipsis': singleLine }">
+  <div class="acc-format-message-wrapper" :class="{ 'acc-text-ellipsis': singleLine }">
     <template v-for="(part, i) in formattedMessageParts" :key="i">
       <div
         v-if="part.markdown && !part.singleLine"
@@ -73,38 +73,38 @@ const onUserTagClick = (event: Event) => {
         @click="onUserTagClick"
         v-html="part.value"
       />
-      <span v-else :key="`txt-${i}`" class="vac-format-text">{{ part.value }}</span>
+      <span v-else :key="`txt-${i}`" class="acc-format-text">{{ part.value }}</span>
     </template>
   </div>
 </template>
 
 <style scoped lang="scss">
-.vac-format-message-wrapper {
-  .vac-format-container {
+.acc-format-message-wrapper {
+  .acc-format-container {
     display: inline;
   }
 
-  .vac-icon-deleted {
+  .acc-icon-deleted {
     height: 14px;
     width: 14px;
     vertical-align: middle;
     margin: -2px 2px 0 0;
     fill: var(--chat-message-color-deleted);
 
-    &.vac-icon-deleted-room {
+    &.acc-icon-deleted-room {
       margin: -3px 1px 0 0;
       fill: var(--chat-room-color-message);
     }
   }
 
-  .vac-image-link-container {
+  .acc-image-link-container {
     background-color: var(--chat-message-bg-color-media);
     padding: 8px;
     margin: 2px auto;
     border-radius: 4px;
   }
 
-  .vac-image-link {
+  .acc-image-link {
     position: relative;
     background-color: var(--chat-message-bg-color-image) !important;
     background-size: contain;
@@ -117,7 +117,7 @@ const onUserTagClick = (event: Event) => {
     margin: 0 auto;
   }
 
-  .vac-image-link-message {
+  .acc-image-link-message {
     max-width: 166px;
     font-size: 12px;
   }

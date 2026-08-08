@@ -71,7 +71,7 @@ Because the variables live on the `Layout` root, you can override
 them globally:
 
 ```css
-.vac-card-window {
+.acc-card-window {
   --chat-message-bg-color-me: #0d579c;
 }
 ```
@@ -83,7 +83,7 @@ them globally:
 ```
 
 ```css
-.my-chat .vac-card-window {
+.my-chat .acc-card-window {
   --chat-message-bg-color-me: #0d579c;
 }
 ```
@@ -128,7 +128,7 @@ rendered inside `Layout`, links currently use the component rule
 `--chat-message-color-link` entry in `Styles` today.
 
 Because V3 renders in light DOM, hosts can override the anchor rule with normal
-CSS, for example `.my-chat .vac-card-window a { color: ... }`. This is a
+CSS, for example `.my-chat .acc-card-window a { color: ... }`. This is a
 selector-level override, not a supported theme token; a dedicated link token
 can be added in a future release after its light/dark contrast values are
 defined.

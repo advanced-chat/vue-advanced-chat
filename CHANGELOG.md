@@ -34,6 +34,8 @@ and the project follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Renamed the component CSS, transition, keyframe, and SVG identifier prefix
+  from `vac-` to `acc-`, including the documented light-DOM selectors.
 - Renamed the V3 project to `advanced-chat-components` while retaining the npm
   package name `@advanced-chat/components`. The default custom-element tag,
   browser globals, bundle filenames, repository metadata, and documentation now

@@ -108,11 +108,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="vac-message-file-container">
+  <div class="acc-message-file-container">
     <div
       v-if="isImage"
       ref="imageRef"
-      class="vac-message-image-container"
+      class="acc-message-image-container"
       @mouseover="imageHover = true"
       @mouseleave="imageHover = false"
       @focusin="imageHover = true"
@@ -133,14 +133,14 @@ onMounted(() => {
       </loader>
       <button
         type="button"
-        class="vac-message-image"
+        class="acc-message-image"
         :aria-label="
           messageSelectionEnabled
             ? `Select message containing ${file.name}`
             : `Preview ${file.name}`
         "
         :class="{
-          'vac-blur-loading': isImageLoading && message.sender.id === currentUser.id,
+          'acc-blur-loading': isImageLoading && message.sender.id === currentUser.id,
         }"
         :style="{
           'background-image': `url('${isImageLoading ? file.previewUrl || file.url : file.url}')`,
@@ -148,14 +148,14 @@ onMounted(() => {
         }"
         @click="openFile($event, 'preview')"
       />
-      <transition name="vac-fade-image">
+      <transition name="acc-fade-image">
         <div
           v-if="imageHover && !isImageLoading && !messageSelectionEnabled"
-          class="vac-image-buttons"
+          class="acc-image-buttons"
         >
           <button
             type="button"
-            class="vac-svg-button vac-button-view"
+            class="acc-svg-button acc-button-view"
             :aria-label="`Preview ${file.name}`"
             @click="openFile($event, 'preview')"
           >
@@ -165,7 +165,7 @@ onMounted(() => {
           </button>
           <button
             type="button"
-            class="vac-svg-button vac-button-download"
+            class="acc-svg-button acc-button-download"
             :aria-label="`Download ${file.name}`"
             @click="openFile($event, 'download')"
           >
@@ -179,7 +179,7 @@ onMounted(() => {
 
     <div
       v-else-if="isVideo"
-      class="vac-video-container"
+      class="acc-video-container"
       role="button"
       tabindex="0"
       :aria-label="
@@ -198,18 +198,18 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-.vac-message-file-container {
+.acc-message-file-container {
   position: relative;
   z-index: 0;
 
-  .vac-message-image-container {
+  .acc-message-image-container {
     position: relative;
     cursor: pointer;
     width: 320px;
     max-width: 100%;
   }
 
-  .vac-message-image {
+  .acc-message-image {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -224,7 +224,7 @@ onMounted(() => {
     cursor: pointer;
   }
 
-  .vac-image-buttons {
+  .acc-image-buttons {
     position: absolute;
     top: 0;
     left: 0;
@@ -251,8 +251,8 @@ onMounted(() => {
       width: 26px;
     }
 
-    .vac-button-view,
-    .vac-button-download {
+    .acc-button-view,
+    .acc-button-download {
       position: absolute;
       bottom: 6px;
       left: 7px;
@@ -266,13 +266,13 @@ onMounted(() => {
       left: 40px;
     }
 
-    .vac-button-view {
+    .acc-button-view {
       max-width: 18px;
       bottom: 8px;
     }
   }
 
-  .vac-video-container {
+  .acc-video-container {
     width: 350px;
     max-width: 100%;
     margin: 4px auto 5px;

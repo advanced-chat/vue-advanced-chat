@@ -99,7 +99,9 @@ const expectText = async (page, selector, expected, label) => {
   if (!el) return false
   const text = (await el.innerText()).trim()
   if (!text.includes(expected)) {
-    failures.push(`[${label}] expected ${selector} to contain "${expected}", got: ${text.slice(0, 80)}`)
+    failures.push(
+      `[${label}] expected ${selector} to contain "${expected}", got: ${text.slice(0, 80)}`,
+    )
     return false
   }
   return true
@@ -112,33 +114,35 @@ const screenshot = async (page, file) => {
 // ---------------- AdvancedChat: light & dark themes
 {
   const page = await browser.newPage({ viewport: { width: 1100, height: 720 } })
-  page.on('pageerror', (err) => failures.push(`[advanced-chat-light] ${err.message}`))
+  page.on('pageerror', (err) => failures.push(`[advanced-chat-components-light] ${err.message}`))
   await goStory(page, 'components-advancedchat--light-mode')
 
-  await expectVisible(page, '.vac-card-window', 'advanced-chat-light')
-  await expectVisible(page, '.vac-rooms-container', 'advanced-chat-light')
-  await expectVisible(page, '.vac-col-messages', 'advanced-chat-light')
-  await expectVisible(page, '.vac-room-header', 'advanced-chat-light')
-  await expectVisible(page, '.vac-room-footer', 'advanced-chat-light')
-  await expectText(page, '.vac-room-name', 'Alice', 'advanced-chat-light')
-  await screenshot(page, 'advanced-chat-light.png')
+  await expectVisible(page, '.acc-card-window', 'advanced-chat-components-light')
+  await expectVisible(page, '.acc-rooms-container', 'advanced-chat-components-light')
+  await expectVisible(page, '.acc-col-messages', 'advanced-chat-components-light')
+  await expectVisible(page, '.acc-room-header', 'advanced-chat-components-light')
+  await expectVisible(page, '.acc-room-footer', 'advanced-chat-components-light')
+  await expectText(page, '.acc-room-name', 'Alice', 'advanced-chat-components-light')
+  await screenshot(page, 'advanced-chat-components-light.png')
   await page.close()
 }
 
 {
   const page = await browser.newPage({ viewport: { width: 1100, height: 720 } })
-  page.on('pageerror', (err) => failures.push(`[advanced-chat-dark] ${err.message}`))
+  page.on('pageerror', (err) => failures.push(`[advanced-chat-components-dark] ${err.message}`))
   await goStory(page, 'components-advancedchat--dark-mode')
 
-  await expectVisible(page, '.vac-card-window', 'advanced-chat-dark')
+  await expectVisible(page, '.acc-card-window', 'advanced-chat-components-dark')
 
   // Read computed background to confirm the dark theme actually applied
-  const bg = await page.$eval('.vac-card-window', (el) => getComputedStyle(el).backgroundColor)
-  // dark theme bg-color is #131415 = rgb(19, 20, 21)
-  if (!bg.includes('19, 20, 21')) {
-    failures.push(`[advanced-chat-dark] expected dark-theme background ~rgb(19, 20, 21), got ${bg}`)
+  const bg = await page.$eval('.acc-card-window', (el) => getComputedStyle(el).backgroundColor)
+  // dark theme content background is #161923 = rgb(22, 25, 35)
+  if (!bg.includes('22, 25, 35')) {
+    failures.push(
+      `[advanced-chat-components-dark] expected dark-theme background ~rgb(22, 25, 35), got ${bg}`,
+    )
   }
-  await screenshot(page, 'advanced-chat-dark.png')
+  await screenshot(page, 'advanced-chat-components-dark.png')
   await page.close()
 }
 
@@ -148,7 +152,7 @@ const screenshot = async (page, file) => {
   page.on('pageerror', (err) => failures.push(`[chat-empty] ${err.message}`))
   await goStory(page, 'components-chat--empty')
 
-  await expectText(page, '.vac-room-empty', 'No messages yet', 'chat-empty')
+  await expectText(page, '.acc-room-empty', 'No messages yet', 'chat-empty')
   await screenshot(page, 'chat-empty.png')
   await page.close()
 }
@@ -158,7 +162,7 @@ const screenshot = async (page, file) => {
   page.on('pageerror', (err) => failures.push(`[chat-no-chat] ${err.message}`))
   await goStory(page, 'components-chat--no-chat-selected')
 
-  await expectText(page, '.vac-room-empty', 'No chat selected', 'chat-no-chat')
+  await expectText(page, '.acc-room-empty', 'No chat selected', 'chat-no-chat')
   await screenshot(page, 'chat-no-chat.png')
   await page.close()
 }
@@ -168,7 +172,7 @@ const screenshot = async (page, file) => {
   page.on('pageerror', (err) => failures.push(`[chat-loading] ${err.message}`))
   await goStory(page, 'components-chat--loading')
 
-  await expectVisible(page, '.vac-loader-wrapper', 'chat-loading')
+  await expectVisible(page, '.acc-loader-wrapper', 'chat-loading')
   await screenshot(page, 'chat-loading.png')
   await page.close()
 }
@@ -179,11 +183,11 @@ const screenshot = async (page, file) => {
   page.on('pageerror', (err) => failures.push(`[chat-selection] ${err.message}`))
   await goStory(page, 'components-chat--selection-mode')
 
-  // selection mode adds vac-message-row-selectable class
-  await expectVisible(page, '.vac-message-row-selectable', 'chat-selection')
-  await page.click('.vac-message-row-selectable')
-  await page.waitForSelector('.vac-message-row-selected', { state: 'visible' })
-  await expectVisible(page, '.vac-room-selection', 'chat-selection')
+  // selection mode adds acc-message-row-selectable class
+  await expectVisible(page, '.acc-message-row-selectable', 'chat-selection')
+  await page.click('.acc-message-row-selectable')
+  await page.waitForSelector('.acc-message-row-selected', { state: 'visible' })
+  await expectVisible(page, '.acc-room-selection', 'chat-selection')
   await screenshot(page, 'chat-selection-active.png')
   await page.close()
 }
@@ -194,8 +198,8 @@ const screenshot = async (page, file) => {
   page.on('pageerror', (err) => failures.push(`[chats-search] ${err.message}`))
   await goStory(page, 'components-chats--default')
 
-  await expectText(page, '.vac-rooms-container', 'Alice', 'chats-search')
-  await expectText(page, '.vac-rooms-container', 'Charlie', 'chats-search')
+  await expectText(page, '.acc-rooms-container', 'Alice', 'chats-search')
+  await expectText(page, '.acc-rooms-container', 'Charlie', 'chats-search')
 
   await page.fill('input[type="search"]', 'Bob')
   // Vue's reactivity should now filter
@@ -205,7 +209,7 @@ const screenshot = async (page, file) => {
   if (aliceVisible && (await aliceVisible.isVisible())) {
     failures.push('[chats-search] Alice still visible after typing "Bob"')
   }
-  await expectText(page, '.vac-rooms-container', 'Bob', 'chats-search')
+  await expectText(page, '.acc-rooms-container', 'Bob', 'chats-search')
   await screenshot(page, 'chats-search-bob.png')
   await page.close()
 }
@@ -213,12 +217,12 @@ const screenshot = async (page, file) => {
 // ---------------- Message: states
 const messageStates = [
   ['default', 'message-default.png', null],
-  ['own-edited', 'message-own-edited.png', '#vac-icon-pencil'],
-  ['reply', 'message-reply.png', '.vac-reply-message'],
-  ['audio-only', 'message-audio.png', '.vac-audio-player'],
-  ['deleted', 'message-deleted.png', '.vac-message-deleted'],
-  ['system', 'message-system.png', '.vac-message-system'],
-  ['failure', 'message-failure.png', '.vac-failure-container'],
+  ['own-edited', 'message-own-edited.png', '#acc-icon-pencil'],
+  ['reply', 'message-reply.png', '.acc-reply-message'],
+  ['audio-only', 'message-audio.png', '.acc-audio-player'],
+  ['deleted', 'message-deleted.png', '.acc-message-deleted'],
+  ['system', 'message-system.png', '.acc-message-system'],
+  ['failure', 'message-failure.png', '.acc-failure-container'],
 ]
 
 for (const [variant, file, requiredSelector] of messageStates) {
@@ -229,7 +233,7 @@ for (const [variant, file, requiredSelector] of messageStates) {
   if (requiredSelector) {
     await expectVisible(page, requiredSelector, `message-${variant}`)
   } else {
-    await expectVisible(page, '.vac-message-row', `message-${variant}`)
+    await expectVisible(page, '.acc-message-row', `message-${variant}`)
   }
   await screenshot(page, file)
   await page.close()
@@ -241,14 +245,14 @@ for (const [variant, file, requiredSelector] of messageStates) {
   page.on('pageerror', (err) => failures.push(`[footer-reply] ${err.message}`))
   await goStory(page, 'components-chatfooter--replying')
 
-  await expectVisible(page, '.vac-room-footer', 'footer-reply')
-  await expectVisible(page, '.vac-footer-reply-wrapper', 'footer-reply')
-  await expectVisible(page, '.vac-footer-reply-close', 'footer-reply')
+  await expectVisible(page, '.acc-room-footer', 'footer-reply')
+  await expectVisible(page, '.acc-footer-reply-wrapper', 'footer-reply')
+  await expectVisible(page, '.acc-footer-reply-close', 'footer-reply')
 
   // clicking the close should remove the reply preview
-  await page.click('.vac-footer-reply-close')
+  await page.click('.acc-footer-reply-close')
   await page.waitForTimeout(50)
-  await expectMissing(page, '.vac-footer-reply-wrapper', 'footer-reply')
+  await expectMissing(page, '.acc-footer-reply-wrapper', 'footer-reply')
   await screenshot(page, 'footer-reply-cancelled.png')
   await page.close()
 }
@@ -260,15 +264,15 @@ for (const [variant, file, requiredSelector] of messageStates) {
   await goStory(page, 'components-chatfooter--default')
 
   // empty -> send button is disabled visually
-  const sendBtn = await page.$('.vac-icon-textarea .vac-svg-button.vac-send-disabled')
+  const sendBtn = await page.$('.acc-icon-textarea .acc-svg-button.acc-send-disabled')
   if (!sendBtn) {
-    failures.push('[footer-send] expected .vac-send-disabled when textarea is empty')
+    failures.push('[footer-send] expected .acc-send-disabled when textarea is empty')
   }
 
   await page.getByLabel('Type a message').fill('Hello world')
   await page.waitForTimeout(50)
 
-  const stillDisabled = await page.$('.vac-icon-textarea .vac-svg-button.vac-send-disabled')
+  const stillDisabled = await page.$('.acc-icon-textarea .acc-svg-button.acc-send-disabled')
   if (stillDisabled) {
     failures.push('[footer-send] send button still disabled after typing')
   }

@@ -35,7 +35,7 @@ export const Loading: Story = {
     loadingChats: true,
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-loader-wrapper')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-loader-wrapper')).toBeTruthy()
   },
 }
 
@@ -45,7 +45,7 @@ export const Empty: Story = {
     chatsLoaded: true,
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-rooms-empty')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-rooms-empty')).toBeTruthy()
   },
 }
 
@@ -57,7 +57,7 @@ export const WithActions: Story = {
     ],
   },
   play: async ({ canvasElement }) => {
-    const triggers = canvasElement.querySelectorAll('.vac-list-room-options')
+    const triggers = canvasElement.querySelectorAll('.acc-list-room-options')
     expect(triggers.length).toBe(3)
   },
 }
@@ -93,7 +93,7 @@ export const LocalSearchEmpty: Story = {
     await userEvent.type(searchInput, 'no matching chat')
 
     await expect(canvas.getByText('No chats available.')).toBeInTheDocument()
-    expect(canvasElement.querySelectorAll('.vac-room-item')).toHaveLength(0)
+    expect(canvasElement.querySelectorAll('.acc-room-item')).toHaveLength(0)
   },
 }
 
@@ -119,7 +119,7 @@ export const ClickOpensChat: Story = {
     'onOpen-chat': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const rows = canvasElement.querySelectorAll('.vac-room-item')
+    const rows = canvasElement.querySelectorAll('.acc-room-item')
     expect(rows.length).toBe(3)
     await userEvent.click(rows[1] as Element)
     await expect(args['onOpen-chat']).toHaveBeenCalled()
@@ -134,12 +134,12 @@ export const ChatActionHandlerEmits: Story = {
     'onChat-action-handler': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const trigger = canvasElement.querySelector('.vac-list-room-options') as HTMLElement
+    const trigger = canvasElement.querySelector('.acc-list-room-options') as HTMLElement
     await userEvent.click(trigger)
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-menu-options')).toBeTruthy()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeTruthy()
     })
-    const action = canvasElement.querySelector('.vac-menu-item') as HTMLElement
+    const action = canvasElement.querySelector('.acc-menu-item') as HTMLElement
     await userEvent.click(action)
     await expect(args['onChat-action-handler']).toHaveBeenCalled()
   },
@@ -150,7 +150,7 @@ export const AddChatEmits: Story = {
     'onAdd-chat': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const addButton = canvasElement.querySelector('.vac-add-icon') as HTMLElement
+    const addButton = canvasElement.querySelector('.acc-add-icon') as HTMLElement
     await userEvent.click(addButton)
     await expect(args['onAdd-chat']).toHaveBeenCalled()
   },
@@ -220,7 +220,7 @@ export const LoadingRecovery: Story = {
 
     await userEvent.click(canvas.getByRole('button', { name: 'Mark all chats loaded' }))
     await waitFor(() => {
-      expect(canvasElement.querySelector('#infinite-loader-rooms .vac-loader-wrapper')).toBeFalsy()
+      expect(canvasElement.querySelector('#infinite-loader-rooms .acc-loader-wrapper')).toBeFalsy()
     })
     expect(args['onFetch-more-chats']).toHaveBeenCalledTimes(2)
   },
@@ -259,7 +259,7 @@ export const HostAppendClearsPending: Story = {
 
     await waitFor(() => expect(args['onFetch-more-chats']).toHaveBeenCalledTimes(1))
     await expect(
-      canvasElement.querySelector('#infinite-loader-rooms .vac-loader-wrapper'),
+      canvasElement.querySelector('#infinite-loader-rooms .acc-loader-wrapper'),
     ).toBeTruthy()
 
     await userEvent.click(canvas.getByRole('button', { name: 'Supply more chats' }))

@@ -40,7 +40,7 @@ export const AddChatEmits: Story = {
     'onAdd-chat': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const addButton = canvasElement.querySelector('.vac-add-icon') as HTMLElement
+    const addButton = canvasElement.querySelector('.acc-add-icon') as HTMLElement
     expect(addButton).toBeTruthy()
     await userEvent.click(addButton)
     await expect(args['onAdd-chat']).toHaveBeenCalledTimes(1)
@@ -61,6 +61,6 @@ export const HiddenAddButton: Story = {
     showAddChat: false,
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-add-icon')).toBeFalsy()
+    expect(canvasElement.querySelector('.acc-add-icon')).toBeFalsy()
   },
 }

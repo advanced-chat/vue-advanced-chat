@@ -131,7 +131,9 @@ export const registerAdvancedChat = ({
   ...pluginOptions
 }: RegisterAdvancedChatOptions = {}): AdvancedChatElementConstructor => {
   if (typeof customElements === 'undefined') {
-    throw new Error('[advanced-chat] Custom elements are not available in this environment.')
+    throw new Error(
+      '[advanced-chat-components] Custom elements are not available in this environment.',
+    )
   }
 
   const managed = managedRegistrations.get(tagName)
@@ -145,7 +147,7 @@ export const registerAdvancedChat = ({
   if (existing) {
     if (Object.keys(pluginOptions).length) {
       throw new Error(
-        `[advanced-chat] Cannot apply options because "${tagName}" is already registered by another constructor.`,
+        `[advanced-chat-components] Cannot apply options because "${tagName}" is already registered by another constructor.`,
       )
     }
     return existing as AdvancedChatElementConstructor

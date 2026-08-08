@@ -340,13 +340,13 @@ const showBlockingState = computed(() =>
   <Layout :height="height" :theme="theme">
     <div
       ref="container"
-      class="vac-chat-root"
+      class="acc-chat-root"
       :data-status="status"
       :aria-busy="status === 'loading'"
     >
       <div
         v-if="status === 'offline' || status === 'reconnecting'"
-        class="vac-status-banner"
+        class="acc-status-banner"
         role="status"
         aria-live="polite"
       >
@@ -355,7 +355,7 @@ const showBlockingState = computed(() =>
 
       <div
         v-show="showBlockingState"
-        class="vac-state-panel"
+        class="acc-state-panel"
         :role="status === 'error' ? 'alert' : 'status'"
       >
         <Loader :show="status === 'loading'" />
@@ -365,7 +365,7 @@ const showBlockingState = computed(() =>
         </button>
       </div>
 
-      <div v-show="!showBlockingState" class="vac-chat-container">
+      <div v-show="!showBlockingState" class="acc-chat-container">
         <Chats
           v-if="currentUser"
           v-show="showChats && showChatList"
@@ -437,7 +437,7 @@ const showBlockingState = computed(() =>
 </template>
 
 <style scoped lang="scss">
-.vac-chat-root {
+.acc-chat-root {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -446,7 +446,7 @@ const showBlockingState = computed(() =>
   border-radius: inherit;
 }
 
-.vac-chat-container {
+.acc-chat-container {
   min-height: 0;
   flex: 1;
   height: 100%;
@@ -463,7 +463,7 @@ const showBlockingState = computed(() =>
   }
 }
 
-.vac-status-banner {
+.acc-status-banner {
   flex: 0 0 auto;
   padding: 9px 16px;
   border-bottom: var(--chat-border-style);
@@ -475,7 +475,7 @@ const showBlockingState = computed(() =>
   text-align: center;
 }
 
-.vac-state-panel {
+.acc-state-panel {
   display: grid;
   flex: 1;
   place-content: center;

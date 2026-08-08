@@ -38,21 +38,21 @@ const isOtherFile = computed(() => {
 </script>
 
 <template>
-  <div class="vac-reply-message">
-    <div class="vac-reply-username">
+  <div class="acc-reply-message">
+    <div class="acc-reply-username">
       {{ replyUsername }}
     </div>
 
-    <div v-if="isImage" class="vac-image-reply-container">
+    <div v-if="isImage" class="acc-image-reply-container">
       <div
-        class="vac-message-image vac-message-image-reply"
+        class="acc-message-image acc-message-image-reply"
         :style="{
           'background-image': `url('${firstFile?.url}')`,
         }"
       />
     </div>
 
-    <div v-else-if="isVideo" class="vac-video-reply-container">
+    <div v-else-if="isVideo" class="acc-video-reply-container">
       <video controls>
         <source :src="firstFile?.url" />
       </video>
@@ -61,21 +61,21 @@ const isOtherFile = computed(() => {
     <AudioPlayer v-else-if="isAudio" :src="firstFile?.url" :message-selection-enabled="false">
     </AudioPlayer>
 
-    <div v-else-if="isOtherFile" class="vac-file-container">
+    <div v-else-if="isOtherFile" class="acc-file-container">
       <div>
         <slot name="file-icon">
           <SvgIcon name="file" />
         </slot>
       </div>
-      <div class="vac-text-ellipsis">
+      <div class="acc-text-ellipsis">
         {{ firstFile?.name }}
       </div>
-      <div v-if="firstFile?.extension" class="vac-text-ellipsis vac-text-extension">
+      <div v-if="firstFile?.extension" class="acc-text-ellipsis acc-text-extension">
         {{ firstFile.extension }}
       </div>
     </div>
 
-    <div class="vac-reply-content">
+    <div class="acc-reply-content">
       <MessageTemplate
         :message="message?.reply"
         :users="users"
@@ -86,14 +86,14 @@ const isOtherFile = computed(() => {
 </template>
 
 <style scoped lang="scss">
-.vac-reply-message {
+.acc-reply-message {
   background: var(--chat-message-bg-color-reply);
   border-left: 3px solid var(--chat-border-color-input-selected);
   border-radius: 8px;
   margin: -1px -5px 8px;
   padding: 8px 10px;
 
-  .vac-reply-username {
+  .acc-reply-username {
     color: var(--chat-message-color-reply-username);
     font-size: 11px;
     font-weight: 700;
@@ -101,17 +101,17 @@ const isOtherFile = computed(() => {
     margin-bottom: 2px;
   }
 
-  .vac-image-reply-container {
+  .acc-image-reply-container {
     width: 70px;
 
-    .vac-message-image-reply {
+    .acc-message-image-reply {
       height: 70px;
       width: 70px;
       margin: 4px auto 3px;
     }
   }
 
-  .vac-video-reply-container {
+  .acc-video-reply-container {
     width: 200px;
     max-width: 100%;
 
@@ -122,12 +122,12 @@ const isOtherFile = computed(() => {
     }
   }
 
-  .vac-reply-content {
+  .acc-reply-content {
     font-size: 12px;
     color: var(--chat-message-color-reply-content);
   }
 
-  .vac-file-container {
+  .acc-file-container {
     height: 60px;
     width: 60px;
   }

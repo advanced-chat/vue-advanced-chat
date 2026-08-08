@@ -29,7 +29,7 @@ export const ToggleChatList: Story = {
     'onToggle-chat-list': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const toggle = canvasElement.querySelector('.vac-toggle-button') as HTMLElement
+    const toggle = canvasElement.querySelector('.acc-toggle-button') as HTMLElement
     expect(toggle).toBeTruthy()
     await userEvent.click(toggle)
     await expect(args['onToggle-chat-list']).toHaveBeenCalled()
@@ -39,7 +39,7 @@ export const ToggleChatList: Story = {
 export const Standalone: Story = {
   args: { standalone: true },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-toggle-button')).toBeFalsy()
+    expect(canvasElement.querySelector('.acc-toggle-button')).toBeFalsy()
   },
 }
 
@@ -49,7 +49,7 @@ export const ChatInfoClickEmits: Story = {
     'onShow-chat-info': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const info = canvasElement.querySelector('.vac-info-wrapper.vac-item-clickable') as HTMLElement
+    const info = canvasElement.querySelector('.acc-info-wrapper.acc-item-clickable') as HTMLElement
     expect(info).toBeTruthy()
     await userEvent.click(info)
     await expect(args['onShow-chat-info']).toHaveBeenCalled()
@@ -65,11 +65,11 @@ export const MenuActionHandler: Story = {
     'onMenu-action-handler': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const menuTrigger = canvasElement.querySelector('.vac-room-options') as HTMLElement
+    const menuTrigger = canvasElement.querySelector('.acc-room-options') as HTMLElement
     expect(menuTrigger).toBeTruthy()
     await userEvent.click(menuTrigger)
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-menu-options')).toBeTruthy()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeTruthy()
     })
     const archive = within(canvasElement).getByText('Archive')
     await userEvent.click(archive)
@@ -89,8 +89,8 @@ export const SelectionToolbar: Story = {
     'onMessage-selection-action-handler': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    expect(canvasElement.querySelector('.vac-room-selection')).toBeTruthy()
-    const deleteBtn = canvasElement.querySelector('.vac-selection-button') as HTMLElement
+    expect(canvasElement.querySelector('.acc-room-selection')).toBeTruthy()
+    const deleteBtn = canvasElement.querySelector('.acc-selection-button') as HTMLElement
     await userEvent.click(deleteBtn)
     await expect(args['onMessage-selection-action-handler']).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -98,7 +98,7 @@ export const SelectionToolbar: Story = {
       }),
     )
 
-    const cancel = canvasElement.querySelector('.vac-selection-cancel') as HTMLElement
+    const cancel = canvasElement.querySelector('.acc-selection-cancel') as HTMLElement
     await userEvent.click(cancel)
     await expect(args['onCancel-message-selection']).toHaveBeenCalled()
   },
@@ -114,7 +114,7 @@ export const TypingIndicator: Story = {
     } as Chat,
   },
   play: async ({ canvasElement }) => {
-    const info = canvasElement.querySelector('.vac-room-info')
+    const info = canvasElement.querySelector('.acc-room-info')
     expect(info?.textContent).toContain('Bob')
     expect(info?.textContent).toContain('typing')
   },
@@ -129,7 +129,7 @@ export const OnlineStatus: Story = {
     } as Chat,
   },
   play: async ({ canvasElement }) => {
-    const info = canvasElement.querySelector('.vac-room-info')
+    const info = canvasElement.querySelector('.acc-room-info')
     expect(info?.textContent?.length).toBeGreaterThan(0)
   },
 }

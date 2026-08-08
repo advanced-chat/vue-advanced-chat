@@ -98,8 +98,8 @@ const isFailed = computed(() => props.message.status === 'failed')
 </script>
 
 <template>
-  <div v-if="message.system" class="vac-message-row vac-message-row-system">
-    <div class="vac-message-system">
+  <div v-if="message.system" class="acc-message-row acc-message-row-system">
+    <div class="acc-message-system">
       <MessageTemplate
         :message="message"
         :users="users"
@@ -111,16 +111,16 @@ const isFailed = computed(() => props.message.status === 'failed')
 
   <div
     v-else
-    class="vac-message-row"
+    class="acc-message-row"
     :class="{
-      'vac-message-row-me': isOwnMessage,
-      'vac-message-row-selected': selected,
-      'vac-message-row-selectable': messageSelectionEnabled,
+      'acc-message-row-me': isOwnMessage,
+      'acc-message-row-selected': selected,
+      'acc-message-row-selectable': messageSelectionEnabled,
     }"
     @click="messageSelectionEnabled ? emit('select-message', message) : undefined"
   >
-    <div class="vac-message-card" :class="{ 'vac-message-current': isOwnMessage }">
-      <div v-if="!isOwnMessage" class="vac-message-author">
+    <div class="acc-message-card" :class="{ 'acc-message-current': isOwnMessage }">
+      <div v-if="!isOwnMessage" class="acc-message-author">
         {{ message.sender.name }}
       </div>
 
@@ -129,10 +129,10 @@ const isFailed = computed(() => props.message.status === 'failed')
         :message="message"
         :users="users"
         :text-formatting="textFormatting"
-        class="vac-reply-block"
+        class="acc-reply-block"
       />
 
-      <div v-if="message.deleted" class="vac-message-deleted">
+      <div v-if="message.deleted" class="acc-message-deleted">
         <!-- @slot Per-message deleted-icon override. Slot name is `deleted-icon_<message.id>`. -->
         <slot :name="'deleted-icon_' + message.id">
           <SvgIcon name="deleted" />
@@ -166,8 +166,8 @@ const isFailed = computed(() => props.message.status === 'failed')
         :message-selection-enabled="messageSelectionEnabled"
       />
 
-      <div class="vac-message-meta">
-        <span v-if="message.edited && !message.deleted" class="vac-message-edited">
+      <div class="acc-message-meta">
+        <span v-if="message.edited && !message.deleted" class="acc-message-edited">
           <!-- @slot Per-message pencil-icon override. Slot name is `pencil-icon_<message.id>`. -->
           <slot :name="'pencil-icon_' + message.id">
             <SvgIcon name="pencil" />
@@ -203,38 +203,38 @@ const isFailed = computed(() => props.message.status === 'failed')
     <button
       v-if="isFailed && isOwnMessage"
       type="button"
-      class="vac-failure-container"
+      class="acc-failure-container"
       :title="strings['chat.message.failure']"
       @click.stop="emit('open-failed-message', message)"
     >
-      <span class="vac-failure-icon" aria-hidden="true">!</span>
-      <span class="vac-failure-label">{{ strings['chat.message.failure'] }}</span>
+      <span class="acc-failure-icon" aria-hidden="true">!</span>
+      <span class="acc-failure-label">{{ strings['chat.message.failure'] }}</span>
     </button>
   </div>
 </template>
 
 <style scoped lang="scss">
-.vac-message-row {
+.acc-message-row {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin: 10px 0;
 
-  &.vac-message-row-me {
+  &.acc-message-row-me {
     align-items: flex-end;
   }
 
-  &.vac-message-row-selected .vac-message-card {
+  &.acc-message-row-selected .acc-message-card {
     background: var(--chat-message-bg-color-selected);
   }
 
-  &.vac-message-row-selectable {
+  &.acc-message-row-selectable {
     cursor: pointer;
   }
 }
 
-.vac-message-card {
+.acc-message-card {
   position: relative;
   max-width: min(78%, 560px);
   margin-bottom: 16px; // reserve space for the floating actions chip below the bubble
@@ -246,14 +246,14 @@ const isFailed = computed(() => props.message.status === 'failed')
   box-shadow: 0 8px 24px rgba(30, 28, 48, 0.07);
   line-height: 1.52;
 
-  &.vac-message-current {
+  &.acc-message-current {
     background: var(--chat-message-bg-color-me);
     border-radius: 18px 18px 6px 18px;
     border-color: transparent;
   }
 }
 
-.vac-message-author {
+.acc-message-author {
   margin-bottom: 4px;
   color: var(--chat-message-color-username);
   font-size: 11px;
@@ -261,22 +261,22 @@ const isFailed = computed(() => props.message.status === 'failed')
   letter-spacing: 0.01em;
 }
 
-.vac-reply-block {
+.acc-reply-block {
   margin-bottom: 8px;
 }
 
-.vac-message-deleted {
+.acc-message-deleted {
   display: flex;
   align-items: center;
   gap: 6px;
   color: var(--chat-message-color-deleted);
 }
 
-.vac-message-row-system {
+.acc-message-row-system {
   align-items: center;
 }
 
-.vac-message-system {
+.acc-message-system {
   width: fit-content;
   margin: 8px auto;
   padding: 6px 13px;
@@ -287,7 +287,7 @@ const isFailed = computed(() => props.message.status === 'failed')
   font-weight: 600;
 }
 
-.vac-message-edited {
+.acc-message-edited {
   display: inline-flex;
   align-items: center;
   margin-right: 2px;
@@ -299,7 +299,7 @@ const isFailed = computed(() => props.message.status === 'failed')
   }
 }
 
-.vac-message-meta {
+.acc-message-meta {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -310,7 +310,7 @@ const isFailed = computed(() => props.message.status === 'failed')
   color: var(--chat-message-color-timestamp);
 }
 
-.vac-failure-container {
+.acc-failure-container {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -326,7 +326,7 @@ const isFailed = computed(() => props.message.status === 'failed')
   line-height: 1;
 }
 
-.vac-failure-icon {
+.acc-failure-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -339,7 +339,7 @@ const isFailed = computed(() => props.message.status === 'failed')
   line-height: 1;
 }
 
-.vac-failure-label {
+.acc-failure-label {
   white-space: nowrap;
 }
 </style>

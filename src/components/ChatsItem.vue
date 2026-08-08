@@ -156,35 +156,35 @@ const chatActionHandler = (action: Action) => {
 </script>
 
 <template>
-  <div class="vac-room-container">
+  <div class="acc-room-container">
     <slot :name="'chat-list-item_' + chat.id">
       <slot :name="'chat-list-avatar_' + chat.id">
         <div
           v-if="avatarUrl"
-          class="vac-avatar"
+          class="acc-avatar"
           :style="{ 'background-image': `url('${avatarUrl}')` }"
         />
       </slot>
-      <div class="vac-name-container vac-text-ellipsis">
-        <div class="vac-title-container">
+      <div class="acc-name-container acc-text-ellipsis">
+        <div class="acc-title-container">
           <div
             v-if="userStatus"
-            class="vac-state-circle"
-            :class="{ 'vac-state-online': userStatus === 'online' }"
+            class="acc-state-circle"
+            :class="{ 'acc-state-online': userStatus === 'online' }"
           />
           <slot :name="'chat-list-info_' + chat.id">
-            <div class="vac-room-name vac-text-ellipsis">
+            <div class="acc-room-name acc-text-ellipsis">
               {{ chat.name }}
             </div>
           </slot>
-          <div v-if="formattedTimestamp" class="vac-text-date">
+          <div v-if="formattedTimestamp" class="acc-text-date">
             {{ formattedTimestamp }}
           </div>
         </div>
         <div
-          class="vac-text-last"
+          class="acc-text-last"
           :class="{
-            'vac-message-new': !!chat.unreadCount && !typingUsers,
+            'acc-message-new': !!chat.unreadCount && !typingUsers,
           }"
         >
           <span v-if="lastMessageCheckmark">
@@ -192,16 +192,16 @@ const chatActionHandler = (action: Action) => {
               <SvgIcon
                 :name="lastMessageCheckmark.name"
                 :param="lastMessageCheckmark.param"
-                class="vac-icon-check"
+                class="acc-icon-check"
               />
             </slot>
           </span>
           <div
             v-if="chat.lastMessage && !chat.lastMessage.deleted && isAudio"
-            class="vac-text-ellipsis"
+            class="acc-text-ellipsis"
           >
             <slot :name="'microphone-icon_' + chat.id">
-              <svg-icon name="microphone" class="vac-icon-microphone" />
+              <svg-icon name="microphone" class="acc-icon-microphone" />
             </slot>
             {{ formattedDuration }}
           </div>
@@ -215,18 +215,18 @@ const chatActionHandler = (action: Action) => {
             :formatting-options="{ singleLine: true, markdown: false }"
           >
           </MessageTemplate>
-          <div v-if="!chat.lastMessage && typingUsers" class="vac-text-ellipsis">
+          <div v-if="!chat.lastMessage && typingUsers" class="acc-text-ellipsis">
             {{ typingUsers }}
           </div>
-          <div class="vac-room-options-container">
-            <div v-if="chat.unreadCount" class="vac-badge-counter vac-room-badge">
+          <div class="acc-room-options-container">
+            <div v-if="chat.unreadCount" class="acc-badge-counter acc-room-badge">
               {{ chat.unreadCount }}
             </div>
             <slot :name="'chat-list-options_' + chat.id">
               <template v-if="actions && actions.length">
                 <button
                   type="button"
-                  class="vac-svg-button vac-list-room-options"
+                  class="acc-svg-button acc-list-room-options"
                   :aria-label="`Options for ${chat.name}`"
                   aria-haspopup="menu"
                   :aria-expanded="openedChatMenu === chat.id"
@@ -236,20 +236,20 @@ const chatActionHandler = (action: Action) => {
                     <svg-icon name="dropdown" param="room" />
                   </slot>
                 </button>
-                <transition name="vac-slide-left">
+                <transition name="acc-slide-left">
                   <div
                     v-if="openedChatMenu === chat.id"
                     v-on-click-outside="closeChatMenu"
-                    class="vac-menu-options"
+                    class="acc-menu-options"
                     role="menu"
                   >
-                    <div class="vac-menu-list">
+                    <div class="acc-menu-list">
                       <button
                         v-for="action in actions"
                         :key="action.id"
                         type="button"
                         role="menuitem"
-                        class="vac-menu-item"
+                        class="acc-menu-item"
                         @click.stop="chatActionHandler(action)"
                       >
                         {{ action.label }}
@@ -267,23 +267,23 @@ const chatActionHandler = (action: Action) => {
 </template>
 
 <style scoped lang="scss">
-.vac-room-container {
+.acc-room-container {
   display: flex;
   flex: 1;
   align-items: center;
   width: 100%;
 
-  .vac-name-container {
+  .acc-name-container {
     flex: 1;
   }
 
-  .vac-title-container {
+  .acc-title-container {
     display: flex;
     align-items: center;
     line-height: 22px;
   }
 
-  .vac-state-circle {
+  .acc-state-circle {
     width: 8px;
     height: 8px;
     border-radius: 50%;
@@ -292,25 +292,25 @@ const chatActionHandler = (action: Action) => {
     transition: 0.3s;
   }
 
-  .vac-state-online {
+  .acc-state-online {
     background-color: var(--chat-room-color-online);
   }
 
-  .vac-room-name {
+  .acc-room-name {
     flex: 1;
     color: var(--chat-room-color-username);
     font-size: 14px;
     font-weight: 700;
   }
 
-  .vac-text-date {
+  .acc-text-date {
     margin-left: 5px;
     font-size: 10px;
     font-weight: 600;
     color: var(--chat-room-color-timestamp);
   }
 
-  .vac-text-last {
+  .acc-text-last {
     display: flex;
     align-items: center;
     min-width: 0;
@@ -320,12 +320,12 @@ const chatActionHandler = (action: Action) => {
     color: var(--chat-room-color-message);
   }
 
-  .vac-message-new {
+  .acc-message-new {
     color: var(--chat-room-color-username);
     font-weight: 500;
   }
 
-  .vac-icon-check {
+  .acc-icon-check {
     display: flex;
     vertical-align: middle;
     height: 14px;
@@ -334,7 +334,7 @@ const chatActionHandler = (action: Action) => {
     margin-right: 2px;
   }
 
-  .vac-icon-microphone {
+  .acc-icon-microphone {
     height: 15px;
     width: 15px;
     vertical-align: middle;
@@ -342,20 +342,20 @@ const chatActionHandler = (action: Action) => {
     fill: var(--chat-room-color-message);
   }
 
-  .vac-room-options-container {
+  .acc-room-options-container {
     position: relative;
     z-index: 2;
     display: flex;
     margin-left: auto;
   }
 
-  .vac-room-badge {
+  .acc-room-badge {
     background-color: var(--chat-room-bg-color-badge);
     color: var(--chat-room-color-badge);
     margin-left: 5px;
   }
 
-  .vac-list-room-options {
+  .acc-list-room-options {
     height: 19px;
     width: 19px;
     align-items: center;

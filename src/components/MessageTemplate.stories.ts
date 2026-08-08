@@ -123,7 +123,7 @@ export const SingleLineCollapses: Story = {
   },
   play: async ({ canvasElement }) => {
     // singleLine collapses to plain text and uses ellipsis class
-    expect(canvasElement.querySelector('.vac-text-ellipsis')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-text-ellipsis')).toBeTruthy()
   },
 }
 

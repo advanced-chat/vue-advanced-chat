@@ -34,8 +34,8 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {},
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-reply-username')?.textContent).toContain('Bob')
-    expect(canvasElement.querySelector('.vac-reply-message')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-reply-username')?.textContent).toContain('Bob')
+    expect(canvasElement.querySelector('.acc-reply-message')).toBeTruthy()
   },
 }
 
@@ -58,7 +58,7 @@ export const ImageReply: Story = {
     },
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-image-reply-container')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-image-reply-container')).toBeTruthy()
   },
 }
 
@@ -81,7 +81,7 @@ export const VideoReply: Story = {
     },
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-video-reply-container')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-video-reply-container')).toBeTruthy()
   },
 }
 
@@ -104,7 +104,7 @@ export const AudioReply: Story = {
     },
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-audio-player')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-audio-player')).toBeTruthy()
   },
 }
 
@@ -127,6 +127,6 @@ export const FileReply: Story = {
     },
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-file-container')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-file-container')).toBeTruthy()
   },
 }

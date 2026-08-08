@@ -37,7 +37,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {},
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-message-image-container')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-message-image-container')).toBeTruthy()
   },
 }
 
@@ -51,7 +51,7 @@ export const VideoFile: Story = {
     },
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-video-container')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-video-container')).toBeTruthy()
   },
 }
 

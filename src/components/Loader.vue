@@ -1,16 +1,16 @@
 <template>
-  <transition name="vac-fade-spinner" appear>
+  <transition name="acc-fade-spinner" appear>
     <div
       v-if="show"
-      class="vac-loader-wrapper"
+      class="acc-loader-wrapper"
       role="status"
       aria-label="Loading"
       :class="{
-        'vac-container-center': !infinite,
-        'vac-container-top': infinite,
+        'acc-container-center': !infinite,
+        'acc-container-top': infinite,
       }"
     >
-      <div id="vac-circle" />
+      <div id="acc-circle" />
     </div>
   </transition>
 </template>
@@ -30,8 +30,8 @@ withDefaults(defineProps<LoaderProps>(), {
 </script>
 
 <style lang="scss" scoped>
-.vac-loader-wrapper {
-  &.vac-container-center {
+.acc-loader-wrapper {
+  &.acc-container-center {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -39,16 +39,16 @@ withDefaults(defineProps<LoaderProps>(), {
     z-index: 9;
   }
 
-  &.vac-container-top {
+  &.acc-container-top {
     padding: 21px;
 
-    #vac-circle {
+    #acc-circle {
       height: 20px;
       width: 20px;
     }
   }
 
-  #vac-circle {
+  #acc-circle {
     margin: auto;
     height: 28px;
     width: 28px;
@@ -57,20 +57,20 @@ withDefaults(defineProps<LoaderProps>(), {
     border-right: 3px var(--chat-color-spinner) solid;
     border-bottom: 3px var(--chat-color-spinner) solid;
     border-radius: 50%;
-    -webkit-animation: vac-spin 1s infinite linear;
-    animation: vac-spin 1s infinite linear;
+    -webkit-animation: acc-spin 1s infinite linear;
+    animation: acc-spin 1s infinite linear;
   }
 
   @media only screen and (max-width: 768px) {
-    #vac-circle {
+    #acc-circle {
       height: 24px;
       width: 24px;
     }
 
-    &.vac-container-top {
+    &.acc-container-top {
       padding: 18px;
 
-      #vac-circle {
+      #acc-circle {
         height: 16px;
         width: 16px;
       }
@@ -78,7 +78,7 @@ withDefaults(defineProps<LoaderProps>(), {
   }
 }
 
-@-webkit-keyframes vac-spin {
+@-webkit-keyframes acc-spin {
   from {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
@@ -88,7 +88,7 @@ withDefaults(defineProps<LoaderProps>(), {
     transform: rotate(359deg);
   }
 }
-@keyframes vac-spin {
+@keyframes acc-spin {
   from {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);

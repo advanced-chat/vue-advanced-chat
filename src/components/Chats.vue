@@ -196,10 +196,10 @@ watch(
 <template>
   <div
     v-if="currentUser"
-    class="vac-rooms-container"
+    class="acc-rooms-container"
     :class="{
-      'vac-rooms-container-full': isMobile,
-      'vac-app-border-r': !isMobile,
+      'acc-rooms-container-full': isMobile,
+      'acc-app-border-r': !isMobile,
     }"
   >
     <!-- @slot Free-form content rendered above the search bar. -->
@@ -220,25 +220,25 @@ watch(
 
     <Loader :show="loadingChats"></Loader>
 
-    <div v-if="!loadingChats && !filteredChats.length" class="vac-rooms-empty">
+    <div v-if="!loadingChats && !filteredChats.length" class="acc-rooms-empty">
       <!-- @slot Empty-state content shown when no chats are available. -->
       <slot name="chats-empty">
         {{ strings['chats.empty'] }}
       </slot>
     </div>
 
-    <div v-if="!loadingChats" id="rooms-list" ref="scrollRootEl" class="vac-room-list">
+    <div v-if="!loadingChats" id="rooms-list" ref="scrollRootEl" class="acc-room-list">
       <div
         v-for="chat in filteredChats"
         :id="String(chat.id)"
         :key="chat.id"
-        class="vac-room-item"
-        :class="{ 'vac-room-selected': selectedChatId === chat.id }"
+        class="acc-room-item"
+        :class="{ 'acc-room-selected': selectedChatId === chat.id }"
         @click="openChat(chat)"
       >
         <button
           type="button"
-          class="vac-room-open"
+          class="acc-room-open"
           :aria-label="`Open ${chat.name}`"
           @click.stop="openChat(chat)"
         />
@@ -250,7 +250,7 @@ watch(
         >
         </ChatsItem>
       </div>
-      <transition name="vac-fade-message">
+      <transition name="acc-fade-message">
         <div v-if="chats.length && !loadingChats" id="infinite-loader-rooms" ref="sentinelEl">
           <Loader :show="showLoader" :infinite="true" type="infinite-rooms"></Loader>
         </div>
@@ -260,7 +260,7 @@ watch(
 </template>
 
 <style scoped lang="scss">
-.vac-rooms-container {
+.acc-rooms-container {
   display: flex;
   flex-flow: column;
   flex: 0 0 clamp(280px, 29%, 340px);
@@ -270,12 +270,12 @@ watch(
   background: var(--chat-sidemenu-bg-color);
   height: 100%;
 
-  &.vac-rooms-container-full {
+  &.acc-rooms-container-full {
     flex: 0 0 100%;
     max-width: 100%;
   }
 
-  .vac-rooms-empty {
+  .acc-rooms-empty {
     font-size: 14px;
     color: var(--chat-message-color-started);
     font-style: italic;
@@ -285,7 +285,7 @@ watch(
     white-space: pre-line;
   }
 
-  .vac-room-list {
+  .acc-room-list {
     flex: 1;
     position: relative;
     max-width: 100%;
@@ -293,7 +293,7 @@ watch(
     overflow-y: auto;
   }
 
-  .vac-room-item {
+  .acc-room-item {
     border-radius: 13px;
     align-items: center;
     display: flex;
@@ -307,7 +307,7 @@ watch(
       transform 0.2s ease,
       box-shadow 0.2s ease;
 
-    .vac-room-open {
+    .acc-room-open {
       position: absolute;
       inset: 0;
       z-index: 1;
@@ -323,12 +323,12 @@ watch(
       transform: translateX(2px);
     }
 
-    &:not(.vac-room-selected) {
+    &:not(.acc-room-selected) {
       cursor: pointer;
     }
   }
 
-  .vac-room-selected {
+  .acc-room-selected {
     color: var(--chat-sidemenu-color-active) !important;
     background: var(--chat-sidemenu-bg-color-active) !important;
     box-shadow: inset 3px 0 0 var(--chat-sidemenu-color-active);
@@ -339,11 +339,11 @@ watch(
   }
 
   @media only screen and (max-width: 768px) {
-    .vac-room-list {
+    .acc-room-list {
       padding: 0 7px 5px;
     }
 
-    .vac-room-item {
+    .acc-room-item {
       min-height: 60px;
       padding: 7px 9px;
     }

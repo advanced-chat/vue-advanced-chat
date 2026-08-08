@@ -21,9 +21,9 @@ const emit = defineEmits<ChatFilesEvents>()
 </script>
 
 <template>
-  <transition name="vac-slide-up">
-    <div v-if="files.length" class="vac-room-files-container">
-      <div class="vac-files-box">
+  <transition name="acc-slide-up">
+    <div v-if="files.length" class="acc-room-files-container">
+      <div class="acc-files-box">
         <ChatFile
           v-for="(file, index) in files"
           :key="index"
@@ -33,10 +33,10 @@ const emit = defineEmits<ChatFilesEvents>()
         />
       </div>
 
-      <div class="vac-icon-close">
+      <div class="acc-icon-close">
         <button
           type="button"
-          class="vac-svg-button"
+          class="acc-svg-button"
           aria-label="Remove all attachments"
           @click="emit('reset-message')"
         >
@@ -50,20 +50,20 @@ const emit = defineEmits<ChatFilesEvents>()
 </template>
 
 <style scoped lang="scss">
-.vac-room-files-container {
+.acc-room-files-container {
   display: flex;
   align-items: flex-start;
   gap: 12px;
   padding: 12px 16px 0;
 }
 
-.vac-files-box {
+.acc-files-box {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.vac-icon-close {
+.acc-icon-close {
   margin-left: auto;
 
   button {

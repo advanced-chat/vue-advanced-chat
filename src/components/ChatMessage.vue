@@ -98,12 +98,12 @@ const showUnreadDivider = computed(() => {
 </script>
 
 <template>
-  <div class="vac-chat-message">
-    <div v-if="showDateDivider" class="vac-card-info vac-card-date">
+  <div class="acc-chat-message">
+    <div v-if="showDateDivider" class="acc-card-info acc-card-date">
       {{ dateLabel }}
     </div>
 
-    <div v-if="showUnreadDivider" class="vac-line-new">
+    <div v-if="showUnreadDivider" class="acc-line-new">
       {{ strings['chat.messages.new'] }}
     </div>
 
@@ -127,7 +127,7 @@ const showUnreadDivider = computed(() => {
 </template>
 
 <style scoped lang="scss">
-.vac-card-info {
+.acc-card-info {
   width: fit-content;
   margin: 12px auto;
   padding: 4px 10px;
@@ -137,7 +137,7 @@ const showUnreadDivider = computed(() => {
   font-size: 12px;
 }
 
-.vac-line-new {
+.acc-line-new {
   margin: 12px 0;
   color: var(--chat-message-color-new-messages);
   font-size: 12px;

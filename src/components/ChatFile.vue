@@ -40,12 +40,12 @@ const isVideo = computed(() => isVideoFile(props.file))
 </script>
 
 <template>
-  <div class="vac-room-file-container">
+  <div class="acc-room-file-container">
     <Loader :show="!!file.loading" />
 
     <button
       type="button"
-      class="vac-svg-button vac-icon-remove"
+      class="acc-svg-button acc-icon-remove"
       :aria-label="`Remove ${file.name}`"
       @click="emit('remove-file', index)"
     >
@@ -56,25 +56,25 @@ const isVideo = computed(() => isVideoFile(props.file))
 
     <div
       v-if="isImage"
-      class="vac-message-image"
-      :class="{ 'vac-blur-loading': file.loading }"
+      class="acc-message-image"
+      :class="{ 'acc-blur-loading': file.loading }"
       :style="{ 'background-image': `url('${previewUrl}')` }"
     />
 
-    <video v-else-if="isVideo" controls :class="{ 'vac-blur-loading': file.loading }">
+    <video v-else-if="isVideo" controls :class="{ 'acc-blur-loading': file.loading }">
       <source :src="previewUrl" />
     </video>
 
-    <div v-else class="vac-file-container" :class="{ 'vac-blur-loading': file.loading }">
+    <div v-else class="acc-file-container" :class="{ 'acc-blur-loading': file.loading }">
       <div>
         <slot name="file-icon">
           <SvgIcon name="file" />
         </slot>
       </div>
-      <div class="vac-text-ellipsis">
+      <div class="acc-text-ellipsis">
         {{ file.name }}
       </div>
-      <div v-if="file.extension" class="vac-text-ellipsis vac-text-extension">
+      <div v-if="file.extension" class="acc-text-ellipsis acc-text-extension">
         {{ file.extension }}
       </div>
     </div>
@@ -82,11 +82,11 @@ const isVideo = computed(() => isVideoFile(props.file))
 </template>
 
 <style scoped lang="scss">
-.vac-room-file-container {
+.acc-room-file-container {
   position: relative;
   width: 100px;
 
-  .vac-icon-remove {
+  .acc-icon-remove {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -96,15 +96,15 @@ const isVideo = computed(() => isVideoFile(props.file))
     background: transparent;
   }
 
-  .vac-message-image,
+  .acc-message-image,
   video,
-  .vac-file-container {
+  .acc-file-container {
     width: 100px;
     height: 100px;
     border-radius: 10px;
   }
 
-  .vac-message-image {
+  .acc-message-image {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;

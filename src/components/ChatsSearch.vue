@@ -46,12 +46,12 @@ const onSearchInput = (event: Event) => {
 <template>
   <div
     :class="{
-      'vac-box-search': showSearchBar,
-      'vac-box-empty': !showSearchBar,
+      'acc-box-search': showSearchBar,
+      'acc-box-empty': !showSearchBar,
     }"
   >
     <template v-if="showSearch">
-      <div v-if="showSearch && !loadingChats" class="vac-icon-search">
+      <div v-if="showSearch && !loadingChats" class="acc-icon-search">
         <slot name="search-icon">
           <svg-icon name="search" />
         </slot>
@@ -61,14 +61,14 @@ const onSearchInput = (event: Event) => {
         type="search"
         :placeholder="strings['chats.search.placeholder']"
         autocomplete="off"
-        class="vac-input"
+        class="acc-input"
         @input="onSearchInput"
       />
     </template>
     <button
       v-if="showAddChat"
       type="button"
-      class="vac-svg-button vac-add-icon"
+      class="acc-svg-button acc-add-icon"
       aria-label="Add chat"
       @click="emit('add-chat')"
     >
@@ -80,7 +80,7 @@ const onSearchInput = (event: Event) => {
 </template>
 
 <style scoped lang="scss">
-.vac-box-empty {
+.acc-box-empty {
   margin-top: 10px;
 
   @media only screen and (max-width: 768px) {
@@ -88,7 +88,7 @@ const onSearchInput = (event: Event) => {
   }
 }
 
-.vac-box-search {
+.acc-box-search {
   position: sticky;
   display: flex;
   align-items: center;
@@ -96,7 +96,7 @@ const onSearchInput = (event: Event) => {
   gap: 10px;
   padding: 0 12px;
 
-  .vac-icon-search {
+  .acc-icon-search {
     display: flex;
     position: absolute;
     left: 27px;
@@ -108,7 +108,7 @@ const onSearchInput = (event: Event) => {
     }
   }
 
-  .vac-input {
+  .acc-input {
     height: 42px;
     width: 100%;
     background: var(--chat-bg-color-input);
@@ -135,7 +135,7 @@ const onSearchInput = (event: Event) => {
     }
   }
 
-  .vac-add-icon {
+  .acc-add-icon {
     flex: 0 0 40px;
     width: 40px;
     height: 40px;

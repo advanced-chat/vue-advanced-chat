@@ -114,7 +114,7 @@ onBeforeUnmount(removeDragListeners)
 <template>
   <div
     ref="progress"
-    class="vac-player-bar"
+    class="acc-player-bar"
     role="slider"
     aria-label="Audio progress"
     aria-valuemin="0"
@@ -127,12 +127,12 @@ onBeforeUnmount(removeDragListeners)
     @mouseover="$emit('hover-audio-progress', true)"
     @mouseout="$emit('hover-audio-progress', false)"
   >
-    <div class="vac-player-progress">
-      <div class="vac-line-container">
-        <div class="vac-line-progress" :style="{ width: `${normalizedPercentage}%` }" />
+    <div class="acc-player-progress">
+      <div class="acc-line-container">
+        <div class="acc-line-progress" :style="{ width: `${normalizedPercentage}%` }" />
         <div
-          class="vac-line-dot"
-          :class="{ 'vac-line-dot__active': isMouseDown }"
+          class="acc-line-dot"
+          :class="{ 'acc-line-dot__active': isMouseDown }"
           :style="{ left: `${normalizedPercentage}%` }"
         />
       </div>
@@ -141,30 +141,30 @@ onBeforeUnmount(removeDragListeners)
 </template>
 
 <style scoped lang="scss">
-.vac-player-bar {
+.acc-player-bar {
   display: flex;
   align-items: center;
   max-width: calc(100% - 18px);
   margin-right: 7px;
   margin-left: 20px;
 
-  .vac-player-progress {
+  .acc-player-progress {
     width: 190px;
 
-    .vac-line-container {
+    .acc-line-container {
       position: relative;
       height: 4px;
       border-radius: 5px;
       background-color: var(--chat-message-bg-color-audio-line);
 
-      .vac-line-progress {
+      .acc-line-progress {
         position: absolute;
         height: inherit;
         background-color: var(--chat-message-bg-color-audio-progress);
         border-radius: inherit;
       }
 
-      .vac-line-dot {
+      .acc-line-dot {
         position: absolute;
         top: -5px;
         margin-left: -7px;
@@ -183,13 +183,13 @@ onBeforeUnmount(removeDragListeners)
 }
 
 @media only screen and (max-width: 768px) {
-  .vac-player-bar {
+  .acc-player-bar {
     margin-right: 5px;
 
-    .vac-player-progress .vac-line-container {
+    .acc-player-progress .acc-line-container {
       height: 3px;
 
-      .vac-line-dot {
+      .acc-line-dot {
         height: 12px;
         width: 12px;
         top: -5px;

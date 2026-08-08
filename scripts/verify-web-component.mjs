@@ -22,7 +22,7 @@ const html = (entrypoint, shouldAutoRegister) => `<!doctype html>
         autoRegistered: Boolean(customElements.get(module.DEFAULT_CUSTOM_ELEMENT_TAG)),
         shouldAutoRegister: ${shouldAutoRegister},
       }
-      window.advancedChatModule = module
+      window.advancedChatComponentsModule = module
     </script>
   </body>
 </html>`
@@ -93,11 +93,11 @@ try {
 
     await customElements.whenDefined('advanced-chat-components')
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))
-    chat.querySelector('.vac-state-panel button')?.click()
+    chat.querySelector('.acc-state-panel button')?.click()
 
     return {
-      message: chat.querySelector('.vac-state-panel p')?.textContent,
-      buttonCursor: getComputedStyle(chat.querySelector('.vac-state-panel button')).cursor,
+      message: chat.querySelector('.acc-state-panel p')?.textContent,
+      buttonCursor: getComputedStyle(chat.querySelector('.acc-state-panel button')).cursor,
       retryEvent: retryEvent
         ? {
             bubbles: retryEvent.bubbles,
@@ -124,7 +124,7 @@ try {
   await page.waitForFunction(() => window.importResult)
   const coreRegistration = await page.evaluate(() => {
     const before = window.importResult.autoRegistered
-    window.advancedChatModule.registerAdvancedChat()
+    window.advancedChatComponentsModule.registerAdvancedChat()
     return {
       before,
       after: Boolean(customElements.get('advanced-chat-components')),

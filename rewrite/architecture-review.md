@@ -146,7 +146,7 @@ the 3.x roadmap.
 ### 5. Remove or justify Tailwind
 
 `src/assets/style.css` does `@import 'tailwindcss'`. No component
-uses Tailwind utility classes — every template uses `vac-*` scoped
+uses Tailwind utility classes — every template uses `acc-*` scoped
 classes. The Tailwind preflight is shipped in `dist/components.css`
 (part of the 37 KB bundle) for no consumer benefit.
 

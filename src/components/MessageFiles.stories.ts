@@ -42,8 +42,8 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {},
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-message-image-container')).toBeTruthy()
-    expect(canvasElement.querySelector('.vac-file-wrapper')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-message-image-container')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-file-wrapper')).toBeTruthy()
   },
 }
 
@@ -82,9 +82,9 @@ export const AuthenticatedMediaEmitsDownload: Story = {
     'onOpen-file': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    expect(canvasElement.querySelector('.vac-message-image-container')).toBeFalsy()
+    expect(canvasElement.querySelector('.acc-message-image-container')).toBeFalsy()
 
-    const fileEntry = canvasElement.querySelector('.vac-file-container') as HTMLElement
+    const fileEntry = canvasElement.querySelector('.acc-file-container') as HTMLElement
     await userEvent.click(fileEntry)
     await expect(args['onOpen-file']).toHaveBeenCalledWith(
       expect.objectContaining({ action: 'download' }),

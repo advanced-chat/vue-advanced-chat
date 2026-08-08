@@ -75,11 +75,11 @@ watch(activeDescendant, (value) => emit('active-descendant-change', value), { im
 </script>
 
 <template>
-  <transition name="vac-slide-up">
+  <transition name="acc-slide-up">
     <div
       v-if="items.length"
-      class="vac-autocomplete-container"
-      :class="[`vac-autocomplete-${layout}`]"
+      class="acc-autocomplete-container"
+      :class="[`acc-autocomplete-${layout}`]"
       :id="listboxId"
       role="listbox"
       :aria-label="ariaLabel"
@@ -87,8 +87,8 @@ watch(activeDescendant, (value) => emit('active-descendant-change', value), { im
       <div
         v-for="(item, index) in items"
         :key="resolveKey(item, index)"
-        class="vac-autocomplete-item"
-        :class="{ 'vac-autocomplete-item-active': index === activeIndex }"
+        class="acc-autocomplete-item"
+        :class="{ 'acc-autocomplete-item-active': index === activeIndex }"
         :id="optionId(index)"
         role="option"
         :aria-selected="index === activeIndex"
@@ -102,7 +102,7 @@ watch(activeDescendant, (value) => emit('active-descendant-change', value), { im
 </template>
 
 <style scoped lang="scss">
-.vac-autocomplete-container {
+.acc-autocomplete-container {
   position: absolute;
   left: 12px;
   right: 12px;
@@ -115,22 +115,22 @@ watch(activeDescendant, (value) => emit('active-descendant-change', value), { im
   border: var(--chat-border-style);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
 
-  &.vac-autocomplete-vertical {
+  &.acc-autocomplete-vertical {
     flex-direction: column;
     gap: 4px;
   }
 
-  &.vac-autocomplete-horizontal {
+  &.acc-autocomplete-horizontal {
     flex-direction: row;
     overflow-x: auto;
   }
 }
 
-.vac-autocomplete-item {
+.acc-autocomplete-item {
   border-radius: 10px;
   cursor: pointer;
 
-  &.vac-autocomplete-item-active,
+  &.acc-autocomplete-item-active,
   &:hover {
     background: var(--chat-footer-bg-color-tag-active);
   }

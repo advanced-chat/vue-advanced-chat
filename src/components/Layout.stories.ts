@@ -38,7 +38,7 @@ export const SlotHeightAndThemeContract: Story = {
     await expect(content).toHaveTextContent(
       'Conversation content is rendered through the default slot.',
     )
-    await expect(layout).toHaveClass('vac-card-window')
+    await expect(layout).toHaveClass('acc-card-window')
     await expect(layout).toHaveStyle({ height: '240px' })
     await expect(layout.style.getPropertyValue('--chat-content-bg-color')).toBe('#f6f7fb')
   },

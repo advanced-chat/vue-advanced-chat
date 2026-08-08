@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {},
   play: async ({ canvasElement }) => {
-    const pills = canvasElement.querySelectorAll('.vac-button-reaction')
+    const pills = canvasElement.querySelectorAll('.acc-button-reaction')
     expect(pills.length).toBe(2)
   },
 }
@@ -30,7 +30,7 @@ export const ClickEmits: Story = {
     'onSend-message-reaction': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const pill = canvasElement.querySelector('.vac-button-reaction') as HTMLElement
+    const pill = canvasElement.querySelector('.acc-button-reaction') as HTMLElement
     await userEvent.click(pill)
     await expect(args['onSend-message-reaction']).toHaveBeenCalled()
   },
@@ -42,10 +42,10 @@ export const SelectionModeBubblesWithoutReacting: Story = {
   },
   play: async ({ canvasElement, args }) => {
     const selectMessage = fn()
-    canvasElement.classList.add('vac-message-row-selectable')
+    canvasElement.classList.add('acc-message-row-selectable')
     canvasElement.addEventListener('click', selectMessage)
 
-    const pill = canvasElement.querySelector('.vac-button-reaction') as HTMLElement
+    const pill = canvasElement.querySelector('.acc-button-reaction') as HTMLElement
     await userEvent.click(pill)
 
     await expect(args['onSend-message-reaction']).not.toHaveBeenCalled()
@@ -56,7 +56,7 @@ export const SelectionModeBubblesWithoutReacting: Story = {
 export const HighlightsCurrentUserReactions: Story = {
   args: {},
   play: async ({ canvasElement }) => {
-    const pills = canvasElement.querySelectorAll('.vac-reaction-me')
+    const pills = canvasElement.querySelectorAll('.acc-reaction-me')
     expect(pills.length).toBeGreaterThan(0)
   },
 }
@@ -66,6 +66,6 @@ export const HiddenWhenDeleted: Story = {
     message: { ...sampleMessages[2]!, deleted: true },
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-button-reaction')).toBeFalsy()
+    expect(canvasElement.querySelector('.acc-button-reaction')).toBeFalsy()
   },
 }

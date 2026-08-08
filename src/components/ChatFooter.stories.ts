@@ -81,12 +81,12 @@ export const ShiftEnterDoesNotSend: Story = {
 export const SendButtonDisabledWhenEmpty: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const sendButton = canvasElement.querySelector('.vac-send-disabled')
+    const sendButton = canvasElement.querySelector('.acc-send-disabled')
     expect(sendButton).toBeTruthy()
     const textarea = canvas.getByPlaceholderText('Type a message')
     await userEvent.click(textarea)
     await userEvent.type(textarea, 'something')
-    expect(canvasElement.querySelector('.vac-send-disabled')).toBeFalsy()
+    expect(canvasElement.querySelector('.acc-send-disabled')).toBeFalsy()
   },
 }
 
@@ -100,7 +100,7 @@ export const ClickingSendIconEmits: Story = {
     await userEvent.click(textarea)
     await userEvent.type(textarea, 'click test')
     const sendButton = canvasElement.querySelector(
-      '.vac-icon-textarea > .vac-svg-button:last-child',
+      '.acc-icon-textarea > .acc-svg-button:last-child',
     )
     expect(sendButton).toBeTruthy()
     await userEvent.click(sendButton as Element)
@@ -116,9 +116,9 @@ export const EmojiAutocompleteSelection: Story = {
     await userEvent.type(textarea, ':')
     // wait for the emoji suggestions chip to appear
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-emojis-menu')).toBeTruthy()
+      expect(canvasElement.querySelector('.acc-emojis-menu')).toBeTruthy()
     })
-    const firstEmoji = canvasElement.querySelector('.vac-emojis-menu .vac-autocomplete-item')
+    const firstEmoji = canvasElement.querySelector('.acc-emojis-menu .acc-autocomplete-item')
     expect(firstEmoji).toBeTruthy()
     await userEvent.click(firstEmoji as Element)
     expect(textarea.value).not.toBe(':')
@@ -208,7 +208,7 @@ export const CancelReplyEmitsReset: Story = {
     'onReset-reply-message': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const closeButton = canvasElement.querySelector('.vac-footer-reply-close')
+    const closeButton = canvasElement.querySelector('.acc-footer-reply-close')
     expect(closeButton).toBeTruthy()
     await userEvent.click(closeButton as Element)
     await expect(args['onReset-reply-message']).toHaveBeenCalled()
@@ -223,7 +223,7 @@ export const CancelEditEmitsReset: Story = {
   },
   play: async ({ canvasElement, args }) => {
     // edit-close-icon button is the first button in icon-textarea
-    const cancelButton = canvasElement.querySelector('.vac-icon-textarea > button') as HTMLElement
+    const cancelButton = canvasElement.querySelector('.acc-icon-textarea > button') as HTMLElement
     expect(cancelButton).toBeTruthy()
     await userEvent.click(cancelButton)
     await expect(args['onReset-edit-message']).toHaveBeenCalled()
@@ -255,7 +255,7 @@ export const EmojiArrowKeysSelect: Story = {
     await userEvent.click(textarea)
     await userEvent.type(textarea, ':')
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-emojis-menu')).toBeTruthy()
+      expect(canvasElement.querySelector('.acc-emojis-menu')).toBeTruthy()
     })
     await userEvent.keyboard('{ArrowDown}')
     await userEvent.keyboard('{ArrowUp}')
@@ -274,7 +274,7 @@ export const UserTagArrowKeysSelect: Story = {
     await userEvent.click(textarea)
     await userEvent.type(textarea, '@')
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-user-tag-menu')).toBeTruthy()
+      expect(canvasElement.querySelector('.acc-user-tag-menu')).toBeTruthy()
     })
     await userEvent.keyboard('{ArrowDown}')
     await userEvent.keyboard('{ArrowUp}')
@@ -294,7 +294,7 @@ export const EditModePrefillsContent: Story = {
       name: 'Type a message',
     }) as HTMLTextAreaElement
     expect(textarea.value).toBe('Here is a screenshot from the latest build.')
-    expect(canvasElement.querySelector('.vac-textarea-outline')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-textarea-outline')).toBeTruthy()
   },
 }
 
@@ -317,7 +317,7 @@ export const SameFileReselectionTransfersPreviewOwnership: Story = {
 
     await userEvent.upload(input, file, { applyAccept: false })
     const removeButton = await canvas.findByRole('button', { name: 'Remove attachment.png' })
-    const preview = canvasElement.querySelector('.vac-message-image') as HTMLElement
+    const preview = canvasElement.querySelector('.acc-message-image') as HTMLElement
     const firstLocalUrl = preview.style.backgroundImage.match(/url\(["']?(.*?)["']?\)/)?.[1]
 
     expect(firstLocalUrl).toBeTruthy()
@@ -370,7 +370,7 @@ export const MaxFilesRejectsOverflow: Story = {
     ])
 
     await waitFor(() => {
-      expect(canvasElement.querySelectorAll('.vac-room-file-container').length).toBe(2)
+      expect(canvasElement.querySelectorAll('.acc-room-file-container').length).toBe(2)
     })
 
     const calls = (args['onInvalid-file'] as ReturnType<typeof fn>).mock.calls
@@ -400,7 +400,7 @@ export const MaxFileSizeRejectsLarge: Story = {
     ])
 
     await waitFor(() => {
-      expect(canvasElement.querySelectorAll('.vac-room-file-container').length).toBe(1)
+      expect(canvasElement.querySelectorAll('.acc-room-file-container').length).toBe(1)
     })
 
     const calls = (args['onInvalid-file'] as ReturnType<typeof fn>).mock.calls

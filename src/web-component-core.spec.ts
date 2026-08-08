@@ -15,6 +15,8 @@ describe('side-effect-free web component entrypoint', () => {
 
   it('exports explicit creation and registration APIs', () => {
     expect(createAdvancedChatElement()).toBeTypeOf('function')
-    expect(registerAdvancedChat({ tagName: 'advanced-chat-core-test' })).toBeTypeOf('function')
+    expect(registerAdvancedChat({ tagName: 'advanced-chat-components-core-test' })).toBeTypeOf(
+      'function',
+    )
   })
 })

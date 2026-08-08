@@ -38,7 +38,7 @@ export const Empty: Story = {
   },
   play: async ({ canvasElement }) => {
     // empty list is hidden behind v-if
-    expect(canvasElement.querySelector('.vac-room-files-container')).toBeFalsy()
+    expect(canvasElement.querySelector('.acc-room-files-container')).toBeFalsy()
   },
 }
 
@@ -47,7 +47,7 @@ export const RemoveFile: Story = {
     'onRemove-file': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const remove = canvasElement.querySelector('.vac-icon-remove') as HTMLElement
+    const remove = canvasElement.querySelector('.acc-icon-remove') as HTMLElement
     await userEvent.click(remove)
     await expect(args['onRemove-file']).toHaveBeenCalledWith(0)
   },

@@ -157,27 +157,27 @@ const menuActionHandler = (action: Action) => {
 </script>
 
 <template>
-  <div class="vac-room-header vac-app-border-b">
+  <div class="acc-room-header acc-app-border-b">
     <!-- @slot Full replacement for the default header layout. -->
     <slot name="chat-header">
-      <div class="vac-room-wrapper">
-        <transition name="vac-slide-up">
-          <div v-if="showMessageSelection" class="vac-room-selection">
+      <div class="acc-room-wrapper">
+        <transition name="acc-slide-up">
+          <div v-if="showMessageSelection" class="acc-room-selection">
             <div v-for="action in selectionActions" :id="action.id" :key="action.id">
               <button
                 type="button"
-                class="vac-selection-button"
+                class="acc-selection-button"
                 @click="messageSelectionActionHandler(action)"
               >
                 {{ action.label }}
-                <span class="vac-selection-button-count">
+                <span class="acc-selection-button-count">
                   {{ selectedCount }}
                 </span>
               </button>
             </div>
             <button
               type="button"
-              class="vac-selection-cancel vac-item-clickable"
+              class="acc-selection-cancel acc-item-clickable"
               @click="emit('cancel-message-selection')"
             >
               {{ strings['chat.cancel-selection'] }}
@@ -188,10 +188,10 @@ const menuActionHandler = (action: Action) => {
           <button
             v-if="!standalone"
             type="button"
-            class="vac-svg-button vac-toggle-button"
+            class="acc-svg-button acc-toggle-button"
             :class="{
-              'vac-rotate-icon-init': !isMobile,
-              'vac-rotate-icon': !showChatList && !isMobile,
+              'acc-rotate-icon-init': !isMobile,
+              'acc-rotate-icon': !showChatList && !isMobile,
             }"
             @click="emit('toggle-chat-list')"
             aria-label="Toggle chat list"
@@ -205,31 +205,31 @@ const menuActionHandler = (action: Action) => {
           <component
             :is="chatInfoEnabled ? 'button' : 'div'"
             :type="chatInfoEnabled ? 'button' : undefined"
-            class="vac-info-wrapper"
-            :class="{ 'vac-item-clickable': chatInfoEnabled }"
+            class="acc-info-wrapper"
+            :class="{ 'acc-item-clickable': chatInfoEnabled }"
             @click="chatInfoEnabled && emit('show-chat-info')"
           >
             <!-- @slot Avatar element. Default renders a CSS background-image div. -->
             <slot name="chat-header-avatar">
               <div
                 v-if="avatarUrl"
-                class="vac-avatar"
+                class="acc-avatar"
                 :style="{ 'background-image': `url('${avatarUrl}')` }"
               />
             </slot>
             <!-- @slot Name + status block to the right of the avatar. -->
             <slot name="chat-header-info">
-              <div class="vac-text-ellipsis">
-                <div class="vac-room-name vac-text-ellipsis">
+              <div class="acc-text-ellipsis">
+                <div class="acc-room-name acc-text-ellipsis">
                   {{ chat.name }}
                 </div>
                 <div
                   v-if="showTypingIndicator && typingUsers"
-                  class="vac-room-info vac-text-ellipsis"
+                  class="acc-room-info acc-text-ellipsis"
                 >
                   {{ typingUsers }}
                 </div>
-                <div v-else class="vac-room-info vac-text-ellipsis">
+                <div v-else class="acc-room-info acc-text-ellipsis">
                   {{ userStatus }}
                 </div>
               </div>
@@ -240,7 +240,7 @@ const menuActionHandler = (action: Action) => {
             <button
               v-if="actions.length"
               type="button"
-              class="vac-svg-button vac-room-options"
+              class="acc-svg-button acc-room-options"
               aria-label="Chat options"
               aria-haspopup="menu"
               :aria-expanded="menuOpened"
@@ -251,20 +251,20 @@ const menuActionHandler = (action: Action) => {
                 <svg-icon name="menu" />
               </slot>
             </button>
-            <transition v-if="actions.length" name="vac-slide-left">
+            <transition v-if="actions.length" name="acc-slide-left">
               <div
                 v-if="menuOpened"
                 v-on-click-outside="closeMenu"
-                class="vac-menu-options"
+                class="acc-menu-options"
                 role="menu"
               >
-                <div class="vac-menu-list">
+                <div class="acc-menu-list">
                   <button
                     v-for="action in actions"
                     :key="action.id"
                     type="button"
                     role="menuitem"
-                    class="vac-menu-item"
+                    class="acc-menu-item"
                     @click="menuActionHandler(action)"
                   >
                     {{ action.label }}
@@ -280,7 +280,7 @@ const menuActionHandler = (action: Action) => {
 </template>
 
 <style scoped lang="scss">
-.vac-room-header {
+.acc-room-header {
   position: var(--chat-header-position);
   display: flex;
   align-items: center;
@@ -290,7 +290,7 @@ const menuActionHandler = (action: Action) => {
   background: var(--chat-header-bg-color);
   border-top-right-radius: var(--chat-container-border-radius);
 
-  .vac-room-wrapper {
+  .acc-room-wrapper {
     display: flex;
     align-items: center;
     min-width: 0;
@@ -300,7 +300,7 @@ const menuActionHandler = (action: Action) => {
     padding: 0 18px;
   }
 
-  .vac-toggle-button {
+  .acc-toggle-button {
     flex: 0 0 38px;
     width: 38px;
     height: 38px;
@@ -315,7 +315,7 @@ const menuActionHandler = (action: Action) => {
     }
   }
 
-  .vac-rotate-icon {
+  .acc-rotate-icon {
     &-init {
       transform: rotate(360deg);
     }
@@ -323,7 +323,7 @@ const menuActionHandler = (action: Action) => {
     transform: rotate(180deg) !important;
   }
 
-  .vac-info-wrapper {
+  .acc-info-wrapper {
     display: flex;
     align-items: center;
     min-width: 0;
@@ -335,7 +335,7 @@ const menuActionHandler = (action: Action) => {
     color: inherit;
     text-align: left;
 
-    &.vac-item-clickable {
+    &.acc-item-clickable {
       border-radius: 10px;
 
       &:focus-visible {
@@ -345,14 +345,14 @@ const menuActionHandler = (action: Action) => {
     }
   }
 
-  .vac-room-selection {
+  .acc-room-selection {
     display: flex;
     align-items: center;
     min-width: 0;
     width: 100%;
     height: 100%;
 
-    .vac-selection-button {
+    .acc-selection-button {
       border: 0;
       padding: 8px 16px;
       color: var(--chat-color-button);
@@ -370,13 +370,13 @@ const menuActionHandler = (action: Action) => {
         opacity: 0.9;
       }
 
-      .vac-selection-button-count {
+      .acc-selection-button-count {
         margin-left: 6px;
         opacity: 0.9;
       }
     }
 
-    .vac-selection-cancel {
+    .acc-selection-cancel {
       display: flex;
       align-items: center;
       margin-left: auto;
@@ -392,20 +392,20 @@ const menuActionHandler = (action: Action) => {
     }
   }
 
-  .vac-room-name {
+  .acc-room-name {
     font-size: 16px;
     font-weight: 750;
     line-height: 22px;
     color: var(--chat-header-color-name);
   }
 
-  .vac-room-info {
+  .acc-room-info {
     font-size: 12px;
     line-height: 18px;
     color: var(--chat-header-color-info);
   }
 
-  .vac-room-options {
+  .acc-room-options {
     flex: 0 0 38px;
     width: 38px;
     height: 38px;
@@ -418,21 +418,21 @@ const menuActionHandler = (action: Action) => {
   @media only screen and (max-width: 768px) {
     height: 50px;
 
-    .vac-room-wrapper {
+    .acc-room-wrapper {
       padding: 0 10px;
     }
 
-    .vac-room-name {
+    .acc-room-name {
       font-size: 16px;
       line-height: 22px;
     }
 
-    .vac-room-info {
+    .acc-room-info {
       font-size: 12px;
       line-height: 16px;
     }
 
-    .vac-avatar {
+    .acc-avatar {
       height: 37px;
       width: 37px;
       min-height: 37px;

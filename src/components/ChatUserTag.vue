@@ -43,22 +43,22 @@ const emit = defineEmits<ChatUserTagEvents>()
     :listbox-id="listboxId"
     layout="vertical"
     :aria-label="strings['chat.autocomplete.users']"
-    class="vac-user-tag-menu"
+    class="acc-user-tag-menu"
     @commit="(user) => emit('select-user-tag', user)"
     @activate-item="emit('activate-item')"
     @active-descendant-change="(value) => emit('active-descendant-change', value)"
   >
     <template #default="{ item: user }">
-      <div class="vac-tags-info">
+      <div class="acc-tags-info">
         <div
           v-if="user.avatar"
-          class="vac-tags-avatar vac-tags-avatar-image"
+          class="acc-tags-avatar acc-tags-avatar-image"
           :style="{ 'background-image': `url('${user.avatar}')` }"
         />
-        <div v-else class="vac-tags-avatar">
+        <div v-else class="acc-tags-avatar">
           {{ user.name.slice(0, 1) }}
         </div>
-        <div class="vac-tags-username">
+        <div class="acc-tags-username">
           {{ user.name }}
         </div>
       </div>
@@ -67,14 +67,14 @@ const emit = defineEmits<ChatUserTagEvents>()
 </template>
 
 <style scoped lang="scss">
-.vac-tags-info {
+.acc-tags-info {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 8px 10px;
 }
 
-.vac-tags-avatar {
+.acc-tags-avatar {
   width: 28px;
   height: 28px;
   display: flex;
@@ -85,14 +85,14 @@ const emit = defineEmits<ChatUserTagEvents>()
   font-size: 12px;
   font-weight: 700;
 
-  &.vac-tags-avatar-image {
+  &.acc-tags-avatar-image {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
   }
 }
 
-.vac-tags-username {
+.acc-tags-username {
   font-size: 14px;
 }
 </style>

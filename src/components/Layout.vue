@@ -15,13 +15,13 @@ const cssVars = useThemeStyles(toRef(props, 'theme'))
 </script>
 
 <template>
-  <div class="vac-card-window" :style="[{ height }, cssVars, styles || {}]">
+  <div class="acc-card-window" :style="[{ height }, cssVars, styles || {}]">
     <slot></slot>
   </div>
 </template>
 
 <style scoped lang="scss">
-.vac-card-window {
+.acc-card-window {
   position: relative;
   width: 100%;
   display: block;

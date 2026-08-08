@@ -28,7 +28,7 @@ export const OwnEdited: Story = {
     message: sampleMessages[1],
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('#vac-icon-pencil')).toBeTruthy()
+    expect(canvasElement.querySelector('#acc-icon-pencil')).toBeTruthy()
   },
 }
 
@@ -37,7 +37,7 @@ export const Reply: Story = {
     message: sampleMessages[2],
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-reply-message')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-reply-message')).toBeTruthy()
   },
 }
 
@@ -59,7 +59,7 @@ export const AudioOnly: Story = {
       play: { configurable: true, value: play },
     })
 
-    expect(canvasElement.querySelector('.vac-audio-player')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-audio-player')).toBeTruthy()
     expect(audio.getAttribute('src')).toBe(sampleMessages[3]!.files![0]!.url)
 
     await userEvent.click(canvas.getByRole('button', { name: 'Play audio' }))
@@ -73,9 +73,9 @@ export const Deleted: Story = {
     message: sampleMessages[4],
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-message-deleted')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-message-deleted')).toBeTruthy()
     // deleted messages hide the actions chip
-    expect(canvasElement.querySelector('.vac-message-actions-wrapper')).toBeFalsy()
+    expect(canvasElement.querySelector('.acc-message-actions-wrapper')).toBeFalsy()
   },
 }
 
@@ -84,8 +84,8 @@ export const System: Story = {
     message: sampleMessages[5],
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-message-system')).toBeTruthy()
-    expect(canvasElement.querySelector('.vac-message-actions-wrapper')).toBeFalsy()
+    expect(canvasElement.querySelector('.acc-message-system')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-message-actions-wrapper')).toBeFalsy()
   },
 }
 
@@ -94,7 +94,7 @@ export const Failure: Story = {
     message: sampleMessages[6],
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-failure-container')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-failure-container')).toBeTruthy()
   },
 }
 
@@ -104,7 +104,7 @@ export const FailureClickEmits: Story = {
     'onOpen-failed-message': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const failure = canvasElement.querySelector('.vac-failure-container') as HTMLElement
+    const failure = canvasElement.querySelector('.acc-failure-container') as HTMLElement
     await userEvent.click(failure)
     await expect(args['onOpen-failed-message']).toHaveBeenCalledWith(sampleMessages[6])
   },
@@ -116,14 +116,14 @@ export const ReactionPickerEmits: Story = {
   },
   play: async ({ canvasElement, args }) => {
     const reactionToggle = canvasElement.querySelector(
-      '.vac-reaction-picker .vac-message-options',
+      '.acc-reaction-picker .acc-message-options',
     ) as HTMLElement
     expect(reactionToggle).toBeTruthy()
     await userEvent.click(reactionToggle)
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-reactions-menu')).toBeTruthy()
+      expect(canvasElement.querySelector('.acc-reactions-menu')).toBeTruthy()
     })
-    const firstReaction = canvasElement.querySelector('.vac-reaction-option') as HTMLElement
+    const firstReaction = canvasElement.querySelector('.acc-reaction-option') as HTMLElement
     await userEvent.click(firstReaction)
     await expect(args['onSend-message-reaction']).toHaveBeenCalled()
   },
@@ -135,14 +135,14 @@ export const DropdownActionEmits: Story = {
   },
   play: async ({ canvasElement, args }) => {
     const dropdownToggle = canvasElement.querySelector(
-      '.vac-dropdown-picker .vac-message-options',
+      '.acc-dropdown-picker .acc-message-options',
     ) as HTMLElement
     expect(dropdownToggle).toBeTruthy()
     await userEvent.click(dropdownToggle)
     await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-menu-options')).toBeTruthy()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeTruthy()
     })
-    const firstAction = canvasElement.querySelector('.vac-menu-item') as HTMLElement
+    const firstAction = canvasElement.querySelector('.acc-menu-item') as HTMLElement
     await userEvent.click(firstAction)
     await expect(args['onMessage-action-handler']).toHaveBeenCalled()
   },
@@ -155,9 +155,9 @@ export const SelectionModeClickEmits: Story = {
     'onSelect-message': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const row = canvasElement.querySelector('.vac-message-row-selectable') as HTMLElement
+    const row = canvasElement.querySelector('.acc-message-row-selectable') as HTMLElement
     expect(row).toBeTruthy()
-    expect(canvasElement.querySelector('.vac-button-reaction')).toBeFalsy()
+    expect(canvasElement.querySelector('.acc-button-reaction')).toBeFalsy()
     await userEvent.click(row)
     await expect(args['onSelect-message']).toHaveBeenCalled()
   },
@@ -168,7 +168,7 @@ export const ExistingReactionsRender: Story = {
     message: sampleMessages[2],
   },
   play: async ({ canvasElement }) => {
-    const reactionPills = canvasElement.querySelectorAll('.vac-button-reaction')
+    const reactionPills = canvasElement.querySelectorAll('.acc-button-reaction')
     expect(reactionPills.length).toBeGreaterThan(0)
   },
 }
@@ -179,7 +179,7 @@ export const ClickReactionPillEmits: Story = {
     'onSend-message-reaction': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const pill = canvasElement.querySelector('.vac-button-reaction') as HTMLElement
+    const pill = canvasElement.querySelector('.acc-button-reaction') as HTMLElement
     await userEvent.click(pill)
     await expect(args['onSend-message-reaction']).toHaveBeenCalled()
   },
@@ -190,6 +190,6 @@ export const DisabledActionsHidesChip: Story = {
     message: { ...sampleMessages[2]!, disableActions: true, disableReactions: true },
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-message-actions-wrapper')).toBeFalsy()
+    expect(canvasElement.querySelector('.acc-message-actions-wrapper')).toBeFalsy()
   },
 }

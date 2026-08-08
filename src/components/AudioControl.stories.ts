@@ -28,7 +28,7 @@ export const Default: Story = {
   args: {},
   play: async ({ canvasElement }) => {
     const slider = within(canvasElement).getByRole('slider', { name: 'Audio progress' })
-    const dot = canvasElement.querySelector('.vac-line-dot') as HTMLElement
+    const dot = canvasElement.querySelector('.acc-line-dot') as HTMLElement
 
     expect(dot.style.left).toBe('25%')
     expect(slider.getAttribute('aria-valuenow')).toBe('25')
@@ -40,7 +40,7 @@ export const MouseDownEmitsZeroLineHead: Story = {
     'onChange-linehead': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const bar = canvasElement.querySelector('.vac-player-bar') as HTMLElement
+    const bar = canvasElement.querySelector('.acc-player-bar') as HTMLElement
     setBarBounds(bar)
     bar.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 100 }))
     document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, clientX: 100 }))
@@ -53,7 +53,7 @@ export const DragMovesLineHead: Story = {
     'onChange-linehead': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const bar = canvasElement.querySelector('.vac-player-bar') as HTMLElement
+    const bar = canvasElement.querySelector('.acc-player-bar') as HTMLElement
     setBarBounds(bar)
     bar.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 150 }))
     document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: 200 }))
@@ -86,7 +86,7 @@ export const HoverEmitsHoverFlag: Story = {
     'onHover-audio-progress': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const bar = canvasElement.querySelector('.vac-player-bar') as HTMLElement
+    const bar = canvasElement.querySelector('.acc-player-bar') as HTMLElement
     bar.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }))
     bar.dispatchEvent(new MouseEvent('mouseout', { bubbles: true }))
     await expect(args['onHover-audio-progress']).toHaveBeenCalledWith(true)
@@ -100,7 +100,7 @@ export const SelectionModeBlocksScrub: Story = {
     'onChange-linehead': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const bar = canvasElement.querySelector('.vac-player-bar') as HTMLElement
+    const bar = canvasElement.querySelector('.acc-player-bar') as HTMLElement
     setBarBounds(bar)
     bar.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 50 }))
     document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, clientX: 50 }))
@@ -130,12 +130,12 @@ export const UnmountDuringDragRemovesDocumentListeners: Story = {
     `,
   }),
   play: async ({ canvasElement, args }) => {
-    const bar = canvasElement.querySelector('.vac-player-bar') as HTMLElement
+    const bar = canvasElement.querySelector('.acc-player-bar') as HTMLElement
     setBarBounds(bar)
     bar.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 150 }))
     expect(args['onChange-linehead']).toHaveBeenCalledTimes(1)
     ;(canvasElement.querySelector('.unmount-control') as HTMLButtonElement).click()
-    await waitFor(() => expect(canvasElement.querySelector('.vac-player-bar')).toBeFalsy())
+    await waitFor(() => expect(canvasElement.querySelector('.acc-player-bar')).toBeFalsy())
     document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: 200 }))
     document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, clientX: 200 }))
     expect(args['onChange-linehead']).toHaveBeenCalledTimes(1)

@@ -26,8 +26,8 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {},
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-media-preview')).toBeTruthy()
-    expect(canvasElement.querySelector('.vac-image-preview')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-media-preview')).toBeTruthy()
+    expect(canvasElement.querySelector('.acc-image-preview')).toBeTruthy()
   },
 }
 
@@ -50,7 +50,7 @@ export const HiddenWhenNoFile: Story = {
     file: null,
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-media-preview')).toBeFalsy()
+    expect(canvasElement.querySelector('.acc-media-preview')).toBeFalsy()
   },
 }
 
@@ -59,7 +59,7 @@ export const ClickBackdropEmitsClose: Story = {
     'onClose-media-preview': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const backdrop = canvasElement.querySelector('.vac-media-preview') as HTMLElement
+    const backdrop = canvasElement.querySelector('.acc-media-preview') as HTMLElement
     await userEvent.click(backdrop)
     await expect(args['onClose-media-preview']).toHaveBeenCalled()
   },
@@ -70,7 +70,7 @@ export const CloseButtonEmitsClose: Story = {
     'onClose-media-preview': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const closeBtn = canvasElement.querySelector('.vac-close-button') as HTMLElement
+    const closeBtn = canvasElement.querySelector('.acc-close-button') as HTMLElement
     await userEvent.click(closeBtn)
     await expect(args['onClose-media-preview']).toHaveBeenCalled()
   },
@@ -81,7 +81,7 @@ export const EscapeKeyEmitsClose: Story = {
     'onClose-media-preview': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const modal = canvasElement.querySelector('.vac-media-preview') as HTMLElement
+    const modal = canvasElement.querySelector('.acc-media-preview') as HTMLElement
     modal.focus()
     await userEvent.keyboard('{Escape}')
     await expect(args['onClose-media-preview']).toHaveBeenCalled()
