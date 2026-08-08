@@ -55,6 +55,15 @@ describe('formatText', () => {
     expect(result.value).toContain('&lt;@unknown&gt;')
   })
 
+  it('escapes user IDs before placing them in mention attributes', () => {
+    const users: User[] = [
+      { id: 'u&quot; autofocus=&quot;x', name: 'Alice', status: { state: 'online' } },
+    ]
+    const result = formatText('hi <@u&quot; autofocus=&quot;x>', { markdown: true }, { users })
+
+    expect(result.value).not.toContain(' data-user-id="u" autofocus=')
+  })
+
   it('reduces output to plain text when singleLine is true', () => {
     const previous = document.body.innerHTML
     const result = formatText('**hello**', { markdown: true, singleLine: true })

@@ -52,6 +52,8 @@ export interface MessageFile {
   extension: string
   url: string
   previewUrl?: string
+  /** Set to `false` to force image/video files through the host-controlled download flow. */
+  previewable?: boolean
   size?: number
   /** Duration in seconds for audio/video files. */
   duration?: number

@@ -61,6 +61,8 @@ const storyIds = Object.values(indexJson.entries)
   .filter((entry) => entry.type === 'story')
   .map((entry) => entry.id)
 
+const intentionallyEmptyStories = new Set(['components-mediapreview--hidden-when-no-file'])
+
 const browser = await chromium.launch()
 
 const probeStory = async (page, storyId) => {
@@ -112,7 +114,7 @@ for (const r of results) {
   if (r.pageErrors.length) {
     errors.push({ storyId: r.storyId, pageErrors: r.pageErrors })
   }
-  if (r.rootHtmlLen < 50) {
+  if (r.rootHtmlLen < 50 && !intentionallyEmptyStories.has(r.storyId)) {
     empties.push({ storyId: r.storyId, rootHtmlLen: r.rootHtmlLen })
   }
   for (const issue of r.consoleIssues) {

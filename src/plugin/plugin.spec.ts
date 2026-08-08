@@ -66,4 +66,16 @@ describe('AdvancedChatPlugin', () => {
     expect(fn('does.not.exist' as never)).toBe('')
     app.unmount()
   })
+
+  it('does not leak string overrides into another plugin instance', () => {
+    const first = createApp({ render: () => h('div') })
+    const second = createApp({ render: () => h('div') })
+    first.use(AdvancedChatPlugin({ strings: { 'chats.empty': 'Overridden' } }))
+    second.use(AdvancedChatPlugin())
+
+    expect(first.config.globalProperties.$advancedChatString('chats.empty')).toBe('Overridden')
+    expect(second.config.globalProperties.$advancedChatString('chats.empty')).toBe(
+      en['chats.empty'],
+    )
+  })
 })

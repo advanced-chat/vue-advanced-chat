@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { expect, fn, userEvent, waitFor } from 'storybook/test'
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 
 import Message from './Message.vue'
 import { currentUser, messageActions, sampleMessages, sampleUsers } from './stories.fixtures.ts'
@@ -46,7 +46,25 @@ export const AudioOnly: Story = {
     message: sampleMessages[3],
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-audio-summary')).toBeTruthy()
+    const canvas = within(canvasElement)
+    const audio = canvasElement.querySelector('audio') as HTMLAudioElement
+    let paused = true
+    const play = fn(async () => {
+      paused = false
+      audio.dispatchEvent(new Event('play'))
+    })
+
+    Object.defineProperties(audio, {
+      paused: { configurable: true, get: () => paused },
+      play: { configurable: true, value: play },
+    })
+
+    expect(canvasElement.querySelector('.vac-audio-player')).toBeTruthy()
+    expect(audio.getAttribute('src')).toBe(sampleMessages[3]!.files![0]!.url)
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Play audio' }))
+    await waitFor(() => expect(canvas.getByRole('button', { name: 'Pause audio' })).toBeTruthy())
+    expect(play).toHaveBeenCalledOnce()
   },
 }
 
@@ -132,12 +150,14 @@ export const DropdownActionEmits: Story = {
 
 export const SelectionModeClickEmits: Story = {
   args: {
+    message: sampleMessages[2],
     messageSelectionEnabled: true,
     'onSelect-message': fn(),
   },
   play: async ({ canvasElement, args }) => {
     const row = canvasElement.querySelector('.vac-message-row-selectable') as HTMLElement
     expect(row).toBeTruthy()
+    expect(canvasElement.querySelector('.vac-button-reaction')).toBeFalsy()
     await userEvent.click(row)
     await expect(args['onSelect-message']).toHaveBeenCalled()
   },

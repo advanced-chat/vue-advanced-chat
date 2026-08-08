@@ -46,6 +46,8 @@ export interface ChatProps {
   showFiles?: boolean
   showEmojis?: boolean
   showFooter?: boolean
+  showSendIcon?: boolean
+  composerDisabled?: boolean
   showReactionEmojis?: boolean
   showNewMessagesDivider?: boolean
   /**
@@ -96,11 +98,21 @@ export interface ChatEvents {
   (e: 'typing-message', value: string): void
   (
     e: 'send-message',
-    payload: { content: string; files: ChatFileItem[]; reply?: Message | null },
+    payload: {
+      content: string
+      files: ChatFileItem[]
+      mentionedUsers: User[]
+      reply?: Message | null
+    },
   ): void
   (
     e: 'edit-message',
-    payload: { messageId: Message['id']; content: string; files: ChatFileItem[] },
+    payload: {
+      messageId: Message['id']
+      content: string
+      files: ChatFileItem[]
+      mentionedUsers: User[]
+    },
   ): void
   (e: 'message-action-handler', payload: { action: Action; message: Message }): void
   (e: 'click-user-tag', user: User): void
@@ -135,6 +147,8 @@ const props = withDefaults(defineProps<ChatProps>(), {
   showFiles: true,
   showEmojis: true,
   showFooter: true,
+  showSendIcon: true,
+  composerDisabled: false,
   showReactionEmojis: true,
   showNewMessagesDivider: true,
   textFormatting: () => ({}),
@@ -154,6 +168,8 @@ const previewFile = ref<MessageFile | null>(null)
 const scrollContainer = useTemplateRef<HTMLElement>('scrollContainer')
 const userAtBottom = ref(true)
 const newMessagesAvailable = ref(false)
+const paginationPending = ref(false)
+const paginationScrollHeight = ref(0)
 
 const users = computed(() => props.chat?.users || [])
 
@@ -213,10 +229,13 @@ const onScroll = () => {
 
   if (
     el.scrollTop < SCROLL_THRESHOLD &&
+    !paginationPending.value &&
     !props.loadingMessages &&
     !props.messagesLoaded &&
     props.messages.length > 0
   ) {
+    paginationPending.value = true
+    paginationScrollHeight.value = el.scrollHeight
     emit('fetch-messages')
   }
 }
@@ -233,6 +252,7 @@ watch(
   () => {
     newMessagesAvailable.value = false
     userAtBottom.value = true
+    paginationPending.value = false
     if (autoScrollPolicy.value.onChatSwitch) {
       nextTick(() => scrollToBottom(false))
     }
@@ -240,15 +260,32 @@ watch(
 )
 
 watch(
-  () => props.messages.length,
-  (newLen, oldLen = 0) => {
-    if (newLen <= oldLen) return
+  () => props.messages.map((message) => message.id),
+  (newIds, oldIds = []) => {
+    const newLen = newIds.length
+    const oldLen = oldIds.length
+    if (newLen <= oldLen) {
+      paginationPending.value = false
+      return
+    }
 
+    const oldFirst = oldIds[0]
+    const oldLast = oldIds[oldLen - 1]
+    const newFirst = newIds[0]
+    const newLast = newIds[newLen - 1]
+    const prepended = oldLen > 0 && oldLast === newLast && oldFirst !== newFirst
     const last = props.messages[newLen - 1]
     const isOwnLast = !!last && !!props.currentUser && last.sender.id === props.currentUser.id
     const policy = autoScrollPolicy.value
 
     nextTick(() => {
+      if (prepended) {
+        const el = scrollContainer.value
+        if (el) el.scrollTop += el.scrollHeight - paginationScrollHeight.value
+        paginationPending.value = false
+        return
+      }
+
       if (isOwnLast) {
         if (policy.onSend) scrollToBottom()
       } else if (policy.onReceive && userAtBottom.value) {
@@ -256,7 +293,15 @@ watch(
       } else {
         newMessagesAvailable.value = true
       }
+      paginationPending.value = false
     })
+  },
+)
+
+watch(
+  () => props.loadingMessages,
+  (loading, previous) => {
+    if (previous && !loading) paginationPending.value = false
   },
 )
 
@@ -391,6 +436,8 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
         :show-files="showFiles"
         :show-emojis="showEmojis"
         :show-footer="showFooter"
+        :show-send-icon="showSendIcon"
+        :disabled="composerDisabled"
         :accept="accept"
         :multiple="multiple"
         :capture="capture"

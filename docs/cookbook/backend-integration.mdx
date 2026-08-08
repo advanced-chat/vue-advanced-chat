@@ -46,12 +46,12 @@ import {
 } from 'firebase/firestore'
 import { db } from './firebase'
 
-import type { Chat, Message, User } from '@advanced-chat/components'
+import type { ChatModel, MessageModel, User } from '@advanced-chat/components'
 
 export const useChatStore = (currentUser: User) => {
-  const chats = ref<Chat[]>([])
-  const messages = ref<Message[]>([])
-  const activeChat = ref<Chat | null>(null)
+  const chats = ref<ChatModel[]>([])
+  const messages = ref<MessageModel[]>([])
+  const activeChat = ref<ChatModel | null>(null)
   const messagesLoaded = ref(false)
   const loadingMessages = ref(false)
   let oldestLoaded: any = null
@@ -59,7 +59,7 @@ export const useChatStore = (currentUser: User) => {
   // Subscribe to the chat list.
   const chatsQuery = query(collection(db, 'chats'), orderBy('updatedAt', 'desc'))
   onSnapshot(chatsQuery, (snap) => {
-    chats.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }) as Chat)
+    chats.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }) as ChatModel)
   })
 
   // Re-subscribe to messages whenever the active chat changes.
@@ -76,24 +76,33 @@ export const useChatStore = (currentUser: User) => {
       limit(50),
     )
     onSnapshot(messagesQuery, (snap) => {
-      messages.value = snap.docs
-        .map((d) => ({ id: d.id, ...d.data() }) as Message)
-        .reverse()
+      messages.value = snap.docs.map((d) => ({ id: d.id, ...d.data() }) as MessageModel).reverse()
       oldestLoaded = snap.docs[snap.docs.length - 1]
       messagesLoaded.value = snap.docs.length < 50
     })
   })
 
-  const sendMessage = async (
-    payload: { content: string; files: { blob?: Blob; name: string }[]; reply?: Message | null },
-  ) => {
+  const sendMessage = async (payload: {
+    content: string
+    files: { blob?: Blob; name: string }[]
+    mentionedUsers: User[]
+    reply?: MessageModel | null
+  }) => {
     if (!activeChat.value) return
     await addDoc(collection(db, 'chats', activeChat.value.id, 'messages'), {
-      sender: { id: currentUser.id, name: currentUser.name },
+      sender: currentUser,
       content: payload.content,
+      mentionedUserIds: payload.mentionedUsers.map((user) => user.id),
       createdAt: serverTimestamp(),
       status: 'sending',
-      reply: payload.reply ? { id: payload.reply.id, sender: payload.reply.sender, content: payload.reply.content, createdAt: payload.reply.createdAt } : undefined,
+      reply: payload.reply
+        ? {
+            id: payload.reply.id,
+            sender: payload.reply.sender,
+            content: payload.reply.content,
+            createdAt: payload.reply.createdAt,
+          }
+        : undefined,
       // file uploads handled separately — see "File Uploads" recipe
     })
   }
@@ -109,7 +118,7 @@ export const useChatStore = (currentUser: User) => {
       limit(50),
     )
     onSnapshot(olderQuery, (snap) => {
-      const older = snap.docs.map((d) => ({ id: d.id, ...d.data() }) as Message).reverse()
+      const older = snap.docs.map((d) => ({ id: d.id, ...d.data() }) as MessageModel).reverse()
       messages.value = [...older, ...messages.value]
       oldestLoaded = snap.docs[snap.docs.length - 1] ?? oldestLoaded
       messagesLoaded.value = snap.docs.length < 50
@@ -158,7 +167,7 @@ const {
     :messages-loaded="messagesLoaded"
     :loading-messages="loadingMessages"
     :chats-loaded="true"
-    @open-chat="(chat) => activeChat = chat"
+    @open-chat="(chat) => (activeChat = chat)"
     @send-message="sendMessage"
     @fetch-messages="fetchMoreMessages"
   />
@@ -190,7 +199,7 @@ them.
 on whether the current user is already in the reaction list:
 
 ```ts
-const onReaction = async ({ emoji, message }: { emoji: string; message: Message }) => {
+const onReaction = async ({ emoji, message }: { emoji: string; message: MessageModel }) => {
   const current = message.reactions?.[emoji] ?? []
   const isMine = current.includes(currentUser.id)
 
@@ -202,10 +211,21 @@ const onReaction = async ({ emoji, message }: { emoji: string; message: Message 
 }
 ```
 
+## Mentions
+
+The send and edit payloads contain both stable `<@id>` tokens in `content` and
+deduplicated full users in `mentionedUsers`. Persist the tokenized content and,
+if your backend needs a notification/index field, derive it from
+`mentionedUsers.map(user => user.id)`. Unknown `<@id>` tokens remain intact in
+content but are not added to `mentionedUsers`.
+
 ## Typing presence
 
-Typing events fire on every keystroke as `typing-message` (with the
-current input text). Debounce them before writing to your backend:
+`typing-message` carries the current composer string, not the v2
+`{ roomId, message }` object. The component emits immediately when typing
+starts, emits a trailing update after 300 ms of inactivity, and emits `''`
+when cleared or when an active composer unmounts. Treat the value as a presence
+signal and rate-limit backend writes:
 
 ```ts
 import { useDebounceFn } from '@vueuse/core'
@@ -228,8 +248,12 @@ pill on failed own-messages and emits `open-failed-message` with
 the message when the user clicks it:
 
 ```ts
-const onRetry = async (message: Message) => {
-  await sendMessage({ content: message.content!, files: message.files ?? [] })
+const onRetry = async (message: MessageModel) => {
+  await sendMessage({
+    content: message.content!,
+    files: message.files ?? [],
+    mentionedUsers: [],
+  })
   // remove the failed copy from local state once the new send lands.
 }
 ```

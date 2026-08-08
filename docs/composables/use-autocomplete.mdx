@@ -30,20 +30,20 @@ const { activeIndex, setActiveIndex } = useAutocomplete<T>({
 
 ## Options
 
-| Field | Type | Description |
-|---|---|---|
-| `items` | `MaybeRefOrGetter<T[]>` | Reactive list of currently-suggested items. The active index resets to `0` whenever the list length changes. |
+| Field          | Type                                | Description                                                                                                                                                |
+| -------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `items`        | `MaybeRefOrGetter<T[]>`             | Reactive list of currently-suggested items. The active index resets to `0` whenever the list length changes.                                               |
 | `selectSignal` | `MaybeRefOrGetter<boolean \| null>` | When this flips truthy, the active item is committed via `onCommit`. Toggle it (e.g. `true` → `false` → `true`) so each commit fires its own watcher tick. |
-| `navSignal` | `MaybeRefOrGetter<number \| null>` | Positive → step forward; negative → step backward. The watcher steps by exactly one on each change regardless of magnitude. |
-| `onCommit` | `(item: T) => void` | Fired with the active item when `selectSignal` flips truthy. |
-| `onNavigate` | `() => void` | Fired after `navSignal` moves the active index. The parent typically resets `navSignal` to `null` here. |
+| `navSignal`    | `MaybeRefOrGetter<number \| null>`  | Positive → step forward; negative → step backward. The watcher steps by exactly one on each change regardless of magnitude.                                |
+| `onCommit`     | `(item: T) => void`                 | Fired with the active item when `selectSignal` flips truthy.                                                                                               |
+| `onNavigate`   | `() => void`                        | Fired after `navSignal` moves the active index. The parent typically resets `navSignal` to `null` here.                                                    |
 
 ## Returns
 
-| Field | Type | Description |
-|---|---|---|
-| `activeIndex` | `Readonly<Ref<number \| null>>` | Currently highlighted index, or `null` when the list is empty. |
-| `setActiveIndex` | `(index: number \| null) => void` | Manually set the active index (e.g. on hover). |
+| Field            | Type                              | Description                                                    |
+| ---------------- | --------------------------------- | -------------------------------------------------------------- |
+| `activeIndex`    | `Readonly<Ref<number \| null>>`   | Currently highlighted index, or `null` when the list is empty. |
+| `setActiveIndex` | `(index: number \| null) => void` | Manually set the active index (e.g. on hover).                 |
 
 ## Example — slash-command menu
 

@@ -3,7 +3,6 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
-import vueDevTools from 'vite-plugin-vue-devtools'
 
 import path from 'node:path'
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
@@ -31,14 +30,19 @@ export default defineConfig({
     !isStorybookProcess &&
       dts({
         tsconfigPath: './tsconfig.lib.json',
-        exclude: ['**/*.stories.ts'],
+        exclude: ['**/*.stories.ts', '**/*.spec.ts'],
         copyDtsFiles: true,
       }),
-    !isStorybookProcess && vueDevTools(),
   ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      // The package's browser export touches `document` at module scope.
+      // Its data-table implementation is browser-safe and keeps the library SSR-importable.
+      'decode-named-character-reference': path.resolve(
+        dirname,
+        'node_modules/decode-named-character-reference/index.js',
+      ),
     },
   },
   build: {

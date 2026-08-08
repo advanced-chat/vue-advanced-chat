@@ -46,3 +46,5 @@ storybook-static
 
 # Coverage reports
 coverage/
+
+opencode.json

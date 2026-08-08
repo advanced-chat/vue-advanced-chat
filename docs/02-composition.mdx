@@ -30,7 +30,7 @@ single mount. Use this when:
   theme="auto"
   @send-message="onSend"
   @fetch-messages="loadOlder"
-  @open-chat="(chat) => activeChat = chat"
+  @open-chat="(chat) => (activeChat = chat)"
 />
 ```
 
@@ -114,14 +114,14 @@ button (the button that hides / shows the sidebar on mobile).
 
 ## Decision table
 
-| If you need... | Use |
-|---|---|
-| A standard chat surface, no customization | `AdvancedChat` |
-| Two-pane layout but want to wrap each pane | `Layout + Chats + Chat` |
-| Single-conversation surface (no sidebar) | `Layout + Chat standalone` |
-| To render messages outside a chat | `Message` (or `MessageTemplate` for just text) |
-| To reuse the composer in a different surface | `ChatFooter` |
-| Just the markdown / mention rendering | `formatText` (no component needed) |
+| If you need...                               | Use                                            |
+| -------------------------------------------- | ---------------------------------------------- |
+| A standard chat surface, no customization    | `AdvancedChat`                                 |
+| Two-pane layout but want to wrap each pane   | `Layout + Chats + Chat`                        |
+| Single-conversation surface (no sidebar)     | `Layout + Chat standalone`                     |
+| To render messages outside a chat            | `Message` (or `MessageTemplate` for just text) |
+| To reuse the composer in a different surface | `ChatFooter`                                   |
+| Just the markdown / mention rendering        | `formatText` (no component needed)             |
 
 ## Composables instead of slots
 

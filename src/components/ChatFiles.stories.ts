@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { expect, fn, userEvent } from 'storybook/test'
+import { expect, fn, userEvent, within } from 'storybook/test'
 
 import ChatFiles from './ChatFiles.vue'
 
@@ -58,8 +58,10 @@ export const ResetEmits: Story = {
     'onReset-message': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const close = canvasElement.querySelector('.vac-icon-close .vac-svg-button') as HTMLElement
-    await userEvent.click(close)
+    const close = within(canvasElement).getByRole('button', { name: 'Remove all attachments' })
+
+    close.focus()
+    await userEvent.keyboard(' ')
     await expect(args['onReset-message']).toHaveBeenCalled()
   },
 }

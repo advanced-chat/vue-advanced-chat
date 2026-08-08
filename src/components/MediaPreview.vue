@@ -21,6 +21,7 @@ const props = defineProps<MediaPreviewProps>()
 const emit = defineEmits<MediaPreviewEvents>()
 
 const modal = useTemplateRef('modal')
+let previouslyFocused: HTMLElement | null = null
 
 const isImage = computed(() => isImageFile(props.file))
 
@@ -28,6 +29,26 @@ const isVideo = computed(() => isVideoFile(props.file))
 
 const closeModal = () => {
   emit('close-media-preview')
+  previouslyFocused?.focus()
+}
+
+const trapFocus = (event: KeyboardEvent) => {
+  const element = modal.value
+  if (!element) return
+  const focusable = Array.from(
+    element.querySelectorAll<HTMLElement>('button, video, [href], [tabindex]:not([tabindex="-1"])'),
+  ).filter((item) => !item.hasAttribute('disabled'))
+  if (!focusable.length) return
+
+  const first = focusable[0]
+  const last = focusable[focusable.length - 1]
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault()
+    last?.focus()
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault()
+    first?.focus()
+  }
 }
 
 watch(
@@ -35,6 +56,7 @@ watch(
   async (file) => {
     if (!file) return
 
+    previouslyFocused = document.activeElement as HTMLElement | null
     await nextTick()
     modal.value?.focus()
   },
@@ -46,10 +68,14 @@ watch(
   <div
     v-if="file"
     ref="modal"
-    tabindex="0"
+    tabindex="-1"
     class="vac-media-preview"
+    role="dialog"
+    aria-modal="true"
+    :aria-label="`Preview ${file.name}`"
     @click.self="closeModal"
     @keydown.esc="closeModal"
+    @keydown.tab="trapFocus"
   >
     <transition name="vac-bounce-preview" appear>
       <div v-if="isImage" class="vac-media-preview-container">
@@ -63,11 +89,16 @@ watch(
       </div>
     </transition>
 
-    <div class="vac-svg-button vac-close-button" @click="closeModal">
+    <button
+      type="button"
+      class="vac-svg-button vac-close-button"
+      aria-label="Close media preview"
+      @click="closeModal"
+    >
       <slot name="preview-close-icon">
         <SvgIcon name="close-outline" param="preview" />
       </slot>
-    </div>
+    </button>
   </div>
 </template>
 
@@ -109,6 +140,9 @@ watch(
     position: absolute;
     top: 18px;
     right: 18px;
+    padding: 0;
+    border: 0;
+    background: transparent;
   }
 }
 </style>

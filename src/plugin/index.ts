@@ -15,7 +15,7 @@ export interface AdvancedChatPlugin {
 export default ({ localization, strings }: AdvancedChatOptions = {}): AdvancedChatPlugin => {
   const baseStrings = getLocalizationStrings(localization || 'auto')
 
-  const mergedStrings = deepMerge(baseStrings, strings || {})
+  const mergedStrings = deepMerge({} as Strings, baseStrings, strings || {})
 
   return {
     install(app: App) {

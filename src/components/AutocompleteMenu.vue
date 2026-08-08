@@ -1,4 +1,6 @@
 <script setup lang="ts" generic="T">
+import { computed, watch } from 'vue'
+
 import { useAutocomplete } from '../composables/use-autocomplete'
 
 export interface AutocompleteMenuProps<T> {
@@ -27,6 +29,8 @@ export interface AutocompleteMenuProps<T> {
   layout?: 'vertical' | 'horizontal'
   /** Accessible name for the listbox. Required to satisfy axe `aria-input-field-name`. */
   ariaLabel?: string
+  /** ID used to connect the listbox and its active option to the owning combobox. */
+  listboxId?: string
 }
 
 export interface AutocompleteMenuEvents<T> {
@@ -34,6 +38,8 @@ export interface AutocompleteMenuEvents<T> {
   (e: 'commit', item: T): void
   /** Fired after the active index moves via `activeUpOrDown`. */
   (e: 'activate-item'): void
+  /** Reports the active option ID for the owning combobox's `aria-activedescendant`. */
+  (e: 'active-descendant-change', value: string | null): void
 }
 
 const props = withDefaults(defineProps<AutocompleteMenuProps<T>>(), {
@@ -42,6 +48,7 @@ const props = withDefaults(defineProps<AutocompleteMenuProps<T>>(), {
   activeUpOrDown: null,
   layout: 'vertical',
   ariaLabel: 'Suggestions',
+  listboxId: undefined,
 })
 
 const emit = defineEmits<AutocompleteMenuEvents<T>>()
@@ -56,6 +63,15 @@ const { activeIndex, setActiveIndex } = useAutocomplete<T>({
 
 const resolveKey = (item: T, index: number): string | number =>
   props.itemKey ? props.itemKey(item, index) : index
+
+const optionId = (index: number) =>
+  props.listboxId ? `${props.listboxId}-option-${index}` : undefined
+
+const activeDescendant = computed(() =>
+  activeIndex.value === null ? null : (optionId(activeIndex.value) ?? null),
+)
+
+watch(activeDescendant, (value) => emit('active-descendant-change', value), { immediate: true })
 </script>
 
 <template>
@@ -64,6 +80,7 @@ const resolveKey = (item: T, index: number): string | number =>
       v-if="items.length"
       class="vac-autocomplete-container"
       :class="[`vac-autocomplete-${layout}`]"
+      :id="listboxId"
       role="listbox"
       :aria-label="ariaLabel"
     >
@@ -72,6 +89,7 @@ const resolveKey = (item: T, index: number): string | number =>
         :key="resolveKey(item, index)"
         class="vac-autocomplete-item"
         :class="{ 'vac-autocomplete-item-active': index === activeIndex }"
+        :id="optionId(index)"
         role="option"
         :aria-selected="index === activeIndex"
         @mouseover="setActiveIndex(index)"

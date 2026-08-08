@@ -9,56 +9,61 @@ mount shape, the data model, and many event payloads all change.
 This guide is the curated map; the [CHANGELOG](https://github.com/advanced-chat/vue-advanced-chat/blob/develop/CHANGELOG.md)
 has the per-alpha play-by-play.
 
-The v2 package on the `main` branch will continue to ship as
-`vue-advanced-chat` until V3 GA and a deprecation notice is
-published. Migration is a deliberate cutover, not a yarn upgrade.
+The stable public line is `vue-advanced-chat@2.1.2`. This `develop`
+tree is `@advanced-chat/components@3.0.0-alpha.5`, a V3 prerelease.
+Migration is a deliberate package and API cutover, not an in-place
+dependency upgrade.
 
 ## Top-line changes
 
-| Area | v2 | V3 |
-|---|---|---|
-| Package name | `vue-advanced-chat` | `@advanced-chat/components` |
-| Surface | Single `<vue-advanced-chat>` web component | 27 typed Vue 3 SFCs |
-| Mount step | `import { register } from 'vue-advanced-chat'; register()` | `import { AdvancedChat } from '@advanced-chat/components'` |
-| Vue dependency | Bundled (Vue 2 + Vue 3 versions) | Vue 3.5+ peer dependency |
-| Props | JSON-stringified strings | Typed Vue 3 props |
-| Slots | `<template #room-header>` (with kebab→camel quirks) | Native Vue slots |
-| Styling | Shadow DOM + CSS variables | Plain stylesheet + CSS variables (no shadow DOM) |
-| TypeScript | Manual ambient module declarations | Per-component `.d.ts` emitted from `vite-plugin-dts` |
+| Area           | v2                                                         | V3                                                         |
+| -------------- | ---------------------------------------------------------- | ---------------------------------------------------------- |
+| Package name   | `vue-advanced-chat`                                        | `@advanced-chat/components`                                |
+| Surface        | Single `<vue-advanced-chat>` web component                 | 28 typed Vue 3 SFCs + bundled light-DOM web component      |
+| Mount step     | `import { register } from 'vue-advanced-chat'; register()` | `import { AdvancedChat } from '@advanced-chat/components'` |
+| Vue dependency | Bundled (Vue 2 + Vue 3 versions)                           | Vue 3.5+ peer dependency                                   |
+| Props          | JSON-stringified strings                                   | Typed Vue 3 props                                          |
+| Slots          | `<template #room-header>` (with kebab→camel quirks)        | Native Vue slots                                           |
+| Styling        | Shadow DOM + CSS variables                                 | Plain stylesheet + CSS variables (no shadow DOM)           |
+| TypeScript     | Manual ambient module declarations                         | Per-component `.d.ts` emitted from `vite-plugin-dts`       |
 
 ## Renames
 
 V3 renames the "room" terminology to "chat" throughout — props,
 events, slots, and types. Renames in alphabetical order:
 
-| v2 | V3 |
-|---|---|
-| `current-user-id` | `currentUser: { id }` |
-| `room` | `chat` |
-| `room-id` | `chat.id` |
-| `rooms` | `chats` |
-| `rooms-loaded` | `chatsLoaded` |
-| `loading-rooms` | `loadingChats` |
-| `room-actions` | `headerActions` |
-| `room-message` | (removed — use `init-reply-message` / `init-edit-message`) |
-| `text-messages` | `AdvancedChatPlugin({ strings })` |
-| `<slot name="rooms-list-item_id">` | `<slot name="chat-list-item_id">` |
-| `<slot name="rooms-empty">` | `<slot name="chats-empty">` |
-| `<slot name="room-header">` | `<slot name="chat-header">` |
-| `<slot name="spinner-icon-rooms">` | `<slot name="spinner-icon-chats">` |
-| `fetch-rooms` | `fetch-more-chats` |
-| `add-room` | `add-chat` |
+| v2                 | V3                                                          |
+| ------------------ | ----------------------------------------------------------- |
+| `current-user-id`  | `currentUser: { id }`                                       |
+| `room`             | `chat`                                                      |
+| `room-id`          | `chat.id`                                                   |
+| `rooms`            | `chats`                                                     |
+| `rooms-loaded`     | `chatsLoaded`                                               |
+| `loading-rooms`    | `loadingChats`                                              |
+| `room-actions`     | `chatActions`                                               |
+| `menu-actions`     | `headerActions`                                             |
+| `room-message`     | No `AdvancedChat` equivalent; `ChatFooter.roomMessage` only |
+| `text-messages`    | `AdvancedChatPlugin({ strings })`                           |
+| `fetch-more-rooms` | `fetch-more-chats`                                          |
+| `add-room`         | `add-chat`                                                  |
+
+V3 slots are component-specific native Vue slots rather than a blanket rename
+of every v2 web-component slot. For example, direct `ChatHeader` composition
+uses `chat-header`, `chat-header-avatar`, `chat-header-info`, and
+`chat-options`; `Chats` exposes `chats-header`, `chats-search`, and
+`chats-empty`. `AdvancedChat` does not forward all child slots, so compose the
+lower-level component when a slot is required.
 
 ## Data model
 
 ### `Action`
 
-| v2 | V3 |
-|---|---|
-| `name: string` | `id: string` |
-| `title: string` | `label: string` |
-| `onlyMe: boolean` | `ownMessageOnly: boolean` |
-| (no field) | `icon?: string` (resolves to a built-in `SvgIcon` name) |
+| v2                | V3                                                      |
+| ----------------- | ------------------------------------------------------- |
+| `name: string`    | `id: string`                                            |
+| `title: string`   | `label: string`                                         |
+| `onlyMe: boolean` | `ownMessageOnly: boolean`                               |
+| (no field)        | `icon?: string` (resolves to a built-in `SvgIcon` name) |
 
 The exported `REPLY_ACTION` (`'reply'`) and `EDIT_ACTION` (`'edit'`)
 constants are the documented `id` values for the two built-in
@@ -66,66 +71,76 @@ actions `Chat` recognizes.
 
 ### `Chat`
 
-| v2 | V3 |
-|---|---|
-| `roomId` | `id` |
-| `roomName` | `name` |
-| `avatar` (string URL) | `avatar?: string` (same) |
-| `unreadCount` | same |
+| v2                            | V3                                                                                                                                            |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `roomId`                      | `id`                                                                                                                                          |
+| `roomName`                    | `name`                                                                                                                                        |
+| `avatar` (string URL)         | `avatar?: string` (same)                                                                                                                      |
+| `unreadCount`                 | same                                                                                                                                          |
 | `lastMessage: Message` (full) | `lastMessage: MessageSummary` (`Pick<Message, 'id' \| 'sender' \| 'content' \| 'createdAt' \| 'status' \| 'deleted' \| 'edited' \| 'files'>`) |
-| `users: User[]` | same |
-| `typingUsers: number[]` | `typingUsers: UserReference[]` |
+| `users: User[]`               | same                                                                                                                                          |
+| `typingUsers: string[]`       | `typingUsers: UserReference[]`                                                                                                                |
 
 ### `Message`
 
-| v2 | V3 |
-|---|---|
-| `_id` | `id` |
-| `senderId: string` | `sender: User` (or `UserReference` resolved against `chat.users`) |
-| `username` (denormalized) | (derived from `sender.name`) |
-| `avatar` (denormalized) | (derived from `sender.avatar`) |
-| `saved: boolean` | `status?: 'sending' \| 'sent' \| 'delivered' \| 'read' \| 'failed'` |
-| `distributed: boolean` | rolled into `status` |
-| `seen: boolean` | rolled into `status` |
-| `failure: boolean` | rolled into `status` (`'failed'`) |
-| `new: boolean` | `unread: boolean` |
-| `content` | same |
-| `files: MessageFile[]` | same |
-| `reactions: { [emoji]: { _id, username }[] }` | `reactions: { [emoji]: Id[] }` |
-| `replyMessage: Message` | `reply: MessageSummary` (no longer recursive) |
+| v2                                 | V3                                                                  |
+| ---------------------------------- | ------------------------------------------------------------------- |
+| `_id`                              | `id`                                                                |
+| `senderId: string`                 | `sender: User` (full user record)                                   |
+| `username` (denormalized)          | (derived from `sender.name`)                                        |
+| `avatar` (denormalized)            | (derived from `sender.avatar`)                                      |
+| `saved: boolean`                   | `status?: 'sending' \| 'sent' \| 'delivered' \| 'read' \| 'failed'` |
+| `distributed: boolean`             | rolled into `status`                                                |
+| `seen: boolean`                    | rolled into `status`                                                |
+| `failure: boolean`                 | rolled into `status` (`'failed'`)                                   |
+| `new: boolean`                     | `unread: boolean`                                                   |
+| `content`                          | same                                                                |
+| `files: MessageFile[]`             | same                                                                |
+| `reactions: { [emoji]: string[] }` | `reactions: { [emoji]: Id[] }`                                      |
+| `replyMessage: Message`            | `reply: MessageSummary` (no longer recursive)                       |
 
 ### `User`
 
-| v2 | V3 |
-|---|---|
-| `_id` | `id` |
-| `username` | `name` |
-| `avatar` | same |
-| `status: 'online' \| 'offline'` (string) | `status: { state, lastActiveAt? }` |
+| v2                                    | V3                                                        |
+| ------------------------------------- | --------------------------------------------------------- |
+| `_id`                                 | `id`                                                      |
+| `username`                            | `name`                                                    |
+| `avatar`                              | same                                                      |
+| `status.state: 'online' \| 'offline'` | `status.state: 'online' \| 'offline' \| 'away' \| 'busy'` |
+| `status.lastChanged`                  | `status.lastActiveAt?`                                    |
+
+The viewer and a message sender deliberately use different shapes:
+
+- `AdvancedChat.currentUser` / `Chat.currentUser` accept
+  `UserReference | null`, so `{ id: 'me' }` is enough to identify the viewer.
+- `Message.sender` is a full `User`, including `name` and `status` (plus the
+  optional `avatar`). It is not resolved from a sender id at render time.
+- `chat.users` contains full `User` values used for participant names,
+  presence, avatars, typing indicators, and mention resolution.
 
 ### `Id`
 
-| v2 | V3 |
-|---|---|
+| v2                 | V3                                                                                |
+| ------------------ | --------------------------------------------------------------------------------- |
 | `string \| number` | `string` (call `String(id)` at the API boundary if your backend uses numeric ids) |
 
 ## Event payloads
 
-| v2 event | V3 event | Payload change |
-|---|---|---|
-| `send-message` | `send-message` | `{ content, files, replyMessage }` → `{ content, files, reply }` |
-| `edit-message` | `edit-message` | `{ messageId, newContent, files }` → `{ messageId, content, files }` |
-| `fetch-messages` | `fetch-messages` | `{ room, options }` → no payload (consumer reads the active chat from its own state) |
-| `fetch-more-rooms` | `fetch-more-chats` | (rename only) |
-| `room-action-handler` | `chat-action-handler` | `{ action: { name, title } }` → `{ chat, action: { id, label } }` |
-| `message-action-handler` | `message-action-handler` | `{ action, roomId, message }` → `{ action: { id, label }, message }` |
-| `menu-action-handler` | `menu-action-handler` | `{ action, roomId }` → `{ chat, action }` |
-| `send-message-reaction` | `send-message-reaction` | `{ messageId, roomId, reaction, remove }` → `{ emoji, message }` (host derives toggle semantics) |
-| `open-file` | `open-file` | `{ message, file, action }` → `{ file, action }` |
-| `open-failed-message` | `open-failed-message` | `{ message }` → `message` directly (single-field wrap dropped) |
-| `typing-message` | `typing-message` | `value` (string) — same |
-| `add-room` | `add-chat` | (rename only) |
-| `room-info` | `show-chat-info` | (rename + emits `chat` payload) |
+| v2 event                 | V3 event                 | Payload change                                                                                                       |
+| ------------------------ | ------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `send-message`           | `send-message`           | `{ roomId, content, files, replyMessage, usersTag }` → `{ content, files, mentionedUsers, reply }`                   |
+| `edit-message`           | `edit-message`           | `{ roomId, messageId, newContent, files, replyMessage, usersTag }` → `{ messageId, content, files, mentionedUsers }` |
+| `fetch-messages`         | `fetch-messages`         | `{ room, options }` → no payload (consumer reads the active chat from its own state)                                 |
+| `fetch-more-rooms`       | `fetch-more-chats`       | (rename only)                                                                                                        |
+| `room-action-handler`    | `chat-action-handler`    | `{ roomId, action: { name, title } }` → `{ chat, action: { id, label } }`                                            |
+| `message-action-handler` | `message-action-handler` | `{ action, roomId, message }` → `{ action: { id, label }, message }`                                                 |
+| `menu-action-handler`    | `menu-action-handler`    | `{ action, roomId }` → `{ chat, action }`                                                                            |
+| `send-message-reaction`  | `send-message-reaction`  | `{ messageId, roomId, reaction, remove }` → `{ emoji, message }` (host derives toggle semantics)                     |
+| `open-file`              | `open-file`              | `{ message, file }` → `{ file, action: 'preview' \| 'download' }`                                                    |
+| `open-failed-message`    | `open-failed-message`    | `{ roomId, message }` → `message` directly                                                                           |
+| `typing-message`         | `typing-message`         | `{ roomId, message }` → current composer string directly; `''` means stopped/cleared                                 |
+| `add-room`               | `add-chat`               | (rename only)                                                                                                        |
+| `room-info`              | `show-chat-info`         | (rename + emits `chat` payload)                                                                                      |
 
 ## Mount-time changes
 
@@ -159,6 +174,36 @@ actions `Chat` recognizes.
 No more `JSON.stringify` per prop. Slot names use the V3 conventions
 above.
 
+### Keeping a web-component host
+
+V3 also has an official framework-independent entrypoint, but its contract is
+not the v2 custom element contract:
+
+```ts
+import '@advanced-chat/components/web-component'
+import '@advanced-chat/components/web-component/styles'
+import type { AdvancedChatHTMLElement } from '@advanced-chat/components/web-component'
+
+const chat = document.querySelector<AdvancedChatHTMLElement>('vue-advanced-chat')!
+chat.currentUser = { id: 'me' }
+chat.chats = chats
+chat.messages = messages
+
+chat.addEventListener('send-message', (event) => {
+  persist(event.detail)
+})
+```
+
+Importing the entrypoint auto-registers `<vue-advanced-chat>`; no default
+`register()` call is needed. Assign typed properties rather than serialized
+attributes. DOM event payloads are direct `CustomEvent.detail` values, not
+one-element arrays.
+
+`registerAdvancedChat({ tagName, localization, strings })` remains available
+for alternate tags and localization overrides. Because the default tag is
+registered on import, a later call for that managed tag changes options for
+future mounts only. It cannot reconfigure an already-mounted element.
+
 ## Behavioral changes worth knowing
 
 - **Selection mode** — v2 had `messageSelectionEnabled: boolean` +
@@ -181,6 +226,56 @@ above.
   from the chat-options menu in the active conversation. V3's
   `chat-action-handler` also fires from the per-row dropdown in
   the chat list (`Chats` re-emits from `ChatsItem`).
+- **Mentions** — choosing an `@` suggestion inserts `<@id>` into the emitted
+  `content`. Both send and edit also include a deduplicated
+  `mentionedUsers: User[]`. Persist the tokenized content; rendering resolves
+  known ids to current display names and leaves unknown tokens intact.
+- **Pending-file ownership** — while files remain in the composer, V3 revokes
+  their object URLs on remove/reset/chat switch/unmount. Emitting send/edit
+  transfers each `localUrl` to the host without revoking it. The host must
+  revoke it after upload or after removing the optimistic preview.
+- **Message pagination and scrolling** — `fetch-messages` fires within 60 px
+  of the top, is gated by `loadingMessages` / `messagesLoaded`, and preserves
+  the reader's relative position after prepends. Auto-scroll is configurable
+  for mount, chat switch, own sends, and incoming messages. Incoming messages
+  show the scroll-to-latest pill when the reader is away from the bottom.
+- **New-message state** — `Message.unread` drives the divider and the pill's
+  unread count. `showNewMessagesDivider` controls the divider only.
+- **Mobile layout** — `AdvancedChat` observes its own container, switches to
+  one pane at 768 px or narrower, hides the list after a chat opens, and uses
+  the header toggle to return. The breakpoint is fixed; there is no V3
+  `responsive-breakpoint` prop.
+- **Operational state** — `AdvancedChat.status` supports blocking loading,
+  empty, error, and permission-denied panels plus non-blocking offline and
+  reconnecting banners. `composerDisabled` can preserve readable history while
+  preventing sends.
+- **Audio** — V3 plays audio messages with native play/pause state and mouse
+  or keyboard scrubbing. It does not record audio or bundle an encoder.
+
+## Deliberate removals and remaining limits
+
+The following v2 features are deliberately not part of the V3 surface:
+
+- Built-in audio recording (`show-audio`, bitrate/sample-rate controls, and
+  the MP3 encoder). Playback remains supported.
+- `rooms-order`; sort `chats` in the host before passing them.
+- `templates-text` `/` autocomplete. `AutocompleteMenu` can power a custom
+  command/template surface, but `ChatFooter` does not wire one automatically.
+- `textarea-action-enabled` / `textarea-action-handler`; use footer icon slots
+  to replace existing icons or compose a custom footer for extra actions.
+
+Current limits that remain documented rather than treated as missing fixes:
+
+- No virtualized/windowed message history.
+- Full SSR hydration is not certified; use a client-only boundary for complete
+  chat surfaces.
+- Only English strings ship, although `'auto'` locale negotiation and partial
+  overrides work.
+- The mobile breakpoint and chat auto-open-first behavior are not configurable.
+- Emoji autocomplete uses a small built-in set, reaction choices are fixed,
+  and emoji-picker localization depends on the upstream picker.
+- Message links have no dedicated theme token. Inside `Layout` they use the
+  current fixed anchor rule and can be overridden with normal light-DOM CSS.
 
 ## When in doubt
 

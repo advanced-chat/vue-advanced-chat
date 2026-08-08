@@ -11,6 +11,8 @@ export interface ChatEmojisProps {
   selectItem?: boolean | null
   /** Positive steps forward, negative backward. The host typically wires this to ArrowLeft/ArrowRight. */
   activeUpOrDown?: number | null
+  /** ID used to connect the suggestion listbox to the composer combobox. */
+  listboxId?: string
 }
 
 export interface ChatEmojisEvents {
@@ -18,11 +20,14 @@ export interface ChatEmojisEvents {
   (e: 'select-emoji', emoji: string): void
   /** Fires after the active emoji moves via `activeUpOrDown`. */
   (e: 'activate-item'): void
+  /** Reports the active option ID for the owning combobox. */
+  (e: 'active-descendant-change', value: string | null): void
 }
 
 withDefaults(defineProps<ChatEmojisProps>(), {
   selectItem: null,
   activeUpOrDown: null,
+  listboxId: undefined,
 })
 
 const emit = defineEmits<ChatEmojisEvents>()
@@ -34,11 +39,13 @@ const emit = defineEmits<ChatEmojisEvents>()
     :item-key="(emoji) => emoji"
     :select-item="selectItem"
     :active-up-or-down="activeUpOrDown"
+    :listbox-id="listboxId"
     layout="horizontal"
     :aria-label="strings['chat.autocomplete.emojis']"
     class="vac-emojis-menu"
     @commit="(emoji) => emit('select-emoji', emoji)"
     @activate-item="emit('activate-item')"
+    @active-descendant-change="(value) => emit('active-descendant-change', value)"
   >
     <template #default="{ item }">
       <div class="vac-emoji-chip">{{ item }}</div>

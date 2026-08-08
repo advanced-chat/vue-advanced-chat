@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { expect, fn, userEvent } from 'storybook/test'
+import { expect, fn, userEvent, within } from 'storybook/test'
 
 import ChatFile from './ChatFile.vue'
 
@@ -52,9 +52,10 @@ export const RemoveEmits: Story = {
     'onRemove-file': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const remove = canvasElement.querySelector('.vac-icon-remove') as HTMLElement
-    expect(remove).toBeTruthy()
-    await userEvent.click(remove)
+    const remove = within(canvasElement).getByRole('button', { name: 'Remove dashboard.png' })
+
+    remove.focus()
+    await userEvent.keyboard('{Enter}')
     await expect(args['onRemove-file']).toHaveBeenCalledWith(0)
   },
 }

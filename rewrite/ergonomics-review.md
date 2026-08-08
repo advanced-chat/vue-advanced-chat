@@ -1,4 +1,13 @@
-# V3 Data Model & Ergonomics Review
+# Archived V3 Data Model & Ergonomics Review (`3.0.0-alpha.1`)
+
+> Historical audit only. This document intentionally preserves the
+> `3.0.0-alpha.1` problem statements and proposed fixes. It is not a current
+> missing-feature list. The action/id naming, chat/user avatars, status enum,
+> string id, message summaries, current-user prop, file prop names, selection
+> shape, event payload normalization, chat slot names, text-formatting pass,
+> and locale negotiation described below subsequently changed. Use
+> [`parity-checklist.md`](./parity-checklist.md) and the public migration guide
+> for the `3.0.0-alpha.5` contract.
 
 A consumer-facing review of the V3 surface at `3.0.0-alpha.1` —
 companion to `architecture-review.md` (which focused on structure).
@@ -16,6 +25,7 @@ consumers expect, force consumers to denormalize more than they
 need, or hide real semantic distinctions behind permissive fields.
 
 The biggest individual fixes are:
+
 - `Chat.icon` → `Chat.avatar` (industry term, matches v2).
 - `User` is missing an `avatar` field entirely.
 - `Message` has three overlapping booleans (`saved`/`delivered`/
@@ -40,14 +50,14 @@ interface Chat {
 }
 ```
 
-| Issue | Priority | Fix |
-|---|---|---|
-| `icon` reads as a small symbolic graphic; consumers expect `avatar` for a chat picture. v2 used `avatar`. | `P0` | Rename `icon` → `avatar`. |
-| `lastMessage: Message` forces consumers to provide the *full* `Message` (including `files`, `reactions`, possibly `reply`) for every chat row. Only the chat-list preview needs a tiny projection. | `P1` | Introduce `MessageSummary = Pick<Message, 'id' \| 'sender' \| 'content' \| 'createdAt' \| 'read' \| 'delivered' \| 'saved' \| 'deleted' \| 'edited' \| 'files'>` and use it for `lastMessage`. |
-| `users?: User[]` is optional but most behavior (typing indicator, online status, message-author lookup) depends on it. Consumers who omit it get silently degraded UI. | `P1` | Make required (or document the degraded behavior explicitly). |
-| `typingUsers` reads as "the participants" until you parse the type. | `note` | Consider `usersTyping` or just `typing: UserReference[]`. |
-| No `index` / `order` field. Consumer must pre-sort. | `note` | OK as-is but document the expected ordering (ascending by activity? descending?). |
-| No `lastActiveAt` / `updatedAt`. | `note` | Many UIs sort or display this. Add as optional. |
+| Issue                                                                                                                                                                                              | Priority | Fix                                                                                                                                                                                            |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `icon` reads as a small symbolic graphic; consumers expect `avatar` for a chat picture. v2 used `avatar`.                                                                                          | `P0`     | Rename `icon` → `avatar`.                                                                                                                                                                      |
+| `lastMessage: Message` forces consumers to provide the _full_ `Message` (including `files`, `reactions`, possibly `reply`) for every chat row. Only the chat-list preview needs a tiny projection. | `P1`     | Introduce `MessageSummary = Pick<Message, 'id' \| 'sender' \| 'content' \| 'createdAt' \| 'read' \| 'delivered' \| 'saved' \| 'deleted' \| 'edited' \| 'files'>` and use it for `lastMessage`. |
+| `users?: User[]` is optional but most behavior (typing indicator, online status, message-author lookup) depends on it. Consumers who omit it get silently degraded UI.                             | `P1`     | Make required (or document the degraded behavior explicitly).                                                                                                                                  |
+| `typingUsers` reads as "the participants" until you parse the type.                                                                                                                                | `note`   | Consider `usersTyping` or just `typing: UserReference[]`.                                                                                                                                      |
+| No `index` / `order` field. Consumer must pre-sort.                                                                                                                                                | `note`   | OK as-is but document the expected ordering (ascending by activity? descending?).                                                                                                              |
+| No `lastActiveAt` / `updatedAt`.                                                                                                                                                                   | `note`   | Many UIs sort or display this. Add as optional.                                                                                                                                                |
 
 ### `Message`
 
@@ -73,18 +83,18 @@ interface Message {
 }
 ```
 
-| Issue | Priority | Fix |
-|---|---|---|
-| `sender: User` (full object) on every message means data is denormalized everywhere. A 200-message thread with two participants ships two users 100× each. | `P0` | Accept `sender: UserReference \| User` and resolve against `chat.users` when only an id is provided. |
-| `saved`, `delivered`, `read` are three booleans for the same delivery state machine. They overlap, can be inconsistent (e.g. `read: true` but `delivered: false`), and require components to derive precedence (current code: `read \|\| delivered` → double-check icon). | `P0` | Replace with `status?: 'sending' \| 'sent' \| 'delivered' \| 'read' \| 'failed'`. Existing booleans become a derived view. |
-| `failure: boolean` — odd noun for a state. The rest of the model is past-participle (`deleted`, `edited`, `read`). | `P0` (folded into the status enum) | Use `'failed'` in the enum, drop the standalone field. |
-| `new: boolean` — too generic; reads as "is this a new field on the schema?". The intent is "this message is one of the unread batch that triggers the New-messages divider." | `P0` | Rename `new` → `unread`. |
-| `disableActions` / `disableReactions` — negative naming forces a double-negative read ("if not disabled, render"). | `P1` | Replace with `actionable?: boolean` / `reactable?: boolean` (default true) **or** a single `readonly?: boolean`. |
-| `system: boolean` is a discriminator for a fundamentally different render path. Mixing it with content fields breaks "make impossible states impossible". | `P1` | Discriminated union: `Message = NormalMessage \| SystemMessage`. Migration path: accept both shapes for a release. |
-| `reply?: Message` is recursive — a reply could itself have a reply ad infinitum. Most apps only want one level of quote. | `P1` | Tighten to `reply?: MessageSummary` (non-recursive). |
-| `createdAt: string` (ISO only). | `note` | Accept `Date \| string` for friendlier API; serialize internally. |
-| `content?: string` — fine. v2 used `content` too. | `note` | Keep. |
-| No "pending" / "sending" state. Consumer can use `failed` for hard failure but has no in-flight state. | `P1` | Falls out of the `status` enum above. |
+| Issue                                                                                                                                                                                                                                                                     | Priority                           | Fix                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `sender: User` (full object) on every message means data is denormalized everywhere. A 200-message thread with two participants ships two users 100× each.                                                                                                                | `P0`                               | Accept `sender: UserReference \| User` and resolve against `chat.users` when only an id is provided.                       |
+| `saved`, `delivered`, `read` are three booleans for the same delivery state machine. They overlap, can be inconsistent (e.g. `read: true` but `delivered: false`), and require components to derive precedence (current code: `read \|\| delivered` → double-check icon). | `P0`                               | Replace with `status?: 'sending' \| 'sent' \| 'delivered' \| 'read' \| 'failed'`. Existing booleans become a derived view. |
+| `failure: boolean` — odd noun for a state. The rest of the model is past-participle (`deleted`, `edited`, `read`).                                                                                                                                                        | `P0` (folded into the status enum) | Use `'failed'` in the enum, drop the standalone field.                                                                     |
+| `new: boolean` — too generic; reads as "is this a new field on the schema?". The intent is "this message is one of the unread batch that triggers the New-messages divider."                                                                                              | `P0`                               | Rename `new` → `unread`.                                                                                                   |
+| `disableActions` / `disableReactions` — negative naming forces a double-negative read ("if not disabled, render").                                                                                                                                                        | `P1`                               | Replace with `actionable?: boolean` / `reactable?: boolean` (default true) **or** a single `readonly?: boolean`.           |
+| `system: boolean` is a discriminator for a fundamentally different render path. Mixing it with content fields breaks "make impossible states impossible".                                                                                                                 | `P1`                               | Discriminated union: `Message = NormalMessage \| SystemMessage`. Migration path: accept both shapes for a release.         |
+| `reply?: Message` is recursive — a reply could itself have a reply ad infinitum. Most apps only want one level of quote.                                                                                                                                                  | `P1`                               | Tighten to `reply?: MessageSummary` (non-recursive).                                                                       |
+| `createdAt: string` (ISO only).                                                                                                                                                                                                                                           | `note`                             | Accept `Date \| string` for friendlier API; serialize internally.                                                          |
+| `content?: string` — fine. v2 used `content` too.                                                                                                                                                                                                                         | `note`                             | Keep.                                                                                                                      |
+| No "pending" / "sending" state. Consumer can use `failed` for hard failure but has no in-flight state.                                                                                                                                                                    | `P1`                               | Falls out of the `status` enum above.                                                                                      |
 
 ### `User`
 
@@ -96,12 +106,12 @@ interface User {
 }
 ```
 
-| Issue | Priority | Fix |
-|---|---|---|
-| **No `avatar` field.** Per-user avatars never render. The "avatar" you see in `ChatsItem` is `chat.icon` (the chat's picture, not a user's). For 1:1 chats the chat avatar happens to look like a user avatar; for group chats every user's avatar is missing. | `P0` | Add `User.avatar?: string`. Render in `Message`'s sender block, in user-tag autocomplete, and as a fallback for `Chat.avatar` in 1:1 rooms. |
-| `status` is required at the type level (no `?`) but conceptually optional — many apps don't track presence. | `P1` | Make `status?: { … }`. |
-| `state: 'online' \| 'offline' \| 'away' \| 'busy'` — `'busy'` is rare; `'away'` overlaps with `'offline'`. | `note` | OK as-is; document the rendering contract. |
-| `lastActiveAt: string` — same Date-or-string flexibility as `Message.createdAt`. | `note` | Match the chosen pattern. |
+| Issue                                                                                                                                                                                                                                                          | Priority | Fix                                                                                                                                         |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **No `avatar` field.** Per-user avatars never render. The "avatar" you see in `ChatsItem` is `chat.icon` (the chat's picture, not a user's). For 1:1 chats the chat avatar happens to look like a user avatar; for group chats every user's avatar is missing. | `P0`     | Add `User.avatar?: string`. Render in `Message`'s sender block, in user-tag autocomplete, and as a fallback for `Chat.avatar` in 1:1 rooms. |
+| `status` is required at the type level (no `?`) but conceptually optional — many apps don't track presence.                                                                                                                                                    | `P1`     | Make `status?: { … }`.                                                                                                                      |
+| `state: 'online' \| 'offline' \| 'away' \| 'busy'` — `'busy'` is rare; `'away'` overlaps with `'offline'`.                                                                                                                                                     | `note`   | OK as-is; document the rendering contract.                                                                                                  |
+| `lastActiveAt: string` — same Date-or-string flexibility as `Message.createdAt`.                                                                                                                                                                               | `note`   | Match the chosen pattern.                                                                                                                   |
 
 ### `MessageFile`
 
@@ -120,13 +130,13 @@ interface MessageFile {
 }
 ```
 
-| Issue | Priority | Fix |
-|---|---|---|
-| `audio: boolean` is redundant; `isAudioFile(file)` already derives this from `type` / `extension`. Two sources of truth. | `P0` | Remove `audio`. Components already detect audio via media-types helpers. |
-| `extension` duplicates information already in `name` ("voice.mp3" → "mp3") and overlaps with `type`. Useful for display but consumers shouldn't have to compute it. | `P1` | Make optional and derive in the rendering layer if missing. |
-| `duration` is named generically; only meaningful for audio/video. | `note` | Acceptable; document the contract. |
-| `blob: Blob` is for upload state, but the type is mixed with display props. | `note` | Could split into `MessageFile` (display) and `PendingMessageFile extends MessageFile { blob, localUrl, progress }`. Currently `ChatFileItem` does some of this; alignment would help. |
-| No `mimeType` alias — consumers backed by REST APIs that return `mime_type` write a mapper for one field. | `note` | Trivial; users can map. |
+| Issue                                                                                                                                                               | Priority | Fix                                                                                                                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `audio: boolean` is redundant; `isAudioFile(file)` already derives this from `type` / `extension`. Two sources of truth.                                            | `P0`     | Remove `audio`. Components already detect audio via media-types helpers.                                                                                                              |
+| `extension` duplicates information already in `name` ("voice.mp3" → "mp3") and overlaps with `type`. Useful for display but consumers shouldn't have to compute it. | `P1`     | Make optional and derive in the rendering layer if missing.                                                                                                                           |
+| `duration` is named generically; only meaningful for audio/video.                                                                                                   | `note`   | Acceptable; document the contract.                                                                                                                                                    |
+| `blob: Blob` is for upload state, but the type is mixed with display props.                                                                                         | `note`   | Could split into `MessageFile` (display) and `PendingMessageFile extends MessageFile { blob, localUrl, progress }`. Currently `ChatFileItem` does some of this; alignment would help. |
+| No `mimeType` alias — consumers backed by REST APIs that return `mime_type` write a mapper for one field.                                                           | `note`   | Trivial; users can map.                                                                                                                                                               |
 
 ### `Action`
 
@@ -138,43 +148,49 @@ interface Action {
 }
 ```
 
-| Issue | Priority | Fix |
-|---|---|---|
-| `name` (identifier) + `title` (label) is non-standard. Most APIs use `id` + `label`. | `P0` | Rename: `Action = { id: string; label: string; onlyMe?: boolean }`. v2 used `name`/`title`; this is a deliberate break. |
-| `onlyMe?: boolean` is fine semantically but reads as colloquial. | `P1` | Rename to `currentUserOnly?: boolean` or `ownMessageOnly?: boolean`. |
-| No optional `icon?: string` field — every modern dropdown action has an icon (delete = trash, reply = arrow). Today consumers use slots for this; clunky for a list of N actions. | `P1` | Add `icon?: string` (resolves to a built-in `SvgIcon` name) and/or `iconUrl?: string`. |
-| No discriminator between built-in (`reply`, `edit`) and custom. Already in the architecture review — consumers must use exported `REPLY_ACTION` / `EDIT_ACTION` constants. | (already P0 in arch review) | Consider a stronger type: `Action<T extends string = string> = { id: T; … }`. |
-| No `confirm?` / `destructive?` flag. Delete actions typically need a confirmation prompt; the library leaves all of that to consumers. | `note` | Acceptable — consumer composes confirms. |
+| Issue                                                                                                                                                                             | Priority                    | Fix                                                                                                                     |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `name` (identifier) + `title` (label) is non-standard. Most APIs use `id` + `label`.                                                                                              | `P0`                        | Rename: `Action = { id: string; label: string; onlyMe?: boolean }`. v2 used `name`/`title`; this is a deliberate break. |
+| `onlyMe?: boolean` is fine semantically but reads as colloquial.                                                                                                                  | `P1`                        | Rename to `currentUserOnly?: boolean` or `ownMessageOnly?: boolean`.                                                    |
+| No optional `icon?: string` field — every modern dropdown action has an icon (delete = trash, reply = arrow). Today consumers use slots for this; clunky for a list of N actions. | `P1`                        | Add `icon?: string` (resolves to a built-in `SvgIcon` name) and/or `iconUrl?: string`.                                  |
+| No discriminator between built-in (`reply`, `edit`) and custom. Already in the architecture review — consumers must use exported `REPLY_ACTION` / `EDIT_ACTION` constants.        | (already P0 in arch review) | Consider a stronger type: `Action<T extends string = string> = { id: T; … }`.                                           |
+| No `confirm?` / `destructive?` flag. Delete actions typically need a confirmation prompt; the library leaves all of that to consumers.                                            | `note`                      | Acceptable — consumer composes confirms.                                                                                |
 
 ### `Id = string | number`
 
-| Issue | Priority | Fix |
-|---|---|---|
+| Issue                                                                                                                                                                                   | Priority                      | Fix                                                                   |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------- |
 | Dual type forces `.toString()` everywhere comparisons happen (Message lookup, user matching, selection). It's a bug attractor: `id: 1` from a JSON column ≠ `id: '1'` from a URL param. | `P0` (already in arch review) | Pin to `Id = string`. Consumers do `String(id)` once at the boundary. |
 
 ### `*Reference` types
 
 ```ts
-interface ChatReference { id: Id }
-interface UserReference { id: Id }
-interface MessageReference { id: Id }
+interface ChatReference {
+  id: Id
+}
+interface UserReference {
+  id: Id
+}
+interface MessageReference {
+  id: Id
+}
 ```
 
-| Issue | Priority | Fix |
-|---|---|---|
-| Three `{ id }` interfaces with different names — they're structurally identical. | `P1` | Either delete and inline `{ id: Id }`, or use `type Reference<T extends { id: Id }> = Pick<T, 'id'>`. |
-| Inconsistent usage: `Chat.typingUsers: UserReference[]` (just ids) but `Message.sender: User` (full). Same conceptual relationship, two shapes. | `P0` | After narrowing `Message.sender` (above), use `UserReference` consistently for "the user is identified, look them up in `chat.users`." |
+| Issue                                                                                                                                           | Priority | Fix                                                                                                                                    |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Three `{ id }` interfaces with different names — they're structurally identical.                                                                | `P1`     | Either delete and inline `{ id: Id }`, or use `type Reference<T extends { id: Id }> = Pick<T, 'id'>`.                                  |
+| Inconsistent usage: `Chat.typingUsers: UserReference[]` (just ids) but `Message.sender: User` (full). Same conceptual relationship, two shapes. | `P0`     | After narrowing `Message.sender` (above), use `UserReference` consistently for "the user is identified, look them up in `chat.users`." |
 
 ## Naming consistency
 
 ### Field names across types
 
-| Concept | Chat | User | Message | Action |
-|---|---|---|---|---|
-| Identifier | `id` ✓ | `id` ✓ | `id` ✓ | `name` ✗ |
-| Display label | `name` | `name` | – | `title` ✗ |
-| Picture | `icon` ✗ | (missing) ✗ | – | – |
-| Counter | `unreadCount` | – | – | – |
+| Concept       | Chat          | User        | Message | Action    |
+| ------------- | ------------- | ----------- | ------- | --------- |
+| Identifier    | `id` ✓        | `id` ✓      | `id` ✓  | `name` ✗  |
+| Display label | `name`        | `name`      | –       | `title` ✗ |
+| Picture       | `icon` ✗      | (missing) ✗ | –       | –         |
+| Counter       | `unreadCount` | –           | –       | –         |
 
 Recommendation: standardize on `id`, `name`, `avatar`, `count`-suffixed counters.
 
@@ -207,31 +223,31 @@ public API. `P0`.
 
 ### `AdvancedChat`
 
-| Prop | Issue | Suggested |
-|---|---|---|
-| `user` | Singular; ambiguous with `chat.users`. | `currentUser` |
-| `chats` + `chat` | Visually similar; the active one is just `chat`. | `activeChat` reads cleaner |
-| `messageSelection` (object on `Chat`/`ChatHeader`) | Packed `{ enabled, actions }` requires the consumer to wire two things to opt in. | `selectionActions: Action[]` (truthy + non-empty enables) |
-| `acceptedFiles`, `multipleFiles`, `captureFiles` | These shadow HTML attributes (`accept`, `multiple`, `capture`) but the names obscure the connection. | `accept`, `allowMultiple`, `capture` — match the platform |
-| `customSearchEnabled` | Awkward gerund. The bool also doesn't disable the local filter so much as "I'm doing it elsewhere". | Drop the flag; if a `@search-chat` listener handles results, the consumer drives `chats` externally. Or rename to `serverSideSearch`. |
-| `chatInfoEnabled` | Reads as "enable the info feature" but really means "make the header a clickable button". | `clickableHeader` |
-| `showSendIcon`, `showFiles`, `showEmojis`, `showFooter`, `showSearch`, `showAddChat`, `showReactionEmojis`, `showNewMessagesDivider`, `showChats` | Nine flags. The granularity is fine, but the `show*` prefix on all of them is heavy. | Group by area: `footer: { show: bool, sendIcon: bool, files: bool, emojis: bool }` (a "config" object). Or accept the verbosity — it's at least consistent. `P1`. |
-| `headerActions` vs `messageActions` vs `chatActions` vs `messageSelectionActions` | Four `*Actions` props at the same level. | OK; they target distinct UI zones. Document the mapping. |
+| Prop                                                                                                                                              | Issue                                                                                                | Suggested                                                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `user`                                                                                                                                            | Singular; ambiguous with `chat.users`.                                                               | `currentUser`                                                                                                                                                     |
+| `chats` + `chat`                                                                                                                                  | Visually similar; the active one is just `chat`.                                                     | `activeChat` reads cleaner                                                                                                                                        |
+| `messageSelection` (object on `Chat`/`ChatHeader`)                                                                                                | Packed `{ enabled, actions }` requires the consumer to wire two things to opt in.                    | `selectionActions: Action[]` (truthy + non-empty enables)                                                                                                         |
+| `acceptedFiles`, `multipleFiles`, `captureFiles`                                                                                                  | These shadow HTML attributes (`accept`, `multiple`, `capture`) but the names obscure the connection. | `accept`, `allowMultiple`, `capture` — match the platform                                                                                                         |
+| `customSearchEnabled`                                                                                                                             | Awkward gerund. The bool also doesn't disable the local filter so much as "I'm doing it elsewhere".  | Drop the flag; if a `@search-chat` listener handles results, the consumer drives `chats` externally. Or rename to `serverSideSearch`.                             |
+| `chatInfoEnabled`                                                                                                                                 | Reads as "enable the info feature" but really means "make the header a clickable button".            | `clickableHeader`                                                                                                                                                 |
+| `showSendIcon`, `showFiles`, `showEmojis`, `showFooter`, `showSearch`, `showAddChat`, `showReactionEmojis`, `showNewMessagesDivider`, `showChats` | Nine flags. The granularity is fine, but the `show*` prefix on all of them is heavy.                 | Group by area: `footer: { show: bool, sendIcon: bool, files: bool, emojis: bool }` (a "config" object). Or accept the verbosity — it's at least consistent. `P1`. |
+| `headerActions` vs `messageActions` vs `chatActions` vs `messageSelectionActions`                                                                 | Four `*Actions` props at the same level.                                                             | OK; they target distinct UI zones. Document the mapping.                                                                                                          |
 
 ### `Chat`
 
-| Prop | Issue | Suggested |
-|---|---|---|
-| `standalone` | Hides the toggle-chat-list button but the name doesn't say so. | `withChatList: boolean` (default true) — flip the polarity |
-| `showChatList` | Internal state of the toggle; mostly an implementation leak from `AdvancedChat` to `Chat`. | Remove from public surface; manage internally |
+| Prop           | Issue                                                                                      | Suggested                                                  |
+| -------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
+| `standalone`   | Hides the toggle-chat-list button but the name doesn't say so.                             | `withChatList: boolean` (default true) — flip the polarity |
+| `showChatList` | Internal state of the toggle; mostly an implementation leak from `AdvancedChat` to `Chat`. | Remove from public surface; manage internally              |
 
 ### `ChatFooter`
 
-| Prop | Issue | Suggested |
-|---|---|---|
-| `roomMessage: string` | "room" naming leak; the meaning ("initial textarea content") isn't clear from the name. | `initialText` or `modelValue` (with `update:modelValue`) |
-| `initReplyMessage`, `initEditMessage` | The `init` prefix conveys "pass once"; convention in Vue 3 is v-model. | `replyMessage` + `update:replyMessage`, `editMessage` + `update:editMessage` |
-| `showFooter` (rendered inside `ChatFooter`) | A footer-level prop deciding whether the footer renders is self-defeating. | Move to parent; just don't render the component if `showFooter: false`. |
+| Prop                                        | Issue                                                                                   | Suggested                                                                    |
+| ------------------------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `roomMessage: string`                       | "room" naming leak; the meaning ("initial textarea content") isn't clear from the name. | `initialText` or `modelValue` (with `update:modelValue`)                     |
+| `initReplyMessage`, `initEditMessage`       | The `init` prefix conveys "pass once"; convention in Vue 3 is v-model.                  | `replyMessage` + `update:replyMessage`, `editMessage` + `update:editMessage` |
+| `showFooter` (rendered inside `ChatFooter`) | A footer-level prop deciding whether the footer renders is self-defeating.              | Move to parent; just don't render the component if `showFooter: false`.      |
 
 ## Localization ergonomics
 
@@ -264,6 +280,7 @@ runtime contract. **`P0`**.
 
 The runtime stub at `src/localization/index.ts` has `case 'auto':`
 returning English regardless of `navigator.language`. Either:
+
 - Remove `'auto'` until you actually have multiple locales.
 - Or document the placeholder and ship at least one alternative
   to validate the wiring. `P1`.
@@ -272,11 +289,11 @@ returning English regardless of `navigator.language`. Either:
 
 ### Inconsistent shape across layers
 
-| Layer | Event | Payload | Issue |
-|---|---|---|---|
-| `ChatHeader` | `menu-action-handler` | `Action` (just the action) | No `chat` context |
-| `Chat` | `menu-action-handler` | `Action` (forwards) | Same |
-| `AdvancedChat` | `menu-action-handler` | `{ chat, action }` | Wraps with the active chat |
+| Layer          | Event                 | Payload                    | Issue                      |
+| -------------- | --------------------- | -------------------------- | -------------------------- |
+| `ChatHeader`   | `menu-action-handler` | `Action` (just the action) | No `chat` context          |
+| `Chat`         | `menu-action-handler` | `Action` (forwards)        | Same                       |
+| `AdvancedChat` | `menu-action-handler` | `{ chat, action }`         | Wraps with the active chat |
 
 A consumer who uses `Chat` directly (without `AdvancedChat`) gets a
 different event shape than the same listener wired through

@@ -53,4 +53,12 @@ describe('getThemeStyles', () => {
 
     expect(result['--chat-content-bg-color']).toBe(dark['--chat-content-bg-color'])
   })
+
+  it('does not mutate a built-in palette when overrides are applied', () => {
+    const original = light['--chat-color']
+
+    getThemeStyles({ base: 'light', overrides: { '--chat-color': '#ff00aa' } })
+
+    expect(getThemeStyles('light')['--chat-color']).toBe(original)
+  })
 })

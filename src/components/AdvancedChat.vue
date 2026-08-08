@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 
 import Chat from '@/components/Chat.vue'
 import Chats from '@/components/Chats.vue'
 import Layout from '@/components/Layout.vue'
+import Loader from '@/components/Loader.vue'
 
 import { type Theme } from '../themes'
 import type {
@@ -16,6 +17,9 @@ import type {
 } from '../models'
 import type { ChatFileItem } from './ChatFile.vue'
 import type { TextFormattingOptions } from '../utils/text-formatter'
+import { useLocalizationStrings } from '../localization'
+
+const strings = useLocalizationStrings()
 
 export interface AdvancedChatProps {
   /** Outer container height as a CSS length. Defaults to `'600px'`. */
@@ -105,6 +109,21 @@ export interface AdvancedChatProps {
   customSearchEnabled?: boolean
   /** When `true`, the header becomes clickable and emits `show-chat-info`. */
   chatInfoEnabled?: boolean
+  /** Operational state shown by the component. Offline states preserve the chat UI. */
+  status?:
+    | 'ready'
+    | 'loading'
+    | 'empty'
+    | 'error'
+    | 'offline'
+    | 'reconnecting'
+    | 'permission-denied'
+  /** Optional host-provided copy for the operational state. */
+  statusMessage?: string
+  /** Optional label for the error-state retry action. */
+  retryLabel?: string
+  /** Disables the composer while preserving history and navigation. */
+  composerDisabled?: boolean
 }
 
 export interface AdvancedChatEvents {
@@ -150,18 +169,30 @@ export interface AdvancedChatEvents {
   /** Fires when the viewer sends a new message. */
   (
     e: 'send-message',
-    payload: { content: string; files: ChatFileItem[]; reply?: Message | null },
+    payload: {
+      content: string
+      files: ChatFileItem[]
+      mentionedUsers: User[]
+      reply?: Message | null
+    },
   ): void
   /** Fires when the viewer commits an edit to an existing message. */
   (
     e: 'edit-message',
-    payload: { messageId: Message['id']; content: string; files: ChatFileItem[] },
+    payload: {
+      messageId: Message['id']
+      content: string
+      files: ChatFileItem[]
+      mentionedUsers: User[]
+    },
   ): void
   /**
    * Re-emitted from `Chat`/`ChatFooter` when a pending file is rejected
    * by a configured `maxFiles` / `maxFileSize` limit.
    */
   (e: 'invalid-file', payload: { file: File; reason: 'size' | 'count' }): void
+  /** Fires when the user activates the retry action in an error state. */
+  (e: 'retry'): void
 }
 
 const props = withDefaults(defineProps<AdvancedChatProps>(), {
@@ -197,6 +228,10 @@ const props = withDefaults(defineProps<AdvancedChatProps>(), {
   autoScroll: () => ({ onMount: true, onChatSwitch: true, onSend: true, onReceive: true }),
   customSearchEnabled: false,
   chatInfoEnabled: false,
+  status: 'ready',
+  statusMessage: '',
+  retryLabel: '',
+  composerDisabled: false,
   height: '600px',
 })
 
@@ -222,7 +257,32 @@ watch(
   { immediate: true },
 )
 
+const container = useTemplateRef<HTMLElement>('container')
 const showChatList = ref(true)
+const isMobile = ref(false)
+let resizeObserver: ResizeObserver | null = null
+
+const updateLayout = (width: number) => {
+  const nextMobile = width <= 768
+
+  if (nextMobile && !isMobile.value) showChatList.value = true
+  isMobile.value = nextMobile
+}
+
+onMounted(() => {
+  const element = container.value
+  if (!element) return
+
+  updateLayout(element.clientWidth)
+  if (typeof ResizeObserver === 'undefined') return
+
+  resizeObserver = new ResizeObserver(([entry]) => {
+    if (entry) updateLayout(entry.contentRect.width)
+  })
+  resizeObserver.observe(element)
+})
+
+onBeforeUnmount(() => resizeObserver?.disconnect())
 
 const chatMessages = computed(() => props.messages)
 
@@ -234,77 +294,140 @@ const onShowChatInfo = () => {
 
 const onOpenChat = (chat: ChatModel) => {
   activeChat.value = chat
+  if (isMobile.value) showChatList.value = false
   emit('open-chat', chat)
 }
+
+const stateMessage = computed(() => {
+  if (props.statusMessage) return props.statusMessage
+
+  return {
+    loading: strings['chat.state.loading'],
+    empty: strings['chat.state.empty'],
+    error: strings['chat.state.error'],
+    offline: strings['chat.state.offline'],
+    reconnecting: strings['chat.state.reconnecting'],
+    'permission-denied': strings['chat.state.permission-denied'],
+    ready: '',
+  }[props.status]
+})
+
+const showBlockingState = computed(() =>
+  ['loading', 'empty', 'error', 'permission-denied'].includes(props.status),
+)
 </script>
 
 <template>
   <Layout :height="height" :theme="theme">
-    <div class="vac-chat-container">
-      <Chats
-        v-if="showChats && currentUser"
-        :current-user="currentUser"
-        :chats="chats"
-        :chat="activeChat || undefined"
-        :loading-chats="loadingChats"
-        :chats-loaded="chatsLoaded"
-        :show-search="showSearch"
-        :show-add-chat="showAddChat"
-        :chat-actions="chatActions"
-        :custom-search-enabled="customSearchEnabled"
-        @search-chat="emit('search-chat', $event)"
-        @add-chat="emit('add-chat')"
-        @fetch-more-chats="emit('fetch-more-chats')"
-        @open-chat="onOpenChat"
-        @chat-action-handler="emit('chat-action-handler', $event)"
-      />
+    <div
+      ref="container"
+      class="vac-chat-root"
+      :data-status="status"
+      :aria-busy="status === 'loading'"
+    >
+      <div
+        v-if="status === 'offline' || status === 'reconnecting'"
+        class="vac-status-banner"
+        role="status"
+        aria-live="polite"
+      >
+        {{ stateMessage }}
+      </div>
 
-      <Chat
-        :current-user="currentUser"
-        :chat="activeChat"
-        :messages="chatMessages"
-        :loading-messages="loadingMessages"
-        :messages-loaded="messagesLoaded"
-        :show-chat-list="showChatList"
-        :header-actions="headerActions"
-        :message-actions="messageActions"
-        :selection-actions="selectionActions"
-        :show-files="showFiles"
-        :show-emojis="showEmojis"
-        :show-footer="showFooter"
-        :show-reaction-emojis="showReactionEmojis"
-        :show-new-messages-divider="showNewMessagesDivider"
-        :text-formatting="textFormatting"
-        :accept="accept"
-        :multiple="multiple"
-        :capture="capture"
-        :max-files="maxFiles"
-        :max-file-size="maxFileSize"
-        :typing-indicator-position="typingIndicatorPosition"
-        :auto-scroll="autoScroll"
-        :chat-info-enabled="chatInfoEnabled"
-        @toggle-chat-list="showChatList = !showChatList"
-        @show-chat-info="onShowChatInfo"
-        @menu-action-handler="emit('menu-action-handler', $event)"
-        @message-action-handler="emit('message-action-handler', $event)"
-        @message-selection-action-handler="emit('message-selection-action-handler', $event)"
-        @cancel-message-selection="emit('cancel-message-selection')"
-        @open-file="emit('open-file', $event)"
-        @open-failed-message="emit('open-failed-message', $event)"
-        @send-message-reaction="emit('send-message-reaction', $event)"
-        @click-user-tag="emit('click-user-tag', $event)"
-        @typing-message="emit('typing-message', $event)"
-        @send-message="emit('send-message', $event)"
-        @edit-message="emit('edit-message', $event)"
-        @fetch-messages="emit('fetch-messages')"
-        @invalid-file="emit('invalid-file', $event)"
-      />
+      <div
+        v-show="showBlockingState"
+        class="vac-state-panel"
+        :role="status === 'error' ? 'alert' : 'status'"
+      >
+        <Loader :show="status === 'loading'" />
+        <p v-if="status !== 'loading'">{{ stateMessage }}</p>
+        <button v-if="status === 'error'" type="button" @click="emit('retry')">
+          {{ retryLabel || strings['chat.state.retry'] }}
+        </button>
+      </div>
+
+      <div v-show="!showBlockingState" class="vac-chat-container">
+        <Chats
+          v-if="currentUser"
+          v-show="showChats && showChatList"
+          :current-user="currentUser"
+          :chats="chats"
+          :chat="activeChat || undefined"
+          :loading-chats="loadingChats"
+          :chats-loaded="chatsLoaded"
+          :show-search="showSearch"
+          :show-add-chat="showAddChat"
+          :chat-actions="chatActions"
+          :custom-search-enabled="customSearchEnabled"
+          :is-mobile="isMobile"
+          @search-chat="emit('search-chat', $event)"
+          @add-chat="emit('add-chat')"
+          @fetch-more-chats="emit('fetch-more-chats')"
+          @open-chat="onOpenChat"
+          @chat-action-handler="emit('chat-action-handler', $event)"
+        />
+
+        <Chat
+          v-show="!isMobile || !showChats || !showChatList"
+          :current-user="currentUser"
+          :chat="activeChat"
+          :messages="chatMessages"
+          :loading-messages="loadingMessages"
+          :messages-loaded="messagesLoaded"
+          :show-chat-list="showChatList"
+          :header-actions="headerActions"
+          :message-actions="messageActions"
+          :selection-actions="selectionActions"
+          :show-files="showFiles"
+          :show-emojis="showEmojis"
+          :show-footer="showFooter"
+          :show-send-icon="showSendIcon"
+          :show-reaction-emojis="showReactionEmojis"
+          :show-new-messages-divider="showNewMessagesDivider"
+          :text-formatting="textFormatting"
+          :accept="accept"
+          :multiple="multiple"
+          :capture="capture"
+          :max-files="maxFiles"
+          :max-file-size="maxFileSize"
+          :typing-indicator-position="typingIndicatorPosition"
+          :auto-scroll="autoScroll"
+          :chat-info-enabled="chatInfoEnabled"
+          :composer-disabled="composerDisabled"
+          :standalone="!showChats"
+          :is-mobile="isMobile"
+          @toggle-chat-list="showChatList = !showChatList"
+          @show-chat-info="onShowChatInfo"
+          @menu-action-handler="emit('menu-action-handler', $event)"
+          @message-action-handler="emit('message-action-handler', $event)"
+          @message-selection-action-handler="emit('message-selection-action-handler', $event)"
+          @cancel-message-selection="emit('cancel-message-selection')"
+          @open-file="emit('open-file', $event)"
+          @open-failed-message="emit('open-failed-message', $event)"
+          @send-message-reaction="emit('send-message-reaction', $event)"
+          @click-user-tag="emit('click-user-tag', $event)"
+          @typing-message="emit('typing-message', $event)"
+          @send-message="emit('send-message', $event)"
+          @edit-message="emit('edit-message', $event)"
+          @fetch-messages="emit('fetch-messages')"
+          @invalid-file="emit('invalid-file', $event)"
+        />
+      </div>
     </div>
   </Layout>
 </template>
 
 <style scoped lang="scss">
+.vac-chat-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  container-type: inline-size;
+}
+
 .vac-chat-container {
+  min-height: 0;
+  flex: 1;
   height: 100%;
   display: flex;
 
@@ -316,6 +439,37 @@ const onOpenChat = (chat: ChatModel) => {
   input[type='text'],
   input[type='search'] {
     -webkit-appearance: none;
+  }
+}
+
+.vac-status-banner {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  border-bottom: var(--chat-border-style);
+  background: var(--chat-message-bg-color-date);
+  color: var(--chat-message-color);
+  font-size: 13px;
+  text-align: center;
+}
+
+.vac-state-panel {
+  display: grid;
+  flex: 1;
+  place-content: center;
+  gap: 12px;
+  padding: 24px;
+  background: var(--chat-content-bg-color);
+  color: var(--chat-message-color);
+  text-align: center;
+
+  button {
+    justify-self: center;
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--chat-bg-color-button);
+    color: var(--chat-color-button);
+    cursor: pointer;
   }
 }
 </style>

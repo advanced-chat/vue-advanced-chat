@@ -29,6 +29,13 @@
     "./styles": {
       "types": "./dist/src/styles.d.ts",
       "import": "./dist/components.css"
+    },
+    "./web-component": {
+      "types": "./dist/src/web-component.d.ts",
+      "import": "./dist/vue-advanced-chat.js"
+    },
+    "./web-component/styles": {
+      "import": "./dist/vue-advanced-chat.css"
     }
   },
   "files": [
@@ -52,7 +59,7 @@
     "url": "https://github.com/advanced-chat/vue-advanced-chat/issues"
   },
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && vite build --config vite.web-component.config.ts",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --fix --cache",
@@ -96,21 +103,22 @@
     "micromark-util-types": "^2.0.0"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "^5.0.1",
-    "@storybook/addon-a11y": "^10.2.17",
-    "@storybook/addon-docs": "^10.2.17",
-    "@storybook/addon-vitest": "^10.2.17",
-    "@storybook/vue3-vite": "^10.2.17",
+    "@chromatic-com/storybook": "^5.3.0",
+    "@storybook/addon-a11y": "^10.5.7",
+    "@storybook/addon-docs": "^10.5.7",
+    "@storybook/addon-mcp": "^0.7.0",
+    "@storybook/addon-vitest": "^10.5.7",
+    "@storybook/vue3-vite": "^10.5.7",
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^22.19.15",
     "@vitejs/plugin-vue": "^6.0.4",
-    "@vitest/browser-playwright": "^4.0.18",
-    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/browser-playwright": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.10",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.7.0",
     "@vue/tsconfig": "^0.9.0",
     "eslint": "^10.0.3",
-    "eslint-plugin-storybook": "^10.2.17",
+    "eslint-plugin-storybook": "^10.5.7",
     "eslint-plugin-vue": "^10.8.0",
     "husky": "^9.1.7",
     "jiti": "^2.6.1",
@@ -120,12 +128,13 @@
     "playwright": "^1.58.2",
     "prettier": "^3.8.1",
     "sass-embedded": "^1.97.3",
-    "storybook": "^10.2.17",
+    "storybook": "^10.5.7",
     "typescript": "~5.9.0",
     "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.4",
     "vite-plugin-vue-devtools": "^8.0.7",
-    "vitest": "^4.0.18",
+    "vitest": "^4.1.10",
+    "vue": "^3.5.0",
     "vue-tsc": "^3.2.5"
   }
 }

@@ -61,6 +61,17 @@ for (const requiredPath of requiredPaths) {
   }
 }
 
+await import(new URL('../dist/components.js', import.meta.url))
+await import(new URL('../dist/vue-advanced-chat.js', import.meta.url))
+
+const webComponentBundle = readFileSync(
+  new URL('../dist/vue-advanced-chat.js', import.meta.url),
+  'utf8',
+)
+if (webComponentBundle.includes('process.env')) {
+  throw new Error('Web-component bundle contains unresolved Node process.env references.')
+}
+
 console.log(
   `Verified npm pack contract for ${pkg.name}@${pkg.version} with ${packResult.entryCount} packaged files.`,
 )

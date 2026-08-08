@@ -57,3 +57,14 @@ export const DateDividerWhenDayChanges: Story = {
     expect(canvasElement.querySelector('.vac-card-date')).toBeTruthy()
   },
 }
+
+export const FirstMessageDateDivider: Story = {
+  args: {
+    message: sampleMessages[0],
+    messages: sampleMessages,
+    index: 0,
+  },
+  play: async ({ canvasElement }) => {
+    expect(canvasElement.querySelector('.vac-card-date')).toBeTruthy()
+  },
+}

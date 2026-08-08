@@ -21,13 +21,13 @@ Several components render avatars and file thumbnails by setting
 from untrusted users, validate them before they enter the data
 layer.
 
-| Source field | Renders in | How |
-|---|---|---|
-| `Chat.avatar` | `ChatHeader`, `ChatsItem` | CSS `background-image: url(…)` |
-| `User.avatar` | `ChatUserTag`, `ChatHeader` (1:1 chats), `ChatsItem` (1:1 chats) | CSS `background-image: url(…)` |
-| `Message.files[].url` | `MessageFile` (image/video render), `MediaPreview` | `<source src>`, CSS `background-image: url(…)` |
-| `Message.files[].previewUrl` | `MessageFile` (image preview while loading) | CSS `background-image: url(…)` |
-| `Message.reply.files[0].url` | `MessageReply` | CSS `background-image: url(…)` |
+| Source field                 | Renders in                                                       | How                                            |
+| ---------------------------- | ---------------------------------------------------------------- | ---------------------------------------------- |
+| `Chat.avatar`                | `ChatHeader`, `ChatsItem`                                        | CSS `background-image: url(…)`                 |
+| `User.avatar`                | `ChatUserTag`, `ChatHeader` (1:1 chats), `ChatsItem` (1:1 chats) | CSS `background-image: url(…)`                 |
+| `Message.files[].url`        | `MessageFile` (image/video render), `MediaPreview`               | `<source src>`, CSS `background-image: url(…)` |
+| `Message.files[].previewUrl` | `MessageFile` (image preview while loading)                      | CSS `background-image: url(…)`                 |
+| `Message.reply.files[0].url` | `MessageReply`                                                   | CSS `background-image: url(…)`                 |
 
 A malicious URL like
 
@@ -86,11 +86,16 @@ user names won't escape the span.
 ## File downloads
 
 Files emitted through the `open-file` event with `action: 'download'`
-are *not* downloaded by the library. The component just emits the
+are _not_ downloaded by the library. The component just emits the
 event with the `MessageFile` payload; your handler decides whether
 to fetch + save the bytes, navigate to a hosted URL, etc. This is
 intentional — chat libraries should not be in the business of
 deciding download behavior.
+
+Set `Message.files[].previewable` to `false` when an image or video URL
+requires authorization and cannot be loaded directly by the browser. The
+component renders it as a downloadable file and emits `open-file` instead of
+placing the protected URL in image or video markup.
 
 ## SSR
 

@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { ref } from 'vue'
 
 import AdvancedChat from '@/components/AdvancedChat.vue'
+import type { Message } from '../models/index.ts'
 import {
   chatActions,
   currentUser,
@@ -34,6 +36,11 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
+type SendMessagePayload = {
+  content: string
+  files: Array<{ name: string }>
+}
+
 export const LightMode: Story = {
   args: {
     theme: 'light',
@@ -43,6 +50,170 @@ export const LightMode: Story = {
 export const DarkMode: Story = {
   args: {
     theme: 'dark',
+  },
+}
+
+export const LoadingConversations: Story = {
+  args: {
+    status: 'loading',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const loader = canvas.getByRole('status', { name: 'Loading' })
+
+    await waitFor(() => expect(loader).toBeVisible())
+    await expect(canvas.queryByRole('searchbox')).not.toBeInTheDocument()
+    await expect(canvas.getByLabelText('Type a message')).not.toBeVisible()
+  },
+}
+
+export const EmptyNoChats: Story = {
+  args: {
+    chats: [],
+    chat: null,
+    messages: [],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await expect(canvas.getByRole('searchbox')).toBeVisible()
+    await expect(canvas.getByText('No chats available.')).toBeVisible()
+    await expect(canvas.getByText('No chat selected.')).toBeVisible()
+    await expect(canvas.queryByLabelText('Type a message')).not.toBeInTheDocument()
+  },
+}
+
+export const ErrorWithRetry: Story = {
+  args: {
+    status: 'error',
+    statusMessage: 'The support inbox could not be synchronized.',
+    retryLabel: 'Retry synchronization',
+    onRetry: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const alert = canvas.getByRole('alert')
+
+    await expect(alert).toHaveTextContent('The support inbox could not be synchronized.')
+    await userEvent.click(canvas.getByRole('button', { name: 'Retry synchronization' }))
+    await expect(args.onRetry).toHaveBeenCalledTimes(1)
+  },
+}
+
+export const OfflineWithHistoryPreserved: Story = {
+  args: {
+    status: 'offline',
+    composerDisabled: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const offlineStatus = canvas
+      .getAllByRole('status')
+      .find((element) => element.textContent?.includes('Live updates are offline.'))
+
+    await expect(offlineStatus).toHaveTextContent(
+      'Live updates are offline. Messages may be delayed.',
+    )
+    await expect(canvas.getByText('Looks good. Can we ship this with reactions?')).toBeVisible()
+    await expect(canvas.getByLabelText('Type a message')).toBeDisabled()
+    await expect(canvas.getByRole('button', { name: 'Send message' })).toBeDisabled()
+  },
+}
+
+export const ReconnectingWithHistoryPreserved: Story = {
+  args: {
+    status: 'reconnecting',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const reconnectingStatus = canvas
+      .getAllByRole('status')
+      .find((element) =>
+        element.textContent?.includes('Reconnecting and synchronizing messages...'),
+      )
+
+    await expect(reconnectingStatus).toHaveTextContent('Reconnecting and synchronizing messages...')
+    await expect(canvas.getByText('Looks good. Can we ship this with reactions?')).toBeVisible()
+    await expect(canvas.getByLabelText('Type a message')).toBeEnabled()
+  },
+}
+
+export const StatefulHostSendWorkflow: Story = {
+  args: {
+    'onSend-message': fn(),
+  },
+  render: (args) => ({
+    components: { AdvancedChat },
+    setup() {
+      const { ['onSend-message']: onSendMessage, ...componentArgs } = args
+      const displayedMessages = ref<Message[]>([...sampleMessages])
+
+      const handleSend = (payload: SendMessagePayload) => {
+        const notifyHost = onSendMessage as ((value: SendMessagePayload) => void) | undefined
+        notifyHost?.(payload)
+        displayedMessages.value = [
+          ...displayedMessages.value,
+          {
+            id: `host-${displayedMessages.value.length + 1}`,
+            sender: currentUser,
+            content: payload.content,
+            createdAt: '2025-12-01T10:12:00Z',
+            status: 'sent',
+          },
+        ]
+      }
+
+      return { componentArgs, displayedMessages, handleSend }
+    },
+    template: `
+      <AdvancedChat
+        v-bind="componentArgs"
+        :messages="displayedMessages"
+        @send-message="handleSend"
+      />
+    `,
+  }),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const composer = canvas.getByLabelText('Type a message')
+
+    await userEvent.type(composer, 'Deployment window confirmed{Enter}')
+    await expect(args['onSend-message']).toHaveBeenCalledWith(
+      expect.objectContaining({ content: 'Deployment window confirmed' }),
+    )
+    await expect(canvas.getByText('Deployment window confirmed')).toBeVisible()
+    await expect(composer).toHaveValue('')
+  },
+}
+
+export const MobileListToChatNavigation: Story = {
+  args: {
+    height: '520px',
+    'onOpen-chat': fn(),
+  },
+  render: (args) => ({
+    components: { AdvancedChat },
+    setup: () => ({ args }),
+    template: `
+      <div aria-label="Mobile chat example" role="region" style="width: 360px; max-width: 100%">
+        <AdvancedChat v-bind="args" />
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Open Bob' }))
+    await expect(args['onOpen-chat']).toHaveBeenCalledWith(
+      expect.objectContaining({ id: sampleChats[1]?.id, name: 'Bob' }),
+    )
+
+    const listToggle = await canvas.findByRole('button', { name: 'Toggle chat list' })
+    await expect(listToggle).toHaveAttribute('aria-expanded', 'false')
+    await expect(canvas.queryByRole('button', { name: 'Open Alice' })).not.toBeInTheDocument()
+
+    await userEvent.click(listToggle)
+    await expect(canvas.getByRole('button', { name: 'Open Alice' })).toBeVisible()
   },
 }
 
@@ -128,7 +299,7 @@ export const HiddenChatList: Story = {
     showChats: false,
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-rooms-container')).toBeFalsy()
+    expect(canvasElement.querySelector('.vac-rooms-container')).not.toBeVisible()
   },
 }
 
@@ -185,5 +356,49 @@ export const ChatActionHandlerEmits: Story = {
     const action = canvasElement.querySelector('.vac-menu-item') as HTMLElement
     await userEvent.click(action)
     await expect(args['onChat-action-handler']).toHaveBeenCalled()
+  },
+}
+
+export const DraftClearsWhenChatChanges: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const textarea = canvas.getByPlaceholderText('Type a message') as HTMLTextAreaElement
+    await userEvent.type(textarea, 'private draft')
+    const rows = canvasElement.querySelectorAll('.vac-room-item')
+    await userEvent.click(rows[1] as Element)
+    await waitFor(() => expect(textarea.value).toBe(''))
+  },
+}
+
+export const PublicStateSurfaces: Story = {
+  name: 'Permission denied',
+  args: {
+    status: 'permission-denied',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await expect(canvas.getByRole('status')).toHaveTextContent(
+      'You do not have permission to use this conversation.',
+    )
+    await expect(canvas.getByLabelText('Type a message')).not.toBeVisible()
+  },
+}
+
+export const SendIconCanBeHidden: Story = {
+  args: {
+    showSendIcon: false,
+  },
+  play: async ({ canvasElement }) => {
+    expect(canvasElement.querySelector('[aria-label="Send message"]')).toBeFalsy()
+  },
+}
+
+export const OnlyFirstUnreadDividerRenders: Story = {
+  args: {
+    messages: sampleMessages.map((message) => ({ ...message, unread: true })),
+  },
+  play: async ({ canvasElement }) => {
+    expect(canvasElement.querySelectorAll('.vac-line-new')).toHaveLength(1)
   },
 }

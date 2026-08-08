@@ -10,6 +10,7 @@ export interface ChatFilesProps {
 export interface ChatFilesEvents {
   /** Fires when the user removes a single file; `index` matches its position in `files`. */
   (e: 'remove-file', index: number): void
+
   /** Fires when the user clears the entire pending-files tray. */
   (e: 'reset-message'): void
 }
@@ -33,11 +34,16 @@ const emit = defineEmits<ChatFilesEvents>()
       </div>
 
       <div class="vac-icon-close">
-        <div class="vac-svg-button" @click="emit('reset-message')">
+        <button
+          type="button"
+          class="vac-svg-button"
+          aria-label="Remove all attachments"
+          @click="emit('reset-message')"
+        >
           <slot name="files-close-icon">
             <SvgIcon name="close-outline" />
           </slot>
-        </div>
+        </button>
       </div>
     </div>
   </transition>
@@ -59,5 +65,11 @@ const emit = defineEmits<ChatFilesEvents>()
 
 .vac-icon-close {
   margin-left: auto;
+
+  button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
 }
 </style>

@@ -10,10 +10,14 @@ localization, and a small set of composables for bringing your own
 UI.
 
 This is the V3 successor to the original [`vue-advanced-chat`][v2]
-package. V3 trades v2's single web-component (`<vue-advanced-chat>` +
-`register()`) for a set of typed Vue 3 SFCs that consumers compose
-directly. Slots, theming, and TypeScript ergonomics are all native
-instead of negotiated through Shadow DOM.
+package. V3 provides typed Vue 3 SFCs that consumers compose directly
+and an official bundled light-DOM `<vue-advanced-chat>` entrypoint for
+framework-independent hosts. Slots, theming, and TypeScript ergonomics
+no longer depend on Shadow DOM.
+
+The public stable line remains `vue-advanced-chat@2.1.2`. These docs describe
+the pre-GA `@advanced-chat/components@3.0.0-alpha.5` tree; do not treat the V3
+API as the stable v2 package or as a drop-in upgrade.
 
 [v2]: https://github.com/advanced-chat/vue-advanced-chat
 
@@ -31,21 +35,21 @@ Reach for this package when you want a chat surface that:
   fetches or persists anything; you wire your backend via props
   (`chats`, `messages`) and events (`fetch-messages`,
   `send-message`, `chat-action-handler`, …).
-- Has an honest, typed contract. Every prop, every event payload,
-  every slot is documented and emitted as a `.d.ts` so your editor
-  catches mistakes before you ship them.
+- Has an honest, typed contract. Props and event payloads ship in generated
+  declarations, while Storybook documents each public slot and its bindings.
 
-## When *not* to use it
+## When _not_ to use it
 
 - You need a hosted chat with backend included — this is UI only.
-- You want a single web component you can drop into any framework.
-  V3 is Vue-only by design; the v2 package on `main` still works
-  for non-Vue hosts.
+- You require Shadow DOM isolation. The V3 web component intentionally
+  renders in light DOM so host CSS, accessibility tools, and framework
+  integrations share one document tree.
 - You need React or Svelte components. There is no port planned.
 
 ## What's in the package
 
-- 27 components, each individually importable.
+- 28 components, each individually importable, plus the bundled web
+  component entrypoint.
 - 5 composables for the state machines that back the built-in
   components (you can build custom autocomplete, selection,
   pagination, search, and reply-edit surfaces without re-deriving

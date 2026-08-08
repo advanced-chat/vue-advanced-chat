@@ -25,6 +25,7 @@ export interface MessageFilesProps {
 export interface MessageFilesEvents {
   /** Fires when any file is clicked; `action` is `'preview'` for media and `'download'` for other files. */
   (e: 'open-file', payload: { file: MessageFileModel; action: 'preview' | 'download' }): void
+
   /** Fires when an `@user` tag in the message body is clicked. */
   (e: 'click-user-tag', user: User): void
 }
@@ -36,17 +37,33 @@ const props = withDefaults(defineProps<MessageFilesProps>(), {
 const emit = defineEmits<MessageFilesEvents>()
 
 const visualMediaFiles = computed(
-  () => props.message.files?.filter((file) => isVisualMediaFile(file)) || [],
+  () =>
+    props.message.files?.filter((file) => file.previewable !== false && isVisualMediaFile(file)) ||
+    [],
 )
 
 const otherFiles = computed(
-  () => props.message.files?.filter((file) => !isVisualMediaFile(file)) || [],
+  () =>
+    props.message.files?.filter((file) => file.previewable === false || !isVisualMediaFile(file)) ||
+    [],
 )
 
+const clampProgress = (progress: number) => {
+  if (Number.isNaN(progress)) return 0
+
+  return Math.min(100, Math.max(0, progress))
+}
+
 const openFile = (event: Event, file: MessageFileModel, action: 'preview' | 'download') => {
+  if (props.messageSelectionEnabled) return
+
   event.stopPropagation()
 
   emit('open-file', { file, action })
+}
+
+const clickUserTag = (user: User) => {
+  if (!props.messageSelectionEnabled) emit('click-user-tag', user)
 }
 </script>
 
@@ -66,34 +83,40 @@ const openFile = (event: Event, file: MessageFileModel, action: 'preview' | 'dow
 
     <div v-for="(file, i) in otherFiles" :key="i + 'a'" class="vac-file-wrapper">
       <ProgressBar
-        v-if="file.progress && file.progress >= 0"
-        :progress="file.progress"
+        v-if="file.progress != null"
+        :progress="clampProgress(file.progress)"
         :style="{ top: '44px' }"
       />
-      <div
+      <button
+        type="button"
         class="vac-file-container"
-        :class="{ 'vac-file-container-progress': file.progress && file.progress >= 0 }"
+        :class="{ 'vac-file-container-progress': file.progress != null }"
+        :aria-label="
+          messageSelectionEnabled
+            ? `Select message containing ${file.name}`
+            : `Download ${file.name}`
+        "
         @click="openFile($event, file, 'download')"
       >
-        <div class="vac-svg-button">
+        <span class="vac-svg-button">
           <slot name="document-icon">
             <SvgIcon name="document" />
           </slot>
-        </div>
-        <div class="vac-text-ellipsis">
+        </span>
+        <span class="vac-text-ellipsis">
           {{ file.name }}
-        </div>
-        <div v-if="file.extension" class="vac-text-ellipsis vac-text-extension">
+        </span>
+        <span v-if="file.extension" class="vac-text-ellipsis vac-text-extension">
           {{ file.extension }}
-        </div>
-      </div>
+        </span>
+      </button>
     </div>
 
     <MessageTemplate
       :message="message"
       :users="users"
       :formatting-options="{ ...textFormatting, singleLine: false }"
-      @click-user-tag="emit('click-user-tag', $event)"
+      @click-user-tag="clickUserTag"
     />
   </div>
 </template>
@@ -110,6 +133,11 @@ const openFile = (event: Event, file: MessageFileModel, action: 'preview' | 'dow
       margin: 3px 0 5px;
       cursor: pointer;
       transition: all 0.6s;
+      color: inherit;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      font: inherit;
 
       &:hover {
         opacity: 0.85;

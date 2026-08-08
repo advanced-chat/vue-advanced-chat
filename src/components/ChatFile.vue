@@ -9,6 +9,10 @@ import { isImageFile, isVideoFile } from '../utils/media-types'
 
 export interface ChatFileItem extends MessageFile {
   loading?: boolean
+  /**
+   * Object URL used for a local preview. `ChatFooter` owns and revokes it
+   * while pending; ownership transfers to the send/edit event listener.
+   */
   localUrl?: string
 }
 
@@ -39,11 +43,16 @@ const isVideo = computed(() => isVideoFile(props.file))
   <div class="vac-room-file-container">
     <Loader :show="!!file.loading" />
 
-    <div class="vac-svg-button vac-icon-remove" @click="emit('remove-file', index)">
+    <button
+      type="button"
+      class="vac-svg-button vac-icon-remove"
+      :aria-label="`Remove ${file.name}`"
+      @click="emit('remove-file', index)"
+    >
       <slot name="image-close-icon">
         <SvgIcon name="close" param="image" />
       </slot>
-    </div>
+    </button>
 
     <div
       v-if="isImage"
@@ -82,6 +91,9 @@ const isVideo = computed(() => isVideoFile(props.file))
     top: 8px;
     right: 8px;
     z-index: 2;
+    padding: 0;
+    border: 0;
+    background: transparent;
   }
 
   .vac-message-image,

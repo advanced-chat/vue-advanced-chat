@@ -24,29 +24,29 @@ const { query, filtered, setQuery } = useLocalSearch<T>({
 
 ## Options
 
-| Field | Type | Description |
-|---|---|---|
-| `items` | `MaybeRefOrGetter<T[]>` | Items to filter. |
-| `field` | `keyof T` | Item field to match against (e.g. `'name'`). The match is case-insensitive and substring-based. |
-| `custom` | `MaybeRefOrGetter<boolean>` | When truthy, the local list passes through unfiltered — the host renders server-driven results. `query` is not updated either; only `onSearch` fires. |
-| `onSearch` | `(query: string) => void` | Fired with the current query on every change. Use this to call your backend search when `custom` is true. |
+| Field      | Type                        | Description                                                                                                                                           |
+| ---------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `items`    | `MaybeRefOrGetter<T[]>`     | Items to filter.                                                                                                                                      |
+| `field`    | `keyof T`                   | Item field to match against (e.g. `'name'`). The match is case-insensitive and substring-based.                                                       |
+| `custom`   | `MaybeRefOrGetter<boolean>` | When truthy, the local list passes through unfiltered — the host renders server-driven results. `query` is not updated either; only `onSearch` fires. |
+| `onSearch` | `(query: string) => void`   | Fired with the current query on every change. Use this to call your backend search when `custom` is true.                                             |
 
 ## Returns
 
-| Field | Type | Description |
-|---|---|---|
-| `query` | `Ref<string \| null>` | Current search query. `null` means no filter is active (i.e. the user cleared the input). |
-| `filtered` | `ComputedRef<T[]>` | Filtered items, or the raw input when `custom` is true. |
-| `setQuery` | `(value: string) => void` | Update the query and forward it via `onSearch`. |
+| Field      | Type                      | Description                                                                               |
+| ---------- | ------------------------- | ----------------------------------------------------------------------------------------- |
+| `query`    | `Ref<string \| null>`     | Current search query. `null` means no filter is active (i.e. the user cleared the input). |
+| `filtered` | `ComputedRef<T[]>`        | Filtered items, or the raw input when `custom` is true.                                   |
+| `setQuery` | `(value: string) => void` | Update the query and forward it via `onSearch`.                                           |
 
 ## Example — local + server-driven hybrid
 
 ```vue
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useLocalSearch } from '@advanced-chat/components'
+import { useLocalSearch, type ChatModel } from '@advanced-chat/components'
 
-const remoteResults = ref<Chat[]>([])
+const remoteResults = ref<ChatModel[]>([])
 const useRemote = ref(false)
 
 const items = computed(() => (useRemote.value ? remoteResults.value : localChats.value))

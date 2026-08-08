@@ -18,37 +18,37 @@ mutually-exclusive reply/edit state.
 ```ts
 import { useReplyEdit } from '@advanced-chat/components'
 
-const { replyMessage, editMessage, dispatch, resetReply, resetEdit } =
-  useReplyEdit({ resetKey })
+const { replyMessage, editMessage, dispatch, resetReply, resetEdit } = useReplyEdit({ resetKey })
 ```
 
 ## Options
 
-| Field | Type | Description |
-|---|---|---|
+| Field      | Type                        | Description                                                                                                                                                  |
+| ---------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `resetKey` | `MaybeRefOrGetter<unknown>` | Watching this clears both `replyMessage` and `editMessage` whenever it changes. Pass `() => activeChat.id` to clear when the active chat switches. Optional. |
 
 ## Returns
 
-| Field | Type | Description |
-|---|---|---|
-| `replyMessage` | `Ref<Message \| null>` | Message currently being replied to, or `null`. |
-| `editMessage` | `Ref<Message \| null>` | Message currently being edited, or `null`. |
-| `dispatch` | `(payload: { action: Action; message: Message }) => void` | Dispatches a `message-action-handler` payload. Sets `replyMessage` / `editMessage` for the built-in reply/edit actions and is otherwise a no-op so hosts can still chain custom actions through it. |
-| `resetReply` | `() => void` | Clears `replyMessage`. Wire to `ChatFooter`'s `reset-reply-message` event. |
-| `resetEdit` | `() => void` | Clears `editMessage`. Wire to `ChatFooter`'s `reset-edit-message` event. |
+| Field          | Type                                                      | Description                                                                                                                                                                                         |
+| -------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `replyMessage` | `Ref<Message \| null>`                                    | Message currently being replied to, or `null`.                                                                                                                                                      |
+| `editMessage`  | `Ref<Message \| null>`                                    | Message currently being edited, or `null`.                                                                                                                                                          |
+| `dispatch`     | `(payload: { action: Action; message: Message }) => void` | Dispatches a `message-action-handler` payload. Sets `replyMessage` / `editMessage` for the built-in reply/edit actions and is otherwise a no-op so hosts can still chain custom actions through it. |
+| `resetReply`   | `() => void`                                              | Clears `replyMessage`. Wire to `ChatFooter`'s `reset-reply-message` event.                                                                                                                          |
+| `resetEdit`    | `() => void`                                              | Clears `editMessage`. Wire to `ChatFooter`'s `reset-edit-message` event.                                                                                                                            |
 
 ## Example — custom composer
 
 ```vue
 <script setup lang="ts">
 import { useReplyEdit } from '@advanced-chat/components'
-import type { Action, Message } from '@advanced-chat/components'
+import type { Action, MessageModel } from '@advanced-chat/components'
 
-const { replyMessage, editMessage, dispatch, resetReply, resetEdit } =
-  useReplyEdit({ resetKey: () => activeChat.value?.id })
+const { replyMessage, editMessage, dispatch, resetReply, resetEdit } = useReplyEdit({
+  resetKey: () => activeChat.value?.id,
+})
 
-const onMessageAction = (payload: { action: Action; message: Message }) => {
+const onMessageAction = (payload: { action: Action; message: MessageModel }) => {
   dispatch(payload)
 
   // Custom actions still pass through.

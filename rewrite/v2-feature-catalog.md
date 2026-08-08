@@ -1,6 +1,6 @@
 # V2 Feature Catalog
 
-Reference inventory of the v2 (`main`) component as published. Built
+Reference inventory of the stable v2 `2.1.2` (`main`) component as published. Built
 from the v2 README and the source on `main`. Used as the parity bar
 for V3.
 
@@ -17,108 +17,108 @@ v2 ships a single web component: `<vue-advanced-chat>`, registered via
 
 ### Layout & rooms
 
-| Prop | Type | Default | Notes |
-|------|------|---------|-------|
-| `height` | string | `'600px'` | container height |
-| `current-user-id` | string | required | identifies the active user |
-| `rooms` | array \| string (JSON) | `[]` | room data |
-| `rooms-order` | `'asc' \| 'desc'` | `'desc'` | sort by `index` |
-| `loading-rooms` | bool | `false` | spinner |
-| `rooms-loaded` | bool | `false` | disables pagination |
-| `room-id` | string | `null` | open a specific room |
-| `load-first-room` | bool | `true` | auto-open the first room |
-| `rooms-list-opened` | bool | `true` | sidebar visibility |
-| `responsive-breakpoint` | number | `900` | mobile collapse px |
-| `single-room` | bool | `false` | hide rooms list |
+| Prop                    | Type                   | Default   | Notes                      |
+| ----------------------- | ---------------------- | --------- | -------------------------- |
+| `height`                | string                 | `'600px'` | container height           |
+| `current-user-id`       | string                 | required  | identifies the active user |
+| `rooms`                 | array \| string (JSON) | `[]`      | room data                  |
+| `rooms-order`           | `'asc' \| 'desc'`      | `'desc'`  | sort by `index`            |
+| `loading-rooms`         | bool                   | `false`   | spinner                    |
+| `rooms-loaded`          | bool                   | `false`   | disables pagination        |
+| `room-id`               | string                 | `null`    | open a specific room       |
+| `load-first-room`       | bool                   | `true`    | auto-open the first room   |
+| `rooms-list-opened`     | bool                   | `true`    | sidebar visibility         |
+| `responsive-breakpoint` | number                 | `900`     | mobile collapse px         |
+| `single-room`           | bool                   | `false`   | hide rooms list            |
 
 ### Messages
 
-| Prop | Type | Default | Notes |
-|------|------|---------|-------|
-| `messages` | array \| string (JSON) | `[]` | active room messages |
-| `messages-loaded` | bool | `false` | disables pagination |
-| `room-message` | string | `''` | preset textarea value |
-| `username-options` | object | `{ minUsers: 3, currentUser: false }` | username display rule |
-| `auto-scroll` | object | `{ send: { new: true, newAfterScrollUp: true }, receive: { new: true, newAfterScrollUp: false } }` | scroll behavior on new messages |
-| `show-new-messages-divider` | bool | `true` | the unread divider line |
+| Prop                        | Type                   | Default                                                                                            | Notes                           |
+| --------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------- |
+| `messages`                  | array \| string (JSON) | `[]`                                                                                               | active room messages            |
+| `messages-loaded`           | bool                   | `false`                                                                                            | disables pagination             |
+| `room-message`              | string                 | `''`                                                                                               | preset textarea value           |
+| `username-options`          | object                 | `{ minUsers: 3, currentUser: false }`                                                              | username display rule           |
+| `auto-scroll`               | object                 | `{ send: { new: true, newAfterScrollUp: true }, receive: { new: true, newAfterScrollUp: false } }` | scroll behavior on new messages |
+| `show-new-messages-divider` | bool                   | `true`                                                                                             | the unread divider line         |
 
 ### Actions
 
-| Prop | Type | Default | Notes |
-|------|------|---------|-------|
-| `room-actions` | array | `[]` | dropdown actions per chat row |
-| `menu-actions` | array | `[]` | room header menu |
-| `message-actions` | array | reply / edit / delete / select | per-message dropdown |
-| `message-selection-actions` | array | `[]` | bulk actions on selected messages |
+| Prop                        | Type  | Default                        | Notes                             |
+| --------------------------- | ----- | ------------------------------ | --------------------------------- |
+| `room-actions`              | array | `[]`                           | dropdown actions per chat row     |
+| `menu-actions`              | array | `[]`                           | room header menu                  |
+| `message-actions`           | array | reply / edit / delete / select | per-message dropdown              |
+| `message-selection-actions` | array | `[]`                           | bulk actions on selected messages |
 
 ### Footer / input
 
-| Prop | Type | Default | Notes |
-|------|------|---------|-------|
-| `templates-text` | array | `null` | `/` autocomplete |
-| `show-search` | bool | `true` | rooms search |
-| `show-add-room` | bool | `true` | add room button |
-| `show-send-icon` | bool | `true` | send button |
-| `show-files` | bool | `true` | paperclip button |
-| `show-audio` | bool | `true` | mic button |
-| `audio-bit-rate` | number | `128` | mp3 encoder kbps |
-| `audio-sample-rate` | number | browser default | mp3 encoder Hz |
-| `show-emojis` | bool | `true` | emoji picker icon |
-| `show-reaction-emojis` | bool | `true` | reactions on messages |
-| `show-footer` | bool | `true` | hide entire input |
-| `accepted-files` | string | `'*'` | mime filter |
-| `capture-files` | string | `''` | mobile capture mode |
-| `multiple-files` | bool | `true` | multi-attach |
-| `textarea-action-enabled` | bool | `false` | extra textarea icon |
-| `textarea-auto-focus` | bool | `true` | autofocus on room change |
-| `user-tags-enabled` | bool | `true` | `@user` mentions |
-| `emojis-suggestion-enabled` | bool | `true` | `:emoji:` suggestions |
-| `media-preview-enabled` | bool | `true` | fullscreen media viewer |
+| Prop                        | Type   | Default         | Notes                    |
+| --------------------------- | ------ | --------------- | ------------------------ |
+| `templates-text`            | array  | `null`          | `/` autocomplete         |
+| `show-search`               | bool   | `true`          | rooms search             |
+| `show-add-room`             | bool   | `true`          | add room button          |
+| `show-send-icon`            | bool   | `true`          | send button              |
+| `show-files`                | bool   | `true`          | paperclip button         |
+| `show-audio`                | bool   | `true`          | mic button               |
+| `audio-bit-rate`            | number | `128`           | mp3 encoder kbps         |
+| `audio-sample-rate`         | number | browser default | mp3 encoder Hz           |
+| `show-emojis`               | bool   | `true`          | emoji picker icon        |
+| `show-reaction-emojis`      | bool   | `true`          | reactions on messages    |
+| `show-footer`               | bool   | `true`          | hide entire input        |
+| `accepted-files`            | string | `'*'`           | mime filter              |
+| `capture-files`             | string | `''`            | mobile capture mode      |
+| `multiple-files`            | bool   | `true`          | multi-attach             |
+| `textarea-action-enabled`   | bool   | `false`         | extra textarea icon      |
+| `textarea-auto-focus`       | bool   | `true`          | autofocus on room change |
+| `user-tags-enabled`         | bool   | `true`          | `@user` mentions         |
+| `emojis-suggestion-enabled` | bool   | `true`          | `:emoji:` suggestions    |
+| `media-preview-enabled`     | bool   | `true`          | fullscreen media viewer  |
 
 ### Behavior & content
 
-| Prop | Type | Default | Notes |
-|------|------|---------|-------|
-| `text-messages` | object | en defaults | i18n string overrides |
-| `text-formatting` | object | see below | markdown markers |
-| `link-options` | object | `{ disabled: false, target: '_blank', rel: null }` | URL handling |
-| `room-info-enabled` | bool | `false` | header click emits `room-info` |
-| `custom-search-room-enabled` | bool | `false` | delegate search to consumer |
-| `scroll-distance` | number | `60` | px before pagination triggers |
+| Prop                         | Type   | Default                                            | Notes                          |
+| ---------------------------- | ------ | -------------------------------------------------- | ------------------------------ |
+| `text-messages`              | object | en defaults                                        | i18n string overrides          |
+| `text-formatting`            | object | see below                                          | markdown markers               |
+| `link-options`               | object | `{ disabled: false, target: '_blank', rel: null }` | URL handling                   |
+| `room-info-enabled`          | bool   | `false`                                            | header click emits `room-info` |
+| `custom-search-room-enabled` | bool   | `false`                                            | delegate search to consumer    |
+| `scroll-distance`            | number | `60`                                               | px before pagination triggers  |
 
 `text-formatting` default: `{ disabled: false, italic: '_', bold: '*', strike: '~', underline: '°', multilineCode: '\`\`\`', inlineCode: '\`' }`.
 
 ### Theme
 
-| Prop | Type | Default | Notes |
-|------|------|---------|-------|
-| `theme` | `'light' \| 'dark'` | `'light'` | built-in palettes |
-| `styles` | object | `{}` | partial CSS-var overrides |
-| `emoji-data-source` | string | CDN URL | emoji-picker-element data |
+| Prop                | Type                | Default   | Notes                     |
+| ------------------- | ------------------- | --------- | ------------------------- |
+| `theme`             | `'light' \| 'dark'` | `'light'` | built-in palettes         |
+| `styles`            | object              | `{}`      | partial CSS-var overrides |
+| `emoji-data-source` | string              | CDN URL   | emoji-picker-element data |
 
 ## Events
 
-| Event | Payload |
-|------|---------|
-| `fetch-messages` | `{ room, options }` (options.reset on first load) |
-| `fetch-more-rooms` | – |
-| `send-message` | `{ roomId, content, files, replyMessage, usersTag }` |
-| `edit-message` | `{ roomId, messageId, newContent, files, replyMessage, usersTag }` |
-| `delete-message` | `{ roomId, message }` |
-| `open-file` | `{ message, file }` |
-| `open-user-tag` | `{ user }` |
-| `open-failed-message` | `{ roomId, message }` |
-| `add-room` | – |
-| `search-room` | `{ roomId, value }` |
-| `room-action-handler` | `{ roomId, action }` |
-| `menu-action-handler` | `{ roomId, action }` |
-| `message-action-handler` | `{ roomId, action, message }` |
-| `message-selection-action-handler` | `{ roomId, action, messages }` |
-| `send-message-reaction` | `{ roomId, messageId, reaction, remove }` |
-| `room-info` | `room` |
-| `toggle-rooms-list` | `{ opened }` |
-| `textarea-action-handler` | `{ roomId, message }` |
-| `typing-message` | `{ roomId, message }` |
+| Event                              | Payload                                                            |
+| ---------------------------------- | ------------------------------------------------------------------ |
+| `fetch-messages`                   | `{ room, options }` (options.reset on first load)                  |
+| `fetch-more-rooms`                 | –                                                                  |
+| `send-message`                     | `{ roomId, content, files, replyMessage, usersTag }`               |
+| `edit-message`                     | `{ roomId, messageId, newContent, files, replyMessage, usersTag }` |
+| `delete-message`                   | `{ roomId, message }`                                              |
+| `open-file`                        | `{ message, file }`                                                |
+| `open-user-tag`                    | `{ user }`                                                         |
+| `open-failed-message`              | `{ roomId, message }`                                              |
+| `add-room`                         | –                                                                  |
+| `search-room`                      | `{ roomId, value }`                                                |
+| `room-action-handler`              | `{ roomId, action }`                                               |
+| `menu-action-handler`              | `{ roomId, action }`                                               |
+| `message-action-handler`           | `{ roomId, action, message }`                                      |
+| `message-selection-action-handler` | `{ roomId, action, messages }`                                     |
+| `send-message-reaction`            | `{ roomId, messageId, reaction, remove }`                          |
+| `room-info`                        | `room`                                                             |
+| `toggle-rooms-list`                | `{ opened }`                                                       |
+| `textarea-action-handler`          | `{ roomId, message }`                                              |
+| `typing-message`                   | `{ roomId, message }`                                              |
 
 ## Slots
 
@@ -157,7 +157,7 @@ interface Room {
   index?: string | number | Date
   lastMessage?: Message
   users: RoomUser[]
-  typingUsers?: string[]      // user ids
+  typingUsers?: string[] // user ids
 }
 
 interface RoomUser {
@@ -186,7 +186,7 @@ interface Message {
   disableReactions?: boolean
   indexId?: string | number
   files?: MessageFile[]
-  reactions?: Record<string, string[]>   // emoji -> userIds
+  reactions?: Record<string, string[]> // emoji -> userIds
   replyMessage?: Message
 }
 

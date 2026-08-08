@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, useId, useTemplateRef, watch } from 'vue'
 
 import ChatEmojis from '@/components/ChatEmojis.vue'
 import ChatFiles from '@/components/ChatFiles.vue'
@@ -24,6 +24,7 @@ export interface ChatFooterProps {
   showFiles?: boolean
   showEmojis?: boolean
   showFooter?: boolean
+  disabled?: boolean
   initReplyMessage?: Message | null
   initEditMessage?: Message | null
   /** MIME-type filter for the file input. */
@@ -50,20 +51,46 @@ export interface ChatFooterProps {
 export type InvalidFileReason = 'size' | 'count'
 
 export interface ChatFooterEvents {
+  /**
+   * Transfers ownership of every emitted file's `localUrl` to the listener.
+   * The listener must revoke those object URLs when it no longer needs them.
+   */
   (
     e: 'send-message',
-    payload: { content: string; files: ChatFileItem[]; reply?: Message | null },
+    payload: {
+      content: string
+      files: ChatFileItem[]
+      mentionedUsers: User[]
+      reply?: Message | null
+    },
   ): void
+
+  /**
+   * Transfers ownership of every emitted file's `localUrl` to the listener.
+   * The listener must revoke those object URLs when it no longer needs them.
+   */
   (
     e: 'edit-message',
-    payload: { messageId: Message['id']; content: string; files: ChatFileItem[] },
+    payload: {
+      messageId: Message['id']
+      content: string
+      files: ChatFileItem[]
+      mentionedUsers: User[]
+    },
   ): void
+
   (e: 'update-edited-message-id', value: Message['id'] | null): void
+
   (e: 'typing-message', value: string): void
+
   (e: 'reset-reply-message'): void
+
   (e: 'reset-edit-message'): void
+
   (e: 'focus-textarea'): void
+
   (e: 'blur-textarea'): void
+
   /**
    * Fired once per file the composer rejected because of a configured
    * `maxFiles` / `maxFileSize` limit. Carries the original `File` so the
@@ -79,6 +106,7 @@ const props = withDefaults(defineProps<ChatFooterProps>(), {
   showFiles: true,
   showEmojis: true,
   showFooter: true,
+  disabled: false,
   initReplyMessage: null,
   initEditMessage: null,
   accept: '*',
@@ -93,14 +121,29 @@ const emit = defineEmits<ChatFooterEvents>()
 const message = ref(props.roomMessage)
 const files = ref<ChatFileItem[]>([])
 const emojiOpened = ref(false)
+const autocompleteDismissed = ref(false)
 const selectEmojiItem = ref(false)
 const selectUserTagItem = ref(false)
 const activeUpOrDownEmojis = ref<number | null>(null)
 const activeUpOrDownUsers = ref<number | null>(null)
+const activeEmojiDescendant = ref<string | null>(null)
+const activeUserDescendant = ref<string | null>(null)
 const replyMessage = ref<Message | null>(props.initReplyMessage)
 const editedMessage = ref<Message | null>(props.initEditMessage)
+const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
+const ownedObjectUrls = new Set<string>()
+const composerId = useId()
+const textareaId = `${composerId}-textarea`
+const emojiSuggestionsId = `${composerId}-emoji-suggestions`
+const userSuggestionsId = `${composerId}-user-suggestions`
+const emojiPickerId = `${composerId}-emoji-picker`
+const emojiPickerButtonId = `${composerId}-emoji-picker-button`
+let typingTimer: ReturnType<typeof setTimeout> | null = null
+let typingActive = false
 
 const filteredEmojis = computed(() => {
+  if (autocompleteDismissed.value) return []
+
   const match = message.value.match(/:([\w+-]*)$/)
 
   if (!match) return []
@@ -111,6 +154,8 @@ const filteredEmojis = computed(() => {
 })
 
 const filteredUsers = computed(() => {
+  if (autocompleteDismissed.value) return []
+
   const match = message.value.match(/@([\w-]*)$/)
 
   if (!match) return []
@@ -120,12 +165,61 @@ const filteredUsers = computed(() => {
   return props.users.filter((user) => user.name.toLowerCase().includes(query)).slice(0, 5)
 })
 
+const autocompleteExpanded = computed(
+  () => filteredEmojis.value.length > 0 || filteredUsers.value.length > 0,
+)
+const activeListboxId = computed(() => {
+  if (filteredUsers.value.length) return userSuggestionsId
+  if (filteredEmojis.value.length) return emojiSuggestionsId
+  return undefined
+})
+const activeDescendantId = computed(() => {
+  if (filteredUsers.value.length) return activeUserDescendant.value ?? undefined
+  if (filteredEmojis.value.length) return activeEmojiDescendant.value ?? undefined
+  return undefined
+})
 const isMessageEmpty = computed(() => !files.value.length && !message.value.trim())
 
 watch(
   () => props.roomMessage,
   (value) => {
     message.value = value
+  },
+)
+
+const revokeFile = (file: ChatFileItem) => {
+  if (!file.localUrl || !ownedObjectUrls.delete(file.localUrl)) return
+
+  URL.revokeObjectURL(file.localUrl)
+}
+
+const revokeFiles = () => {
+  files.value.forEach(revokeFile)
+  files.value = []
+}
+
+const transferFiles = () => {
+  const transferredFiles = [...files.value]
+
+  transferredFiles.forEach((file) => {
+    if (file.localUrl) ownedObjectUrls.delete(file.localUrl)
+  })
+  files.value = []
+
+  return transferredFiles
+}
+
+watch(
+  () => props.chat?.id,
+  () => {
+    revokeFiles()
+    message.value = props.roomMessage
+    emojiOpened.value = false
+    replyMessage.value = null
+    editedMessage.value = null
+    emit('reset-reply-message')
+    emit('reset-edit-message')
+    emit('update-edited-message-id', null)
   },
 )
 
@@ -139,9 +233,12 @@ watch(
 watch(
   () => props.initEditMessage,
   (value) => {
+    const wasEditing = editedMessage.value !== null
     editedMessage.value = value
     if (value) {
       message.value = value.content || ''
+    } else if (wasEditing) {
+      message.value = props.roomMessage
     }
     emit('update-edited-message-id', value?.id ?? null)
   },
@@ -149,7 +246,28 @@ watch(
 )
 
 watch(message, (value) => {
-  emit('typing-message', value)
+  autocompleteDismissed.value = false
+
+  if (typingTimer !== null) clearTimeout(typingTimer)
+
+  if (!value) {
+    typingActive = false
+    emit('typing-message', '')
+    return
+  }
+
+  if (!typingActive) {
+    typingActive = true
+    emit('typing-message', value)
+  }
+
+  typingTimer = setTimeout(() => emit('typing-message', value), 300)
+})
+
+onBeforeUnmount(() => {
+  if (typingTimer !== null) clearTimeout(typingTimer)
+  if (typingActive) emit('typing-message', '')
+  revokeFiles()
 })
 
 const updateFiles = (fileList: FileList | null) => {
@@ -171,6 +289,7 @@ const updateFiles = (fileList: FileList | null) => {
     }
 
     const objectUrl = URL.createObjectURL(file)
+    ownedObjectUrls.add(objectUrl)
 
     accepted.push({
       name: file.name,
@@ -189,18 +308,24 @@ const updateFiles = (fileList: FileList | null) => {
   }
 }
 
+const onFileChange = (event: Event) => {
+  const input = event.target as HTMLInputElement
+
+  try {
+    updateFiles(input.files)
+  } finally {
+    input.value = ''
+  }
+}
+
 const removeFile = (index: number) => {
   const [removed] = files.value.splice(index, 1)
 
-  if (removed?.localUrl) URL.revokeObjectURL(removed.localUrl)
+  if (removed) revokeFile(removed)
 }
 
 const resetMessage = () => {
-  files.value.forEach((file) => {
-    if (file.localUrl) URL.revokeObjectURL(file.localUrl)
-  })
-
-  files.value = []
+  revokeFiles()
   message.value = ''
 
   if (replyMessage.value) {
@@ -242,7 +367,7 @@ const selectEmoji = (emoji: string) => {
 }
 
 const selectUserTag = (user: User) => {
-  replaceTrailingToken(/@[\w-]*$/, `@${user.name} `)
+  replaceTrailingToken(/@[\w-]*$/, `<@${user.id}> `)
   selectUserTagItem.value = false
 }
 
@@ -256,12 +381,43 @@ const addEmoji = (event: Event) => {
   emojiOpened.value = false
 }
 
-const sendMessage = () => {
-  if (isMessageEmpty.value) return
+const closePopups = (event?: KeyboardEvent) => {
+  if (!autocompleteExpanded.value && !emojiOpened.value) return
 
+  autocompleteDismissed.value = true
+  emojiOpened.value = false
+  selectEmojiItem.value = false
+  selectUserTagItem.value = false
+  activeUpOrDownEmojis.value = null
+  activeUpOrDownUsers.value = null
+  event?.preventDefault()
+  event?.stopPropagation()
+}
+
+const toggleEmojiPicker = () => {
+  emojiOpened.value = !emojiOpened.value
+  if (emojiOpened.value) autocompleteDismissed.value = true
+}
+
+const getMentionedUsers = (content: string) => {
+  const mentionedUsers = new Map<User['id'], User>()
+
+  for (const match of content.matchAll(/<@([^>]+)>/g)) {
+    const user = props.users.find(({ id }) => id === match[1])
+    if (user) mentionedUsers.set(user.id, user)
+  }
+
+  return [...mentionedUsers.values()]
+}
+
+const sendMessage = () => {
+  if (props.disabled || isMessageEmpty.value) return
+
+  const content = message.value.trim()
   const payload = {
-    content: message.value.trim(),
-    files: [...files.value],
+    content,
+    files: transferFiles(),
+    mentionedUsers: getMentionedUsers(content),
   }
 
   if (editedMessage.value) {
@@ -323,21 +479,30 @@ const onKeydown = (event: KeyboardEvent) => {
 </script>
 
 <template>
-  <div v-if="showFooter && chat" id="room-footer" class="vac-room-footer">
+  <div
+    v-if="showFooter && chat"
+    id="room-footer"
+    class="vac-room-footer"
+    @keydown.esc="closePopups"
+  >
     <ChatEmojis
       :filtered-emojis="filteredEmojis"
       :select-item="selectEmojiItem"
       :active-up-or-down="activeUpOrDownEmojis"
+      :listbox-id="emojiSuggestionsId"
       @select-emoji="selectEmoji"
       @activate-item="activeUpOrDownEmojis = null"
+      @active-descendant-change="activeEmojiDescendant = $event"
     />
 
     <ChatUserTag
       :filtered-users="filteredUsers"
       :select-item="selectUserTagItem"
       :active-up-or-down="activeUpOrDownUsers"
+      :listbox-id="userSuggestionsId"
       @select-user-tag="selectUserTag"
       @activate-item="activeUpOrDownUsers = null"
+      @active-descendant-change="activeUserDescendant = $event"
     />
 
     <div v-if="replyMessage" class="vac-footer-reply-wrapper">
@@ -365,16 +530,31 @@ const onKeydown = (event: KeyboardEvent) => {
       class="vac-box-footer"
       :class="{ 'vac-box-footer-border': !files.length && !replyMessage }"
     >
-      <textarea
-        id="roomTextarea"
-        v-model="message"
-        :placeholder="strings['chat.message.placeholder']"
-        class="vac-textarea"
-        :class="{ 'vac-textarea-outline': editedMessage }"
-        @keydown="onKeydown"
-        @focus="emit('focus-textarea')"
-        @blur="emit('blur-textarea')"
-      />
+      <div
+        class="vac-composer-combobox"
+        role="combobox"
+        aria-label="Message suggestions"
+        aria-haspopup="listbox"
+        :aria-expanded="autocompleteExpanded"
+        :aria-controls="activeListboxId"
+        :aria-activedescendant="activeDescendantId"
+      >
+        <textarea
+          :id="textareaId"
+          v-model="message"
+          :placeholder="strings['chat.message.placeholder']"
+          class="vac-textarea"
+          :disabled="disabled"
+          :class="{ 'vac-textarea-outline': editedMessage }"
+          :aria-label="strings['chat.message.placeholder']"
+          aria-autocomplete="list"
+          :aria-controls="activeListboxId"
+          :aria-activedescendant="activeDescendantId"
+          @keydown="onKeydown"
+          @focus="emit('focus-textarea')"
+          @blur="emit('blur-textarea')"
+        />
+      </div>
 
       <div class="vac-icon-textarea">
         <button
@@ -391,43 +571,74 @@ const onKeydown = (event: KeyboardEvent) => {
         </button>
 
         <div v-if="showEmojis" class="vac-emoji-button">
-          <div class="vac-svg-button" @click="emojiOpened = !emojiOpened">
+          <button
+            :id="emojiPickerButtonId"
+            type="button"
+            class="vac-svg-button"
+            :disabled="disabled"
+            aria-label="Choose an emoji"
+            aria-haspopup="dialog"
+            :aria-expanded="emojiOpened"
+            :aria-controls="emojiPickerId"
+            @click="toggleEmojiPicker"
+          >
             <!-- @slot Icon that toggles the emoji picker. -->
             <slot name="emoji-picker-icon">
               <SvgIcon name="emoji" />
             </slot>
-          </div>
-          <div v-if="emojiOpened" class="vac-picker-shell" @emoji-click="addEmoji">
+          </button>
+          <div
+            v-if="emojiOpened"
+            :id="emojiPickerId"
+            class="vac-picker-shell"
+            role="dialog"
+            aria-label="Emoji picker"
+            :aria-labelledby="emojiPickerButtonId"
+            @emoji-click="addEmoji"
+          >
             <EmojiPicker :opened="emojiOpened" />
           </div>
         </div>
 
-        <label v-if="showFiles" class="vac-svg-button">
+        <button
+          v-if="showFiles"
+          type="button"
+          class="vac-svg-button"
+          :disabled="disabled"
+          aria-label="Attach files"
+          @click="fileInput?.click()"
+        >
           <!-- @slot Icon for the "attach file" button. -->
           <slot name="paperclip-icon">
             <SvgIcon name="paperclip" />
           </slot>
-          <input
-            hidden
-            type="file"
-            :multiple="multiple"
-            :accept="accept"
-            :capture="capture || undefined"
-            @change="updateFiles(($event.target as HTMLInputElement).files)"
-          />
-        </label>
+        </button>
+        <input
+          v-if="showFiles"
+          ref="fileInput"
+          hidden
+          type="file"
+          :multiple="multiple"
+          :accept="accept"
+          :capture="capture || undefined"
+          :disabled="disabled"
+          @change="onFileChange"
+        />
 
-        <div
+        <button
           v-if="showSendIcon"
+          type="button"
           class="vac-svg-button"
           :class="{ 'vac-send-disabled': isMessageEmpty }"
+          :disabled="disabled || isMessageEmpty"
+          aria-label="Send message"
           @click="sendMessage"
         >
           <!-- @slot Icon for the send button. Receives no slot props. -->
           <slot name="send-icon">
             <SvgIcon :name="'send'" :param="isMessageEmpty ? 'disabled' : ''" />
           </slot>
-        </div>
+        </button>
       </div>
     </div>
   </div>
@@ -487,10 +698,21 @@ const onKeydown = (event: KeyboardEvent) => {
   }
 }
 
+.vac-composer-combobox {
+  width: 100%;
+}
+
 .vac-icon-textarea {
   display: flex;
   align-items: center;
   gap: 10px;
+
+  .vac-svg-button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+  }
 }
 
 .vac-emoji-button {
@@ -506,6 +728,5 @@ const onKeydown = (event: KeyboardEvent) => {
 
 .vac-send-disabled {
   opacity: 0.35;
-  pointer-events: none;
 }
 </style>

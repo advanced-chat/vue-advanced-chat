@@ -140,12 +140,12 @@ export const getThemeStyles = (theme: Theme): Styles => {
 
     const overrideStyles = theme.overrides || {}
 
-    return deepMerge(baseStyles, overrideStyles)
+    return deepMerge({} as Styles, baseStyles, overrideStyles)
   }
 
   const isDarkMode = (theme === 'auto' && prefersDark()) || theme === 'dark'
 
-  return isDarkMode ? dark : light
+  return deepMerge({} as Styles, isDarkMode ? dark : light)
 }
 
 /**

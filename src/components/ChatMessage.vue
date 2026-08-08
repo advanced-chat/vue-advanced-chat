@@ -70,7 +70,8 @@ const props = withDefaults(defineProps<ChatMessageProps>(), {
 const emit = defineEmits<ChatMessageEvents>()
 
 const showDateDivider = computed(() => {
-  if (!props.index || !props.messages.length) return false
+  if (props.index === 0) return true
+  if (!props.messages.length) return false
 
   const previous = props.messages[props.index - 1]
 
@@ -88,6 +89,12 @@ const dateLabel = computed(() => {
 
   return date.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })
 })
+
+const showUnreadDivider = computed(() => {
+  if (!props.message.unread || !props.showNewMessagesDivider) return false
+
+  return !props.messages.slice(0, props.index).some((message) => message.unread)
+})
 </script>
 
 <template>
@@ -96,7 +103,7 @@ const dateLabel = computed(() => {
       {{ dateLabel }}
     </div>
 
-    <div v-if="message.unread && showNewMessagesDivider" class="vac-line-new">
+    <div v-if="showUnreadDivider" class="vac-line-new">
       {{ strings['chat.messages.new'] }}
     </div>
 

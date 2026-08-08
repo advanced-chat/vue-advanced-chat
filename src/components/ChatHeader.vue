@@ -160,40 +160,50 @@ const menuActionHandler = (action: Action) => {
         <transition name="vac-slide-up">
           <div v-if="showMessageSelection" class="vac-room-selection">
             <div v-for="action in selectionActions" :id="action.id" :key="action.id">
-              <div class="vac-selection-button" @click="messageSelectionActionHandler(action)">
+              <button
+                type="button"
+                class="vac-selection-button"
+                @click="messageSelectionActionHandler(action)"
+              >
                 {{ action.label }}
                 <span class="vac-selection-button-count">
                   {{ selectedCount }}
                 </span>
-              </div>
+              </button>
             </div>
-            <div
+            <button
+              type="button"
               class="vac-selection-cancel vac-item-clickable"
               @click="emit('cancel-message-selection')"
             >
               {{ strings['chat.cancel-selection'] }}
-            </div>
+            </button>
           </div>
         </transition>
         <template v-if="!showMessageSelection && messageSelectionAnimationEnded">
-          <div
+          <button
             v-if="!standalone"
+            type="button"
             class="vac-svg-button vac-toggle-button"
             :class="{
               'vac-rotate-icon-init': !isMobile,
               'vac-rotate-icon': !showChatList && !isMobile,
             }"
             @click="emit('toggle-chat-list')"
+            aria-label="Toggle chat list"
+            :aria-expanded="showChatList"
           >
             <!-- @slot Icon for the chat-list toggle button. -->
             <slot name="toggle-icon">
               <SvgIcon name="toggle" />
             </slot>
-          </div>
-          <div
+          </button>
+          <component
+            :is="chatInfoEnabled ? 'button' : 'div'"
+            :type="chatInfoEnabled ? 'button' : undefined"
             class="vac-info-wrapper"
             :class="{ 'vac-item-clickable': chatInfoEnabled }"
-            @click="emit('show-chat-info')"
+            @click="chatInfoEnabled && emit('show-chat-info')"
           >
             <!-- @slot Avatar element. Default renders a CSS background-image div. -->
             <slot name="chat-header-avatar">
@@ -220,19 +230,23 @@ const menuActionHandler = (action: Action) => {
                 </div>
               </div>
             </slot>
-          </div>
+          </component>
           <!-- @slot Replacement for the chat-options menu trigger + dropdown. -->
           <slot v-if="chat.id" name="chat-options">
-            <div
+            <button
               v-if="actions.length"
+              type="button"
               class="vac-svg-button vac-room-options"
+              aria-label="Chat options"
+              aria-haspopup="menu"
+              :aria-expanded="menuOpened"
               @click="menuOpened = !menuOpened"
             >
               <!-- @slot Icon for the chat-options menu trigger. -->
               <slot name="menu-icon">
                 <svg-icon name="menu" />
               </slot>
-            </div>
+            </button>
             <transition v-if="actions.length" name="vac-slide-left">
               <div
                 v-if="menuOpened"
@@ -304,6 +318,11 @@ const menuActionHandler = (action: Action) => {
     min-width: 0;
     width: 100%;
     height: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
   }
 
   .vac-room-selection {
@@ -314,6 +333,7 @@ const menuActionHandler = (action: Action) => {
     height: 100%;
 
     .vac-selection-button {
+      border: 0;
       padding: 8px 16px;
       color: var(--chat-color-button);
       background-color: var(--chat-bg-color-button);
@@ -343,6 +363,8 @@ const menuActionHandler = (action: Action) => {
       white-space: nowrap;
       color: var(--chat-color-button-clear);
       transition: all 0.2s;
+      border: 0;
+      background: transparent;
 
       &:hover {
         opacity: 0.7;

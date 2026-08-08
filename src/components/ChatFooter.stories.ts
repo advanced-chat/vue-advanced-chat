@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 
 import ChatFooter from './ChatFooter.vue'
 import { sampleChat, sampleMessages, sampleUsers } from './stories.fixtures.ts'
@@ -36,9 +36,10 @@ export const TypingEmitsTypingMessage: Story = {
     const textarea = canvas.getByPlaceholderText('Type a message')
     await userEvent.click(textarea)
     await userEvent.type(textarea, 'hi')
-    await expect(args['onTyping-message']).toHaveBeenCalled()
-    const calls = (args['onTyping-message'] as ReturnType<typeof fn>).mock.calls
-    expect(calls[calls.length - 1]?.[0]).toBe('hi')
+    await waitFor(() => {
+      const calls = (args['onTyping-message'] as ReturnType<typeof fn>).mock.calls
+      expect(calls[calls.length - 1]?.[0]).toBe('hi')
+    })
   },
 }
 
@@ -125,17 +126,79 @@ export const EmojiAutocompleteSelection: Story = {
 }
 
 export const UserTagAutocompleteSelection: Story = {
-  play: async ({ canvasElement }) => {
+  args: {
+    'onSend-message': fn(),
+  },
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const textarea = canvas.getByPlaceholderText('Type a message') as HTMLTextAreaElement
+    const combobox = canvas.getByRole('combobox', {
+      name: 'Message suggestions',
+    })
+    const textarea = canvas.getByRole('textbox', {
+      name: 'Type a message',
+    }) as HTMLTextAreaElement
     await userEvent.click(textarea)
     await userEvent.type(textarea, '@')
-    await waitFor(() => {
-      expect(canvasElement.querySelector('.vac-user-tag-menu')).toBeTruthy()
-    })
-    const firstUser = canvasElement.querySelector('.vac-user-tag-menu .vac-autocomplete-item')
-    await userEvent.click(firstUser as Element)
-    expect(textarea.value).toContain('@')
+    const listbox = await canvas.findByRole('listbox', { name: 'User suggestions' })
+    const firstUser = within(listbox).getByRole('option', { name: 'Alice' })
+
+    expect(combobox).toHaveAttribute('aria-expanded', 'true')
+    expect(combobox).toHaveAttribute('aria-controls', listbox.id)
+    expect(textarea).toHaveAttribute('aria-controls', listbox.id)
+    expect(textarea).toHaveAttribute('aria-activedescendant', firstUser.id)
+
+    await userEvent.click(firstUser)
+    expect(textarea.value).toBe('<@1> ')
+
+    await userEvent.type(textarea, 'and @a')
+    const secondListbox = await canvas.findByRole('listbox', { name: 'User suggestions' })
+    await userEvent.click(within(secondListbox).getByRole('option', { name: 'Alice' }))
+    expect(textarea.value).toBe('<@1> and <@1> ')
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Send message' }))
+    await expect(args['onSend-message']).toHaveBeenCalledTimes(1)
+
+    const payload = (args['onSend-message'] as ReturnType<typeof fn>).mock.calls[0]?.[0] as {
+      content: string
+      files: unknown[]
+      mentionedUsers: unknown[]
+    }
+    expect(payload.content).toBe('<@1> and <@1>')
+    expect(payload.files).toEqual([])
+    expect(payload.mentionedUsers).toEqual([sampleUsers[0]])
+  },
+}
+
+export const EscapeClosesComposerPopupsWithoutSending: Story = {
+  args: {
+    'onSend-message': fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const combobox = canvas.getByRole('combobox', { name: 'Message suggestions' })
+    const textarea = canvas.getByRole('textbox', { name: 'Type a message' })
+
+    await userEvent.click(textarea)
+    await userEvent.type(textarea, '@')
+    await canvas.findByRole('listbox', { name: 'User suggestions' })
+    expect(combobox).toHaveAttribute('aria-expanded', 'true')
+
+    await userEvent.keyboard('{Escape}')
+    await waitFor(() =>
+      expect(canvas.queryByRole('listbox', { name: 'User suggestions' })).not.toBeInTheDocument(),
+    )
+    expect(combobox).toHaveAttribute('aria-expanded', 'false')
+    expect(args['onSend-message']).not.toHaveBeenCalled()
+
+    const pickerButton = canvas.getByRole('button', { name: 'Choose an emoji' })
+    await userEvent.click(pickerButton)
+    await canvas.findByRole('dialog', { name: 'Choose an emoji' })
+    expect(pickerButton).toHaveAttribute('aria-expanded', 'true')
+
+    await userEvent.keyboard('{Escape}')
+    expect(canvas.queryByRole('dialog', { name: 'Choose an emoji' })).not.toBeInTheDocument()
+    expect(pickerButton).toHaveAttribute('aria-expanded', 'false')
+    expect(args['onSend-message']).not.toHaveBeenCalled()
   },
 }
 
@@ -226,7 +289,10 @@ export const EditModePrefillsContent: Story = {
     'onUpdate-edited-message-id': fn(),
   },
   play: async ({ canvasElement }) => {
-    const textarea = canvasElement.querySelector('#roomTextarea') as HTMLTextAreaElement
+    const canvas = within(canvasElement)
+    const textarea = canvas.getByRole('textbox', {
+      name: 'Type a message',
+    }) as HTMLTextAreaElement
     expect(textarea.value).toBe('Here is a screenshot from the latest build.')
     expect(canvasElement.querySelector('.vac-textarea-outline')).toBeTruthy()
   },
@@ -237,6 +303,49 @@ const dropFiles = (input: HTMLInputElement, files: File[]) => {
   for (const file of files) transfer.items.add(file)
   input.files = transfer.files
   input.dispatchEvent(new Event('change', { bubbles: true }))
+}
+
+export const SameFileReselectionTransfersPreviewOwnership: Story = {
+  args: {
+    'onSend-message': fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const input = canvasElement.querySelector('input[type="file"]') as HTMLInputElement
+    const file = new File(['attachment contents'], 'attachment.png', { type: 'image/png' })
+    const revokeObjectURL = spyOn(URL, 'revokeObjectURL')
+
+    await userEvent.upload(input, file, { applyAccept: false })
+    const removeButton = await canvas.findByRole('button', { name: 'Remove attachment.png' })
+    const preview = canvasElement.querySelector('.vac-message-image') as HTMLElement
+    const firstLocalUrl = preview.style.backgroundImage.match(/url\(["']?(.*?)["']?\)/)?.[1]
+
+    expect(firstLocalUrl).toBeTruthy()
+    expect(input.value).toBe('')
+
+    await userEvent.click(removeButton)
+    await waitFor(() =>
+      expect(
+        canvas.queryByRole('button', { name: 'Remove attachment.png' }),
+      ).not.toBeInTheDocument(),
+    )
+    await expect(revokeObjectURL).toHaveBeenCalledWith(firstLocalUrl)
+
+    await userEvent.upload(input, file, { applyAccept: false })
+    await canvas.findByRole('button', { name: 'Remove attachment.png' })
+    await userEvent.click(canvas.getByRole('button', { name: 'Send message' }))
+
+    await expect(args['onSend-message']).toHaveBeenCalledTimes(1)
+    const payload = (args['onSend-message'] as ReturnType<typeof fn>).mock.calls[0]?.[0] as {
+      files: Array<{ localUrl?: string }>
+    }
+    const localUrl = payload.files[0]?.localUrl
+
+    expect(localUrl).toBeTruthy()
+    await expect((await fetch(localUrl!)).text()).resolves.toBe('attachment contents')
+    URL.revokeObjectURL(localUrl!)
+    revokeObjectURL.mockRestore()
+  },
 }
 
 /**
@@ -304,15 +413,28 @@ export const MaxFileSizeRejectsLarge: Story = {
 
 export const EditedMessageEmitsEdit: Story = {
   args: {
-    initEditMessage: { ...sampleMessages[1]! } as never,
+    initEditMessage: { ...sampleMessages[1]!, content: 'Review with <@1>' } as never,
     'onEdit-message': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const textarea = canvasElement.querySelector('#roomTextarea') as HTMLTextAreaElement
-    textarea.focus()
+    const canvas = within(canvasElement)
+    const textarea = canvas.getByRole('textbox', {
+      name: 'Type a message',
+    }) as HTMLTextAreaElement
+    await userEvent.click(textarea)
     await userEvent.type(textarea, '!')
-    // Trigger send via Enter
     await userEvent.keyboard('{Enter}')
-    await expect(args['onEdit-message']).toHaveBeenCalled()
+    await expect(args['onEdit-message']).toHaveBeenCalledTimes(1)
+
+    const payload = (args['onEdit-message'] as ReturnType<typeof fn>).mock.calls[0]?.[0] as {
+      messageId: string
+      content: string
+      files: unknown[]
+      mentionedUsers: unknown[]
+    }
+    expect(payload.messageId).toBe(sampleMessages[1]!.id)
+    expect(payload.content).toBe('Review with <@1>!')
+    expect(payload.files).toEqual([])
+    expect(payload.mentionedUsers).toEqual([sampleUsers[0]])
   },
 }

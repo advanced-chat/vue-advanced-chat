@@ -215,7 +215,7 @@ const messageStates = [
   ['default', 'message-default.png', null],
   ['own-edited', 'message-own-edited.png', '#vac-icon-pencil'],
   ['reply', 'message-reply.png', '.vac-reply-message'],
-  ['audio-only', 'message-audio.png', '.vac-audio-summary'],
+  ['audio-only', 'message-audio.png', '.vac-audio-player'],
   ['deleted', 'message-deleted.png', '.vac-message-deleted'],
   ['system', 'message-system.png', '.vac-message-system'],
   ['failure', 'message-failure.png', '.vac-failure-container'],
@@ -265,7 +265,7 @@ for (const [variant, file, requiredSelector] of messageStates) {
     failures.push('[footer-send] expected .vac-send-disabled when textarea is empty')
   }
 
-  await page.fill('#roomTextarea', 'Hello world')
+  await page.getByLabel('Type a message').fill('Hello world')
   await page.waitForTimeout(50)
 
   const stillDisabled = await page.$('.vac-icon-textarea .vac-svg-button.vac-send-disabled')

@@ -38,6 +38,9 @@ jobs:
       - name: Run Storybook browser and accessibility tests
         run: npm run test:storybook
 
+      - name: Run unit tests
+        run: npm run test:unit
+
       - name: Build
         run: npm run build
 

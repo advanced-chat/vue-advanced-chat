@@ -4,10 +4,11 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 # Theming
 
-Every visible color in `@advanced-chat/components` is a CSS custom
-property. The `Layout` component (which `AdvancedChat` mounts for
-you) emits the active palette as inline CSS variables on its root
-element; consumers override them with normal CSS at any specificity.
+The component palette in `@advanced-chat/components` is driven primarily by
+CSS custom properties. The `Layout` component (which `AdvancedChat` mounts for
+you) emits the active palette as inline CSS variables on its root element;
+consumers override them through the normal CSS cascade. The fixed message
+link rule is documented separately below.
 
 There is no shadow DOM, no `!important` scaffolding, and no
 component-level CSS-in-JS — overrides land where you'd expect.
@@ -20,10 +21,10 @@ component-level CSS-in-JS — overrides land where you'd expect.
 <Layout theme="auto">…</Layout>
 ```
 
-| Value | Behavior |
-|---|---|
-| `'light'` | Light palette, fixed. |
-| `'dark'` | Dark palette, fixed. |
+| Value              | Behavior                                                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `'light'`          | Light palette, fixed.                                                                                                   |
+| `'dark'`           | Dark palette, fixed.                                                                                                    |
 | `'auto'` (default) | Follows `prefers-color-scheme` reactively. The active palette flips when the user's OS preference changes — no remount. |
 
 ## Override map
@@ -37,7 +38,7 @@ resolved palette:
     base: 'dark',
     overrides: {
       '--chat-message-bg-color-me': '#0d579c',
-      '--chat-message-color-link': '#7cc4ff',
+      '--chat-message-color': '#f7f9fb',
     },
   }"
 >
@@ -48,10 +49,11 @@ or `'dark'`); `overrides` is a `Partial<Styles>` deep-merged on top.
 
 ## Per-instance overrides
 
-`Layout.styles` (and `AdvancedChat.styles` if you wrap your own
-`Layout`) accepts a separate `Partial<Styles>` that's applied as
-the *final* layer — useful when one mount needs to look slightly
-different without forking a full theme.
+`Layout.styles` accepts a separate `Partial<Styles>` that's applied
+as the _final_ layer — useful when one mount needs to look slightly
+different without forking a full theme. `AdvancedChat` does not have
+a `styles` prop; use its object-form `theme` for per-instance
+overrides.
 
 ```vue
 <Layout
@@ -71,7 +73,6 @@ them globally:
 ```css
 .vac-card-window {
   --chat-message-bg-color-me: #0d579c;
-  --chat-message-color-link: #7cc4ff;
 }
 ```
 
@@ -87,12 +88,12 @@ them globally:
 }
 ```
 
-The component's CSS rules use `var(...)` everywhere, so the override
-takes effect at any specificity layer.
+Palette-driven component rules consume these values with `var(...)`, so the
+override takes effect without Shadow DOM or `!important` scaffolding.
 
 ## The full variable list
 
-All ~120 CSS custom properties are typed via the exported `Styles`
+The supported CSS custom properties are typed via the exported `Styles`
 interface:
 
 ```ts
@@ -105,19 +106,32 @@ source of truth for default values.
 
 A sampling of the most-overridden ones:
 
-| Variable | What it controls |
-|---|---|
-| `--chat-content-bg-color` | Main message-list background. |
-| `--chat-sidemenu-bg-color` | Chat-list (sidebar) background. |
-| `--chat-message-bg-color` | Default message bubble. |
-| `--chat-message-bg-color-me` | Own-message bubble. |
-| `--chat-message-color` | Default message text. |
-| `--chat-message-color-link` | Link color inside message bodies. |
-| `--chat-footer-bg-color` | Composer background. |
-| `--chat-bg-color-input` | Textarea background. |
-| `--chat-color` | Default text on the message-list background. |
-| `--chat-container-border-radius` | Outer container radius. |
-| `--chat-container-box-shadow` | Outer container drop shadow. |
+| Variable                         | What it controls                             |
+| -------------------------------- | -------------------------------------------- |
+| `--chat-content-bg-color`        | Main message-list background.                |
+| `--chat-sidemenu-bg-color`       | Chat-list (sidebar) background.              |
+| `--chat-message-bg-color`        | Default message bubble.                      |
+| `--chat-message-bg-color-me`     | Own-message bubble.                          |
+| `--chat-message-color`           | Default message text.                        |
+| `--chat-footer-bg-color`         | Composer background.                         |
+| `--chat-bg-color-input`          | Textarea background.                         |
+| `--chat-color`                   | Default text on the message-list background. |
+| `--chat-container-border-radius` | Outer container radius.                      |
+| `--chat-container-box-shadow`    | Outer container drop shadow.                 |
+
+## Message links
+
+`MessageTemplate` turns detected URLs and markdown links into `<a>` elements
+and applies the configured `linkOptions` attributes (`target` and `rel`). When
+rendered inside `Layout`, links currently use the component rule
+`color: #0d579c; font-weight: 500`. There is no
+`--chat-message-color-link` entry in `Styles` today.
+
+Because V3 renders in light DOM, hosts can override the anchor rule with normal
+CSS, for example `.my-chat .vac-card-window a { color: ... }`. This is a
+selector-level override, not a supported theme token; a dedicated link token
+can be added in a future release after its light/dark contrast values are
+defined.
 
 ## Reactive theme: `useThemeStyles`
 

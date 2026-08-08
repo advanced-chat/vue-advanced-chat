@@ -2,6 +2,11 @@
 
 This document defines the release path for the V3 rewrite on the `develop` branch.
 
+The release tracks are intentionally separate: `vue-advanced-chat@2.1.2` is the
+stable v2 package, while this tree is the pre-GA
+`@advanced-chat/components@3.0.0-alpha.5` line. Do not describe an alpha as the
+stable replacement or move the v2 `latest` tag as part of a V3 prerelease.
+
 ## Trusted Publishing Setup
 
 Configure npm trusted publishing for the exact GitHub Actions workflow in this repository before the first live release.
@@ -35,6 +40,14 @@ After trusted publishing is working:
 ```bash
 npm ci
 npm run verify
+```
+
+- when public docs or rewrite records changed, format/check only those files
+  rather than bulk-formatting unrelated working-tree files:
+
+```bash
+npx prettier --check README.md CHANGELOG.md RELEASING.md "docs/**/*.mdx" "rewrite/*.md"
+git diff --check
 ```
 
 - confirm the package tarball contract is clean:
@@ -72,6 +85,8 @@ npm run verify:pack
 - npm package published with provenance through GitHub OIDC trusted publishing
 - npm package page shows provenance for the published release
 - changelog or release notes captured in the repo or release record used for the publication
+- public docs state stable v2 and prerelease V3 status accurately
+- migration/parity records list deliberate removals and remaining limits
 
 ## Rollback And Follow-Up
 

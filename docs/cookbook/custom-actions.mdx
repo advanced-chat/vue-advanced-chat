@@ -8,12 +8,12 @@ Four action menus are exposed across the surface, each driven by
 an `Action[]` array prop. They share a single contract:
 `{ id, label, icon?, ownMessageOnly? }`.
 
-| Menu | Prop on `AdvancedChat` / `Chat` / `Chats` | Event the host handles |
-|---|---|---|
-| Chat-row dropdown (per row in the chat list) | `chatActions` | `chat-action-handler: { chat, action }` |
-| Chat-header overflow (top-right of active chat) | `headerActions` | `menu-action-handler: { chat, action }` |
-| Per-message dropdown | `messageActions` | `message-action-handler: { action, message }` |
-| Bulk-selection toolbar | `selectionActions` | `message-selection-action-handler: { chat, action, messages }` |
+| Menu                                            | Prop on `AdvancedChat` / `Chat` / `Chats` | Event the host handles                                         |
+| ----------------------------------------------- | ----------------------------------------- | -------------------------------------------------------------- |
+| Chat-row dropdown (per row in the chat list)    | `chatActions`                             | `chat-action-handler: { chat, action }`                        |
+| Chat-header overflow (top-right of active chat) | `headerActions`                           | `menu-action-handler: { chat, action }`                        |
+| Per-message dropdown                            | `messageActions`                          | `message-action-handler: { action, message }`                  |
+| Bulk-selection toolbar                          | `selectionActions`                        | `message-selection-action-handler: { chat, action, messages }` |
 
 The four payloads are intentionally different so a single
 host-level handler doesn't accidentally shadow the wrong context.
@@ -60,7 +60,7 @@ slot overrides (`pencil-icon_<id>`, `deleted-icon_<id>`, …).
 
 ```vue
 <script setup lang="ts">
-import type { Action, Chat as ChatModel, Message } from '@advanced-chat/components'
+import type { Action, ChatModel, MessageModel } from '@advanced-chat/components'
 
 const onChatAction = ({ chat, action }: { chat: ChatModel; action: Action }) => {
   switch (action.id) {
@@ -87,7 +87,7 @@ const onHeaderAction = ({ chat, action }: { chat: ChatModel; action: Action }) =
   }
 }
 
-const onMessageAction = ({ action, message }: { action: Action; message: Message }) => {
+const onMessageAction = ({ action, message }: { action: Action; message: MessageModel }) => {
   // The built-in REPLY / EDIT actions already pre-fill the composer; you only need
   // to handle the rest.
   switch (action.id) {
@@ -110,7 +110,7 @@ const onSelectionAction = ({
 }: {
   chat: ChatModel
   action: Action
-  messages: Message[]
+  messages: MessageModel[]
 }) => {
   switch (action.id) {
     case 'delete-many':
@@ -165,7 +165,7 @@ Two `Message` flags suppress action menus on individual messages
 without removing the actions globally:
 
 ```ts
-const messages: Message[] = [
+const messages: MessageModel[] = [
   {
     id: '1',
     sender: otherUser,
@@ -178,10 +178,10 @@ const messages: Message[] = [
 ]
 ```
 
-| Flag | Effect |
-|---|---|
-| `disableActions` | Hides the per-message dropdown menu on this message. |
-| `disableReactions` | Hides the inline reaction picker on this message. |
+| Flag               | Effect                                               |
+| ------------------ | ---------------------------------------------------- |
+| `disableActions`   | Hides the per-message dropdown menu on this message. |
+| `disableReactions` | Hides the inline reaction picker on this message.    |
 
 `system: true` already hides both by default (system messages
 render as a centered pill, not a normal bubble).

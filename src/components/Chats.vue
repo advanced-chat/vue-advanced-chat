@@ -2,7 +2,7 @@
 import ChatsSearch from '@/components/ChatsSearch.vue'
 import type { Action, Chat, Id, UserReference } from '../models'
 import Loader from '@/components/Loader.vue'
-import { ref, useTemplateRef, watch } from 'vue'
+import { nextTick, ref, useTemplateRef, watch } from 'vue'
 import ChatsItem from '@/components/ChatsItem.vue'
 
 import { useInfiniteScroll } from '../composables/use-infinite-scroll'
@@ -105,7 +105,7 @@ const showLoader = ref(false)
 const { loading: loadingMoreChats, setLoading: setLoadingMore } = useInfiniteScroll({
   target: sentinelEl,
   scrollRoot: scrollRootEl,
-  exhausted: () => props.chatsLoaded,
+  exhausted: () => props.chatsLoaded || props.loadingChats,
   onLoadMore: () => {
     showLoader.value = true
     emit('fetch-more-chats')
@@ -113,12 +113,23 @@ const { loading: loadingMoreChats, setLoading: setLoadingMore } = useInfiniteScr
 })
 
 const loadMoreChats = () => {
-  if (loadingMoreChats.value || props.chatsLoaded) return
+  if (loadingMoreChats.value || props.loadingChats || props.chatsLoaded) return
 
   setLoadingMore(true)
   showLoader.value = true
 
   emit('fetch-more-chats')
+}
+
+const finishLoadingMore = () => {
+  setLoadingMore(false)
+  showLoader.value = false
+}
+
+const loadMoreChatsIfNeeded = () => {
+  if (filteredChats.value.length < props.minimumVisibleChats) {
+    loadMoreChats()
+  }
 }
 
 const openChat = (chat: Chat) => {
@@ -132,39 +143,43 @@ watch(loadingMoreChats, (val) => {
 })
 
 watch(
-  () => props.chats,
-  (newVal = [], oldVal = []) => {
-    const newLength = Array.isArray(newVal) ? newVal.length : 0
-    const oldLength = Array.isArray(oldVal) ? oldVal.length : 0
-
-    if (newLength !== oldLength || props.chatsLoaded) {
-      setLoadingMore(false)
+  () => props.chats.length,
+  (newLength, oldLength) => {
+    if (props.chatsLoaded) {
+      finishLoadingMore()
+      return
     }
 
-    if (props.chatsLoaded) {
-      showLoader.value = false
+    if (oldLength !== undefined && newLength !== oldLength) {
+      finishLoadingMore()
+      void nextTick(loadMoreChatsIfNeeded)
 
       return
     }
 
-    if (!loadingMoreChats.value && filteredChats.value.length < props.minimumVisibleChats) {
-      loadMoreChats()
-    }
+    loadMoreChatsIfNeeded()
   },
-  { deep: true, immediate: true },
+  { immediate: true },
 )
 
 watch(
   () => props.chatsLoaded,
   (val) => {
     if (val) {
-      setLoadingMore(false)
-      if (!props.loadingChats) {
-        showLoader.value = false
-      }
+      finishLoadingMore()
     }
   },
   { immediate: true },
+)
+
+watch(
+  () => props.loadingChats,
+  (loading, wasLoading) => {
+    if (loading || !wasLoading) return
+
+    finishLoadingMore()
+    void nextTick(loadMoreChatsIfNeeded)
+  },
 )
 
 watch(
@@ -205,7 +220,7 @@ watch(
 
     <Loader :show="loadingChats"> </Loader>
 
-    <div v-if="!loadingChats && !chats.length" class="vac-rooms-empty">
+    <div v-if="!loadingChats && !filteredChats.length" class="vac-rooms-empty">
       <!-- @slot Empty-state content shown when no chats are available. -->
       <slot name="chats-empty">
         {{ strings['chats.empty'] }}
@@ -221,6 +236,12 @@ watch(
         :class="{ 'vac-room-selected': selectedChatId === chat.id }"
         @click="openChat(chat)"
       >
+        <button
+          type="button"
+          class="vac-room-open"
+          :aria-label="`Open ${chat.name}`"
+          @click.stop="openChat(chat)"
+        />
         <ChatsItem
           :current-user="currentUser"
           :chat="chat"
@@ -284,6 +305,17 @@ watch(
     position: relative;
     min-height: 71px;
     transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+
+    .vac-room-open {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      border: 0;
+      border-radius: inherit;
+      background: transparent;
+      cursor: pointer;
+    }
 
     &:hover {
       background: var(--chat-sidemenu-bg-color-hover);

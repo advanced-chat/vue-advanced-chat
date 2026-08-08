@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { nextTick, ref } from 'vue'
 
 import Chats from './Chats.vue'
 
@@ -84,6 +85,18 @@ export const SearchFiltersList: Story = {
   },
 }
 
+export const LocalSearchEmpty: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const searchInput = canvas.getByRole('searchbox')
+
+    await userEvent.type(searchInput, 'no matching chat')
+
+    await expect(canvas.getByText('No chats available.')).toBeInTheDocument()
+    expect(canvasElement.querySelectorAll('.vac-room-item')).toHaveLength(0)
+  },
+}
+
 export const CustomSearchKeepsList: Story = {
   args: {
     customSearchEnabled: true,
@@ -156,6 +169,101 @@ export const FewerThanMinimumTriggersLoadMore: Story = {
       expect(args['onFetch-more-chats']).toHaveBeenCalled()
     })
     await expect(args['onLoading-more-chats']).toHaveBeenCalledWith(true)
+  },
+}
+
+export const LoadingRecovery: Story = {
+  args: {
+    chats: chats.slice(0, 1) as Chat[],
+    chatsLoaded: false,
+    minimumVisibleChats: 5,
+    'onFetch-more-chats': fn(),
+    'onLoading-more-chats': fn(),
+  },
+  render: (args) => ({
+    components: { Chats },
+    setup() {
+      const loadingChats = ref(true)
+      const chatsLoaded = ref(false)
+      const completeLoading = async () => {
+        loadingChats.value = true
+        await nextTick()
+        loadingChats.value = false
+      }
+
+      return { args, chatsLoaded, completeLoading, loadingChats }
+    },
+    template: `
+      <div>
+        <button type="button" @click="completeLoading">Complete host loading</button>
+        <button type="button" @click="chatsLoaded = true">Mark all chats loaded</button>
+        <Chats
+          v-bind="args"
+          :chats-loaded="chatsLoaded"
+          :loading-chats="loadingChats"
+        />
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const completeLoading = canvas.getByRole('button', { name: 'Complete host loading' })
+
+    expect(args['onFetch-more-chats']).not.toHaveBeenCalled()
+
+    await userEvent.click(completeLoading)
+    await waitFor(() => expect(args['onFetch-more-chats']).toHaveBeenCalledTimes(1))
+
+    await userEvent.click(completeLoading)
+    await waitFor(() => expect(args['onFetch-more-chats']).toHaveBeenCalledTimes(2))
+    await expect(args['onLoading-more-chats']).toHaveBeenCalledWith(false)
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Mark all chats loaded' }))
+    await waitFor(() => {
+      expect(canvasElement.querySelector('#infinite-loader-rooms .vac-loader-wrapper')).toBeFalsy()
+    })
+    expect(args['onFetch-more-chats']).toHaveBeenCalledTimes(2)
+  },
+}
+
+export const HostAppendClearsPending: Story = {
+  args: {
+    chats: chats.slice(0, 1) as Chat[],
+    chatsLoaded: false,
+    minimumVisibleChats: 2,
+    'onFetch-more-chats': fn(),
+    'onLoading-more-chats': fn(),
+  },
+  render: (args) => ({
+    components: { Chats },
+    setup() {
+      const chatList = ref(args.chats)
+
+      return {
+        args,
+        chatList,
+        supplyMoreChats: () => {
+          chatList.value = chats.slice(0, 2) as Chat[]
+        },
+      }
+    },
+    template: `
+      <div>
+        <button type="button" @click="supplyMoreChats">Supply more chats</button>
+        <Chats v-bind="args" :chats="chatList" />
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+
+    await waitFor(() => expect(args['onFetch-more-chats']).toHaveBeenCalledTimes(1))
+    await expect(
+      canvasElement.querySelector('#infinite-loader-rooms .vac-loader-wrapper'),
+    ).toBeTruthy()
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Supply more chats' }))
+    await waitFor(() => expect(args['onLoading-more-chats']).toHaveBeenCalledWith(false))
   },
 }
 

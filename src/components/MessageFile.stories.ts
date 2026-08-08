@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { expect, fn, userEvent } from 'storybook/test'
+import { expect, fn, userEvent, within } from 'storybook/test'
 
 import MessageFile from './MessageFile.vue'
 
@@ -60,8 +60,10 @@ export const ClickImageEmitsPreview: Story = {
     'onOpen-file': fn(),
   },
   play: async ({ canvasElement, args }) => {
-    const container = canvasElement.querySelector('.vac-message-image-container') as HTMLElement
-    await userEvent.click(container)
+    const preview = within(canvasElement).getByRole('button', { name: 'Preview example.jpg' })
+
+    preview.focus()
+    await userEvent.keyboard('{Enter}')
     await expect(args['onOpen-file']).toHaveBeenCalledWith(
       expect.objectContaining({ action: 'preview' }),
     )
@@ -75,10 +77,30 @@ export const UploadProgress: Story = {
       type: 'image/png',
       extension: 'png',
       url: 'https://picsum.photos/200',
-      progress: 42,
+      progress: 0,
     },
   },
   play: async ({ canvasElement }) => {
-    expect(canvasElement.querySelector('.vac-progress-wrapper')).toBeTruthy()
+    expect(within(canvasElement).getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0')
+  },
+}
+
+export const SelectionModeBubblesWithoutOpening: Story = {
+  args: {
+    messageSelectionEnabled: true,
+    'onOpen-file': fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const selectMessage = fn()
+    canvasElement.addEventListener('click', selectMessage)
+
+    await userEvent.click(
+      within(canvasElement).getByRole('button', {
+        name: 'Select message containing example.jpg',
+      }),
+    )
+
+    await expect(args['onOpen-file']).not.toHaveBeenCalled()
+    await expect(selectMessage).toHaveBeenCalledTimes(1)
   },
 }

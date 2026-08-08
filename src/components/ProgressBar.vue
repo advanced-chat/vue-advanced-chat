@@ -1,6 +1,13 @@
 <template>
   <transition name="vac-fade-spinner" appear>
-    <div class="vac-progress-wrapper">
+    <div
+      class="vac-progress-wrapper"
+      role="progressbar"
+      aria-label="Upload progress"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      :aria-valuenow="progress"
+    >
       <svg :height="radius * 2" :width="radius * 2">
         <circle
           stroke="rgba(255, 255, 255, 0.7)"

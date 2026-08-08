@@ -30,6 +30,13 @@ export type Strings = {
   'chat.user.last-seen': string
   'chat.autocomplete.emojis': string
   'chat.autocomplete.users': string
+  'chat.state.loading': string
+  'chat.state.empty': string
+  'chat.state.error': string
+  'chat.state.offline': string
+  'chat.state.reconnecting': string
+  'chat.state.permission-denied': string
+  'chat.state.retry': string
 }
 
 /**

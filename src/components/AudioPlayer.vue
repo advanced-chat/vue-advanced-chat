@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { MessageReference } from '../models'
-import { computed, onMounted, ref, useTemplateRef } from 'vue'
+import { computed, onBeforeUnmount, ref, useId, useTemplateRef, watch } from 'vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import AudioControl from '@/components/AudioControl.vue'
 
@@ -25,51 +25,39 @@ const props = defineProps<AudioPlayerProps>()
 const emit = defineEmits<AudioPlayerEvents>()
 
 const convertTimeMMSS = (seconds: number): string => {
-  return new Date(seconds * 1000).toISOString().substring(14, 19)
+  const totalSeconds = Number.isFinite(seconds) ? Math.max(0, Math.floor(seconds)) : 0
+  const minutes = Math.floor(totalSeconds / 60)
+  const remainingSeconds = totalSeconds % 60
+
+  return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`
 }
 
 const isPlaying = ref(false)
 const duration = ref(convertTimeMMSS(0))
 const playedTime = ref(convertTimeMMSS(0))
 const progress = ref(0)
+const fallbackPlayerId = useId()
 
 const playerUniqId = computed(() => {
-  return `audio-player${props.message?.id ?? ''}`
+  return `audio-player${props.message?.id ?? fallbackPlayerId}`
 })
 
-const root = useTemplateRef('root')
+const player = useTemplateRef<HTMLAudioElement>('player')
+let playbackRequest = 0
+let playPending = false
 
-const player = ref<HTMLAudioElement | null>(null)
-
-onMounted(() => {
-  player.value = root.value?.querySelector(`#${playerUniqId.value}`) as HTMLAudioElement | null
-
-  player.value?.addEventListener('ended', () => {
-    isPlaying.value = false
-  })
-
-  player.value?.addEventListener('loadeddata', () => {
-    resetProgress()
-    if (player.value) {
-      duration.value = convertTimeMMSS(player.value.duration)
-    }
-    updateProgressTime()
-  })
-
-  player.value?.addEventListener('timeupdate', onTimeUpdate)
-})
-
-const playback = () => {
-  if (props.messageSelectionEnabled || !audioSource.value) return
-
-  if (isPlaying.value) player.value?.pause()
-  else setTimeout(() => player.value?.play())
-
-  isPlaying.value = !isPlaying.value
+const updateProgressTime = () => {
+  emit('update-progress-time', progress.value > 0 ? playedTime.value : duration.value)
 }
 
 const resetProgress = () => {
-  if (isPlaying.value) player.value?.pause()
+  playbackRequest += 1
+  playPending = false
+
+  if (player.value) {
+    player.value.pause()
+    player.value.currentTime = 0
+  }
 
   duration.value = convertTimeMMSS(0)
   playedTime.value = convertTimeMMSS(0)
@@ -81,45 +69,150 @@ const resetProgress = () => {
 const onTimeUpdate = () => {
   if (!player.value) return
 
-  playedTime.value = convertTimeMMSS(player.value.currentTime)
-  progress.value = (player.value.currentTime / player.value.duration) * 100
+  const currentTime = Number.isFinite(player.value.currentTime) ? player.value.currentTime : 0
+  const playerDuration = Number.isFinite(player.value.duration) ? player.value.duration : 0
+
+  playedTime.value = convertTimeMMSS(currentTime)
+  progress.value =
+    playerDuration > 0 ? Math.min(100, Math.max(0, (currentTime / playerDuration) * 100)) : 0
   updateProgressTime()
 }
 
-const onUpdateProgress = (pos: number | null) => {
-  if (pos && player.value) player.value.currentTime = pos * player.value.duration
+const onUpdateProgress = (position: number) => {
+  if (!player.value || !Number.isFinite(player.value.duration) || player.value.duration <= 0) return
+
+  player.value.currentTime = Math.min(1, Math.max(0, position)) * player.value.duration
+  onTimeUpdate()
 }
 
-const updateProgressTime = () => {
-  emit('update-progress-time', progress.value > 1 ? playedTime.value : duration.value)
+const onEnded = () => {
+  isPlaying.value = false
+}
+
+const onPlay = () => {
+  isPlaying.value = true
+}
+
+const onPause = () => {
+  isPlaying.value = false
+}
+
+const onLoadedData = () => {
+  resetProgress()
+
+  if (player.value) duration.value = convertTimeMMSS(player.value.duration)
+
+  updateProgressTime()
+}
+
+const addPlayerListeners = (element: HTMLAudioElement) => {
+  element.addEventListener('ended', onEnded)
+  element.addEventListener('loadeddata', onLoadedData)
+  element.addEventListener('pause', onPause)
+  element.addEventListener('play', onPlay)
+  element.addEventListener('timeupdate', onTimeUpdate)
+}
+
+const removePlayerListeners = (element: HTMLAudioElement) => {
+  element.removeEventListener('ended', onEnded)
+  element.removeEventListener('loadeddata', onLoadedData)
+  element.removeEventListener('pause', onPause)
+  element.removeEventListener('play', onPlay)
+  element.removeEventListener('timeupdate', onTimeUpdate)
+}
+
+const playback = async () => {
+  const element = player.value
+
+  if (props.messageSelectionEnabled || !audioSource.value || !element || playPending) return
+
+  if (isPlaying.value || !element.paused) {
+    playbackRequest += 1
+    element.pause()
+    isPlaying.value = false
+    return
+  }
+
+  const request = ++playbackRequest
+  playPending = true
+
+  try {
+    await element.play()
+
+    if (request !== playbackRequest || player.value !== element) {
+      element.pause()
+      return
+    }
+
+    isPlaying.value = true
+  } catch {
+    if (request === playbackRequest) isPlaying.value = false
+  } finally {
+    if (request === playbackRequest) playPending = false
+  }
 }
 
 const audioSource = computed(() => {
-  if (props.src) return props.src
-  resetProgress()
-  return null
+  return props.src || null
+})
+
+watch(player, (element, previousElement) => {
+  if (previousElement) removePlayerListeners(previousElement)
+  if (element) addPlayerListeners(element)
+})
+
+watch(
+  () => props.src,
+  () => resetProgress(),
+)
+
+watch(
+  () => props.messageSelectionEnabled,
+  (enabled) => {
+    if (enabled) resetProgress()
+  },
+)
+
+onBeforeUnmount(() => {
+  playbackRequest += 1
+  playPending = false
+
+  if (player.value) {
+    player.value.pause()
+    removePlayerListeners(player.value)
+  }
 })
 </script>
 
 <template>
-  <div ref="root">
+  <div>
     <div class="vac-audio-player">
-      <div class="vac-svg-button" @click="playback">
+      <button
+        type="button"
+        class="vac-svg-button"
+        :disabled="!audioSource"
+        :tabindex="messageSelectionEnabled || !audioSource ? -1 : 0"
+        :aria-label="isPlaying ? 'Pause audio' : 'Play audio'"
+        :aria-pressed="isPlaying"
+        :aria-disabled="messageSelectionEnabled || !audioSource"
+        :aria-controls="audioSource ? playerUniqId : undefined"
+        @click="playback"
+      >
         <slot v-if="isPlaying" :name="'audio-pause-icon_' + message?.id">
           <SvgIcon name="audio-pause" />
         </slot>
         <slot v-else :name="'audio-play-icon_' + message?.id">
           <svg-icon name="audio-play" />
         </slot>
-      </div>
+      </button>
       <AudioControl
         :percentage="progress"
-        :message-selection-enabled="!!messageSelectionEnabled"
+        :message-selection-enabled="messageSelectionEnabled || !audioSource"
         @change-linehead="onUpdateProgress"
         @hover-audio-progress="emit('hover-audio-progress', $event)"
       />
 
-      <audio v-if="audioSource" :id="playerUniqId" :src="audioSource" />
+      <audio v-if="audioSource" :id="playerUniqId" ref="player" :src="audioSource" />
     </div>
   </div>
 </template>
@@ -130,14 +223,25 @@ const audioSource = computed(() => {
   margin: 8px 0 5px;
 
   .vac-svg-button {
+    display: flex;
+    align-items: center;
     max-width: 18px;
     margin-left: 7px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: default;
+    }
   }
 }
 
 @media only screen and (max-width: 768px) {
   .vac-audio-player {
-    margin: 4px 0 0px;
+    margin: 4px 0 0;
 
     .vac-svg-button {
       max-width: 16px;

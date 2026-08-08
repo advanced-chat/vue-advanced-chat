@@ -134,8 +134,8 @@ export const EditActionPrefillsFooter: Story = {
 
 export const MediaPreviewOpensOnImageClick: Story = {
   play: async ({ canvasElement }) => {
-    const image = canvasElement.querySelector('.vac-message-image-container') as HTMLElement
-    expect(image).toBeTruthy()
+    const canvas = within(canvasElement)
+    const image = canvas.getByRole('button', { name: /^Preview / })
     await userEvent.click(image)
     await waitFor(() => {
       expect(canvasElement.querySelector('.vac-media-preview')).toBeTruthy()

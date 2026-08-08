@@ -51,13 +51,13 @@ const onSearchInput = (event: Event) => {
     }"
   >
     <template v-if="showSearch">
-      <div v-if="!loadingChats && chats.length" class="vac-icon-search">
+      <div v-if="showSearch && !loadingChats" class="vac-icon-search">
         <slot name="search-icon">
           <svg-icon name="search" />
         </slot>
       </div>
       <input
-        v-if="!loadingChats && chats.length"
+        v-if="showSearch && !loadingChats"
         type="search"
         :placeholder="strings['chats.search.placeholder']"
         autocomplete="off"
@@ -65,11 +65,17 @@ const onSearchInput = (event: Event) => {
         @input="onSearchInput"
       />
     </template>
-    <div v-if="showAddChat" class="vac-svg-button vac-add-icon" @click="emit('add-chat')">
+    <button
+      v-if="showAddChat"
+      type="button"
+      class="vac-svg-button vac-add-icon"
+      aria-label="Add chat"
+      @click="emit('add-chat')"
+    >
       <slot name="add-icon">
         <svg-icon name="add" />
       </slot>
-    </div>
+    </button>
   </div>
 </template>
 
@@ -121,6 +127,8 @@ const onSearchInput = (event: Event) => {
   .vac-add-icon {
     margin-left: auto;
     padding-left: 10px;
+    border: 0;
+    background: transparent;
   }
 
   @media only screen and (max-width: 768px) {

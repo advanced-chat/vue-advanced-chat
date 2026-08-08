@@ -1,4 +1,13 @@
-# V3 Architecture Review
+# Archived V3 Architecture Review (`3.0.0-alpha.1`)
+
+> Historical audit only. This review records the state and recommendations at
+> `3.0.0-alpha.1`; its words such as "today", "current", "missing", and
+> "incomplete" do not describe the `3.0.0-alpha.5` working tree. Pagination,
+> auto-scroll, event renames, action constants, type exports, Tailwind removal,
+> click-outside replacement, strict utility typing, and the public composables
+> subsequently landed. Use [`parity-checklist.md`](./parity-checklist.md) for
+> current compatibility status. The findings below are retained as design
+> history and should not be reopened without checking the implementation.
 
 A maintainer-eye review of the V3 surface as it stands at
 `3.0.0-alpha.1`. Each section is ranked by what should land before
@@ -15,7 +24,7 @@ library, plugin-based localization, theme via CSS custom properties,
 peer-deped Vue, and a separate stylesheet. The core composition
 (`AdvancedChat → Chats + Chat → primitives`) is sound.
 
-What it isn't yet: cohesive. Several decisions are *almost* right
+What it isn't yet: cohesive. Several decisions are _almost_ right
 but inconsistent across the surface — event naming, the line between
 "composer" and "state owner", the `Action` contract, the slot
 namespace. Pagination and auto-scroll for messages are incomplete.
@@ -65,9 +74,9 @@ Today the surface mixes:
 The colon form has no parallel in Vue's ecosystem (it's a custom
 namespacing convention). Pick one. I'd standardize on kebab-case:
 
-| Current | Proposed |
-|---|---|
-| `opened:file` | `open-file` |
+| Current            | Proposed         |
+| ------------------ | ---------------- |
+| `opened:file`      | `open-file`      |
 | `clicked:user-tag` | `click-user-tag` |
 
 Past-tense vs present-tense is also drifting; `send-message` (action

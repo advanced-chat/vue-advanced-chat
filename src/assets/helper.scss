@@ -47,6 +47,11 @@
     transform: scale(1.1);
     opacity: 0.7;
   }
+
+  &:focus-visible {
+    outline: 2px solid var(--chat-border-color-input-selected);
+    outline-offset: 3px;
+  }
 }
 
 .vac-avatar {
@@ -60,6 +65,13 @@
   min-width: 42px;
   margin-right: 15px;
   border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vac-svg-button,
+  .vac-app-box-shadow {
+    transition: none;
+  }
 }
 
 .vac-blur-loading {

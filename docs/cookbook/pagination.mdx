@@ -18,9 +18,9 @@ fetching older items and prepending (for messages) or appending
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { Message } from '@advanced-chat/components'
+import type { ChatModel, MessageModel } from '@advanced-chat/components'
 
-const messages = ref<Message[]>([])
+const messages = ref<MessageModel[]>([])
 const loadingMessages = ref(false)
 const messagesLoaded = ref(false)
 
@@ -50,43 +50,25 @@ const fetchOlder = async () => {
 </template>
 ```
 
-### Important: never mutate the array shape during a load
+### Use immutable array updates
 
-The library reads `messages.length` to detect new arrivals. If you
-swap the entire ref while a fetch is in flight, the auto-scroll
-heuristic gets confused. Either:
+The library compares first and last message IDs to distinguish a
+history prepend from a newly-arrived message. Replace the array after
+each page so Vue and custom-element hosts observe the update:
 
 - Append in place (`messages.value = [...older, ...messages.value]`),
   which is what the snippet above does. Vue notices the new length
   and re-runs the watcher.
-- Or set `messages.value = await fetchAll()` *once*, with the
+- Or set `messages.value = await fetchAll()` _once_, with the
   full list, and never paginate. (Fine for small chats but not
   what most apps want.)
 
 ### Scroll-position preservation
 
-The library does **not** preserve scroll position when older
-messages prepend. The default browser behavior is to keep the
-*pixel offset from the top* constant — which means the user will
-see the old top message scroll downward by the height of the
-newly-prepended block. Consumers who want sticky-relative
-preservation should snapshot `scrollTop + scrollHeight` before the
-load and restore it after `nextTick`:
-
-```ts
-const beforeLoad = (el: HTMLElement) => {
-  const offset = el.scrollHeight - el.scrollTop
-  return offset
-}
-
-const afterLoad = (el: HTMLElement, offset: number) => {
-  el.scrollTop = el.scrollHeight - offset
-}
-```
-
-Wire this around your `fetchOlder` call by grabbing
-`document.querySelector('.vac-container-scroll')` (or use the slot
-escape hatch to wrap `Chat` and capture the ref yourself).
+`Chat` snapshots the scroll height when it emits `fetch-messages` and
+restores the reader's relative position after older messages are
+prepended. It also gates duplicate fetch events until the page lands
+or `loadingMessages` returns to `false`.
 
 ## Chats
 
@@ -95,7 +77,7 @@ within 100 px of the bottom, suppressed while `chatsLoaded` is
 `true`. The pattern is the inverse — older chats append:
 
 ```ts
-const chats = ref<Chat[]>([])
+const chats = ref<ChatModel[]>([])
 const chatsLoaded = ref(false)
 const loadingMoreChats = ref(false)
 
@@ -120,7 +102,7 @@ sidebar shows fewer chats than the threshold by default.
 
 ## Combining with `useInfiniteScroll`
 
-If you're rendering a *custom* list (not `Chats` / `Chat`),
+If you're rendering a _custom_ list (not `Chats` / `Chat`),
 `useInfiniteScroll` is the same machinery without the surrounding
 component. See its
 [reference page](?path=/docs/composables-useinfinitescroll--docs)
@@ -149,5 +131,8 @@ pagination:
   does **not** scroll — that would yank the user away from where
   they were reading.
 
-If `autoScroll: { onReceive: false }`, the scroll-to-latest pill
-appears for new messages instead of an automatic scroll.
+If `autoScroll: { onReceive: false }`, incoming messages do not trigger an
+automatic scroll. The scroll-to-latest pill is shown when the component's
+scroll state reports that the reader is away from the bottom; disabling
+receive auto-scroll does not by itself force the pill while the reader is
+still at the bottom.

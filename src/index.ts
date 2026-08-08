@@ -90,7 +90,7 @@ export { getThemeStyles, useThemeStyles } from './themes'
 
 // Localization primitives
 export type { Localization, Strings } from './localization'
-export { getLocalizationStrings, useLocalizationStrings } from './localization'
+export { getLocalizationStrings, negotiateLocale, useLocalizationStrings } from './localization'
 
 // Per-component prop / event interfaces
 export type { AdvancedChatProps, AdvancedChatEvents } from './components/AdvancedChat.vue'

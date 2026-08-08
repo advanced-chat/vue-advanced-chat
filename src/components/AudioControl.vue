@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue'
+import { computed, onBeforeUnmount, ref, useTemplateRef, watch } from 'vue'
 
 export interface AudioControlProps {
   /** Playback position as `0`–`100`. Drives the progress bar fill and dot. Defaults to `0`. */
@@ -23,10 +23,16 @@ const emit = defineEmits<AudioControlEvents>()
 
 const isMouseDown = ref(false)
 const progress = useTemplateRef('progress')
+const normalizedPercentage = computed(() => {
+  if (!Number.isFinite(props.percentage)) return 0
+
+  return Math.min(100, Math.max(0, props.percentage))
+})
 
 const calculateLineHeadPosition = (ev: MouseEvent, element: HTMLElement) => {
-  const progressWidth = element.getBoundingClientRect().width
-  const leftPosition = element.getBoundingClientRect().left
+  const { width: progressWidth, left: leftPosition } = element.getBoundingClientRect()
+  if (progressWidth <= 0) return 0
+
   let pos = (ev.clientX - leftPosition) / progressWidth
 
   pos = pos < 0 ? 0 : pos
@@ -36,48 +42,98 @@ const calculateLineHeadPosition = (ev: MouseEvent, element: HTMLElement) => {
 }
 
 const onMouseMove = (ev: MouseEvent) => {
-  if (props.messageSelectionEnabled) return
+  if (props.messageSelectionEnabled || !progress.value) return
 
-  const seekPos = calculateLineHeadPosition(ev, progress.value!)
+  const seekPos = calculateLineHeadPosition(ev, progress.value)
   emit('change-linehead', seekPos)
 }
 
-const onMouseUp = (ev: MouseEvent) => {
-  if (props.messageSelectionEnabled) return
-
+const removeDragListeners = () => {
   isMouseDown.value = false
   document.removeEventListener('mouseup', onMouseUp)
   document.removeEventListener('mousemove', onMouseMove)
-  const seekPos = calculateLineHeadPosition(ev, progress.value!)
+}
+
+const onMouseUp = (ev: MouseEvent) => {
+  removeDragListeners()
+  if (props.messageSelectionEnabled || !progress.value) return
+
+  const seekPos = calculateLineHeadPosition(ev, progress.value)
   emit('change-linehead', seekPos)
 }
 
 const onMouseDown = (ev: MouseEvent) => {
-  if (props.messageSelectionEnabled) return
+  if (props.messageSelectionEnabled || !progress.value) return
 
   isMouseDown.value = true
-  const seekPos = calculateLineHeadPosition(ev, progress.value!)
+  const seekPos = calculateLineHeadPosition(ev, progress.value)
   emit('change-linehead', seekPos)
   document.addEventListener('mousemove', onMouseMove)
   document.addEventListener('mouseup', onMouseUp)
 }
+
+const onKeyDown = (ev: KeyboardEvent) => {
+  if (props.messageSelectionEnabled) return
+
+  const position = normalizedPercentage.value / 100
+  let nextPosition: number
+
+  switch (ev.key) {
+    case 'ArrowLeft':
+    case 'ArrowDown':
+      nextPosition = position - 0.05
+      break
+    case 'ArrowRight':
+    case 'ArrowUp':
+      nextPosition = position + 0.05
+      break
+    case 'Home':
+      nextPosition = 0
+      break
+    case 'End':
+      nextPosition = 1
+      break
+    default:
+      return
+  }
+
+  ev.preventDefault()
+  emit('change-linehead', Math.min(1, Math.max(0, nextPosition)))
+}
+
+watch(
+  () => props.messageSelectionEnabled,
+  (enabled) => {
+    if (enabled) removeDragListeners()
+  },
+)
+
+onBeforeUnmount(removeDragListeners)
 </script>
 
 <template>
   <div
     ref="progress"
     class="vac-player-bar"
+    role="slider"
+    aria-label="Audio progress"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    :aria-valuenow="normalizedPercentage"
+    :aria-disabled="messageSelectionEnabled"
+    :tabindex="messageSelectionEnabled ? -1 : 0"
     @mousedown="onMouseDown"
+    @keydown.stop="onKeyDown"
     @mouseover="$emit('hover-audio-progress', true)"
     @mouseout="$emit('hover-audio-progress', false)"
   >
     <div class="vac-player-progress">
       <div class="vac-line-container">
-        <div class="vac-line-progress" :style="{ width: `${percentage}%` }" />
+        <div class="vac-line-progress" :style="{ width: `${normalizedPercentage}%` }" />
         <div
           class="vac-line-dot"
           :class="{ 'vac-line-dot__active': isMouseDown }"
-          :style="{ left: `${percentage}%` }"
+          :style="{ left: `${normalizedPercentage}%` }"
         />
       </div>
     </div>

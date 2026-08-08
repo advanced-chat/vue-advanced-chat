@@ -12,6 +12,8 @@ export interface ChatUserTagProps {
   selectItem?: boolean | null
   /** Positive steps forward, negative backward. The host typically wires this to ArrowUp/ArrowDown. */
   activeUpOrDown?: number | null
+  /** ID used to connect the suggestion listbox to the composer combobox. */
+  listboxId?: string
 }
 
 export interface ChatUserTagEvents {
@@ -19,11 +21,14 @@ export interface ChatUserTagEvents {
   (e: 'select-user-tag', user: User): void
   /** Fires after the active user moves via `activeUpOrDown`. */
   (e: 'activate-item'): void
+  /** Reports the active option ID for the owning combobox. */
+  (e: 'active-descendant-change', value: string | null): void
 }
 
 withDefaults(defineProps<ChatUserTagProps>(), {
   selectItem: null,
   activeUpOrDown: null,
+  listboxId: undefined,
 })
 
 const emit = defineEmits<ChatUserTagEvents>()
@@ -35,11 +40,13 @@ const emit = defineEmits<ChatUserTagEvents>()
     :item-key="(user) => user.id"
     :select-item="selectItem"
     :active-up-or-down="activeUpOrDown"
+    :listbox-id="listboxId"
     layout="vertical"
     :aria-label="strings['chat.autocomplete.users']"
     class="vac-user-tag-menu"
     @commit="(user) => emit('select-user-tag', user)"
     @activate-item="emit('activate-item')"
+    @active-descendant-change="(value) => emit('active-descendant-change', value)"
   >
     <template #default="{ item: user }">
       <div class="vac-tags-info">

@@ -20,6 +20,15 @@ const props = defineProps<MessageReactionsProps>()
 const emit = defineEmits<MessageReactionsEvents>()
 
 const reactions = computed(() => Object.entries(props.message.reactions || {}))
+
+const sendReaction = (event: MouseEvent, emoji: string, reaction: Array<string | number>) => {
+  const reactionButton = event.currentTarget as HTMLElement
+
+  if (reactionButton.closest('.vac-message-row-selectable')) return
+
+  event.stopPropagation()
+  emit('send-message-reaction', { emoji, reaction })
+}
 </script>
 
 <template>
@@ -28,9 +37,11 @@ const reactions = computed(() => Object.entries(props.message.reactions || {}))
       v-for="[emoji, reaction] in reactions"
       v-show="reaction.length"
       :key="emoji"
+      type="button"
       class="vac-button-reaction"
       :class="{ 'vac-reaction-me': reaction.some((id) => id === currentUser.id) }"
-      @click="emit('send-message-reaction', { emoji, reaction })"
+      :aria-label="`${emoji} reaction from ${reaction.length} ${reaction.length === 1 ? 'person' : 'people'}`"
+      @click="sendReaction($event, emoji, reaction)"
     >
       {{ emoji }}<span>{{ reaction.length }}</span>
     </button>

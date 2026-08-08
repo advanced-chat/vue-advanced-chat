@@ -3,6 +3,8 @@
     <div
       v-if="show"
       class="vac-loader-wrapper"
+      role="status"
+      aria-label="Loading"
       :class="{
         'vac-container-center': !infinite,
         'vac-container-top': infinite,

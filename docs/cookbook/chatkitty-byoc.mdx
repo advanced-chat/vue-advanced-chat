@@ -1,0 +1,63 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Cookbook/ChatKitty BYOC" />
+
+# ChatKitty BYOC integration
+
+`vue-advanced-chat` is the presentation boundary. Keep ChatKitty sessions,
+channel provisioning, HTTP history, realtime subscriptions, reconciliation,
+uploads, notification delivery, and moderation policy in the host application.
+
+## Model boundary
+
+Map ChatKitty resources into stable UI models:
+
+| ChatKitty value                        | UI value                 |
+| -------------------------------------- | ------------------------ |
+| user numeric ID                        | `String(id)`             |
+| `display_name`                         | `User.name`              |
+| channel or application conversation ID | `ChatModel.id`           |
+| message `body`                         | `MessageModel.content`   |
+| `created_time`                         | `MessageModel.createdAt` |
+| delivered/read evidence                | `MessageModel.status`    |
+| message attachment metadata            | `MessageFileModel`       |
+
+Keep a separate map from each UI chat ID to its ChatKitty channel ID. Do not put
+ChatKitty credentials or transport clients in component props.
+
+## Browser host
+
+```js
+import '@advanced-chat/components/web-component'
+import '@advanced-chat/components/web-component/styles'
+
+const element = document.querySelector('vue-advanced-chat')
+element.currentUser = { id: String(session.user.id) }
+element.chats = channels.map(toChatModel)
+element.chat = element.chats[0]
+element.messages = history.map(toMessageModel)
+element.showAddChat = false
+element.messageActions = []
+element.selectionActions = []
+
+element.addEventListener('open-chat', (event) => openChannel(event.detail.id))
+element.addEventListener('fetch-messages', () => loadOlderHistory())
+element.addEventListener('send-message', (event) => persistMessage(event.detail))
+element.addEventListener('open-file', (event) => openAuthorizedFile(event.detail.file))
+```
+
+Assign arrays and objects as element properties. Do not serialize them into HTML
+attributes. Every library event is a standard `CustomEvent` whose payload is
+available directly at `event.detail`.
+
+## Recovery and permissions
+
+Use `status="offline"` while durable sends remain available and
+`status="reconnecting"` during transport recovery. Reconcile HTTP history after
+realtime reconnect, then replace `chats`, `chat`, and `messages` with fresh
+arrays and objects. Use `composerDisabled` for read-only conversations and
+`status="permission-denied"` when the user cannot view the conversation.
+
+Only configure actions the backend actually supports. An empty `messageActions`
+array avoids presenting edit, delete, reply, reaction, moderation, or block
+operations that the integration cannot persist.

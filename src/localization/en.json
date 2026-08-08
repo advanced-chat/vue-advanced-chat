@@ -15,5 +15,12 @@
   "chat.user.is-online": "is online",
   "chat.user.last-seen": "last seen ",
   "chat.autocomplete.emojis": "Emoji suggestions",
-  "chat.autocomplete.users": "User suggestions"
+  "chat.autocomplete.users": "User suggestions",
+  "chat.state.loading": "Loading conversations...",
+  "chat.state.empty": "No conversations are available.",
+  "chat.state.error": "Conversations could not be loaded.",
+  "chat.state.offline": "Live updates are offline. Messages may be delayed.",
+  "chat.state.reconnecting": "Reconnecting and synchronizing messages...",
+  "chat.state.permission-denied": "You do not have permission to use this conversation.",
+  "chat.state.retry": "Try again"
 }

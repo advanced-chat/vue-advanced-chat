@@ -28,30 +28,30 @@ const { loading, setLoading, reset } = useInfiniteScroll({
 
 ## Options
 
-| Field | Type | Description |
-|---|---|---|
-| `target` | `MaybeRefOrGetter<HTMLElement \| null>` | Element whose visibility triggers loading (the bottom-of-list sentinel). Accepts a `Ref` from `useTemplateRef` or a getter for elements behind a `v-if`. |
-| `scrollRoot` | `MaybeRefOrGetter<HTMLElement \| null>` | Element used as the `IntersectionObserver` root (the scroll container). Same shape as `target`. |
-| `exhausted` | `MaybeRefOrGetter<boolean>` | When truthy, the observer stops calling `onLoadMore`. Wire to your "no more pages" flag. |
-| `rootMargin` | `string` | Margin around the root, forwarded to `IntersectionObserver`. Defaults to `'100px'` so loading starts before the user hits the very bottom. |
-| `onLoadMore` | `() => void` | Fired when the sentinel intersects the root and neither `loading` nor `exhausted` is true. |
+| Field        | Type                                    | Description                                                                                                                                              |
+| ------------ | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `target`     | `MaybeRefOrGetter<HTMLElement \| null>` | Element whose visibility triggers loading (the bottom-of-list sentinel). Accepts a `Ref` from `useTemplateRef` or a getter for elements behind a `v-if`. |
+| `scrollRoot` | `MaybeRefOrGetter<HTMLElement \| null>` | Element used as the `IntersectionObserver` root (the scroll container). Same shape as `target`.                                                          |
+| `exhausted`  | `MaybeRefOrGetter<boolean>`             | When truthy, the observer stops calling `onLoadMore`. Wire to your "no more pages" flag.                                                                 |
+| `rootMargin` | `string`                                | Margin around the root, forwarded to `IntersectionObserver`. Defaults to `'100px'` so loading starts before the user hits the very bottom.               |
+| `onLoadMore` | `() => void`                            | Fired when the sentinel intersects the root and neither `loading` nor `exhausted` is true.                                                               |
 
 ## Returns
 
-| Field | Type | Description |
-|---|---|---|
-| `loading` | `Readonly<Ref<boolean>>` | True between an `onLoadMore` invocation and `setLoading(false)`. Also surfaces useful for rendering a loader. |
-| `setLoading` | `(value: boolean) => void` | Manually toggle the loading flag. Call `setLoading(false)` after the new page lands so the next intersection can fire. |
-| `reset` | `() => void` | Manually re-attach the observer. The composable already does this when `target` / `scrollRoot` change, so you only need this for unusual cases. |
+| Field        | Type                       | Description                                                                                                                                     |
+| ------------ | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `loading`    | `Readonly<Ref<boolean>>`   | True between an `onLoadMore` invocation and `setLoading(false)`. Also surfaces useful for rendering a loader.                                   |
+| `setLoading` | `(value: boolean) => void` | Manually toggle the loading flag. Call `setLoading(false)` after the new page lands so the next intersection can fire.                          |
+| `reset`      | `() => void`               | Manually re-attach the observer. The composable already does this when `target` / `scrollRoot` change, so you only need this for unusual cases. |
 
 ## Example — message-list pagination
 
 ```vue
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue'
-import { useInfiniteScroll } from '@advanced-chat/components'
+import { useInfiniteScroll, type MessageModel } from '@advanced-chat/components'
 
-const messages = ref<Message[]>([])
+const messages = ref<MessageModel[]>([])
 const messagesLoaded = ref(false)
 const sentinel = useTemplateRef<HTMLElement>('sentinel')
 const scrollRoot = useTemplateRef<HTMLElement>('scrollRoot')

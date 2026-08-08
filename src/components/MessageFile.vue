@@ -47,15 +47,23 @@ const isImageLoading = computed(() => {
 })
 
 const isImage = computed(() => {
-  return isImageFile(props.file)
+  return props.file.previewable !== false && isImageFile(props.file)
 })
 
 const isVideo = computed(() => {
-  return isVideoFile(props.file)
+  return props.file.previewable !== false && isVideoFile(props.file)
+})
+
+const displayProgress = computed(() => {
+  if (props.file.progress == null) return null
+
+  if (Number.isNaN(props.file.progress)) return 0
+
+  return Math.min(100, Math.max(0, props.file.progress))
 })
 
 const checkImgLoad = () => {
-  if (!isImageFile(props.file)) return
+  if (props.file.previewable === false || !isImageFile(props.file)) return
 
   imageLoading.value = true
 
@@ -71,7 +79,9 @@ const checkImgLoad = () => {
   image.addEventListener('error', done)
 }
 
-const openFile = (event: MouseEvent, action: 'preview' | 'download') => {
+const openFile = (event: Event, action: 'preview' | 'download') => {
+  if (props.messageSelectionEnabled) return
+
   event.stopPropagation()
   emit('open-file', { file: props.file, action })
 }
@@ -105,11 +115,12 @@ onMounted(() => {
       class="vac-message-image-container"
       @mouseover="imageHover = true"
       @mouseleave="imageHover = false"
-      @click="openFile($event, 'preview')"
+      @focusin="imageHover = true"
+      @focusout="imageHover = false"
     >
       <progress-bar
-        v-if="file.progress && file.progress >= 0"
-        :progress="file.progress"
+        v-if="displayProgress !== null"
+        :progress="displayProgress"
         :style="{ top: `${imageResponsive.loaderTop}px` }"
       />
       <loader
@@ -120,8 +131,14 @@ onMounted(() => {
         :style="{ top: `${imageResponsive.loaderTop}px` }"
       >
       </loader>
-      <div
+      <button
+        type="button"
         class="vac-message-image"
+        :aria-label="
+          messageSelectionEnabled
+            ? `Select message containing ${file.name}`
+            : `Preview ${file.name}`
+        "
         :class="{
           'vac-blur-loading': isImageLoading && message.sender.id === currentUser.id,
         }"
@@ -129,31 +146,51 @@ onMounted(() => {
           'background-image': `url('${isImageLoading ? file.previewUrl || file.url : file.url}')`,
           'max-height': `${imageResponsive.maxHeight}px`,
         }"
-      >
-        <transition name="vac-fade-image">
-          <div v-if="imageHover && !isImageLoading" class="vac-image-buttons">
-            <div class="vac-svg-button vac-button-view" @click="openFile($event, 'preview')">
-              <slot :name="'eye-icon_' + message.id">
-                <svg-icon name="eye" />
-              </slot>
-            </div>
-            <div class="vac-svg-button vac-button-download" @click="openFile($event, 'download')">
-              <slot :name="'document-icon_' + message.id">
-                <svg-icon name="document" />
-              </slot>
-            </div>
-          </div>
-        </transition>
-      </div>
+        @click="openFile($event, 'preview')"
+      />
+      <transition name="vac-fade-image">
+        <div
+          v-if="imageHover && !isImageLoading && !messageSelectionEnabled"
+          class="vac-image-buttons"
+        >
+          <button
+            type="button"
+            class="vac-svg-button vac-button-view"
+            :aria-label="`Preview ${file.name}`"
+            @click="openFile($event, 'preview')"
+          >
+            <slot :name="'eye-icon_' + message.id">
+              <svg-icon name="eye" />
+            </slot>
+          </button>
+          <button
+            type="button"
+            class="vac-svg-button vac-button-download"
+            :aria-label="`Download ${file.name}`"
+            @click="openFile($event, 'download')"
+          >
+            <slot :name="'document-icon_' + message.id">
+              <svg-icon name="document" />
+            </slot>
+          </button>
+        </div>
+      </transition>
     </div>
 
     <div
       v-else-if="isVideo"
       class="vac-video-container"
+      role="button"
+      tabindex="0"
+      :aria-label="
+        messageSelectionEnabled ? `Select message containing ${file.name}` : `Preview ${file.name}`
+      "
       @click.prevent="openFile($event, 'preview')"
+      @keydown.enter.self.prevent="openFile($event, 'preview')"
+      @keydown.space.self.prevent="openFile($event, 'preview')"
     >
-      <progress-bar v-if="file.progress && file.progress >= 0" :progress="file.progress" />
-      <video controls>
+      <progress-bar v-if="displayProgress !== null" :progress="displayProgress" />
+      <video :controls="!messageSelectionEnabled">
         <source :src="file.url" />
       </video>
     </div>
@@ -166,6 +203,7 @@ onMounted(() => {
   z-index: 0;
 
   .vac-message-image-container {
+    position: relative;
     cursor: pointer;
     width: 320px;
     max-width: 100%;
@@ -180,10 +218,16 @@ onMounted(() => {
     min-height: 120px;
     width: 100%;
     position: relative;
+    display: block;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
   }
 
   .vac-image-buttons {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     border-radius: 4px;
@@ -200,6 +244,7 @@ onMounted(() => {
       rgba(0, 0, 0, 0.7) 95%,
       rgba(0, 0, 0, 0.8) 100%
     );
+    pointer-events: none;
 
     svg {
       height: 26px;
@@ -211,6 +256,10 @@ onMounted(() => {
       position: absolute;
       bottom: 6px;
       left: 7px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      pointer-events: auto;
     }
 
     :first-child {

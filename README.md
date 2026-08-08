@@ -14,11 +14,13 @@ of composables. Backend-agnostic — you own the data layer.
 This repository ships two tracks:
 
 - **`main`** — the stable v2 line. Published as `vue-advanced-chat` on
-  npm. Single web-component (`<vue-advanced-chat>` + `register()`).
+  npm, currently `2.1.2`. Single web component
+  (`<vue-advanced-chat>` + `register()`).
   Most users on Vue 2 / non-Vue hosts should stay here.
 - **`develop`** — the V3 rewrite. Published as
-  `@advanced-chat/components` on npm (currently `3.0.0-alpha.5`).
-  Set of typed Vue 3 SFCs, no shadow DOM, no `JSON.stringify` props.
+  `@advanced-chat/components`; this tree is versioned
+  `3.0.0-alpha.5` and remains pre-GA. It contains 28 typed Vue 3
+  SFCs plus an official light-DOM web-component entrypoint.
 
 ## V3 documentation
 
@@ -55,11 +57,16 @@ createApp(App).use(AdvancedChatPlugin()).mount('#app')
 <!-- App.vue -->
 <script setup lang="ts">
 import { ref } from 'vue'
-import { AdvancedChat, type Chat, type Message, type User } from '@advanced-chat/components'
+import {
+  AdvancedChat,
+  type ChatModel,
+  type MessageModel,
+  type User,
+} from '@advanced-chat/components'
 
 const currentUser: User = { id: 'me', name: 'Alice', status: { state: 'online' } }
-const chats = ref<Chat[]>([{ id: 'general', name: 'General', users: [currentUser] }])
-const messages = ref<Message[]>([])
+const chats = ref<ChatModel[]>([{ id: 'general', name: 'General', users: [currentUser] }])
+const messages = ref<MessageModel[]>([])
 </script>
 
 <template>
@@ -76,13 +83,65 @@ const messages = ref<Message[]>([])
 </template>
 ```
 
+## Web component (V3)
+
+The framework-independent entrypoint bundles its Vue runtime and
+registers `<vue-advanced-chat>` in light DOM on import. Load its
+matching stylesheet, then assign objects and arrays as DOM properties
+rather than JSON attributes:
+
+```html
+<vue-advanced-chat id="chat"></vue-advanced-chat>
+<script type="module">
+  import '@advanced-chat/components/web-component'
+  import '@advanced-chat/components/web-component/styles'
+
+  /** @type {import('@advanced-chat/components/web-component').AdvancedChatHTMLElement} */
+  const chat = document.querySelector('#chat')
+  chat.currentUser = { id: 'me' }
+  chat.chats = [{ id: 'general', name: 'General', users: [] }]
+  chat.chat = chat.chats[0]
+  chat.messages = []
+  chat.chatsLoaded = true
+  chat.messagesLoaded = true
+
+  chat.addEventListener('send-message', (event) => {
+    console.log(event.detail.content, event.detail.files, event.detail.mentionedUsers)
+  })
+</script>
+```
+
+Importing `@advanced-chat/components/web-component` auto-registers the default
+tag with automatic localization. The entrypoint exports
+`AdvancedChatHTMLElement`, `AdvancedChatEventMap`, and
+`AdvancedChatElementConstructor` so DOM properties and event details are typed.
+Event payloads are exposed directly as `CustomEvent.detail`, not wrapped in a
+Vue argument array.
+
+`registerAdvancedChat({ tagName, strings, localization })` can register an
+alternate tag. Calling it for the default managed tag after auto-registration
+updates options for elements mounted after that call; already-mounted elements
+keep the localization they were created with. Options are never silently
+applied to a tag registered by an unrelated constructor.
+
+Mention selections are serialized into stable `<@id>` tokens in `content` and
+the corresponding full users are included in `mentionedUsers` on both
+`send-message` and `edit-message`. Pending attachment object URLs are owned and
+cleaned up by the library until send/edit; ownership of emitted `localUrl`
+values then transfers to the host, which must revoke them when they are no
+longer needed.
+
+Transport, persistence, authorization, upload, realtime, and retry policy
+remain the host application's responsibility.
+
 For a full working example, the **Quick Start** page on the docs site
 walks through the wiring end-to-end. To run a real backend behind it,
 see **Cookbook → Backend Integration**.
 
 ## Install (v2)
 
-If you're shipping today on `main`, the v2 package is unchanged:
+If you're shipping today on `main`, install the stable v2 `2.1.2`
+line:
 
 ```bash
 npm install vue-advanced-chat

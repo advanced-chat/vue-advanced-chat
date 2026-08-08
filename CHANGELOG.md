@@ -8,6 +8,56 @@ package is the V3 successor of the original `vue-advanced-chat`. See
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project follows [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### Added
+
+- Official `@advanced-chat/components/web-component` entrypoint. Importing it
+  auto-registers the light-DOM `<vue-advanced-chat>` element and bundles Vue;
+  `AdvancedChatHTMLElement`, `AdvancedChatEventMap`, and the constructor type
+  provide typed DOM properties and `addEventListener` payloads.
+- `send-message` and `edit-message` now include deduplicated
+  `mentionedUsers: User[]`. Selecting a mention writes a stable `<@id>` token
+  into `content`; rendering resolves known ids to names without changing the
+  persisted token.
+- `AdvancedChat` operational states: blocking `loading`, `empty`, `error`, and
+  `permission-denied` panels; non-blocking `offline` and `reconnecting`
+  banners; host copy, retry action, and independent composer disabling.
+- Container-observed mobile navigation. `AdvancedChat` switches its two-pane
+  layout at 768 px based on its own width, hides the list after opening a chat,
+  and exposes the header toggle to return to it.
+
+### Changed
+
+- Web-component events expose the component payload directly as
+  `CustomEvent.detail`; Vue's internal single-argument array wrapper is removed
+  at the DOM boundary.
+- Calling `registerAdvancedChat()` with options after default
+  auto-registration updates managed registration options for future mounts
+  only. Existing elements retain their initialized localization; foreign tag
+  registrations reject options rather than discarding them.
+- Sending or editing transfers ownership of emitted attachment `localUrl`
+  object URLs to the host. The library still revokes URLs for files removed or
+  reset while pending; after emission the host must revoke them.
+- V3 compatibility records now distinguish stable `vue-advanced-chat@2.1.2`
+  from the pre-GA `@advanced-chat/components@3.0.0-alpha.5` tree and record the
+  deliberate removal of audio recording, room ordering, template
+  autocomplete, and the extra composer action.
+
+### Fixed
+
+- Audio playback now follows the native media element's play/pause/end state,
+  catches rejected play promises, resets when the source or selection mode
+  changes, supports mouse and keyboard scrubbing, and releases listeners on
+  unmount. Audio recording remains intentionally out of scope.
+- Message pagination preserves the reader's position after history prepends,
+  gates duplicate requests, and works with the documented auto-scroll and
+  scroll-to-latest behavior.
+- Removed documentation for the nonexistent
+  `--chat-message-color-link` theme token. Links rendered inside `Layout`
+  currently use the component's fixed link rule and can be overridden with
+  normal light-DOM CSS; there is not yet a dedicated `Styles` key.
+
 ## 3.0.0-alpha.5
 
 Closes the remaining items on `rewrite/release-plan.md` step 4 — the
@@ -27,7 +77,7 @@ Storybook regression test.
   and
   [#474](https://github.com/advanced-chat/vue-advanced-chat/issues/474).
 - `Chat.typingIndicatorPosition: 'header' \| 'composer' \| 'both' \|
-  'none'` (default `'header'`). When the policy includes `composer`,
+'none'` (default `'header'`). When the policy includes `composer`,
   `Chat` renders a typing line above `ChatFooter`; the new
   `composer-typing` scoped slot exposes the resolved string. Closes
   [#513](https://github.com/advanced-chat/vue-advanced-chat/issues/513).
@@ -46,8 +96,7 @@ Storybook regression test.
 - `<!-- @slot ... -->` documentation comments on every public slot
   (`Chat`, `Chats`, `ChatHeader`, `ChatFooter`, `Message`).
   Storybook autodocs now lists each slot, its description, and
-  scoped slot props where applicable. The README gains a
-  single-page slot reference table.
+  scoped slot props where applicable.
 
 ### Changed
 
@@ -104,7 +153,7 @@ additive.
   `<AutocompleteMenu>`. Their public props / events are unchanged.
   The internal CSS class names changed (`vac-emoji-element`,
   `vac-tags-box`, `vac-tags-box-active`, etc. → shared
-  `vac-autocomplete-item` /  `vac-autocomplete-item-active` +
+  `vac-autocomplete-item` / `vac-autocomplete-item-active` +
   per-wrapper `vac-emojis-menu` / `vac-user-tag-menu` scopes); only
   consumers that styled or queried those internal classes are
   affected.
@@ -137,18 +186,18 @@ change vs `3.0.0-alpha.2`.
 
 ### Migration recipe
 
-| Before | After |
-|---|---|
-| `messageSelection: { enabled, actions }` (Chat / ChatHeader / AdvancedChat as `messageSelectionActions`) | `selectionActions: Action[]` — non-empty enables selection mode |
-| `acceptedFiles` | `accept` |
-| `multipleFiles` | `multiple` |
-| `captureFiles` | `capture` |
-| `user` (the viewer prop on AdvancedChat / Chat / Chats / ChatHeader / ChatsItem / Message / ChatMessage / MessageActions / MessageReactions / MessageFile / MessageFiles) | `currentUser` |
-| `Action.onlyMe` | `Action.ownMessageOnly` |
-| `selectedMessagesTotal` (ChatHeader) | `selectedCount` |
-| `Chat.lastMessage: Message` | `Chat.lastMessage: MessageSummary` (`Message` is still assignable; the projection just doesn't require `reactions`/`reply`/etc.) |
-| `Message.reply: Message` | `Message.reply: MessageSummary` (no longer recursive) |
-| `chat.lastMessage.unread` (read in `ChatsItem` for the "new message" styling) | `chat.unreadCount` |
+| Before                                                                                                                                                                    | After                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `messageSelection: { enabled, actions }` (Chat / ChatHeader / AdvancedChat as `messageSelectionActions`)                                                                  | `selectionActions: Action[]` — non-empty enables selection mode                                                                  |
+| `acceptedFiles`                                                                                                                                                           | `accept`                                                                                                                         |
+| `multipleFiles`                                                                                                                                                           | `multiple`                                                                                                                       |
+| `captureFiles`                                                                                                                                                            | `capture`                                                                                                                        |
+| `user` (the viewer prop on AdvancedChat / Chat / Chats / ChatHeader / ChatsItem / Message / ChatMessage / MessageActions / MessageReactions / MessageFile / MessageFiles) | `currentUser`                                                                                                                    |
+| `Action.onlyMe`                                                                                                                                                           | `Action.ownMessageOnly`                                                                                                          |
+| `selectedMessagesTotal` (ChatHeader)                                                                                                                                      | `selectedCount`                                                                                                                  |
+| `Chat.lastMessage: Message`                                                                                                                                               | `Chat.lastMessage: MessageSummary` (`Message` is still assignable; the projection just doesn't require `reactions`/`reply`/etc.) |
+| `Message.reply: Message`                                                                                                                                                  | `Message.reply: MessageSummary` (no longer recursive)                                                                            |
+| `chat.lastMessage.unread` (read in `ChatsItem` for the "new message" styling)                                                                                             | `chat.unreadCount`                                                                                                               |
 
 ### Added
 
@@ -167,9 +216,9 @@ change vs `3.0.0-alpha.2`.
 
 ### Changed (data model)
 
-- `Action.{name,title}` … wait, that's already alpha.2. *(This entry
+- `Action.{name,title}` … wait, that's already alpha.2. _(This entry
   is correct: alpha.2 did `name → id` / `title → label`; alpha.3
-  follows up with `onlyMe → ownMessageOnly` and adds `icon`.)*
+  follows up with `onlyMe → ownMessageOnly` and adds `icon`.)_
 - `Chat.lastMessage` and `Message.reply` retyped to `MessageSummary`.
   This is a non-recursive projection: `id`, `sender`, `content`,
   `createdAt`, `status`, `deleted`, `edited`, `files`. Existing
@@ -200,23 +249,23 @@ change vs `3.0.0-alpha.1`.
 
 ### Migration recipe (mechanical)
 
-| Before | After |
-|---|---|
-| `Action.name`, `Action.title` | `Action.id`, `Action.label` |
-| `Chat.icon` | `Chat.avatar` |
-| `User` had no avatar field | `User.avatar?: string` |
+| Before                                                                  | After                                                                       |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `Action.name`, `Action.title`                                           | `Action.id`, `Action.label`                                                 |
+| `Chat.icon`                                                             | `Chat.avatar`                                                               |
+| `User` had no avatar field                                              | `User.avatar?: string`                                                      |
 | `Message.saved`, `Message.delivered`, `Message.read`, `Message.failure` | `Message.status?: 'sending' \| 'sent' \| 'delivered' \| 'read' \| 'failed'` |
-| `Message.new` | `Message.unread` |
-| `MessageFile.audio: boolean` | (removed; use `isAudioFile(file)` from `@advanced-chat/components`) |
-| `Id = string \| number` | `Id = string` (call `String(id)` at the API boundary) |
-| `<slot name="room-header">` etc. | `<slot name="chat-header">` |
-| `<slot :name="'room-list-item_' + id">` etc. | `<slot :name="'chat-list-item_' + id">` |
-| `<slot name="rooms-empty">` | `<slot name="chats-empty">` |
-| `<slot name="spinner-icon-rooms">` | `<slot name="spinner-icon-chats">` |
-| `ChatHeader` emits `menu-action-handler: Action` | `ChatHeader` emits `menu-action-handler: { chat, action }` |
-| `ChatHeader` emits `message-selection-action-handler: Action` | `ChatHeader` emits `message-selection-action-handler: { chat, action }` |
-| `ChatsItem` emits `chat-action-handler: Action` | `ChatsItem` emits `chat-action-handler: { chat, action }` |
-| `Chat`/`Message`/`AdvancedChat` emit `open-failed-message: { message }` | `open-failed-message: message` (single-field wrap dropped) |
+| `Message.new`                                                           | `Message.unread`                                                            |
+| `MessageFile.audio: boolean`                                            | (removed; use `isAudioFile(file)` from `@advanced-chat/components`)         |
+| `Id = string \| number`                                                 | `Id = string` (call `String(id)` at the API boundary)                       |
+| `<slot name="room-header">` etc.                                        | `<slot name="chat-header">`                                                 |
+| `<slot :name="'room-list-item_' + id">` etc.                            | `<slot :name="'chat-list-item_' + id">`                                     |
+| `<slot name="rooms-empty">`                                             | `<slot name="chats-empty">`                                                 |
+| `<slot name="spinner-icon-rooms">`                                      | `<slot name="spinner-icon-chats">`                                          |
+| `ChatHeader` emits `menu-action-handler: Action`                        | `ChatHeader` emits `menu-action-handler: { chat, action }`                  |
+| `ChatHeader` emits `message-selection-action-handler: Action`           | `ChatHeader` emits `message-selection-action-handler: { chat, action }`     |
+| `ChatsItem` emits `chat-action-handler: Action`                         | `ChatsItem` emits `chat-action-handler: { chat, action }`                   |
+| `Chat`/`Message`/`AdvancedChat` emit `open-failed-message: { message }` | `open-failed-message: message` (single-field wrap dropped)                  |
 
 ### Changed (data model)
 

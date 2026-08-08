@@ -36,6 +36,23 @@ export const ClickEmits: Story = {
   },
 }
 
+export const SelectionModeBubblesWithoutReacting: Story = {
+  args: {
+    'onSend-message-reaction': fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const selectMessage = fn()
+    canvasElement.classList.add('vac-message-row-selectable')
+    canvasElement.addEventListener('click', selectMessage)
+
+    const pill = canvasElement.querySelector('.vac-button-reaction') as HTMLElement
+    await userEvent.click(pill)
+
+    await expect(args['onSend-message-reaction']).not.toHaveBeenCalled()
+    await expect(selectMessage).toHaveBeenCalledTimes(1)
+  },
+}
+
 export const HighlightsCurrentUserReactions: Story = {
   args: {},
   play: async ({ canvasElement }) => {

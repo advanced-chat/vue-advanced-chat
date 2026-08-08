@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
+import AudioPlayer from '@/components/AudioPlayer.vue'
 import MessageActions from '@/components/MessageActions.vue'
 import MessageFiles from '@/components/MessageFiles.vue'
 import MessageReactions from '@/components/MessageReactions.vue'
@@ -153,13 +154,12 @@ const isFailed = computed(() => props.message.status === 'failed')
         @click-user-tag="emit('click-user-tag', $event)"
       />
 
-      <div v-else class="vac-audio-summary">
-        <!-- @slot Per-message microphone-icon override. Slot name is `microphone-icon_<message.id>`. -->
-        <slot :name="'microphone-icon_' + message.id">
-          <SvgIcon name="microphone" />
-        </slot>
-        <span>{{ firstFile?.name }}</span>
-      </div>
+      <AudioPlayer
+        v-else
+        :message="message"
+        :src="firstFile?.url"
+        :message-selection-enabled="messageSelectionEnabled"
+      />
 
       <div class="vac-message-meta">
         <span v-if="message.edited && !message.deleted" class="vac-message-edited">
@@ -189,7 +189,7 @@ const isFailed = computed(() => props.message.status === 'failed')
     </div>
 
     <MessageReactions
-      v-if="message.reactions"
+      v-if="message.reactions && !messageSelectionEnabled"
       :current-user="currentUser"
       :message="message"
       @send-message-reaction="emit('send-message-reaction', { emoji: $event.emoji, message })"
@@ -286,12 +286,6 @@ const isFailed = computed(() => props.message.status === 'failed')
     height: 12px;
     width: 12px;
   }
-}
-
-.vac-audio-summary {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .vac-message-meta {

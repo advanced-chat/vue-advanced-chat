@@ -224,14 +224,18 @@ const chatActionHandler = (action: Action) => {
             </div>
             <slot :name="'chat-list-options_' + chat.id">
               <template v-if="actions && actions.length">
-                <div
+                <button
+                  type="button"
                   class="vac-svg-button vac-list-room-options"
+                  :aria-label="`Options for ${chat.name}`"
+                  aria-haspopup="menu"
+                  :aria-expanded="openedChatMenu === chat.id"
                   @click.stop="openedChatMenu = chat.id"
                 >
                   <slot :name="'chat-list-options-icon_' + chat.id">
                     <svg-icon name="dropdown" param="room" />
                   </slot>
-                </div>
+                </button>
                 <transition name="vac-slide-left">
                   <div
                     v-if="openedChatMenu === chat.id"
@@ -335,6 +339,8 @@ const chatActionHandler = (action: Action) => {
   }
 
   .vac-room-options-container {
+    position: relative;
+    z-index: 2;
     display: flex;
     margin-left: auto;
   }
@@ -350,6 +356,9 @@ const chatActionHandler = (action: Action) => {
     width: 19px;
     align-items: center;
     margin-left: 5px;
+    padding: 0;
+    border: 0;
+    background: transparent;
   }
 }
 </style>

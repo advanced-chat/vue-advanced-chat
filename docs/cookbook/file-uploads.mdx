@@ -9,15 +9,22 @@ without doing any uploading itself. Each pending file lands in the
 `send-message` payload as a `ChatFileItem` with three URL-shaped
 fields:
 
-| Field | Set by the library | Meaning |
-|---|---|---|
-| `blob` | `Blob` | The raw file bytes. Use this for the upload. |
-| `localUrl` | object URL | Library-owned. Used for the in-composer preview thumbnail. Revoked when the file is removed or the composer resets. |
-| `url` | object URL (initial) | Consumer-owned. The library writes the same object URL here on attach; you replace it with the server URL after upload. |
+| Field      | Set by the library | Meaning                                                                              |
+| ---------- | ------------------ | ------------------------------------------------------------------------------------ |
+| `blob`     | `Blob`             | The raw file bytes. Use this for the upload.                                         |
+| `localUrl` | object URL         | Library-owned while pending; ownership transfers to the host in a send/edit payload. |
+| `url`      | same object URL    | Initial display URL. Replace it with the persisted server URL after upload.          |
 
-The split lets you swap `url` to the persisted server URL once the
-upload completes, while the library cleans up `localUrl` on its
-own.
+The two fields initially point to the same object URL. The library revokes it
+when a pending file is removed, the pending composer is reset, the chat
+changes, or the footer unmounts. On `send-message` or `edit-message`, the
+library transfers the files without revoking their `localUrl` values so the
+host can upload or keep an optimistic preview. The receiving handler owns
+those URLs from that point and must revoke them.
+
+For authenticated image or video attachments, set `previewable: false` on the
+persisted `MessageFileModel`. This preserves the original MIME type and name
+while routing clicks through the host-controlled `open-file` download flow.
 
 ## Upload-on-send pattern
 
@@ -26,12 +33,17 @@ send, the host uploads each blob in parallel, and writes a single
 message document with the resolved URLs.
 
 ```ts
-import type { ChatFileItem, MessageFile } from '@advanced-chat/components'
+import type { ChatFileItem, MessageFileModel, MessageModel, User } from '@advanced-chat/components'
 
-const onSend = async (payload: { content: string; files: ChatFileItem[]; reply?: Message | null }) => {
+const onSend = async (payload: {
+  content: string
+  files: ChatFileItem[]
+  mentionedUsers: User[]
+  reply?: MessageModel | null
+}) => {
   // 1. Upload each pending file (in parallel).
   const uploaded = await Promise.all(
-    payload.files.map(async (item): Promise<MessageFile> => {
+    payload.files.map(async (item): Promise<MessageFileModel> => {
       if (!item.blob) {
         // Already-uploaded files (e.g. from a forwarded message) come through unchanged.
         return item
@@ -53,6 +65,11 @@ const onSend = async (payload: { content: string; files: ChatFileItem[]; reply?:
     files: uploaded,
     reply: payload.reply ? { id: payload.reply.id } : undefined,
   })
+
+  // 3. The send payload transferred object-URL ownership to this handler.
+  for (const localUrl of new Set(payload.files.map((file) => file.localUrl).filter(Boolean))) {
+    URL.revokeObjectURL(localUrl!)
+  }
 }
 ```
 
@@ -66,9 +83,13 @@ If you want the message to appear immediately while uploads
 continue in the background:
 
 ```ts
-const onSend = async (payload: { content: string; files: ChatFileItem[] }) => {
+const onSend = async (payload: {
+  content: string
+  files: ChatFileItem[]
+  mentionedUsers: User[]
+}) => {
   const optimisticId = `pending-${Date.now()}`
-  const localFiles: MessageFile[] = payload.files.map((f) => ({
+  const localFiles: MessageFileModel[] = payload.files.map((f) => ({
     name: f.name,
     type: f.type,
     extension: f.extension,
@@ -103,6 +124,7 @@ const onSend = async (payload: { content: string; files: ChatFileItem[] }) => {
       msg.files[i]!.url = url
       msg.files[i]!.progress = 100
     }
+    if (file.localUrl) URL.revokeObjectURL(file.localUrl)
   }
 
   // 3. Persist the now-uploaded message; replace the optimistic one with the server copy.
@@ -120,17 +142,13 @@ hides the bar.
 `ChatFooter` ships two opt-in caps:
 
 ```vue
-<AdvancedChat
-  :max-files="5"
-  :max-file-size="10 * 1024 * 1024"
-  @invalid-file="onRejected"
-/>
+<AdvancedChat :max-files="5" :max-file-size="10 * 1024 * 1024" @invalid-file="onRejected" />
 ```
 
-| Prop | Behavior |
-|---|---|
-| `maxFiles?: number` | Max pending files in the composer at once. Files past the cap don't enter `files.value`. `0` (default) disables. |
-| `maxFileSize?: number` | Max bytes per file. `0` (default) disables. |
+| Prop                   | Behavior                                                                                                         |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `maxFiles?: number`    | Max pending files in the composer at once. Files past the cap don't enter `files.value`. `0` (default) disables. |
+| `maxFileSize?: number` | Max bytes per file. `0` (default) disables.                                                                      |
 
 Rejected files are emitted as `invalid-file: { file: File; reason: 'size' \| 'count' }`
 so the host can surface its own error UI:
@@ -176,12 +194,19 @@ directly on mobile.
 
 ## Cleanup contract
 
-The library owns `localUrl` and revokes it when:
+The library owns `localUrl` only while the file is pending and revokes it when:
 
 - The user clicks the remove-file button on a pending file.
-- The composer resets (after send, or after `reset-message` event).
+- The composer resets before emission, the active chat changes, or the footer
+  unmounts.
 
-The library does **not** own `url` — once you swap it to a server
-URL, you're responsible for whatever lifecycle that URL has. If
-your server URLs are presigned with a short TTL, refresh them in
-your data layer rather than expecting the library to.
+Sending or editing is different: ownership of each emitted `localUrl`
+transfers to the event listener and the library deliberately does not revoke
+it during the post-send reset. Revoke each unique object URL after upload, or
+after replacing/removing the optimistic preview that still uses it. The
+initial `url` and `localUrl` are the same object URL, so do not revoke both
+fields separately.
+
+Once `url` is replaced with a server URL, the host is responsible for that
+URL's lifecycle too. If server URLs are presigned with a short TTL, refresh
+them in the data layer rather than expecting the library to.
