@@ -43,12 +43,16 @@ export interface ChatHeaderProps {
 export interface ChatHeaderEvents {
   /** Fires when the chat-list toggle button is clicked. */
   (e: 'toggle-chat-list'): void
+
   /** Fires when the avatar/name area is clicked while `chatInfoEnabled` is `true`. */
   (e: 'show-chat-info'): void
+
   /** Fires when an item in the overflow menu is selected. */
   (e: 'menu-action-handler', payload: { chat: Chat; action: Action }): void
+
   /** Fires when the user clicks the "cancel" button in the selection toolbar. */
   (e: 'cancel-message-selection'): void
+
   /** Fires when a button in the selection toolbar is clicked. */
   (e: 'message-selection-action-handler', payload: { chat: Chat; action: Action }): void
 }
@@ -280,10 +284,9 @@ const menuActionHandler = (action: Action) => {
   position: var(--chat-header-position);
   display: flex;
   align-items: center;
-  height: 64px;
+  height: 72px;
   width: var(--chat-header-width);
   z-index: 10;
-  margin-right: 1px;
   background: var(--chat-header-bg-color);
   border-top-right-radius: var(--chat-container-border-radius);
 
@@ -293,15 +296,22 @@ const menuActionHandler = (action: Action) => {
     min-width: 0;
     height: 100%;
     width: 100%;
-    padding: 0 16px;
+    gap: 12px;
+    padding: 0 18px;
   }
 
   .vac-toggle-button {
-    margin-right: 15px;
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    max-height: 38px;
+    margin-right: 0;
+    border: var(--chat-border-style);
+    background: var(--chat-bg-color-input);
 
     svg {
-      height: 26px;
-      width: 26px;
+      height: 20px;
+      width: 20px;
     }
   }
 
@@ -309,6 +319,7 @@ const menuActionHandler = (action: Action) => {
     &-init {
       transform: rotate(360deg);
     }
+
     transform: rotate(180deg) !important;
   }
 
@@ -323,6 +334,15 @@ const menuActionHandler = (action: Action) => {
     background: transparent;
     color: inherit;
     text-align: left;
+
+    &.vac-item-clickable {
+      border-radius: 10px;
+
+      &:focus-visible {
+        outline: 2px solid var(--chat-border-color-input-selected);
+        outline-offset: 3px;
+      }
+    }
   }
 
   .vac-room-selection {
@@ -373,20 +393,26 @@ const menuActionHandler = (action: Action) => {
   }
 
   .vac-room-name {
-    font-size: 17px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 750;
     line-height: 22px;
     color: var(--chat-header-color-name);
   }
 
   .vac-room-info {
-    font-size: 13px;
+    font-size: 12px;
     line-height: 18px;
     color: var(--chat-header-color-info);
   }
 
   .vac-room-options {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    max-height: 38px;
     margin-left: auto;
+    border: 0;
+    background: var(--chat-bg-color-input);
   }
 
   @media only screen and (max-width: 768px) {

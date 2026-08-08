@@ -22,25 +22,39 @@ const cssVars = useThemeStyles(toRef(props, 'theme'))
 
 <style scoped lang="scss">
 .vac-card-window {
+  position: relative;
   width: 100%;
   display: block;
   max-width: 100%;
   background: var(--chat-content-bg-color);
   color: var(--chat-color);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
   overflow-wrap: break-word;
   white-space: normal;
+  overflow: hidden;
   border: var(--chat-container-border);
   border-radius: var(--chat-container-border-radius);
   box-shadow: var(--chat-container-box-shadow);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
 
   * {
+    box-sizing: border-box;
     font-family: inherit;
   }
 
   a {
-    color: #0d579c;
-    font-weight: 500;
+    color: var(--chat-message-color-tag);
+    font-weight: 600;
   }
 }
 </style>

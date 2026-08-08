@@ -92,13 +92,15 @@ const onSearchInput = (event: Event) => {
   position: sticky;
   display: flex;
   align-items: center;
-  height: 64px;
-  padding: 0 15px;
+  height: 72px;
+  gap: 10px;
+  padding: 0 12px;
 
   .vac-icon-search {
     display: flex;
     position: absolute;
-    left: 30px;
+    left: 27px;
+    z-index: 1;
 
     svg {
       width: 18px;
@@ -107,17 +109,26 @@ const onSearchInput = (event: Event) => {
   }
 
   .vac-input {
-    height: 38px;
+    height: 42px;
     width: 100%;
     background: var(--chat-bg-color-input);
     color: var(--chat-color);
-    border-radius: 4px;
-    font-size: 15px;
+    font-size: 14px;
     outline: 0;
     caret-color: var(--chat-color-caret);
-    padding: 10px 10px 10px 40px;
+    padding: 10px 12px 10px 40px;
     border: 1px solid var(--chat-sidemenu-border-color-search);
-    border-radius: 20px;
+    border-radius: 12px;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+
+    &:focus {
+      border-color: var(--chat-border-color-input-selected);
+      box-shadow: 0 0 0 3px
+        color-mix(in srgb, var(--chat-border-color-input-selected) 14%, transparent);
+    }
 
     &::placeholder {
       color: var(--chat-color-placeholder);
@@ -125,10 +136,16 @@ const onSearchInput = (event: Event) => {
   }
 
   .vac-add-icon {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    max-height: 40px;
     margin-left: auto;
-    padding-left: 10px;
+    padding: 0;
     border: 0;
-    background: transparent;
+    border-radius: 12px;
+    background: var(--chat-bg-color-button);
+    box-shadow: 0 7px 16px color-mix(in srgb, var(--chat-bg-color-button) 24%, transparent);
   }
 
   @media only screen and (max-width: 768px) {

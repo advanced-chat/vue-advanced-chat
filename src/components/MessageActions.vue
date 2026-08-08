@@ -22,6 +22,7 @@ export interface MessageActionsProps {
 export interface MessageActionsEvents {
   /** Fires when an item in the dropdown menu is selected. */
   (e: 'message-action-handler', payload: { action: Action; message: Message }): void
+
   /** Fires when the viewer picks a quick-reaction emoji; the host should toggle the emoji on the message. */
   (e: 'send-message-reaction', payload: { emoji: string; message: Message }): void
 }
@@ -202,11 +203,22 @@ const selectAction = (action: Action) => {
   bottom: -14px;
   right: 8px;
   z-index: 5;
-  padding: 2px 6px;
+  padding: 3px 7px;
   border-radius: 999px;
   background: var(--chat-dropdown-bg-color);
   border: var(--chat-border-style);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 20px rgba(22, 20, 38, 0.12);
+  opacity: 0.72;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover,
+  &:focus-within,
+  &.vac-message-actions-open {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
 }
 
 .vac-actions-shell {

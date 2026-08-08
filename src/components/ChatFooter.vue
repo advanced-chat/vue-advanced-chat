@@ -647,7 +647,7 @@ const onKeydown = (event: KeyboardEvent) => {
 <style scoped lang="scss">
 .vac-room-footer {
   position: relative;
-  padding: 0 0 16px;
+  padding: 12px 16px 16px;
   background: var(--chat-footer-bg-color);
   border-top: var(--chat-border-style);
 }
@@ -657,14 +657,14 @@ const onKeydown = (event: KeyboardEvent) => {
 }
 
 .vac-footer-reply {
-  margin: 12px 16px 0;
+  margin: 0 0 10px;
   padding-right: 36px;
 }
 
 .vac-footer-reply-close {
   position: absolute;
-  top: 14px;
-  right: 18px;
+  top: 3px;
+  right: 3px;
   border: 0;
   background: transparent;
   cursor: pointer;
@@ -673,8 +673,22 @@ const onKeydown = (event: KeyboardEvent) => {
 .vac-box-footer {
   display: flex;
   align-items: flex-end;
-  gap: 12px;
-  padding: 12px 16px 0;
+  gap: 8px;
+  padding: 6px 7px 6px 14px;
+  border: var(--chat-border-style-input);
+  border-radius: 18px;
+  background: var(--chat-bg-color-input);
+  box-shadow: 0 8px 24px rgba(30, 28, 48, 0.07);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:focus-within {
+    border-color: var(--chat-border-color-input-selected);
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--chat-border-color-input-selected) 13%, transparent),
+      0 8px 24px rgba(30, 28, 48, 0.07);
+  }
 
   &.vac-box-footer-border {
     border-top: 0;
@@ -683,13 +697,12 @@ const onKeydown = (event: KeyboardEvent) => {
 
 .vac-textarea {
   width: 100%;
-  min-height: 46px;
+  min-height: 42px;
   max-height: 140px;
   resize: vertical;
-  padding: 12px 14px;
-  border-radius: 18px;
-  border: var(--chat-border-style-input);
-  background: var(--chat-bg-color-input);
+  padding: 10px 0 8px;
+  border: 0;
+  background: transparent;
   color: var(--chat-color);
   outline: 0;
 
@@ -705,13 +718,25 @@ const onKeydown = (event: KeyboardEvent) => {
 .vac-icon-textarea {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 4px;
 
   .vac-svg-button {
-    padding: 0;
+    width: 34px;
+    height: 34px;
+    max-height: 34px;
+    padding: 7px;
     border: 0;
     background: transparent;
     color: inherit;
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--chat-border-color-input-selected) 10%, transparent);
+    }
+  }
+
+  > .vac-svg-button:last-child:not(.vac-send-disabled) {
+    background: var(--chat-bg-color-button);
+    box-shadow: 0 6px 14px color-mix(in srgb, var(--chat-bg-color-button) 30%, transparent);
   }
 }
 
@@ -727,6 +752,6 @@ const onKeydown = (event: KeyboardEvent) => {
 }
 
 .vac-send-disabled {
-  opacity: 0.35;
+  opacity: 0.4;
 }
 </style>

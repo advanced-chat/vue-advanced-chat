@@ -87,15 +87,22 @@ export interface ChatProps {
 
 export interface ChatEvents {
   (e: 'toggle-chat-list'): void
+
   (e: 'show-chat-info'): void
+
   (e: 'menu-action-handler', payload: { chat: Chat; action: Action }): void
+
   (
     e: 'message-selection-action-handler',
     payload: { chat: Chat; action: Action; messages: Message[] },
   ): void
+
   (e: 'cancel-message-selection'): void
+
   (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
+
   (e: 'typing-message', value: string): void
+
   (
     e: 'send-message',
     payload: {
@@ -105,6 +112,7 @@ export interface ChatEvents {
       reply?: Message | null
     },
   ): void
+
   (
     e: 'edit-message',
     payload: {
@@ -114,16 +122,22 @@ export interface ChatEvents {
       mentionedUsers: User[]
     },
   ): void
+
   (e: 'message-action-handler', payload: { action: Action; message: Message }): void
+
   (e: 'click-user-tag', user: User): void
+
   (e: 'send-message-reaction', payload: { emoji: string; message: Message }): void
+
   (e: 'open-failed-message', message: Message): void
+
   /**
    * Fired when the user scrolls near the top of the message list and more
    * messages should be paginated in. Suppressed while `loadingMessages` is
    * `true` or `messagesLoaded` is `true`.
    */
   (e: 'fetch-messages'): void
+
   /**
    * Re-emitted from `ChatFooter` when a pending file is rejected by a
    * configured `maxFiles` / `maxFileSize` limit.
@@ -474,12 +488,14 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
   position: relative;
   flex: 1 1 auto;
   overflow-y: auto;
-  padding: 0 16px 16px;
+  padding: 0 22px 18px;
   background: var(--chat-content-bg-color);
+  scrollbar-color: color-mix(in srgb, var(--chat-color) 20%, transparent) transparent;
+  scrollbar-width: thin;
 }
 
 .vac-messages-container {
-  padding: 12px 0;
+  padding: 18px 0 8px;
 }
 
 .vac-room-empty {
@@ -503,13 +519,13 @@ const onMessageAction = (payload: { action: Action; message: Message }) => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 12px;
+  padding: 9px 13px;
   border-radius: 999px;
   border: var(--chat-border-style);
   background: var(--chat-bg-scroll-icon);
   color: var(--chat-message-color);
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 26px rgba(25, 23, 43, 0.18);
   z-index: 4;
 
   :deep(svg) {

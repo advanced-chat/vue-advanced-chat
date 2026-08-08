@@ -33,10 +33,15 @@ export interface MessageProps {
 
 export interface MessageEvents {
   (e: 'message-action-handler', payload: { action: Action; message: Message }): void
+
   (e: 'send-message-reaction', payload: { emoji: string; message: Message }): void
+
   (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
+
   (e: 'click-user-tag', user: User): void
+
   (e: 'select-message', message: Message): void
+
   (e: 'open-failed-message', message: Message): void
 }
 
@@ -214,7 +219,7 @@ const isFailed = computed(() => props.message.status === 'failed')
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: 8px 0;
+  margin: 10px 0;
 
   &.vac-message-row-me {
     align-items: flex-end;
@@ -231,23 +236,29 @@ const isFailed = computed(() => props.message.status === 'failed')
 
 .vac-message-card {
   position: relative;
-  max-width: min(100%, 560px);
-  margin-bottom: 14px; // reserve space for the floating actions chip below the bubble
-  padding: 12px 14px;
-  border-radius: 18px;
+  max-width: min(78%, 560px);
+  margin-bottom: 16px; // reserve space for the floating actions chip below the bubble
+  padding: 11px 14px 10px;
+  border: var(--chat-border-style);
+  border-radius: 18px 18px 18px 6px;
   background: var(--chat-message-bg-color);
   color: var(--chat-message-color);
+  box-shadow: 0 8px 24px rgba(30, 28, 48, 0.07);
+  line-height: 1.52;
 
   &.vac-message-current {
     background: var(--chat-message-bg-color-me);
+    border-radius: 18px 18px 6px 18px;
+    border-color: transparent;
   }
 }
 
 .vac-message-author {
   margin-bottom: 4px;
   color: var(--chat-message-color-username);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.01em;
 }
 
 .vac-reply-block {
@@ -268,12 +279,12 @@ const isFailed = computed(() => props.message.status === 'failed')
 .vac-message-system {
   width: fit-content;
   margin: 8px auto;
-  padding: 6px 14px;
+  padding: 6px 13px;
   border-radius: 999px;
   background: var(--chat-message-bg-color-system);
   color: var(--chat-message-color-system);
   font-size: 12px;
-  font-style: italic;
+  font-weight: 600;
 }
 
 .vac-message-edited {
@@ -293,8 +304,9 @@ const isFailed = computed(() => props.message.status === 'failed')
   justify-content: flex-end;
   align-items: center;
   gap: 6px;
-  margin-top: 6px;
-  font-size: 11px;
+  margin-top: 5px;
+  font-size: 10px;
+  font-weight: 550;
   color: var(--chat-message-color-timestamp);
 }
 

@@ -40,6 +40,6 @@ export const SlotHeightAndThemeContract: Story = {
     )
     await expect(layout).toHaveClass('vac-card-window')
     await expect(layout).toHaveStyle({ height: '240px' })
-    await expect(layout.style.getPropertyValue('--chat-content-bg-color')).toBe('#f8f9fa')
+    await expect(layout.style.getPropertyValue('--chat-content-bg-color')).toBe('#f6f7fb')
   },
 }

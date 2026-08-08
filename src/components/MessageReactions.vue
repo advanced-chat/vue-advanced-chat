@@ -59,11 +59,23 @@ const sendReaction = (event: MouseEvent, emoji: string, reaction: Array<string |
 .vac-button-reaction {
   border: 0;
   border-radius: 999px;
-  padding: 4px 10px;
+  padding: 4px 9px;
   background: var(--chat-message-bg-color-reaction);
   border: var(--chat-message-border-style-reaction);
   color: inherit;
   cursor: pointer;
+  font-size: 12px;
+  box-shadow: 0 3px 10px rgba(30, 28, 48, 0.06);
+  transition:
+    transform 0.18s ease,
+    background-color 0.18s ease,
+    border-color 0.18s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: var(--chat-message-bg-color-reaction-hover);
+    border: var(--chat-message-border-style-reaction-hover);
+  }
 
   span {
     margin-left: 4px;
@@ -72,6 +84,11 @@ const sendReaction = (event: MouseEvent, emoji: string, reaction: Array<string |
   &.vac-reaction-me {
     background: var(--chat-message-bg-color-reaction-me);
     border: var(--chat-message-border-style-reaction-me);
+
+    &:hover {
+      background: var(--chat-message-bg-color-reaction-hover-me);
+      border: var(--chat-message-border-style-reaction-hover-me);
+    }
   }
 }
 </style>

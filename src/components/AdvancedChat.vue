@@ -133,39 +133,55 @@ export interface AdvancedChatEvents {
    * filter and drive results from your backend.
    */
   (e: 'search-chat', query: string): void
+
   /** Fires when the "add chat" button is clicked. */
   (e: 'add-chat'): void
+
   /** Fires when the chats list scrolls near the bottom and more chats should be paginated in. */
   (e: 'fetch-more-chats'): void
+
   /** Fires when the messages list scrolls near the top and more messages should be paginated in. */
   (e: 'fetch-messages'): void
+
   /** Fires when the user selects a chat from the list. */
   (e: 'open-chat', chat: ChatModel): void
+
   /** Fires when the chat header is clicked while `chatInfoEnabled` is `true`. */
   (e: 'show-chat-info', chat: ChatModel): void
+
   /** Fires when an item in the chat-header menu is selected. */
   (e: 'menu-action-handler', payload: { chat: ChatModel; action: Action }): void
+
   /** Fires when an item in a message's actions menu is selected. */
   (e: 'message-action-handler', payload: { action: Action; message: Message }): void
+
   /** Fires when a bulk-selection action is invoked, with the currently-selected messages. */
   (
     e: 'message-selection-action-handler',
     payload: { chat: ChatModel; action: Action; messages: Message[] },
   ): void
+
   /** Fires when an item in a chat-list item's actions menu is selected. */
   (e: 'chat-action-handler', payload: { chat: ChatModel; action: Action }): void
+
   /** Fires when the user exits message-selection mode. */
   (e: 'cancel-message-selection'): void
+
   /** Fires when a message file is clicked; `action` is `'preview'` for media and `'download'` for other files. */
   (e: 'open-file', payload: { file: MessageFile; action: 'preview' | 'download' }): void
+
   /** Fires when the user clicks a failed message to retry sending. */
   (e: 'open-failed-message', message: Message): void
+
   /** Fires when the viewer adds or removes a reaction; the host should toggle the emoji on the message. */
   (e: 'send-message-reaction', payload: { emoji: string; message: Message }): void
+
   /** Fires when an `@user` tag in a rendered message is clicked. */
   (e: 'click-user-tag', user: User): void
+
   /** Fires (debounced) as the viewer types in the composer; emit typing presence upstream. */
   (e: 'typing-message', value: string): void
+
   /** Fires when the viewer sends a new message. */
   (
     e: 'send-message',
@@ -176,6 +192,7 @@ export interface AdvancedChatEvents {
       reply?: Message | null
     },
   ): void
+
   /** Fires when the viewer commits an edit to an existing message. */
   (
     e: 'edit-message',
@@ -186,11 +203,13 @@ export interface AdvancedChatEvents {
       mentionedUsers: User[]
     },
   ): void
+
   /**
    * Re-emitted from `Chat`/`ChatFooter` when a pending file is rejected
    * by a configured `maxFiles` / `maxFileSize` limit.
    */
   (e: 'invalid-file', payload: { file: File; reason: 'size' | 'count' }): void
+
   /** Fires when the user activates the retry action in an error state. */
   (e: 'retry'): void
 }
@@ -423,6 +442,8 @@ const showBlockingState = computed(() =>
   flex-direction: column;
   height: 100%;
   container-type: inline-size;
+  overflow: hidden;
+  border-radius: inherit;
 }
 
 .vac-chat-container {
@@ -444,11 +465,13 @@ const showBlockingState = computed(() =>
 
 .vac-status-banner {
   flex: 0 0 auto;
-  padding: 8px 16px;
+  padding: 9px 16px;
   border-bottom: var(--chat-border-style);
   background: var(--chat-message-bg-color-date);
   color: var(--chat-message-color);
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   text-align: center;
 }
 
@@ -456,20 +479,38 @@ const showBlockingState = computed(() =>
   display: grid;
   flex: 1;
   place-content: center;
-  gap: 12px;
+  gap: 16px;
   padding: 24px;
   background: var(--chat-content-bg-color);
   color: var(--chat-message-color);
   text-align: center;
 
+  p {
+    max-width: 360px;
+    margin: 0;
+    color: var(--chat-message-color-started);
+    font-size: 15px;
+  }
+
   button {
     justify-self: center;
-    padding: 8px 16px;
+    padding: 10px 18px;
     border: 0;
-    border-radius: 6px;
+    border-radius: 10px;
     background: var(--chat-bg-color-button);
     color: var(--chat-color-button);
     cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--chat-bg-color-button) 28%, transparent);
+
+    &:hover {
+      filter: brightness(1.08);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--chat-border-color-input-selected);
+      outline-offset: 3px;
+    }
   }
 }
 </style>

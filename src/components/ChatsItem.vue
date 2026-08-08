@@ -280,12 +280,12 @@ const chatActionHandler = (action: Action) => {
   .vac-title-container {
     display: flex;
     align-items: center;
-    line-height: 25px;
+    line-height: 22px;
   }
 
   .vac-state-circle {
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background-color: var(--chat-room-color-offline);
     margin-right: 6px;
@@ -299,20 +299,24 @@ const chatActionHandler = (action: Action) => {
   .vac-room-name {
     flex: 1;
     color: var(--chat-room-color-username);
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 700;
   }
 
   .vac-text-date {
     margin-left: 5px;
-    font-size: 11px;
+    font-size: 10px;
+    font-weight: 600;
     color: var(--chat-room-color-timestamp);
   }
 
   .vac-text-last {
     display: flex;
     align-items: center;
+    min-width: 0;
+    margin-top: 3px;
     font-size: 12px;
-    line-height: 19px;
+    line-height: 18px;
     color: var(--chat-room-color-message);
   }
 

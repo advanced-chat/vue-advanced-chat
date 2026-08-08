@@ -88,13 +88,15 @@ const isOtherFile = computed(() => {
 <style scoped lang="scss">
 .vac-reply-message {
   background: var(--chat-message-bg-color-reply);
-  border-radius: 4px;
+  border-left: 3px solid var(--chat-border-color-input-selected);
+  border-radius: 8px;
   margin: -1px -5px 8px;
   padding: 8px 10px;
 
   .vac-reply-username {
     color: var(--chat-message-color-reply-username);
-    font-size: 12px;
+    font-size: 11px;
+    font-weight: 700;
     line-height: 15px;
     margin-bottom: 2px;
   }

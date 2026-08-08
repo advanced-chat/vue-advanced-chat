@@ -1,9 +1,9 @@
 .vac-menu-list {
-  border-radius: 4px;
+  border-radius: 12px;
   display: block;
   cursor: pointer;
   background: var(--chat-dropdown-bg-color);
-  padding: 6px 0;
+  padding: 6px;
 
   :hover {
     background: var(--chat-dropdown-bg-color-hover);
@@ -32,11 +32,12 @@
   -webkit-box-flex: 1;
   -ms-flex: 1 1 100%;
   flex: 1 1 100%;
-  min-height: 30px;
-  padding: 5px 16px;
+  min-height: 38px;
+  padding: 5px 12px;
   position: relative;
   white-space: nowrap;
-  line-height: 30px;
+  line-height: 28px;
+  border-radius: 8px;
   width: 100%;
   text-align: left;
   background: transparent;
@@ -51,16 +52,14 @@
   right: 10px;
   top: 20px;
   z-index: 9999;
-  min-width: 150px;
+  min-width: 164px;
   display: inline-block;
-  border-radius: 4px;
+  border: var(--chat-border-style);
+  border-radius: 12px;
   font-size: 14px;
   color: var(--chat-color);
   overflow-y: auto;
   overflow-x: hidden;
   contain: content;
-  box-shadow:
-    0 2px 2px -4px rgba(0, 0, 0, 0.1),
-    0 2px 2px 1px rgba(0, 0, 0, 0.12),
-    0 1px 8px 1px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 14px 36px rgba(18, 17, 31, 0.2);
 }

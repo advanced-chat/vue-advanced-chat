@@ -218,7 +218,7 @@ watch(
       </ChatsSearch>
     </slot>
 
-    <Loader :show="loadingChats"> </Loader>
+    <Loader :show="loadingChats"></Loader>
 
     <div v-if="!loadingChats && !filteredChats.length" class="vac-rooms-empty">
       <!-- @slot Empty-state content shown when no chats are available. -->
@@ -252,7 +252,7 @@ watch(
       </div>
       <transition name="vac-fade-message">
         <div v-if="chats.length && !loadingChats" id="infinite-loader-rooms" ref="sentinelEl">
-          <Loader :show="showLoader" :infinite="true" type="infinite-rooms"> </Loader>
+          <Loader :show="showLoader" :infinite="true" type="infinite-rooms"></Loader>
         </div>
       </transition>
     </div>
@@ -263,14 +263,12 @@ watch(
 .vac-rooms-container {
   display: flex;
   flex-flow: column;
-  flex: 0 0 25%;
-  min-width: 260px;
-  max-width: 500px;
+  flex: 0 0 clamp(280px, 29%, 340px);
+  min-width: 280px;
+  max-width: 380px;
   position: relative;
   background: var(--chat-sidemenu-bg-color);
   height: 100%;
-  border-top-left-radius: var(--chat-container-border-radius);
-  border-bottom-left-radius: var(--chat-container-border-radius);
 
   &.vac-rooms-container-full {
     flex: 0 0 100%;
@@ -291,20 +289,23 @@ watch(
     flex: 1;
     position: relative;
     max-width: 100%;
-    padding: 0 10px 5px;
+    padding: 2px 10px 12px;
     overflow-y: auto;
   }
 
   .vac-room-item {
-    border-radius: 8px;
+    border-radius: 13px;
     align-items: center;
     display: flex;
     flex: 1 1 100%;
-    margin-bottom: 5px;
-    padding: 0 14px;
+    margin-bottom: 4px;
+    padding: 9px 12px;
     position: relative;
-    min-height: 71px;
-    transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+    min-height: 74px;
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
 
     .vac-room-open {
       position: absolute;
@@ -319,6 +320,7 @@ watch(
 
     &:hover {
       background: var(--chat-sidemenu-bg-color-hover);
+      transform: translateX(2px);
     }
 
     &:not(.vac-room-selected) {
@@ -329,6 +331,7 @@ watch(
   .vac-room-selected {
     color: var(--chat-sidemenu-color-active) !important;
     background: var(--chat-sidemenu-bg-color-active) !important;
+    box-shadow: inset 3px 0 0 var(--chat-sidemenu-color-active);
 
     &:hover {
       background: var(--chat-sidemenu-bg-color-active) !important;
@@ -342,7 +345,7 @@ watch(
 
     .vac-room-item {
       min-height: 60px;
-      padding: 0 8px;
+      padding: 7px 9px;
     }
   }
 }
