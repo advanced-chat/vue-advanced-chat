@@ -58,6 +58,9 @@ export const ActionHandlerEmits: Story = {
         action: { id: 'archive', label: 'Archive' },
       }),
     )
+    await waitFor(() => {
+      expect(canvasElement.querySelector('.acc-menu-item')).toBeNull()
+    })
   },
 }
 
