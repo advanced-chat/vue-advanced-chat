@@ -19,6 +19,8 @@ const config: StorybookConfig = {
       },
     },
   },
+  managerHead: (head) =>
+    `${head ?? ''}\n<script>document.title = 'Advanced Chat Components'</script>`,
   viteFinal: async (config) =>
     mergeConfig(config, {
       // Honored by GitHub Pages deploy where the site lives under
