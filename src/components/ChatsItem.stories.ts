@@ -60,6 +60,7 @@ export const ActionHandlerEmits: Story = {
     )
     await waitFor(() => {
       expect(canvasElement.querySelector('.acc-menu-item')).toBeNull()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeNull()
     })
   },
 }

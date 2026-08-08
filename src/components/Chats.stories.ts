@@ -150,6 +150,10 @@ export const ChatActionHandlerEmits: Story = {
     const action = canvasElement.querySelector('.acc-menu-item') as HTMLElement
     await userEvent.click(action)
     await expect(args['onChat-action-handler']).toHaveBeenCalled()
+    await waitFor(() => {
+      expect(canvasElement.querySelector('.acc-menu-item')).toBeNull()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeNull()
+    })
   },
 }
 

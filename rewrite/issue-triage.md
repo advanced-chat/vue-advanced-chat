@@ -2,7 +2,7 @@
 
 Open issues and PRs on advanced-chat/advanced-chat-components, sorted by
 what V3 should do with each. Use this as the script for the post-3.0
-issue sweep. Last reconciled against the `3.0.0-rc.1` working tree.
+issue sweep. Last reconciled against the `3.0.0-rc.2` working tree.
 
 ## Resolved by V3 architecture (close on release)
 
@@ -56,10 +56,10 @@ notes and the version that shipped each fix.
 | Local search filter on `Chats`                                                                                        | `alpha.1`                            | `useLocalSearch` (extracted in `alpha.4`); `customSearchEnabled` opts out                                                             |
 | `chat-action-handler` re-emit on `Chats`                                                                              | `alpha.1`                            | `Chats` re-emits `ChatsItem`'s `chat-action-handler`                                                                                  |
 | Markdown task-list a11y warning                                                                                       | `alpha.1`                            | `aria-label` on `<input type="checkbox">` in markdown render                                                                          |
-| [#573](https://github.com/advanced-chat/advanced-chat-components/issues/573) Narrow embedded layout                   | `3.0.0-rc.1`                         | `AdvancedChat` observes its own width for the 768 px pane switch; message cards use `max-width: min(100%, 560px)`                     |
-| Audio playback state and controls                                                                                     | `3.0.0-rc.1`                         | Native play/pause/end synchronization, rejected-play handling, mouse/keyboard scrubbing, source/selection reset, and listener cleanup |
-| Mention payloads                                                                                                      | `3.0.0-rc.1`                         | Stable `<@id>` content plus deduplicated `mentionedUsers` on send/edit                                                                |
-| Host operational states                                                                                               | `3.0.0-rc.1`                         | Blocking and non-blocking state UI, retry event, and independently disabled composer                                                  |
+| [#573](https://github.com/advanced-chat/advanced-chat-components/issues/573) Narrow embedded layout                   | `3.0.0-rc.2`                         | `AdvancedChat` observes its own width for the 768 px pane switch; message cards use `max-width: min(100%, 560px)`                     |
+| Audio playback state and controls                                                                                     | `3.0.0-rc.2`                         | Native play/pause/end synchronization, rejected-play handling, mouse/keyboard scrubbing, source/selection reset, and listener cleanup |
+| Mention payloads                                                                                                      | `3.0.0-rc.2`                         | Stable `<@id>` content plus deduplicated `mentionedUsers` on send/edit                                                                |
+| Host operational states                                                                                               | `3.0.0-rc.2`                         | Blocking and non-blocking state UI, retry event, and independently disabled composer                                                  |
 
 ## Compatibility decisions before beta
 

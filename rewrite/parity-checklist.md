@@ -1,7 +1,7 @@
 # V2 -> V3 Compatibility Record
 
 Current compatibility status for stable `vue-advanced-chat@2.1.2` and the
-pre-GA `@advanced-chat/components@3.0.0-rc.1` working tree. Unlike the
+pre-GA `@advanced-chat/components@3.0.0-rc.2` working tree. Unlike the
 archived alpha.1 reviews, this file is maintained as the current source of
 truth.
 
@@ -17,7 +17,7 @@ Status legend:
 
 | v2 surface                                   | V3 surface                                                 | Status  | Notes                                                                          |
 | -------------------------------------------- | ---------------------------------------------------------- | ------- | ------------------------------------------------------------------------------ |
-| Stable `vue-advanced-chat@2.1.2`             | Pre-GA `@advanced-chat/components@3.0.0-rc.1` tree         | Done    | Separate package and release track; not an in-place upgrade.                   |
+| Stable `vue-advanced-chat@2.1.2`             | Pre-GA `@advanced-chat/components@3.0.0-rc.2` tree         | Done    | Separate package and release track; not an in-place upgrade.                   |
 | One Shadow DOM custom element + `register()` | 28 typed Vue SFCs plus bundled light-DOM custom element    | Done    | Vue is primary; web-component entrypoint auto-registers by default.            |
 | JSON-stringified object/array props          | Typed Vue props or custom-element DOM properties           | Done    | Do not serialize complex V3 values into attributes.                            |
 | Web-component event payloads                 | Typed `CustomEvent.detail`                                 | Done    | V3 exposes the payload directly, without Vue's single-argument array wrapper.  |

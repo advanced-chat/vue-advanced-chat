@@ -286,6 +286,10 @@ export const ReplyActionPrefillsFooter: Story = {
     await waitFor(() => {
       expect(canvasElement.querySelector('.acc-footer-reply-wrapper')).toBeTruthy()
     })
+    await waitFor(() => {
+      expect(canvasElement.querySelector('.acc-menu-item')).toBeNull()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeNull()
+    })
   },
 }
 
@@ -335,6 +339,10 @@ export const HeaderMenuActionFires: Story = {
     const item = canvasElement.querySelector('.acc-menu-item') as HTMLElement
     await userEvent.click(item)
     await expect(args['onMenu-action-handler']).toHaveBeenCalled()
+    await waitFor(() => {
+      expect(canvasElement.querySelector('.acc-menu-item')).toBeNull()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeNull()
+    })
   },
 }
 
@@ -366,6 +374,10 @@ export const ChatActionHandlerEmits: Story = {
     const action = canvasElement.querySelector('.acc-menu-item') as HTMLElement
     await userEvent.click(action)
     await expect(args['onChat-action-handler']).toHaveBeenCalled()
+    await waitFor(() => {
+      expect(canvasElement.querySelector('.acc-menu-item')).toBeNull()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeNull()
+    })
   },
 }
 

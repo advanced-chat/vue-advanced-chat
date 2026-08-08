@@ -3,7 +3,7 @@
 This directory holds planning, historical audits, and the current compatibility
 record for the V3 rewrite of `vue-advanced-chat`. Stable v2 is
 `vue-advanced-chat@2.1.2`; the current pre-GA line is
-`@advanced-chat/components@3.0.0-rc.1`.
+`@advanced-chat/components@3.0.0-rc.2`.
 
 The library on the legacy `v2` branch ships v2 as a single web component registered via
 `register()`. V3 ships 28 individually importable typed Vue 3 components and a
@@ -30,7 +30,7 @@ remaining limits rather than treating every v2 difference as a regression.
   bucketed by whether the rewrite resolves them, still needs work,
   is intentionally out of scope, or warrants a stale-close.
 - [`release-plan.md`](./release-plan.md) — concrete path from the
-  current `3.0.0-rc.1` tree to a published `3.0.0` on npm,
+  current `3.0.0-rc.2` tree to a published `3.0.0` on npm,
   including version bumps, migration notes, and announcement plan.
 - [`publish-readiness-audit.md`](./publish-readiness-audit.md) — historical
   publication audit, resolution record, and remaining external release gates.
