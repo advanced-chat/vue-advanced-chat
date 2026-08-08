@@ -7,7 +7,7 @@
 > shape, event payload normalization, chat slot names, text-formatting pass,
 > and locale negotiation described below subsequently changed. Use
 > [`parity-checklist.md`](./parity-checklist.md) and the public migration guide
-> for the `3.0.0-rc.1` contract.
+> for the `3.0.0-rc.2` contract.
 
 A consumer-facing review of the V3 surface at `3.0.0-alpha.1` —
 companion to `architecture-review.md` (which focused on structure).

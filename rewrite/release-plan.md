@@ -1,6 +1,6 @@
 # V3 Release Plan
 
-This is the path from `@advanced-chat/components@3.0.0-rc.1` to a published
+This is the path from `@advanced-chat/components@3.0.0-rc.2` to a published
 `3.0.0`. Stable v2 remains `vue-advanced-chat@2.1.2` on npm and its source is
 preserved on the `v2` branch; V3 is not a drop-in replacement.
 
@@ -21,11 +21,11 @@ preserved on the `v2` branch; V3 is not a drop-in replacement.
 ## Publication baseline
 
 The 2026-08-08 [publish-readiness audit](./publish-readiness-audit.md) found
-release blockers not covered by the original build and test gates. The rc.1
+release blockers not covered by the original build and test gates. The rc.2
 preparation resolved the repository identity, version, CommonJS, licensing,
 declaration, manifest, governance, public-copy, and packed-consumer findings.
 The remaining gates are external: merge to the default branch, deploy and
-verify Pages, confirm npm trusted publishing, and publish the immutable rc.1
+verify Pages, confirm npm trusted publishing, and publish the immutable rc.2
 tag to `next`.
 
 ## Gates that must be green before tagging
@@ -104,7 +104,7 @@ onSend?, onReceive? }`) — defaults match the alpha.2 hard-coded
      Currently still resolves to `'en'` (only locale shipped) but
      warns in DEV when the detected language isn't supported, so
      adding a second locale is purely additive.
-6. **Post-alpha.5 public-contract fixes** ✅ included in `3.0.0-rc.1`:
+6. **Post-alpha.5 public-contract fixes** ✅ included in `3.0.0-rc.2`:
    - Typed, auto-registering light-DOM web-component entrypoint with direct
      `CustomEvent.detail` and future-mount registration option semantics.
    - Stable `<@id>` mention content plus `mentionedUsers` on send/edit.
@@ -127,7 +127,7 @@ onSend?, onReceive? }`) — defaults match the alpha.2 hard-coded
        does (`backfillIfBelowMinimum`) so the file reads as a single
        codepath.
 
-8. **Release-candidate prep** ✅ completed for `3.0.0-rc.1`:
+8. **Release-candidate prep** ✅ completed for `3.0.0-rc.2`:
    - ESM-only package contract and strict packed-consumer verification.
    - MIT and bundled third-party notices.
    - Security, contribution, conduct, support, and issue templates.
@@ -154,13 +154,15 @@ Use semver prereleases on `next`:
 - `3.0.0-alpha.5` — internal milestone closing the originally listed GA gaps:
   file-constraint props, typing-indicator position, `autoScroll`
   policy, locale negotiation, slot autodocs.
-- `3.0.0-rc.1` — first public release candidate: contract complete, ESM-only,
-  licensed, packed-consumer verified, and documentation audited.
+- `3.0.0-rc.1` — failed pre-publish verification; immutable tag retained but no
+  npm package was published.
+- `3.0.0-rc.2` — first published release candidate: contract complete,
+  ESM-only, licensed, packed-consumer verified, and documentation audited.
 - `3.0.0` — promoted to `latest`
 
 Each tag must satisfy:
 
-- `package.json` version matches the tag (`v3.0.0-rc.1` ↔ `3.0.0-rc.1`)
+- `package.json` version matches the tag (`v3.0.0-rc.2` ↔ `3.0.0-rc.2`)
 - Tag is pushed from a clean, reviewed commit on `main`
 - CI on the exact tag is green
 
@@ -171,7 +173,7 @@ Triggered by an immutable `v*` tag push:
 1. Ensure `package.json` and the changelog match the intended version on
    `main`.
 2. Tag and push only that tag, for example
-   `git tag v3.0.0-rc.1 && git push origin v3.0.0-rc.1`.
+   `git tag v3.0.0-rc.2 && git push origin v3.0.0-rc.2`.
 3. The workflow validates the tag and publishes prereleases to `next` or stable
    versions to `latest`.
 4. Confirm the npm package page shows provenance on the new version.

@@ -108,6 +108,10 @@ export const ReplyActionPrefillsFooter: Story = {
     await waitFor(() => {
       expect(canvasElement.querySelector('.acc-footer-reply-wrapper')).toBeTruthy()
     })
+    await waitFor(() => {
+      expect(canvasElement.querySelector('.acc-menu-item')).toBeNull()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeNull()
+    })
   },
 }
 
@@ -132,6 +136,10 @@ export const EditActionPrefillsFooter: Story = {
     await userEvent.click(edit)
     await waitFor(() => {
       expect(canvasElement.querySelector('.acc-textarea-outline')).toBeTruthy()
+    })
+    await waitFor(() => {
+      expect(canvasElement.querySelector('.acc-menu-item')).toBeNull()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeNull()
     })
   },
 }

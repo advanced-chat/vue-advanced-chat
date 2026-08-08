@@ -106,6 +106,10 @@ export const DropdownMenuOpen: Story = {
     })
     await waitFor(() => expect(trigger).toHaveFocus())
     expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    await waitFor(() => {
+      expect(canvasElement.querySelector('.acc-menu-item')).toBeNull()
+      expect(canvas.queryByRole('menu', { name: 'Message actions' })).not.toBeInTheDocument()
+    })
   },
 }
 

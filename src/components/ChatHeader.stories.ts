@@ -83,6 +83,10 @@ export const MenuActionHandler: Story = {
         action: { id: 'archive', label: 'Archive' },
       }),
     )
+    await waitFor(() => {
+      expect(canvasElement.querySelector('.acc-menu-item')).toBeNull()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeNull()
+    })
   },
 }
 

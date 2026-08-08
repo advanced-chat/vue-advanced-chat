@@ -129,6 +129,9 @@ export const ReactionPickerEmits: Story = {
     const firstReaction = canvasElement.querySelector('.acc-reaction-option') as HTMLElement
     await userEvent.click(firstReaction)
     await expect(args['onSend-message-reaction']).toHaveBeenCalled()
+    await waitFor(() => {
+      expect(canvasElement.querySelector('.acc-reactions-menu')).toBeNull()
+    })
   },
 }
 
@@ -149,6 +152,10 @@ export const DropdownActionEmits: Story = {
     const firstAction = canvasElement.querySelector('.acc-menu-item') as HTMLElement
     await userEvent.click(firstAction)
     await expect(args['onMessage-action-handler']).toHaveBeenCalled()
+    await waitFor(() => {
+      expect(canvasElement.querySelector('.acc-menu-item')).toBeNull()
+      expect(canvasElement.querySelector('.acc-menu-options')).toBeNull()
+    })
   },
 }
 
