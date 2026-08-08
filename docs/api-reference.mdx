@@ -55,13 +55,14 @@ of components also export ancillary types: `ChatFileItem`,
 ## Web component
 
 The separate `@advanced-chat/components/web-component` entrypoint bundles Vue
-and auto-registers the light-DOM `<vue-advanced-chat>` tag on import. Import
+and auto-registers the light-DOM `<advanced-chat-components>` tag on import. Import
 `@advanced-chat/components/web-component/styles` alongside it.
 
 | Export                           | Kind      | Description                                                                                                  |
 | -------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------ |
 | `registerAdvancedChat`           | function  | Registers a custom tag, or updates options for future mounts of a tag previously managed by this entrypoint. |
-| `DEFAULT_CUSTOM_ELEMENT_TAG`     | constant  | `'vue-advanced-chat'`.                                                                                       |
+| `createAdvancedChatElement`      | function  | Creates an unregistered custom-element constructor for hosts that manage their own registry.                 |
+| `DEFAULT_CUSTOM_ELEMENT_TAG`     | constant  | `'advanced-chat-components'`.                                                                                |
 | `AdvancedChatHTMLElement`        | interface | `HTMLElement` plus typed `AdvancedChat` properties and typed event listener overloads.                       |
 | `AdvancedChatEventMap`           | type      | Maps every public event name to its typed `CustomEvent<Detail>`.                                             |
 | `AdvancedChatElementConstructor` | interface | Constructor returning `AdvancedChatHTMLElement`.                                                             |
@@ -69,7 +70,15 @@ and auto-registers the light-DOM `<vue-advanced-chat>` tag on import. Import
 
 Objects and arrays must be assigned as DOM properties. Each event payload is
 available directly at `event.detail`; single-argument Vue emits are not exposed
-as one-element arrays. A no-payload event has `detail === undefined`.
+as one-element arrays. Following the DOM `CustomEvent` contract, a no-payload
+event has `detail === null`. Public
+events use `bubbles: true` and `composed: true`, allowing event delegation from
+an application shell or across a host shadow root.
+
+`@advanced-chat/components/web-component/core` exports the same registration
+and type API without registering a tag during module evaluation. Use it for
+SSR-safe imports, alternate tag names, or applications that require explicit
+startup control. The default `/web-component` entry remains auto-registering.
 
 The default import performs registration before user code calls
 `registerAdvancedChat()`. Supplying options in a later call updates the managed

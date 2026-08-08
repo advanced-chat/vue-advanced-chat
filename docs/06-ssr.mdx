@@ -26,11 +26,11 @@ default and the real behavior kicks in on hydration.
 
 ## What doesn't
 
-| Feature                                   | SSR status                     | Workaround                                                                                                                                                                           |
-| ----------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Hydration of full chat surfaces in Nuxt 3 | ⚠️ Untested                    | Wrap in `<ClientOnly>`. See [#451](https://github.com/advanced-chat/vue-advanced-chat/issues/451), [#528](https://github.com/advanced-chat/vue-advanced-chat/issues/528).            |
-| Auto-scroll on mount under SSR            | ⚠️ Effectively a no-op         | The `onMounted` hook only runs on the client; first paint shows the list at top. Set `autoScroll: { onMount: false }` if you'd rather not see the scroll-to-bottom flash on hydrate. |
-| Emoji picker (`emoji-picker-element`)     | ⚠️ Browser-only custom element | Render `EmojiPicker` inside `<ClientOnly>`, or hide it entirely until mounted.                                                                                                       |
+| Feature                                   | SSR status                     | Workaround                                                                                                                                                                              |
+| ----------------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hydration of full chat surfaces in Nuxt 3 | ⚠️ Untested                    | Wrap in `<ClientOnly>`. See [#451](https://github.com/advanced-chat/advanced-chat-components/issues/451), [#528](https://github.com/advanced-chat/advanced-chat-components/issues/528). |
+| Auto-scroll on mount under SSR            | ⚠️ Effectively a no-op         | The `onMounted` hook only runs on the client; first paint shows the list at top. Set `autoScroll: { onMount: false }` if you'd rather not see the scroll-to-bottom flash on hydrate.    |
+| Emoji picker (`emoji-picker-element`)     | ⚠️ Browser-only custom element | Render `EmojiPicker` inside `<ClientOnly>`, or hide it entirely until mounted.                                                                                                          |
 
 ## Recommended pattern (Nuxt 3)
 
@@ -77,8 +77,8 @@ const isSsr = import.meta.env.SSR
 ## Roadmap
 
 Full SSR + hydration is on the post-3.0 roadmap (issues
-[#451](https://github.com/advanced-chat/vue-advanced-chat/issues/451)
-and [#528](https://github.com/advanced-chat/vue-advanced-chat/issues/528)).
+[#451](https://github.com/advanced-chat/advanced-chat-components/issues/451)
+and [#528](https://github.com/advanced-chat/advanced-chat-components/issues/528)).
 The work involves:
 
 - Auditing every browser-only side effect in `onMounted` /

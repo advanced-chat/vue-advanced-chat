@@ -81,12 +81,12 @@ onSend?, onReceive? }`) — defaults match the alpha.2 hard-coded
    - `ChatFooter.maxFiles` and `ChatFooter.maxFileSize` props,
      forwarded by `Chat` / `AdvancedChat`. Files above either cap
      are emitted as `invalid-file: { file, reason }`
-     ([#461](https://github.com/advanced-chat/vue-advanced-chat/issues/461),
-     [#474](https://github.com/advanced-chat/vue-advanced-chat/issues/474)).
+     ([#461](https://github.com/advanced-chat/advanced-chat-components/issues/461),
+     [#474](https://github.com/advanced-chat/advanced-chat-components/issues/474)).
    - `Chat.typingIndicatorPosition` prop (`'header' | 'composer' |
 'both' | 'none'`) plus a `composer-typing` slot that exposes
      the typing string
-     ([#513](https://github.com/advanced-chat/vue-advanced-chat/issues/513)).
+     ([#513](https://github.com/advanced-chat/advanced-chat-components/issues/513)).
    - Slot inventory documented inline (`<!-- @slot ... -->` on every
      public slot) so Storybook autodocs exposes it on component pages.
    - `getLocalizationStrings('auto')` actually negotiates against

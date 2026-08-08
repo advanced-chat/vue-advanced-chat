@@ -194,7 +194,7 @@ export const NoFetchWhenLoaded: Story = {
 }
 
 /**
- * Regression for [#513](https://github.com/advanced-chat/vue-advanced-chat/issues/513):
+ * Regression for [#513](https://github.com/advanced-chat/advanced-chat-components/issues/513):
  * setting `typingIndicatorPosition: 'composer'` moves the typing line
  * from the header (default) to a band above the textarea.
  */
@@ -214,7 +214,7 @@ export const TypingIndicatorAboveComposer: Story = {
 }
 
 /**
- * Regression for [#513](https://github.com/advanced-chat/vue-advanced-chat/issues/513):
+ * Regression for [#513](https://github.com/advanced-chat/advanced-chat-components/issues/513):
  * `typingIndicatorPosition: 'both'` shows the indicator in the header
  * AND above the composer at once.
  */
@@ -231,7 +231,7 @@ export const TypingIndicatorBoth: Story = {
 }
 
 /**
- * Regression for [#513](https://github.com/advanced-chat/vue-advanced-chat/issues/513):
+ * Regression for [#513](https://github.com/advanced-chat/advanced-chat-components/issues/513):
  * `typingIndicatorPosition: 'none'` suppresses the indicator entirely.
  */
 export const TypingIndicatorNone: Story = {

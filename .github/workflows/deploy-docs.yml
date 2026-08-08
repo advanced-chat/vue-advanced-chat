@@ -33,7 +33,7 @@ jobs:
 
       - name: Build Storybook
         env:
-          STORYBOOK_BASE_URL: /vue-advanced-chat/
+          STORYBOOK_BASE_URL: /advanced-chat-components/
         run: npm run build-storybook
 
       - name: Configure Pages

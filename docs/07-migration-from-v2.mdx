@@ -6,7 +6,7 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 V3 is **not** a drop-in replacement for v2. The package name, the
 mount shape, the data model, and many event payloads all change.
-This guide is the curated map; the [CHANGELOG](https://github.com/advanced-chat/vue-advanced-chat/blob/develop/CHANGELOG.md)
+This guide is the curated map; the [CHANGELOG](https://github.com/advanced-chat/advanced-chat-components/blob/develop/CHANGELOG.md)
 has the per-alpha play-by-play.
 
 The stable public line is `vue-advanced-chat@2.1.2`. This `develop`
@@ -184,7 +184,7 @@ import '@advanced-chat/components/web-component'
 import '@advanced-chat/components/web-component/styles'
 import type { AdvancedChatHTMLElement } from '@advanced-chat/components/web-component'
 
-const chat = document.querySelector<AdvancedChatHTMLElement>('vue-advanced-chat')!
+const chat = document.querySelector<AdvancedChatHTMLElement>('advanced-chat-components')!
 chat.currentUser = { id: 'me' }
 chat.chats = chats
 chat.messages = messages
@@ -194,7 +194,7 @@ chat.addEventListener('send-message', (event) => {
 })
 ```
 
-Importing the entrypoint auto-registers `<vue-advanced-chat>`; no default
+Importing the entrypoint auto-registers `<advanced-chat-components>`; no default
 `register()` call is needed. Assign typed properties rather than serialized
 attributes. DOM event payloads are direct `CustomEvent.detail` values, not
 one-element arrays.
@@ -280,9 +280,9 @@ Current limits that remain documented rather than treated as missing fixes:
 ## When in doubt
 
 The full alpha-by-alpha CHANGELOG is the authoritative record:
-[`CHANGELOG.md`](https://github.com/advanced-chat/vue-advanced-chat/blob/develop/CHANGELOG.md).
+[`CHANGELOG.md`](https://github.com/advanced-chat/advanced-chat-components/blob/develop/CHANGELOG.md).
 The architecture rationale lives in
-[`rewrite/architecture.md`](https://github.com/advanced-chat/vue-advanced-chat/blob/develop/rewrite/architecture.md);
+[`rewrite/architecture.md`](https://github.com/advanced-chat/advanced-chat-components/blob/develop/rewrite/architecture.md);
 the parity status (which v2 features V3 already supports, drops, or
 defers) is in
-[`rewrite/parity-checklist.md`](https://github.com/advanced-chat/vue-advanced-chat/blob/develop/rewrite/parity-checklist.md).
+[`rewrite/parity-checklist.md`](https://github.com/advanced-chat/advanced-chat-components/blob/develop/rewrite/parity-checklist.md).

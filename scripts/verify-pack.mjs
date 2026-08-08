@@ -16,7 +16,11 @@ if (!packResult || !Array.isArray(packResult.files)) {
 const packagedFiles = new Set(packResult.files.map((file) => file.path))
 
 for (const file of packagedFiles) {
-  const isAllowedRootFile = file === 'README.md' || file === 'package.json' || file === 'LICENSE'
+  const isAllowedRootFile =
+    file === 'README.md' ||
+    file === 'package.json' ||
+    file === 'LICENSE' ||
+    file === 'custom-elements.json'
   const isDistArtifact = file.startsWith('dist/')
 
   if (!isAllowedRootFile && !isDistArtifact) {
@@ -34,7 +38,7 @@ const addRequiredPath = (value) => {
   requiredPaths.add(value.slice(2))
 }
 
-for (const field of ['main', 'module', 'style', 'typings']) {
+for (const field of ['main', 'module', 'style', 'typings', 'customElements']) {
   addRequiredPath(`./${pkg[field]}`)
 }
 
@@ -62,10 +66,27 @@ for (const requiredPath of requiredPaths) {
 }
 
 await import(new URL('../dist/components.js', import.meta.url))
-await import(new URL('../dist/vue-advanced-chat.js', import.meta.url))
+const webComponentModule = await import(
+  new URL('../dist/advanced-chat-components.js', import.meta.url)
+)
+await import(new URL('../dist/advanced-chat-components-core.js', import.meta.url))
+
+if (webComponentModule.DEFAULT_CUSTOM_ELEMENT_TAG !== 'advanced-chat-components') {
+  throw new Error('The web-component bundle exports an unexpected default tag name.')
+}
+
+const customElementsManifest = JSON.parse(
+  readFileSync(new URL('../custom-elements.json', import.meta.url), 'utf8'),
+)
+const manifestTag = customElementsManifest.modules
+  ?.flatMap((module) => module.declarations || [])
+  .find((declaration) => declaration.customElement)?.tagName
+if (manifestTag !== webComponentModule.DEFAULT_CUSTOM_ELEMENT_TAG) {
+  throw new Error('The Custom Elements Manifest tag does not match the runtime default tag.')
+}
 
 const webComponentBundle = readFileSync(
-  new URL('../dist/vue-advanced-chat.js', import.meta.url),
+  new URL('../dist/advanced-chat-components.js', import.meta.url),
   'utf8',
 )
 if (webComponentBundle.includes('process.env')) {

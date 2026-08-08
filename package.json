@@ -2,7 +2,7 @@
   "name": "@advanced-chat/components",
   "version": "3.0.0-alpha.5",
   "license": "MIT",
-  "description": "A beautiful chat component library made with Vue",
+  "description": "Framework-neutral chat web component and typed Vue 3 component library",
   "contributors": [
     {
       "email": "antoindupontdev@gmail.com",
@@ -20,6 +20,7 @@
   "jsdelivr": "dist/components.umd.cjs",
   "style": "dist/components.css",
   "typings": "dist/src/index.d.ts",
+  "customElements": "custom-elements.json",
   "exports": {
     ".": {
       "types": "./dist/src/index.d.ts",
@@ -32,18 +33,30 @@
     },
     "./web-component": {
       "types": "./dist/src/web-component.d.ts",
-      "import": "./dist/vue-advanced-chat.js"
+      "import": "./dist/advanced-chat-components.js"
+    },
+    "./web-component/core": {
+      "types": "./dist/src/web-component-core.d.ts",
+      "import": "./dist/advanced-chat-components-core.js"
     },
     "./web-component/styles": {
-      "import": "./dist/vue-advanced-chat.css"
+      "types": "./dist/src/styles.d.ts",
+      "import": "./dist/advanced-chat-components.css"
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "custom-elements.json"
   ],
   "keywords": [
     "vue",
     "vuejs",
+    "web-components",
+    "custom-element",
+    "framework-agnostic",
+    "react",
+    "angular",
+    "svelte",
     "chat",
     "vue-js-chat",
     "multiple",
@@ -53,13 +66,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/advanced-chat/vue-advanced-chat.git"
+    "url": "git+https://github.com/advanced-chat/advanced-chat-components.git"
   },
   "bugs": {
-    "url": "https://github.com/advanced-chat/vue-advanced-chat/issues"
+    "url": "https://github.com/advanced-chat/advanced-chat-components/issues"
   },
+  "homepage": "https://advanced-chat.github.io/advanced-chat-components/",
   "scripts": {
-    "build": "vite build && vite build --config vite.web-component.config.ts",
+    "build": "vite build && vite build --config vite.web-component.config.ts && vite build --config vite.web-component.config.ts --mode core",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --fix --cache",
@@ -70,9 +84,10 @@
     "test:coverage": "vitest run --coverage",
     "test": "vitest run",
     "verify:pack": "node ./scripts/verify-pack.mjs",
+    "verify:web-component": "node ./scripts/verify-web-component.mjs",
     "verify:storybook-ui": "node ./scripts/verify-storybook-ui.mjs",
     "verify:storybook-flows": "node ./scripts/verify-storybook-flows.mjs",
-    "verify": "npm run format:check && npm run type-check && npm run lint && npm run test:unit && npm run test:storybook && npm run build && npm run verify:pack && npm run build-storybook",
+    "verify": "npm run format:check && npm run type-check && npm run lint && npm run test:unit && npm run test:storybook && npm run build && npm run verify:pack && npm run verify:web-component && npm run build-storybook",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prepare": "husky"
@@ -112,8 +127,8 @@
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^22.19.15",
     "@vitejs/plugin-vue": "^6.0.4",
-    "@vitest/browser-playwright": "^4.1.10",
-    "@vitest/coverage-v8": "^4.1.10",
+    "@vitest/browser-playwright": "4.1.10",
+    "@vitest/coverage-v8": "4.1.10",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.7.0",
     "@vue/tsconfig": "^0.9.0",
@@ -133,7 +148,7 @@
     "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.4",
     "vite-plugin-vue-devtools": "^8.0.7",
-    "vitest": "^4.1.10",
+    "vitest": "4.1.10",
     "vue": "^3.5.0",
     "vue-tsc": "^3.2.5"
   }

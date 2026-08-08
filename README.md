@@ -1,15 +1,15 @@
 <p align="center">
-  <a href="https://github.com/advanced-chat/vue-advanced-chat"><img src="https://img.shields.io/github/stars/advanced-chat/vue-advanced-chat?style=social" alt="GitHub stars"></a>
-  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/dm/vue-advanced-chat.svg" alt="npm downloads"></a>
-  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/v/vue-advanced-chat.svg" alt="npm version"></a>
-  <a href="https://www.npmjs.com/package/vue-advanced-chat"><img src="https://img.shields.io/npm/l/vue-advanced-chat.svg" alt="license"></a>
+  <a href="https://github.com/advanced-chat/advanced-chat-components"><img src="https://img.shields.io/github/stars/advanced-chat/advanced-chat-components?style=social" alt="GitHub stars"></a>
+  <a href="https://www.npmjs.com/package/@advanced-chat/components"><img src="https://img.shields.io/npm/dm/%40advanced-chat%2Fcomponents.svg" alt="npm downloads"></a>
+  <a href="https://www.npmjs.com/package/@advanced-chat/components"><img src="https://img.shields.io/npm/v/%40advanced-chat%2Fcomponents.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@advanced-chat/components"><img src="https://img.shields.io/npm/l/%40advanced-chat%2Fcomponents.svg" alt="license"></a>
 </p>
 
-# vue-advanced-chat
+# Advanced Chat Components
 
-A typed Vue 3 chat-UI library: rooms, messages, files, audio, reactions,
-replies, edits, typing indicators, themes, localization, and a small set
-of composables. Backend-agnostic — you own the data layer.
+A framework-neutral chat web component and typed Vue 3 component library:
+rooms, messages, files, audio, reactions, replies, edits, typing indicators,
+themes, localization, and composables. Backend-agnostic — you own the data layer.
 
 This repository ships two tracks:
 
@@ -26,7 +26,7 @@ This repository ships two tracks:
 
 The V3 docs site is built from Storybook and deployed from `develop`:
 
-> **<https://advanced-chat.github.io/vue-advanced-chat/>**
+> **<https://advanced-chat.github.io/advanced-chat-components/>**
 
 It carries the per-component prop / event / slot tables, the prose
 guides, the cookbook, and the public API reference. New users on V3
@@ -86,12 +86,12 @@ const messages = ref<MessageModel[]>([])
 ## Web component (V3)
 
 The framework-independent entrypoint bundles its Vue runtime and
-registers `<vue-advanced-chat>` in light DOM on import. Load its
+registers `<advanced-chat-components>` in light DOM on import. Load its
 matching stylesheet, then assign objects and arrays as DOM properties
 rather than JSON attributes:
 
 ```html
-<vue-advanced-chat id="chat"></vue-advanced-chat>
+<advanced-chat-components id="chat"></advanced-chat-components>
 <script type="module">
   import '@advanced-chat/components/web-component'
   import '@advanced-chat/components/web-component/styles'
@@ -116,7 +116,28 @@ tag with automatic localization. The entrypoint exports
 `AdvancedChatHTMLElement`, `AdvancedChatEventMap`, and
 `AdvancedChatElementConstructor` so DOM properties and event details are typed.
 Event payloads are exposed directly as `CustomEvent.detail`, not wrapped in a
-Vue argument array.
+Vue argument array. Public events bubble and cross shadow boundaries, so hosts
+can use event delegation.
+
+For applications that control registration or render on the server, import the
+side-effect-free core entrypoint:
+
+```ts
+import {
+  registerAdvancedChat,
+  type AdvancedChatHTMLElement,
+} from '@advanced-chat/components/web-component/core'
+import '@advanced-chat/components/web-component/styles'
+
+if (typeof window !== 'undefined') {
+  registerAdvancedChat({ tagName: 'acme-chat' })
+}
+```
+
+The package includes a standards-based `custom-elements.json` manifest for IDE
+completion and custom-element-aware tooling. Vanilla JavaScript, React,
+Angular, Svelte, and other framework examples are in the **Web Components**
+page on the documentation site.
 
 `registerAdvancedChat({ tagName, strings, localization })` can register an
 alternate tag. Calling it for the default managed tag after auto-registration

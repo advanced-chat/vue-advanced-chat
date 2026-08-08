@@ -4,7 +4,7 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 # ChatKitty BYOC integration
 
-`vue-advanced-chat` is the presentation boundary. Keep ChatKitty sessions,
+`@advanced-chat/components` is the presentation boundary. Keep ChatKitty sessions,
 channel provisioning, HTTP history, realtime subscriptions, reconciliation,
 uploads, notification delivery, and moderation policy in the host application.
 
@@ -31,7 +31,7 @@ ChatKitty credentials or transport clients in component props.
 import '@advanced-chat/components/web-component'
 import '@advanced-chat/components/web-component/styles'
 
-const element = document.querySelector('vue-advanced-chat')
+const element = document.querySelector('advanced-chat-components')
 element.currentUser = { id: String(session.user.id) }
 element.chats = channels.map(toChatModel)
 element.chat = element.chats[0]

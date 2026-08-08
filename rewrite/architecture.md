@@ -25,8 +25,8 @@ exposes.
 
 These all bake into the V3 surface and need a migration entry:
 
-1. **Vue is the primary API; a web-component boundary is also shipped.** Vue consumers import `AdvancedChat` directly. Framework-independent hosts import `@advanced-chat/components/web-component`, which registers a bundled light-DOM `<vue-advanced-chat>` element and accepts complex values as DOM properties.
-2. **Props take real values.** `:rooms="rooms"` (an array) instead of `:rooms="JSON.stringify(rooms)"`. Resolves [#553](https://github.com/advanced-chat/vue-advanced-chat/issues/553), [#445](https://github.com/advanced-chat/vue-advanced-chat/issues/445).
+1. **Vue and web components are first-class APIs.** Vue consumers import `AdvancedChat` directly. Framework-independent hosts import `@advanced-chat/components/web-component`, which registers a bundled light-DOM `<advanced-chat-components>` element and accepts complex values as DOM properties.
+2. **Props take real values.** `:rooms="rooms"` (an array) instead of `:rooms="JSON.stringify(rooms)"`. Resolves [#553](https://github.com/advanced-chat/advanced-chat-components/issues/553), [#445](https://github.com/advanced-chat/advanced-chat-components/issues/445).
 3. **Schema rename.** v2's domain types changed:
    - `roomId` → `id`, `roomName` → `name`, `avatar` stays `avatar`
    - `message._id` → `message.id`, `senderId` → `sender` (full `User`),
@@ -40,7 +40,7 @@ These all bake into the V3 surface and need a migration entry:
    deliberately removed. `AudioPlayer` and `AudioControl` are playback and
    scrubber components, not recording hooks. Hosts that need capture own that
    UI, permission flow, encoding, and upload.
-7. **The wrapper isn't required.** `AdvancedChat` is the convenience composition. Consumers can import `Chats`, `Chat`, `ChatHeader`, `ChatFooter`, `Message`, etc. directly and wire their own layout. Resolves [#166](https://github.com/advanced-chat/vue-advanced-chat/issues/166), [#570](https://github.com/advanced-chat/vue-advanced-chat/issues/570), [#549](https://github.com/advanced-chat/vue-advanced-chat/pull/549).
+7. **The wrapper isn't required.** `AdvancedChat` is the convenience composition. Consumers can import `Chats`, `Chat`, `ChatHeader`, `ChatFooter`, `Message`, etc. directly and wire their own layout. Resolves [#166](https://github.com/advanced-chat/advanced-chat-components/issues/166), [#570](https://github.com/advanced-chat/advanced-chat-components/issues/570), [#549](https://github.com/advanced-chat/advanced-chat-components/pull/549).
 
 ## Public contract
 
@@ -94,7 +94,7 @@ are full users for rendering, presence, and mention lookup.
 
 `@advanced-chat/components/web-component` bundles Vue, builds its component
 styles into the separate `web-component/styles` entrypoint, and auto-registers
-`<vue-advanced-chat>` in light DOM.
+`<advanced-chat-components>` in light DOM.
 Complex values are DOM properties. `AdvancedChatHTMLElement` and
 `AdvancedChatEventMap` type the property/event boundary, and event payloads are
 direct `CustomEvent.detail` values.
@@ -164,13 +164,13 @@ boundary.
 
 ## Out of scope for 3.0
 
-- Virtual scroll / windowing for very large message histories ([#261](https://github.com/advanced-chat/vue-advanced-chat/issues/261), [#342](https://github.com/advanced-chat/vue-advanced-chat/issues/342)).
-- Server-side rendering ([#451](https://github.com/advanced-chat/vue-advanced-chat/issues/451), [#528](https://github.com/advanced-chat/vue-advanced-chat/issues/528)).
+- Virtual scroll / windowing for very large message histories ([#261](https://github.com/advanced-chat/advanced-chat-components/issues/261), [#342](https://github.com/advanced-chat/advanced-chat-components/issues/342)).
+- Server-side rendering ([#451](https://github.com/advanced-chat/advanced-chat-components/issues/451), [#528](https://github.com/advanced-chat/advanced-chat-components/issues/528)).
 - Built-in audio recording / MP3 encoder (deliberately removed; playback is
   supported).
 - Chat ordering, `/` template autocomplete, and an additional composer action
   (deliberately host-composed rather than built in).
 - Configurable mobile breakpoint and auto-open-first-chat policy.
 - Dedicated message-link theme token.
-- Built-in emoji-picker localization ([#536](https://github.com/advanced-chat/vue-advanced-chat/issues/536)).
-- WebRTC / phone integration ([#561](https://github.com/advanced-chat/vue-advanced-chat/pull/561)).
+- Built-in emoji-picker localization ([#536](https://github.com/advanced-chat/advanced-chat-components/issues/536)).
+- WebRTC / phone integration ([#561](https://github.com/advanced-chat/advanced-chat-components/pull/561)).

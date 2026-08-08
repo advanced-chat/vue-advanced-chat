@@ -38,10 +38,17 @@ const preview: Preview = {
             'Localization',
             'Security Model',
             'SSR',
+            'Web Components',
             'Migration from v2',
           ],
           'Cookbook',
-          ['Backend Integration', 'File Uploads', 'Pagination', 'Custom Action Menus'],
+          [
+            'Backend Integration',
+            'ChatKitty BYOC',
+            'File Uploads',
+            'Pagination',
+            'Custom Action Menus',
+          ],
           'Composables',
           [
             'useAutocomplete',

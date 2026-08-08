@@ -47,5 +47,8 @@ jobs:
       - name: Verify Pack Contract
         run: npm run verify:pack
 
+      - name: Verify Web Component
+        run: npm run verify:web-component
+
       - name: Build Storybook
         run: npm run build-storybook

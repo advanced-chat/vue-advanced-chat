@@ -81,6 +81,27 @@ describe('web component entrypoint', () => {
     expect(detail).toBe('general')
   })
 
+  it('emits delegated standards-based DOM events', async () => {
+    const Element = registerAdvancedChat({ tagName: 'advanced-chat-bubbling-test' })
+    const container = document.createElement('div')
+    const element = new Element()
+    element.status = 'error'
+    container.append(element)
+    document.body.append(container)
+    let receivedEvent: CustomEvent | undefined
+    container.addEventListener('retry', (event) => {
+      receivedEvent = event as CustomEvent
+    })
+
+    await Promise.resolve()
+    await nextTick()
+    element.querySelector<HTMLButtonElement>('.vac-state-panel button')?.click()
+
+    expect(receivedEvent?.detail).toBeNull()
+    expect(receivedEvent?.bubbles).toBe(true)
+    expect(receivedEvent?.composed).toBe(true)
+  })
+
   it('applies options supplied after default auto-registration to future mounts', async () => {
     registerAdvancedChat({
       strings: { 'chat.state.error': 'Localized web-component error' },

@@ -13,7 +13,7 @@ Configure npm trusted publishing for the exact GitHub Actions workflow in this r
 
 - npm package: `@advanced-chat/components`
 - GitHub organization or user: `advanced-chat`
-- GitHub repository: `vue-advanced-chat`
+- GitHub repository: `advanced-chat-components`
 - workflow filename: `release-package.yml`
 - environment name: leave blank unless this workflow is later gated behind a GitHub Environment
 

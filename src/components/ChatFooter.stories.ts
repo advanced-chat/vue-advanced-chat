@@ -349,7 +349,7 @@ export const SameFileReselectionTransfersPreviewOwnership: Story = {
 }
 
 /**
- * Regression for [#474](https://github.com/advanced-chat/vue-advanced-chat/issues/474):
+ * Regression for [#474](https://github.com/advanced-chat/advanced-chat-components/issues/474):
  * `maxFiles` caps the pending-file count. Files past the cap are
  * rejected via `invalid-file` with `reason: 'count'`; the existing
  * pending list is left untouched.
@@ -382,7 +382,7 @@ export const MaxFilesRejectsOverflow: Story = {
 }
 
 /**
- * Regression for [#461](https://github.com/advanced-chat/vue-advanced-chat/issues/461):
+ * Regression for [#461](https://github.com/advanced-chat/advanced-chat-components/issues/461):
  * `maxFileSize` rejects single files above the byte cap, but leaves
  * smaller files in the same selection alone.
  */

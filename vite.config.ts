@@ -14,7 +14,9 @@ const dirname =
 const npmLifecycleEvent = process.env.npm_lifecycle_event || ''
 const isVitestStorybookProcess =
   process.env.VITEST === 'true' &&
-  (npmLifecycleEvent === 'test' ||
+  (process.env.VITEST_CHILD_PROCESS === 'true' ||
+    process.env.VITEST_STORYBOOK === 'true' ||
+    npmLifecycleEvent === 'test' ||
     npmLifecycleEvent === 'test:storybook' ||
     npmLifecycleEvent === 'test:coverage' ||
     npmLifecycleEvent === 'test:unit' ||
@@ -49,7 +51,7 @@ export default defineConfig({
     copyPublicDir: false,
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
-      name: 'VueAdvancedChat',
+      name: 'AdvancedChatComponents',
     },
     rollupOptions: {
       external: ['vue'],
@@ -102,7 +104,6 @@ export default defineConfig({
               },
             ],
           },
-          setupFiles: ['.storybook/vitest.setup.ts'],
         },
       },
       {

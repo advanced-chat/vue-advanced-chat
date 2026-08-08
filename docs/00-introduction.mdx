@@ -4,14 +4,14 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 # `@advanced-chat/components`
 
-A typed Vue 3 chat-UI library. Backend-agnostic: rooms, messages,
-files, audio, reactions, replies / edits, typing indicators, themes,
-localization, and a small set of composables for bringing your own
-UI.
+A framework-neutral chat UI library with a standards-based custom element and
+typed Vue 3 components. Backend-agnostic: rooms, messages, files, audio,
+reactions, replies / edits, typing indicators, themes, localization, and a
+small set of composables for bringing your own UI.
 
 This is the V3 successor to the original [`vue-advanced-chat`][v2]
 package. V3 provides typed Vue 3 SFCs that consumers compose directly
-and an official bundled light-DOM `<vue-advanced-chat>` entrypoint for
+and an official bundled light-DOM `<advanced-chat-components>` entrypoint for
 framework-independent hosts. Slots, theming, and TypeScript ergonomics
 no longer depend on Shadow DOM.
 
@@ -19,7 +19,7 @@ The public stable line remains `vue-advanced-chat@2.1.2`. These docs describe
 the pre-GA `@advanced-chat/components@3.0.0-alpha.5` tree; do not treat the V3
 API as the stable v2 package or as a drop-in upgrade.
 
-[v2]: https://github.com/advanced-chat/vue-advanced-chat
+[v2]: https://github.com/advanced-chat/advanced-chat-components
 
 ## When to use it
 
@@ -44,7 +44,8 @@ Reach for this package when you want a chat surface that:
 - You require Shadow DOM isolation. The V3 web component intentionally
   renders in light DOM so host CSS, accessibility tools, and framework
   integrations share one document tree.
-- You need React or Svelte components. There is no port planned.
+- You need native React or Svelte components rather than the framework-neutral
+  custom-element entrypoint. There is no native adapter planned.
 
 ## What's in the package
 

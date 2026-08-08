@@ -13,9 +13,14 @@ and the project follows [Semantic Versioning](https://semver.org/).
 ### Added
 
 - Official `@advanced-chat/components/web-component` entrypoint. Importing it
-  auto-registers the light-DOM `<vue-advanced-chat>` element and bundles Vue;
+  auto-registers the light-DOM `<advanced-chat-components>` element and bundles Vue;
   `AdvancedChatHTMLElement`, `AdvancedChatEventMap`, and the constructor type
   provide typed DOM properties and `addEventListener` payloads.
+- Side-effect-free `@advanced-chat/components/web-component/core` entrypoint
+  with explicit constructor creation and registration, plus a Custom Elements
+  Manifest for IDE and framework tooling.
+- Browser-level package verification for auto-registration, explicit
+  registration, property assignment, packaged styles, rendering, and events.
 - `send-message` and `edit-message` now include deduplicated
   `mentionedUsers: User[]`. Selecting a mention writes a stable `<@id>` token
   into `content`; rendering resolves known ids to names without changing the
@@ -29,9 +34,14 @@ and the project follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Renamed the V3 project to `advanced-chat-components` while retaining the npm
+  package name `@advanced-chat/components`. The default custom-element tag,
+  browser globals, bundle filenames, repository metadata, and documentation now
+  use the framework-neutral project name.
 - Web-component events expose the component payload directly as
   `CustomEvent.detail`; Vue's internal single-argument array wrapper is removed
-  at the DOM boundary.
+  at the DOM boundary. Events now also bubble and cross shadow boundaries for
+  standards-based delegation.
 - Calling `registerAdvancedChat()` with options after default
   auto-registration updates managed registration options for future mounts
   only. Existing elements retain their initialized localization; foreign tag
@@ -73,14 +83,14 @@ Storybook regression test.
   new `invalid-file: { file, reason: 'size' \| 'count' }` event so
   hosts can show their own error UI. Forwarded by `Chat` and
   `AdvancedChat`. Closes
-  [#461](https://github.com/advanced-chat/vue-advanced-chat/issues/461)
+  [#461](https://github.com/advanced-chat/advanced-chat-components/issues/461)
   and
-  [#474](https://github.com/advanced-chat/vue-advanced-chat/issues/474).
+  [#474](https://github.com/advanced-chat/advanced-chat-components/issues/474).
 - `Chat.typingIndicatorPosition: 'header' \| 'composer' \| 'both' \|
 'none'` (default `'header'`). When the policy includes `composer`,
   `Chat` renders a typing line above `ChatFooter`; the new
   `composer-typing` scoped slot exposes the resolved string. Closes
-  [#513](https://github.com/advanced-chat/vue-advanced-chat/issues/513).
+  [#513](https://github.com/advanced-chat/advanced-chat-components/issues/513).
 - `Chat.autoScroll: { onMount?, onChatSwitch?, onSend?, onReceive? }`
   policy prop. Each leg defaults `true` to match the alpha.2
   hard-coded behavior; consumers can opt out per leg without
