@@ -1,0 +1,119 @@
+name: Release Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup npm
+        run: npm install --global npm@11.5.1
+
+      - name: Validate release tag
+        id: release
+        shell: bash
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          package_version="$(node -p "require('./package.json').version")"
+          expected_tag="v${package_version}"
+          checked_out_tag="$(git tag --points-at HEAD --list "$TAG_NAME")"
+          tag_commit="$(git rev-list -n 1 "$TAG_NAME")"
+
+          if [[ ! "$package_version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$ ]]; then
+            echo "Package version ${package_version} is not valid SemVer."
+            exit 1
+          fi
+
+          version_without_build="${package_version%%+*}"
+          if [[ "$version_without_build" == *-* ]]; then
+            prerelease="${version_without_build#*-}"
+            IFS='.' read -ra prerelease_identifiers <<< "$prerelease"
+            for identifier in "${prerelease_identifiers[@]}"; do
+              if [[ "$identifier" =~ ^[0-9]+$ && "$identifier" == 0* && "$identifier" != "0" ]]; then
+                echo "Package version ${package_version} has a leading-zero prerelease identifier."
+                exit 1
+              fi
+            done
+          fi
+
+          if [[ "$TAG_NAME" != "$expected_tag" || "$checked_out_tag" != "$expected_tag" ]]; then
+            echo "Release tag ${TAG_NAME} must exactly match package version ${package_version}."
+            exit 1
+          fi
+
+          if [[ "$tag_commit" != "$GITHUB_SHA" ]]; then
+            echo "Release tag ${TAG_NAME} does not resolve to the pushed commit ${GITHUB_SHA}."
+            exit 1
+          fi
+
+          git fetch --no-tags origin main
+          if ! git merge-base --is-ancestor "$tag_commit" origin/main; then
+            echo "Release tag ${TAG_NAME} must point to a commit on origin/main."
+            exit 1
+          fi
+
+          if [[ "$version_without_build" == *-* ]]; then
+            echo "npm_dist_tag=next" >> "$GITHUB_OUTPUT"
+            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "npm_dist_tag=latest" >> "$GITHUB_OUTPUT"
+            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify
+        run: npm run verify
+
+      - name: Publish package
+        env:
+          NPM_DIST_TAG: ${{ steps.release.outputs.npm_dist_tag }}
+        run: npm publish --provenance --access public --tag "$NPM_DIST_TAG"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          IS_PRERELEASE: ${{ steps.release.outputs.is_prerelease }}
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            echo "GitHub release ${TAG_NAME} already exists."
+            exit 0
+          fi
+
+          args=("$TAG_NAME" --verify-tag --generate-notes)
+          if [[ "$IS_PRERELEASE" == "true" ]]; then
+            args+=(--prerelease)
+          fi
+          gh release create "${args[@]}"

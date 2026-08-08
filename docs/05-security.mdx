@@ -1,0 +1,133 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Docs/Security Model" />
+
+# Security model
+
+Vue escapes text rendered through interpolation, and `formatText` leaves
+micromark's dangerous-HTML and dangerous-protocol options disabled. Those are
+useful defaults, not a blanket guarantee that every value passed through the
+component API is trusted or safe for your application. The host remains
+responsible for authorization, URL policy, resource limits, and any stronger
+sanitization required by its threat model.
+
+## Message text and Markdown
+
+`MessageTemplate` renders message bodies through `formatText` and then inserts
+the generated markup with `v-html` when Markdown is enabled. In the current
+formatter:
+
+- Raw HTML in Markdown is not enabled, so input such as `<script>` is encoded
+  rather than copied into the output as an element.
+- Micromark's URI sanitization is used for Markdown links and the custom GFM
+  literal-autolink output. Dangerous protocols are not enabled.
+- The GFM tag-filter HTML extension is present, but it is not an HTML sanitizer
+  and does not inspect arbitrary event-handler attributes. Do not describe it
+  as one.
+- A browser-only post-pass sets labels on generated task-list checkboxes. It
+  does not sanitize the generated HTML.
+
+The formatter configuration and its extensions are part of this security
+boundary. Re-audit it when enabling raw HTML, adding a syntax extension, or
+changing link generation.
+
+Running DOMPurify on the raw Markdown before parsing is not equivalent to
+sanitizing the generated HTML: Markdown can create elements and URLs that did
+not exist as raw HTML in the input. If your policy requires an HTML sanitizer,
+render and sanitize the final formatter output in a host-controlled renderer
+before inserting it. `MessageTemplate` does not currently expose a sanitizer
+hook. The simpler strict mode is to disable Markdown; the component then
+renders the message value through Vue text interpolation:
+
+```vue
+<Chat :text-formatting="{ markdown: false }" />
+```
+
+Independently of XSS, bound the accepted message length and nesting complexity
+at your API boundary. Large Markdown tables, deeply nested input, and very long
+URLs can consume substantial parsing or layout time.
+
+## Remote-resource URLs
+
+Avatar and attachment URLs are assigned through Vue style-property bindings or
+media `src` properties. A quote or semicolon inside one `background-image`
+value does not create a second CSS declaration, so the often-cited
+`url('...'); other-property: ...` injection example does not match this
+implementation. Untrusted URLs still matter because rendering them can make a
+browser request, expose network metadata, load large or hostile media, or reach
+a same-origin endpoint with the user's ambient credentials.
+
+| Source field                 | Renders in                                                       | How                                   |
+| ---------------------------- | ---------------------------------------------------------------- | ------------------------------------- |
+| `Chat.avatar`                | `ChatHeader`, `ChatsItem`                                        | CSS `background-image`                |
+| `User.avatar`                | `ChatUserTag`, `ChatHeader` (1:1 chats), `ChatsItem` (1:1 chats) | CSS `background-image`                |
+| `Message.files[].url`        | `MessageFile`, `MediaPreview`, `AudioPlayer`                     | Media `src` or CSS `background-image` |
+| `Message.files[].previewUrl` | `MessageFile` while an image is loading                          | CSS `background-image`                |
+| `Message.reply.files[0].url` | `MessageReply`                                                   | Media `src` or CSS `background-image` |
+| `ChatFileItem.localUrl`      | Composer previews                                                | Media `src` or CSS `background-image` |
+
+Apply a URL policy before values reach the components:
+
+- Allow only the schemes and origins your application needs. `https:` is a
+  common remote default; permit `blob:` only for object URLs your application
+  created and owns.
+- Treat `data:` as a separate capability rather than including it in a broad
+  image allowlist. It can carry large inline resources and active formats.
+- Enforce media type and byte-size limits server-side. The composer's
+  `accept`, `maxFiles`, and `maxFileSize` props are user-interface constraints,
+  not authorization or upload validation.
+- Use a restrictive Content Security Policy as defense in depth. Configure
+  `img-src` and `media-src` for the origins and schemes you actually use.
+
+## Link behavior
+
+`singleLine` can be combined with the Markdown pass. `linkify` is consulted
+only while Markdown is enabled: disabling it suppresses literal URL and email
+autolinking, but explicit Markdown links such as `[label](https://example.com)`
+still render as links. `MessageTemplate` defaults literal autolinks to
+`target="_blank"` with
+`rel="noopener noreferrer"`; retain an appropriate `rel` if you override those
+options. Treat `linkOptions` as trusted application configuration, not message
+data: the custom literal-autolink extension interpolates those option strings
+into generated attributes and does not provide a runtime validation boundary.
+
+## Mention tags
+
+`<@id>` tokens in message bodies resolve to clickable spans via the
+`userTag` micromark extension. The extension reads the user's
+`name` and renders it inside a `<span data-user-id="…">@Name</span>`
+with both the name and id encoded by micromark. Unknown ids are encoded and
+rendered as the original token. Keep the id and name length-bounded even though
+the current renderer encodes them.
+
+## File downloads
+
+Files emitted through the `open-file` event with `action: 'download'`
+are _not_ downloaded by the library. The component just emits the
+event with the `MessageFile` payload; your handler decides whether
+to fetch + save the bytes, navigate to a hosted URL, etc. This is
+intentional — chat libraries should not be in the business of
+deciding download behavior.
+
+Set `Message.files[].previewable` to `false` when an image or video URL
+requires authorization and cannot be loaded directly by the browser. The
+top-level `MessageFile` renders it as a generic file and emits `open-file`
+instead of placing that URL in its image or video markup. This flag is not a
+general URL security control: reply attachments and audio playback follow
+separate render paths, and your `open-file` handler must still authorize the
+requested file.
+
+## SSR
+
+The project does not currently certify full SSR or hydration safety. Some
+helpers guard browser globals, while component paths still depend on DOM APIs.
+Use the client-only patterns in [SSR](?path=/docs/docs-ssr--docs).
+
+## Reporting
+
+For a suspected vulnerability, use the repository's
+[private security-advisory form](https://github.com/advanced-chat/advanced-chat-components/security/advisories/new)
+rather than publishing exploit details in an issue. The form requires a GitHub
+account. See the repository's
+`SECURITY.md` for supported release lines and reporting scope; it does not
+guarantee a response or resolution time.

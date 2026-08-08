@@ -1,0 +1,148 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Docs/Theming" />
+
+# Theming
+
+The component palette in `@advanced-chat/components` is driven primarily by
+CSS custom properties. The `Layout` component (which `AdvancedChat` mounts for
+you) emits the complete active palette as inline CSS variables on its root
+element. Use the object-form `theme` prop or `Layout.styles` to override that
+inline map. Ordinary author stylesheet declarations on the same element, or
+variables inherited from an ancestor, lose to the inline values.
+
+There is no shadow DOM or component-level CSS-in-JS. Component selectors remain
+available to host stylesheets, but palette overrides have the inline-style
+specificity described above.
+
+## Built-in themes
+
+The Vue blocks in this guide are intentionally small template excerpts and
+assume their named components are imported from `@advanced-chat/components`.
+
+```vue
+<Layout theme="light">…</Layout>
+<Layout theme="dark">…</Layout>
+<Layout theme="auto">…</Layout>
+```
+
+| Value              | Behavior                                                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `'light'`          | Light palette, fixed.                                                                                                   |
+| `'dark'`           | Dark palette, fixed.                                                                                                    |
+| `'auto'` (default) | Follows `prefers-color-scheme` reactively. The active palette flips when the user's OS preference changes — no remount. |
+
+## Override map
+
+Pass an object to override individual variables on top of the
+resolved palette:
+
+```vue
+<Layout
+  :theme="{
+    base: 'dark',
+    overrides: {
+      '--chat-message-bg-color-me': '#0d579c',
+      '--chat-message-color': '#f7f9fb',
+    },
+  }"
+/>
+```
+
+The `base` field picks the palette you're starting from (`'light'`
+or `'dark'`); `overrides` is a `Partial<Styles>` deep-merged on top.
+
+## Per-instance overrides
+
+`Layout.styles` accepts a separate `Partial<Styles>` that's applied
+as the _final_ layer — useful when one mount needs to look slightly
+different without forking a full theme. `AdvancedChat` does not have
+a `styles` prop; use its object-form `theme` for per-instance
+overrides.
+
+```vue
+<Layout theme="dark" :styles="{ '--chat-container-border-radius': '0px' }" />
+```
+
+Applied order, lowest to highest: bundled palette → `theme.overrides`
+→ `Layout.styles`.
+
+## Targeting from your own stylesheet
+
+The supported override path is a prop, not an ordinary stylesheet rule:
+
+```vue
+<AdvancedChat
+  :theme="{
+    base: 'light',
+    overrides: { '--chat-message-bg-color-me': '#0d579c' },
+  }"
+/>
+```
+
+For direct `Layout` composition, put the same value in `styles`. An author rule
+with `!important` can beat a normal inline declaration, but relying on an
+internal root class and `!important` is intentionally not the documented theme
+API. Normal stylesheet rules are still appropriate for non-palette layout or
+component-selector changes.
+
+## The full variable list
+
+The supported CSS custom properties are typed via the exported `Styles`
+interface:
+
+```ts
+import type { Styles } from '@advanced-chat/components'
+```
+
+Hover over the type in your editor to get the full list with field
+names. Use `getThemeStyles('light')` or `getThemeStyles('dark')` when code needs
+the current default map; the package does not export its source JSON files.
+
+A sampling of the most-overridden ones:
+
+| Variable                         | What it controls                             |
+| -------------------------------- | -------------------------------------------- |
+| `--chat-content-bg-color`        | Main message-list background.                |
+| `--chat-sidemenu-bg-color`       | Chat-list (sidebar) background.              |
+| `--chat-message-bg-color`        | Default message bubble.                      |
+| `--chat-message-bg-color-me`     | Own-message bubble.                          |
+| `--chat-message-color`           | Default message text.                        |
+| `--chat-footer-bg-color`         | Composer background.                         |
+| `--chat-bg-color-input`          | Textarea background.                         |
+| `--chat-color`                   | Default text on the message-list background. |
+| `--chat-container-border-radius` | Outer container radius.                      |
+| `--chat-container-box-shadow`    | Outer container drop shadow.                 |
+
+## Message links
+
+`MessageTemplate` turns literal URLs and Markdown links into `<a>` elements.
+`linkOptions.target` and `linkOptions.rel` are applied to GFM literal autolinks;
+ordinary `[label](url)` Markdown links use micromark's link output and do not
+receive those options.
+
+When rendered inside `Layout`, anchors use
+`color: var(--chat-message-color-tag); font-weight: 600`. There is no dedicated
+link token today: changing `--chat-message-color-tag` through `theme` or
+`Layout.styles` changes both links and mention tags. Light DOM also permits a
+more targeted host anchor selector when those two surfaces need different
+colors; normal selector specificity and stylesheet order apply to that direct
+`color` override.
+
+## Reactive theme: `useThemeStyles`
+
+If you're rendering primitives outside of `Layout` (e.g. embedding
+`Message` somewhere on its own), you can call `useThemeStyles`
+yourself:
+
+```ts
+import { ref } from 'vue'
+import { useThemeStyles, type Theme } from '@advanced-chat/components'
+
+const theme = ref<Theme>('auto')
+const cssVars = useThemeStyles(theme)
+// cssVars is a Ref<Styles>; bind it to :style on a wrapper.
+```
+
+The composable handles `prefers-color-scheme` change events for
+`'auto'` and tears the listener down on unmount.

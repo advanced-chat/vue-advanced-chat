@@ -1,0 +1,148 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Composables/useAutocomplete" />
+
+# useAutocomplete
+
+Active-index state machine for floating autocomplete menus. The same
+composable powers `ChatEmojis` and `ChatUserTag` under the hood — you
+can use it directly to build slash-command menus, mention pickers,
+emoji shortcuts, or anything else that lets a user pick from a
+filtered list driven by typing.
+
+The signal-driven shape (rather than direct keyboard handlers) lets
+the parent component decide which keys mean navigate / commit. The
+composable owns nothing but the active index.
+
+## Signature
+
+```ts
+import { useAutocomplete } from '@advanced-chat/components'
+
+const { activeIndex, setActiveIndex } = useAutocomplete<T>({
+  items,
+  selectSignal,
+  navSignal,
+  onCommit,
+  onNavigate,
+})
+```
+
+## Options
+
+| Field          | Type                                | Description                                                                                                                                                         |
+| -------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `items`        | `MaybeRefOrGetter<T[]>`             | Reactive suggestions. Initial evaluation selects `0` when non-empty. Replacement and in-place length changes reset the index; same-length replacements preserve it. |
+| `selectSignal` | `MaybeRefOrGetter<boolean \| null>` | When this flips truthy, the active item is committed via `onCommit`. Toggle it (e.g. `true` → `false` → `true`) so each commit fires its own watcher tick.          |
+| `navSignal`    | `MaybeRefOrGetter<number \| null>`  | Positive → step forward; negative → step backward. The watcher steps by exactly one on each change regardless of magnitude.                                         |
+| `onCommit`     | `(item: T) => void`                 | Fired with the active item when `selectSignal` flips truthy.                                                                                                        |
+| `onNavigate`   | `() => void`                        | Fired after every nonzero `navSignal`, including at a list boundary where the index cannot move. Typically resets `navSignal` to `null`.                            |
+
+## Returns
+
+| Field            | Type                              | Description                                                    |
+| ---------------- | --------------------------------- | -------------------------------------------------------------- |
+| `activeIndex`    | `Readonly<Ref<number \| null>>`   | Currently highlighted index, or `null` when the list is empty. |
+| `setActiveIndex` | `(index: number \| null) => void` | Manually set the active index (e.g. on hover).                 |
+
+## Example — slash-command menu
+
+```vue
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useAutocomplete } from '@advanced-chat/components'
+
+const message = ref('')
+const commands = [
+  { id: 'mute', label: 'Mute notifications' },
+  { id: 'leave', label: 'Leave chat' },
+  { id: 'invite', label: 'Invite participant' },
+]
+
+const runCommand = (id: string) => {
+  console.log(`Run command: ${id}`)
+}
+
+const filtered = computed(() => {
+  const m = message.value.match(/^\/(\w*)$/)
+  if (!m) return []
+  const q = (m[1] || '').toLowerCase()
+  return commands.filter((c) => c.id.startsWith(q))
+})
+
+const selectSignal = ref<boolean | null>(null)
+const navSignal = ref<number | null>(null)
+
+const { activeIndex, setActiveIndex } = useAutocomplete({
+  items: filtered,
+  selectSignal,
+  navSignal,
+  onCommit: (cmd) => {
+    message.value = ''
+    runCommand(cmd.id)
+    selectSignal.value = false
+  },
+  onNavigate: () => {
+    navSignal.value = null
+  },
+})
+
+const onKeydown = (e: KeyboardEvent) => {
+  if (!filtered.value.length) return
+  if (e.key === 'ArrowDown') {
+    e.preventDefault()
+    navSignal.value = 1
+  }
+  if (e.key === 'ArrowUp') {
+    e.preventDefault()
+    navSignal.value = -1
+  }
+  if (e.key === 'Enter') {
+    e.preventDefault()
+    selectSignal.value = !selectSignal.value
+  }
+}
+
+const selectCommand = (index: number) => {
+  setActiveIndex(index)
+  selectSignal.value = !selectSignal.value
+}
+</script>
+
+<template>
+  <textarea v-model="message" @keydown="onKeydown" />
+  <ul v-if="filtered.length" role="listbox" aria-label="Chat commands">
+    <li
+      v-for="(cmd, i) in filtered"
+      :key="cmd.id"
+      role="option"
+      :aria-selected="i === activeIndex"
+      :class="{ active: i === activeIndex }"
+      @mouseover="setActiveIndex(i)"
+      @click="selectCommand(i)"
+    >
+      {{ cmd.label }}
+    </li>
+  </ul>
+</template>
+```
+
+## Notes
+
+- The items watcher tracks only the array length. Replacement arrays and
+  in-place mutations such as `push` or `splice` reset the index when their
+  length changes, without traversing nested item data.
+- `selectSignal` and `navSignal` are intentionally separate from the
+  keyboard event itself. The parent translates whatever keys it
+  wants (Enter, Tab, ArrowDown, etc.) into the signal flips, so the
+  composable doesn't bake in any specific keymap.
+- `setActiveIndex` does not clamp or validate its argument. Keep manually set
+  indexes within the current items array; committing an out-of-range index is a
+  no-op.
+- Set the clicked index before toggling `selectSignal`, as `selectCommand` does
+  above. Hover commonly updates the index for a mouse, but touch activation
+  does not provide that preceding hover event.
+- For a rendered menu with positioning, slots, listbox/option roles, and active
+  descendant reporting, reach for `<AutocompleteMenu>`. The host still owns the
+  input or combobox attributes, keyboard policy, focus behavior, and accessible
+  labeling for the complete interaction.

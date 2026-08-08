@@ -1,0 +1,212 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Cookbook/ChatKitty BYOC" />
+
+# ChatKitty BYOC integration
+
+`@advanced-chat/components` is the presentation boundary. Keep ChatKitty sessions,
+channel provisioning, history, realtime subscriptions, reconciliation, uploads,
+notification delivery, and moderation policy in the host application and its
+server-side integration layer.
+
+This page is an **illustrative architecture adapter**, not a versioned ChatKitty
+SDK recipe. As checked on August 8, 2026, the
+[ChatKitty public site](https://chatkitty.com/) describes BYOC as a versioned OCI
+service backed by PostgreSQL and Valkey and reached over HTTPS and WebSocket.
+This repository does not pin a ChatKitty SDK/API contract, and the public BYOC
+page does not link a current browser resource schema, so field names, cursors,
+event names, and delivery semantics must follow the API documentation supplied
+with your deployment.
+
+## Model boundary
+
+Normalize deployment-specific resources into stable UI models:
+
+| Transport concept               | UI value                                                  |
+| ------------------------------- | --------------------------------------------------------- |
+| authenticated user identifier   | `User.id` (normalize to a stable string)                  |
+| display name and presence       | required `User.name` and `User.status`                    |
+| channel/conversation identifier | `ChatModel.id`                                            |
+| message body                    | `MessageModel.content`                                    |
+| creation timestamp              | ISO-8601 string in `MessageModel.createdAt`               |
+| delivered/read evidence         | `MessageModel.status`                                     |
+| authorized attachment metadata  | `MessageFileModel`; do not expose service/storage secrets |
+
+Keep a separate map from each UI chat ID to its ChatKitty channel ID. Do not put
+ChatKitty credentials or transport clients in component props.
+
+## Browser host
+
+```ts
+import '@advanced-chat/components/web-component'
+import '@advanced-chat/components/web-component/styles'
+import type { ChatModel, MessageModel, User } from '@advanced-chat/components'
+import type {
+  AdvancedChatEventMap,
+  AdvancedChatHTMLElement,
+} from '@advanced-chat/components/web-component'
+
+type SendMessagePayload = Omit<AdvancedChatEventMap['send-message']['detail'], 'reply'> & {
+  reply?: NonNullable<AdvancedChatEventMap['send-message']['detail']['reply']>
+}
+
+interface ChatKittyAdapter {
+  currentUser(): Promise<User>
+  listChats(): Promise<ChatModel[]>
+  listMessages(chatId: ChatModel['id']): Promise<{
+    messages: MessageModel[]
+    exhausted: boolean
+  }>
+  openChat(chatId: ChatModel['id']): Promise<void>
+  loadOlderMessages(
+    chatId: ChatModel['id'],
+    before: MessageModel['id'],
+  ): Promise<{
+    messages: MessageModel[]
+    exhausted: boolean
+  }>
+  sendMessage(payload: SendMessagePayload): Promise<void>
+  openAuthorizedFile(file: NonNullable<MessageModel['files']>[number]): Promise<void>
+  subscribe(onChange: () => void): () => void
+}
+
+declare function createAdapterForYourDeployment(): ChatKittyAdapter
+declare function refreshUiModels(): Promise<void>
+
+const adapter: ChatKittyAdapter = createAdapterForYourDeployment()
+const element = document.querySelector<AdvancedChatHTMLElement>('advanced-chat-components')
+
+if (!element) throw new Error('Missing <advanced-chat-components> host')
+
+element.currentUser = await adapter.currentUser()
+const chats = await adapter.listChats()
+element.chats = chats
+element.chatsLoaded = true
+element.showAddChat = false
+element.messageActions = []
+element.selectionActions = []
+element.showReactionEmojis = false
+
+let selectionVersion = 0
+
+const selectChat = async (chat: ChatModel) => {
+  const version = ++selectionVersion
+
+  // The event does not update the element's public properties for the host.
+  element.chat = chat
+  element.messages = []
+  element.loadingMessages = true
+  element.messagesLoaded = false
+
+  try {
+    await adapter.openChat(chat.id)
+    const page = await adapter.listMessages(chat.id)
+    if (version !== selectionVersion || element.chat?.id !== chat.id) return
+
+    element.messages = [...page.messages]
+    element.messagesLoaded = page.exhausted
+  } catch (error) {
+    if (version === selectionVersion) {
+      element.messagesLoaded = true
+      element.status = 'error'
+      element.statusMessage = 'Unable to open this conversation.'
+    }
+    console.error(error)
+  } finally {
+    if (version === selectionVersion) element.loadingMessages = false
+  }
+}
+
+const initialChat = chats[0]
+if (initialChat) {
+  await selectChat(initialChat)
+} else {
+  element.chat = null
+  element.messages = []
+  element.loadingMessages = false
+  element.messagesLoaded = true
+}
+
+const onOpenChat = (event: AdvancedChatEventMap['open-chat']) => {
+  element.status = 'ready'
+  element.statusMessage = ''
+  void selectChat(event.detail)
+}
+const onFetchMessages = async () => {
+  const chat = element.chat
+  const currentMessages = element.messages ?? []
+  const oldest = currentMessages[0]
+  if (!chat || !oldest || element.loadingMessages || element.messagesLoaded) return
+
+  const version = selectionVersion
+  element.loadingMessages = true
+  try {
+    const page = await adapter.loadOlderMessages(chat.id, oldest.id)
+    if (version !== selectionVersion || element.chat?.id !== chat.id) return
+
+    const latestMessages = element.messages ?? []
+    const loadedIds = new Set(latestMessages.map((message) => message.id))
+    element.messages = [
+      ...page.messages.filter((message) => !loadedIds.has(message.id)),
+      ...latestMessages,
+    ]
+    element.messagesLoaded = page.exhausted
+  } catch (error) {
+    console.error(error)
+  } finally {
+    if (version === selectionVersion) element.loadingMessages = false
+  }
+}
+const onSendMessage = (event: AdvancedChatEventMap['send-message']) => {
+  const { reply, ...message } = event.detail
+  void adapter.sendMessage(reply ? { ...message, reply } : message)
+}
+const onOpenFile = (event: AdvancedChatEventMap['open-file']) => {
+  void adapter.openAuthorizedFile(event.detail.file)
+}
+
+element.addEventListener('open-chat', onOpenChat)
+element.addEventListener('fetch-messages', onFetchMessages)
+element.addEventListener('send-message', onSendMessage)
+element.addEventListener('open-file', onOpenFile)
+const unsubscribe = adapter.subscribe(() => void refreshUiModels())
+
+const dispose = () => {
+  unsubscribe()
+  element.removeEventListener('open-chat', onOpenChat)
+  element.removeEventListener('fetch-messages', onFetchMessages)
+  element.removeEventListener('send-message', onSendMessage)
+  element.removeEventListener('open-file', onOpenFile)
+}
+```
+
+`createAdapterForYourDeployment` and `refreshUiModels` are intentionally
+application-specific. The handler above normalizes a missing reply by omitting
+the adapter field rather than alternating between `null` and `undefined`. The
+adapter should preserve that convention on the server. Call `dispose` from the
+host framework's unmount lifecycle; do not leave realtime subscriptions or DOM
+listeners attached after navigation.
+
+Assign arrays and objects as element properties. Do not serialize them into HTML
+attributes. Every library event is a standard `CustomEvent` whose payload is
+available directly at `event.detail`.
+
+## Recovery and permissions
+
+Use `status="offline"` while durable sends remain available and
+`status="reconnecting"` during transport recovery. Reconcile HTTP history after
+realtime reconnect, then replace `chats`, `chat`, and `messages` with fresh
+arrays and objects. Use `composerDisabled` for read-only conversations and
+`status="permission-denied"` when the user cannot view the conversation.
+
+Only configure actions the backend actually supports. An empty `messageActions`
+array removes message-menu actions such as edit, delete, reply, moderation, or
+block. Reactions are a separate control; set `showReactionEmojis` to `false`
+unless the integration persists `send-message-reaction` events.
+
+The browser must never hold administrative credentials or decide channel
+membership. Authenticate requests with the host application's user session and
+enforce channel membership, attachment access, moderation roles, and action
+permissions server-side for every HTTP and WebSocket operation. UI props such as
+`composerDisabled`, `messageActions`, and `status` communicate capability; they
+are not authorization controls.

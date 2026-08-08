@@ -1,0 +1,106 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Composables/useMessageSelection" />
+
+# useMessageSelection
+
+Bulk-selection state for any list of id-bearing items. `Chat.vue`
+uses it for the message-selection toolbar; you can use it for chat
+rows, files, or anything else where a host wants to expose
+multi-select actions (forward, delete, archive, etc.).
+
+The composable is generic — `<T extends { id: Id }>` — so the
+selection's `selected.value` is typed correctly for whatever you put
+in.
+
+## Signature
+
+```ts
+import { useMessageSelection, type Id } from '@advanced-chat/components'
+
+type Selectable = { id: Id }
+
+const { selected, selectedIds, toggle, clear, cancel } = useMessageSelection<Selectable>({
+  enabled,
+  resetKey,
+  onCancel,
+})
+```
+
+## Options
+
+| Field      | Type                        | Description                                                                                                                |
+| ---------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`  | `MaybeRefOrGetter<boolean>` | When falsy, `toggle` is a no-op. Wire to a "selection mode is active" flag.                                                |
+| `resetKey` | `MaybeRefOrGetter<unknown>` | Watching this clears the selection whenever it changes. Pass `() => activeChat.id` to clear when the active chat switches. |
+| `onCancel` | `() => void`                | Fired when `cancel()` is called — typically used to also notify a parent that selection mode should close.                 |
+
+## Returns
+
+| Field         | Type                   | Description                                                                                          |
+| ------------- | ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| `selected`    | `Ref<T[]>`             | Currently selected items, in selection order.                                                        |
+| `selectedIds` | `ComputedRef<Set<Id>>` | Convenience set for templates: `selectedIds.value.has(item.id)`. Recomputed when `selected` changes. |
+| `toggle`      | `(item: T) => void`    | Add the item if not selected; remove it if already selected. No-op when `enabled` is false.          |
+| `clear`       | `() => void`           | Empty the selection without invoking `onCancel`.                                                     |
+| `cancel`      | `() => void`           | Empty the selection and invoke `onCancel`.                                                           |
+
+## Example — chat-row selection
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useMessageSelection, type ChatModel } from '@advanced-chat/components'
+
+declare function archiveChats(ids: string[]): void
+declare function openChat(chat: ChatModel): void
+
+const chats = ref<ChatModel[]>([])
+const selectionMode = ref(false)
+
+const { selected, selectedIds, toggle, cancel } = useMessageSelection<ChatModel>({
+  enabled: selectionMode,
+  onCancel: () => {
+    selectionMode.value = false
+  },
+})
+
+const archive = () => {
+  archiveChats(selected.value.map((c) => c.id))
+  cancel()
+}
+</script>
+
+<template>
+  <button @click="selectionMode ? cancel() : (selectionMode = true)">
+    {{ selectionMode ? 'Exit selection' : 'Select' }}
+  </button>
+  <button v-if="selected.length" @click="archive">Archive ({{ selected.length }})</button>
+  <button v-if="selected.length" @click="cancel">Cancel</button>
+  <div
+    v-for="chat in chats"
+    :key="chat.id"
+    :class="{ selected: selectedIds.has(chat.id) }"
+    @click="selectionMode ? toggle(chat) : openChat(chat)"
+  >
+    {{ chat.name }}
+  </div>
+</template>
+```
+
+`archiveChats` and `openChat` are intentionally declared as app-owned functions
+in this example.
+
+## Notes
+
+- `selected.value` is always an array, never `undefined`. Safe to
+  call `.length` / `.map` directly.
+- `clear()` skips `onCancel`. Use it when you want to empty the
+  selection programmatically (after a successful action) without
+  leaving selection mode. Use `cancel()` when the user explicitly
+  presses a "cancel" button.
+- The composable does not track which item was _last_ selected. If
+  you need that for shift-click range-select, layer it on top.
+- Changing `enabled` to `false` prevents future toggles but does not clear an
+  existing selection. Call `clear()` or `cancel()` when leaving selection mode
+  if that state should be discarded.

@@ -1,0 +1,54 @@
+name: Verify Pull Request
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Format Check
+        run: npm run format:check
+
+      - name: Typecheck
+        run: npm run type-check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run Storybook browser and accessibility tests
+        run: npm run test:storybook
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify Pack Contract
+        run: npm run verify:pack
+
+      - name: Verify Web Component
+        run: npm run verify:web-component
+
+      - name: Build Storybook
+        run: npm run build-storybook

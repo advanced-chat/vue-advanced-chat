@@ -1,0 +1,203 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Cookbook/Pagination" />
+
+# Pagination
+
+`Chat` and `Chats` both fire pagination events when the user
+scrolls near the boundary of the list. The host responds by
+fetching older items and prepending (for messages) or appending
+(for chats) them to the reactive ref.
+
+## Messages
+
+`Chat` emits `fetch-messages` when a non-empty messages list is within 60 px of
+the top, suppressed while `loadingMessages` or `messagesLoaded` is `true`.
+
+```vue
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import { Chat } from '@advanced-chat/components'
+import type { ChatModel, MessageModel, UserReference } from '@advanced-chat/components'
+
+interface MessagesApi {
+  getMessages(options: {
+    chatId: ChatModel['id']
+    before?: MessageModel['id']
+    limit: number
+  }): Promise<MessageModel[]>
+}
+
+const { currentUser, activeChat, api } = defineProps<{
+  currentUser: UserReference
+  activeChat: ChatModel | null
+  api: MessagesApi
+}>()
+
+const messages = ref<MessageModel[]>([])
+const loadingMessages = ref(false)
+const messagesLoaded = ref(false)
+let requestVersion = 0
+
+const fetchOlder = async () => {
+  const version = requestVersion
+  const chatId = activeChat?.id
+  if (!chatId || loadingMessages.value || messagesLoaded.value) return
+  loadingMessages.value = true
+
+  try {
+    const oldestId = messages.value[0]?.id
+    const next = await api.getMessages({ chatId, before: oldestId, limit: 50 })
+    if (version !== requestVersion || activeChat?.id !== chatId) return
+    const loadedIds = new Set(messages.value.map((message) => message.id))
+
+    // Replace the array and prepend only records not already delivered.
+    messages.value = [...next.filter((message) => !loadedIds.has(message.id)), ...messages.value]
+    messagesLoaded.value = next.length < 50
+  } finally {
+    if (version === requestVersion) loadingMessages.value = false
+  }
+}
+
+watch(
+  () => activeChat?.id,
+  () => {
+    requestVersion += 1
+    messages.value = []
+    messagesLoaded.value = false
+    loadingMessages.value = false
+    void fetchOlder()
+  },
+  { immediate: true },
+)
+</script>
+
+<template>
+  <Chat
+    :current-user="currentUser"
+    :chat="activeChat"
+    :messages="messages"
+    :loading-messages="loadingMessages"
+    :messages-loaded="messagesLoaded"
+    @fetch-messages="fetchOlder"
+  />
+</template>
+```
+
+### Use immutable array updates
+
+The library compares first and last message IDs to distinguish a
+history prepend from a newly-arrived message. Replace the array after
+each page so Vue and custom-element hosts observe the update:
+
+- Prepend immutably (`messages.value = [...older, ...messages.value]`), as in
+  the snippet above. Do not use `unshift` or mutate the existing array in
+  custom-element hosts, where assigning a new property value is the update
+  boundary.
+- Or set `messages.value = await fetchAll()` _once_, with the
+  full list, and never paginate. (Fine for small chats but not
+  what most apps want.)
+
+### Scroll-position preservation
+
+`Chat` snapshots the scroll height when it emits `fetch-messages` and
+restores the reader's relative position after older messages are
+prepended. It also gates duplicate fetch events until the page lands
+or `loadingMessages` returns to `false`.
+
+## Chats
+
+`Chats` emits `fetch-more-chats` when its bottom sentinel intersects the list's
+scroll viewport. It suppresses duplicate requests while its internal loader is
+active, or while `loadingChats` or `chatsLoaded` is `true`. The pattern is the
+inverse: older chats append:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Chats } from '@advanced-chat/components'
+import type { ChatModel, UserReference } from '@advanced-chat/components'
+
+interface ChatsApi {
+  getChats(options: { after?: ChatModel['id']; limit: number }): Promise<ChatModel[]>
+}
+
+const { currentUser, api } = defineProps<{
+  currentUser: UserReference
+  api: ChatsApi
+}>()
+
+const chats = ref<ChatModel[]>([])
+const chatsLoaded = ref(false)
+const loadingMoreChats = ref(false)
+
+const fetchMoreChats = async () => {
+  if (loadingMoreChats.value || chatsLoaded.value) return
+  loadingMoreChats.value = true
+
+  try {
+    const oldestId = chats.value[chats.value.length - 1]?.id
+    const next = await api.getChats({ after: oldestId, limit: 25 })
+    const loadedIds = new Set(chats.value.map((chat) => chat.id))
+
+    chats.value = [...chats.value, ...next.filter((chat) => !loadedIds.has(chat.id))]
+    chatsLoaded.value = next.length < 25
+  } finally {
+    loadingMoreChats.value = false
+  }
+}
+</script>
+
+<template>
+  <Chats
+    :current-user="currentUser"
+    :chats="chats"
+    :chats-loaded="chatsLoaded"
+    @fetch-more-chats="fetchMoreChats"
+  />
+</template>
+```
+
+`Chats` also has a `minimumVisibleChats` prop (default `10`). When
+the local list (after applying the search filter) falls below
+that, the component will eagerly call `fetch-more-chats` even
+without the user scrolling — useful for narrow viewports where the
+sidebar shows fewer chats than the threshold by default.
+
+## Combining with `useInfiniteScroll`
+
+If you're rendering a _custom_ list (not `Chats` / `Chat`),
+`useInfiniteScroll` is the same machinery without the surrounding
+component. See its
+[reference page](?path=/docs/composables-useinfinitescroll--docs)
+for the API.
+
+## What `messagesLoaded` / `chatsLoaded` mean
+
+These are "no more pages available" signals. Once you flip them
+to `true`, the components stop firing the `fetch-*` event. They
+stay `true` until you flip them back (e.g. when the user switches
+chats and the new chat starts at zero loaded messages).
+
+The library does not infer backend exhaustion. If your backend
+returns 0 items, you flip the flag; if it returns a partial page
+that you know is the last one, you can flip the flag eagerly
+without waiting for an empty response.
+
+## Auto-scroll interaction
+
+`Chat`'s `autoScroll: { onReceive }` policy interacts with
+pagination:
+
+- When the viewer's own message appends (`messages[length - 1]` changed),
+  `onSend` scrolls to the bottom by default.
+- When another user's message appends, `onReceive` scrolls only if the reader was
+  already at the bottom.
+- When older messages prepend (`messages[0]` changed), the library preserves the
+  relative reading position instead of scrolling to the latest message.
+
+If `autoScroll: { onReceive: false }`, incoming messages do not trigger an
+automatic scroll. The scroll-to-latest pill is shown when the component's
+scroll state reports that the reader is away from the bottom; disabling
+receive auto-scroll does not by itself force the pill while the reader is
+still at the bottom.

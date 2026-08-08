@@ -1,0 +1,352 @@
+<script setup lang="ts">
+import ChatsSearch from '@/components/ChatsSearch.vue'
+import type { Action, Chat, Id, UserReference } from '../models'
+import Loader from '@/components/Loader.vue'
+import { nextTick, ref, useTemplateRef, watch } from 'vue'
+import ChatsItem from '@/components/ChatsItem.vue'
+
+import { useInfiniteScroll } from '../composables/use-infinite-scroll'
+import { useLocalSearch } from '../composables/use-local-search'
+import { useLocalizationStrings } from '../localization'
+
+const strings = useLocalizationStrings()
+
+export interface ChatsProps {
+  showChats?: boolean
+  showSearch?: boolean
+  showAddChat?: boolean
+  loadingChats?: boolean
+  /**
+   * Set to `true` once the consumer has delivered every chat available;
+   * this disables further `fetch-more-chats` emissions. When `false`
+   * (the default), the component asks for more chats when the visible
+   * list falls below `minimumVisibleChats` or when the bottom-of-list
+   * sentinel scrolls into view.
+   */
+  chatsLoaded?: boolean
+  minimumVisibleChats?: number
+  isMobile?: boolean
+  currentUser?: UserReference
+  chats?: Array<Chat>
+  chat?: Chat
+  /**
+   * Per-chat-row dropdown actions surfaced through `ChatsItem`.
+   */
+  chatActions?: Array<Action>
+  /**
+   * When true, `search-chat` is emitted but the local filter is not
+   * applied. Use this if the consumer drives chat results from the
+   * server based on the search query.
+   */
+  customSearchEnabled?: boolean
+}
+
+export interface ChatsEvents {
+  /**
+   * Emitted when the search input changes. The local list is filtered
+   * automatically unless `customSearchEnabled` is true.
+   */
+  (event: 'search-chat', query: string): void
+
+  /**
+   * Emitted when the add chat button is clicked
+   */
+  (event: 'add-chat'): void
+
+  /**
+   * Emitted to fetch more chats for infinite scrolling
+   */
+  (event: 'fetch-more-chats'): void
+
+  /**
+   * Emitted when a chat is selected to be shown
+   */
+  (event: 'open-chat', chat: Chat): void
+
+  /**
+   * Emitted when more chats are being loaded
+   */
+  (event: 'loading-more-chats', isLoading: boolean): void
+
+  /**
+   * Emitted when a per-chat dropdown action is triggered.
+   */
+  (event: 'chat-action-handler', payload: { chat: Chat; action: Action }): void
+}
+
+const props = withDefaults(defineProps<ChatsProps>(), {
+  showChats: true,
+  showSearch: true,
+  showAddChat: true,
+  loadingChats: false,
+  chatsLoaded: false,
+  minimumVisibleChats: 10,
+  isMobile: false,
+  chats: () => [],
+  chatActions: () => [],
+  customSearchEnabled: false,
+})
+
+const selectedChatId = ref<Id | null>(null)
+
+const emit = defineEmits<ChatsEvents>()
+
+const { filtered: filteredChats, setQuery } = useLocalSearch<Chat>({
+  items: () => props.chats,
+  field: 'name',
+  custom: () => props.customSearchEnabled,
+  onSearch: (query) => emit('search-chat', query),
+})
+
+const sentinelEl = useTemplateRef<HTMLElement>('sentinelEl')
+const scrollRootEl = useTemplateRef<HTMLElement>('scrollRootEl')
+const showLoader = ref(false)
+
+const { loading: loadingMoreChats, setLoading: setLoadingMore } = useInfiniteScroll({
+  target: sentinelEl,
+  scrollRoot: scrollRootEl,
+  exhausted: () => props.chatsLoaded || props.loadingChats,
+  onLoadMore: () => {
+    showLoader.value = true
+    emit('fetch-more-chats')
+  },
+})
+
+const loadMoreChats = () => {
+  if (loadingMoreChats.value || props.loadingChats || props.chatsLoaded) return
+
+  setLoadingMore(true)
+  showLoader.value = true
+
+  emit('fetch-more-chats')
+}
+
+const finishLoadingMore = () => {
+  setLoadingMore(false)
+  showLoader.value = false
+}
+
+const loadMoreChatsIfNeeded = () => {
+  if (filteredChats.value.length < props.minimumVisibleChats) {
+    loadMoreChats()
+  }
+}
+
+const openChat = (chat: Chat) => {
+  selectedChatId.value = chat.id
+
+  emit('open-chat', chat)
+}
+
+watch(loadingMoreChats, (val) => {
+  emit('loading-more-chats', val)
+})
+
+watch(
+  () => props.chats.length,
+  (newLength, oldLength) => {
+    if (props.chatsLoaded) {
+      finishLoadingMore()
+      return
+    }
+
+    if (oldLength !== undefined && newLength !== oldLength) {
+      finishLoadingMore()
+      void nextTick(loadMoreChatsIfNeeded)
+
+      return
+    }
+
+    loadMoreChatsIfNeeded()
+  },
+  { immediate: true },
+)
+
+watch(
+  () => props.chatsLoaded,
+  (val) => {
+    if (val) {
+      finishLoadingMore()
+    }
+  },
+  { immediate: true },
+)
+
+watch(
+  () => props.loadingChats,
+  (loading, wasLoading) => {
+    if (loading || !wasLoading) return
+
+    finishLoadingMore()
+    void nextTick(loadMoreChatsIfNeeded)
+  },
+)
+
+watch(
+  () => props.chat,
+  (val) => {
+    if (val && !props.isMobile) {
+      selectedChatId.value = val.id
+    }
+  },
+  { immediate: true },
+)
+</script>
+
+<template>
+  <div
+    v-if="currentUser"
+    class="acc-rooms-container"
+    :class="{
+      'acc-rooms-container-full': isMobile,
+      'acc-app-border-r': !isMobile,
+    }"
+  >
+    <!-- @slot Free-form content rendered above the search bar. -->
+    <slot name="chats-header" />
+
+    <!-- @slot Replacement for the default `<ChatsSearch>` row. -->
+    <slot name="chats-search">
+      <ChatsSearch
+        :show-search="showSearch"
+        :show-add-chat="showAddChat"
+        :loading-chats="loadingChats"
+        :chats="chats"
+        @search-chat="setQuery"
+        @add-chat="$emit('add-chat')"
+      >
+      </ChatsSearch>
+    </slot>
+
+    <Loader :show="loadingChats"></Loader>
+
+    <div v-if="!loadingChats && !filteredChats.length" class="acc-rooms-empty">
+      <!-- @slot Empty-state content shown when no chats are available. -->
+      <slot name="chats-empty">
+        {{ strings['chats.empty'] }}
+      </slot>
+    </div>
+
+    <div v-if="!loadingChats" id="rooms-list" ref="scrollRootEl" class="acc-room-list">
+      <div
+        v-for="chat in filteredChats"
+        :id="String(chat.id)"
+        :key="chat.id"
+        class="acc-room-item"
+        :class="{ 'acc-room-selected': selectedChatId === chat.id }"
+        @click="openChat(chat)"
+      >
+        <button
+          type="button"
+          class="acc-room-open"
+          :aria-label="`Open ${chat.name}`"
+          @click.stop="openChat(chat)"
+        />
+        <ChatsItem
+          :current-user="currentUser"
+          :chat="chat"
+          :actions="chatActions"
+          @chat-action-handler="emit('chat-action-handler', $event)"
+        >
+        </ChatsItem>
+      </div>
+      <transition name="acc-fade-message">
+        <div v-if="chats.length && !loadingChats" id="infinite-loader-rooms" ref="sentinelEl">
+          <Loader :show="showLoader" :infinite="true" type="infinite-rooms"></Loader>
+        </div>
+      </transition>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.acc-rooms-container {
+  display: flex;
+  flex-flow: column;
+  flex: 0 0 clamp(280px, 29%, 340px);
+  min-width: 280px;
+  max-width: 380px;
+  position: relative;
+  background: var(--chat-sidemenu-bg-color);
+  height: 100%;
+
+  &.acc-rooms-container-full {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .acc-rooms-empty {
+    font-size: 14px;
+    color: var(--chat-message-color-started);
+    font-style: italic;
+    text-align: center;
+    margin: 40px 0;
+    line-height: 20px;
+    white-space: pre-line;
+  }
+
+  .acc-room-list {
+    flex: 1;
+    position: relative;
+    max-width: 100%;
+    padding: 2px 10px 12px;
+    overflow-y: auto;
+  }
+
+  .acc-room-item {
+    border-radius: 13px;
+    align-items: center;
+    display: flex;
+    flex: 1 1 100%;
+    margin-bottom: 4px;
+    padding: 9px 12px;
+    position: relative;
+    min-height: 74px;
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+
+    .acc-room-open {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      border: 0;
+      border-radius: inherit;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    &:hover {
+      background: var(--chat-sidemenu-bg-color-hover);
+      transform: translateX(2px);
+    }
+
+    &:not(.acc-room-selected) {
+      cursor: pointer;
+    }
+  }
+
+  .acc-room-selected {
+    color: var(--chat-sidemenu-color-active) !important;
+    background: var(--chat-sidemenu-bg-color-active) !important;
+    box-shadow: inset 3px 0 0 var(--chat-sidemenu-color-active);
+
+    &:hover {
+      background: var(--chat-sidemenu-bg-color-active) !important;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .acc-room-list {
+      padding: 0 7px 5px;
+    }
+
+    .acc-room-item {
+      min-height: 60px;
+      padding: 7px 9px;
+    }
+  }
+}
+</style>

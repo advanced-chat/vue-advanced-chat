@@ -1,0 +1,27 @@
+[
+  {
+    "id": "1",
+    "name": "Alice",
+    "avatar": "https://i.pravatar.cc/96?img=1",
+    "status": {
+      "state": "online"
+    }
+  },
+  {
+    "id": "2",
+    "name": "Bob",
+    "avatar": "https://i.pravatar.cc/96?img=12",
+    "status": {
+      "state": "away"
+    }
+  },
+  {
+    "id": "3",
+    "name": "Charlie",
+    "avatar": "https://i.pravatar.cc/96?img=13",
+    "status": {
+      "state": "offline",
+      "lastActiveAt": "2025-11-30T13:22:23Z"
+    }
+  }
+]

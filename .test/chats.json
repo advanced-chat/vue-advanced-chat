@@ -1,0 +1,54 @@
+[
+  {
+    "id": "1",
+    "name": "Alice",
+    "avatar": "https://picsum.photos/200",
+    "lastMessage": {
+      "id": "1",
+      "sender": {
+        "id": "1",
+        "name": "Alice",
+        "status": {
+          "state": "online"
+        }
+      },
+      "content": "Hey there!",
+      "createdAt": "2025-12-01T10:00:00Z"
+    }
+  },
+  {
+    "id": "2",
+    "name": "Bob",
+    "avatar": "https://picsum.photos/200",
+    "lastMessage": {
+      "id": "2",
+      "sender": {
+        "id": "2",
+        "name": "Bob",
+        "status": {
+          "state": "away"
+        }
+      },
+      "content": "What's up?",
+      "createdAt": "2025-12-01T10:05:00Z"
+    }
+  },
+  {
+    "id": "3",
+    "name": "Charlie",
+    "avatar": "https://picsum.photos/200",
+    "lastMessage": {
+      "id": "3",
+      "sender": {
+        "id": "3",
+        "name": "Charlie",
+        "status": {
+          "state": "offline",
+          "lastActiveAt": "2025-11-30T13:22:23Z"
+        }
+      },
+      "content": "See you soon.",
+      "createdAt": "2025-12-01T10:10:00Z"
+    }
+  }
+]

@@ -1,0 +1,454 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "README.md",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "dist/advanced-chat-components.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "name": "AdvancedChatElement",
+          "description": "A backend-agnostic chat interface exposed as a standards-based light-DOM custom element. Assign objects and arrays as DOM properties.",
+          "tagName": "advanced-chat-components",
+          "customElement": true,
+          "members": [
+            {
+              "kind": "field",
+              "name": "height",
+              "type": { "text": "string" },
+              "default": "'600px'"
+            },
+            {
+              "kind": "field",
+              "name": "theme",
+              "type": { "text": "Theme" },
+              "default": "'auto'"
+            },
+            {
+              "kind": "field",
+              "name": "currentUser",
+              "type": { "text": "UserReference | null" },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "chats",
+              "type": { "text": "Chat[]" },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "chat",
+              "type": { "text": "Chat | null" },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "messages",
+              "type": { "text": "Message[]" },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "loadingChats",
+              "type": { "text": "boolean" },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "chatsLoaded",
+              "type": { "text": "boolean" },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "loadingMessages",
+              "type": { "text": "boolean" },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "messagesLoaded",
+              "type": { "text": "boolean" },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "headerActions",
+              "type": { "text": "Action[]" },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "messageActions",
+              "type": { "text": "Action[]" },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "chatActions",
+              "type": { "text": "Action[]" },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "selectionActions",
+              "type": { "text": "Action[]" },
+              "default": "[]"
+            },
+            {
+              "kind": "field",
+              "name": "showChats",
+              "type": { "text": "boolean" },
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "showSearch",
+              "type": { "text": "boolean" },
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "showAddChat",
+              "type": { "text": "boolean" },
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "showFiles",
+              "type": { "text": "boolean" },
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "showEmojis",
+              "type": { "text": "boolean" },
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "showFooter",
+              "type": { "text": "boolean" },
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "showSendIcon",
+              "type": { "text": "boolean" },
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "showReactionEmojis",
+              "type": { "text": "boolean" },
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "showNewMessagesDivider",
+              "type": { "text": "boolean" },
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "textFormatting",
+              "type": { "text": "Partial<TextFormattingOptions>" },
+              "default": "{}"
+            },
+            {
+              "kind": "field",
+              "name": "accept",
+              "type": { "text": "string" },
+              "default": "'*'"
+            },
+            {
+              "kind": "field",
+              "name": "multiple",
+              "type": { "text": "boolean" },
+              "default": "true"
+            },
+            {
+              "kind": "field",
+              "name": "capture",
+              "type": { "text": "'' | 'user' | 'environment'" },
+              "default": "''"
+            },
+            {
+              "kind": "field",
+              "name": "maxFiles",
+              "type": { "text": "number" },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "maxFileSize",
+              "type": { "text": "number" },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "typingIndicatorPosition",
+              "type": { "text": "'header' | 'composer' | 'both' | 'none'" },
+              "default": "'header'"
+            },
+            {
+              "kind": "field",
+              "name": "autoScroll",
+              "type": {
+                "text": "{ onMount?: boolean; onChatSwitch?: boolean; onSend?: boolean; onReceive?: boolean }"
+              },
+              "default": "{ onMount: true, onChatSwitch: true, onSend: true, onReceive: true }"
+            },
+            {
+              "kind": "field",
+              "name": "customSearchEnabled",
+              "type": { "text": "boolean" },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "chatInfoEnabled",
+              "type": { "text": "boolean" },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "status",
+              "type": {
+                "text": "'ready' | 'loading' | 'empty' | 'error' | 'offline' | 'reconnecting' | 'permission-denied'"
+              },
+              "default": "'ready'"
+            },
+            {
+              "kind": "field",
+              "name": "statusMessage",
+              "type": { "text": "string" },
+              "default": "''"
+            },
+            {
+              "kind": "field",
+              "name": "retryLabel",
+              "type": { "text": "string" },
+              "default": "''"
+            },
+            {
+              "kind": "field",
+              "name": "composerDisabled",
+              "type": { "text": "boolean" },
+              "default": "false"
+            }
+          ],
+          "attributes": [
+            { "name": "height", "fieldName": "height", "type": { "text": "string" } },
+            {
+              "name": "theme",
+              "fieldName": "theme",
+              "type": { "text": "'light' | 'dark' | 'auto'" }
+            },
+            {
+              "name": "loading-chats",
+              "fieldName": "loadingChats",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "chats-loaded",
+              "fieldName": "chatsLoaded",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "loading-messages",
+              "fieldName": "loadingMessages",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "messages-loaded",
+              "fieldName": "messagesLoaded",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "show-chats",
+              "fieldName": "showChats",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "show-search",
+              "fieldName": "showSearch",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "show-add-chat",
+              "fieldName": "showAddChat",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "show-files",
+              "fieldName": "showFiles",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "show-emojis",
+              "fieldName": "showEmojis",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "show-footer",
+              "fieldName": "showFooter",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "show-send-icon",
+              "fieldName": "showSendIcon",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "show-reaction-emojis",
+              "fieldName": "showReactionEmojis",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "show-new-messages-divider",
+              "fieldName": "showNewMessagesDivider",
+              "type": { "text": "boolean" }
+            },
+            { "name": "accept", "fieldName": "accept", "type": { "text": "string" } },
+            {
+              "name": "multiple",
+              "fieldName": "multiple",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "capture",
+              "fieldName": "capture",
+              "type": { "text": "'' | 'user' | 'environment'" }
+            },
+            {
+              "name": "max-files",
+              "fieldName": "maxFiles",
+              "type": { "text": "number" }
+            },
+            {
+              "name": "max-file-size",
+              "fieldName": "maxFileSize",
+              "type": { "text": "number" }
+            },
+            {
+              "name": "typing-indicator-position",
+              "fieldName": "typingIndicatorPosition",
+              "type": { "text": "'header' | 'composer' | 'both' | 'none'" }
+            },
+            {
+              "name": "custom-search-enabled",
+              "fieldName": "customSearchEnabled",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "chat-info-enabled",
+              "fieldName": "chatInfoEnabled",
+              "type": { "text": "boolean" }
+            },
+            {
+              "name": "status",
+              "fieldName": "status",
+              "type": {
+                "text": "'ready' | 'loading' | 'empty' | 'error' | 'offline' | 'reconnecting' | 'permission-denied'"
+              }
+            },
+            {
+              "name": "status-message",
+              "fieldName": "statusMessage",
+              "type": { "text": "string" }
+            },
+            {
+              "name": "retry-label",
+              "fieldName": "retryLabel",
+              "type": { "text": "string" }
+            },
+            {
+              "name": "composer-disabled",
+              "fieldName": "composerDisabled",
+              "type": { "text": "boolean" }
+            }
+          ],
+          "events": [
+            { "name": "search-chat", "type": { "text": "CustomEvent<string>" } },
+            { "name": "add-chat", "type": { "text": "CustomEvent<null>" } },
+            {
+              "name": "fetch-more-chats",
+              "type": { "text": "CustomEvent<null>" }
+            },
+            { "name": "fetch-messages", "type": { "text": "CustomEvent<null>" } },
+            { "name": "open-chat", "type": { "text": "CustomEvent<Chat>" } },
+            { "name": "show-chat-info", "type": { "text": "CustomEvent<Chat>" } },
+            {
+              "name": "menu-action-handler",
+              "type": { "text": "CustomEvent<{ chat: Chat; action: Action }>" }
+            },
+            {
+              "name": "message-action-handler",
+              "type": { "text": "CustomEvent<{ action: Action; message: Message }>" }
+            },
+            {
+              "name": "message-selection-action-handler",
+              "type": {
+                "text": "CustomEvent<{ chat: Chat; action: Action; messages: Message[] }>"
+              }
+            },
+            {
+              "name": "chat-action-handler",
+              "type": { "text": "CustomEvent<{ chat: Chat; action: Action }>" }
+            },
+            {
+              "name": "cancel-message-selection",
+              "type": { "text": "CustomEvent<null>" }
+            },
+            {
+              "name": "open-file",
+              "type": {
+                "text": "CustomEvent<{ file: MessageFile; action: 'preview' | 'download' }>"
+              }
+            },
+            {
+              "name": "open-failed-message",
+              "type": { "text": "CustomEvent<Message>" }
+            },
+            {
+              "name": "send-message-reaction",
+              "type": { "text": "CustomEvent<{ emoji: string; message: Message }>" }
+            },
+            { "name": "click-user-tag", "type": { "text": "CustomEvent<User>" } },
+            { "name": "typing-message", "type": { "text": "CustomEvent<string>" } },
+            {
+              "name": "send-message",
+              "type": {
+                "text": "CustomEvent<{ content: string; files: ChatFileItem[]; mentionedUsers: User[]; reply?: Message | null }>"
+              }
+            },
+            {
+              "name": "edit-message",
+              "type": {
+                "text": "CustomEvent<{ messageId: Message['id']; content: string; files: ChatFileItem[]; mentionedUsers: User[] }>"
+              }
+            },
+            {
+              "name": "invalid-file",
+              "type": { "text": "CustomEvent<{ file: File; reason: 'size' | 'count' }>" }
+            },
+            { "name": "retry", "type": { "text": "CustomEvent<null>" } }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "advanced-chat-components",
+          "declaration": {
+            "name": "AdvancedChatElement",
+            "module": "dist/advanced-chat-components.js"
+          }
+        }
+      ]
+    }
+  ]
+}

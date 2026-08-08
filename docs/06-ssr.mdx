@@ -1,0 +1,87 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Docs/SSR" />
+
+# Server-side rendering
+
+Full component SSR and hydration are not currently a supported guarantee.
+Several helpers guard browser globals, but the component tree also contains DOM
+measurement, observers, media elements, and browser-only custom-element
+integration. Keep complete chat surfaces behind a client-only boundary unless
+your application has tested its exact prop and render paths.
+
+## Helper behavior
+
+These implementation facts can help with host wrappers, but they are narrower
+than a component-rendering guarantee:
+
+- `formatText({ markdown: true })` can run without `document`; the browser-only
+  checkbox annotation pass is skipped.
+- `formatText({ singleLine: true })` uses a regex fallback on the server and DOM
+  `innerText` in a browser. Those paths can produce different text for some
+  input, so do not render their output into both sides of a hydration boundary
+  without tests.
+- `getThemeStyles('auto')` resolves to light when `window.matchMedia` is absent.
+  A dark-mode browser can resolve dark during client setup, producing different
+  inline variables from a server-rendered light tree.
+- `negotiateLocale()` returns `'en'` without `navigator`. Only English ships
+  today, so the client currently resolves to the same bundled dictionary.
+- `useInfiniteScroll` constructs `IntersectionObserver` after its element refs
+  resolve. It has no fallback when that API is unavailable.
+
+The package's ESM source guards default custom-element registration when
+`customElements` is absent. That fact alone does not certify every bundler,
+module format, component prop combination, or hydration result.
+
+## Recommended pattern (Nuxt 3)
+
+The following is an intentionally partial page excerpt. Put the component that
+imports and renders `AdvancedChat` in a Nuxt `.client.vue` file so Nuxt excludes
+that component from server rendering:
+
+```vue
+<template>
+  <ClientOnly>
+    <ChatSurface />
+    <template #fallback>
+      <div class="chat-skeleton" aria-hidden="true" />
+    </template>
+  </ClientOnly>
+</template>
+```
+
+For that example, name the implementation file `ChatSurface.client.vue` and
+keep its `AdvancedChat`, stylesheet, state, and handler imports inside that
+file. `<ClientOnly>` renders the fallback on the server and mounts the client
+component after hydration. Choose `autoScroll.onMount` based on the desired
+post-mount behavior; it is not an SSR fix.
+
+## Recommended pattern (Vite SSR)
+
+For non-Nuxt Vite SSR setups, render the same fallback during the server pass
+and the client's initial hydration render. Set a mounted flag in `onMounted`
+before rendering a lazily imported chat surface:
+
+```vue
+<script setup lang="ts">
+import { defineAsyncComponent, onMounted, ref } from 'vue'
+
+const mounted = ref(false)
+const ChatSurface = defineAsyncComponent(() => import('./ChatSurface.vue'))
+
+onMounted(() => {
+  mounted.value = true
+})
+</script>
+
+<template>
+  <ChatSurface v-if="mounted" />
+  <div v-else class="chat-skeleton" aria-hidden="true" />
+</template>
+```
+
+Unlike `const isSsr = import.meta.env.SSR`, `mounted` is `false` for both the
+server render and the client's initial render. The fallback therefore hydrates
+against matching markup; the async chat module is requested only after mount.
+Keep the package imports inside `ChatSurface.vue`, and test the wrapper with the
+SSR framework and deployment adapter you ship.

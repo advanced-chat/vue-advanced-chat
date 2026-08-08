@@ -1,26 +1,23 @@
-**What kind of change does this PR introduce?** (check at least one)
+## Summary
 
-- [ ] Bugfix
-- [ ] Feature
-- [ ] Code style update
-- [ ] Refactor
-- [ ] Build-related changes
-- [ ] Other, please describe:
+Describe the user-visible problem and the solution. Keep unrelated changes out of this pull
+request.
 
-**Does this PR introduce a breaking change?** (check one)
+## Related Issue
 
-- [ ] Yes
-- [ ] No
+Link the issue or Discussion, or state why one is not needed.
 
-If yes, please describe the impact and migration path for existing applications:
+## Validation
 
-**The PR fulfills these requirements:**
+List the exact commands and manual checks run.
 
-- [ ] When resolving a specific issue, it's referenced in the PR's title (e.g. `fix #xxx[,#xxx]`, where "xxx" is the issue number)
-- [ ] All tests are passing
+## Checklist
 
-If adding a **new feature**, the PR's description includes:
-
-- [ ] A convincing reason for adding this feature (to avoid wasting your time, it's best to open a suggestion issue first and wait for approval before working on it)
-
-**Other information:**
+- [ ] I targeted `main`, or a maintainer requested another target branch.
+- [ ] I added or updated tests for observable behavior.
+- [ ] I added or updated Storybook coverage for changed component states or interactions.
+- [ ] I checked types, lint, tests, and builds appropriate to this change.
+- [ ] I included screenshots or recordings for visual changes.
+- [ ] I documented breaking changes, compatibility limits, and migration impact.
+- [ ] I removed credentials, private data, generated local artifacts, and unrelated formatting.
+- [ ] My contribution can be distributed under the repository's MIT License.
