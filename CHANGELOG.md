@@ -11,9 +11,11 @@ and the project follows [Semantic Versioning](https://semver.org/).
 Only `3.0.0-alpha.0` was published to npm. The alpha.1 through alpha.5
 sections below are retained as internal development milestones that were folded
 into the first public release candidate. The `v3.0.0-rc.1` tag failed
-pre-publish verification and was never published; rc.2 supersedes it.
+pre-publish verification. The `v3.0.0-rc.2` tag passed verification, but npm
+rejected its stale pre-rename trusted-publisher identity. Neither was published;
+rc.3 supersedes them.
 
-## 3.0.0-rc.2 - 2026-08-08
+## 3.0.0-rc.3 - 2026-08-09
 
 ### Added
 
@@ -63,7 +65,7 @@ pre-publish verification and was never published; rc.2 supersedes it.
   object URLs to the host. The library still revokes URLs for files removed or
   reset while pending; after emission the host must revoke them.
 - V3 compatibility records now distinguish stable `vue-advanced-chat@2.1.2`
-  from the pre-GA `@advanced-chat/components@3.0.0-rc.2` tree and record the
+  from the pre-GA `@advanced-chat/components@3.0.0-rc.3` tree and record the
   deliberate removal of audio recording, room ordering, template
   autocomplete, and the extra composer action.
 

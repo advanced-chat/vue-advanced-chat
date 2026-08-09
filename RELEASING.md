@@ -4,7 +4,7 @@ This document defines the release path for V3 on the default `main` branch.
 
 The release tracks are intentionally separate: `vue-advanced-chat@2.1.2` is the
 stable v2 package, while this tree is the pre-GA
-`@advanced-chat/components@3.0.0-rc.2` line. Do not describe a release candidate
+`@advanced-chat/components@3.0.0-rc.3` line. Do not describe a release candidate
 as the stable replacement or modify the separate `vue-advanced-chat` package's
 `latest` tag as part of a V3 prerelease.
 
@@ -34,7 +34,7 @@ After trusted publishing is working:
 ## Release Preconditions
 
 - merge only reviewed, green commits into `main`
-- ensure `package.json` version already matches the intended tag, for example `3.0.0-rc.2`
+- ensure `package.json` version already matches the intended tag, for example `3.0.0-rc.3`
 - ensure the local and CI runtime meets npm trusted publishing minimums:
   - Node `22.14.0` or newer
   - npm `11.5.1` or newer
@@ -63,8 +63,8 @@ npm run verify:pack
 
 ## Version And Tag Rules
 
-- V3 prereleases use SemVer prerelease versions such as `3.0.0-rc.2`
-- the Git tag must match `package.json` exactly with a `v` prefix, for example `v3.0.0-rc.2`
+- V3 prereleases use SemVer prerelease versions such as `3.0.0-rc.3`
+- the Git tag must match `package.json` exactly with a `v` prefix, for example `v3.0.0-rc.3`
 - the release workflow publishes from immutable tags only; do not publish from a branch tip
 - prerelease tags publish to npm `next`; stable tags publish to npm `latest`
 
@@ -74,7 +74,7 @@ npm run verify:pack
    the reviewed change on `main`.
 2. Verify the exact release commit locally with `npm ci`, `npm run verify`, and `npm run verify:pack`.
 3. Create and push only the exact tag, for example
-   `git tag v3.0.0-rc.2 && git push origin v3.0.0-rc.2`.
+   `git tag v3.0.0-rc.3 && git push origin v3.0.0-rc.3`.
 4. The tag push starts `Release Package`; the workflow validates the tag and
    derives the npm dist-tag from the package version.
 5. Confirm the workflow completed successfully and that the published npm

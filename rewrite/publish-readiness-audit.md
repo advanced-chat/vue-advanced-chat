@@ -18,13 +18,13 @@ implementation.
 
 ## Resolution status
 
-The `3.0.0-rc.2` preparation resolved the codebase and documentation blockers
+The `3.0.0-rc.3` tree resolves the codebase and documentation blockers
 recorded below:
 
 - The repository was renamed to `advanced-chat/advanced-chat-components`, its
   Pages URL exists, repository metadata is current, and private vulnerability
   reporting is enabled.
-- The package is versioned `3.0.0-rc.2`; prereleases publish to npm `next` from
+- The package is versioned `3.0.0-rc.3`; prereleases publish to npm `next` from
   immutable tag pushes.
 - The Node package is ESM-only. Browser UMD remains CDN-only and is not exposed
   through a CommonJS condition.
@@ -37,10 +37,11 @@ recorded below:
 - Public guides, integrations, examples, Storybook labels, and deterministic
   media fixtures were reconciled against implementation and tests.
 
-Remaining external gates are operational rather than source defects: merge the
-release commit to the default branch, deploy and verify the Storybook Pages
-site, confirm npm trusted publishing, publish `v3.0.0-rc.2` to `next`, and verify
-the installed package and provenance anonymously.
+The Storybook Pages site is deployed and npm trusted publishing now targets the
+renamed repository. The remaining external gates are operational rather than
+source defects: merge the rc.3 release commit to the default branch, publish
+`v3.0.0-rc.3` to `next`, and verify the installed package and provenance
+anonymously.
 
 ## Original publication blockers (resolved)
 
@@ -175,7 +176,7 @@ the bundle dependency set changes.
 
 1. Repository: `advanced-chat/advanced-chat-components`; V3 becomes the default
    `main` line and legacy source is preserved on `v2`.
-2. Version: `3.0.0-rc.2`; prereleases publish to `next`, stable to `latest`.
+2. Version: `3.0.0-rc.3`; prereleases publish to `next`, stable to `latest`.
 3. Module policy: ESM-only Node package with a browser-only UMD artifact.
 4. TypeScript policy: strict `Bundler` and `NodeNext` consumers are verified.
 5. CDN policy: browser UMD remains the Vue-library CDN artifact; the standalone
@@ -205,5 +206,5 @@ the bundle dependency set changes.
 
 Publication is complete only when the final commit and workflows are on `main`,
 the Pages site serves the V3 Storybook build, npm trusted publishing succeeds
-for `v3.0.0-rc.2`, `next` resolves to that version, provenance is visible, and a
+for `v3.0.0-rc.3`, `next` resolves to that version, provenance is visible, and a
 clean anonymous consumer can install and exercise the documented entrypoints.

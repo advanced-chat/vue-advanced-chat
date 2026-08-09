@@ -15,7 +15,7 @@ This repository contains the release-candidate line of Advanced Chat
 Components:
 
 - **V3 release candidate** — published as
-  `@advanced-chat/components@3.0.0-rc.2` on the npm `next` tag. It contains 28
+  `@advanced-chat/components@3.0.0-rc.3` on the npm `next` tag. It contains 28
   typed Vue 3 SFCs plus an official light-DOM web-component entrypoint. The
   package is ESM-only; a browser-only UMD artifact remains available through
   the CDN metadata.
