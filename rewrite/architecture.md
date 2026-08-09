@@ -6,7 +6,7 @@ exposes.
 
 ## What V3 changes vs v2
 
-| Concern       | v2 (`v2`, stable 2.1.2)                     | V3 (`main`, pre-GA 3.0.0-rc.2)                                          |
+| Concern       | v2 (`v2`, stable 2.1.2)                     | V3 (`main`, pre-GA 3.0.0-rc.3)                                          |
 | ------------- | ------------------------------------------- | ----------------------------------------------------------------------- |
 | Package name  | `vue-advanced-chat`                         | `@advanced-chat/components`                                             |
 | Distribution  | Single web component, explicit `register()` | 28 typed Vue SFCs plus bundled auto-registering web component           |
