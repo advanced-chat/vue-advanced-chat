@@ -82,11 +82,14 @@
     "test:unit": "vitest run --project unit",
     "test:coverage": "vitest run --coverage",
     "test": "vitest run",
+    "capture:ga-triage": "node ./scripts/capture-ga-triage.mjs",
+    "update:api-baseline": "node ./scripts/verify-api.mjs --write",
+    "verify:api": "node ./scripts/verify-api.mjs",
     "verify:pack": "node ./scripts/verify-pack.mjs",
     "verify:web-component": "node ./scripts/verify-web-component.mjs",
     "verify:storybook-ui": "node ./scripts/verify-storybook-ui.mjs",
     "verify:storybook-flows": "node ./scripts/verify-storybook-flows.mjs",
-    "verify": "npm run format:check && npm run type-check && npm run lint && npm run test:unit && npm run test:storybook && npm run build && npm run verify:pack && npm run verify:web-component && npm run build-storybook",
+    "verify": "npm run format:check && npm run type-check && npm run lint && npm run test:unit && npm run test:storybook && npm run build && npm run verify:api && npm run verify:pack && npm run verify:web-component && npm run build-storybook",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prepare": "husky"
@@ -97,7 +100,7 @@
     ]
   },
   "engines": {
-    "node": "^20.19.0 || >=22.14.0"
+    "node": ">=22.14.0"
   },
   "peerDependencies": {
     "vue": "^3.5.0"

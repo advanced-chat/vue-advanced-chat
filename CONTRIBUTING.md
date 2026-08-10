@@ -24,8 +24,8 @@ cleanup should be a separate change.
 
 ## Local Setup
 
-The repository uses npm and requires Node.js `^20.19.0 || >=22.14.0`. The checked-in `.nvmrc`
-selects Node.js 22.14.0.
+The repository uses npm and requires Node.js `>=22.14.0`. The checked-in `.nvmrc` selects
+Node.js 22.14.0.
 
 ```sh
 nvm use

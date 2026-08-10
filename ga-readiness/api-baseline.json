@@ -1,0 +1,1196 @@
+{
+  "schemaVersion": 1,
+  "normalization": {
+    "source": "Generated package declarations, runtime entry points, and Custom Elements Manifest",
+    "rules": [
+      "Sort names and manifest members lexically.",
+      "Remove declaration comments and collapse printer line breaks.",
+      "Record component contracts instead of volatile Vue/Volar implementation helpers.",
+      "Omit bundle bytes, hashes, descriptions, and generation timestamps."
+    ]
+  },
+  "package": {
+    "name": "@advanced-chat/components",
+    "version": "3.0.0-rc.3",
+    "type": "module",
+    "module": "dist/components.js",
+    "types": "dist/index.d.ts",
+    "style": "dist/components.css",
+    "customElements": "custom-elements.json",
+    "unpkg": "dist/components.umd.js",
+    "jsdelivr": "dist/components.umd.js",
+    "files": ["THIRD_PARTY_LICENSES.md", "custom-elements.json", "dist"],
+    "peerDependencies": { "vue": "^3.5.0" },
+    "engines": { "node": ">=22.14.0" },
+    "exports": {
+      ".": { "types": "./dist/index.d.ts", "import": "./dist/components.js" },
+      "./styles": { "types": "./dist/styles.d.ts", "import": "./dist/components.css" },
+      "./web-component": {
+        "types": "./dist/web-component.d.ts",
+        "import": "./dist/advanced-chat-components.js"
+      },
+      "./web-component/core": {
+        "types": "./dist/web-component-core.d.ts",
+        "import": "./dist/advanced-chat-components-core.js"
+      },
+      "./web-component/styles": {
+        "types": "./dist/styles.d.ts",
+        "import": "./dist/advanced-chat-components.css"
+      }
+    }
+  },
+  "entrypoints": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/components.js",
+      "runtimeExports": [
+        "AdvancedChat",
+        "AdvancedChatPlugin",
+        "AudioControl",
+        "AudioPlayer",
+        "AutocompleteMenu",
+        "Chat",
+        "ChatEmojis",
+        "ChatFile",
+        "ChatFiles",
+        "ChatFooter",
+        "ChatHeader",
+        "ChatMessage",
+        "ChatUserTag",
+        "Chats",
+        "ChatsItem",
+        "ChatsSearch",
+        "EDIT_ACTION",
+        "EmojiPicker",
+        "Layout",
+        "Loader",
+        "MediaPreview",
+        "Message",
+        "MessageActions",
+        "MessageFile",
+        "MessageFiles",
+        "MessageReactions",
+        "MessageReply",
+        "MessageTemplate",
+        "ProgressBar",
+        "REPLY_ACTION",
+        "SvgIcon",
+        "findUserById",
+        "formatText",
+        "getLocalizationStrings",
+        "getThemeStyles",
+        "negotiateLocale",
+        "typingUsersString",
+        "useAutocomplete",
+        "useInfiniteScroll",
+        "useLocalSearch",
+        "useLocalizationStrings",
+        "useMessageSelection",
+        "useReplyEdit",
+        "useThemeStyles"
+      ]
+    },
+    "./styles": {
+      "types": "./dist/styles.d.ts",
+      "import": "./dist/components.css",
+      "assetType": "css"
+    },
+    "./web-component": {
+      "types": "./dist/web-component.d.ts",
+      "import": "./dist/advanced-chat-components.js",
+      "runtimeExports": [
+        "DEFAULT_CUSTOM_ELEMENT_TAG",
+        "createAdvancedChatElement",
+        "registerAdvancedChat"
+      ]
+    },
+    "./web-component/core": {
+      "types": "./dist/web-component-core.d.ts",
+      "import": "./dist/advanced-chat-components-core.js",
+      "runtimeExports": [
+        "DEFAULT_CUSTOM_ELEMENT_TAG",
+        "createAdvancedChatElement",
+        "registerAdvancedChat"
+      ]
+    },
+    "./web-component/styles": {
+      "types": "./dist/styles.d.ts",
+      "import": "./dist/advanced-chat-components.css",
+      "assetType": "css"
+    }
+  },
+  "root": {
+    "runtimeExports": [
+      "AdvancedChat",
+      "AdvancedChatPlugin",
+      "AudioControl",
+      "AudioPlayer",
+      "AutocompleteMenu",
+      "Chat",
+      "ChatEmojis",
+      "ChatFile",
+      "ChatFiles",
+      "ChatFooter",
+      "ChatHeader",
+      "ChatMessage",
+      "ChatUserTag",
+      "Chats",
+      "ChatsItem",
+      "ChatsSearch",
+      "EDIT_ACTION",
+      "EmojiPicker",
+      "Layout",
+      "Loader",
+      "MediaPreview",
+      "Message",
+      "MessageActions",
+      "MessageFile",
+      "MessageFiles",
+      "MessageReactions",
+      "MessageReply",
+      "MessageTemplate",
+      "ProgressBar",
+      "REPLY_ACTION",
+      "SvgIcon",
+      "findUserById",
+      "formatText",
+      "getLocalizationStrings",
+      "getThemeStyles",
+      "negotiateLocale",
+      "typingUsersString",
+      "useAutocomplete",
+      "useInfiniteScroll",
+      "useLocalSearch",
+      "useLocalizationStrings",
+      "useMessageSelection",
+      "useReplyEdit",
+      "useThemeStyles"
+    ],
+    "typeExports": [
+      "Action",
+      "AdvancedChatEvents",
+      "AdvancedChatOptions",
+      "AdvancedChatPluginType",
+      "AdvancedChatProps",
+      "AudioControlEvents",
+      "AudioControlProps",
+      "AudioPlayerEvents",
+      "AudioPlayerProps",
+      "AutocompleteMenuEvents",
+      "AutocompleteMenuProps",
+      "BuiltInActionName",
+      "ChatEmojisEvents",
+      "ChatEmojisProps",
+      "ChatEvents",
+      "ChatFileEvents",
+      "ChatFileItem",
+      "ChatFileProps",
+      "ChatFilesEvents",
+      "ChatFilesProps",
+      "ChatFooterEvents",
+      "ChatFooterProps",
+      "ChatHeaderEvents",
+      "ChatHeaderProps",
+      "ChatMessageEvents",
+      "ChatMessageProps",
+      "ChatModel",
+      "ChatProps",
+      "ChatReference",
+      "ChatUserTagEvents",
+      "ChatUserTagProps",
+      "ChatsEvents",
+      "ChatsItemEvents",
+      "ChatsItemProps",
+      "ChatsProps",
+      "ChatsSearchProps",
+      "EmojiPickerProps",
+      "FormattedText",
+      "Id",
+      "InvalidFileReason",
+      "LayoutProps",
+      "LinkOptions",
+      "LoaderProps",
+      "Localization",
+      "MediaPreviewEvents",
+      "MediaPreviewProps",
+      "MessageActionsEvents",
+      "MessageActionsProps",
+      "MessageEvents",
+      "MessageFileEvents",
+      "MessageFileModel",
+      "MessageFileProps",
+      "MessageFilesEvents",
+      "MessageFilesProps",
+      "MessageModel",
+      "MessageProps",
+      "MessageReactionsEvents",
+      "MessageReactionsProps",
+      "MessageReference",
+      "MessageReplyProps",
+      "MessageStatus",
+      "MessageSummary",
+      "MessageTemplateEvents",
+      "MessageTemplateProps",
+      "ProgressBarProps",
+      "Strings",
+      "Styles",
+      "SvgIconProps",
+      "TextFormattingBindings",
+      "TextFormattingOptions",
+      "Theme",
+      "UseAutocompleteOptions",
+      "UseAutocompleteReturn",
+      "UseInfiniteScrollOptions",
+      "UseInfiniteScrollReturn",
+      "UseLocalSearchOptions",
+      "UseLocalSearchReturn",
+      "UseMessageSelectionOptions",
+      "UseMessageSelectionReturn",
+      "UseReplyEditOptions",
+      "UseReplyEditReturn",
+      "User",
+      "UserReference"
+    ],
+    "runtimeDeclarations": {
+      "AdvancedChatPlugin": "export declare const AdvancedChatPlugin: ({ localization, strings }?: AdvancedChatOptions) => AdvancedChatPluginType;",
+      "EDIT_ACTION": "export declare const EDIT_ACTION = \"edit\";",
+      "REPLY_ACTION": "export declare const REPLY_ACTION = \"reply\";",
+      "findUserById": "export declare const findUserById: (users: User[] | undefined, id: Id) => User | undefined;",
+      "formatText": "export declare const formatText: (text: string, { markdown, singleLine, linkify, linkOptions }: TextFormattingOptions, { users }?: TextFormattingBindings) => FormattedText;",
+      "getLocalizationStrings": "export declare const getLocalizationStrings: (locale: Localization) => Strings;",
+      "getThemeStyles": "export declare const getThemeStyles: (theme: Theme) => Styles;",
+      "negotiateLocale": "export declare const negotiateLocale: () => SupportedLocale;",
+      "typingUsersString": "export declare const typingUsersString: (chat: ChatModel, strings: Pick<Strings, \"chat.typing\">) => string;"
+    },
+    "models": {
+      "Action": "export declare interface Action { id: string; label: string; icon?: string; ownMessageOnly?: boolean; }",
+      "ChatModel": "export declare interface ChatModel { id: Id; name: string; avatar?: string; unreadCount?: number; lastMessage?: MessageSummary; users?: User[]; typingUsers?: UserReference[]; }",
+      "ChatReference": "export declare interface ChatReference { id: Id; }",
+      "Id": "export declare type Id = string;",
+      "MessageFileModel": "export declare interface MessageFileModel { name: string; type: string; extension: string; url: string; previewUrl?: string; previewable?: boolean; size?: number; duration?: number; progress?: number; blob?: Blob; }",
+      "MessageModel": "export declare interface MessageModel extends MessageSummary { reactions?: Record<string, Id[]>; unread?: boolean; system?: boolean; disableActions?: boolean; disableReactions?: boolean; reply?: MessageSummary; }",
+      "MessageReference": "export declare interface MessageReference { id: Id; }",
+      "MessageStatus": "export declare type MessageStatus = 'sending' | 'sent' | 'delivered' | 'read' | 'failed';",
+      "MessageSummary": "export declare interface MessageSummary { id: Id; sender: User; content?: string; createdAt: string; status?: MessageStatus; deleted?: boolean; edited?: boolean; files?: MessageFileModel[]; }",
+      "User": "export declare interface User { id: Id; name: string; avatar?: string; status: { state: 'online' | 'offline' | 'away' | 'busy'; lastActiveAt?: string; }; }",
+      "UserReference": "export declare interface UserReference { id: Id; }"
+    },
+    "composables": {
+      "runtime": {
+        "useAutocomplete": "export declare const useAutocomplete: <T>(options: UseAutocompleteOptions<T>) => UseAutocompleteReturn;",
+        "useInfiniteScroll": "export declare const useInfiniteScroll: (options: UseInfiniteScrollOptions) => UseInfiniteScrollReturn;",
+        "useLocalSearch": "export declare const useLocalSearch: <T>(options: UseLocalSearchOptions<T>) => UseLocalSearchReturn<T>;",
+        "useLocalizationStrings": "export declare const useLocalizationStrings: () => Strings;",
+        "useMessageSelection": "export declare const useMessageSelection: <T extends { id: Id; }>(options: UseMessageSelectionOptions) => UseMessageSelectionReturn<T>;",
+        "useReplyEdit": "export declare const useReplyEdit: (options?: UseReplyEditOptions) => UseReplyEditReturn;",
+        "useThemeStyles": "export declare const useThemeStyles: (theme: Ref<Theme | undefined>) => Ref<Styles>;"
+      },
+      "types": {
+        "UseAutocompleteOptions": "export declare interface UseAutocompleteOptions<T> { items: MaybeRefOrGetter<T[]>; selectSignal?: MaybeRefOrGetter<boolean | null>; navSignal?: MaybeRefOrGetter<number | null>; onCommit?: (item: T) => void; onNavigate?: () => void; }",
+        "UseAutocompleteReturn": "export declare interface UseAutocompleteReturn { activeIndex: Readonly<Ref<number | null>>; setActiveIndex: (index: number | null) => void; }",
+        "UseInfiniteScrollOptions": "export declare interface UseInfiniteScrollOptions { target: MaybeRefOrGetter<HTMLElement | null>; scrollRoot: MaybeRefOrGetter<HTMLElement | null>; exhausted: MaybeRefOrGetter<boolean>; rootMargin?: string; onLoadMore: () => void; }",
+        "UseInfiniteScrollReturn": "export declare interface UseInfiniteScrollReturn { loading: Readonly<Ref<boolean>>; setLoading: (value: boolean) => void; reset: () => void; }",
+        "UseLocalSearchOptions": "export declare interface UseLocalSearchOptions<T> { items: MaybeRefOrGetter<T[]>; field: keyof T; custom?: MaybeRefOrGetter<boolean>; onSearch?: (query: string) => void; }",
+        "UseLocalSearchReturn": "export declare interface UseLocalSearchReturn<T> { query: Ref<string | null>; filtered: ComputedRef<T[]>; setQuery: (value: string) => void; }",
+        "UseMessageSelectionOptions": "export declare interface UseMessageSelectionOptions { enabled: MaybeRefOrGetter<boolean>; resetKey?: MaybeRefOrGetter<unknown>; onCancel?: () => void; }",
+        "UseMessageSelectionReturn": "export declare interface UseMessageSelectionReturn<T extends { id: Id; }> { selected: Ref<T[]>; selectedIds: ComputedRef<Set<Id>>; toggle: (item: T) => void; clear: () => void; cancel: () => void; }",
+        "UseReplyEditOptions": "export declare interface UseReplyEditOptions { resetKey?: MaybeRefOrGetter<unknown>; }",
+        "UseReplyEditReturn": "export declare interface UseReplyEditReturn { replyMessage: Ref<MessageModel | null>; editMessage: Ref<MessageModel | null>; dispatch: (payload: { action: Action; message: MessageModel; }) => void; resetReply: () => void; resetEdit: () => void; }"
+      }
+    },
+    "componentContracts": {
+      "AdvancedChat": {
+        "propsTypeParameters": null,
+        "props": {
+          "accept": "accept?: string;",
+          "autoScroll": "autoScroll?: { onMount?: boolean; onChatSwitch?: boolean; onSend?: boolean; onReceive?: boolean; };",
+          "capture": "capture?: '' | 'user' | 'environment';",
+          "chat": "chat?: ChatModel | null;",
+          "chatActions": "chatActions?: Action[];",
+          "chatInfoEnabled": "chatInfoEnabled?: boolean;",
+          "chats": "chats?: ChatModel[];",
+          "chatsLoaded": "chatsLoaded?: boolean;",
+          "composerDisabled": "composerDisabled?: boolean;",
+          "currentUser": "currentUser?: UserReference | null;",
+          "customSearchEnabled": "customSearchEnabled?: boolean;",
+          "headerActions": "headerActions?: Action[];",
+          "height": "height?: string;",
+          "loadingChats": "loadingChats?: boolean;",
+          "loadingMessages": "loadingMessages?: boolean;",
+          "maxFileSize": "maxFileSize?: number;",
+          "maxFiles": "maxFiles?: number;",
+          "messageActions": "messageActions?: Action[];",
+          "messages": "messages?: MessageModel[];",
+          "messagesLoaded": "messagesLoaded?: boolean;",
+          "multiple": "multiple?: boolean;",
+          "retryLabel": "retryLabel?: string;",
+          "selectionActions": "selectionActions?: Action[];",
+          "showAddChat": "showAddChat?: boolean;",
+          "showChats": "showChats?: boolean;",
+          "showEmojis": "showEmojis?: boolean;",
+          "showFiles": "showFiles?: boolean;",
+          "showFooter": "showFooter?: boolean;",
+          "showNewMessagesDivider": "showNewMessagesDivider?: boolean;",
+          "showReactionEmojis": "showReactionEmojis?: boolean;",
+          "showSearch": "showSearch?: boolean;",
+          "showSendIcon": "showSendIcon?: boolean;",
+          "status": "status?: 'ready' | 'loading' | 'empty' | 'error' | 'offline' | 'reconnecting' | 'permission-denied';",
+          "statusMessage": "statusMessage?: string;",
+          "textFormatting": "textFormatting?: Partial<TextFormattingOptions>;",
+          "theme": "theme?: Theme;",
+          "typingIndicatorPosition": "typingIndicatorPosition?: 'header' | 'composer' | 'both' | 'none';"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "add-chat": "(e: 'add-chat'): void;",
+          "cancel-message-selection": "(e: 'cancel-message-selection'): void;",
+          "chat-action-handler": "(e: 'chat-action-handler', payload: { chat: ChatModel; action: Action; }): void;",
+          "click-user-tag": "(e: 'click-user-tag', user: User): void;",
+          "edit-message": "(e: 'edit-message', payload: { messageId: MessageModel['id']; content: string; files: ChatFileItem[]; mentionedUsers: User[]; }): void;",
+          "fetch-messages": "(e: 'fetch-messages'): void;",
+          "fetch-more-chats": "(e: 'fetch-more-chats'): void;",
+          "invalid-file": "(e: 'invalid-file', payload: { file: File; reason: 'size' | 'count'; }): void;",
+          "menu-action-handler": "(e: 'menu-action-handler', payload: { chat: ChatModel; action: Action; }): void;",
+          "message-action-handler": "(e: 'message-action-handler', payload: { action: Action; message: MessageModel; }): void;",
+          "message-selection-action-handler": "(e: 'message-selection-action-handler', payload: { chat: ChatModel; action: Action; messages: MessageModel[]; }): void;",
+          "open-chat": "(e: 'open-chat', chat: ChatModel): void;",
+          "open-failed-message": "(e: 'open-failed-message', message: MessageModel): void;",
+          "open-file": "(e: 'open-file', payload: { file: MessageFileModel; action: 'preview' | 'download'; }): void;",
+          "retry": "(e: 'retry'): void;",
+          "search-chat": "(e: 'search-chat', query: string): void;",
+          "send-message": "(e: 'send-message', payload: { content: string; files: ChatFileItem[]; mentionedUsers: User[]; reply?: MessageModel | null; }): void;",
+          "send-message-reaction": "(e: 'send-message-reaction', payload: { emoji: string; message: MessageModel; }): void;",
+          "show-chat-info": "(e: 'show-chat-info', chat: ChatModel): void;",
+          "typing-message": "(e: 'typing-message', value: string): void;"
+        },
+        "slots": null
+      },
+      "AudioControl": {
+        "propsTypeParameters": null,
+        "props": {
+          "messageSelectionEnabled": "messageSelectionEnabled: boolean;",
+          "percentage": "percentage?: number;"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "change-linehead": "(e: 'change-linehead', position: number): void;",
+          "hover-audio-progress": "(e: 'hover-audio-progress', hovering: boolean): void;"
+        },
+        "slots": null
+      },
+      "AudioPlayer": {
+        "propsTypeParameters": null,
+        "props": {
+          "message": "message?: MessageReference;",
+          "messageSelectionEnabled": "messageSelectionEnabled?: boolean;",
+          "src": "src?: string | null;"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "hover-audio-progress": "(e: 'hover-audio-progress', hovering: boolean): void;",
+          "update-progress-time": "(e: 'update-progress-time', value: string): void;"
+        },
+        "slots": "Partial<Record<string, (_: {}) => any>> & Partial<Record<string, (_: {}) => any>>"
+      },
+      "AutocompleteMenu": {
+        "propsTypeParameters": "<T>",
+        "props": {
+          "activeUpOrDown": "activeUpOrDown?: number | null;",
+          "ariaLabel": "ariaLabel?: string;",
+          "itemKey": "itemKey?: (item: T, index: number) => string | number;",
+          "items": "items: T[];",
+          "layout": "layout?: 'vertical' | 'horizontal';",
+          "listboxId": "listboxId?: string;",
+          "selectItem": "selectItem?: boolean | null;"
+        },
+        "eventsTypeParameters": "<T>",
+        "events": {
+          "activate-item": "(e: 'activate-item'): void;",
+          "active-descendant-change": "(e: 'active-descendant-change', value: string | null): void;",
+          "commit": "(e: 'commit', item: T): void;"
+        },
+        "slots": null
+      },
+      "Chat": {
+        "propsTypeParameters": null,
+        "props": {
+          "accept": "accept?: string;",
+          "autoScroll": "autoScroll?: { onMount?: boolean; onChatSwitch?: boolean; onSend?: boolean; onReceive?: boolean; };",
+          "capture": "capture?: '' | 'user' | 'environment';",
+          "chat": "chat?: ChatModel | null;",
+          "chatInfoEnabled": "chatInfoEnabled?: boolean;",
+          "composerDisabled": "composerDisabled?: boolean;",
+          "currentUser": "currentUser?: UserReference | null;",
+          "headerActions": "headerActions?: Action[];",
+          "isMobile": "isMobile?: boolean;",
+          "loadingMessages": "loadingMessages?: boolean;",
+          "maxFileSize": "maxFileSize?: number;",
+          "maxFiles": "maxFiles?: number;",
+          "messageActions": "messageActions?: Action[];",
+          "messages": "messages?: MessageModel[];",
+          "messagesLoaded": "messagesLoaded?: boolean;",
+          "multiple": "multiple?: boolean;",
+          "selectionActions": "selectionActions?: Action[];",
+          "showChatList": "showChatList?: boolean;",
+          "showEmojis": "showEmojis?: boolean;",
+          "showFiles": "showFiles?: boolean;",
+          "showFooter": "showFooter?: boolean;",
+          "showNewMessagesDivider": "showNewMessagesDivider?: boolean;",
+          "showReactionEmojis": "showReactionEmojis?: boolean;",
+          "showSendIcon": "showSendIcon?: boolean;",
+          "standalone": "standalone?: boolean;",
+          "textFormatting": "textFormatting?: Partial<TextFormattingOptions>;",
+          "typingIndicatorPosition": "typingIndicatorPosition?: 'header' | 'composer' | 'both' | 'none';"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "cancel-message-selection": "(e: 'cancel-message-selection'): void;",
+          "click-user-tag": "(e: 'click-user-tag', user: User): void;",
+          "edit-message": "(e: 'edit-message', payload: { messageId: MessageModel['id']; content: string; files: ChatFileItem[]; mentionedUsers: User[]; }): void;",
+          "fetch-messages": "(e: 'fetch-messages'): void;",
+          "invalid-file": "(e: 'invalid-file', payload: { file: File; reason: 'size' | 'count'; }): void;",
+          "menu-action-handler": "(e: 'menu-action-handler', payload: { chat: ChatModel; action: Action; }): void;",
+          "message-action-handler": "(e: 'message-action-handler', payload: { action: Action; message: MessageModel; }): void;",
+          "message-selection-action-handler": "(e: 'message-selection-action-handler', payload: { chat: ChatModel; action: Action; messages: MessageModel[]; }): void;",
+          "open-failed-message": "(e: 'open-failed-message', message: MessageModel): void;",
+          "open-file": "(e: 'open-file', payload: { file: MessageFileModel; action: 'preview' | 'download'; }): void;",
+          "send-message": "(e: 'send-message', payload: { content: string; files: ChatFileItem[]; mentionedUsers: User[]; reply?: MessageModel | null; }): void;",
+          "send-message-reaction": "(e: 'send-message-reaction', payload: { emoji: string; message: MessageModel; }): void;",
+          "show-chat-info": "(e: 'show-chat-info'): void;",
+          "toggle-chat-list": "(e: 'toggle-chat-list'): void;",
+          "typing-message": "(e: 'typing-message', value: string): void;"
+        },
+        "slots": "{ 'no-chat-selected'?(_: {}): any; 'scroll-icon'?(_: {}): any; 'composer-typing'?(_: { typingUsers: string; }): any; }"
+      },
+      "ChatEmojis": {
+        "propsTypeParameters": null,
+        "props": {
+          "activeUpOrDown": "activeUpOrDown?: number | null;",
+          "filteredEmojis": "filteredEmojis: string[];",
+          "listboxId": "listboxId?: string;",
+          "selectItem": "selectItem?: boolean | null;"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "activate-item": "(e: 'activate-item'): void;",
+          "active-descendant-change": "(e: 'active-descendant-change', value: string | null): void;",
+          "select-emoji": "(e: 'select-emoji', emoji: string): void;"
+        },
+        "slots": null
+      },
+      "ChatFile": {
+        "propsTypeParameters": null,
+        "props": { "file": "file: ChatFileItem;", "index": "index: number;" },
+        "eventsTypeParameters": null,
+        "events": { "remove-file": "(e: 'remove-file', index: number): void;" },
+        "slots": "{ 'image-close-icon'?(_: {}): any; 'file-icon'?(_: {}): any; }"
+      },
+      "ChatFiles": {
+        "propsTypeParameters": null,
+        "props": { "files": "files: ChatFileItem[];" },
+        "eventsTypeParameters": null,
+        "events": {
+          "remove-file": "(e: 'remove-file', index: number): void;",
+          "reset-message": "(e: 'reset-message'): void;"
+        },
+        "slots": "{ 'files-close-icon'?(_: {}): any; }"
+      },
+      "ChatFooter": {
+        "propsTypeParameters": null,
+        "props": {
+          "accept": "accept?: string;",
+          "capture": "capture?: '' | 'user' | 'environment';",
+          "chat": "chat?: ChatModel | null;",
+          "disabled": "disabled?: boolean;",
+          "initEditMessage": "initEditMessage?: MessageModel | null;",
+          "initReplyMessage": "initReplyMessage?: MessageModel | null;",
+          "maxFileSize": "maxFileSize?: number;",
+          "maxFiles": "maxFiles?: number;",
+          "multiple": "multiple?: boolean;",
+          "roomMessage": "roomMessage?: string;",
+          "showEmojis": "showEmojis?: boolean;",
+          "showFiles": "showFiles?: boolean;",
+          "showFooter": "showFooter?: boolean;",
+          "showSendIcon": "showSendIcon?: boolean;",
+          "users": "users?: User[];"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "blur-textarea": "(e: 'blur-textarea'): void;",
+          "edit-message": "(e: 'edit-message', payload: { messageId: MessageModel['id']; content: string; files: ChatFileItem[]; mentionedUsers: User[]; }): void;",
+          "focus-textarea": "(e: 'focus-textarea'): void;",
+          "invalid-file": "(e: 'invalid-file', payload: { file: File; reason: InvalidFileReason; }): void;",
+          "reset-edit-message": "(e: 'reset-edit-message'): void;",
+          "reset-reply-message": "(e: 'reset-reply-message'): void;",
+          "send-message": "(e: 'send-message', payload: { content: string; files: ChatFileItem[]; mentionedUsers: User[]; reply?: MessageModel | null; }): void;",
+          "typing-message": "(e: 'typing-message', value: string): void;",
+          "update-edited-message-id": "(e: 'update-edited-message-id', value: MessageModel['id'] | null): void;"
+        },
+        "slots": "{ 'reply-close-icon'?(_: {}): any; 'edit-close-icon'?(_: {}): any; 'emoji-picker-icon'?(_: {}): any; 'paperclip-icon'?(_: {}): any; 'send-icon'?(_: {}): any; }"
+      },
+      "ChatHeader": {
+        "propsTypeParameters": null,
+        "props": {
+          "actions": "actions?: Array<Action>;",
+          "chat": "chat: ChatModel;",
+          "chatInfoEnabled": "chatInfoEnabled?: boolean;",
+          "currentUser": "currentUser: UserReference;",
+          "isMobile": "isMobile?: boolean;",
+          "selectedCount": "selectedCount?: number;",
+          "selectionActions": "selectionActions?: Array<Action>;",
+          "showChatList": "showChatList?: boolean;",
+          "showTypingIndicator": "showTypingIndicator?: boolean;",
+          "standalone": "standalone?: boolean;"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "cancel-message-selection": "(e: 'cancel-message-selection'): void;",
+          "menu-action-handler": "(e: 'menu-action-handler', payload: { chat: ChatModel; action: Action; }): void;",
+          "message-selection-action-handler": "(e: 'message-selection-action-handler', payload: { chat: ChatModel; action: Action; }): void;",
+          "show-chat-info": "(e: 'show-chat-info'): void;",
+          "toggle-chat-list": "(e: 'toggle-chat-list'): void;"
+        },
+        "slots": "{ 'chat-header'?(_: {}): any; 'toggle-icon'?(_: {}): any; 'chat-header-avatar'?(_: {}): any; 'chat-header-info'?(_: {}): any; 'chat-options'?(_: {}): any; 'menu-icon'?(_: {}): any; }"
+      },
+      "ChatMessage": {
+        "propsTypeParameters": null,
+        "props": {
+          "actions": "actions?: Action[];",
+          "currentUser": "currentUser: UserReference;",
+          "index": "index?: number;",
+          "message": "message: MessageModel;",
+          "messageSelectionEnabled": "messageSelectionEnabled?: boolean;",
+          "messages": "messages?: MessageModel[];",
+          "selected": "selected?: boolean;",
+          "showNewMessagesDivider": "showNewMessagesDivider?: boolean;",
+          "showReactionEmojis": "showReactionEmojis?: boolean;",
+          "textFormatting": "textFormatting?: Partial<TextFormattingOptions>;",
+          "users": "users?: User[];"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "click-user-tag": "(e: 'click-user-tag', user: User): void;",
+          "message-action-handler": "(e: 'message-action-handler', payload: { action: Action; message: MessageModel; }): void;",
+          "open-failed-message": "(e: 'open-failed-message', message: MessageModel): void;",
+          "open-file": "(e: 'open-file', payload: { file: MessageFileModel; action: 'preview' | 'download'; }): void;",
+          "select-message": "(e: 'select-message', message: MessageModel): void;",
+          "send-message-reaction": "(e: 'send-message-reaction', payload: { emoji: string; message: MessageModel; }): void;"
+        },
+        "slots": null
+      },
+      "ChatUserTag": {
+        "propsTypeParameters": null,
+        "props": {
+          "activeUpOrDown": "activeUpOrDown?: number | null;",
+          "filteredUsers": "filteredUsers: User[];",
+          "listboxId": "listboxId?: string;",
+          "selectItem": "selectItem?: boolean | null;"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "activate-item": "(e: 'activate-item'): void;",
+          "active-descendant-change": "(e: 'active-descendant-change', value: string | null): void;",
+          "select-user-tag": "(e: 'select-user-tag', user: User): void;"
+        },
+        "slots": null
+      },
+      "Chats": {
+        "propsTypeParameters": null,
+        "props": {
+          "chat": "chat?: ChatModel;",
+          "chatActions": "chatActions?: Array<Action>;",
+          "chats": "chats?: Array<ChatModel>;",
+          "chatsLoaded": "chatsLoaded?: boolean;",
+          "currentUser": "currentUser?: UserReference;",
+          "customSearchEnabled": "customSearchEnabled?: boolean;",
+          "isMobile": "isMobile?: boolean;",
+          "loadingChats": "loadingChats?: boolean;",
+          "minimumVisibleChats": "minimumVisibleChats?: number;",
+          "showAddChat": "showAddChat?: boolean;",
+          "showChats": "showChats?: boolean;",
+          "showSearch": "showSearch?: boolean;"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "add-chat": "(event: 'add-chat'): void;",
+          "chat-action-handler": "(event: 'chat-action-handler', payload: { chat: ChatModel; action: Action; }): void;",
+          "fetch-more-chats": "(event: 'fetch-more-chats'): void;",
+          "loading-more-chats": "(event: 'loading-more-chats', isLoading: boolean): void;",
+          "open-chat": "(event: 'open-chat', chat: ChatModel): void;",
+          "search-chat": "(event: 'search-chat', query: string): void;"
+        },
+        "slots": "{ 'chats-header'?(_: {}): any; 'chats-search'?(_: {}): any; 'chats-empty'?(_: {}): any; }"
+      },
+      "ChatsItem": {
+        "propsTypeParameters": null,
+        "props": {
+          "actions": "actions?: Array<Action>;",
+          "chat": "chat: ChatModel;",
+          "currentUser": "currentUser: UserReference;"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "chat-action-handler": "(event: 'chat-action-handler', payload: { chat: ChatModel; action: Action; }): void;"
+        },
+        "slots": "Partial<Record<string, (_: {}) => any>> & Partial<Record<string, (_: {}) => any>> & Partial<Record<string, (_: {}) => any>> & Partial<Record<string, (_: {}) => any>> & Partial<Record<string, (_: {}) => any>> & Partial<Record<string, (_: {}) => any>> & Partial<Record<string, (_: {}) => any>>"
+      },
+      "ChatsSearch": {
+        "propsTypeParameters": null,
+        "props": {
+          "chats": "chats?: Array<ChatModel>;",
+          "loadingChats": "loadingChats?: boolean;",
+          "showAddChat": "showAddChat?: boolean;",
+          "showSearch": "showSearch?: boolean;"
+        },
+        "eventsTypeParameters": null,
+        "events": {},
+        "slots": "{ 'search-icon'?(_: {}): any; 'add-icon'?(_: {}): any; }"
+      },
+      "EmojiPicker": {
+        "propsTypeParameters": null,
+        "props": { "opened": "opened: boolean;" },
+        "eventsTypeParameters": null,
+        "events": {},
+        "slots": null
+      },
+      "Layout": {
+        "propsTypeParameters": null,
+        "props": {
+          "height": "height?: string;",
+          "styles": "styles?: Partial<Styles>;",
+          "theme": "theme?: Theme;"
+        },
+        "eventsTypeParameters": null,
+        "events": {},
+        "slots": "{ default?(_: {}): any; }"
+      },
+      "Loader": {
+        "propsTypeParameters": null,
+        "props": { "infinite": "infinite?: boolean;", "show": "show: boolean;" },
+        "eventsTypeParameters": null,
+        "events": {},
+        "slots": null
+      },
+      "MediaPreview": {
+        "propsTypeParameters": null,
+        "props": { "file": "file?: MessageFileModel | null;" },
+        "eventsTypeParameters": null,
+        "events": { "close-media-preview": "(e: 'close-media-preview'): void;" },
+        "slots": "{ 'preview-close-icon'?(_: {}): any; }"
+      },
+      "Message": {
+        "propsTypeParameters": null,
+        "props": {
+          "actions": "actions?: Action[];",
+          "currentUser": "currentUser: UserReference;",
+          "message": "message: MessageModel;",
+          "messageSelectionEnabled": "messageSelectionEnabled?: boolean;",
+          "selected": "selected?: boolean;",
+          "showReactionEmojis": "showReactionEmojis?: boolean;",
+          "textFormatting": "textFormatting?: Partial<TextFormattingOptions>;",
+          "users": "users?: User[];"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "click-user-tag": "(e: 'click-user-tag', user: User): void;",
+          "message-action-handler": "(e: 'message-action-handler', payload: { action: Action; message: MessageModel; }): void;",
+          "open-failed-message": "(e: 'open-failed-message', message: MessageModel): void;",
+          "open-file": "(e: 'open-file', payload: { file: MessageFileModel; action: 'preview' | 'download'; }): void;",
+          "select-message": "(e: 'select-message', message: MessageModel): void;",
+          "send-message-reaction": "(e: 'send-message-reaction', payload: { emoji: string; message: MessageModel; }): void;"
+        },
+        "slots": "Partial<Record<string, (_: {}) => any>> & Partial<Record<string, (_: {}) => any>> & Partial<Record<string, (_: {}) => any>>"
+      },
+      "MessageActions": {
+        "propsTypeParameters": null,
+        "props": {
+          "actions": "actions?: Action[];",
+          "currentUser": "currentUser: UserReference;",
+          "message": "message: MessageModel;",
+          "showReactionEmojis": "showReactionEmojis?: boolean;"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "message-action-handler": "(e: 'message-action-handler', payload: { action: Action; message: MessageModel; }): void;",
+          "send-message-reaction": "(e: 'send-message-reaction', payload: { emoji: string; message: MessageModel; }): void;"
+        },
+        "slots": "Partial<Record<string, (_: {}) => any>> & Partial<Record<string, (_: {}) => any>>"
+      },
+      "MessageFile": {
+        "propsTypeParameters": null,
+        "props": {
+          "currentUser": "currentUser: UserReference;",
+          "file": "file: MessageFileModel;",
+          "index": "index: number;",
+          "message": "message: MessageModel;",
+          "messageSelectionEnabled": "messageSelectionEnabled: boolean;"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "open-file": "(e: 'open-file', payload: { file: MessageFileModel; action: 'preview' | 'download'; }): void;"
+        },
+        "slots": "Partial<Record<string, (_: {}) => any>> & Partial<Record<string, (_: {}) => any>>"
+      },
+      "MessageFiles": {
+        "propsTypeParameters": null,
+        "props": {
+          "currentUser": "currentUser: UserReference;",
+          "message": "message: MessageModel;",
+          "messageSelectionEnabled": "messageSelectionEnabled: boolean;",
+          "textFormatting": "textFormatting?: Partial<TextFormattingOptions>;",
+          "users": "users: Array<User>;"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "click-user-tag": "(e: 'click-user-tag', user: User): void;",
+          "open-file": "(e: 'open-file', payload: { file: MessageFileModel; action: 'preview' | 'download'; }): void;"
+        },
+        "slots": "{ 'document-icon'?(_: {}): any; }"
+      },
+      "MessageReactions": {
+        "propsTypeParameters": null,
+        "props": {
+          "currentUser": "currentUser: UserReference;",
+          "message": "message: MessageModel;"
+        },
+        "eventsTypeParameters": null,
+        "events": {
+          "send-message-reaction": "(e: 'send-message-reaction', payload: { emoji: string; reaction: Array<string | number>; }): void;"
+        },
+        "slots": null
+      },
+      "MessageReply": {
+        "propsTypeParameters": null,
+        "props": {
+          "message": "message: MessageModel;",
+          "textFormatting": "textFormatting?: Partial<TextFormattingOptions>;",
+          "users": "users: Array<User>;"
+        },
+        "eventsTypeParameters": null,
+        "events": {},
+        "slots": "{ 'file-icon'?(_: {}): any; }"
+      },
+      "MessageTemplate": {
+        "propsTypeParameters": null,
+        "props": {
+          "chat": "chat?: ChatReference;",
+          "formattingOptions": "formattingOptions?: Partial<TextFormattingOptions>;",
+          "message": "message?: MessageModel;",
+          "users": "users?: Array<User>;"
+        },
+        "eventsTypeParameters": null,
+        "events": { "click-user-tag": "(event: 'click-user-tag', user: User): void;" },
+        "slots": null
+      },
+      "ProgressBar": {
+        "propsTypeParameters": null,
+        "props": { "progress": "progress: number;" },
+        "eventsTypeParameters": null,
+        "events": {},
+        "slots": null
+      },
+      "SvgIcon": {
+        "propsTypeParameters": null,
+        "props": { "name": "name: string;", "param": "param?: string | null;" },
+        "eventsTypeParameters": null,
+        "events": {},
+        "slots": null
+      }
+    },
+    "cssCustomProperties": {
+      "--chat-bg-color-button": "'--chat-bg-color-button': string;",
+      "--chat-bg-color-input": "'--chat-bg-color-input': string;",
+      "--chat-bg-scroll-icon": "'--chat-bg-scroll-icon': string;",
+      "--chat-border-color-input-selected": "'--chat-border-color-input-selected': string;",
+      "--chat-border-style": "'--chat-border-style': string;",
+      "--chat-border-style-input": "'--chat-border-style-input': string;",
+      "--chat-color": "'--chat-color': string;",
+      "--chat-color-button": "'--chat-color-button': string;",
+      "--chat-color-button-clear": "'--chat-color-button-clear': string;",
+      "--chat-color-caret": "'--chat-color-caret': string;",
+      "--chat-color-placeholder": "'--chat-color-placeholder': string;",
+      "--chat-color-spinner": "'--chat-color-spinner': string;",
+      "--chat-container-border": "'--chat-container-border': string;",
+      "--chat-container-border-radius": "'--chat-container-border-radius': string;",
+      "--chat-container-box-shadow": "'--chat-container-box-shadow': string;",
+      "--chat-content-bg-color": "'--chat-content-bg-color': string;",
+      "--chat-dropdown-bg-color": "'--chat-dropdown-bg-color': string;",
+      "--chat-dropdown-bg-color-hover": "'--chat-dropdown-bg-color-hover': string;",
+      "--chat-emoji-bg-color": "'--chat-emoji-bg-color': string;",
+      "--chat-footer-bg-color": "'--chat-footer-bg-color': string;",
+      "--chat-footer-bg-color-reply": "'--chat-footer-bg-color-reply': string;",
+      "--chat-footer-bg-color-tag": "'--chat-footer-bg-color-tag': string;",
+      "--chat-footer-bg-color-tag-active": "'--chat-footer-bg-color-tag-active': string;",
+      "--chat-header-bg-color": "'--chat-header-bg-color': string;",
+      "--chat-header-color-info": "'--chat-header-color-info': string;",
+      "--chat-header-color-name": "'--chat-header-color-name': string;",
+      "--chat-header-position": "'--chat-header-position': string;",
+      "--chat-header-width": "'--chat-header-width': string;",
+      "--chat-icon-bg-dropdown-message": "'--chat-icon-bg-dropdown-message': string;",
+      "--chat-icon-color-add": "'--chat-icon-color-add': string;",
+      "--chat-icon-color-audio-cancel": "'--chat-icon-color-audio-cancel': string;",
+      "--chat-icon-color-audio-confirm": "'--chat-icon-color-audio-confirm': string;",
+      "--chat-icon-color-audio-pause": "'--chat-icon-color-audio-pause': string;",
+      "--chat-icon-color-audio-play": "'--chat-icon-color-audio-play': string;",
+      "--chat-icon-color-checkmark": "'--chat-icon-color-checkmark': string;",
+      "--chat-icon-color-checkmark-seen": "'--chat-icon-color-checkmark-seen': string;",
+      "--chat-icon-color-close": "'--chat-icon-color-close': string;",
+      "--chat-icon-color-close-image": "'--chat-icon-color-close-image': string;",
+      "--chat-icon-color-close-outline": "'--chat-icon-color-close-outline': string;",
+      "--chat-icon-color-close-preview": "'--chat-icon-color-close-preview': string;",
+      "--chat-icon-color-document": "'--chat-icon-color-document': string;",
+      "--chat-icon-color-dropdown-message": "'--chat-icon-color-dropdown-message': string;",
+      "--chat-icon-color-dropdown-room": "'--chat-icon-color-dropdown-room': string;",
+      "--chat-icon-color-dropdown-scroll": "'--chat-icon-color-dropdown-scroll': string;",
+      "--chat-icon-color-emoji": "'--chat-icon-color-emoji': string;",
+      "--chat-icon-color-emoji-reaction": "'--chat-icon-color-emoji-reaction': string;",
+      "--chat-icon-color-eye": "'--chat-icon-color-eye': string;",
+      "--chat-icon-color-file": "'--chat-icon-color-file': string;",
+      "--chat-icon-color-menu": "'--chat-icon-color-menu': string;",
+      "--chat-icon-color-microphone": "'--chat-icon-color-microphone': string;",
+      "--chat-icon-color-paperclip": "'--chat-icon-color-paperclip': string;",
+      "--chat-icon-color-pencil": "'--chat-icon-color-pencil': string;",
+      "--chat-icon-color-search": "'--chat-icon-color-search': string;",
+      "--chat-icon-color-send": "'--chat-icon-color-send': string;",
+      "--chat-icon-color-send-disabled": "'--chat-icon-color-send-disabled': string;",
+      "--chat-icon-color-toggle": "'--chat-icon-color-toggle': string;",
+      "--chat-markdown-bg": "'--chat-markdown-bg': string;",
+      "--chat-markdown-border": "'--chat-markdown-border': string;",
+      "--chat-markdown-color": "'--chat-markdown-color': string;",
+      "--chat-markdown-color-multi": "'--chat-markdown-color-multi': string;",
+      "--chat-message-bg-color": "'--chat-message-bg-color': string;",
+      "--chat-message-bg-color-audio-line": "'--chat-message-bg-color-audio-line': string;",
+      "--chat-message-bg-color-audio-progress": "'--chat-message-bg-color-audio-progress': string;",
+      "--chat-message-bg-color-audio-progress-selector": "'--chat-message-bg-color-audio-progress-selector': string;",
+      "--chat-message-bg-color-audio-record": "'--chat-message-bg-color-audio-record': string;",
+      "--chat-message-bg-color-date": "'--chat-message-bg-color-date': string;",
+      "--chat-message-bg-color-deleted": "'--chat-message-bg-color-deleted': string;",
+      "--chat-message-bg-color-failure": "'--chat-message-bg-color-failure': string;",
+      "--chat-message-bg-color-image": "'--chat-message-bg-color-image': string;",
+      "--chat-message-bg-color-me": "'--chat-message-bg-color-me': string;",
+      "--chat-message-bg-color-media": "'--chat-message-bg-color-media': string;",
+      "--chat-message-bg-color-reaction": "'--chat-message-bg-color-reaction': string;",
+      "--chat-message-bg-color-reaction-hover": "'--chat-message-bg-color-reaction-hover': string;",
+      "--chat-message-bg-color-reaction-hover-me": "'--chat-message-bg-color-reaction-hover-me': string;",
+      "--chat-message-bg-color-reaction-me": "'--chat-message-bg-color-reaction-me': string;",
+      "--chat-message-bg-color-reply": "'--chat-message-bg-color-reply': string;",
+      "--chat-message-bg-color-scroll-counter": "'--chat-message-bg-color-scroll-counter': string;",
+      "--chat-message-bg-color-selected": "'--chat-message-bg-color-selected': string;",
+      "--chat-message-bg-color-system": "'--chat-message-bg-color-system': string;",
+      "--chat-message-border-style-reaction": "'--chat-message-border-style-reaction': string;",
+      "--chat-message-border-style-reaction-hover": "'--chat-message-border-style-reaction-hover': string;",
+      "--chat-message-border-style-reaction-hover-me": "'--chat-message-border-style-reaction-hover-me': string;",
+      "--chat-message-border-style-reaction-me": "'--chat-message-border-style-reaction-me': string;",
+      "--chat-message-color": "'--chat-message-color': string;",
+      "--chat-message-color-date": "'--chat-message-color-date': string;",
+      "--chat-message-color-deleted": "'--chat-message-color-deleted': string;",
+      "--chat-message-color-failure": "'--chat-message-color-failure': string;",
+      "--chat-message-color-file-extension": "'--chat-message-color-file-extension': string;",
+      "--chat-message-color-new-messages": "'--chat-message-color-new-messages': string;",
+      "--chat-message-color-reaction-counter": "'--chat-message-color-reaction-counter': string;",
+      "--chat-message-color-reaction-counter-me": "'--chat-message-color-reaction-counter-me': string;",
+      "--chat-message-color-reply-content": "'--chat-message-color-reply-content': string;",
+      "--chat-message-color-reply-username": "'--chat-message-color-reply-username': string;",
+      "--chat-message-color-scroll-counter": "'--chat-message-color-scroll-counter': string;",
+      "--chat-message-color-started": "'--chat-message-color-started': string;",
+      "--chat-message-color-system": "'--chat-message-color-system': string;",
+      "--chat-message-color-tag": "'--chat-message-color-tag': string;",
+      "--chat-message-color-timestamp": "'--chat-message-color-timestamp': string;",
+      "--chat-message-color-username": "'--chat-message-color-username': string;",
+      "--chat-room-bg-color-badge": "'--chat-room-bg-color-badge': string;",
+      "--chat-room-color-badge": "'--chat-room-color-badge': string;",
+      "--chat-room-color-message": "'--chat-room-color-message': string;",
+      "--chat-room-color-offline": "'--chat-room-color-offline': string;",
+      "--chat-room-color-online": "'--chat-room-color-online': string;",
+      "--chat-room-color-timestamp": "'--chat-room-color-timestamp': string;",
+      "--chat-room-color-username": "'--chat-room-color-username': string;",
+      "--chat-sidemenu-bg-color": "'--chat-sidemenu-bg-color': string;",
+      "--chat-sidemenu-bg-color-active": "'--chat-sidemenu-bg-color-active': string;",
+      "--chat-sidemenu-bg-color-hover": "'--chat-sidemenu-bg-color-hover': string;",
+      "--chat-sidemenu-border-color-search": "'--chat-sidemenu-border-color-search': string;",
+      "--chat-sidemenu-color-active": "'--chat-sidemenu-color-active': string;"
+    },
+    "localizationKeys": {
+      "chat.autocomplete.emojis": "'chat.autocomplete.emojis': string;",
+      "chat.autocomplete.users": "'chat.autocomplete.users': string;",
+      "chat.cancel-edit": "'chat.cancel-edit': string;",
+      "chat.cancel-reply": "'chat.cancel-reply': string;",
+      "chat.cancel-selection": "'chat.cancel-selection': string;",
+      "chat.empty": "'chat.empty': string;",
+      "chat.message.deleted": "'chat.message.deleted': string;",
+      "chat.message.failure": "'chat.message.failure': string;",
+      "chat.message.placeholder": "'chat.message.placeholder': string;",
+      "chat.messages.empty": "'chat.messages.empty': string;",
+      "chat.messages.new": "'chat.messages.new': string;",
+      "chat.scroll-to-bottom": "'chat.scroll-to-bottom': string;",
+      "chat.state.empty": "'chat.state.empty': string;",
+      "chat.state.error": "'chat.state.error': string;",
+      "chat.state.loading": "'chat.state.loading': string;",
+      "chat.state.offline": "'chat.state.offline': string;",
+      "chat.state.permission-denied": "'chat.state.permission-denied': string;",
+      "chat.state.reconnecting": "'chat.state.reconnecting': string;",
+      "chat.state.retry": "'chat.state.retry': string;",
+      "chat.typing": "'chat.typing': string;",
+      "chat.user.is-online": "'chat.user.is-online': string;",
+      "chat.user.last-seen": "'chat.user.last-seen': string;",
+      "chats.empty": "'chats.empty': string;",
+      "chats.search.placeholder": "'chats.search.placeholder': string;"
+    },
+    "otherTypes": {
+      "AdvancedChatOptions": "export declare interface AdvancedChatOptions { localization?: Localization; strings?: Partial<Strings>; }",
+      "AdvancedChatPluginType": "export declare interface AdvancedChatPluginType { install: (app: App) => void; }",
+      "BuiltInActionName": "export declare type BuiltInActionName = typeof REPLY_ACTION | typeof EDIT_ACTION;",
+      "ChatFileItem": "export declare interface ChatFileItem extends MessageFileModel { loading?: boolean; localUrl?: string; }",
+      "FormattedText": "export declare interface FormattedText { value: string; markdown?: boolean; singleLine?: boolean; }",
+      "InvalidFileReason": "export declare type InvalidFileReason = 'size' | 'count';",
+      "LinkOptions": "export declare interface LinkOptions { target?: '_blank' | '_self' | '_parent' | '_top'; rel?: string; }",
+      "Localization": "export declare type Localization = 'en' | 'auto';",
+      "TextFormattingBindings": "export declare interface TextFormattingBindings { users?: Array<User>; }",
+      "TextFormattingOptions": "export declare interface TextFormattingOptions { markdown?: boolean; singleLine?: boolean; linkify?: boolean; linkOptions?: LinkOptions; }",
+      "Theme": "export declare type Theme = 'light' | 'dark' | 'auto' | { base: 'light' | 'dark'; overrides: Partial<Styles>; };"
+    }
+  },
+  "webComponents": {
+    "dist/web-component-core.d.ts": {
+      "runtimeDeclarations": {
+        "DEFAULT_CUSTOM_ELEMENT_TAG": "export declare const DEFAULT_CUSTOM_ELEMENT_TAG = \"advanced-chat-components\";",
+        "createAdvancedChatElement": "export declare const createAdvancedChatElement: (options?: AdvancedChatOptions) => AdvancedChatElementConstructor;",
+        "registerAdvancedChat": "export declare const registerAdvancedChat: ({ tagName, ...pluginOptions }?: RegisterAdvancedChatOptions) => AdvancedChatElementConstructor;"
+      },
+      "typeDeclarations": {
+        "AdvancedChatElementConstructor": "export declare interface AdvancedChatElementConstructor extends CustomElementConstructor { new (): AdvancedChatHTMLElement; }",
+        "AdvancedChatEventMap": "export declare type AdvancedChatEventMap = { [Key in keyof AdvancedChatEventListeners as EventName<Key & string>]-?: CustomEvent<EventDetail<AdvancedChatEventListeners[Key]>>; };",
+        "AdvancedChatHTMLElement": "export declare interface AdvancedChatHTMLElement extends HTMLElement, AdvancedChatProps { addEventListener<Key extends keyof AdvancedChatEventMap>(type: Key, listener: (this: AdvancedChatHTMLElement, event: AdvancedChatEventMap[Key]) => unknown, options?: boolean | AddEventListenerOptions): void; addEventListener(type: string, listener: EventListenerOrEventListenerObject | null, options?: boolean | AddEventListenerOptions): void; removeEventListener<Key extends keyof AdvancedChatEventMap>(type: Key, listener: (this: AdvancedChatHTMLElement, event: AdvancedChatEventMap[Key]) => unknown, options?: boolean | EventListenerOptions): void; removeEventListener(type: string, listener: EventListenerOrEventListenerObject | null, options?: boolean | EventListenerOptions): void; }",
+        "RegisterAdvancedChatOptions": "export declare interface RegisterAdvancedChatOptions extends AdvancedChatOptions { tagName?: string; }"
+      },
+      "globalAugmentations": []
+    },
+    "dist/web-component.d.ts": {
+      "runtimeDeclarations": {
+        "DEFAULT_CUSTOM_ELEMENT_TAG": "export declare const DEFAULT_CUSTOM_ELEMENT_TAG = \"advanced-chat-components\";",
+        "createAdvancedChatElement": "export declare const createAdvancedChatElement: (options?: AdvancedChatOptions) => AdvancedChatElementConstructor;",
+        "registerAdvancedChat": "export declare const registerAdvancedChat: ({ tagName, ...pluginOptions }?: RegisterAdvancedChatOptions) => AdvancedChatElementConstructor;"
+      },
+      "typeDeclarations": {
+        "AdvancedChatElementConstructor": "export declare interface AdvancedChatElementConstructor extends CustomElementConstructor { new (): AdvancedChatHTMLElement; }",
+        "AdvancedChatEventMap": "export declare type AdvancedChatEventMap = { [Key in keyof AdvancedChatEventListeners as EventName<Key & string>]-?: CustomEvent<EventDetail<AdvancedChatEventListeners[Key]>>; };",
+        "AdvancedChatHTMLElement": "export declare interface AdvancedChatHTMLElement extends HTMLElement, AdvancedChatProps { addEventListener<Key extends keyof AdvancedChatEventMap>(type: Key, listener: (this: AdvancedChatHTMLElement, event: AdvancedChatEventMap[Key]) => unknown, options?: boolean | AddEventListenerOptions): void; addEventListener(type: string, listener: EventListenerOrEventListenerObject | null, options?: boolean | AddEventListenerOptions): void; removeEventListener<Key extends keyof AdvancedChatEventMap>(type: Key, listener: (this: AdvancedChatHTMLElement, event: AdvancedChatEventMap[Key]) => unknown, options?: boolean | EventListenerOptions): void; removeEventListener(type: string, listener: EventListenerOrEventListenerObject | null, options?: boolean | EventListenerOptions): void; }",
+        "RegisterAdvancedChatOptions": "export declare interface RegisterAdvancedChatOptions extends AdvancedChatOptions { tagName?: string; }"
+      },
+      "globalAugmentations": []
+    }
+  },
+  "customElementsManifest": {
+    "schemaVersion": "1.0.0",
+    "modules": [
+      {
+        "path": "dist/advanced-chat-components.js",
+        "declarations": [
+          {
+            "kind": "class",
+            "name": "AdvancedChatElement",
+            "tagName": "advanced-chat-components",
+            "customElement": true,
+            "members": [
+              { "kind": "field", "name": "accept", "type": "string", "default": "'*'" },
+              {
+                "kind": "field",
+                "name": "autoScroll",
+                "type": "{ onMount?: boolean; onChatSwitch?: boolean; onSend?: boolean; onReceive?: boolean }",
+                "default": "{ onMount: true, onChatSwitch: true, onSend: true, onReceive: true }"
+              },
+              {
+                "kind": "field",
+                "name": "capture",
+                "type": "'' | 'user' | 'environment'",
+                "default": "''"
+              },
+              { "kind": "field", "name": "chat", "type": "Chat | null", "default": "null" },
+              { "kind": "field", "name": "chatActions", "type": "Action[]", "default": "[]" },
+              { "kind": "field", "name": "chatInfoEnabled", "type": "boolean", "default": "false" },
+              { "kind": "field", "name": "chats", "type": "Chat[]", "default": "[]" },
+              { "kind": "field", "name": "chatsLoaded", "type": "boolean", "default": "false" },
+              {
+                "kind": "field",
+                "name": "composerDisabled",
+                "type": "boolean",
+                "default": "false"
+              },
+              {
+                "kind": "field",
+                "name": "currentUser",
+                "type": "UserReference | null",
+                "default": "null"
+              },
+              {
+                "kind": "field",
+                "name": "customSearchEnabled",
+                "type": "boolean",
+                "default": "false"
+              },
+              { "kind": "field", "name": "headerActions", "type": "Action[]", "default": "[]" },
+              { "kind": "field", "name": "height", "type": "string", "default": "'600px'" },
+              { "kind": "field", "name": "loadingChats", "type": "boolean", "default": "false" },
+              { "kind": "field", "name": "loadingMessages", "type": "boolean", "default": "false" },
+              { "kind": "field", "name": "maxFileSize", "type": "number", "default": "0" },
+              { "kind": "field", "name": "maxFiles", "type": "number", "default": "0" },
+              { "kind": "field", "name": "messageActions", "type": "Action[]", "default": "[]" },
+              { "kind": "field", "name": "messages", "type": "Message[]", "default": "[]" },
+              { "kind": "field", "name": "messagesLoaded", "type": "boolean", "default": "false" },
+              { "kind": "field", "name": "multiple", "type": "boolean", "default": "true" },
+              { "kind": "field", "name": "retryLabel", "type": "string", "default": "''" },
+              { "kind": "field", "name": "selectionActions", "type": "Action[]", "default": "[]" },
+              { "kind": "field", "name": "showAddChat", "type": "boolean", "default": "true" },
+              { "kind": "field", "name": "showChats", "type": "boolean", "default": "true" },
+              { "kind": "field", "name": "showEmojis", "type": "boolean", "default": "true" },
+              { "kind": "field", "name": "showFiles", "type": "boolean", "default": "true" },
+              { "kind": "field", "name": "showFooter", "type": "boolean", "default": "true" },
+              {
+                "kind": "field",
+                "name": "showNewMessagesDivider",
+                "type": "boolean",
+                "default": "true"
+              },
+              {
+                "kind": "field",
+                "name": "showReactionEmojis",
+                "type": "boolean",
+                "default": "true"
+              },
+              { "kind": "field", "name": "showSearch", "type": "boolean", "default": "true" },
+              { "kind": "field", "name": "showSendIcon", "type": "boolean", "default": "true" },
+              {
+                "kind": "field",
+                "name": "status",
+                "type": "'ready' | 'loading' | 'empty' | 'error' | 'offline' | 'reconnecting' | 'permission-denied'",
+                "default": "'ready'"
+              },
+              { "kind": "field", "name": "statusMessage", "type": "string", "default": "''" },
+              {
+                "kind": "field",
+                "name": "textFormatting",
+                "type": "Partial<TextFormattingOptions>",
+                "default": "{}"
+              },
+              { "kind": "field", "name": "theme", "type": "Theme", "default": "'auto'" },
+              {
+                "kind": "field",
+                "name": "typingIndicatorPosition",
+                "type": "'header' | 'composer' | 'both' | 'none'",
+                "default": "'header'"
+              }
+            ],
+            "attributes": [
+              { "name": "accept", "fieldName": "accept", "type": "string" },
+              { "name": "capture", "fieldName": "capture", "type": "'' | 'user' | 'environment'" },
+              { "name": "chat-info-enabled", "fieldName": "chatInfoEnabled", "type": "boolean" },
+              { "name": "chats-loaded", "fieldName": "chatsLoaded", "type": "boolean" },
+              { "name": "composer-disabled", "fieldName": "composerDisabled", "type": "boolean" },
+              {
+                "name": "custom-search-enabled",
+                "fieldName": "customSearchEnabled",
+                "type": "boolean"
+              },
+              { "name": "height", "fieldName": "height", "type": "string" },
+              { "name": "loading-chats", "fieldName": "loadingChats", "type": "boolean" },
+              { "name": "loading-messages", "fieldName": "loadingMessages", "type": "boolean" },
+              { "name": "max-file-size", "fieldName": "maxFileSize", "type": "number" },
+              { "name": "max-files", "fieldName": "maxFiles", "type": "number" },
+              { "name": "messages-loaded", "fieldName": "messagesLoaded", "type": "boolean" },
+              { "name": "multiple", "fieldName": "multiple", "type": "boolean" },
+              { "name": "retry-label", "fieldName": "retryLabel", "type": "string" },
+              { "name": "show-add-chat", "fieldName": "showAddChat", "type": "boolean" },
+              { "name": "show-chats", "fieldName": "showChats", "type": "boolean" },
+              { "name": "show-emojis", "fieldName": "showEmojis", "type": "boolean" },
+              { "name": "show-files", "fieldName": "showFiles", "type": "boolean" },
+              { "name": "show-footer", "fieldName": "showFooter", "type": "boolean" },
+              {
+                "name": "show-new-messages-divider",
+                "fieldName": "showNewMessagesDivider",
+                "type": "boolean"
+              },
+              {
+                "name": "show-reaction-emojis",
+                "fieldName": "showReactionEmojis",
+                "type": "boolean"
+              },
+              { "name": "show-search", "fieldName": "showSearch", "type": "boolean" },
+              { "name": "show-send-icon", "fieldName": "showSendIcon", "type": "boolean" },
+              {
+                "name": "status",
+                "fieldName": "status",
+                "type": "'ready' | 'loading' | 'empty' | 'error' | 'offline' | 'reconnecting' | 'permission-denied'"
+              },
+              { "name": "status-message", "fieldName": "statusMessage", "type": "string" },
+              { "name": "theme", "fieldName": "theme", "type": "'light' | 'dark' | 'auto'" },
+              {
+                "name": "typing-indicator-position",
+                "fieldName": "typingIndicatorPosition",
+                "type": "'header' | 'composer' | 'both' | 'none'"
+              }
+            ],
+            "events": [
+              { "name": "add-chat", "type": "CustomEvent<null>" },
+              { "name": "cancel-message-selection", "type": "CustomEvent<null>" },
+              {
+                "name": "chat-action-handler",
+                "type": "CustomEvent<{ chat: Chat; action: Action }>"
+              },
+              { "name": "click-user-tag", "type": "CustomEvent<User>" },
+              {
+                "name": "edit-message",
+                "type": "CustomEvent<{ messageId: Message['id']; content: string; files: ChatFileItem[]; mentionedUsers: User[] }>"
+              },
+              { "name": "fetch-messages", "type": "CustomEvent<null>" },
+              { "name": "fetch-more-chats", "type": "CustomEvent<null>" },
+              {
+                "name": "invalid-file",
+                "type": "CustomEvent<{ file: File; reason: 'size' | 'count' }>"
+              },
+              {
+                "name": "menu-action-handler",
+                "type": "CustomEvent<{ chat: Chat; action: Action }>"
+              },
+              {
+                "name": "message-action-handler",
+                "type": "CustomEvent<{ action: Action; message: Message }>"
+              },
+              {
+                "name": "message-selection-action-handler",
+                "type": "CustomEvent<{ chat: Chat; action: Action; messages: Message[] }>"
+              },
+              { "name": "open-chat", "type": "CustomEvent<Chat>" },
+              { "name": "open-failed-message", "type": "CustomEvent<Message>" },
+              {
+                "name": "open-file",
+                "type": "CustomEvent<{ file: MessageFile; action: 'preview' | 'download' }>"
+              },
+              { "name": "retry", "type": "CustomEvent<null>" },
+              { "name": "search-chat", "type": "CustomEvent<string>" },
+              {
+                "name": "send-message",
+                "type": "CustomEvent<{ content: string; files: ChatFileItem[]; mentionedUsers: User[]; reply?: Message | null }>"
+              },
+              {
+                "name": "send-message-reaction",
+                "type": "CustomEvent<{ emoji: string; message: Message }>"
+              },
+              { "name": "show-chat-info", "type": "CustomEvent<Chat>" },
+              { "name": "typing-message", "type": "CustomEvent<string>" }
+            ]
+          }
+        ],
+        "exports": [
+          {
+            "kind": "custom-element-definition",
+            "name": "advanced-chat-components",
+            "declaration": {
+              "name": "AdvancedChatElement",
+              "module": "dist/advanced-chat-components.js"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

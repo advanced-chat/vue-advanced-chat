@@ -44,6 +44,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Verify API Contract
+        run: npm run verify:api
+
       - name: Verify Pack Contract
         run: npm run verify:pack
 
