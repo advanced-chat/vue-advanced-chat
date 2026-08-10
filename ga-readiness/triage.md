@@ -1,19 +1,21 @@
 # GA-016 Open Issue and PR Triage Snapshot
 
-Snapshot ID: `GH-20260810T160310Z`
+Baseline human snapshot: `GH-20260810T160310Z`
+
+Current machine snapshot: `GH-20260810T163841Z`
 
 Query started: `2026-08-10T16:03:10Z`
 
 Repository: [`advanced-chat/advanced-chat-components`](https://github.com/advanced-chat/advanced-chat-components), default branch `main`
 
-Last triaged: `2026-08-10T16:03:10Z`
+Last triaged: `2026-08-10T16:38:41Z`
 
-Scope: every issue and pull request returned as open by the queries below. This
-file is a frozen, human-auditable snapshot; re-running the commands is expected
-to reflect later GitHub state. No GitHub state was mutated.
+Scope: every issue and pull request returned as open by the queries below. Each
+row retains the snapshot that introduced it; the machine inventory is refreshed
+after GitHub coordination changes and before release authorization.
 
 Machine-readable inventory: [`triage-snapshot.json`](./triage-snapshot.json)
-(`GH-20260810T163031Z`), captured with `npm run capture:ga-triage` and
+(`GH-20260810T163841Z`), captured with `npm run capture:ga-triage` and
 independently reconciled with this human disposition table in `EV-010`.
 
 ## Queries
@@ -35,9 +37,9 @@ gh pr view 574 --repo advanced-chat/advanced-chat-components --json number,title
 
 ## Totals
 
-- Open issues: **77**
-- Open pull requests: **13**
-- Total open items: **90**
+- Open issues: **78**
+- Open pull requests: **14**
+- Total open items: **92**
 - Missing rows, dispositions, or owner proposals: **0**
 - Open Blocker/High items with `needs-info`: **0**
 
@@ -45,9 +47,9 @@ Disposition totals:
 
 | Disposition   | Count |
 | ------------- | ----: |
-| `ga-blocker`  |     1 |
+| `ga-blocker`  |     2 |
 | `rc-soak`     |     1 |
-| `close-on-ga` |    40 |
+| `close-on-ga` |    41 |
 | `v3-roadmap`  |    18 |
 | `v2-only`     |    18 |
 | `support`     |     3 |
@@ -59,7 +61,7 @@ Impact totals:
 | Impact    | Count |
 | --------- | ----: |
 | `Blocker` |     0 |
-| `High`    |     9 |
+| `High`    |    11 |
 | `Medium`  |    52 |
 | `Low`     |    29 |
 
@@ -73,8 +75,8 @@ Owner values are proposals, not evidence that the GitHub item was assigned.
 The live inventory and V3 authorities do not support using
 [`rewrite/issue-triage.md`](../rewrite/issue-triage.md) as a complete inventory:
 
-- It covers 42 of the 77 currently open issues and 12 of the 13 currently open
-  PRs. It omits 35 open issues and PR #574.
+- It covers 42 of the 78 currently open issues and 12 of the 14 currently open
+  PRs. It omits 36 open issues plus PRs #574 and #581.
 - It also references #461 and #513 as landed, but neither is currently open;
   they correctly do not appear in this snapshot.
 - #573 is a V2 report whose V3 container-width behavior landed in RC3. It is
@@ -100,6 +102,7 @@ Evidence abbreviations used below:
 
 | Snapshot              | Kind  |                                                                       Number | Title                                                                                                                  | Release relevance                                                                                                                                                                         | Impact | Disposition   | Owner proposal   | Linked finding                 | Last triaged           | Evidence                                                               |
 | --------------------- | ----- | ---------------------------------------------------------------------------: | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------------- | ---------------- | ------------------------------ | ---------------------- | ---------------------------------------------------------------------- |
+| `GH-20260810T163841Z` | Issue | [#580](https://github.com/advanced-chat/advanced-chat-components/issues/580) | V3 GA readiness control room                                                                                           | Canonical GitHub coordination surface for the local tracker; remains open through GA convergence.                                                                                         | High   | `close-on-ga` | `@aerovulpe`     | `GA-016`                       | `2026-08-10T16:38:41Z` | live; coordination issue; PR #581                                      |
 | `GH-20260810T160310Z` | Issue | [#573](https://github.com/advanced-chat/advanced-chat-components/issues/573) | Message bubble max-width breakpoint uses viewport width instead of container width                                     | V2 report; V3 `AdvancedChat` observes container width and cards use `max-width: min(78%, 560px)` in RC3. Verify narrow embedding on candidate bytes before closing.                       | Medium | `rc-soak`     | `agent-runtime`  | `GA-016`                       | `2026-08-10T16:03:10Z` | live; detail; triage landed table; parity distribution                 |
 | `GH-20260810T160310Z` | Issue | [#572](https://github.com/advanced-chat/advanced-chat-components/issues/572) | Expose container of conversation                                                                                       | V3 exports composable components; consumers can wrap `Chat` without a new container escape hatch.                                                                                         | Medium | `close-on-ga` | `@aerovulpe`     | `GA-016`, `GA-013`             | `2026-08-10T16:03:10Z` | live; triage architecture                                              |
 | `GH-20260810T160310Z` | Issue | [#571](https://github.com/advanced-chat/advanced-chat-components/issues/571) | 请问room-actions 可以动态控制吗                                                                                        | V3 reactive `chatActions` replaces V2 `room-actions`.                                                                                                                                     | Medium | `close-on-ga` | `@aerovulpe`     | `GA-016`, `GA-013`             | `2026-08-10T16:03:10Z` | live; triage architecture; parity chats                                |
@@ -180,21 +183,22 @@ Evidence abbreviations used below:
 
 ## Open pull requests
 
-| Snapshot              | Kind |                                                                     Number | Title                                                                                                              | Release relevance                                                                                                                                                 | Impact | Disposition   | Owner proposal   | Linked finding               | Last triaged           | Evidence                                      |
-| --------------------- | ---- | -------------------------------------------------------------------------: | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------------- | ---------------- | ---------------------------- | ---------------------- | --------------------------------------------- |
-| `GH-20260810T160310Z` | PR   | [#574](https://github.com/advanced-chat/advanced-chat-components/pull/574) | Publish src/ for bundler consumers extending ChatWindow                                                            | Targets legacy package names and V2 source paths absent from V3. Merging would expand the frozen tarball/API contract; retarget to `v2` or close.                 | Medium | `v2-only`     | `@aerovulpe`     | `GA-016`, `GA-013`, `GA-015` | `2026-08-10T16:03:10Z` | live; detail; parity packaging                |
-| `GH-20260810T160310Z` | PR   | [#567](https://github.com/advanced-chat/advanced-chat-components/pull/567) | fix: load more rooms when less than minimumVisibleRooms and prepare build to support install from GitHub           | V2 implementation and emergency GitHub-install workaround; V3 has a separate chat backfill path and published package. Retarget only if V2 maintenance continues. | Medium | `v2-only`     | `@aerovulpe`     | `GA-016`, `GA-015`           | `2026-08-10T16:03:10Z` | live; triage stale PRs; release package split |
-| `GH-20260810T160310Z` | PR   | [#561](https://github.com/advanced-chat/advanced-chat-components/pull/561) | feat: Add JJSIP based phone option to chat                                                                         | Vendor-specific telephony feature is beyond the frozen chat-component charter.                                                                                    | Medium | `declined`    | `@aerovulpe`     | `GA-016`                     | `2026-08-10T16:03:10Z` | live; triage out-of-scope                     |
-| `GH-20260810T160310Z` | PR   | [#549](https://github.com/advanced-chat/advanced-chat-components/pull/549) | Fix #166: export internal components                                                                               | V3 architecture already exports typed components through a reviewed public surface; this conflicting V2 patch should close with #166.                             | High   | `close-on-ga` | `agent-contract` | `GA-016`, `GA-013`           | `2026-08-10T16:03:10Z` | live; triage architecture                     |
-| `GH-20260810T160310Z` | PR   | [#540](https://github.com/advanced-chat/advanced-chat-components/pull/540) | Bag return replyMessage in editMessage function                                                                    | V2 reply/edit patch; V3 has its own typed dispatch and GA-005 state verification. Close after confirming candidate behavior rather than merging stale code.       | Medium | `close-on-ga` | `agent-runtime`  | `GA-016`, `GA-005`           | `2026-08-10T16:03:10Z` | live; triage stale PRs; parity composer       |
-| `GH-20260810T160310Z` | PR   | [#520](https://github.com/advanced-chat/advanced-chat-components/pull/520) | Bump vite from 2.9.16 to 2.9.18 in /demo                                                                           | Stale Dependabot update for the removed V2 demo/toolchain; superseded by the V3 lockfile.                                                                         | Low    | `declined`    | `@aerovulpe`     | `GA-016`, `GA-015`           | `2026-08-10T16:03:10Z` | live; triage stale PRs                        |
-| `GH-20260810T160310Z` | PR   | [#519](https://github.com/advanced-chat/advanced-chat-components/pull/519) | Bump vite from 2.9.16 to 2.9.18                                                                                    | Stale Dependabot update against the V2 dependency graph; superseded by V3.                                                                                        | Low    | `declined`    | `@aerovulpe`     | `GA-016`, `GA-015`           | `2026-08-10T16:03:10Z` | live; triage stale PRs                        |
-| `GH-20260810T160310Z` | PR   | [#518](https://github.com/advanced-chat/advanced-chat-components/pull/518) | change "background-color" to "background" of message cards in order to use gradient background in RoomMessage.scss | V2 stylesheet patch; V3 light-DOM theme/style surface supersedes it.                                                                                              | Low    | `close-on-ga` | `@aerovulpe`     | `GA-016`, `GA-013`           | `2026-08-10T16:03:10Z` | live; triage stale PRs                        |
-| `GH-20260810T160310Z` | PR   | [#514](https://github.com/advanced-chat/advanced-chat-components/pull/514) | Feature/issue 742 chat users list must have a backround color and scroll bar                                       | V2 mention-list CSS patch against absent paths; retarget to `v2` if still desired.                                                                                | Low    | `v2-only`     | `@aerovulpe`     | `GA-016`                     | `2026-08-10T16:03:10Z` | live; triage stale PRs                        |
-| `GH-20260810T160310Z` | PR   | [#495](https://github.com/advanced-chat/advanced-chat-components/pull/495) | [fix] new message line disappearance issue                                                                         | V2 lifecycle patch; V3 has a separate divider implementation and chat-state verification. Preserve scenario, not patch.                                           | Medium | `close-on-ga` | `agent-runtime`  | `GA-016`, `GA-004`, `GA-005` | `2026-08-10T16:03:10Z` | live; triage stale PRs; #443 relation         |
-| `GH-20260810T160310Z` | PR   | [#477](https://github.com/advanced-chat/advanced-chat-components/pull/477) | Develop                                                                                                            | Opaque, stale, merge-conflicting branch with no reviewable V3 scope.                                                                                              | Low    | `declined`    | `@aerovulpe`     | `GA-016`                     | `2026-08-10T16:03:10Z` | live; triage stale PRs                        |
-| `GH-20260810T160310Z` | PR   | [#307](https://github.com/advanced-chat/advanced-chat-components/pull/307) | (feature) emit new signal reset-message                                                                            | Stale V2-only event proposal; no approved V3 API requirement.                                                                                                     | Low    | `declined`    | `agent-contract` | `GA-016`, `GA-013`           | `2026-08-10T16:03:10Z` | live; triage stale PRs                        |
-| `GH-20260810T160310Z` | PR   | [#306](https://github.com/advanced-chat/advanced-chat-components/pull/306) | (feature) add method-callback to signal 'message-action-handler'                                                   | Stale V2 callback-in-event API proposal; conflicts with V3 typed event ownership and is not GA scope.                                                             | Low    | `declined`    | `agent-contract` | `GA-016`, `GA-013`           | `2026-08-10T16:03:10Z` | live; triage stale PRs                        |
+| Snapshot              | Kind |                                                                     Number | Title                                                                                                              | Release relevance                                                                                                                                                 | Impact | Disposition   | Owner proposal   | Linked finding               | Last triaged           | Evidence                                           |
+| --------------------- | ---- | -------------------------------------------------------------------------: | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------------- | ---------------- | ---------------------------- | ---------------------- | -------------------------------------------------- |
+| `GH-20260810T163841Z` | PR   | [#581](https://github.com/advanced-chat/advanced-chat-components/pull/581) | chore: establish v3 GA readiness control room                                                                      | Implements the control room, reviewed API baseline gate, Node 22.14+ floor, and repeatable triage capture required before RC4 remediation proceeds.               | High   | `ga-blocker`  | `@aerovulpe`     | `GA-010`, `GA-013`, `GA-016` | `2026-08-10T16:38:41Z` | live; local `EV-011`; independent review requested |
+| `GH-20260810T160310Z` | PR   | [#574](https://github.com/advanced-chat/advanced-chat-components/pull/574) | Publish src/ for bundler consumers extending ChatWindow                                                            | Targets legacy package names and V2 source paths absent from V3. Merging would expand the frozen tarball/API contract; retarget to `v2` or close.                 | Medium | `v2-only`     | `@aerovulpe`     | `GA-016`, `GA-013`, `GA-015` | `2026-08-10T16:03:10Z` | live; detail; parity packaging                     |
+| `GH-20260810T160310Z` | PR   | [#567](https://github.com/advanced-chat/advanced-chat-components/pull/567) | fix: load more rooms when less than minimumVisibleRooms and prepare build to support install from GitHub           | V2 implementation and emergency GitHub-install workaround; V3 has a separate chat backfill path and published package. Retarget only if V2 maintenance continues. | Medium | `v2-only`     | `@aerovulpe`     | `GA-016`, `GA-015`           | `2026-08-10T16:03:10Z` | live; triage stale PRs; release package split      |
+| `GH-20260810T160310Z` | PR   | [#561](https://github.com/advanced-chat/advanced-chat-components/pull/561) | feat: Add JJSIP based phone option to chat                                                                         | Vendor-specific telephony feature is beyond the frozen chat-component charter.                                                                                    | Medium | `declined`    | `@aerovulpe`     | `GA-016`                     | `2026-08-10T16:03:10Z` | live; triage out-of-scope                          |
+| `GH-20260810T160310Z` | PR   | [#549](https://github.com/advanced-chat/advanced-chat-components/pull/549) | Fix #166: export internal components                                                                               | V3 architecture already exports typed components through a reviewed public surface; this conflicting V2 patch should close with #166.                             | High   | `close-on-ga` | `agent-contract` | `GA-016`, `GA-013`           | `2026-08-10T16:03:10Z` | live; triage architecture                          |
+| `GH-20260810T160310Z` | PR   | [#540](https://github.com/advanced-chat/advanced-chat-components/pull/540) | Bag return replyMessage in editMessage function                                                                    | V2 reply/edit patch; V3 has its own typed dispatch and GA-005 state verification. Close after confirming candidate behavior rather than merging stale code.       | Medium | `close-on-ga` | `agent-runtime`  | `GA-016`, `GA-005`           | `2026-08-10T16:03:10Z` | live; triage stale PRs; parity composer            |
+| `GH-20260810T160310Z` | PR   | [#520](https://github.com/advanced-chat/advanced-chat-components/pull/520) | Bump vite from 2.9.16 to 2.9.18 in /demo                                                                           | Stale Dependabot update for the removed V2 demo/toolchain; superseded by the V3 lockfile.                                                                         | Low    | `declined`    | `@aerovulpe`     | `GA-016`, `GA-015`           | `2026-08-10T16:03:10Z` | live; triage stale PRs                             |
+| `GH-20260810T160310Z` | PR   | [#519](https://github.com/advanced-chat/advanced-chat-components/pull/519) | Bump vite from 2.9.16 to 2.9.18                                                                                    | Stale Dependabot update against the V2 dependency graph; superseded by V3.                                                                                        | Low    | `declined`    | `@aerovulpe`     | `GA-016`, `GA-015`           | `2026-08-10T16:03:10Z` | live; triage stale PRs                             |
+| `GH-20260810T160310Z` | PR   | [#518](https://github.com/advanced-chat/advanced-chat-components/pull/518) | change "background-color" to "background" of message cards in order to use gradient background in RoomMessage.scss | V2 stylesheet patch; V3 light-DOM theme/style surface supersedes it.                                                                                              | Low    | `close-on-ga` | `@aerovulpe`     | `GA-016`, `GA-013`           | `2026-08-10T16:03:10Z` | live; triage stale PRs                             |
+| `GH-20260810T160310Z` | PR   | [#514](https://github.com/advanced-chat/advanced-chat-components/pull/514) | Feature/issue 742 chat users list must have a backround color and scroll bar                                       | V2 mention-list CSS patch against absent paths; retarget to `v2` if still desired.                                                                                | Low    | `v2-only`     | `@aerovulpe`     | `GA-016`                     | `2026-08-10T16:03:10Z` | live; triage stale PRs                             |
+| `GH-20260810T160310Z` | PR   | [#495](https://github.com/advanced-chat/advanced-chat-components/pull/495) | [fix] new message line disappearance issue                                                                         | V2 lifecycle patch; V3 has a separate divider implementation and chat-state verification. Preserve scenario, not patch.                                           | Medium | `close-on-ga` | `agent-runtime`  | `GA-016`, `GA-004`, `GA-005` | `2026-08-10T16:03:10Z` | live; triage stale PRs; #443 relation              |
+| `GH-20260810T160310Z` | PR   | [#477](https://github.com/advanced-chat/advanced-chat-components/pull/477) | Develop                                                                                                            | Opaque, stale, merge-conflicting branch with no reviewable V3 scope.                                                                                              | Low    | `declined`    | `@aerovulpe`     | `GA-016`                     | `2026-08-10T16:03:10Z` | live; triage stale PRs                             |
+| `GH-20260810T160310Z` | PR   | [#307](https://github.com/advanced-chat/advanced-chat-components/pull/307) | (feature) emit new signal reset-message                                                                            | Stale V2-only event proposal; no approved V3 API requirement.                                                                                                     | Low    | `declined`    | `agent-contract` | `GA-016`, `GA-013`           | `2026-08-10T16:03:10Z` | live; triage stale PRs                             |
+| `GH-20260810T160310Z` | PR   | [#306](https://github.com/advanced-chat/advanced-chat-components/pull/306) | (feature) add method-callback to signal 'message-action-handler'                                                   | Stale V2 callback-in-event API proposal; conflicts with V3 typed event ownership and is not GA scope.                                                             | Low    | `declined`    | `agent-contract` | `GA-016`, `GA-013`           | `2026-08-10T16:03:10Z` | live; triage stale PRs                             |
 
 ## Candidate blockers and follow-up
 
@@ -208,17 +212,19 @@ Unresolved candidate blocker:
   GA. #573's message-card/container fix is supporting context, not proof that
   the fixed 190 px audio progress width is safe.
 
+Release-control enabler PR #581 is also `ga-blocker`: merge only after required
+checks and independent review confirm the API baseline, Node floor, tracker
+integrity, and triage capture.
+
 The following existing High findings receive regression input from live items
 but are not new blockers: #498 and PR #540 feed `GA-005`; #493 feeds `GA-004`;
 #491 feeds `GA-003`/`GA-013`; #526, #445, #166, #549, and PR #574 feed
 `GA-013`/API review.
 
-Recommended tracker/evidence updates, intentionally not made because
-`TASK-006` permits only this file:
+Remaining follow-up:
 
-1. Reconcile `rewrite/issue-triage.md` from this snapshot: add its 36 omitted
-   live items, distinguish #550 from #573, and add PR #574. Do not mutate GitHub
-   until a maintainer accepts the proposed dispositions.
+1. Reconcile `rewrite/issue-triage.md` from this snapshot: add its 38 omitted
+   live items, distinguish #550 from #573, and add PRs #574 and #581.
 2. At RC authorization and again after GA publication, rerun the same inventory
    queries. `G-009`/`G-017` should fail if any returned item lacks a row, owner,
    disposition, or last-triaged time, or if a Blocker/High item is left as

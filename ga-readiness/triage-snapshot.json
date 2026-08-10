@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "snapshotId": "GH-20260810T163031Z",
-  "capturedAt": "2026-08-10T16:30:31Z",
+  "snapshotId": "GH-20260810T163841Z",
+  "capturedAt": "2026-08-10T16:38:41Z",
   "repository": {
     "defaultBranchRef": {
       "name": "main"
@@ -14,6 +14,53 @@
     "pullRequests": "gh pr list --repo advanced-chat/advanced-chat-components --state open --limit 1000 --json number,title,url,author,assignees,labels,milestone,createdAt,updatedAt,isDraft,headRefName,baseRefName,reviewDecision,mergeStateStatus"
   },
   "issues": [
+    {
+      "assignees": [
+        {
+          "id": "MDQ6VXNlcjY0Mzg0NTc=",
+          "login": "aerovulpe",
+          "name": "Aaron Nwabuoku",
+          "databaseId": 6438457
+        }
+      ],
+      "author": {
+        "id": "MDQ6VXNlcjY0Mzg0NTc=",
+        "is_bot": false,
+        "login": "aerovulpe",
+        "name": "Aaron Nwabuoku"
+      },
+      "createdAt": "2026-08-10T16:37:29Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwyNzcxODIwODI2",
+          "name": "in progress",
+          "description": "This is currently being worked on",
+          "color": "fef2c0"
+        },
+        {
+          "id": "LA_kwDODY8BAc8AAAACvu8Krg",
+          "name": "v3-ga",
+          "description": "Required for @advanced-chat/components 3.0.0 readiness",
+          "color": "5319E7"
+        },
+        {
+          "id": "LA_kwDODY8BAc8AAAACvu8KwQ",
+          "name": "ga-control",
+          "description": "V3 GA governance and coordination",
+          "color": "1D76DB"
+        }
+      ],
+      "milestone": {
+        "number": 1,
+        "title": "V3 GA",
+        "description": "Tracks @advanced-chat/components 3.0.0 readiness, RC4 verification, soak, and promotion.",
+        "dueOn": null
+      },
+      "number": 580,
+      "title": "V3 GA readiness control room",
+      "updatedAt": "2026-08-10T16:38:04Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/580"
+    },
     {
       "assignees": [],
       "author": {
@@ -222,7 +269,14 @@
       "url": "https://github.com/advanced-chat/advanced-chat-components/issues/551"
     },
     {
-      "assignees": [],
+      "assignees": [
+        {
+          "id": "MDQ6VXNlcjY0Mzg0NTc=",
+          "login": "aerovulpe",
+          "name": "Aaron Nwabuoku",
+          "databaseId": 6438457
+        }
+      ],
       "author": {
         "id": "MDQ6VXNlcjc3NjUzOTA3",
         "is_bot": false,
@@ -236,12 +290,35 @@
           "name": "bug",
           "description": "Something isn't working",
           "color": "d73a4a"
+        },
+        {
+          "id": "MDU6TGFiZWwyNTk0NjUxMjE5",
+          "name": "priority",
+          "description": "To be fixed in priority",
+          "color": "F4B572"
+        },
+        {
+          "id": "LA_kwDODY8BAc8AAAACvu8KrQ",
+          "name": "ga-high",
+          "description": "High-impact V3 GA finding",
+          "color": "B60205"
+        },
+        {
+          "id": "LA_kwDODY8BAc8AAAACvu8Krg",
+          "name": "v3-ga",
+          "description": "Required for @advanced-chat/components 3.0.0 readiness",
+          "color": "5319E7"
         }
       ],
-      "milestone": null,
+      "milestone": {
+        "number": 1,
+        "title": "V3 GA",
+        "description": "Tracks @advanced-chat/components 3.0.0 readiness, RC4 verification, soak, and promotion.",
+        "dueOn": null
+      },
       "number": 550,
       "title": "audio does not responsive on desktop mode",
-      "updatedAt": "2026-04-15T23:20:08Z",
+      "updatedAt": "2026-08-10T16:38:07Z",
       "url": "https://github.com/advanced-chat/advanced-chat-components/issues/550"
     },
     {
@@ -1846,6 +1923,52 @@
     }
   ],
   "pullRequests": [
+    {
+      "assignees": [
+        {
+          "id": "MDQ6VXNlcjY0Mzg0NTc=",
+          "login": "aerovulpe",
+          "name": "Aaron Nwabuoku",
+          "databaseId": 6438457
+        }
+      ],
+      "author": {
+        "id": "MDQ6VXNlcjY0Mzg0NTc=",
+        "is_bot": false,
+        "login": "aerovulpe",
+        "name": "Aaron Nwabuoku"
+      },
+      "baseRefName": "main",
+      "createdAt": "2026-08-10T16:37:46Z",
+      "headRefName": "ga/readiness-orchestration",
+      "isDraft": false,
+      "labels": [
+        {
+          "id": "LA_kwDODY8BAc8AAAACvu8Krg",
+          "name": "v3-ga",
+          "description": "Required for @advanced-chat/components 3.0.0 readiness",
+          "color": "5319E7"
+        },
+        {
+          "id": "LA_kwDODY8BAc8AAAACvu8KwQ",
+          "name": "ga-control",
+          "description": "V3 GA governance and coordination",
+          "color": "1D76DB"
+        }
+      ],
+      "mergeStateStatus": "BLOCKED",
+      "milestone": {
+        "number": 1,
+        "title": "V3 GA",
+        "description": "Tracks @advanced-chat/components 3.0.0 readiness, RC4 verification, soak, and promotion.",
+        "dueOn": null
+      },
+      "number": 581,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "chore: establish v3 GA readiness control room",
+      "updatedAt": "2026-08-10T16:37:50Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/581"
+    },
     {
       "assignees": [],
       "author": {

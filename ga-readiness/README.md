@@ -13,7 +13,7 @@ decisions and independently verify every Blocker or High item.
 
 | Candidate    | Commit                                     | npm state                  | RC4 decision          | GA decision | Soak        | Updated                |
 | ------------ | ------------------------------------------ | -------------------------- | --------------------- | ----------- | ----------- | ---------------------- |
-| `3.0.0-rc.3` | `86929e655a0188822edc0b48ecfe0d330945debc` | `next`; provenance present | Required; work active | Hold        | Not started | `2026-08-10T16:34:19Z` |
+| `3.0.0-rc.3` | `86929e655a0188822edc0b48ecfe0d330945debc` | `next`; provenance present | Required; work active | Hold        | Not started | `2026-08-10T16:38:41Z` |
 
 Current authority:
 
@@ -21,6 +21,10 @@ Current authority:
 - [`tracker.md`](./tracker.md) is the canonical work-item and gate index.
 - [`runs.md`](./runs.md) is the append-only evidence register.
 - [`decisions.md`](./decisions.md) is the append-only decision log.
+- [GitHub issue #580](https://github.com/advanced-chat/advanced-chat-components/issues/580)
+  is the public coordination surface.
+- [Pull request #581](https://github.com/advanced-chat/advanced-chat-components/pull/581)
+  carries the control-room implementation and independent review.
 - [`../rewrite/parity-checklist.md`](../rewrite/parity-checklist.md) remains the
   compatibility authority.
 - [`../rewrite/release-plan.md`](../rewrite/release-plan.md) remains the release
