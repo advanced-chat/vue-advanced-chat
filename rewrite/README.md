@@ -34,6 +34,9 @@ remaining limits rather than treating every v2 difference as a regression.
   including version bumps, migration notes, and announcement plan.
 - [`publish-readiness-audit.md`](./publish-readiness-audit.md) — historical
   publication audit, resolution record, and remaining external release gates.
+- [`../ga-readiness/`](../ga-readiness/README.md) - live GA execution plan,
+  finding tracker, evidence register, and decision log. Operational status lives
+  there rather than in the historical rewrite records.
 
 ## Conventions for this directory
 

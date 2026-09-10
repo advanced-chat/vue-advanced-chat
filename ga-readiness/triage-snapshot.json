@@ -1,0 +1,2256 @@
+{
+  "schemaVersion": 1,
+  "snapshotId": "GH-20260810T163841Z",
+  "capturedAt": "2026-08-10T16:38:41Z",
+  "repository": {
+    "defaultBranchRef": {
+      "name": "main"
+    },
+    "nameWithOwner": "advanced-chat/advanced-chat-components",
+    "url": "https://github.com/advanced-chat/advanced-chat-components"
+  },
+  "queries": {
+    "issues": "gh issue list --repo advanced-chat/advanced-chat-components --state open --limit 1000 --json number,title,url,author,assignees,labels,milestone,createdAt,updatedAt",
+    "pullRequests": "gh pr list --repo advanced-chat/advanced-chat-components --state open --limit 1000 --json number,title,url,author,assignees,labels,milestone,createdAt,updatedAt,isDraft,headRefName,baseRefName,reviewDecision,mergeStateStatus"
+  },
+  "issues": [
+    {
+      "assignees": [
+        {
+          "id": "MDQ6VXNlcjY0Mzg0NTc=",
+          "login": "aerovulpe",
+          "name": "Aaron Nwabuoku",
+          "databaseId": 6438457
+        }
+      ],
+      "author": {
+        "id": "MDQ6VXNlcjY0Mzg0NTc=",
+        "is_bot": false,
+        "login": "aerovulpe",
+        "name": "Aaron Nwabuoku"
+      },
+      "createdAt": "2026-08-10T16:37:29Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwyNzcxODIwODI2",
+          "name": "in progress",
+          "description": "This is currently being worked on",
+          "color": "fef2c0"
+        },
+        {
+          "id": "LA_kwDODY8BAc8AAAACvu8Krg",
+          "name": "v3-ga",
+          "description": "Required for @advanced-chat/components 3.0.0 readiness",
+          "color": "5319E7"
+        },
+        {
+          "id": "LA_kwDODY8BAc8AAAACvu8KwQ",
+          "name": "ga-control",
+          "description": "V3 GA governance and coordination",
+          "color": "1D76DB"
+        }
+      ],
+      "milestone": {
+        "number": 1,
+        "title": "V3 GA",
+        "description": "Tracks @advanced-chat/components 3.0.0 readiness, RC4 verification, soak, and promotion.",
+        "dueOn": null
+      },
+      "number": 580,
+      "title": "V3 GA readiness control room",
+      "updatedAt": "2026-08-10T16:38:04Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/580"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjEyMzgyMzg=",
+        "is_bot": false,
+        "login": "ulfgebhardt",
+        "name": "Ulf Gebhardt"
+      },
+      "createdAt": "2026-04-16T21:56:17Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 573,
+      "title": "Message bubble max-width breakpoint uses viewport width instead of container width",
+      "updatedAt": "2026-04-16T21:56:17Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/573"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjUyNzI3NTc3",
+        "is_bot": false,
+        "login": "alex-nghuy",
+        "name": "Nguyen Gia Huy"
+      },
+      "createdAt": "2026-03-12T10:00:52Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 572,
+      "title": "Expose container of conversation",
+      "updatedAt": "2026-03-12T10:00:52Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/572"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjQxOTgyMzY5",
+        "is_bot": false,
+        "login": "Medanore",
+        "name": ""
+      },
+      "createdAt": "2026-01-19T09:39:24Z",
+      "labels": [],
+      "milestone": null,
+      "number": 571,
+      "title": "请问room-actions  可以动态控制吗",
+      "updatedAt": "2026-02-14T08:45:03Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/571"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOBX-Xsw",
+        "is_bot": false,
+        "login": "DMzmwh",
+        "name": ""
+      },
+      "createdAt": "2025-12-21T03:13:23Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 570,
+      "title": "CSS Style Modification Issue",
+      "updatedAt": "2025-12-23T15:48:54Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/570"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjU1MDEwNTU3",
+        "is_bot": false,
+        "login": "lcwh52",
+        "name": ""
+      },
+      "createdAt": "2025-03-13T02:51:42Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 557,
+      "title": "document-icon 插槽 使用后没有效果",
+      "updatedAt": "2025-03-13T04:22:19Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/557"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjU1MDEwNTU3",
+        "is_bot": false,
+        "login": "lcwh52",
+        "name": ""
+      },
+      "createdAt": "2025-03-12T09:33:02Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 556,
+      "title": "vue2.0一切换路由 再次切换回去就不显示了",
+      "updatedAt": "2025-03-12T09:33:02Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/556"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjgxNzQyMDc2",
+        "is_bot": false,
+        "login": "marshall-li",
+        "name": ""
+      },
+      "createdAt": "2025-03-06T08:47:43Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 555,
+      "title": "fetch-more-rooms event is not execute",
+      "updatedAt": "2025-03-06T08:47:43Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/555"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOBjFV8Q",
+        "is_bot": false,
+        "login": "Oleh-Semenenko",
+        "name": "Oleh Semenenko"
+      },
+      "createdAt": "2025-02-19T12:17:43Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 553,
+      "title": "SyntaxError: \"[object Object]\" is not valid JSON",
+      "updatedAt": "2025-03-25T18:19:40Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/553"
+    },
+    {
+      "assignees": [
+        {
+          "id": "MDQ6VXNlcjY0Mzg0NTc=",
+          "login": "aerovulpe",
+          "name": "Aaron Nwabuoku",
+          "databaseId": 6438457
+        }
+      ],
+      "author": {
+        "id": "MDQ6VXNlcjQzMjkwNDc=",
+        "is_bot": false,
+        "login": "earok",
+        "name": ""
+      },
+      "createdAt": "2024-11-13T09:10:36Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 551,
+      "title": "node-sass dependency unneeded?",
+      "updatedAt": "2025-12-02T17:36:56Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/551"
+    },
+    {
+      "assignees": [
+        {
+          "id": "MDQ6VXNlcjY0Mzg0NTc=",
+          "login": "aerovulpe",
+          "name": "Aaron Nwabuoku",
+          "databaseId": 6438457
+        }
+      ],
+      "author": {
+        "id": "MDQ6VXNlcjc3NjUzOTA3",
+        "is_bot": false,
+        "login": "Henglongung",
+        "name": "Ung henglong"
+      },
+      "createdAt": "2024-11-13T09:05:45Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "MDU6TGFiZWwyNTk0NjUxMjE5",
+          "name": "priority",
+          "description": "To be fixed in priority",
+          "color": "F4B572"
+        },
+        {
+          "id": "LA_kwDODY8BAc8AAAACvu8KrQ",
+          "name": "ga-high",
+          "description": "High-impact V3 GA finding",
+          "color": "B60205"
+        },
+        {
+          "id": "LA_kwDODY8BAc8AAAACvu8Krg",
+          "name": "v3-ga",
+          "description": "Required for @advanced-chat/components 3.0.0 readiness",
+          "color": "5319E7"
+        }
+      ],
+      "milestone": {
+        "number": 1,
+        "title": "V3 GA",
+        "description": "Tracks @advanced-chat/components 3.0.0 readiness, RC4 verification, soak, and promotion.",
+        "dueOn": null
+      },
+      "number": 550,
+      "title": "audio does not responsive on desktop mode",
+      "updatedAt": "2026-08-10T16:38:07Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/550"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjI1Njg4OTAy",
+        "is_bot": false,
+        "login": "smitea",
+        "name": "Shaw"
+      },
+      "createdAt": "2024-10-20T18:12:24Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 548,
+      "title": "The display of New Message Line can be controlled by show-new-messages-divider",
+      "updatedAt": "2024-10-20T18:13:04Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/548"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjUzMDQ5OTU3",
+        "is_bot": false,
+        "login": "SaiCode-DEV",
+        "name": "SaiCode"
+      },
+      "createdAt": "2024-09-28T11:25:22Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 546,
+      "title": "Horrible Link Contrast",
+      "updatedAt": "2025-04-01T08:18:33Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/546"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjgwNjA0ODk5",
+        "is_bot": false,
+        "login": "aldoprogra",
+        "name": "Gesualdo Sinatra"
+      },
+      "createdAt": "2024-09-07T21:41:53Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 542,
+      "title": "Delete pdf",
+      "updatedAt": "2024-09-07T21:42:35Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/542"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjE3OTk5MTQ2",
+        "is_bot": false,
+        "login": "duyanming",
+        "name": "杜燕明"
+      },
+      "createdAt": "2024-09-07T08:29:06Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 541,
+      "title": "Switching rooms will trigger the event",
+      "updatedAt": "2024-09-07T08:29:06Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/541"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjMxMjc5NjY3",
+        "is_bot": false,
+        "login": "Genemes",
+        "name": "Genemes Souza"
+      },
+      "createdAt": "2024-08-18T19:33:55Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 539,
+      "title": "Catch the change event",
+      "updatedAt": "2024-08-18T19:33:55Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/539"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjIzMjY5NjUw",
+        "is_bot": false,
+        "login": "joshandersn",
+        "name": "Josh Anderson"
+      },
+      "createdAt": "2024-07-23T16:56:17Z",
+      "labels": [],
+      "milestone": null,
+      "number": 538,
+      "title": "How to disable right aligned messages? ",
+      "updatedAt": "2024-09-25T05:54:57Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/538"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjM3MjI0NzM0",
+        "is_bot": false,
+        "login": "reznikovk",
+        "name": ""
+      },
+      "createdAt": "2024-06-29T20:11:18Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 536,
+      "title": "i18n for emoji-picker",
+      "updatedAt": "2024-06-29T20:11:18Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/536"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOCfMQSQ",
+        "is_bot": false,
+        "login": "tailwindL",
+        "name": ""
+      },
+      "createdAt": "2024-06-10T08:19:59Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 532,
+      "title": "Why does it keep loading when switching rooms?",
+      "updatedAt": "2024-09-02T19:07:21Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/532"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjMzMDg5OTk0",
+        "is_bot": false,
+        "login": "WebFaker",
+        "name": "Nicolas | Webfaker"
+      },
+      "createdAt": "2024-06-05T00:49:31Z",
+      "labels": [],
+      "milestone": null,
+      "number": 531,
+      "title": "Adding the possibility to edit the custom textarea action icon",
+      "updatedAt": "2024-06-05T00:49:31Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/531"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjMzMDg5OTk0",
+        "is_bot": false,
+        "login": "WebFaker",
+        "name": "Nicolas | Webfaker"
+      },
+      "createdAt": "2024-06-05T00:27:54Z",
+      "labels": [],
+      "milestone": null,
+      "number": 530,
+      "title": "Add the possibility for disabling capture on input=\"file\"",
+      "updatedAt": "2025-01-17T07:40:35Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/530"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjE1MTkzNTAz",
+        "is_bot": false,
+        "login": "StanislavKozak",
+        "name": ""
+      },
+      "createdAt": "2024-05-10T15:14:40Z",
+      "labels": [],
+      "milestone": null,
+      "number": 528,
+      "title": "How to make it work with Nuxt 3 ClientOnly mode?",
+      "updatedAt": "2025-06-08T23:43:19Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/528"
+    },
+    {
+      "assignees": [
+        {
+          "id": "MDQ6VXNlcjY0Mzg0NTc=",
+          "login": "aerovulpe",
+          "name": "Aaron Nwabuoku",
+          "databaseId": 6438457
+        }
+      ],
+      "author": {
+        "id": "MDQ6VXNlcjQxMzE1ODc0",
+        "is_bot": false,
+        "login": "fumiama",
+        "name": ""
+      },
+      "createdAt": "2024-04-28T16:38:58Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 526,
+      "title": "Named Slot doesn't work correctly on Vue3",
+      "updatedAt": "2025-12-02T17:36:52Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/526"
+    },
+    {
+      "assignees": [
+        {
+          "id": "MDQ6VXNlcjE5NTcxMjA0",
+          "login": "arufonsekun",
+          "name": "Junior Vitor Ramisch",
+          "databaseId": 19571204
+        }
+      ],
+      "author": {
+        "id": "MDQ6VXNlcjE5NTcxMjA0",
+        "is_bot": false,
+        "login": "arufonsekun",
+        "name": "Junior Vitor Ramisch"
+      },
+      "createdAt": "2024-04-05T17:05:19Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 522,
+      "title": "Message draft",
+      "updatedAt": "2024-04-14T20:48:19Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/522"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjgxMDcyMjUy",
+        "is_bot": false,
+        "login": "Cyanogens",
+        "name": ""
+      },
+      "createdAt": "2024-03-19T15:47:58Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 517,
+      "title": ":messages-loaded does not take effect.",
+      "updatedAt": "2024-04-05T13:04:42Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/517"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjQ3NTQ5MTM4",
+        "is_bot": false,
+        "login": "waghankit",
+        "name": "Ankit Wagh"
+      },
+      "createdAt": "2024-02-29T18:03:30Z",
+      "labels": [],
+      "milestone": null,
+      "number": 511,
+      "title": "Not able to apply styles to the vac-progress-bar",
+      "updatedAt": "2024-02-29T18:03:30Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/511"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjE0ODM5MjU=",
+        "is_bot": false,
+        "login": "seyfer",
+        "name": "Oleg Abrazhaev"
+      },
+      "createdAt": "2024-02-11T14:02:20Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 510,
+      "title": "warning \"vue-advanced-chat > linkifyjs@2.1.9\" has unmet peer dependency",
+      "updatedAt": "2024-02-11T14:02:20Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/510"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOBn1QEw",
+        "is_bot": false,
+        "login": "zqpMe",
+        "name": ""
+      },
+      "createdAt": "2024-01-23T08:08:35Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 507,
+      "title": "In mobile mode, when a new message comes in, how to do it without returning to the roomlist",
+      "updatedAt": "2024-01-23T08:11:40Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/507"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjY3MzI3ODUy",
+        "is_bot": false,
+        "login": "fabionixweb",
+        "name": "Fábio Ávila"
+      },
+      "createdAt": "2024-01-15T21:18:22Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 503,
+      "title": "How can I return to the initial option when closing a room?  Example room_empty = true",
+      "updatedAt": "2024-01-15T21:18:42Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/503"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjY2ODk0MDU=",
+        "is_bot": false,
+        "login": "Kinzi",
+        "name": "Sebastian Kinzlinger"
+      },
+      "createdAt": "2024-01-07T12:05:12Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 502,
+      "title": "How to run locally for development",
+      "updatedAt": "2024-06-13T06:50:06Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/502"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjY1NzU1MDg2",
+        "is_bot": false,
+        "login": "abbjetmus",
+        "name": ""
+      },
+      "createdAt": "2024-01-06T21:23:47Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 501,
+      "title": "Room list as slot does not update order after sorting?",
+      "updatedAt": "2024-01-06T21:23:47Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/501"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjUxNjg4MTYx",
+        "is_bot": false,
+        "login": "sheepmouse",
+        "name": ""
+      },
+      "createdAt": "2024-01-05T11:54:03Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 500,
+      "title": " Room message search",
+      "updatedAt": "2024-01-05T11:54:03Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/500"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjM4MTkwMDg0",
+        "is_bot": false,
+        "login": "frostycoles",
+        "name": ""
+      },
+      "createdAt": "2023-12-29T16:50:26Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 498,
+      "title": "Editing a message to include a reply emits `send-message` instead",
+      "updatedAt": "2023-12-29T16:50:26Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/498"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOBa6HiA",
+        "is_bot": false,
+        "login": "mateus3690",
+        "name": "Mateus Santos"
+      },
+      "createdAt": "2023-12-12T14:50:01Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 493,
+      "title": "Cannot read properties of undefined (reading 'roomId')",
+      "updatedAt": "2024-05-23T15:24:33Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/493"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjQ4MzQ5Mzg=",
+        "is_bot": false,
+        "login": "vlahde",
+        "name": "Ville Lähde"
+      },
+      "createdAt": "2023-11-30T10:25:31Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 491,
+      "title": "vue-tsc --noEmit && vite build fails",
+      "updatedAt": "2023-11-30T10:27:15Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/491"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOCPFwkg",
+        "is_bot": false,
+        "login": "bacca-chew",
+        "name": ""
+      },
+      "createdAt": "2023-11-14T15:55:36Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 485,
+      "title": "Spinner still there even when setting messages-loaded to true",
+      "updatedAt": "2023-12-20T11:04:54Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/485"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOBnI7-Q",
+        "is_bot": false,
+        "login": "Mohammad-Ravand",
+        "name": "Mohammad Ravand"
+      },
+      "createdAt": "2023-10-22T16:59:03Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 482,
+      "title": "event fetch-more-rooms  not working ",
+      "updatedAt": "2024-04-30T16:39:10Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/482"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjgxNjAyOA==",
+        "is_bot": false,
+        "login": "vesper8",
+        "name": "C-Bass"
+      },
+      "createdAt": "2023-10-13T10:17:30Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 478,
+      "title": "[Feature Request] emit event when user focuses/blurs in message input field",
+      "updatedAt": "2023-10-13T10:17:30Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/478"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOCLPC9w",
+        "is_bot": false,
+        "login": "chan136626",
+        "name": ""
+      },
+      "createdAt": "2023-09-25T14:10:28Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 474,
+      "title": "Can you support limiting the number of uploaded files",
+      "updatedAt": "2023-09-25T14:10:28Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/474"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjI1MTY1OTk5",
+        "is_bot": false,
+        "login": "yogs22",
+        "name": "Yogi Prasetyawan"
+      },
+      "createdAt": "2023-09-21T04:01:49Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 473,
+      "title": "Found error img.path not defined",
+      "updatedAt": "2023-09-21T04:02:29Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/473"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjE5NTcxMjA0",
+        "is_bot": false,
+        "login": "arufonsekun",
+        "name": "Junior Vitor Ramisch"
+      },
+      "createdAt": "2023-09-11T14:40:06Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 471,
+      "title": "`link-options` not working",
+      "updatedAt": "2023-09-12T12:11:52Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/471"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjQ0NzgyODIz",
+        "is_bot": false,
+        "login": "MaxZhurin",
+        "name": ""
+      },
+      "createdAt": "2023-08-22T15:05:42Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 469,
+      "title": "Too wide emoji block",
+      "updatedAt": "2023-08-22T15:05:42Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/469"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOBb66Bw",
+        "is_bot": false,
+        "login": "dynomind-dev",
+        "name": "Dynomind Dev"
+      },
+      "createdAt": "2023-07-27T13:37:37Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 464,
+      "title": "Issue with `no-room-selected` slot",
+      "updatedAt": "2023-07-30T13:32:55Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/464"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjE5NTcxMjA0",
+        "is_bot": false,
+        "login": "arufonsekun",
+        "name": "Junior Vitor Ramisch"
+      },
+      "createdAt": "2023-07-25T20:40:40Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 463,
+      "title": "Ghost of original content appears when a slot is overwritten",
+      "updatedAt": "2023-08-02T18:50:51Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/463"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOCBqrCg",
+        "is_bot": false,
+        "login": "lala960",
+        "name": ""
+      },
+      "createdAt": "2023-06-09T05:19:49Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 457,
+      "title": "cannot inject my own css file",
+      "updatedAt": "2023-11-08T00:29:55Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/457"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjU2OTQ1NzMx",
+        "is_bot": false,
+        "login": "qing-chen-zero",
+        "name": "qing-chen-zero"
+      },
+      "createdAt": "2023-05-27T07:10:50Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 454,
+      "title": "Changing the showFooter property of room has no effect",
+      "updatedAt": "2023-05-27T07:10:50Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/454"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjQzNDMzMDAw",
+        "is_bot": false,
+        "login": "Deepblue1337",
+        "name": ""
+      },
+      "createdAt": "2023-05-24T12:29:38Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 453,
+      "title": "Custom styling, injecting css into shadow DOM ?",
+      "updatedAt": "2023-07-17T14:40:44Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/453"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjE0ODM5MjU=",
+        "is_bot": false,
+        "login": "seyfer",
+        "name": "Oleg Abrazhaev"
+      },
+      "createdAt": "2023-04-27T09:36:57Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 452,
+      "title": "When using single-room mode, typing indicator for users not shown anywhere",
+      "updatedAt": "2023-05-23T09:43:32Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/452"
+    },
+    {
+      "assignees": [
+        {
+          "id": "MDQ6VXNlcjY0Mzg0NTc=",
+          "login": "aerovulpe",
+          "name": "Aaron Nwabuoku",
+          "databaseId": 6438457
+        }
+      ],
+      "author": {
+        "id": "MDQ6VXNlcjE2MjU2MjA3",
+        "is_bot": false,
+        "login": "antoine92190",
+        "name": "Antoine Dupont"
+      },
+      "createdAt": "2023-04-23T10:56:59Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "MDU6TGFiZWwyNTk0NjUxMjE5",
+          "name": "priority",
+          "description": "To be fixed in priority",
+          "color": "F4B572"
+        }
+      ],
+      "milestone": null,
+      "number": 451,
+      "title": "Improve SSR compatibility",
+      "updatedAt": "2025-12-02T17:36:47Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/451"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjE5MzA3Nzg=",
+        "is_bot": false,
+        "login": "dingyaguang117",
+        "name": "Yaguang Ding"
+      },
+      "createdAt": "2023-04-05T01:43:01Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 445,
+      "title": "The type of some props only accepts string",
+      "updatedAt": "2023-10-04T21:09:19Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/445"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjY3MTAwNzEx",
+        "is_bot": false,
+        "login": "10wen",
+        "name": "Devin"
+      },
+      "createdAt": "2023-03-30T02:45:47Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 443,
+      "title": "When I switch rooms, the new message line sometimes doesn't appear",
+      "updatedAt": "2023-12-18T08:12:53Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/443"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjQ1MTM4MjMw",
+        "is_bot": false,
+        "login": "iced-lemon-tea",
+        "name": "Lemon"
+      },
+      "createdAt": "2023-03-03T03:18:48Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 436,
+      "title": "When the room-message field is too long and needs to be wrapped, the textarea will not automatically expand the height",
+      "updatedAt": "2023-03-05T16:41:29Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/436"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjU4NDgwOA==",
+        "is_bot": false,
+        "login": "szwss",
+        "name": ""
+      },
+      "createdAt": "2023-02-21T07:41:31Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 431,
+      "title": "vertical scroll bar of the chat-room message container automatically scrolls to the very top",
+      "updatedAt": "2023-02-23T11:13:12Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/431"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjU4NDgwOA==",
+        "is_bot": false,
+        "login": "szwss",
+        "name": ""
+      },
+      "createdAt": "2023-01-27T03:14:33Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTUw",
+          "name": "new feature",
+          "description": "New feature accepted",
+          "color": "7057ff"
+        }
+      ],
+      "milestone": null,
+      "number": 418,
+      "title": " Who have seen a message and support it",
+      "updatedAt": "2024-03-06T05:38:27Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/418"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjI1NjQ4MDQ3",
+        "is_bot": false,
+        "login": "backurdi",
+        "name": "Bachir Kurdi"
+      },
+      "createdAt": "2023-01-15T14:11:47Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 416,
+      "title": "Loader for when sending voice messages",
+      "updatedAt": "2023-02-22T17:03:14Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/416"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjEzMTM2OTky",
+        "is_bot": false,
+        "login": "georgy-komarov",
+        "name": "Georgy Komarov"
+      },
+      "createdAt": "2022-12-15T16:55:10Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 410,
+      "title": "Reply to file is not clickable",
+      "updatedAt": "2024-01-29T13:56:09Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/410"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjI3Njc2NjU=",
+        "is_bot": false,
+        "login": "NINI1988",
+        "name": ""
+      },
+      "createdAt": "2022-11-27T11:18:57Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "MDU6TGFiZWwyNTk0NjUxMjE5",
+          "name": "priority",
+          "description": "To be fixed in priority",
+          "color": "F4B572"
+        }
+      ],
+      "milestone": null,
+      "number": 405,
+      "title": "Add emoji/new line at cursor position ",
+      "updatedAt": "2023-04-16T17:49:58Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/405"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjI3Njc2NjU=",
+        "is_bot": false,
+        "login": "NINI1988",
+        "name": ""
+      },
+      "createdAt": "2022-11-26T13:50:58Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "MDU6TGFiZWwyNTk0NjUxMjE5",
+          "name": "priority",
+          "description": "To be fixed in priority",
+          "color": "F4B572"
+        }
+      ],
+      "milestone": null,
+      "number": 404,
+      "title": "Keep messages at bottom when textarea is increasing",
+      "updatedAt": "2023-04-16T17:49:40Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/404"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjI3Njc2NjU=",
+        "is_bot": false,
+        "login": "NINI1988",
+        "name": ""
+      },
+      "createdAt": "2022-11-26T13:08:26Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDODY8BAc71UM-6",
+          "name": "fixed",
+          "description": "The issues was fixed",
+          "color": "0E8A16"
+        }
+      ],
+      "milestone": null,
+      "number": 403,
+      "title": "Emoji Suggestion broken",
+      "updatedAt": "2022-12-20T06:21:15Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/403"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOBiBo5g",
+        "is_bot": false,
+        "login": "Shivam-apna",
+        "name": "Shivam"
+      },
+      "createdAt": "2022-11-23T06:34:58Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "MDU6TGFiZWwyNTk0NjUxMjE5",
+          "name": "priority",
+          "description": "To be fixed in priority",
+          "color": "F4B572"
+        }
+      ],
+      "milestone": null,
+      "number": 397,
+      "title": "Add message when contact list is empty",
+      "updatedAt": "2023-04-16T17:48:55Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/397"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjI4ODE1NTI4",
+        "is_bot": false,
+        "login": "iuryLandin",
+        "name": "Iury Landin"
+      },
+      "createdAt": "2022-11-10T05:02:04Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 387,
+      "title": "Maps location message",
+      "updatedAt": "2024-09-17T11:30:46Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/387"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjM1MzA0MTc3",
+        "is_bot": false,
+        "login": "catthecreator",
+        "name": ""
+      },
+      "createdAt": "2022-10-21T12:26:19Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "MDU6TGFiZWwyNTk0NjUxMjE5",
+          "name": "priority",
+          "description": "To be fixed in priority",
+          "color": "F4B572"
+        }
+      ],
+      "milestone": null,
+      "number": 376,
+      "title": "How to disable room message input? ",
+      "updatedAt": "2023-11-23T22:35:33Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/376"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjI3Njc2NjU=",
+        "is_bot": false,
+        "login": "NINI1988",
+        "name": ""
+      },
+      "createdAt": "2022-10-11T21:16:48Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "MDU6TGFiZWwyNTk0NjUxMjE5",
+          "name": "priority",
+          "description": "To be fixed in priority",
+          "color": "F4B572"
+        }
+      ],
+      "milestone": null,
+      "number": 371,
+      "title": "New line with enter",
+      "updatedAt": "2022-10-30T16:35:34Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/371"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjQ4MzQ5Mzg=",
+        "is_bot": false,
+        "login": "vlahde",
+        "name": "Ville Lähde"
+      },
+      "createdAt": "2022-09-26T09:58:47Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "MDU6TGFiZWwyNTk0NjUxMjE5",
+          "name": "priority",
+          "description": "To be fixed in priority",
+          "color": "F4B572"
+        }
+      ],
+      "milestone": null,
+      "number": 365,
+      "title": "Externalize file upload",
+      "updatedAt": "2022-10-30T16:34:15Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/365"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjczNTIxOTk0",
+        "is_bot": false,
+        "login": "Furqan2",
+        "name": "Furqan Khan"
+      },
+      "createdAt": "2022-09-14T13:12:11Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "MDU6TGFiZWwyNTk0NjUxMjE5",
+          "name": "priority",
+          "description": "To be fixed in priority",
+          "color": "F4B572"
+        }
+      ],
+      "milestone": null,
+      "number": 356,
+      "title": "Voice in voice note got heavy pitch as compare to original voice",
+      "updatedAt": "2023-12-04T11:32:04Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/356"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjI5ODkyNjU5",
+        "is_bot": false,
+        "login": "Alisonispig",
+        "name": ""
+      },
+      "createdAt": "2022-08-22T08:53:02Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 342,
+      "title": "Add virtual scroll to improvement performance",
+      "updatedAt": "2025-12-21T02:57:12Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/342"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjE2MjU2NjUw",
+        "is_bot": false,
+        "login": "mreguly",
+        "name": "Martin Reguly"
+      },
+      "createdAt": "2022-08-09T20:08:25Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTUw",
+          "name": "new feature",
+          "description": "New feature accepted",
+          "color": "7057ff"
+        }
+      ],
+      "milestone": null,
+      "number": 338,
+      "title": "Signal like disappearing messages",
+      "updatedAt": "2022-08-25T06:30:02Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/338"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjE2MjU2NjUw",
+        "is_bot": false,
+        "login": "mreguly",
+        "name": "Martin Reguly"
+      },
+      "createdAt": "2022-07-29T12:25:44Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "MDU6TGFiZWwyNTk0NjUxMjE5",
+          "name": "priority",
+          "description": "To be fixed in priority",
+          "color": "F4B572"
+        }
+      ],
+      "milestone": null,
+      "number": 333,
+      "title": "Ability to star message",
+      "updatedAt": "2022-10-30T16:35:14Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/333"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjI3Njc2NjU=",
+        "is_bot": false,
+        "login": "NINI1988",
+        "name": ""
+      },
+      "createdAt": "2022-07-17T00:38:34Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 331,
+      "title": "Scrollbar glitch",
+      "updatedAt": "2022-08-02T19:02:20Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/331"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOBiBo5g",
+        "is_bot": false,
+        "login": "Shivam-apna",
+        "name": "Shivam"
+      },
+      "createdAt": "2022-05-27T04:57:07Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTUw",
+          "name": "new feature",
+          "description": "New feature accepted",
+          "color": "7057ff"
+        }
+      ],
+      "milestone": null,
+      "number": 314,
+      "title": "Add search bar for room messages",
+      "updatedAt": "2022-06-17T15:21:09Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/314"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjQ5NDU5MjI1",
+        "is_bot": false,
+        "login": "MatthewLoffredo",
+        "name": "Matt Loffredo"
+      },
+      "createdAt": "2022-04-20T14:19:05Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 300,
+      "title": "Option to render html as message content",
+      "updatedAt": "2025-09-01T12:16:22Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/300"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjI4MTk4MDE0",
+        "is_bot": false,
+        "login": "isbincApps",
+        "name": "Sebastian Maya Roldan"
+      },
+      "createdAt": "2022-04-18T19:33:05Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTUw",
+          "name": "new feature",
+          "description": "New feature accepted",
+          "color": "7057ff"
+        }
+      ],
+      "milestone": null,
+      "number": 299,
+      "title": "Pin chats option",
+      "updatedAt": "2022-05-13T06:12:34Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/299"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjQ5NDU5MjI1",
+        "is_bot": false,
+        "login": "MatthewLoffredo",
+        "name": "Matt Loffredo"
+      },
+      "createdAt": "2022-03-19T02:06:05Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 292,
+      "title": "More link customization options",
+      "updatedAt": "2022-03-23T04:35:24Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/292"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjE2MjU2MjA3",
+        "is_bot": false,
+        "login": "antoine92190",
+        "name": "Antoine Dupont"
+      },
+      "createdAt": "2021-12-05T08:03:48Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 261,
+      "title": "Add virtual scroll",
+      "updatedAt": "2025-12-21T18:54:12Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/261"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjE2MjU2MjA3",
+        "is_bot": false,
+        "login": "antoine92190",
+        "name": "Antoine Dupont"
+      },
+      "createdAt": "2021-11-16T23:42:25Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 244,
+      "title": "Scrolling issues",
+      "updatedAt": "2021-12-05T10:02:42Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/244"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjIzNjIyMTg0",
+        "is_bot": false,
+        "login": "natsumework",
+        "name": "natsumework"
+      },
+      "createdAt": "2021-09-07T06:23:07Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "milestone": null,
+      "number": 206,
+      "title": "Swipe back animation",
+      "updatedAt": "2022-11-26T12:34:39Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/206"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjMzODA0MDcy",
+        "is_bot": false,
+        "login": "prokhn",
+        "name": "Nikolay Prokhorov"
+      },
+      "createdAt": "2021-07-07T02:04:07Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ1",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "milestone": null,
+      "number": 182,
+      "title": "Display saved not distributed messages ",
+      "updatedAt": "2023-02-23T17:22:07Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/182"
+    },
+    {
+      "assignees": [
+        {
+          "id": "MDQ6VXNlcjY0Mzg0NTc=",
+          "login": "aerovulpe",
+          "name": "Aaron Nwabuoku",
+          "databaseId": 6438457
+        }
+      ],
+      "author": {
+        "id": "MDQ6VXNlcjMyNDQzNg==",
+        "is_bot": false,
+        "login": "antirek",
+        "name": "Dmitriev Sergey"
+      },
+      "createdAt": "2021-05-18T17:24:47Z",
+      "labels": [
+        {
+          "id": "MDU6TGFiZWwxNzI5MDU0MTQ4",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "MDU6TGFiZWwyNTk0NjUxMjE5",
+          "name": "priority",
+          "description": "To be fixed in priority",
+          "color": "F4B572"
+        }
+      ],
+      "milestone": null,
+      "number": 166,
+      "title": "Chat components library",
+      "updatedAt": "2025-12-02T17:35:53Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/issues/166"
+    }
+  ],
+  "pullRequests": [
+    {
+      "assignees": [
+        {
+          "id": "MDQ6VXNlcjY0Mzg0NTc=",
+          "login": "aerovulpe",
+          "name": "Aaron Nwabuoku",
+          "databaseId": 6438457
+        }
+      ],
+      "author": {
+        "id": "MDQ6VXNlcjY0Mzg0NTc=",
+        "is_bot": false,
+        "login": "aerovulpe",
+        "name": "Aaron Nwabuoku"
+      },
+      "baseRefName": "main",
+      "createdAt": "2026-08-10T16:37:46Z",
+      "headRefName": "ga/readiness-orchestration",
+      "isDraft": false,
+      "labels": [
+        {
+          "id": "LA_kwDODY8BAc8AAAACvu8Krg",
+          "name": "v3-ga",
+          "description": "Required for @advanced-chat/components 3.0.0 readiness",
+          "color": "5319E7"
+        },
+        {
+          "id": "LA_kwDODY8BAc8AAAACvu8KwQ",
+          "name": "ga-control",
+          "description": "V3 GA governance and coordination",
+          "color": "1D76DB"
+        }
+      ],
+      "mergeStateStatus": "BLOCKED",
+      "milestone": {
+        "number": 1,
+        "title": "V3 GA",
+        "description": "Tracks @advanced-chat/components 3.0.0 readiness, RC4 verification, soak, and promotion.",
+        "dueOn": null
+      },
+      "number": 581,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "chore: establish v3 GA readiness control room",
+      "updatedAt": "2026-08-10T16:37:50Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/581"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjE4MDMzNjY2",
+        "is_bot": false,
+        "login": "agritheory",
+        "name": "Tyler Matteson"
+      },
+      "baseRefName": "main",
+      "createdAt": "2026-07-21T17:14:07Z",
+      "headRefName": "upstream/publish-src",
+      "isDraft": false,
+      "labels": [],
+      "mergeStateStatus": "DIRTY",
+      "milestone": null,
+      "number": 574,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "Publish src/ for bundler consumers extending ChatWindow",
+      "updatedAt": "2026-07-21T17:14:07Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/574"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjY0Mzg0NTc=",
+        "is_bot": false,
+        "login": "aerovulpe",
+        "name": "Aaron Nwabuoku"
+      },
+      "baseRefName": "main",
+      "createdAt": "2025-12-10T16:56:25Z",
+      "headRefName": "fix/566",
+      "isDraft": false,
+      "labels": [],
+      "mergeStateStatus": "DIRTY",
+      "milestone": null,
+      "number": 567,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "fix: load more rooms when less than minimumVisibleRooms and prepare build to support install from GitHub",
+      "updatedAt": "2025-12-10T17:40:43Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/567"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjkxMTUxNTM=",
+        "is_bot": false,
+        "login": "adriavidal",
+        "name": "adria vidal"
+      },
+      "baseRefName": "main",
+      "createdAt": "2025-05-28T06:47:14Z",
+      "headRefName": "feat/jjsip-phone-option",
+      "isDraft": false,
+      "labels": [],
+      "mergeStateStatus": "DIRTY",
+      "milestone": null,
+      "number": 561,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "feat: Add JJSIP based phone option to chat",
+      "updatedAt": "2025-12-04T19:05:54Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/561"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOCB3MTQ",
+        "is_bot": false,
+        "login": "ChasingTheTide",
+        "name": ""
+      },
+      "baseRefName": "main",
+      "createdAt": "2024-10-26T15:32:18Z",
+      "headRefName": "chasing/exports",
+      "isDraft": false,
+      "labels": [],
+      "mergeStateStatus": "DIRTY",
+      "milestone": null,
+      "number": 549,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "Fix #166: export internal components",
+      "updatedAt": "2025-12-04T19:05:54Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/549"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjYyOTQ3OTAx",
+        "is_bot": false,
+        "login": "Arttf",
+        "name": "Щербатых Артур"
+      },
+      "baseRefName": "main",
+      "createdAt": "2024-08-28T12:53:55Z",
+      "headRefName": "patch-1",
+      "isDraft": false,
+      "labels": [],
+      "mergeStateStatus": "DIRTY",
+      "milestone": null,
+      "number": 540,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "Bag return replyMessage in editMessage function",
+      "updatedAt": "2025-12-04T19:05:54Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/540"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "is_bot": true,
+        "login": "app/dependabot"
+      },
+      "baseRefName": "main",
+      "createdAt": "2024-04-03T17:50:59Z",
+      "headRefName": "dependabot/npm_and_yarn/demo/vite-2.9.18",
+      "isDraft": false,
+      "labels": [
+        {
+          "id": "LA_kwDODY8BAc8AAAABap6rWw",
+          "name": "dependencies",
+          "description": "Pull requests that update a dependency file",
+          "color": "0366d6"
+        }
+      ],
+      "mergeStateStatus": "DIRTY",
+      "milestone": null,
+      "number": 520,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "Bump vite from 2.9.16 to 2.9.18 in /demo",
+      "updatedAt": "2025-12-04T19:05:54Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/520"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "is_bot": true,
+        "login": "app/dependabot"
+      },
+      "baseRefName": "main",
+      "createdAt": "2024-04-03T17:50:38Z",
+      "headRefName": "dependabot/npm_and_yarn/vite-2.9.18",
+      "isDraft": false,
+      "labels": [
+        {
+          "id": "LA_kwDODY8BAc8AAAABap6rWw",
+          "name": "dependencies",
+          "description": "Pull requests that update a dependency file",
+          "color": "0366d6"
+        }
+      ],
+      "mergeStateStatus": "DIRTY",
+      "milestone": null,
+      "number": 519,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "Bump vite from 2.9.16 to 2.9.18",
+      "updatedAt": "2025-12-04T19:05:54Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/519"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOBivmdQ",
+        "is_bot": false,
+        "login": "Abeni001",
+        "name": "Abenezer Getnet"
+      },
+      "baseRefName": "main",
+      "createdAt": "2024-04-03T08:36:10Z",
+      "headRefName": "patch-1",
+      "isDraft": false,
+      "labels": [],
+      "mergeStateStatus": "DIRTY",
+      "milestone": null,
+      "number": 518,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "change \"background-color\" to \"background\" of message cards in order to use gradient background in RoomMessage.scss",
+      "updatedAt": "2025-12-04T19:05:54Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/518"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "U_kgDOCIbg9Q",
+        "is_bot": false,
+        "login": "SachinL98",
+        "name": "Sachin Lakshan"
+      },
+      "baseRefName": "main",
+      "createdAt": "2024-03-09T11:47:45Z",
+      "headRefName": "feature/issue-742-chat-users-list-must-have-a-backround-color-and-scroll-bar",
+      "isDraft": false,
+      "labels": [],
+      "mergeStateStatus": "DIRTY",
+      "milestone": null,
+      "number": 514,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "Feature/issue 742 chat users list must have a backround color and scroll bar",
+      "updatedAt": "2025-12-04T19:05:54Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/514"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjY3MTAwNzEx",
+        "is_bot": false,
+        "login": "10wen",
+        "name": "Devin"
+      },
+      "baseRefName": "main",
+      "createdAt": "2023-12-27T12:31:46Z",
+      "headRefName": "main",
+      "isDraft": false,
+      "labels": [],
+      "mergeStateStatus": "DIRTY",
+      "milestone": null,
+      "number": 495,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "[fix] new message line disappearance issue",
+      "updatedAt": "2025-12-04T19:05:54Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/495"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjY1ODE0OTU=",
+        "is_bot": false,
+        "login": "alexlqi",
+        "name": ""
+      },
+      "baseRefName": "main",
+      "createdAt": "2023-10-11T21:00:56Z",
+      "headRefName": "develop",
+      "isDraft": false,
+      "labels": [],
+      "mergeStateStatus": "DIRTY",
+      "milestone": null,
+      "number": 477,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "Develop",
+      "updatedAt": "2025-12-04T19:05:54Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/477"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjI5NjkwMzQz",
+        "is_bot": false,
+        "login": "rr-it",
+        "name": "Ayke Halder"
+      },
+      "baseRefName": "main",
+      "createdAt": "2022-05-03T19:03:18Z",
+      "headRefName": "feature/emit-new-signal-reset-message",
+      "isDraft": false,
+      "labels": [],
+      "mergeStateStatus": "DIRTY",
+      "milestone": null,
+      "number": 307,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "(feature) emit new signal reset-message",
+      "updatedAt": "2025-12-04T19:05:54Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/307"
+    },
+    {
+      "assignees": [],
+      "author": {
+        "id": "MDQ6VXNlcjI5NjkwMzQz",
+        "is_bot": false,
+        "login": "rr-it",
+        "name": "Ayke Halder"
+      },
+      "baseRefName": "main",
+      "createdAt": "2022-05-03T18:44:02Z",
+      "headRefName": "feature/message-action-handler-method-callback",
+      "isDraft": false,
+      "labels": [],
+      "mergeStateStatus": "DIRTY",
+      "milestone": null,
+      "number": 306,
+      "reviewDecision": "REVIEW_REQUIRED",
+      "title": "(feature) add method-callback to signal 'message-action-handler'",
+      "updatedAt": "2025-12-04T19:05:54Z",
+      "url": "https://github.com/advanced-chat/advanced-chat-components/pull/306"
+    }
+  ]
+}
