@@ -7,9 +7,9 @@ import { gfmStrikethroughHtml } from 'micromark-extension-gfm-strikethrough'
 import { gfmTableHtml } from 'micromark-extension-gfm-table'
 import { gfmTagfilterHtml } from 'micromark-extension-gfm-tagfilter'
 import { gfmTaskListItemHtml } from 'micromark-extension-gfm-task-list-item'
+import type { Extension, HtmlExtension } from 'micromark-util-types'
 
 import { gfmAutolinkLiteralHtml } from './autolink.ts'
-
 import { underline, underlineHtml } from './underline.ts'
 import { userTag, userTagHtml } from './user-tag.ts'
 
@@ -25,6 +25,8 @@ export interface TextFormattingOptions {
   singleLine?: boolean
   linkify?: boolean
   linkOptions?: LinkOptions
+  extensions?: Extension[]
+  htmlExtensions?: HtmlExtension[]
 }
 
 export interface TextFormattingBindings {
@@ -39,7 +41,7 @@ export interface FormattedText {
 
 export const formatText = (
   text: string,
-  { markdown, singleLine, linkify, linkOptions }: TextFormattingOptions,
+  { markdown, singleLine, linkify, linkOptions, extensions, htmlExtensions }: TextFormattingOptions,
   { users }: TextFormattingBindings = {},
 ): FormattedText => {
   let parsed = text
@@ -70,8 +72,14 @@ export const formatText = (
         },
         underline,
         userTag,
+        ...(extensions || []),
       ],
-      htmlExtensions: [gfmHtml(), underlineHtml, userTagHtml(users || [])],
+      htmlExtensions: [
+        gfmHtml(),
+        underlineHtml,
+        userTagHtml(users || []),
+        ...(htmlExtensions || []),
+      ],
     })
 
     if (typeof document !== 'undefined') {

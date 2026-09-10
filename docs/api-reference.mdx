@@ -210,7 +210,8 @@ and dangerous protocols are disabled in the current micromark configuration,
 but the return value is not passed through a general-purpose HTML sanitizer.
 See the security model before inserting formatter output with `v-html` in a
 custom renderer. `linkOptions` applies to literal GFM autolinks; explicit
-Markdown links use micromark's standard link output.
+Markdown links use micromark's standard link output. Optional `extensions`
+and `htmlExtensions` are appended after the built-in micromark stack.
 
 ## Operational state
 

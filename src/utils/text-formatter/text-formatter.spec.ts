@@ -77,4 +77,27 @@ describe('formatText', () => {
     const result = formatText('- [x] done', { markdown: true })
     expect(result.value).toContain('aria-label="Checklist item"')
   })
+
+  it('appends host micromark extensions after the built-in stack', () => {
+    const result = formatText('°hi° ~~gone~~', {
+      markdown: true,
+      extensions: [{ disable: { null: ['strikethrough'] } }],
+      htmlExtensions: [
+        {
+          enter: {
+            underline() {
+              this.tag('<u data-ext="">')
+            },
+          },
+          exit: {
+            underline() {
+              this.tag('</u>')
+            },
+          },
+        },
+      ],
+    })
+    expect(result.value).toContain('data-ext')
+    expect(result.value).not.toContain('<del>')
+  })
 })
